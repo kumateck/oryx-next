@@ -1,0 +1,15 @@
+node_modules
+tailwind.css
+
+/build
+/public/build
+.env
+
+
+/src/generated/types.ts
+/src/generated/graphql.schema.json
+/src/**/*.generated.ts
+
+.eslintrc.cjs
+pnpm-lock.yaml
+.prettierrc
