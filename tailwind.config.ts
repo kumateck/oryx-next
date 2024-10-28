@@ -1,0 +1,139 @@
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+    darkMode: ["class"],
+    content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+  	extend: {
+  		colors: {
+  			background: 'var(--background)',
+  			foreground: 'var(--foreground)',
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			},
+			main:{
+DEFAULT:"#FAF9F8"
+			},
+			  primary: {
+				900: "#16273D",
+				800: "#07426F",
+				700: "#095A97",
+				600: "#106EBE",
+				500: "#0078D4",
+				400: "#2484CE",
+				300: "#61A7DD",
+				200: "#ABD1EE",
+				100: "#D1E6F6",
+				50: "#F3F9FD",
+			  },
+			  secondary: {
+				900: "#000000",
+				800: "#030303",
+				700: "#181717",
+				600: "#201F1E",
+				500: "#323130",
+				400: "#3B3A39",
+				300: "#D2D0CE",
+				200: "#EDEBE9",
+				100: "#F3F2F1",
+				50: "#FAF9F8",
+			  },
+			
+			  accent: {
+				900: "#00534C",
+				500: "#2CD5C7",
+				300: "#37FAEA",
+				200: "#8AFFF5",
+				100: "#C8FFFB",
+			  },
+			  popover: {
+				DEFAULT: "hsl(var(--popover))",
+				foreground: "hsl(var(--popover-foreground))",
+			  },
+			  card: {
+				DEFAULT: "hsl(var(--card))",
+				foreground: "hsl(var(--card-foreground))",
+			  },
+			  danger: {
+				900: "#7F1D1D",
+				800: "#7F1D1D",
+				700: "#B91C1C",
+				600: "#DC2626",
+				500: "#EF4444",
+				400: "#F87171",
+				300: "#FCA5A5",
+				200: "#FECACA",
+				100: "#FEE2E2",
+				50: "#FEF2F2",
+			  },
+			  info: {
+				900: "#055565",
+				500: "#0CB8DA",
+				300: "#5DDBF5",
+				200: "#90E7F8",
+				100: "#B4EFFA",
+			  },
+			  warning: {
+				900: "#78350F",
+				800: "#92400E",
+				700: "#B45309",
+				600: "#D97706",
+				500: "#F59E0B",
+				400: "#FBBF24",
+				300: "#FCD34D",
+				200: "#FDE68A",
+				100: "##FEF3C7",
+				50: "#FFFBEB",
+			  },
+			  success: {
+				900: "#14532D",
+				800: "#166534",
+				700: "#15803D",
+				600: "#16A34A",
+				500: "#22C55E",
+				400: "#4ADE80",
+				300: "#86EFAC",
+				200: "#BBF7D0",
+				100: "#DCFCE7",
+				50: "#F0FDF4",
+			  },
+			  neutral: {
+				900: "#0F172A",
+				800: "#1F2937",
+				700: "#374151",
+				600: "#4B5563",
+				500: "#647488",
+				400: "#9CA3AF",
+				300: "#CBD5E1",
+				200: "#E7ECF2",
+				100: "#F9FAFB",
+				50: "#FDFDFD",
+			  },
+	  
+			  black: "#000000",
+			  white: "#FFFFFF",
+  		},
+		  fontFamily: {
+			krub: ["Krub", "sans-serif"],
+		  },
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
+  },
+  plugins: [require("tailwindcss-animate")],
+};
+export default config;
