@@ -1,0 +1,61 @@
+import { format } from "date-fns";
+
+import { ListsTable } from "@/app/shared/datatable";
+import { ProductBillOfMaterialDto } from "@/lib/redux/api/openapi.generated";
+
+interface IProps {
+  data?: ProductBillOfMaterialDto;
+  title?: string;
+}
+
+export const Bom = ({ data, title }: IProps) => {
+  if (!data) {
+    return <div>No Data</div>;
+  }
+
+  const billOfMaterial = data.billOfMaterial;
+  const version = billOfMaterial?.version;
+  const effectiveDate = data?.effectiveDate as string;
+  const isActive = billOfMaterial?.isActive;
+  const items = billOfMaterial?.items;
+  return (
+    <div className="space-y-4">
+      <span className="block text-2xl font-bold">{title}</span>
+      <div>
+        <span>Version: {version}</span> |{" "}
+        <span>
+          Effective Date:{" "}
+          {effectiveDate ? format(effectiveDate, "MMMM dd, yyyy") : ""}
+        </span>{" "}
+        | <span> Is Active: {isActive ? "Yes" : "No"}</span>
+      </div>
+      <ListsTable
+        columns={[
+          {
+            accessorKey: "materialtype",
+            header: "Material Type",
+            cell: (info) => info.row.original.materialType?.name,
+          },
+          {
+            accessorKey: "material",
+            header: "Material",
+            cell: (info) => info.row.original.componentMaterial?.name,
+          },
+          {
+            accessorKey: "grade",
+            header: "Grade",
+          },
+          {
+            accessorKey: "casNumber",
+            header: "CAS Number",
+          },
+          {
+            accessorKey: "function",
+            header: "Function",
+          },
+        ]}
+        data={items ?? []}
+      />
+    </div>
+  );
+};

@@ -1,13 +1,14 @@
+@import "react-calendar/dist/Calendar.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 html,
 body {
   font-family: "Krub", sans-serif;
   /* font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif; */
-    -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
   font-style: normal;
@@ -16,7 +17,7 @@ body {
 @layer base {
   :root {
     --radius: 0.5rem;
-    --sidebar-background: 30 10% 92%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -35,4 +36,111 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+.react-calendar,
+.react-calendar * {
+  font-family: "Krub", sans-serif;
+  -webkit-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+.react-calendar__navigation {
+  height: 28px !important;
+  line-height: 44px !important;
+  margin-bottom: 0px !important;
+  gap: 4px !important;
+}
+.react-calendar__navigation button {
+  min-width: 28px !important;
+  height: 28px !important;
+  width: 28px !important;
+}
+.react-calendar__navigation__label:hover,
+.react-calendar__navigation__arrow:hover {
+  /* color: var(--colorBrandForegroundOnLightHover) !important; */
+  color: theme("colors.neutral.500") !important;
+  /* background: var(--colorBrandBackgroundInvertedHover) !important; */
+  /* background: theme("background.neutral.100") !important; */
+  background-color: theme("backgroundColor.neutral.50") !important;
+  background: theme("backgroundColor.neutral.50") !important;
+}
+.react-calendar__navigation__label {
+  vertical-align: middle !important;
+  text-align: center !important;
+  margin-bottom: 1em !important;
+  line-height: normal !important;
+}
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  /* color: var(--colorBrandForegroundOnLightHover) !important; */
+  color: theme("colors.neutral.500") !important;
+  background-color: theme("backgroundColor.neutral.50") !important;
+  background: theme("backgroundColor.neutral.50") !important;
+
+  /* background: var(--colorBrandBackgroundInvertedHover) !important; */
+}
+.react-calendar__year-view {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.react-calendar__year-view__months {
+  text-align: center;
+  border-radius: 5px;
+  background-color: #ffffff;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+}
+.react-calendar__year-view .react-calendar__tile {
+  padding: 1.1rem 0.5rem !important;
+}
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: theme("backgroundColor.primary.100") !important;
+  border-radius: 2px !important;
+  color: var(--stroke-accent) !important;
+}
+.react-calendar__tile--active {
+  background-color: theme("backgroundColor.primary.500") !important;
+  border-radius: 6px !important;
+  color: theme("colors.white") !important;
+}
+.react-calendar__tile--hasActive {
+  background: theme("backgroundColor.primary.500");
+  background-color: theme("backgroundColor.primary.500");
+  /*  var(--colorBrandBackground) !important; */
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 6px !important;
+}
+.react-calendar__tile--now {
+  background-color: theme("backgroundColor.secondary.200") !important;
+  color: theme("colors.primary.500") !important;
+  border-radius: 6px;
+}
+.react-calendar__decade-view {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.react-calendar__decade-view .react-calendar__tile {
+  padding: 1rem 0.5rem !important;
+}
+
+.react-calendar__century-view {
+  width: 100%;
+  max-width: 500px;
+  max-height: 300px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.react-calendar__century-view .react-calendar__tile {
+  padding: 0.75rem 0.25rem !important;
 }

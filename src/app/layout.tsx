@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Krub as KrubSerif } from "next/font/google";
 
 import { cn } from "@/lib/utils";
+import Providers from "@/providers";
 
 import "./globals.css";
 
@@ -23,11 +24,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn("", krubSerif.variable)}
-        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={cn("h-screen w-full antialiased", krubSerif.variable)}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

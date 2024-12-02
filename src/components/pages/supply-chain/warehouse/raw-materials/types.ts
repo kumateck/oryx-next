@@ -1,0 +1,27 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { EMaterialKind } from "@/lib";
+
+export const CreateMaterialSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  code: z.string().min(1, { message: "Code is required" }),
+  description: z.string().optional(),
+  pharmacopoeia: z.string().optional(),
+  kind: z.nativeEnum(EMaterialKind, {
+    required_error: "Type is required",
+    invalid_type_error: "Type must be either 'Package' or 'Raw'",
+  }),
+  materialCategoryId: z.object(
+    {
+      value: z.string().min(1, { message: "Material Category is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Material Category is required",
+    },
+  ),
+});
+
+export type MaterialRequestDto = z.infer<typeof CreateMaterialSchema>;
+export const CreateMaterialValidator = zodResolver(CreateMaterialSchema);

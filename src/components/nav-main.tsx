@@ -1,4 +1,563 @@
 // "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+"use client";
+
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+
+import { MenuItem } from "./navigation";
+import { Icon } from "./ui/icon";
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
+// import { ChevronRight,  } from "lucide-react"
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+// import {
+//   SidebarGroup,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar"
+// import { MenuItem } from "./navigation"
+// import { Icon } from "./ui/icon"
+// import Link from "next/link"
+// interface Props{
+//   title: string
+//   items:MenuItem[]
+// }
+// export function NavMain({
+//   items,title
+// }: Props) {
+//   return (
+//     <SidebarGroup>
+//       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+//       <SidebarMenu>
+//         {items.map((item) => (
+//           <Collapsible
+//             key={item.title}
+//             asChild
+//             defaultOpen={item.isActive}
+//             className="group/collapsible"
+//           >
+//             <SidebarMenuItem>
+//               <CollapsibleTrigger asChild>
+//                 <SidebarMenuButton tooltip={item.title}>
+//                   {item.icon && <Icon name={item.icon} />}
+//                   <span>{item.title}</span>
+//                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                 </SidebarMenuButton>
+//               </CollapsibleTrigger>
+//               <CollapsibleContent>
+//                 <SidebarMenuSub>
+//                   {item.items?.map((subItem) => (
+//                     <SidebarMenuSubItem key={subItem.title}>
+//                       <SidebarMenuSubButton asChild>
+//                         <Link href={subItem.url}>
+//                           <span>{subItem.title}</span>
+//                         </Link>
+//                       </SidebarMenuSubButton>
+//                     </SidebarMenuSubItem>
+//                   ))}
+//                 </SidebarMenuSub>
+//               </CollapsibleContent>
+//             </SidebarMenuItem>
+//           </Collapsible>
+//         ))}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   )
+// }
+
+// "use client"
 
 // import { ChevronRight,  } from "lucide-react"
 
@@ -68,40 +627,21 @@
 //   )
 // }
 
-"use client";
-
-import { ChevronRight } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
-import { MenuItem } from "./navigation";
-import { Icon } from "./ui/icon";
-import Link from "next/link";
-
 interface Props {
   title: string;
   items: MenuItem[];
+  currentPath?: string;
 }
 
-export function NavMain({ items, title }: Props) {
+export function NavMain({ items, title, currentPath }: Props) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
-          item.items && item.items.length > 0 ? (
+        {items.map((item) => {
+          const isActive = currentPath === item.url;
+
+          return item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}
               asChild
@@ -133,15 +673,22 @@ export function NavMain({ items, title }: Props) {
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} asChild>
-                <Link href={item.url as string} className="flex items-center w-full">
+              <SidebarMenuButton
+                tooltip={item.title}
+                asChild
+                isActive={isActive}
+              >
+                <Link
+                  href={item.url as string}
+                  className="flex w-full items-center"
+                >
                   {item.icon && <Icon name={item.icon} />}
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          )
-        ))}
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );

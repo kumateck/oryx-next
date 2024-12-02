@@ -1,6 +1,5 @@
-"use client"
+"use client";
 
-import * as React from "react"
 import {
   AudioWaveform,
   BookOpen,
@@ -12,11 +11,11 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
+import * as React from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 // import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
@@ -24,9 +23,10 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+
 // import SideLogo from "./logo"
-import { ROUTES } from "./navigation"
+import { ROUTES } from "./navigation";
 
 // This is sample data.
 const data = {
@@ -156,29 +156,33 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface Props extends React.ComponentProps<typeof Sidebar> {
+  currentPath?: string;
+}
+export function AppSidebar({ currentPath, ...props }: Props) {
   return (
-    <Sidebar variant="inset" color="primary" collapsible="icon" {...props}>
-      <SidebarHeader>
-        {/* <SideLogo /> */}
-      </SidebarHeader>
+    <Sidebar variant="floating" color="primary" collapsible="icon" {...props}>
+      <SidebarHeader>{/* <SideLogo /> */}</SidebarHeader>
       <SidebarContent>
-        {
-          ROUTES.map((route,idx) => {
-            return (
-              <NavMain key={idx} title={route.title} items={route.menu} />
-            )
-          })
-        }
+        {ROUTES.map((route, idx) => {
+          return (
+            <NavMain
+              key={idx}
+              title={route.title}
+              items={route.menu}
+              currentPath={currentPath}
+            />
+          );
+        })}
         {/* <NavMain items={data.navMain} /> */}
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

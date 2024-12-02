@@ -1,13 +1,9 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,28 +18,20 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
+import { DynamicBreadcrumb } from "../shared/dynamic-breadcrumb";
+
 export default function Page({ children }: { children: React.ReactNode }) {
+  const currentPath = usePathname();
+  // const currentPath = router.
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar currentPath={currentPath} />
       <SidebarInset className="bg-secondary-50">
         <header className="flex h-16 shrink-0 items-center gap-2 px-3 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex flex-1 items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <DynamicBreadcrumb />
           </div>
           <div>
             <div className="flex items-center gap-3 rounded-full bg-neutral-200 p-1 px-4">

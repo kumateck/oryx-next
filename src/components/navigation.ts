@@ -1,201 +1,253 @@
-
-import {  LucideIconName } from "./ui/icon";
+import { LucideIconName } from "./ui/icon";
 
 // Define the sub-item structure for nested menu items.
 interface SubItem {
-    title: string;
-    url?: string;
-  }
-  
-  // Define the main menu item structure.
-  export interface MenuItem {
-    title: string;
-    url?: string;
-    icon: LucideIconName;
-    isActive?: boolean;
-    items?: SubItem[]; // Optional array of sub-items.
-  }
-  
-  // Define the structure for each main route section.
- export interface Route {
-    title: string;
-    menu: MenuItem[];
-  }
-  
-export const ROUTES:Route[] = [
-   {
-    title:"Main",
-    menu:[
-        {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: "LayoutDashboard",
-           isActive: false,
-            
-        }
-    ]
-   }, {
-    title:"Supply Chain",
-    menu:[
-        {
-            title: "Logistics",
-            // url: "",
-            icon: "Forklift",
+  title: string;
+  url?: string;
+}
+
+// Define the main menu item structure.
+export interface MenuItem {
+  title: string;
+  url?: string;
+  icon: LucideIconName;
+  isActive?: boolean;
+  items?: SubItem[]; // Optional array of sub-items.
+}
+
+// Define the structure for each main route section.
+export interface Route {
+  title: string;
+  menu: MenuItem[];
+}
+
+export const ROUTES: Route[] = [
+  {
+    title: "Main",
+    menu: [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: "LayoutDashboard",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Supply Chain",
+    menu: [
+      {
+        title: "Logistics",
+        // url: "",
+        icon: "Forklift",
         //    isActive: false,
-            items: [{
-              title: "Available Stock",
-              url: "/stock/available"
-            },{
-              title: "Shipment",
-              url: "/logistics/shipment"
-            },{
-              title: "Billing Sheet",
-              url: "/logistics/billing-sheet"
-            },{
-              title: "Vendors",
-              url: "/logistics/vendors"
-            },
-            {
-              title: "Purchase Order",
-              url: "/logistics/purchase-order"
-            },
-        ]
-        }, {
-            title: "Warehouse",
-            // url: "string",
-            icon: "Warehouse",
+        items: [
+          {
+            title: "Manufacturers",
+            url: "/logistics/manufacturers",
+          },
+          {
+            title: "Vendors",
+            url: "/logistics/vendors",
+          },
+          {
+            title: "Available Stock",
+            url: "/stock/available",
+          },
+          {
+            title: "Shipment",
+            url: "/logistics/shipment",
+          },
+          {
+            title: "Billing Sheet",
+            url: "/logistics/billing-sheet",
+          },
+          {
+            title: "Purchase Order",
+            url: "/logistics/purchase-order",
+          },
+        ],
+      },
+      {
+        title: "Warehouse",
+        // url: "string",
+        icon: "Warehouse",
         //    isActive: false,
-            items: [{
-              title: "Available Stock",
-              url: "/stock/available"
-            },{
-              title: "Stock Requisitions",
-              url: "/stock/requisitions"
-            },]
-        }, {
-            title: "Procurement",
-            // url: "string",
-            icon: "Microchip",
+        items: [
+          {
+            title: "Raw Materials",
+            url: "/warehouse/raw-materials",
+          },
+          {
+            title: "Available Stock",
+            url: "/stock/available",
+          },
+          {
+            title: "Stock Requisitions",
+            url: "/stock/requisitions",
+          },
+        ],
+      },
+      {
+        title: "Procurement",
+        // url: "string",
+        icon: "Microchip",
         //    isActive: false,
-            items: [{
-              title: "Proforma Invoices",
-              url: "/procurement/proforma-invoice"
-            },{
-              title: "Sales Quotations",
-              url: "/procurement/sales-quotation"
-            },{
-              title: "Purchase Orders",
-              url: "/procurement/purchase-orders"
-            },]
-        },
-    ]
-   }, {
-    title:"Production",
-    menu:[
-        {
-            title: "Stock Requisition",
+        items: [
+          {
+            title: "Manufacturers",
+            url: "/procurement/manufacturers",
+          },
+          {
+            title: "Vendors",
+            url: "/procurement/vendors",
+          },
+          {
+            title: "Proforma Invoices",
+            url: "/procurement/proforma-invoice",
+          },
+          {
+            title: "Sales Quotations",
+            url: "/procurement/sales-quotation",
+          },
+          {
+            title: "Purchase Orders",
+            url: "/procurement/purchase-orders",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Production",
+    menu: [
+      {
+        title: "Requisition",
+        // url: "/production/stock-requisition",
+        icon: "Notebook",
+        items: [
+          {
+            title: "General",
+            url: "/production/requisition",
+          },
+          {
+            title: "Others",
+            url: "/production/stock-requisition/others",
+          },
+        ],
+        //    isActive: false,
+      },
+      {
+        title: "Stock Requisition",
+        // url: "/production/stock-requisition",
+        icon: "Notebook",
+        items: [
+          {
+            title: "Materials",
             url: "/production/stock-requisition",
-            icon: "Notebook",
+          },
+          {
+            title: "Others",
+            url: "/production/stock-requisition/others",
+          },
+        ],
         //    isActive: false,
-            
-        }, {
-            title: "Planning",
-            url: "/production/planning",
-            icon: "Notebook",
+      },
+      {
+        title: "Planning",
+        url: "/production/plannings",
+        icon: "Notebook",
         //    isActive: false,
-            
-        }, {
-            title: "Work Order",
-            url: "/production/work-order",
-            icon: "FolderKanban",
-           isActive: false,
-            
-        },{
-            title: "Product Schedule",
-            url: "/production/product-schedule",
-            icon: "SwatchBook",
-           isActive: false,
-            
-        },{
-            title: "Master Schedule",
-            url: "/production/master-schedule",
-            icon: "Bookmark",
-           isActive: false,
-            
-        },
-    ]
-   }, {
-    title:"Human Resource",
-    menu:[
-        {
-            title: "string",
-            url: "string",
-            icon: "BookUser",
-           isActive: false,
-            // items: [{
-            //   title: "string",
-            //   url: "string"
-            // }]
-        }
-    ]
-   }, {
-    title:"System Settings",
-    menu:[
-        {
-            title: "string",
-            url: "string",
-            icon: "Settings",
-           isActive: false,
-            // items: [{
-            //   title: "string",
-            //   url: "string"
-            // }]
-        }
-    ]
-   },{
-    title:"CRM",
-    menu:[
-        {
-            title: "string",
-            url: "string",
-            icon: "UserRound",
-           isActive: false,
-            // items: [{
-            //   title: "string",
-            //   url: "string"
-            // }]
-        }
-    ]
-   },{
-    title:"Internal",
-    menu:[
-        {
-            title: "string",
-            url: "string",
-            icon: "ShieldCheck",
-           isActive: false,
-            // items: [{
-            //   title: "string",
-            //   url: "string"
-            // }]
-        }
-    ]
-   },{
-    title:"Reports",
-    menu:[
-        {
-            title: "string",
-            url: "string",
-            icon: "ClipboardPlus",
-           isActive: false,
-            // items: [{
-            //   title: "string",
-            //   url: "string"
-            // }]
-        }
-    ]
-   },
-]
-
-
-
+      },
+      {
+        title: "Work Order",
+        url: "/production/work-order",
+        icon: "FolderKanban",
+        isActive: false,
+      },
+      {
+        title: "Product Schedule",
+        url: "/production/schedules",
+        icon: "SwatchBook",
+        isActive: false,
+      },
+      {
+        title: "Master Schedule",
+        url: "/production/master-schedule",
+        icon: "Bookmark",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Human Resource",
+    menu: [
+      {
+        title: "string",
+        url: "string",
+        icon: "BookUser",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+    ],
+  },
+  {
+    title: "System Settings",
+    menu: [
+      {
+        title: "Settings",
+        url: "/settings",
+        icon: "Settings",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "CRM",
+    menu: [
+      {
+        title: "string",
+        url: "string",
+        icon: "UserRound",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+    ],
+  },
+  {
+    title: "Internal",
+    menu: [
+      {
+        title: "string",
+        url: "string",
+        icon: "ShieldCheck",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+    ],
+  },
+  {
+    title: "Reports",
+    menu: [
+      {
+        title: "string",
+        url: "string",
+        icon: "ClipboardPlus",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+    ],
+  },
+];

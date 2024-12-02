@@ -263,6 +263,9 @@ const config: Config = {
       fontFamily: {
         krub: ["Krub", "sans-serif"],
       },
+      fontSize: {
+        xxs: "0.625rem",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
