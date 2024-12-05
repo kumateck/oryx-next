@@ -24,6 +24,7 @@ import { ColumnType } from ".";
 
 interface EditableCellProps {
   type?: ColumnType;
+  min?: boolean;
   cellContext: any; // Type this based on your row data
   updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   options?: { label: string; value: string }[]; // Options for react-select and combobox
@@ -34,12 +35,14 @@ const EditableCell: React.FC<EditableCellProps> = ({
   updateData,
   type = ColumnType.TEXT,
   options = [],
+  min,
 }) => {
   const { row, column, value, getValue } = cellContext;
   const columnId = column.id;
   const rowIndex = row.index;
   const [editingValue, setEditingValue] = useState(getValue() || "");
 
+  const setMin = min ? getValue() : 0;
   useEffect(() => {
     setEditingValue(getValue() || "");
   }, [getValue]);
@@ -70,6 +73,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
       handleSelectChange={handleSelectChange}
       handleBlur={handleBlur}
       options={options}
+      setMin={setMin}
     />
   );
 };
@@ -81,6 +85,7 @@ const InputSwitch = ({
   handleSelectChange,
   handleBlur,
   options,
+  setMin,
 }: {
   type: ColumnType;
   editingValue: string;
@@ -88,6 +93,7 @@ const InputSwitch = ({
   handleSelectChange: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
   handleBlur: () => void;
   options?: { label: string; value: string }[];
+  setMin?: number;
 }) => {
   switch (type) {
     case ColumnType.NUMBER:
@@ -97,6 +103,7 @@ const InputSwitch = ({
           value={editingValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          min={setMin || 0}
         />
       );
     case ColumnType.SELECT:

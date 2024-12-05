@@ -33,6 +33,7 @@ export enum ColumnType {
 export type CustomColumnMeta<TData> = {
   edittableCell?: {
     type?: ColumnType;
+    min?: boolean;
     editable: boolean;
     setItemLists: React.Dispatch<React.SetStateAction<TData[]>>;
     options?: Option[];
@@ -128,6 +129,7 @@ export const ListsTable = <TData, TValue>({
                     <TableCell key={cell.id}>
                       {editableCell?.editable ? (
                         <EditableCell
+                          min={editableCell?.min}
                           cellContext={cell.getContext()}
                           updateData={(rowIndex, columnId, value) => {
                             updateData(rowIndex, columnId, value);

@@ -8,10 +8,25 @@ export const CreateMaterialSchema = z.object({
   code: z.string().min(1, { message: "Code is required" }),
   description: z.string().optional(),
   pharmacopoeia: z.string().optional(),
-  kind: z.nativeEnum(EMaterialKind, {
-    required_error: "Type is required",
-    invalid_type_error: "Type must be either 'Package' or 'Raw'",
-  }),
+  // kind: z.nativeEnum(EMaterialKind, {
+  //   required_error: "Type is required",
+  //   invalid_type_error: "Type must be either 'Package' or 'Raw'",
+  // }),
+  kind: z
+    .string()
+    .transform((value) => {
+      const numValue = Number(value);
+      if (isNaN(numValue)) {
+        throw new Error("Invalid value for kind");
+      }
+      return numValue;
+    })
+    .refine(
+      (value) => value === EMaterialKind.Raw || value === EMaterialKind.Package,
+      {
+        message: "Type must be either 'Raw' (0) or 'Package' (1)",
+      },
+    ),
   materialCategoryId: z.object(
     {
       value: z.string().min(1, { message: "Material Category is required" }),

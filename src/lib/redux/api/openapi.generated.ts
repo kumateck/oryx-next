@@ -404,6 +404,51 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1MaterialBatchMove: build.mutation<
+      PostApiV1MaterialBatchMoveApiResponse,
+      PostApiV1MaterialBatchMoveApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batch/move`,
+        method: "POST",
+        params: {
+          batchId: queryArg.batchId,
+          fromLocationId: queryArg.fromLocationId,
+          toLocationId: queryArg.toLocationId,
+          quantity: queryArg.quantity,
+        },
+      }),
+    }),
+    getApiV1MaterialByMaterialIdStockAndWarehouseId: build.query<
+      GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiResponse,
+      GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/${queryArg.materialId}/stock/${queryArg.warehouseId}`,
+      }),
+    }),
+    postApiV1MaterialBatchConsume: build.mutation<
+      PostApiV1MaterialBatchConsumeApiResponse,
+      PostApiV1MaterialBatchConsumeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batch/consume`,
+        method: "POST",
+        params: {
+          batchId: queryArg.batchId,
+          locationId: queryArg.locationId,
+          quantity: queryArg.quantity,
+        },
+      }),
+    }),
+    getApiV1MaterialByMaterialIdStockAcrossWarehouses: build.query<
+      GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse,
+      GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/${queryArg.materialId}/stock/across-warehouses`,
+      }),
+    }),
     postApiV1ProcurementManufacturer: build.mutation<
       PostApiV1ProcurementManufacturerApiResponse,
       PostApiV1ProcurementManufacturerApiArg
@@ -790,6 +835,14 @@ const injectedRtkApi = api.injectEndpoints({
       GetApiV1ProductionScheduleProductionStatusApiArg
     >({
       query: () => ({ url: `/api/v1/production-schedule/production-status` }),
+    }),
+    getApiV1ProductionScheduleByScheduleIdDetails: build.query<
+      GetApiV1ProductionScheduleByScheduleIdDetailsApiResponse,
+      GetApiV1ProductionScheduleByScheduleIdDetailsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/${queryArg.scheduleId}/details`,
+      }),
     }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
@@ -1357,6 +1410,37 @@ export type GetApiV1MaterialBatchesApiArg = {
   /** Search query for filtering results. */
   searchQuery?: string;
 };
+export type PostApiV1MaterialBatchMoveApiResponse = unknown;
+export type PostApiV1MaterialBatchMoveApiArg = {
+  /** The ID of the material batch to move. */
+  batchId?: string;
+  /** The ID of the warehouse source location. */
+  fromLocationId?: string;
+  /** The ID of the warehouse destination location. */
+  toLocationId?: string;
+  /** The quantity to move. */
+  quantity?: number;
+};
+export type GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiResponse =
+  /** status 200 OK */ number;
+export type GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiArg = {
+  /** The ID of the material. */
+  materialId: string;
+  /** The ID of the warehouse. */
+  warehouseId: string;
+};
+export type PostApiV1MaterialBatchConsumeApiResponse = unknown;
+export type PostApiV1MaterialBatchConsumeApiArg = {
+  batchId?: string;
+  locationId?: string;
+  quantity?: number;
+};
+export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse =
+  /** status 200 OK */ WarehouseStockDto[];
+export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg = {
+  /** The id of the material */
+  materialId: string;
+};
 export type PostApiV1ProcurementManufacturerApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1ProcurementManufacturerApiArg = {
@@ -1603,6 +1687,12 @@ export type GetApiV1ProductionScheduleSchedulesApiArg = {
 export type GetApiV1ProductionScheduleProductionStatusApiResponse =
   /** status 200 Returns the list of production status */ TypeResponse[];
 export type GetApiV1ProductionScheduleProductionStatusApiArg = void;
+export type GetApiV1ProductionScheduleByScheduleIdDetailsApiResponse =
+  /** status 200 OK */ ProductionScheduleProcurementDtoRead[];
+export type GetApiV1ProductionScheduleByScheduleIdDetailsApiArg = {
+  /** The ID of the Production Schedule. */
+  scheduleId: string;
+};
 export type PostApiV1RequisitionApiResponse = /** status 200 OK */ string;
 export type PostApiV1RequisitionApiArg = {
   /** The CreateRequisitionRequest object. */
@@ -1921,18 +2011,17 @@ export type CreateDepartmentRequest = {
   description?: string | null;
   warehouseId?: string | null;
 };
+export type WarehouseType = 0 | 1;
 export type WarehouseLocationDto = {
   id?: string;
-  createdBy?: CollectionItemDto;
-  createdAt?: string;
   name?: string | null;
 };
 export type WarehouseDto = {
   id?: string;
-  createdBy?: CollectionItemDto;
-  createdAt?: string;
+  code?: string | null;
   name?: string | null;
   description?: string | null;
+  type?: WarehouseType;
   locations?: WarehouseLocationDto[] | null;
 };
 export type DepartmentDto = {
@@ -1962,12 +2051,25 @@ export type CreateMaterialRequest = {
   kind?: MaterialKind;
 };
 export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5;
-export type EventType = 0 | 1;
+export type EventType = 0 | 1 | 2 | 3;
 export type MaterialBatchEventDto = {
   type?: EventType;
   quantity?: number;
   user?: CollectionItemDto;
   createdAt?: string;
+};
+export type MovementType = 0 | 1 | 2;
+export type MaterialBatchMovementDto = {
+  id?: string;
+  createdBy?: CollectionItemDto;
+  createdAt?: string;
+  batch?: CollectionItemDto;
+  fromLocation?: WarehouseLocationDto;
+  toLocation?: WarehouseLocationDto;
+  quantity?: number;
+  movedAt?: string;
+  movedBy?: CollectionItemDto;
+  movementType?: MovementType;
 };
 export type MaterialBatchDto = {
   code?: string | null;
@@ -1976,11 +2078,11 @@ export type MaterialBatchDto = {
   status?: BatchStatus;
   dateReceived?: string;
   dateApproved?: string | null;
-  warehouse?: WarehouseDto;
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
   events?: MaterialBatchEventDto[] | null;
+  movements?: MaterialBatchMovementDto[] | null;
 };
 export type MaterialDto = {
   id?: string;
@@ -2001,7 +2103,7 @@ export type MaterialDtoRead = {
   kind?: MaterialKind;
   materialCategory?: CollectionItemDto;
   batches?: MaterialBatchDto[] | null;
-  amountInStock?: number;
+  totalStock?: number;
 };
 export type MaterialDtoIEnumerablePaginateable = {
   data?: MaterialDto[] | null;
@@ -2024,7 +2126,7 @@ export type MaterialDtoIEnumerablePaginateableRead = {
 export type CreateMaterialBatchRequest = {
   materialId?: string;
   quantity?: number;
-  warehouseId?: string;
+  initialLocationId?: string;
   dateReceived?: string;
 };
 export type MaterialBatchDtoIEnumerablePaginateable = {
@@ -2035,6 +2137,10 @@ export type MaterialBatchDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type WarehouseStockDto = {
+  warehouse?: WarehouseDto;
+  stockQuantity?: number;
 };
 export type CreateManufacturerMaterialRequest = {
   materialId?: string;
@@ -2444,6 +2550,18 @@ export type ProductionScheduleDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type ProductionScheduleProcurementDto = {
+  material?: MaterialDto;
+  uoM?: CollectionItemDto;
+  quantityRequested?: number;
+  quantityOnHand?: number;
+};
+export type ProductionScheduleProcurementDtoRead = {
+  material?: MaterialDtoRead;
+  uoM?: CollectionItemDto;
+  quantityRequested?: number;
+  quantityOnHand?: number;
+};
 export type CreateRequisitionItemRequest = {
   materialId?: string;
   quantity?: number;
@@ -2634,7 +2752,9 @@ export type CreateWarehouseLocationRequest = {
 };
 export type CreateWarehouseRequest = {
   name?: string | null;
+  code?: string | null;
   description?: string | null;
+  type?: WarehouseType;
   locations?: CreateWarehouseLocationRequest[] | null;
 };
 export type WarehouseDtoIEnumerablePaginateable = {
@@ -2739,6 +2859,12 @@ export const {
   useLazyGetApiV1MaterialBatchByBatchIdQuery,
   useGetApiV1MaterialBatchesQuery,
   useLazyGetApiV1MaterialBatchesQuery,
+  usePostApiV1MaterialBatchMoveMutation,
+  useGetApiV1MaterialByMaterialIdStockAndWarehouseIdQuery,
+  useLazyGetApiV1MaterialByMaterialIdStockAndWarehouseIdQuery,
+  usePostApiV1MaterialBatchConsumeMutation,
+  useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
+  useLazyGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   usePostApiV1ProcurementManufacturerMutation,
   useGetApiV1ProcurementManufacturerQuery,
   useLazyGetApiV1ProcurementManufacturerQuery,
@@ -2797,6 +2923,8 @@ export const {
   useLazyGetApiV1ProductionScheduleSchedulesQuery,
   useGetApiV1ProductionScheduleProductionStatusQuery,
   useLazyGetApiV1ProductionScheduleProductionStatusQuery,
+  useGetApiV1ProductionScheduleByScheduleIdDetailsQuery,
+  useLazyGetApiV1ProductionScheduleByScheduleIdDetailsQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,

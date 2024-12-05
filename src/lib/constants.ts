@@ -135,6 +135,7 @@ export const routes = {
   inspections: () => "/inspections",
   regulations: () => "/compliance/external/regulations",
   newStockRequisition: () => "stock-requisition/create",
+  newRequisition: () => "requisition/create",
   audits: () => "/audits",
   findings: () => "/findings",
   editEmployee: (params: { id: string }) =>

@@ -15,6 +15,8 @@ export default function AuthLayout({
           className="absolute inset-0 h-full w-full object-cover"
           src={LoginPageSideImage.src}
           alt="side image"
+          width={1000}
+          height={1000}
         />
       </div>
       <div className="flex items-center justify-center bg-white">
