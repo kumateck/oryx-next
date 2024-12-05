@@ -84,6 +84,9 @@ const Signin = () => {
   // };
 
   const onSubmit = async (data: TLogin) => {
+    // Log the API base URL to ensure it's correct
+    console.log("API BASE_URL: ", process.env.NEXT_PUBLIC_BASE_URL);
+
     if (!data.password) return;
 
     const payload = {
@@ -92,7 +95,7 @@ const Signin = () => {
         password: data.password,
       },
     } satisfies PostApiV1AuthLoginApiArg;
-
+    console.log("Sending login request with payload: ", payload);
     try {
       // Acquire lock
       await mutex.runExclusive(async () => {
