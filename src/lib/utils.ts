@@ -2,7 +2,10 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { APP_NAME, CODE_SETTINGS, Status } from "./constants";
-import { NamingType } from "./redux/api/openapi.generated";
+import {
+  NamingType,
+  ProductionScheduleProcurementDtoRead,
+} from "./redux/api/openapi.generated";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -136,4 +139,22 @@ export const getStatusColor = (status: string) => {
     default:
       return "bg-gray-100 text-neutral-500";
   }
+};
+
+export const quantityAvailable = (
+  materials: ProductionScheduleProcurementDtoRead[],
+) => {
+  // Calculate the total quantityRequested
+  const totalQuantityRequested = materials.reduce(
+    (sum, item) => sum + (item?.quantityRequested || 0),
+    0,
+  );
+
+  // Calculate the total quantityOnHand
+  const totalQuantityOnHand = materials.reduce(
+    (sum, item) => sum + (item?.quantityOnHand || 0),
+    0,
+  );
+
+  return totalQuantityOnHand > totalQuantityRequested;
 };

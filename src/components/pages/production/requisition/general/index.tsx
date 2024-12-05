@@ -46,7 +46,7 @@ const Page = () => {
           <Button
             variant="default"
             size={"sm"}
-            onClick={() => router.push(routes.newStockRequisition())}
+            onClick={() => router.push(routes.newRequisition())}
           >
             <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
           </Button>

@@ -70,10 +70,11 @@ const Create = ({ isOpen, onClose }: Props) => {
     mode: "all",
   });
 
-  const kind = useWatch<MaterialRequestDto>({
+  const kindString = useWatch<MaterialRequestDto>({
     name: "kind",
     control,
   });
+  const kind = Number(kindString) as EMaterialKind;
 
   const name = useWatch<MaterialRequestDto>({
     name: "name",
@@ -85,19 +86,26 @@ const Create = ({ isOpen, onClose }: Props) => {
   }) as Option;
 
   useEffect(() => {
-    if ((kind && name) || (kind && category)) {
+    console.log(kind, name, category, kind === EMaterialKind.Raw && name);
+    if (
+      (kind === EMaterialKind.Raw && name) ||
+      (kind === EMaterialKind.Package && category)
+    ) {
       handleLoadCode();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, name, category]);
   const handleLoadCode = async () => {
+    console.log("abotut to load code");
     const getCodeSettings = await loadCodeSettings({
       modelType:
         kind === EMaterialKind.Raw
           ? CODE_SETTINGS.modelTypes.RawMaterial
           : CODE_SETTINGS.modelTypes.PackageMaterial,
     }).unwrap();
+
     const prefix = getCodeSettings?.prefix;
+    console.log(prefix, "prefix");
     const codePrefix =
       kind === EMaterialKind.Raw
         ? prefix + getFirstCharacter(name)
@@ -165,6 +173,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.RADIO,
                 name: `kind`,
                 required: true,
+
                 options: Object.entries(EMaterialKind)
                   .filter(([, value]) => typeof value === "number")
                   .map(([key, value]) => ({
