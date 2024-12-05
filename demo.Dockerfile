@@ -56,9 +56,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3006
+EXPOSE 3000
 
-ENV PORT=3006
 ENV NEXT_PUBLIC_BASE_URL=http://164.90.142.68:8086/
 
 # server.js is created by next build from the standalone output
