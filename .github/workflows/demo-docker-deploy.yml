@@ -9,7 +9,7 @@ env:
   DOCKER_IMAGE_NAME: kumateck/demo-oryx-erp-web
   CONTAINER_NAME: demo-oryx-erp-web
   HOST_PORT: 3006
-  CONTAINER_PORT: 3000
+  CONTAINER_PORT: 3006
 
 jobs:
   build:

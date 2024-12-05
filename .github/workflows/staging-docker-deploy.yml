@@ -9,7 +9,7 @@ env:
   DOCKER_IMAGE_NAME: kumateck/staging-oryx-erp-web
   CONTAINER_NAME: staging-oryx-erp-web
   HOST_PORT: 3007
-  CONTAINER_PORT: 3000
+  CONTAINER_PORT: 3007
 
 jobs:
   build:
