@@ -10,7 +10,6 @@ env:
   CONTAINER_NAME: dev-oryx-erp-web
   HOST_PORT: 3005
   CONTAINER_PORT: 3005
-  NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8080/
 
 jobs:
   build:
@@ -52,7 +51,6 @@ jobs:
           CONTAINER_NAME: ${{ env.CONTAINER_NAME }}
           HOST_PORT: ${{ env.HOST_PORT }}
           CONTAINER_PORT: ${{ env.CONTAINER_PORT }}
-          NEXT_PUBLIC_BASE_URL: ${{ env.NEXT_PUBLIC_BASE_URL }}
         run: |
           mkdir -p ~/.ssh
           echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
@@ -74,10 +72,6 @@ jobs:
             echo "Pruning unused Docker images"
             docker image prune -a -f
 
-            echo "Running the new Docker container with environment variables"
-            docker run -d --restart always --net sail \
-              -e NEXT_PUBLIC_BASE_URL="${NEXT_PUBLIC_BASE_URL}" \
-              -p "${HOST_PORT}:${CONTAINER_PORT}" \
-              --name "${CONTAINER_NAME}" \
-              "${DOCKER_IMAGE_NAME}:latest"
+            echo "Running the new Docker container on the external 'sail' network"
+            docker run -d --restart always --net sail -p "${HOST_PORT}:${CONTAINER_PORT}" --name "${CONTAINER_NAME}" "${DOCKER_IMAGE_NAME}:latest"
           EOF

@@ -19,7 +19,7 @@ import {
   Checkbox,
   Icon,
 } from "@/components/ui";
-import { APP_CONTEXT, InputTypes, routes } from "@/lib/constants";
+import { APP_CONTEXT, BASE_URL, InputTypes, routes } from "@/lib/constants";
 import {
   PostApiV1AuthLoginApiArg,
   usePostApiV1AuthLoginMutation,
@@ -85,7 +85,7 @@ const Signin = () => {
 
   const onSubmit = async (data: TLogin) => {
     // Log the API base URL to ensure it's correct
-    console.log("API BASE_URL: ", process.env.NEXT_PUBLIC_BASE_URL);
+    console.log("API BASE_URL: ", BASE_URL);
 
     if (!data.password) return;
 

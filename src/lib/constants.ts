@@ -1,4 +1,5 @@
-export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const BASE_URL = "http://164.90.142.68:8086/";
+//process.env.NEXT_PUBLIC_BASE_URL
 
 export const APP_NAME = "Oryx ERP";
 
