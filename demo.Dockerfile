@@ -58,6 +58,7 @@ USER nextjs
 
 EXPOSE 3000
 
+ENV PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=http://164.90.142.68:8086/
 
 # server.js is created by next build from the standalone output
