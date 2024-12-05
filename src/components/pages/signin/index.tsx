@@ -86,6 +86,7 @@ const Signin = () => {
   const onSubmit = async (data: TLogin) => {
     // Log the API base URL to ensure it's correct
     console.log("API BASE_URL: ", BASE_URL);
+    console.log("API BASE_URL: ", process.env.NEXT_PUBLIC_BASE_URL);
 
     if (!data.password) return;
 
