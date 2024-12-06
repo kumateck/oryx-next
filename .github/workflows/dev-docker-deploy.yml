@@ -9,7 +9,7 @@ env:
   DOCKER_IMAGE_NAME: kumateck/dev-oryx-erp-web
   CONTAINER_NAME: dev-oryx-erp-web
   HOST_PORT: 3005
-  CONTAINER_PORT: 3005
+  CONTAINER_PORT: 3000
   NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8080/
 
 jobs:
