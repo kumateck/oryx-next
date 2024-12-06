@@ -34,6 +34,7 @@ export const CODE_SETTINGS = {
     RequestOrder: "RequestOrder",
     Requisition: "Requisition",
     RawMaterial: "RawMaterial",
+    Warehouse: "Warehouse",
     PackageMaterial: "PackageMaterial",
     ProductionSchedule: "ProductionSchedule",
   },

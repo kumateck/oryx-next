@@ -1,0 +1,239 @@
+// import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+
+import { FormWizard } from "@/components/form-inputs";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Icon,
+} from "@/components/ui";
+import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import {
+  CreateWarehouseRequest,
+  PostApiV1CollectionApiArg,
+  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  useLazyGetApiV1WarehouseQuery,
+  usePostApiV1CollectionMutation,
+  usePostApiV1WarehouseMutation,
+} from "@/lib/redux/api/openapi.generated";
+import {
+  ErrorResponse,
+  GenerateCodeOptions,
+  cn,
+  generateCode,
+  getFirstCharacter,
+  isErrorResponse,
+} from "@/lib/utils";
+
+import { CreateWarehouseValidator, WarehouseRequestDto } from "./types";
+
+// import "./types";
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+}
+const Create = ({ isOpen, onClose }: Props) => {
+  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
+  const [loadCodeSettings] =
+    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
+  const [loadCodeMyModel] =
+    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+
+  const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+  const {
+    register,
+    control,
+    formState: { errors },
+    reset,
+    handleSubmit,
+    setValue,
+  } = useForm<WarehouseRequestDto>({
+    resolver: CreateWarehouseValidator,
+    mode: "all",
+  });
+
+  const name = useWatch<WarehouseRequestDto>({
+    name: "name",
+    control,
+  }) as string;
+
+  const productionDepartment = useWatch<WarehouseRequestDto>({
+    name: "productionDepartment",
+    control,
+  }) as string;
+
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
+
+  useEffect(() => {
+    loadCollection({
+      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
+    } as PostApiV1CollectionApiArg).unwrap();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (name && productionDepartment?.length > 0) {
+      handleLoadCode();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name, productionDepartment]);
+
+  const handleLoadCode = async () => {
+    try {
+      const getCodeSettings = await loadCodeSettings({
+        modelType: CODE_SETTINGS.modelTypes.Warehouse,
+      }).unwrap();
+
+      const prefix = getCodeSettings?.prefix;
+      const locationName = productionDepartment || "";
+      const codePrefix = `${prefix}${getFirstCharacter(name)}${getFirstCharacter(locationName)}`;
+
+      const payload = {
+        modelType: CODE_SETTINGS.modelTypes.Warehouse,
+        prefix: codePrefix,
+      };
+
+      const res = await loadCodeMyModel(payload).unwrap();
+
+      const generatePayload: GenerateCodeOptions = {
+        maxlength: Number(getCodeSettings?.maximumNameLength),
+        minlength: Number(getCodeSettings?.minimumNameLength),
+        prefix: codePrefix,
+        type: 0,
+        seriesCounter: res + 1,
+      };
+
+      const code = generateCode(generatePayload);
+      setValue("code", code);
+    } catch (error) {
+      console.error("Error generating code:", error);
+    }
+  };
+
+  const categoryOptions = collectionResponse?.[
+    COLLECTION_TYPES.ProductCategory
+  ]?.map((uom) => ({
+    label: uom.name,
+    value: uom.id,
+  })) as Option[];
+
+  const onSubmit = async (data: WarehouseRequestDto) => {
+    try {
+      const payload = {
+        ...data,
+      } satisfies CreateWarehouseRequest;
+      await createWarehouse({
+        createWarehouseRequest: payload,
+      });
+      toast.success("Material created successfully");
+      loadWarehouses({
+        page: 1,
+        pageSize: 10,
+      });
+      reset(); // Reset the form after submission
+      onClose(); // Close the form/modal if applicable
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Warehouse</DialogTitle>
+        </DialogHeader>
+
+        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          <FormWizard
+            config={[
+              // {
+              //   label: "Kind",
+              //   control,
+              //   type: InputTypes.RADIO,
+              //   name: `kind`,
+              //   required: true,
+              //   options: Object.entries(EMaterialKind)
+              //     .filter(([, value]) => typeof value === "number")
+              //     .map(([key, value]) => ({
+              //       label: key, // "Raw" or "Package"
+              //       value: value.toString(), // 0 or 1
+              //     })),
+              //   errors: {
+              //     message: errors?.kind?.message || "",
+              //     error: !!errors?.kind?.type,
+              //   },
+              // },
+              // {
+              //   label: "Material Category",
+              //   control,
+              //   type: InputTypes.SELECT,
+              //   name: "materialCategoryId",
+              //   required: true,
+              //   placeholder: "Material Category",
+              //   options: materialCategoryOptions,
+              //   errors: {
+              //     message: errors.materialCategoryId?.message,
+              //     error: !!errors.materialCategoryId,
+              //   },
+              // },
+
+              {
+                register: { ...register("name") },
+                label: "Warehouse Name",
+                required: true,
+                placeholder: "Enter New Warehouse Name",
+                type: InputTypes.TEXT,
+
+                errors: {
+                  message: errors.name?.message,
+                  error: !!errors.name,
+                },
+              },
+              {
+                label: "Production Department",
+                control,
+                type: InputTypes.SELECT,
+                name: "departmentId",
+                required: true,
+
+                options: categoryOptions,
+                errors: {
+                  message: errors.productionDepartment?.message,
+                  error: !!errors.productionDepartment,
+                },
+              },
+            ]}
+          />
+          <DialogFooter className="justify-end gap-4 py-6">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button variant={"default"} className="flex items-center gap-2">
+              <Icon
+                name={isLoading ? "LoaderCircle" : "Plus"}
+                className={cn("h-4 w-4", {
+                  "animate-spin": isLoading,
+                })}
+              />
+              <span>Add Warehouse</span>{" "}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default Create;

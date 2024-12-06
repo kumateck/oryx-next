@@ -52,7 +52,7 @@ export function middleware(request: NextRequest) {
   //todo: then delete the client cookie
   //todo: if server cookie exists, isLoggedIn else redirect
 
-  if (isProtectedPage(pathname) && !isLoggedIn) {
+  if (!isProtectedPage(pathname) && !isLoggedIn) {
     return NextResponse.redirect(
       new URL(`${routes.signin()}?redirectTo=${redirecTo}`, request.url),
     );
