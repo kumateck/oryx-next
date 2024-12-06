@@ -22,7 +22,6 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 
-# here we are reading the value from the build args and inserting into the environment variables
 ARG NEXT_PUBLIC_BASE_URL
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
 
@@ -45,7 +44,6 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
