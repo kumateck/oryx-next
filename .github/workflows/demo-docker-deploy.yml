@@ -10,6 +10,7 @@ env:
   CONTAINER_NAME: demo-oryx-erp-web
   HOST_PORT: 3006
   CONTAINER_PORT: 3006
+  NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8086/
 
 jobs:
   build:
@@ -34,7 +35,9 @@ jobs:
           push: true
           file: demo.Dockerfile  
           tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
-          no-cache: true  
+          no-cache: true
+          build-args: |
+            NEXT_PUBLIC_BASE_URL=${{ env.NEXT_PUBLIC_BASE_URL }} 
 
   deploy:
     runs-on: ubuntu-latest
