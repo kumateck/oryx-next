@@ -10,6 +10,7 @@ env:
   CONTAINER_NAME: dev-oryx-erp-web
   HOST_PORT: 3005
   CONTAINER_PORT: 3005
+  NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8080/
 
 jobs:
   build:
@@ -35,6 +36,8 @@ jobs:
           file: dev.Dockerfile  
           tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
           no-cache: true  
+          build-args: |
+            NEXT_PUBLIC_BASE_URL=${{ env.NEXT_PUBLIC_BASE_URL }}
 
   deploy:
     runs-on: ubuntu-latest
