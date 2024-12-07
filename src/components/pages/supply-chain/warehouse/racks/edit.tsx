@@ -16,8 +16,8 @@ import {
 import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateMaterialRequest,
-  MaterialDto,
-  PostApiV1CollectionApiArg, // MaterialKind,
+  PostApiV1CollectionApiArg,
+  WarehouseLocationRackDto, // MaterialKind,
   // useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1MaterialQuery,
   usePostApiV1CollectionMutation,
@@ -32,7 +32,7 @@ import { CreateRackValidator, RackRequestDto } from "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  details: MaterialDto;
+  details: WarehouseLocationRackDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadMaterials] = useLazyGetApiV1MaterialQuery();
@@ -54,6 +54,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const defaultLocation = {
+    label: details?.warehouseLocation?.id as string,
+    value: details?.warehouseLocation?.id as string,
+  };
+
   const {
     register,
     control,
@@ -66,8 +71,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       name: details.name as string,
       description: details.description as string,
-      location: details.description as string,
-      code: details.code as string,
+      locationId: defaultLocation,
     },
   });
 
@@ -84,7 +88,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         ...data,
       } satisfies CreateMaterialRequest;
       await createMaterial({
-        materialId: details.id as string,
+        materialId: details.name as string,
         createMaterialRequest: payload,
       });
       toast.success("Material updated successfully");
@@ -118,8 +122,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
                 options: categoryOptions,
                 errors: {
-                  message: errors.location?.message,
-                  error: !!errors.location,
+                  message: errors.locationId?.message,
+                  error: !!errors.locationId,
                 },
               },
               {
