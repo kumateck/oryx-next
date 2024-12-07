@@ -15,10 +15,10 @@ import {
 // import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import { InputTypes } from "@/lib";
 import {
-  CreateMaterialRequest,
-  MaterialDto, // useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1MaterialQuery,
-  usePutApiV1MaterialByMaterialIdMutation,
+  CreateWarehouseLocationRequest,
+  WarehouseLocationDto,
+  useLazyGetApiV1WarehouseLocationQuery,
+  usePutApiV1WarehouseLocationByLocationIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
@@ -29,16 +29,21 @@ import { CreateLocationValidator, LocationRequestDto } from "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  details: MaterialDto;
+  details: WarehouseLocationDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+  const [loadLocations] = useLazyGetApiV1WarehouseLocationQuery();
 
-  const [createMaterial, { isLoading }] =
-    usePutApiV1MaterialByMaterialIdMutation();
+  const [createLocation, { isLoading }] =
+    usePutApiV1WarehouseLocationByLocationIdMutation();
   // const { data } = useGetApiV1CollectionByItemTypeQuery({
   //   itemType: COLLECTION_TYPES.MaterialCategory,
   // });
+
+  const defaultWarehouse = {
+    label: details?.warehouse?.id as string,
+    value: details?.warehouse?.id as string,
+  };
 
   const {
     register,
@@ -49,11 +54,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     resolver: CreateLocationValidator,
     mode: "all",
     defaultValues: {
-      warehouse: details.name as string,
+      warehouseId: defaultWarehouse,
       description: details.description as string,
       location: details.description as string,
-      floor: details.pharmacopoeia as string,
-      code: details.code as string,
+      floor: details.floorName as string,
     },
   });
 
@@ -61,13 +65,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateMaterialRequest;
-      await createMaterial({
-        materialId: details.id as string,
-        createMaterialRequest: payload,
+      } satisfies CreateWarehouseLocationRequest;
+      await createLocation({
+        locationId: details.id as string,
+        createWarehouseLocationRequest: payload,
       });
       toast.success("Material updated successfully");
-      loadMaterials({
+      loadLocations({
         page: 1,
         pageSize: 10,
       });
