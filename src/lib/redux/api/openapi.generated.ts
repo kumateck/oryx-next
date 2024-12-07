@@ -914,6 +914,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          status: queryArg.status,
         },
       }),
     }),
@@ -1008,6 +1009,38 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1RequisitionSourceSupplier: build.query<
+      GetApiV1RequisitionSourceSupplierApiResponse,
+      GetApiV1RequisitionSourceSupplierApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/supplier`,
+        params: {
+          source: queryArg.source,
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          sent: queryArg.sent,
+        },
+      }),
+    }),
+    getApiV1RequisitionSourceSupplierBySupplierId: build.query<
+      GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse,
+      GetApiV1RequisitionSourceSupplierBySupplierIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}`,
+      }),
+    }),
+    postApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSent:
+      build.mutation<
+        PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiResponse,
+        PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}/mark-quotation-sent`,
+          method: "POST",
+        }),
+      }),
     getApiV1Role: build.query<GetApiV1RoleApiResponse, GetApiV1RoleApiArg>({
       query: () => ({ url: `/api/v1/role` }),
     }),
@@ -2015,6 +2048,8 @@ export type GetApiV1RequisitionApiArg = {
   pageSize?: number;
   /** Search query for filtering results. */
   searchQuery?: string;
+  /** Filter by status of the requisition. */
+  status?: RequestStatus;
 };
 export type GetApiV1RequisitionByRequisitionIdApiResponse =
   /** status 200 OK */ RequisitionDtoRead;
@@ -2042,7 +2077,7 @@ export type PostApiV1RequisitionSourceApiArg = {
   createSourceRequisitionRequest: CreateSourceRequisitionRequest;
 };
 export type GetApiV1RequisitionSourceApiResponse =
-  /** status 200 OK */ SourceRequisitionDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SourceRequisitionDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceApiArg = {
   /** The current page number. */
   page?: number;
@@ -2052,7 +2087,7 @@ export type GetApiV1RequisitionSourceApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1RequisitionSourceBySourceRequisitionIdApiResponse =
-  /** status 200 OK */ SourceRequisitionDtoRead;
+  /** status 200 OK */ SourceRequisitionDto;
 export type GetApiV1RequisitionSourceBySourceRequisitionIdApiArg = {
   /** The ID of the Source Requisition. */
   sourceRequisitionId: string;
@@ -2071,7 +2106,7 @@ export type DeleteApiV1RequisitionSourceBySourceRequisitionIdApiArg = {
   sourceRequisitionId: string;
 };
 export type GetApiV1RequisitionSourceItemsApiResponse =
-  /** status 200 OK */ SourceRequisitionItemDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SourceRequisitionItemDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceItemsApiArg = {
   /** The procurement source of the material(e.g., Local, Foreign, Internal). */
   source?: ProcurementSource;
@@ -2080,6 +2115,31 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
   /** The number of items per page. */
   pageSize?: number;
 };
+export type GetApiV1RequisitionSourceSupplierApiResponse =
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
+export type GetApiV1RequisitionSourceSupplierApiArg = {
+  /** The source of the requisition. (example Local, Foreign, Internal) */
+  source?: ProcurementSource;
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Filter by whether a quotation has been sent. */
+  sent?: boolean;
+};
+export type GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse =
+  /** status 200 OK */ SupplierQuotationDtoRead;
+export type GetApiV1RequisitionSourceSupplierBySupplierIdApiArg = {
+  /** The id of the supplier with associated requisition items. */
+  supplierId: string;
+};
+export type PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiResponse =
+  unknown;
+export type PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiArg =
+  {
+    /** The ID of the supplier. */
+    supplierId: string;
+  };
 export type GetApiV1RoleApiResponse = /** status 200 OK */ RoleDto[];
 export type GetApiV1RoleApiArg = void;
 export type PostApiV1RoleApiResponse = unknown;
@@ -2456,6 +2516,7 @@ export type WarehouseLocationDto = {
   name?: string | null;
   floorName?: string | null;
   description?: string | null;
+  warehouse?: CollectionItemDto;
   racks?: WarehouseLocationRackDto[] | null;
 };
 export type WarehouseDto = {
@@ -3016,7 +3077,7 @@ export type RequisitionApprovalDto = {
   comments?: string | null;
   order?: number;
 };
-export type RequestStatus = 0 | 1 | 2;
+export type RequestStatus = 0 | 1 | 2 | 3;
 export type RequisitionDto = {
   id?: string;
   code?: string | null;
@@ -3088,6 +3149,7 @@ export type AttachmentDto = {
 };
 export type SourceRequisitionItemSupplierDto = {
   supplier?: CollectionItemDto;
+  sentQuotationRequestAt?: string | null;
 };
 export type SourceRequisitionItemDto = {
   id?: string;
@@ -3097,20 +3159,7 @@ export type SourceRequisitionItemDto = {
   quantity?: number;
   source?: ProcurementSource;
   suppliers?: SourceRequisitionItemSupplierDto[] | null;
-  sentQuotationRequestAt?: string | null;
   createdAt?: string;
-};
-export type SourceRequisitionItemDtoRead = {
-  id?: string;
-  sourceRequisition?: CollectionItemDto;
-  material?: CollectionItemDto;
-  uoM?: CollectionItemDto;
-  quantity?: number;
-  source?: ProcurementSource;
-  suppliers?: SourceRequisitionItemSupplierDto[] | null;
-  sentQuotationRequestAt?: string | null;
-  createdAt?: string;
-  sentQuotationRequest?: boolean;
 };
 export type SourceRequisitionDto = {
   attachments?: AttachmentDto[] | null;
@@ -3120,25 +3169,8 @@ export type SourceRequisitionDto = {
   items?: SourceRequisitionItemDto[] | null;
   createdAt?: string;
 };
-export type SourceRequisitionDtoRead = {
-  attachments?: AttachmentDto[] | null;
-  id?: string;
-  code?: string | null;
-  requisition?: CollectionItemDto;
-  items?: SourceRequisitionItemDtoRead[] | null;
-  createdAt?: string;
-};
 export type SourceRequisitionDtoIEnumerablePaginateable = {
   data?: SourceRequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type SourceRequisitionDtoIEnumerablePaginateableRead = {
-  data?: SourceRequisitionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -3155,8 +3187,28 @@ export type SourceRequisitionItemDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type SourceRequisitionItemDtoIEnumerablePaginateableRead = {
-  data?: SourceRequisitionItemDtoRead[] | null;
+export type SupplierQuotationDto = {
+  supplier?: CollectionItemDto;
+  sentQuotationRequestAt?: string | null;
+  items?: SourceRequisitionItemDto[] | null;
+};
+export type SupplierQuotationDtoRead = {
+  supplier?: CollectionItemDto;
+  sentQuotationRequestAt?: string | null;
+  sentQuotationRequest?: boolean;
+  items?: SourceRequisitionItemDto[] | null;
+};
+export type SupplierQuotationDtoIEnumerablePaginateable = {
+  data?: SupplierQuotationDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type SupplierQuotationDtoIEnumerablePaginateableRead = {
+  data?: SupplierQuotationDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -3496,6 +3548,11 @@ export const {
   useDeleteApiV1RequisitionSourceBySourceRequisitionIdMutation,
   useGetApiV1RequisitionSourceItemsQuery,
   useLazyGetApiV1RequisitionSourceItemsQuery,
+  useGetApiV1RequisitionSourceSupplierQuery,
+  useLazyGetApiV1RequisitionSourceSupplierQuery,
+  useGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
+  useLazyGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
+  usePostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentMutation,
   useGetApiV1RoleQuery,
   useLazyGetApiV1RoleQuery,
   usePostApiV1RoleMutation,
