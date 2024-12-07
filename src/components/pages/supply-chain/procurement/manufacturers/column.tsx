@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  ManufacturerDtoRead,
   MaterialDto,
+  SupplierManufacturerDtoRead,
   useDeleteApiV1MaterialByMaterialIdMutation,
   useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -16,7 +16,7 @@ import Edit from "./edit";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends ManufacturerDtoRead>({
+export function DataTableRowActions<TData extends SupplierManufacturerDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1MaterialByMaterialIdMutation();
@@ -71,7 +71,7 @@ export function DataTableRowActions<TData extends ManufacturerDtoRead>({
   );
 }
 
-export const columns: ColumnDef<ManufacturerDtoRead>[] = [
+export const columns: ColumnDef<SupplierManufacturerDtoRead>[] = [
   {
     accessorKey: "name",
     header: "Name",
