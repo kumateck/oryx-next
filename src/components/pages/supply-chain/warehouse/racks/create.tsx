@@ -15,13 +15,12 @@ import {
 } from "@/components/ui";
 import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
-  CreateWarehouseRequest,
-  PostApiV1CollectionApiArg,
+  CreateWarehouseLocationRackRequest,
+  useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseQuery,
-  usePostApiV1CollectionMutation,
-  usePostApiV1WarehouseMutation,
+  useLazyGetApiV1WarehouseLocationQuery,
+  usePostApiV1WarehouseByLocationIdRackMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
   ErrorResponse,
@@ -41,13 +40,14 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
+  const [loadWarehouseLocations] = useLazyGetApiV1WarehouseLocationQuery();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
     useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
 
-  const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+  const [createWarehouseLocationRack, { isLoading }] =
+    usePostApiV1WarehouseByLocationIdRackMutation();
   const {
     register,
     control,
@@ -66,20 +66,13 @@ const Create = ({ isOpen, onClose }: Props) => {
   }) as string;
 
   const location = useWatch<RackRequestDto>({
-    name: "location",
+    name: "locationId",
     control,
   }) as string;
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.WarehouseLocation,
+  });
 
   useEffect(() => {
     if (name && location?.length > 0) {
@@ -120,23 +113,22 @@ const Create = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
+  const warehouseLocationsOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
   })) as Option[];
 
   const onSubmit = async (data: RackRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateWarehouseRequest;
-      await createWarehouse({
-        createWarehouseRequest: payload,
+      } satisfies CreateWarehouseLocationRackRequest;
+      await createWarehouseLocationRack({
+        createWarehouseLocationRackRequest: payload,
+        locationId: data?.locationId?.value,
       });
       toast.success("Rack created successfully");
-      loadWarehouses({
+      loadWarehouseLocations({
         page: 1,
         pageSize: 10,
       });
@@ -157,37 +149,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   label: "Kind",
-              //   control,
-              //   type: InputTypes.RADIO,
-              //   name: `kind`,
-              //   required: true,
-              //   options: Object.entries(EMaterialKind)
-              //     .filter(([, value]) => typeof value === "number")
-              //     .map(([key, value]) => ({
-              //       label: key, // "Raw" or "Package"
-              //       value: value.toString(), // 0 or 1
-              //     })),
-              //   errors: {
-              //     message: errors?.kind?.message || "",
-              //     error: !!errors?.kind?.type,
-              //   },
-              // },
-              // {
-              //   label: "Material Category",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "materialCategoryId",
-              //   required: true,
-              //   placeholder: "Material Category",
-              //   options: materialCategoryOptions,
-              //   errors: {
-              //     message: errors.materialCategoryId?.message,
-              //     error: !!errors.materialCategoryId,
-              //   },
-              // },
-
               {
                 label: "Location",
                 control,
@@ -195,10 +156,10 @@ const Create = ({ isOpen, onClose }: Props) => {
                 name: "locationId",
                 required: true,
 
-                options: categoryOptions,
+                options: warehouseLocationsOptions,
                 errors: {
-                  message: errors.location?.message,
-                  error: !!errors.location,
+                  message: errors.locationId?.message,
+                  error: !!errors.locationId,
                 },
               },
               {

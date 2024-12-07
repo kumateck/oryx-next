@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  WarehouseDto,
-  useDeleteApiV1WarehouseByWarehouseIdMutation,
-  useLazyGetApiV1WarehouseQuery,
+  WarehouseLocationShelfDto,
+  useDeleteApiV1WarehouseShelfByShelfIdMutation,
+  useLazyGetApiV1WarehouseShelfQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "../raw-materials/edit";
@@ -15,14 +15,16 @@ import {
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends WarehouseDto>({
+export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseByWarehouseIdMutation();
+  const [deleteMutation] = useDeleteApiV1WarehouseShelfByShelfIdMutation();
   // const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<WarehouseDto>({} as WarehouseDto);
+  const [details, setDetails] = useState<WarehouseLocationShelfDto>(
+    {} as WarehouseLocationShelfDto,
+  );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouse] = useLazyGetApiV1WarehouseQuery();
+  const [loadShelves] = useLazyGetApiV1WarehouseShelfQuery();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -55,10 +57,10 @@ export function DataTableRowActions<TData extends WarehouseDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              warehouseId: details.id as string,
+              shelfId: details.code as string,
             }).unwrap();
             toast.success("Warehouse deleted successfully");
-            loadWarehouse({
+            loadShelves({
               pageSize: 30,
             });
           } catch (error) {
@@ -70,7 +72,7 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   );
 }
 
-export const columns: ColumnDef<WarehouseDto>[] = [
+export const columns: ColumnDef<WarehouseLocationShelfDto>[] = [
   {
     accessorKey: "shelfCode",
     header: "Shelf Code",

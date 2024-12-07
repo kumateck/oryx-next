@@ -15,13 +15,12 @@ import {
 } from "@/components/ui";
 import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
-  CreateWarehouseRequest,
-  PostApiV1CollectionApiArg,
+  CreateWarehouseLocationRequest,
+  useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseQuery,
-  usePostApiV1CollectionMutation,
-  usePostApiV1WarehouseMutation,
+  useLazyGetApiV1WarehouseLocationQuery,
+  usePostApiV1WarehouseByWarehouseIdLocationMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
   ErrorResponse,
@@ -41,13 +40,17 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
+  const [loadWarehouseLocations] = useLazyGetApiV1WarehouseLocationQuery();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
     useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
 
-  const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+  const [createWarehouseLocation, { isLoading }] =
+    usePostApiV1WarehouseByWarehouseIdLocationMutation();
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.Warehouse,
+  });
   const {
     register,
     control,
@@ -61,7 +64,7 @@ const Create = ({ isOpen, onClose }: Props) => {
   });
 
   const warehouse = useWatch<LocationRequestDto>({
-    name: "warehouse",
+    name: "warehouseId",
     control,
   }) as string;
 
@@ -69,17 +72,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     name: "floor",
     control,
   }) as string;
-
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (warehouse && floor?.length > 0) {
@@ -120,23 +112,22 @@ const Create = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
+  const warehouseOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
   })) as Option[];
 
   const onSubmit = async (data: LocationRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateWarehouseRequest;
-      await createWarehouse({
-        createWarehouseRequest: payload,
+      } satisfies CreateWarehouseLocationRequest;
+      await createWarehouseLocation({
+        createWarehouseLocationRequest: payload,
+        warehouseId: data?.warehouseId?.value,
       });
       toast.success("Material created successfully");
-      loadWarehouses({
+      loadWarehouseLocations({
         page: 1,
         pageSize: 10,
       });
@@ -192,13 +183,13 @@ const Create = ({ isOpen, onClose }: Props) => {
                 label: "Warehouse Name",
                 control,
                 type: InputTypes.SELECT,
-                name: "departmentId",
+                name: "warehouseId",
                 required: true,
 
-                options: categoryOptions,
+                options: warehouseOptions,
                 errors: {
-                  message: errors.warehouse?.message,
-                  error: !!errors.warehouse,
+                  message: errors.warehouseId?.message,
+                  error: !!errors.warehouseId,
                 },
               },
               {

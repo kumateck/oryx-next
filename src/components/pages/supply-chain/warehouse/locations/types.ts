@@ -2,7 +2,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const CreateLocationSchema = z.object({
-  warehouse: z.string().min(1, { message: "Warehouse is required" }),
+  warehouseId: z.object(
+    {
+      value: z.string().min(1, { message: "Material Category is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Material Category is required",
+    },
+  ),
   location: z.string().min(1, { message: "Location is required" }),
   floor: z.string().min(1, { message: "Location is required" }),
   description: z.string().optional(),

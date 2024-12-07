@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { ServerDatatable } from "@/app/shared/datatable";
 import { Button, Icon } from "@/components/ui";
 import {
-  useGetApiV1WarehouseQuery,
-  useLazyGetApiV1WarehouseQuery,
+  useGetApiV1WarehouseRackQuery,
+  useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import { useDispatch } from "~/redux/store";
@@ -17,11 +17,11 @@ const Page = () => {
   // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1WarehouseQuery({
+  const { data: result, isLoading } = useGetApiV1WarehouseRackQuery({
     page,
     pageSize,
   });
-  const [loadRacks, { isFetching }] = useLazyGetApiV1WarehouseQuery();
+  const [loadRacks, { isFetching }] = useLazyGetApiV1WarehouseRackQuery();
 
   useEffect(() => {
     loadRacks({

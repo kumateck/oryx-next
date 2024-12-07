@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  WarehouseDto,
-  useDeleteApiV1WarehouseByWarehouseIdMutation,
-  useLazyGetApiV1WarehouseQuery,
+  WarehouseLocationRackDto,
+  useDeleteApiV1WarehouseRackByRackIdMutation,
+  useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "../raw-materials/edit";
@@ -15,14 +15,16 @@ import {
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends WarehouseDto>({
+export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseByWarehouseIdMutation();
+  const [deleteMutation] = useDeleteApiV1WarehouseRackByRackIdMutation();
   // const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<WarehouseDto>({} as WarehouseDto);
+  const [details, setDetails] = useState<WarehouseLocationRackDto>(
+    {} as WarehouseLocationRackDto,
+  );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouse] = useLazyGetApiV1WarehouseQuery();
+  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -55,10 +57,10 @@ export function DataTableRowActions<TData extends WarehouseDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              warehouseId: details.id as string,
+              rackId: details.name as string,
             }).unwrap();
             toast.success("Warehouse deleted successfully");
-            loadWarehouse({
+            loadWarehouseLocationRacks({
               pageSize: 30,
             });
           } catch (error) {
@@ -70,21 +72,21 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   );
 }
 
-export const columns: ColumnDef<WarehouseDto>[] = [
+export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
   {
     accessorKey: "rack",
     header: "Rack",
-    cell: ({ row }) => <div>{row.getValue("rack")}</div>,
+    cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
     accessorKey: "location",
     header: "Location",
-    cell: ({ row }) => <div>{row.getValue("location")}</div>,
+    cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
+    cell: ({ row }) => <div>{row.original.description}</div>,
   },
 
   {

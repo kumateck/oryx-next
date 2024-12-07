@@ -18,6 +18,8 @@ export const COLLECTION_TYPES = {
   UnitOfMeasure: "UnitOfMeasure",
   Material: "Material",
   MaterialType: "MaterialType",
+  Warehouse: "Warehouse",
+  WarehouseLocation: "WarehouseLocation",
   Product: "Product",
   WorkCenter: "WorkCenter",
   Operation: "Operation",
