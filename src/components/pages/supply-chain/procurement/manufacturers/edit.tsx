@@ -15,7 +15,7 @@ import {
 import { InputTypes, Option } from "@/lib";
 import {
   CreateManufacturerRequest,
-  ManufacturerDtoRead,
+  ManufacturerDto,
   PutApiV1ProcurementManufacturerByManufacturerIdApiArg,
   useGetApiV1MaterialQuery,
   useLazyGetApiV1MaterialQuery,
@@ -30,7 +30,7 @@ import { CreateManufacturerValidator, ManufacturerRequestDto } from "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  details: ManufacturerDtoRead;
+  details: ManufacturerDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadMaterials] = useLazyGetApiV1MaterialQuery();
