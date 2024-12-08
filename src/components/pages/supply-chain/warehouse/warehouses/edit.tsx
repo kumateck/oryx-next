@@ -1,5 +1,4 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -13,13 +12,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { InputTypes } from "@/lib";
 import {
   CreateMaterialRequest,
   MaterialDto,
-  PostApiV1CollectionApiArg,
   useLazyGetApiV1MaterialQuery,
-  usePostApiV1CollectionMutation,
   usePutApiV1MaterialByMaterialIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
@@ -42,20 +39,20 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   //   itemType: COLLECTION_TYPES.MaterialCategory,
   // });
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  // const [loadCollection, { data: collectionResponse }] =
+  //   usePostApiV1CollectionMutation();
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
+  // useEffect(() => {
+  //   loadCollection({
+  //     body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
+  //   } as PostApiV1CollectionApiArg).unwrap();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const {
     register,
-    control,
+    // control,
     formState: { errors },
     reset,
     handleSubmit,
@@ -69,12 +66,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     },
   });
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  // const categoryOptions = collectionResponse?.[
+  //   COLLECTION_TYPES.ProductCategory
+  // ]?.map((uom) => ({
+  //   label: uom.name,
+  //   value: uom.id,
+  // })) as Option[];
 
   const onSubmit = async (data: WarehouseRequestDto) => {
     try {
@@ -119,19 +116,19 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   error: !!errors.name,
                 },
               },
-              {
-                label: "Production Department",
-                control,
-                type: InputTypes.SELECT,
-                name: "departmentId",
-                required: true,
+              // {
+              //   label: "Production Department",
+              //   control,
+              //   type: InputTypes.SELECT,
+              //   name: "departmentId",
+              //   required: true,
 
-                options: categoryOptions,
-                errors: {
-                  message: errors.productionDepartment?.message,
-                  error: !!errors.productionDepartment,
-                },
-              },
+              //   options: categoryOptions,
+              //   errors: {
+              //     message: errors.productionDepartment?.message,
+              //     error: !!errors.productionDepartment,
+              //   },
+              // },
             ]}
           />
           <DialogFooter className="justify-end gap-4 py-6">
