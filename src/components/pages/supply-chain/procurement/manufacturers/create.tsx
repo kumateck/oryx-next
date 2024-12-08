@@ -1,4 +1,5 @@
 // import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -12,11 +13,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateManufacturerRequest,
-  useGetApiV1MaterialQuery,
-  useLazyGetApiV1MaterialQuery,
+  PostApiV1CollectionApiArg,
+  useGetApiV1MaterialAllQuery,
+  useLazyGetApiV1ProcurementManufacturerQuery,
+  usePostApiV1CollectionMutation,
   usePostApiV1ProcurementManufacturerMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
@@ -30,11 +33,8 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
-  const { data: materialResponse } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 10000,
-  });
+  const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const [createMutation, { isLoading }] =
     usePostApiV1ProcurementManufacturerMutation();
@@ -49,10 +49,24 @@ const Create = ({ isOpen, onClose }: Props) => {
     resolver: CreateManufacturerValidator,
     mode: "all",
   });
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
 
-  const materials = materialResponse?.data;
+  useEffect(() => {
+    loadCollection({
+      body: [COLLECTION_TYPES.Country],
+    } as PostApiV1CollectionApiArg).unwrap();
 
-  const materialOptions = materials?.map((item) => ({
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
+    (uom) => ({
+      label: uom.name,
+      value: uom.id,
+    }),
+  ) as Option[];
+  const materialOptions = materialResponse?.map((item) => ({
     label: item.name,
     value: item.id,
   })) as Option[];
@@ -71,7 +85,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         createManufacturerRequest: payload,
       });
       toast.success("Manufacturer created successfully");
-      loadMaterials({
+      reload({
         page: 1,
         pageSize: 10,
       });
@@ -110,6 +124,19 @@ const Create = ({ isOpen, onClose }: Props) => {
                 errors: {
                   message: errors.address?.message,
                   error: !!errors.address,
+                },
+              },
+              {
+                label: "Country",
+                control,
+                type: InputTypes.SELECT,
+                name: "country",
+                required: true,
+                placeholder: "Select Country",
+                options: countryOptions,
+                errors: {
+                  message: errors.country?.message,
+                  error: !!errors.country,
                 },
               },
               {
