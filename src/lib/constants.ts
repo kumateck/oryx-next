@@ -60,6 +60,12 @@ export enum EMaterialKind {
   Raw = 0,
   Package = 1,
 }
+
+export enum WarehouseType {
+  Storage = 0,
+  Production = 1,
+}
+
 export enum InputTypes {
   SWITCH = "switch",
   TEXT = "text",

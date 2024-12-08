@@ -10,7 +10,7 @@ import {
   useLazyGetApiV1WarehouseQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-// import Edit from "../raw-materials/edit";
+import Edit from "./edit";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -19,7 +19,7 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1WarehouseByWarehouseIdMutation();
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<WarehouseDto>({} as WarehouseDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouse] = useLazyGetApiV1WarehouseQuery();
@@ -30,7 +30,7 @@ export function DataTableRowActions<TData extends WarehouseDto>({
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
           setDetails(row.original);
-          // setIsOpen(true);
+          setIsOpen(true);
         }}
       />
       <Icon
@@ -42,13 +42,13 @@ export function DataTableRowActions<TData extends WarehouseDto>({
         }}
       />
 
-      {/* {details.id && isOpen && (
+      {details.id && isOpen && (
         <Edit
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
         />
-      )} */}
+      )}
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -77,9 +77,9 @@ export const columns: ColumnDef<WarehouseDto>[] = [
     cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
-    accessorKey: "productionDepartment",
-    header: "Production Department",
-    cell: ({ row }) => <div>{row.getValue("productionDepartment")}</div>,
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => <div>{row.original.description}</div>,
   },
 
   {

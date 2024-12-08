@@ -13,14 +13,14 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { CODE_SETTINGS, InputTypes, WarehouseType } from "@/lib";
 import {
   CreateWarehouseRequest,
-  PostApiV1CollectionApiArg,
+  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  NamingType,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1WarehouseQuery,
-  usePostApiV1CollectionMutation,
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -65,67 +65,33 @@ const Create = ({ isOpen, onClose }: Props) => {
     control,
   }) as string;
 
-  const productionDepartment = useWatch<WarehouseRequestDto>({
-    name: "productionDepartment",
-    control,
-  }) as string;
-
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (name && productionDepartment?.length > 0) {
-      handleLoadCode();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, productionDepartment]);
-
   const handleLoadCode = async () => {
-    try {
-      const getCodeSettings = await loadCodeSettings({
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-      }).unwrap();
+    const getCodeSettings = await loadCodeSettings({
+      modelType: CODE_SETTINGS.modelTypes.Warehouse,
+    }).unwrap();
+    const prefix = getCodeSettings?.prefix;
+    const codePrefix = prefix + getFirstCharacter(name);
 
-      const prefix = getCodeSettings?.prefix;
-      const locationName = productionDepartment || "";
-      const codePrefix = `${prefix}${getFirstCharacter(name)}${getFirstCharacter(locationName)}`;
-
-      const payload = {
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-        prefix: codePrefix,
-      };
-
-      const res = await loadCodeMyModel(payload).unwrap();
-
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(getCodeSettings?.maximumNameLength),
-        minlength: Number(getCodeSettings?.minimumNameLength),
-        prefix: codePrefix,
-        type: 0,
-        seriesCounter: res + 1,
-      };
-
-      const code = generateCode(generatePayload);
-      setValue("code", code);
-    } catch (error) {
-      console.error("Error generating code:", error);
-    }
+    const payload = {
+      modelType: CODE_SETTINGS.modelTypes.Warehouse,
+      prefix: codePrefix,
+    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+    const res = await loadCodeMyModel(payload).unwrap();
+    const generatePayload: GenerateCodeOptions = {
+      maxlength: Number(getCodeSettings?.maximumNameLength),
+      minlength: Number(getCodeSettings?.minimumNameLength),
+      prefix: codePrefix,
+      type: getCodeSettings?.namingType as NamingType,
+      seriesCounter: res + 1,
+    };
+    const code = generateCode(generatePayload);
+    setValue("code", code);
   };
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  useEffect(() => {
+    handleLoadCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit = async (data: WarehouseRequestDto) => {
     try {
@@ -135,7 +101,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       await createWarehouse({
         createWarehouseRequest: payload,
       });
-      toast.success("Material created successfully");
+      toast.success("Warehouse created successfully");
       loadWarehouses({
         page: 1,
         pageSize: 10,
@@ -157,37 +123,23 @@ const Create = ({ isOpen, onClose }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   label: "Kind",
-              //   control,
-              //   type: InputTypes.RADIO,
-              //   name: `kind`,
-              //   required: true,
-              //   options: Object.entries(EMaterialKind)
-              //     .filter(([, value]) => typeof value === "number")
-              //     .map(([key, value]) => ({
-              //       label: key, // "Raw" or "Package"
-              //       value: value.toString(), // 0 or 1
-              //     })),
-              //   errors: {
-              //     message: errors?.kind?.message || "",
-              //     error: !!errors?.kind?.type,
-              //   },
-              // },
-              // {
-              //   label: "Material Category",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "materialCategoryId",
-              //   required: true,
-              //   placeholder: "Material Category",
-              //   options: materialCategoryOptions,
-              //   errors: {
-              //     message: errors.materialCategoryId?.message,
-              //     error: !!errors.materialCategoryId,
-              //   },
-              // },
-
+              {
+                label: "Warehouse Type",
+                control,
+                type: InputTypes.RADIO,
+                name: `type`,
+                required: true,
+                options: Object.entries(WarehouseType)
+                  .filter(([, value]) => typeof value === "number")
+                  .map(([key, value]) => ({
+                    label: key, // "Raw" or "Package"
+                    value: value.toString(), // 0 or 1
+                  })),
+                errors: {
+                  message: errors?.type?.message || "",
+                  error: !!errors?.type?.type,
+                },
+              },
               {
                 register: { ...register("name") },
                 label: "Warehouse Name",
@@ -201,16 +153,15 @@ const Create = ({ isOpen, onClose }: Props) => {
                 },
               },
               {
-                label: "Production Department",
-                control,
-                type: InputTypes.SELECT,
-                name: "departmentId",
+                register: { ...register("description") },
+                label: "Description",
                 required: true,
+                placeholder: "Enter Warehouse Description",
+                type: InputTypes.TEXT,
 
-                options: categoryOptions,
                 errors: {
-                  message: errors.productionDepartment?.message,
-                  error: !!errors.productionDepartment,
+                  message: errors.description?.message,
+                  error: !!errors.description,
                 },
               },
             ]}

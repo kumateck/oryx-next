@@ -75,11 +75,9 @@ const Create = ({ isOpen, onClose }: Props) => {
   });
 
   useEffect(() => {
-    if (name && location?.length > 0) {
-      handleLoadCode();
-    }
+    handleLoadCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, location]);
+  }, []);
 
   const handleLoadCode = async () => {
     try {

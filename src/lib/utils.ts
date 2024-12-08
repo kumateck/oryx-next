@@ -66,6 +66,7 @@ export interface ErrorResponse {
 export const isErrorResponse = (error: ErrorResponse) => {
   const err = error.errors;
   const errorResponse = err[0];
+  console.log("Error message", errorResponse.description);
   return errorResponse;
 };
 

@@ -148,37 +148,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   label: "Kind",
-              //   control,
-              //   type: InputTypes.RADIO,
-              //   name: `kind`,
-              //   required: true,
-              //   options: Object.entries(EMaterialKind)
-              //     .filter(([, value]) => typeof value === "number")
-              //     .map(([key, value]) => ({
-              //       label: key, // "Raw" or "Package"
-              //       value: value.toString(), // 0 or 1
-              //     })),
-              //   errors: {
-              //     message: errors?.kind?.message || "",
-              //     error: !!errors?.kind?.type,
-              //   },
-              // },
-              // {
-              //   label: "Material Category",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "materialCategoryId",
-              //   required: true,
-              //   placeholder: "Material Category",
-              //   options: materialCategoryOptions,
-              //   errors: {
-              //     message: errors.materialCategoryId?.message,
-              //     error: !!errors.materialCategoryId,
-              //   },
-              // },
-
               {
                 label: "Warehouse Name",
                 control,
