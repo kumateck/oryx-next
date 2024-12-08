@@ -123,6 +123,18 @@ export const ROUTES: Route[] = [
             url: "/procurement/proforma-invoice",
           },
           {
+            title: "Purchase Requisition",
+            url: "/procurement/requisition",
+          },
+          {
+            title: "Foreign Quotations",
+            url: "/procurement/foreign-quotation",
+          },
+          {
+            title: "Local Quotations",
+            url: "/procurement/local-quotation",
+          },
+          {
             title: "Sales Quotations",
             url: "/procurement/sales-quotation",
           },

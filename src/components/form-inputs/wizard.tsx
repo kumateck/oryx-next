@@ -248,12 +248,13 @@ const FormWizardSwitch = (formInput: FormInput) => {
         <Controller
           control={formInput.control}
           name={formInput.name}
-          render={({ field: { onChange } }) => (
+          render={({ field: { onChange, value } }) => (
             <FormSelectInput
               isMulti={false}
               defaultValue={formInput.defaultValue}
               label={formInput.label}
               required={formInput.required}
+              value={value}
               onChange={onChange}
               errors={formInput.errors}
               options={formInput.options}
@@ -269,12 +270,13 @@ const FormWizardSwitch = (formInput: FormInput) => {
         <Controller
           control={formInput.control}
           name={formInput.name}
-          render={({ field: { onChange } }) => (
+          render={({ field: { onChange, value } }) => (
             <FormSelectInput
               isMulti={true}
               defaultValue={formInput.defaultValue}
               label={formInput.label}
               required={formInput.required}
+              value={value}
               onChange={onChange}
               errors={formInput.errors}
               options={formInput.options}

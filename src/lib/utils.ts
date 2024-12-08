@@ -80,7 +80,9 @@ export interface GenerateCodeOptions {
   seriesCounter?: number;
 }
 
-export const generateCode = (options: GenerateCodeOptions): string => {
+export const generateCode = async (
+  options: GenerateCodeOptions,
+): Promise<string> => {
   const { prefix, minlength, maxlength, type, seriesCounter = 1 } = options; // Default to 1 if seriesCounter is not provided
 
   let generatedCode = "";
@@ -104,7 +106,8 @@ export const generateCode = (options: GenerateCodeOptions): string => {
       break;
 
     default:
-      throw new Error("Invalid type provided");
+      // throw new Error("Invalid type provided");
+      generatedCode = "";
   }
 
   // Ensure the generated code fits the minlength and maxlength constraints

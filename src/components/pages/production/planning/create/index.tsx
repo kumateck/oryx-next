@@ -80,7 +80,7 @@ const Create = () => {
 
       const products = productsResponse?.totalRecordCount ?? 0;
       generatePayload.seriesCounter = products + 1;
-      const code = generateCode(generatePayload);
+      const code = await generateCode(generatePayload);
       setValue("code", code);
     };
 

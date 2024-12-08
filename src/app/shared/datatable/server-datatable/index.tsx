@@ -15,6 +15,7 @@ interface IProps<TData> {
   onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
   selectedRows?: string[];
   tablePrefixComponent?: React.FC;
+  onRowClick?: (row: TData) => void;
 }
 
 export const ServerDatatable = <TData,>({
@@ -22,6 +23,7 @@ export const ServerDatatable = <TData,>({
   columns,
   isLoading,
   // title,
+  onRowClick,
   setPage,
   setPageSize,
   // setSearchQuery,
@@ -54,6 +56,7 @@ export const ServerDatatable = <TData,>({
     <Datatable
       // toolbar={{ title, actions: meta.actions }}
       // tablePrefixComponent={props.tablePrefixComponent}
+      onRowClick={onRowClick}
       data={data}
       columns={columns}
       isLoading={isLoading}

@@ -89,7 +89,7 @@ const Purchase = ({ isOpen, onClose, lists }: Props) => {
 
       const products = productsResponse?.totalRecordCount ?? 0;
       generatePayload.seriesCounter = products + 1;
-      const code = generateCode(generatePayload);
+      const code = await generateCode(generatePayload);
       setValue("code", code);
     };
 
@@ -115,6 +115,7 @@ const Purchase = ({ isOpen, onClose, lists }: Props) => {
       },
     } satisfies PostApiV1RequisitionApiArg;
 
+    console.log(items, "items");
     const validate = itemsRequestSchema.safeParse(items);
 
     if (!validate.success) {

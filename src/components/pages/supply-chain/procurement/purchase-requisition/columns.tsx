@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 import { Icon } from "@/components/ui";
-import { RequisitionStatus, RequisitionType, routes } from "@/lib/constants";
+import { RequisitionStatus, routes } from "@/lib/constants";
 import {
   ProductDto,
   RequestStatus,
@@ -39,17 +39,17 @@ export const columns: ColumnDef<RequisitionDtoRead>[] = [
     header: "Requisition Number",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
   },
-  {
-    accessorKey: "type",
-    header: "Type",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {row.original.requisitionType === RequisitionType.StockVoucher
-          ? "Stock Voucher"
-          : "Purchase Requisition Voucher"}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "type",
+  //   header: "Type",
+  //   cell: ({ row }) => (
+  //     <div className="min-w-36">
+  //       {row.original.requisitionType === RequisitionType.StockVoucher
+  //         ? "Stock Voucher"
+  //         : "Purchase Requisition Voucher"}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "createdAt",
     header: "Requested Date",
@@ -73,13 +73,13 @@ export const columns: ColumnDef<RequisitionDtoRead>[] = [
     ),
   },
   {
-    accessorKey: "comment",
-    header: "Justification for Request",
-    cell: ({ row }) => <div>{row.original.comments}</div>,
+    accessorKey: "department",
+    header: "Requested Department",
+    cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
   },
   {
     accessorKey: "total",
-    header: "Total Requested",
+    header: "Total Items Requested",
     cell: ({ row }) => (
       <div>
         {row.original.items?.reduce((accumulator, item) => {

@@ -126,7 +126,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       type: getCodeSettings?.namingType as NamingType,
       seriesCounter: res + 1,
     };
-    const code = generateCode(generatePayload);
+    const code = await generateCode(generatePayload);
     setValue("code", code);
   };
 

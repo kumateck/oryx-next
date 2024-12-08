@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib";
 
 import TableRowSkeleton from "../table-skeleton";
 import { TPaginationResponse, paginationParams } from "../types";
@@ -27,34 +28,55 @@ import { DataTablePagination } from "./pagination";
 
 // import { DataTableToolbar } from "./toolbar";
 
-interface DatatableProps<TData> {
-  columns: ColumnDef<TData>[];
+// interface DatatableProps<TData> {
+//   columns: ColumnDef<TData>[];
+//   data: TData[];
+//   isLoading?: boolean;
+//   pagination?: paginationParams;
+//   tableParams?: TPaginationResponse;
+
+//   toolbar?: { title: string; actions: React.ReactNode };
+//   filter?: {
+//     searchOnchange: (search?: string) => void;
+//     searchPlaceholder: string;
+//     searchColumn: string;
+//   };
+//   onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
+//   tablePrefixComponent?: React.FC;
+//   selectedRows?: string[];
+// }
+
+export type CustomColumnMeta = {
+  omitRowClick?: boolean;
+};
+
+// Extend the ColumnDef type to include the custom `meta` property
+export type ExtendedColumnDef<TData, TValue> = ColumnDef<TData, TValue> & {
+  meta?: CustomColumnMeta;
+};
+interface DataTableProps<TData, TValue> {
+  columns: ExtendedColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
   pagination?: paginationParams;
   tableParams?: TPaginationResponse;
 
-  toolbar?: { title: string; actions: React.ReactNode };
-  filter?: {
-    searchOnchange: (search?: string) => void;
-    searchPlaceholder: string;
-    searchColumn: string;
-  };
   onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
   tablePrefixComponent?: React.FC;
   selectedRows?: string[];
+  onRowClick?: (row: TData) => void;
+  resetSelection?: boolean;
 }
-
-export const Datatable = <TData,>({
+export const Datatable = <TData, TValue>({
   data,
   columns,
   isLoading,
   pagination,
   tableParams,
-  // toolbar,
+  onRowClick,
   onChangeSelectedRows,
   ...props
-}: DatatableProps<TData>) => {
+}: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -145,22 +167,72 @@ export const Datatable = <TData,>({
               rows={tableParams?.pageSize}
             />
           ) : (
+            // <TableBody>
+            //   {table.getRowModel().rows?.length ? (
+            //     table.getRowModel().rows.map((row) => (
+            //       <TableRow
+            //         key={row.id}
+            //         data-state={row.getIsSelected() && "selected"}
+            //         className="odd:bg-white even:bg-primary-50 hover:bg-primary-100"
+            //         onClick={() => onRowClick?.(row.original)}
+            //       >
+            //         {row.getVisibleCells().map((cell) => (
+            //           <TableCell key={cell.id} className="py-2">
+            //             {flexRender(
+            //               cell.column.columnDef.cell,
+            //               cell.getContext(),
+            //             )}
+            //           </TableCell>
+            //         ))}
+            //       </TableRow>
+            //     ))
+            //   ) : (
+            //     <TableRow>
+            //       <TableCell
+            //         colSpan={columns.length}
+            //         className="h-24 text-center"
+            //       >
+            //         No results.
+            //       </TableCell>
+            //     </TableRow>
+            //   )}
+            // </TableBody>
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="odd:bg-white even:bg-primary-50 hover:bg-primary-100"
+                    onClick={() => onRowClick?.(row.original)}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-2">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      const isNonClickable = (
+                        cell.column.columnDef as ExtendedColumnDef<
+                          TData,
+                          TValue
+                        >
+                      ).meta?.omitRowClick;
+
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn("", {
+                            "hover:cursor-pointer":
+                              onRowClick && !isNonClickable,
+                          })}
+                          onClick={
+                            isNonClickable
+                              ? (e) => e.stopPropagation()
+                              : undefined
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (

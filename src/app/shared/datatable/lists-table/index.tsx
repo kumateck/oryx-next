@@ -29,12 +29,14 @@ export enum ColumnType {
   NUMBER = "number",
   SELECT = "select",
   COMBOBOX = "combobox",
+  MULTI = "multi",
 }
 export type CustomColumnMeta<TData> = {
   edittableCell?: {
     type?: ColumnType;
     min?: boolean;
     editable: boolean;
+    extraEvents?: (rowIndex: number, value: unknown) => void;
     setItemLists: React.Dispatch<React.SetStateAction<TData[]>>;
     options?: Option[];
   };
@@ -43,25 +45,52 @@ export type CustomColumnMeta<TData> = {
 export type ExtendedColumnDef<TData, TValue> = ColumnDef<TData, TValue> & {
   meta?: CustomColumnMeta<TData>;
 };
-interface DatatableProps<TData, TValue> {
+
+interface DatatableProps<TData extends { options?: Option[] }, TValue> {
   columns: ExtendedColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
 }
 
+interface TableUpdateDataProps<TData> {
+  rowIndex: number;
+  columnId: string;
+  value: unknown;
+  setTableData: React.Dispatch<React.SetStateAction<TData[]>>;
+}
+export const TableUpdateData = <TData,>({
+  rowIndex,
+  columnId,
+  value,
+  setTableData,
+}: TableUpdateDataProps<TData>) => {
+  setTableData((oldData) =>
+    oldData.map((row, index) =>
+      index === rowIndex ? { ...row, [columnId]: value } : row,
+    ),
+  );
+};
+
 export const ListsTable = <TData, TValue>({
   data,
   columns,
   isLoading,
-}: DatatableProps<TData, TValue>) => {
+}: DatatableProps<TData & { options?: Option[] }, TValue>) => {
   const [tableData, setTableData] = useState(data);
 
   const updateData = (rowIndex: number, columnId: string, value: unknown) => {
-    setTableData((oldData) =>
-      oldData.map((row, index) =>
-        index === rowIndex ? { ...row, [columnId]: value } : row,
-      ),
-    );
+    // setTableData((oldData) =>
+    //   oldData.map((row, index) =>
+    //     index === rowIndex ? { ...row, [columnId]: value } : row,
+    //   ),
+    // );
+
+    TableUpdateData({
+      rowIndex,
+      columnId,
+      value,
+      setTableData,
+    });
   };
 
   useEffect(() => {
@@ -121,6 +150,7 @@ export const ListsTable = <TData, TValue>({
                 className="odd:bg-white even:bg-primary-50 hover:bg-primary-100"
               >
                 {row.getVisibleCells().map((cell) => {
+                  // console.log(cell, "cells");
                   const editableCell = (
                     cell.column.columnDef as ExtendedColumnDef<TData, TValue>
                   ).meta?.edittableCell; // Extracted the editableCell meta information into a variable
@@ -130,6 +160,7 @@ export const ListsTable = <TData, TValue>({
                       {editableCell?.editable ? (
                         <EditableCell
                           min={editableCell?.min}
+                          extraEvents={editableCell?.extraEvents}
                           cellContext={cell.getContext()}
                           updateData={(rowIndex, columnId, value) => {
                             updateData(rowIndex, columnId, value);
@@ -149,7 +180,15 @@ export const ListsTable = <TData, TValue>({
                             });
                           }}
                           type={editableCell?.type} // Access type directly from the editableCell variable
-                          options={editableCell?.options}
+                          options={
+                            // "options" in cell.row?.original
+                            //   ? cell.row.original.options
+                            //   : editableCell?.options
+                            // "options" in cell.row.original
+                            //   ? cell.row.original.options
+                            //   : editableCell?.options
+                            editableCell?.options ?? cell.row.original?.options
+                          }
                         />
                       ) : (
                         flexRender(
