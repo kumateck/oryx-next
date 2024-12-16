@@ -4,6 +4,7 @@ import { LucideIconName } from "./ui/icon";
 interface SubItem {
   title: string;
   url?: string;
+  children?: SubItem[];
 }
 
 // Define the main menu item structure.
@@ -131,16 +132,53 @@ export const ROUTES: Route[] = [
             url: "/procurement/requisition",
           },
           {
-            title: "Foreign Quotations",
-            url: "/procurement/foreign-quotation",
+            title: "Quotations Request",
+            url: "/procurement/quotations",
+            children: [
+              {
+                title: "Foreign",
+                url: "/procurement/foreign-quotation",
+              },
+              {
+                title: "Local",
+                url: "/procurement/local-quotation",
+              },
+            ],
           },
-          {
-            title: "Local Quotations",
-            url: "/procurement/local-quotation",
-          },
+          // {
+          //   title: "Foreign Quotations",
+          //   url: "/procurement/foreign-quotation",
+          // },
+          // {
+          //   title: "Local Quotations",
+          //   url: "/procurement/local-quotation",
+          // },
+
           {
             title: "Sales Quotations",
-            url: "/procurement/sales-quotation",
+            url: "/procurement/sales",
+            children: [
+              {
+                title: "Foreign",
+                url: "/procurement/foreign-sales-quotation",
+              },
+              {
+                title: "Local",
+                url: "/procurement/local-sales-quotation",
+              },
+            ],
+          },
+          {
+            title: "Price Comparison",
+            url: "/procurement/price-comparison",
+          },
+          {
+            title: "Awarded Quotations",
+            url: "/procurement/awarded-quotations",
+          },
+          {
+            title: "Profoma Responses",
+            url: "/procurement/profoma-responses",
           },
           {
             title: "Purchase Orders",
