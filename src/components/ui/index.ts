@@ -8,6 +8,7 @@ export * from "./calendar";
 export * from "./card";
 export * from "./checkbox";
 export * from "./command";
+export * from "./accordion";
 export * from "./collapsible";
 export * from "./date-picker-2";
 export * from "./date-picker";
