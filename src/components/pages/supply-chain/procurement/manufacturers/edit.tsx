@@ -1,4 +1,5 @@
 // import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -12,13 +13,15 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateManufacturerRequest,
   ManufacturerDto,
+  PostApiV1CollectionApiArg,
   PutApiV1ProcurementManufacturerByManufacturerIdApiArg,
-  useGetApiV1MaterialQuery,
-  useLazyGetApiV1MaterialQuery,
+  useGetApiV1MaterialAllQuery,
+  useLazyGetApiV1ProcurementManufacturerQuery,
+  usePostApiV1CollectionMutation,
   usePutApiV1ProcurementManufacturerByManufacturerIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
@@ -33,11 +36,8 @@ interface Props {
   details: ManufacturerDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
-  const { data: materialResponse } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 10000,
-  });
+  const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const [changeManufacturer, { isLoading }] =
     usePutApiV1ProcurementManufacturerByManufacturerIdMutation();
@@ -47,7 +47,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     label: item.material?.name as string,
   })) as Option[];
 
-  const materials = materialResponse?.data;
+  const defaultCountry = {
+    label: details?.country?.name as string,
+    value: details?.country?.id as string,
+  };
+  const materials = materialResponse;
 
   const materialOptions = materials?.map((item) => ({
     label: item.name,
@@ -68,8 +72,27 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       address: details?.address as string,
       validityDate: details?.validityDate as string,
       materials: defaultMaterials,
+      country: defaultCountry,
     },
   });
+
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
+
+  useEffect(() => {
+    loadCollection({
+      body: [COLLECTION_TYPES.Country],
+    } as PostApiV1CollectionApiArg).unwrap();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
+    (uom) => ({
+      label: uom.name,
+      value: uom.id,
+    }),
+  ) as Option[];
 
   const onSubmit = async (data: ManufacturerRequestDto) => {
     try {
@@ -85,8 +108,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         manufacturerId: details.id as string,
         createManufacturerRequest: payload,
       } satisfies PutApiV1ProcurementManufacturerByManufacturerIdApiArg);
-      toast.success("Material updated successfully");
-      loadMaterials({
+      toast.success("Manufacturer updated successfully");
+      reload({
         page: 1,
         pageSize: 10,
       });
@@ -125,6 +148,20 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 errors: {
                   message: errors.address?.message,
                   error: !!errors.address,
+                },
+              },
+              {
+                label: "Country",
+                control,
+                type: InputTypes.SELECT,
+                name: "country",
+                required: true,
+                placeholder: "Select Country",
+                defaultValue: defaultCountry,
+                options: countryOptions,
+                errors: {
+                  message: errors.country?.message,
+                  error: !!errors.country,
                 },
               },
               {

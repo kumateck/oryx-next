@@ -7,8 +7,8 @@ import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   MaterialDto,
   SupplierDtoRead,
-  useDeleteApiV1MaterialByMaterialIdMutation,
-  useLazyGetApiV1MaterialQuery,
+  useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
+  useLazyGetApiV1ProcurementSupplierQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "./edit";
@@ -19,11 +19,12 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends SupplierDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1MaterialByMaterialIdMutation();
+  const [deleteMutation] =
+    useDeleteApiV1ProcurementSupplierBySupplierIdMutation();
   // const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+  const [reload] = useLazyGetApiV1ProcurementSupplierQuery();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -56,10 +57,10 @@ export function DataTableRowActions<TData extends SupplierDtoRead>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              materialId: details.id as string,
+              supplierId: details.id as string,
             }).unwrap();
             toast.success("Vendor deleted successfully");
-            loadMaterials({
+            reload({
               pageSize: 30,
             });
           } catch (error) {

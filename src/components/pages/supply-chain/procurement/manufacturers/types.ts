@@ -19,6 +19,11 @@ export const CreateManufacturerSchema = z.object({
     .min(1, {
       message: "Materials is required",
     }),
+  email: z.string().email({ message: "Invalid email address" }).optional(),
+  country: z.object({
+    value: z.string(),
+    label: z.string(),
+  }),
 });
 
 export type ManufacturerRequestDto = z.infer<typeof CreateManufacturerSchema>;

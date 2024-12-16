@@ -23,23 +23,28 @@ import { cn } from "@/lib/utils";
 import { ColumnType } from ".";
 
 interface EditableCellProps {
+  extraEvents?: (rowIndex: number, value: unknown) => void;
   type?: ColumnType;
+  min?: boolean;
   cellContext: any; // Type this based on your row data
   updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   options?: { label: string; value: string }[]; // Options for react-select and combobox
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
+  extraEvents,
   cellContext,
   updateData,
   type = ColumnType.TEXT,
   options = [],
+  min,
 }) => {
   const { row, column, value, getValue } = cellContext;
   const columnId = column.id;
   const rowIndex = row.index;
   const [editingValue, setEditingValue] = useState(getValue() || "");
 
+  const setMin = min ? getValue() : 0;
   useEffect(() => {
     setEditingValue(getValue() || "");
   }, [getValue]);
@@ -51,7 +56,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
-    setEditingValue(e.target ? e.target.value : e.value); // Handle value for select and combobox
+    const value = e.target ? e.target.value : e.value;
+    setEditingValue(value); // Handle value for select and combobox
   };
   const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const evalue = e.target ? e.target.value : e.value;
@@ -59,6 +65,9 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
     if (evalue !== value) {
       updateData(rowIndex, columnId, evalue);
+    }
+    if (extraEvents) {
+      extraEvents(rowIndex, evalue);
     }
   };
 
@@ -70,6 +79,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
       handleSelectChange={handleSelectChange}
       handleBlur={handleBlur}
       options={options}
+      setMin={setMin}
     />
   );
 };
@@ -81,6 +91,7 @@ const InputSwitch = ({
   handleSelectChange,
   handleBlur,
   options,
+  setMin,
 }: {
   type: ColumnType;
   editingValue: string;
@@ -88,6 +99,7 @@ const InputSwitch = ({
   handleSelectChange: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
   handleBlur: () => void;
   options?: { label: string; value: string }[];
+  setMin?: number;
 }) => {
   switch (type) {
     case ColumnType.NUMBER:
@@ -97,6 +109,7 @@ const InputSwitch = ({
           value={editingValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          min={setMin || 0}
         />
       );
     case ColumnType.SELECT:
@@ -105,6 +118,25 @@ const InputSwitch = ({
           value={options?.find((option) => option.value === editingValue)}
           options={options}
           onChange={(option) => handleChange(option)}
+          onBlur={handleBlur}
+          isClearable
+        />
+      );
+    case ColumnType.MULTI:
+      return (
+        <SelectDropDown
+          isMulti
+          value={options?.filter((option) =>
+            Array.isArray(editingValue)
+              ? editingValue.includes(option.value)
+              : option.value === editingValue,
+          )}
+          options={options}
+          onChange={(selectedOptions) => {
+            const opts = selectedOptions as Option[];
+            const values = Array.isArray(opts) && opts.map((opt) => opt.value);
+            handleChange({ value: values });
+          }}
           onBlur={handleBlur}
           isClearable
         />

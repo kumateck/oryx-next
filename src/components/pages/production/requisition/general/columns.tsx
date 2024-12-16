@@ -44,8 +44,9 @@ export const columns: ColumnDef<RequisitionDtoRead>[] = [
     header: "Type",
     cell: ({ row }) => (
       <div className="min-w-36">
-        {row.original.requisitionType === RequisitionType.StockVoucher &&
-          "Stock Voucher"}
+        {row.original.requisitionType === RequisitionType.StockVoucher
+          ? "Stock Voucher"
+          : "Purchase Requisition Voucher"}
       </div>
     ),
   },

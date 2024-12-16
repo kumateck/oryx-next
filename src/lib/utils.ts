@@ -2,7 +2,10 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { APP_NAME, CODE_SETTINGS, Status } from "./constants";
-import { NamingType } from "./redux/api/openapi.generated";
+import {
+  NamingType,
+  ProductionScheduleProcurementDtoRead,
+} from "./redux/api/openapi.generated";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -78,7 +81,9 @@ export interface GenerateCodeOptions {
   seriesCounter?: number;
 }
 
-export const generateCode = (options: GenerateCodeOptions): string => {
+export const generateCode = async (
+  options: GenerateCodeOptions,
+): Promise<string> => {
   const { prefix, minlength, maxlength, type, seriesCounter = 1 } = options; // Default to 1 if seriesCounter is not provided
 
   let generatedCode = "";
@@ -102,7 +107,8 @@ export const generateCode = (options: GenerateCodeOptions): string => {
       break;
 
     default:
-      throw new Error("Invalid type provided");
+      // throw new Error("Invalid type provided");
+      generatedCode = "";
   }
 
   // Ensure the generated code fits the minlength and maxlength constraints
@@ -137,4 +143,22 @@ export const getStatusColor = (status: string) => {
     default:
       return "bg-gray-100 text-neutral-500";
   }
+};
+
+export const quantityAvailable = (
+  materials: ProductionScheduleProcurementDtoRead[],
+) => {
+  // Calculate the total quantityRequested
+  const totalQuantityRequested = materials.reduce(
+    (sum, item) => sum + (item?.quantityRequested || 0),
+    0,
+  );
+
+  // Calculate the total quantityOnHand
+  const totalQuantityOnHand = materials.reduce(
+    (sum, item) => sum + (item?.quantityOnHand || 0),
+    0,
+  );
+
+  return totalQuantityOnHand > totalQuantityRequested;
 };

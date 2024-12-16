@@ -21,11 +21,13 @@ type Props = {
       isMulti: false;
       onChange: (option: Option) => void;
       defaultValue?: Option;
+      value: Option;
     }
   | {
       isMulti: true;
       onChange: (option: Option[]) => void;
       defaultValue?: Option[];
+      value: Option[];
     }
 );
 export default function FormSelectInput({
@@ -34,6 +36,7 @@ export default function FormSelectInput({
   errors,
   options,
   defaultValue,
+  value,
   onChange,
   placeholder,
   isMulti,
@@ -58,7 +61,8 @@ export default function FormSelectInput({
               }),
           }}
           options={options?.map((opt) => opt)}
-          value={defaultValue}
+          defaultValue={defaultValue}
+          value={value ?? defaultValue}
           onChange={(option) => {
             isMulti ? onChange(option as Option[]) : onChange(option as Option);
           }}

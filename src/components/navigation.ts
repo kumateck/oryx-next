@@ -75,6 +75,22 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
+            title: "Lists",
+            url: "/warehouse/raw-materials",
+          },
+          {
+            title: "Locations",
+            url: "/warehouse/raw-materials",
+          },
+          {
+            title: "Racks",
+            url: "/warehouse/raw-materials",
+          },
+          {
+            title: "Shelfs",
+            url: "/warehouse/raw-materials",
+          },
+          {
             title: "Raw Materials",
             url: "/warehouse/raw-materials",
           },
@@ -121,6 +137,18 @@ export const ROUTES: Route[] = [
           {
             title: "Proforma Invoices",
             url: "/procurement/proforma-invoice",
+          },
+          {
+            title: "Purchase Requisition",
+            url: "/procurement/requisition",
+          },
+          {
+            title: "Foreign Quotations",
+            url: "/procurement/foreign-quotation",
+          },
+          {
+            title: "Local Quotations",
+            url: "/procurement/local-quotation",
           },
           {
             title: "Sales Quotations",

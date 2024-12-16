@@ -3325,8 +3325,8 @@ export type CreateWarehouseRequest = {
   name?: string | null;
   code?: string | null;
   description?: string | null;
-  // type?: WarehouseType;
-  // locations?: CreateWarehouseLocationRequest[] | null;
+  type?: WarehouseType;
+  locations?: CreateWarehouseLocationRequest[] | null;
 };
 export type WarehouseDtoIEnumerablePaginateable = {
   data?: WarehouseDto[] | null;

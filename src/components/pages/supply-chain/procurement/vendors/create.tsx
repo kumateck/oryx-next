@@ -12,7 +12,7 @@ import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
   PostApiV1ProcurementSupplierApiArg,
-  useGetApiV1MaterialQuery,
+  useGetApiV1MaterialAllQuery,
   useLazyGetApiV1ProcurementManufacturerMaterialByMaterialIdQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ProcurementSupplierMutation,
@@ -26,12 +26,9 @@ const Create = () => {
   // Rest of the existing code...
   const [createMutation, { isLoading }] =
     usePostApiV1ProcurementSupplierMutation();
-  const { data: materialResponse } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 10000,
-  });
-  const materials = materialResponse?.data;
-  const materialOptions = materials?.map((item) => ({
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
+
+  const materialOptions = materialResponse?.map((item) => ({
     label: item.name,
     value: item.id,
   })) as Option[];

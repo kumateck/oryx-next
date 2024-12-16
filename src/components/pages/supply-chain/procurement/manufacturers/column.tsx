@@ -1,4 +1,5 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -7,8 +8,8 @@ import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   ManufacturerDto,
   MaterialDto,
-  useDeleteApiV1MaterialByMaterialIdMutation,
-  useLazyGetApiV1MaterialQuery,
+  useDeleteApiV1ProcurementManufacturerByManufacturerIdMutation,
+  useLazyGetApiV1ProcurementManufacturerQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
@@ -19,11 +20,12 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends ManufacturerDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1MaterialByMaterialIdMutation();
+  const [deleteMutation] =
+    useDeleteApiV1ProcurementManufacturerByManufacturerIdMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+  const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -56,11 +58,12 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              materialId: details.id as string,
+              manufacturerId: details.id as string,
             }).unwrap();
             toast.success("Manufacturer deleted successfully");
-            loadMaterials({
-              pageSize: 30,
+            reload({
+              page: 1,
+              pageSize: 10,
             });
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -88,12 +91,24 @@ export const columns: ColumnDef<ManufacturerDto>[] = [
     accessorKey: "approvedAt",
     header: "Approved At",
 
-    cell: ({ row }) => <div>{row.getValue("approvedAt")}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("approvedAt")
+          ? format(row.getValue("approvedAt"), "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "validityDate",
     header: "Validity Date",
-    cell: ({ row }) => <div>{row.getValue("validityDate")}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("validityDate")
+          ? format(row.getValue("validityDate"), "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     id: "actions",

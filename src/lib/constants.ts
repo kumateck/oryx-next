@@ -49,8 +49,9 @@ export const CODE_SETTINGS = {
 
 export enum RequisitionStatus {
   Pending = 0,
-  Completed = 1,
-  Rejected = 2,
+  Sourced = 1,
+  Completed = 2,
+  Rejected = 3,
 }
 export enum RequisitionType {
   StockVoucher,
@@ -144,6 +145,7 @@ export const routes = {
   inspections: () => "/inspections",
   regulations: () => "/compliance/external/regulations",
   newStockRequisition: () => "stock-requisition/create",
+  newRequisition: () => "requisition/create",
   audits: () => "/audits",
   findings: () => "/findings",
   editEmployee: (params: { id: string }) =>
