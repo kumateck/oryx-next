@@ -10,7 +10,7 @@ import {
   useLazyGetApiV1WarehouseLocationQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-// import Edit from "../raw-materials/edit";
+import Edit from "./edit";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -20,7 +20,7 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] =
     useDeleteApiV1WarehouseLocationByLocationIdMutation();
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<WarehouseLocationDto>(
     {} as WarehouseLocationDto,
   );
@@ -33,7 +33,7 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
           setDetails(row.original);
-          // setIsOpen(true);
+          setIsOpen(true);
         }}
       />
       <Icon
@@ -45,13 +45,13 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
         }}
       />
 
-      {/* {details.id && isOpen && (
+      {details.id && isOpen && (
         <Edit
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
         />
-      )} */}
+      )}
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -60,7 +60,7 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
             await deleteMutation({
               locationId: details.id as string,
             }).unwrap();
-            toast.success("Warehouse deleted successfully");
+            toast.success("Location deleted successfully");
             loadWarehouseLocation({
               pageSize: 30,
             });
@@ -92,7 +92,7 @@ export const columns: ColumnDef<WarehouseLocationDto>[] = [
   {
     accessorKey: "warehouse",
     header: "Warehouse",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => <div>{row.original.warehouse?.name}</div>,
   },
 
   {

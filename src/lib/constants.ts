@@ -20,6 +20,7 @@ export const COLLECTION_TYPES = {
   MaterialType: "MaterialType",
   Warehouse: "Warehouse",
   WarehouseLocation: "WarehouseLocation",
+  WarehouseLocationRack: "WarehouseLocationRack",
   Product: "Product",
   WorkCenter: "WorkCenter",
   Operation: "Operation",

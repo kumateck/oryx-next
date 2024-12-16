@@ -1,5 +1,4 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,12 +14,11 @@ import {
 } from "@/components/ui";
 import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
-  CreateMaterialRequest,
-  MaterialDto,
-  PostApiV1CollectionApiArg, // useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1MaterialQuery,
-  usePostApiV1CollectionMutation,
-  usePutApiV1MaterialByMaterialIdMutation,
+  CreateWarehouseLocationShelfRequest,
+  WarehouseLocationShelfDto,
+  useGetApiV1CollectionByItemTypeQuery,
+  useLazyGetApiV1WarehouseRackQuery,
+  usePutApiV1WarehouseShelfByShelfIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
@@ -31,27 +29,27 @@ import { CreateShelfValidator, ShelfRequestDto } from "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  details: MaterialDto;
+  details: WarehouseLocationShelfDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+  const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
 
-  const [createMaterial, { isLoading }] =
-    usePutApiV1MaterialByMaterialIdMutation();
-  // const { data } = useGetApiV1CollectionByItemTypeQuery({
-  //   itemType: COLLECTION_TYPES.MaterialCategory,
-  // });
+  const [editRack, { isLoading }] =
+    usePutApiV1WarehouseShelfByShelfIdMutation();
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.WarehouseLocationRack,
+  });
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
+  const rackOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const defaultRack = {
+    label: details?.warehouseLocationRack?.name as string,
+    value: details?.warehouseLocationRack?.id as string,
+  };
 
   const {
     register,
@@ -64,35 +62,27 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     mode: "all",
     defaultValues: {
       name: details.name as string,
-      rack: details.description as string,
       description: details.description as string,
-      code: details.code as string,
+      rackId: defaultRack,
     },
   });
-
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
 
   const onSubmit = async (data: ShelfRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateMaterialRequest;
-      await createMaterial({
-        materialId: details.id as string,
-        createMaterialRequest: payload,
+      } satisfies CreateWarehouseLocationShelfRequest;
+      await editRack({
+        shelfId: details.id as string,
+        createWarehouseLocationShelfRequest: payload,
       });
-      toast.success("Material updated successfully");
-      loadMaterials({
+      toast.success("Rack updated successfully");
+      loadLocationRack({
         page: 1,
         pageSize: 10,
       });
-      reset(); // Reset the form after submission
-      onClose(); // Close the form/modal if applicable
+      reset();
+      onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -102,29 +92,29 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Material</DialogTitle>
+          <DialogTitle>Edit Rack</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              {
-                register: { ...register("code") },
-                label: "Shelf Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the shelf code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
+              // {
+              //   register: { ...register("code") },
+              //   label: "Shelf Code",
+              //   readOnly: true,
+              //   required: true,
+              //   description: (
+              //     <span className="text-sm text-neutral-500">
+              //       You can’t change the shelf code
+              //     </span>
+              //   ),
+              //   placeholder: "Code will be generated",
+              //   type: InputTypes.TEXT,
+              //   errors: {
+              //     message: errors.code?.message,
+              //     error: !!errors.code,
+              //   },
+              // },
               {
                 register: { ...register("name") },
                 label: "Shelf Name",
@@ -144,10 +134,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 name: "rackId",
                 required: true,
 
-                options: categoryOptions,
+                options: rackOptions,
                 errors: {
-                  message: errors.rack?.message,
-                  error: !!errors.rack,
+                  message: errors.rackId?.message,
+                  error: !!errors.rackId,
                 },
               },
               {
@@ -176,7 +166,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Update Material</span>{" "}
+              <span>Update Rack</span>{" "}
             </Button>
           </DialogFooter>
         </form>

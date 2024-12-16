@@ -4,18 +4,16 @@ import { z } from "zod";
 export const CreateLocationSchema = z.object({
   warehouseId: z.object(
     {
-      value: z.string().min(1, { message: "Material Category is required" }),
+      value: z.string().min(1, { message: "Warehouse is required" }),
       label: z.string(),
     },
     {
-      message: "Material Category is required",
+      message: "Warehouse is required",
     },
   ),
-  location: z.string().min(1, { message: "Location is required" }),
-  floor: z.string().min(1, { message: "Location is required" }),
+  name: z.string().min(1, { message: "Location Name is required" }),
+  floorName: z.string().min(1, { message: "Floor is required" }),
   description: z.string().optional(),
-  type: z.number(),
-  code: z.string().min(1, { message: "Code is required" }),
 });
 
 export type LocationRequestDto = z.infer<typeof CreateLocationSchema>;

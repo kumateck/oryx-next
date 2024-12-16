@@ -425,25 +425,25 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getApiV1MaterialBatch: build.query<
+      GetApiV1MaterialBatchApiResponse,
+      GetApiV1MaterialBatchApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batch`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
     getApiV1MaterialBatchByBatchId: build.query<
       GetApiV1MaterialBatchByBatchIdApiResponse,
       GetApiV1MaterialBatchByBatchIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/material/batch/${queryArg.batchId}`,
-      }),
-    }),
-    getApiV1MaterialBatches: build.query<
-      GetApiV1MaterialBatchesApiResponse,
-      GetApiV1MaterialBatchesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batches`,
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
       }),
     }),
     postApiV1MaterialBatchMove: build.mutation<
@@ -613,6 +613,166 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/api/v1/procurement/supplier/${queryArg.materialId}/${queryArg["type"]}`,
+      }),
+    }),
+    postApiV1ProcurementPurchaseOrder: build.mutation<
+      PostApiV1ProcurementPurchaseOrderApiResponse,
+      PostApiV1ProcurementPurchaseOrderApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order`,
+        method: "POST",
+        body: queryArg.createPurchaseOrderRequest,
+      }),
+    }),
+    getApiV1ProcurementPurchaseOrder: build.query<
+      GetApiV1ProcurementPurchaseOrderApiResponse,
+      GetApiV1ProcurementPurchaseOrderApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          status: queryArg.status,
+        },
+      }),
+    }),
+    getApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.query<
+      GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+      GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+      }),
+    }),
+    postApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+      PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+      PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+        method: "POST",
+      }),
+    }),
+    putApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+        method: "PUT",
+        body: queryArg.createPurchaseOrderRequest,
+      }),
+    }),
+    deleteApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+      DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+      DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+        method: "DELETE",
+      }),
+    }),
+    postApiV1ProcurementPurchaseOrderInvoice: build.mutation<
+      PostApiV1ProcurementPurchaseOrderInvoiceApiResponse,
+      PostApiV1ProcurementPurchaseOrderInvoiceApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order-invoice`,
+        method: "POST",
+        body: queryArg.createPurchaseOrderInvoiceRequest,
+      }),
+    }),
+    getApiV1ProcurementPurchaseOrderInvoice: build.query<
+      GetApiV1ProcurementPurchaseOrderInvoiceApiResponse,
+      GetApiV1ProcurementPurchaseOrderInvoiceApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order-invoice`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.query<
+      GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+      GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+      }),
+    }),
+    putApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
+      PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+      PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+        method: "PUT",
+        body: queryArg.createPurchaseOrderInvoiceRequest,
+      }),
+    }),
+    deleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
+      DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+      DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+        method: "DELETE",
+      }),
+    }),
+    postApiV1ProcurementBillingSheet: build.mutation<
+      PostApiV1ProcurementBillingSheetApiResponse,
+      PostApiV1ProcurementBillingSheetApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/billing-sheet`,
+        method: "POST",
+        body: queryArg.createBillingSheetRequest,
+      }),
+    }),
+    getApiV1ProcurementBillingSheet: build.query<
+      GetApiV1ProcurementBillingSheetApiResponse,
+      GetApiV1ProcurementBillingSheetApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/billing-sheet`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProcurementBillingSheetByBillingSheetId: build.query<
+      GetApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+      GetApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+      }),
+    }),
+    putApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
+      PutApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+      PutApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+        method: "PUT",
+        body: queryArg.createBillingSheetRequest,
+      }),
+    }),
+    deleteApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
+      DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+      DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+        method: "DELETE",
       }),
     }),
     postApiV1Product: build.mutation<
@@ -1031,16 +1191,70 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}`,
       }),
     }),
-    postApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSent:
-      build.mutation<
-        PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiResponse,
-        PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiArg
+    postApiV1RequisitionSourceSupplierBySupplierIdSendQuotation: build.mutation<
+      PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiResponse,
+      PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}/send-quotation`,
+        method: "POST",
+      }),
+    }),
+    getApiV1RequisitionSourceSupplierQuotation: build.query<
+      GetApiV1RequisitionSourceSupplierQuotationApiResponse,
+      GetApiV1RequisitionSourceSupplierQuotationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/supplier/quotation`,
+        params: {
+          supplierType: queryArg.supplierType,
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          received: queryArg.received,
+        },
+      }),
+    }),
+    getApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotation:
+      build.query<
+        GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiResponse,
+        GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}/mark-quotation-sent`,
-          method: "POST",
+          url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation`,
         }),
       }),
+    postApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceive:
+      build.mutation<
+        PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiResponse,
+        PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation/receive`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+      }),
+    getApiV1RequisitionSourceMaterialPriceComparison: build.query<
+      GetApiV1RequisitionSourceMaterialPriceComparisonApiResponse,
+      GetApiV1RequisitionSourceMaterialPriceComparisonApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/material/price-comparison`,
+        params: {
+          supplierType: queryArg.supplierType,
+        },
+      }),
+    }),
+    postApiV1RequisitionSourceQuotationProcessPurchaseOrder: build.mutation<
+      PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse,
+      PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/quotation/process-purchase-order`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
     getApiV1Role: build.query<GetApiV1RoleApiResponse, GetApiV1RoleApiArg>({
       query: () => ({ url: `/api/v1/role` }),
     }),
@@ -1727,21 +1941,21 @@ export type PostApiV1MaterialBatchApiArg = {
   /** The CreateMaterialBatchRequest object. */
   body: CreateMaterialBatchRequest[];
 };
-export type GetApiV1MaterialBatchByBatchIdApiResponse =
-  /** status 200 OK */ MaterialBatchDto;
-export type GetApiV1MaterialBatchByBatchIdApiArg = {
-  /** The ID of the material batch. */
-  batchId: string;
-};
-export type GetApiV1MaterialBatchesApiResponse =
+export type GetApiV1MaterialBatchApiResponse =
   /** status 200 OK */ MaterialBatchDtoIEnumerablePaginateable;
-export type GetApiV1MaterialBatchesApiArg = {
+export type GetApiV1MaterialBatchApiArg = {
   /** The current page number. */
   page?: number;
   /** The number of items per page. */
   pageSize?: number;
   /** Search query for filtering results. */
   searchQuery?: string;
+};
+export type GetApiV1MaterialBatchByBatchIdApiResponse =
+  /** status 200 OK */ MaterialBatchDto;
+export type GetApiV1MaterialBatchByBatchIdApiArg = {
+  /** The ID of the material batch. */
+  batchId: string;
 };
 export type PostApiV1MaterialBatchMoveApiResponse = unknown;
 export type PostApiV1MaterialBatchMoveApiArg = {
@@ -1863,6 +2077,122 @@ export type GetApiV1ProcurementSupplierByMaterialIdAndTypeApiArg = {
   materialId: string;
   /** The type of the supplier. */
   type: SupplierType;
+};
+export type PostApiV1ProcurementPurchaseOrderApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1ProcurementPurchaseOrderApiArg = {
+  /** The CreatePurchaseOrderRequest object. */
+  createPurchaseOrderRequest: CreatePurchaseOrderRequest;
+};
+export type GetApiV1ProcurementPurchaseOrderApiResponse =
+  /** status 200 OK */ PurchaseOrderDtoIEnumerablePaginateableRead;
+export type GetApiV1ProcurementPurchaseOrderApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+  /** Filter by the status of the purchase order. (Pending, Delivered, Completed) */
+  status?: PurchaseOrderStatus;
+};
+export type GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
+  /** status 200 OK */ PurchaseOrderDtoRead;
+export type GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
+  /** The ID of the purchase order. */
+  purchaseOrderId: string;
+};
+export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
+  unknown;
+export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
+  /** The ID of the purchase order you want to send to a supplier as an email. */
+  purchaseOrderId: string;
+};
+export type PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
+  unknown;
+export type PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
+  /** The ID of the purchase order to update. */
+  purchaseOrderId: string;
+  /** The UpdatePurchaseOrderRequest object. */
+  createPurchaseOrderRequest: CreatePurchaseOrderRequest;
+};
+export type DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
+  unknown;
+export type DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
+  /** The ID of the purchase order to delete. */
+  purchaseOrderId: string;
+};
+export type PostApiV1ProcurementPurchaseOrderInvoiceApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1ProcurementPurchaseOrderInvoiceApiArg = {
+  /** The CreatePurchaseOrderInvoiceRequest object. */
+  createPurchaseOrderInvoiceRequest: CreatePurchaseOrderInvoiceRequest;
+};
+export type GetApiV1ProcurementPurchaseOrderInvoiceApiResponse =
+  /** status 200 OK */ PurchaseOrderInvoiceDtoIEnumerablePaginateable;
+export type GetApiV1ProcurementPurchaseOrderInvoiceApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+};
+export type GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse =
+  /** status 200 OK */ PurchaseOrderInvoiceDto;
+export type GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg = {
+  /** The ID of the invoice. */
+  invoiceId: string;
+};
+export type PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse =
+  unknown;
+export type PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg = {
+  /** The ID of the invoice to update. */
+  invoiceId: string;
+  /** The UpdatePurchaseOrderInvoiceRequest object. */
+  createPurchaseOrderInvoiceRequest: CreatePurchaseOrderInvoiceRequest;
+};
+export type DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse =
+  unknown;
+export type DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg = {
+  /** The ID of the invoice to delete. */
+  invoiceId: string;
+};
+export type PostApiV1ProcurementBillingSheetApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1ProcurementBillingSheetApiArg = {
+  /** The CreateBillingSheetRequest object. */
+  createBillingSheetRequest: CreateBillingSheetRequest;
+};
+export type GetApiV1ProcurementBillingSheetApiResponse =
+  /** status 200 OK */ BillingSheetDtoIEnumerablePaginateable;
+export type GetApiV1ProcurementBillingSheetApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+};
+export type GetApiV1ProcurementBillingSheetByBillingSheetIdApiResponse =
+  /** status 200 OK */ BillingSheetDto;
+export type GetApiV1ProcurementBillingSheetByBillingSheetIdApiArg = {
+  /** The ID of the billing sheet. */
+  billingSheetId: string;
+};
+export type PutApiV1ProcurementBillingSheetByBillingSheetIdApiResponse =
+  unknown;
+export type PutApiV1ProcurementBillingSheetByBillingSheetIdApiArg = {
+  /** The ID of the billing sheet to update. */
+  billingSheetId: string;
+  /** The UpdateBillingSheetRequest object. */
+  createBillingSheetRequest: CreateBillingSheetRequest;
+};
+export type DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiResponse =
+  unknown;
+export type DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiArg = {
+  /** The ID of the billing sheet to delete. */
+  billingSheetId: string;
 };
 export type PostApiV1ProductApiResponse = /** status 201 Created */ string;
 export type PostApiV1ProductApiArg = {
@@ -2116,7 +2446,7 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
   pageSize?: number;
 };
 export type GetApiV1RequisitionSourceSupplierApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceSupplierApiArg = {
   /** The source of the requisition. (example Local, Foreign, Internal) */
   source?: ProcurementSource;
@@ -2128,18 +2458,58 @@ export type GetApiV1RequisitionSourceSupplierApiArg = {
   sent?: boolean;
 };
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoRead;
+  /** status 200 OK */ SupplierQuotationDto;
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiArg = {
   /** The id of the supplier with associated requisition items. */
   supplierId: string;
 };
-export type PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiResponse =
+export type PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiResponse =
   unknown;
-export type PostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentApiArg =
+export type PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg =
   {
     /** The ID of the supplier. */
     supplierId: string;
   };
+export type GetApiV1RequisitionSourceSupplierQuotationApiResponse =
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
+export type GetApiV1RequisitionSourceSupplierQuotationApiArg = {
+  /** The type of the supplier (example Foreign, Local). */
+  supplierType?: SupplierType;
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Filter by whether the quotation has been received. */
+  received?: boolean;
+};
+export type GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiResponse =
+  /** status 200 OK */ SupplierQuotationDto;
+export type GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiArg =
+  {
+    /** The ID of the supplier quotation. */
+    supplierQuotationId: string;
+  };
+export type PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiResponse =
+  unknown;
+export type PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiArg =
+  {
+    /** The ID of the supplier quotation. */
+    supplierQuotationId: string;
+    /** The list of quotations received from the supplier. */
+    body: SupplierQuotationResponseDto[];
+  };
+export type GetApiV1RequisitionSourceMaterialPriceComparisonApiResponse =
+  /** status 200 OK */ SupplierPriceComparison[];
+export type GetApiV1RequisitionSourceMaterialPriceComparisonApiArg = {
+  /** The type of the supplier (example Local, Foreign). */
+  supplierType?: SupplierType;
+};
+export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse =
+  unknown;
+export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg = {
+  /** The list of quotations to process. */
+  body: ProcessQuotation[];
+};
 export type GetApiV1RoleApiResponse = /** status 200 OK */ RoleDto[];
 export type GetApiV1RoleApiArg = void;
 export type PostApiV1RoleApiResponse = unknown;
@@ -2499,14 +2869,23 @@ export type CreateDepartmentRequest = {
   warehouseId?: string | null;
 };
 export type WarehouseType = 0 | 1;
+export type WareHouseLocationDto = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  warehouse?: CollectionItemDto;
+};
 export type WarehouseLocationShelfDto = {
+  id?: string;
   warehouseLocationRack?: CollectionItemDto;
   code?: string | null;
   name?: string | null;
   description?: string | null;
 };
 export type WarehouseLocationRackDto = {
-  warehouseLocation?: CollectionItemDto;
+  id?: string;
+  warehouseLocation?: WareHouseLocationDto;
   name?: string | null;
   description?: string | null;
   shelves?: WarehouseLocationShelfDto[] | null;
@@ -2566,16 +2945,20 @@ export type MaterialBatchMovementDto = {
   createdBy?: CollectionItemDto;
   createdAt?: string;
   batch?: CollectionItemDto;
-  fromLocation?: WarehouseLocationDto;
-  toLocation?: WarehouseLocationDto;
+  fromLocation?: CollectionItemDto;
+  toLocation?: CollectionItemDto;
   quantity?: number;
   movedAt?: string;
   movedBy?: CollectionItemDto;
   movementType?: MovementType;
 };
+export type CurrentLocationDto = {
+  locationName?: string | null;
+  quantityAtLocation?: number;
+};
 export type MaterialBatchDto = {
+  id?: string;
   code?: string | null;
-  quantity?: number;
   uoM?: CollectionItemDto;
   status?: BatchStatus;
   dateReceived?: string;
@@ -2583,8 +2966,10 @@ export type MaterialBatchDto = {
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  expiryDate?: string;
   events?: MaterialBatchEventDto[] | null;
   movements?: MaterialBatchMovementDto[] | null;
+  locations?: CurrentLocationDto[] | null;
 };
 export type MaterialDto = {
   id?: string;
@@ -2630,6 +3015,7 @@ export type CreateMaterialBatchRequest = {
   quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
+  expiryDate?: string;
 };
 export type MaterialBatchDtoIEnumerablePaginateable = {
   data?: MaterialBatchDto[] | null;
@@ -2751,6 +3137,163 @@ export type SupplierDtoIEnumerablePaginateable = {
 };
 export type SupplierDtoIEnumerablePaginateableRead = {
   data?: SupplierDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreatePurchaseOrderItemRequest = {
+  materialId?: string;
+  uomId?: string;
+  quantity?: number;
+  pricePerUnit?: number;
+};
+export type CreatePurchaseOrderRequest = {
+  supplierId?: string;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: CreatePurchaseOrderItemRequest[] | null;
+};
+export type AttachmentDto = {
+  link?: string | null;
+  name?: string | null;
+  id?: string;
+  reference?: string | null;
+};
+export type PurchaseOrderItemDto = {
+  purchaseOrder?: CollectionItemDto;
+  material?: CollectionItemDto;
+  uom?: CollectionItemDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  currency?: CollectionItemDto;
+};
+export type PurchaseOrderItemDtoRead = {
+  purchaseOrder?: CollectionItemDto;
+  material?: CollectionItemDto;
+  uom?: CollectionItemDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  currency?: CollectionItemDto;
+  cost?: number;
+};
+export type PurchaseOrderStatus = 0 | 1 | 2;
+export type PurchaseOrderDto = {
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  supplier?: CollectionItemDto;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: PurchaseOrderItemDto[] | null;
+  status?: PurchaseOrderStatus;
+  createdAt?: string;
+};
+export type PurchaseOrderDtoRead = {
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  supplier?: CollectionItemDto;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: PurchaseOrderItemDtoRead[] | null;
+  status?: PurchaseOrderStatus;
+  createdAt?: string;
+};
+export type PurchaseOrderDtoIEnumerablePaginateable = {
+  data?: PurchaseOrderDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type PurchaseOrderDtoIEnumerablePaginateableRead = {
+  data?: PurchaseOrderDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateBatchItemRequest = {
+  batchNumber?: string | null;
+  manufacturerId?: string;
+  quantity?: number;
+};
+export type CreateChargeRequest = {
+  description?: string | null;
+  amount?: number;
+  currencyId?: string | null;
+};
+export type CreatePurchaseOrderInvoiceRequest = {
+  code?: string | null;
+  purchaseOrderId?: string;
+  batchItems?: CreateBatchItemRequest[] | null;
+  charges?: CreateChargeRequest[] | null;
+};
+export type BatchItemDto = {
+  batchNumber?: string | null;
+  purchaseOrderInvoice?: CollectionItemDto;
+  manufacturer?: CollectionItemDto;
+  quantity?: number;
+};
+export type ChargeDto = {
+  purchaseOrderInvoice?: PurchaseOrderInvoiceDto;
+  description?: string | null;
+  currency?: CollectionItemDto;
+  amount?: number;
+};
+export type PurchaseOrderInvoiceDto = {
+  id?: string;
+  createdBy?: CollectionItemDto;
+  createdAt?: string;
+  code?: string | null;
+  purchaseOrder?: CollectionItemDto;
+  batchItems?: BatchItemDto[] | null;
+  charges?: ChargeDto[] | null;
+};
+export type PurchaseOrderInvoiceDtoIEnumerablePaginateable = {
+  data?: PurchaseOrderInvoiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateBillingSheetRequest = {
+  code?: string | null;
+  billOfLading?: string | null;
+  supplierId?: string;
+  invoiceId?: string;
+  expectedArrivalDate?: string;
+  freeTimeExpiryDate?: string;
+  freeTimeDuration?: string;
+  demurrageStartDate?: string;
+  containerNumber?: string | null;
+  numberOfPackages?: string | null;
+  packageDescription?: string | null;
+};
+export type BillingSheetDto = {
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  code?: string | null;
+  billOfLading?: string | null;
+  supplier?: CollectionItemDto;
+  invoice?: CollectionItemDto;
+  expectedArrivalDate?: string;
+  freeTimeExpiryDate?: string;
+  freeTimeDuration?: string;
+  demurrageStartDate?: string;
+  containerNumber?: string | null;
+  numberOfPackages?: string | null;
+  packageDescription?: string | null;
+};
+export type BillingSheetDtoIEnumerablePaginateable = {
+  data?: BillingSheetDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -3141,15 +3684,10 @@ export type CreateSourceRequisitionRequest = {
   requisitionId?: string;
   items?: CreateSourceRequisitionItemRequest[] | null;
 };
-export type AttachmentDto = {
-  link?: string | null;
-  name?: string | null;
-  id?: string;
-  reference?: string | null;
-};
 export type SourceRequisitionItemSupplierDto = {
   supplier?: CollectionItemDto;
   sentQuotationRequestAt?: string | null;
+  supplierQuotedPrice?: number | null;
 };
 export type SourceRequisitionItemDto = {
   id?: string;
@@ -3187,16 +3725,18 @@ export type SourceRequisitionItemDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type SupplierQuotationDto = {
-  supplier?: CollectionItemDto;
-  sentQuotationRequestAt?: string | null;
-  items?: SourceRequisitionItemDto[] | null;
+export type SupplierQuotationItemDto = {
+  id?: string;
+  material?: CollectionItemDto;
+  uoM?: CollectionItemDto;
+  quantity?: number;
+  quotedPrice?: number | null;
 };
-export type SupplierQuotationDtoRead = {
+export type SupplierQuotationDto = {
+  id?: string;
   supplier?: CollectionItemDto;
-  sentQuotationRequestAt?: string | null;
-  sentQuotationRequest?: boolean;
-  items?: SourceRequisitionItemDto[] | null;
+  items?: SupplierQuotationItemDto[] | null;
+  receivedQuotation?: boolean;
 };
 export type SupplierQuotationDtoIEnumerablePaginateable = {
   data?: SupplierQuotationDto[] | null;
@@ -3207,14 +3747,23 @@ export type SupplierQuotationDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type SupplierQuotationDtoIEnumerablePaginateableRead = {
-  data?: SupplierQuotationDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
+export type SupplierQuotationResponseDto = {
+  id?: string;
+  price?: number;
+};
+export type SupplierPrice = {
+  supplier?: CollectionItemDto;
+  price?: number | null;
+};
+export type SupplierPriceComparison = {
+  material?: CollectionItemDto;
+  uoM?: CollectionItemDto;
+  quantity?: number;
+  supplierQuotation?: SupplierPrice[] | null;
+};
+export type ProcessQuotation = {
+  supplierId?: string;
+  items?: CreatePurchaseOrderItemRequest[] | null;
 };
 export type CreateRoleRequest = {
   name: string;
@@ -3460,10 +4009,10 @@ export const {
   useGetApiV1MaterialByMaterialIdStockLevelQuery,
   useLazyGetApiV1MaterialByMaterialIdStockLevelQuery,
   usePostApiV1MaterialBatchMutation,
+  useGetApiV1MaterialBatchQuery,
+  useLazyGetApiV1MaterialBatchQuery,
   useGetApiV1MaterialBatchByBatchIdQuery,
   useLazyGetApiV1MaterialBatchByBatchIdQuery,
-  useGetApiV1MaterialBatchesQuery,
-  useLazyGetApiV1MaterialBatchesQuery,
   usePostApiV1MaterialBatchMoveMutation,
   useGetApiV1MaterialByMaterialIdStockAndWarehouseIdQuery,
   useLazyGetApiV1MaterialByMaterialIdStockAndWarehouseIdQuery,
@@ -3490,6 +4039,28 @@ export const {
   useLazyGetApiV1ProcurementSupplierMaterialByMaterialIdQuery,
   useGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery,
   useLazyGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery,
+  usePostApiV1ProcurementPurchaseOrderMutation,
+  useGetApiV1ProcurementPurchaseOrderQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderQuery,
+  useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
+  usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
+  useDeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
+  usePostApiV1ProcurementPurchaseOrderInvoiceMutation,
+  useGetApiV1ProcurementPurchaseOrderInvoiceQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderInvoiceQuery,
+  useGetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdQuery,
+  usePutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdMutation,
+  useDeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdMutation,
+  usePostApiV1ProcurementBillingSheetMutation,
+  useGetApiV1ProcurementBillingSheetQuery,
+  useLazyGetApiV1ProcurementBillingSheetQuery,
+  useGetApiV1ProcurementBillingSheetByBillingSheetIdQuery,
+  useLazyGetApiV1ProcurementBillingSheetByBillingSheetIdQuery,
+  usePutApiV1ProcurementBillingSheetByBillingSheetIdMutation,
+  useDeleteApiV1ProcurementBillingSheetByBillingSheetIdMutation,
   usePostApiV1ProductMutation,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductQuery,
@@ -3552,7 +4123,15 @@ export const {
   useLazyGetApiV1RequisitionSourceSupplierQuery,
   useGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
   useLazyGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
-  usePostApiV1RequisitionSourceSupplierBySupplierIdMarkQuotationSentMutation,
+  usePostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationMutation,
+  useGetApiV1RequisitionSourceSupplierQuotationQuery,
+  useLazyGetApiV1RequisitionSourceSupplierQuotationQuery,
+  useGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery,
+  useLazyGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery,
+  usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation,
+  useGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
+  useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
+  usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
   useGetApiV1RoleQuery,
   useLazyGetApiV1RoleQuery,
   usePostApiV1RoleMutation,

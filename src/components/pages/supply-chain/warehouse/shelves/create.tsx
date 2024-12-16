@@ -1,6 +1,6 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+// import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -13,24 +13,15 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
-  CreateWarehouseRequest,
-  PostApiV1CollectionApiArg,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseQuery,
-  usePostApiV1CollectionMutation,
-  usePostApiV1WarehouseMutation,
+  CreateWarehouseLocationShelfRequest,
+  useGetApiV1CollectionByItemTypeQuery, // useGetApiV1WarehouseLocationByLocationIdQuery,
+  // useGetApiV1WarehouseRackByRackIdQuery,
+  useLazyGetApiV1WarehouseShelfQuery,
+  usePostApiV1WarehouseByRackIdShelfMutation,
 } from "@/lib/redux/api/openapi.generated";
-import {
-  ErrorResponse,
-  GenerateCodeOptions,
-  cn,
-  generateCode,
-  getFirstCharacter,
-  isErrorResponse,
-} from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { CreateShelfValidator, ShelfRequestDto } from "./types";
 
@@ -41,102 +32,95 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
-  const [loadCodeSettings] =
-    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-
-  const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+  const [loadShelves] = useLazyGetApiV1WarehouseShelfQuery();
+  const [createShelf, { isLoading }] =
+    usePostApiV1WarehouseByRackIdShelfMutation();
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
-    setValue,
+    // setValue,
   } = useForm<ShelfRequestDto>({
     resolver: CreateShelfValidator,
     mode: "all",
   });
 
-  const name = useWatch<ShelfRequestDto>({
-    name: "name",
-    control,
-  }) as string;
+  // const name = useWatch<ShelfRequestDto>({
+  //   name: "name",
+  //   control,
+  // }) as string;
 
-  const rack = useWatch<ShelfRequestDto>({
-    name: "rack",
-    control,
-  }) as string;
+  // const rack = useWatch<ShelfRequestDto>({
+  //   name: "rackId",
+  //   control,
+  // }) as Option;
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.WarehouseLocationRack,
+  });
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (name && rack?.length > 0) {
-      handleLoadCode();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, rack]);
-
-  const handleLoadCode = async () => {
-    try {
-      const getCodeSettings = await loadCodeSettings({
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-      }).unwrap();
-
-      const prefix = getCodeSettings?.prefix;
-      const locationName = rack || "";
-      const codePrefix = `${prefix}${getFirstCharacter(name)}${getFirstCharacter(locationName)}`;
-
-      const payload = {
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-        prefix: codePrefix,
-      };
-
-      const res = await loadCodeMyModel(payload).unwrap();
-
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(getCodeSettings?.maximumNameLength),
-        minlength: Number(getCodeSettings?.minimumNameLength),
-        prefix: codePrefix,
-        type: 0,
-        seriesCounter: res + 1,
-      };
-
-      const code = generateCode(generatePayload);
-      setValue("code", code);
-    } catch (error) {
-      console.error("Error generating code:", error);
-    }
-  };
-
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
+  const rackOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
   })) as Option[];
+  console.log(data, "Racks");
+
+  // const { data: rackData } = useGetApiV1WarehouseRackByRackIdQuery({
+  //   rackId: rack?.value,
+  // });
+
+  // const locationId = rackData?.warehouseLocation?.id;
+
+  // const { data: locationData } = useGetApiV1WarehouseLocationByLocationIdQuery({
+  //   locationId
+  // });
+
+  // const floor = locationData?.floorName;
+
+  // async function generateShelfCode(
+  //   floor: string | null | undefined,
+  //   rackNumber: string,
+  //   shelfLevel: string,
+  // ) {
+  //   console.log("Shelf code generation function called")
+  //   // Ensure all parameters are provided
+  //   if (!floor || !rackNumber || !shelfLevel) {
+  //     return "";
+  //   }
+  //   // Get the first letter of floor and shelfLevel, convert to uppercase
+  //   const floorCode = floor.trim()[0].toUpperCase();
+  //   const shelfCode = shelfLevel.trim()[0].toUpperCase();
+  //   // Combine into the desired format
+  //   const code = `${floorCode}/${rackNumber}/${shelfCode}`;
+  //   return code;
+  // }
+
+  // useEffect(() => {
+  //   if (name && rack && floor) {
+  //     handleLoadCode();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [floor, name, rack]);
+
+  // const handleLoadCode = async () => {
+  //   console.log("Handle load code called")
+  //   const code = await generateShelfCode(floor, name, rack.value);
+  //   setValue("code", code);
+  // };
 
   const onSubmit = async (data: ShelfRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateWarehouseRequest;
-      await createWarehouse({
-        createWarehouseRequest: payload,
+      } satisfies CreateWarehouseLocationShelfRequest;
+      await createShelf({
+        rackId: data.rackId.value,
+        createWarehouseLocationShelfRequest: payload,
       });
-      toast.success("Material created successfully");
-      loadWarehouses({
+      toast.success("Shelf created successfully");
+      loadShelves({
         page: 1,
         pageSize: 10,
       });
@@ -158,53 +142,22 @@ const Create = ({ isOpen, onClose }: Props) => {
           <FormWizard
             config={[
               // {
-              //   label: "Kind",
-              //   control,
-              //   type: InputTypes.RADIO,
-              //   name: `kind`,
+              //   register: { ...register("code") },
+              //   label: "Shelf Code",
+              //   readOnly: true,
               //   required: true,
-              //   options: Object.entries(EMaterialKind)
-              //     .filter(([, value]) => typeof value === "number")
-              //     .map(([key, value]) => ({
-              //       label: key, // "Raw" or "Package"
-              //       value: value.toString(), // 0 or 1
-              //     })),
+              //   description: (
+              //     <span className="text-sm text-neutral-500">
+              //       You can’t change the shelf code
+              //     </span>
+              //   ),
+              //   placeholder: "Code will be generated",
+              //   type: InputTypes.TEXT,
               //   errors: {
-              //     message: errors?.kind?.message || "",
-              //     error: !!errors?.kind?.type,
+              //     message: errors.code?.message,
+              //     error: !!errors.code,
               //   },
               // },
-              // {
-              //   label: "Material Category",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "materialCategoryId",
-              //   required: true,
-              //   placeholder: "Material Category",
-              //   options: materialCategoryOptions,
-              //   errors: {
-              //     message: errors.materialCategoryId?.message,
-              //     error: !!errors.materialCategoryId,
-              //   },
-              // },
-
-              {
-                register: { ...register("code") },
-                label: "Shelf Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the shelf code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
               {
                 register: { ...register("name") },
                 label: "Shelf Name",
@@ -224,10 +177,10 @@ const Create = ({ isOpen, onClose }: Props) => {
                 name: "rackId",
                 required: true,
 
-                options: categoryOptions,
+                options: rackOptions,
                 errors: {
-                  message: errors.rack?.message,
-                  error: !!errors.rack,
+                  message: errors.rackId?.message,
+                  error: !!errors.rackId,
                 },
               },
               {

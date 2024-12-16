@@ -1,6 +1,5 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -13,23 +12,14 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1WarehouseLocationQuery,
   usePostApiV1WarehouseByWarehouseIdLocationMutation,
 } from "@/lib/redux/api/openapi.generated";
-import {
-  ErrorResponse,
-  GenerateCodeOptions,
-  cn,
-  generateCode,
-  getFirstCharacter,
-  isErrorResponse,
-} from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { CreateLocationValidator, LocationRequestDto } from "./types";
 
@@ -41,76 +31,23 @@ interface Props {
 }
 const Create = ({ isOpen, onClose }: Props) => {
   const [loadWarehouseLocations] = useLazyGetApiV1WarehouseLocationQuery();
-  const [loadCodeSettings] =
-    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-
   const [createWarehouseLocation, { isLoading }] =
     usePostApiV1WarehouseByWarehouseIdLocationMutation();
-  const { data } = useGetApiV1CollectionByItemTypeQuery({
-    itemType: COLLECTION_TYPES.Warehouse,
-  });
+
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
-    setValue,
   } = useForm<LocationRequestDto>({
     resolver: CreateLocationValidator,
     mode: "all",
   });
 
-  const warehouse = useWatch<LocationRequestDto>({
-    name: "warehouseId",
-    control,
-  }) as string;
-
-  const floor = useWatch<LocationRequestDto>({
-    name: "floor",
-    control,
-  }) as string;
-
-  useEffect(() => {
-    if (warehouse && floor?.length > 0) {
-      handleLoadCode();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [warehouse, floor]);
-
-  const handleLoadCode = async () => {
-    try {
-      const getCodeSettings = await loadCodeSettings({
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-      }).unwrap();
-
-      const prefix = getCodeSettings?.prefix;
-      const locationName = floor || "";
-      const codePrefix = `${prefix}${getFirstCharacter(warehouse)}${getFirstCharacter(locationName)}`;
-
-      const payload = {
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-        prefix: codePrefix,
-      };
-
-      const res = await loadCodeMyModel(payload).unwrap();
-
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(getCodeSettings?.maximumNameLength),
-        minlength: Number(getCodeSettings?.minimumNameLength),
-        prefix: codePrefix,
-        type: 0,
-        seriesCounter: res + 1,
-      };
-
-      const code = generateCode(generatePayload);
-      setValue("code", code);
-    } catch (error) {
-      console.error("Error generating code:", error);
-    }
-  };
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.Warehouse,
+  });
 
   const warehouseOptions = data?.map((item) => ({
     label: item.name,
@@ -126,7 +63,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         createWarehouseLocationRequest: payload,
         warehouseId: data?.warehouseId?.value,
       });
-      toast.success("Material created successfully");
+      toast.success("Location created successfully");
       loadWarehouseLocations({
         page: 1,
         pageSize: 10,
@@ -162,27 +99,27 @@ const Create = ({ isOpen, onClose }: Props) => {
                 },
               },
               {
-                register: { ...register("location") },
+                register: { ...register("name") },
                 label: "Location Name",
                 required: true,
                 placeholder: "Enter New Location Name",
                 type: InputTypes.TEXT,
 
                 errors: {
-                  message: errors.location?.message,
-                  error: !!errors.location,
+                  message: errors.name?.message,
+                  error: !!errors.name,
                 },
               },
               {
-                register: { ...register("floor") },
+                register: { ...register("floorName") },
                 label: "Floor Name",
                 required: true,
                 placeholder: "Enter New Floor Name",
                 type: InputTypes.TEXT,
 
                 errors: {
-                  message: errors.floor?.message,
-                  error: !!errors.floor,
+                  message: errors.floorName?.message,
+                  error: !!errors.floorName,
                 },
               },
               {
@@ -193,8 +130,8 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.TEXT,
 
                 errors: {
-                  message: errors.location?.message,
-                  error: !!errors.location,
+                  message: errors.description?.message,
+                  error: !!errors.description,
                 },
               },
             ]}

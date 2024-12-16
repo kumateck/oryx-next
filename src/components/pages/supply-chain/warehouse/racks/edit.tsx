@@ -1,5 +1,4 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,13 +14,11 @@ import {
 } from "@/components/ui";
 import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
-  CreateMaterialRequest,
-  PostApiV1CollectionApiArg,
-  WarehouseLocationRackDto, // MaterialKind,
-  // useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1MaterialQuery,
-  usePostApiV1CollectionMutation,
-  usePutApiV1MaterialByMaterialIdMutation,
+  CreateWarehouseLocationRackRequest,
+  WarehouseLocationRackDto,
+  useGetApiV1CollectionByItemTypeQuery,
+  useLazyGetApiV1WarehouseRackQuery,
+  usePutApiV1WarehouseRackByRackIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
@@ -35,27 +32,21 @@ interface Props {
   details: WarehouseLocationRackDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+  const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
 
-  const [createMaterial, { isLoading }] =
-    usePutApiV1MaterialByMaterialIdMutation();
-  // const { data } = useGetApiV1CollectionByItemTypeQuery({
-  //   itemType: COLLECTION_TYPES.MaterialCategory,
-  // });
+  const [editRack, { isLoading }] = usePutApiV1WarehouseRackByRackIdMutation();
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.WarehouseLocation,
+  });
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const locationOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
 
   const defaultLocation = {
-    label: details?.warehouseLocation?.id as string,
+    label: details?.warehouseLocation?.name as string,
     value: details?.warehouseLocation?.id as string,
   };
 
@@ -75,29 +66,22 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     },
   });
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
-
   const onSubmit = async (data: RackRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateMaterialRequest;
-      await createMaterial({
-        materialId: details.name as string,
-        createMaterialRequest: payload,
+      } satisfies CreateWarehouseLocationRackRequest;
+      await editRack({
+        rackId: details.id as string,
+        createWarehouseLocationRackRequest: payload,
       });
-      toast.success("Material updated successfully");
-      loadMaterials({
+      toast.success("Rack updated successfully");
+      loadLocationRack({
         page: 1,
         pageSize: 10,
       });
-      reset(); // Reset the form after submission
-      onClose(); // Close the form/modal if applicable
+      reset();
+      onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -107,20 +91,20 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Material</DialogTitle>
+          <DialogTitle>Edit Rack</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
               {
-                label: "Location",
+                label: "Location Name",
                 control,
                 type: InputTypes.SELECT,
                 name: "locationId",
                 required: true,
 
-                options: categoryOptions,
+                options: locationOptions,
                 errors: {
                   message: errors.locationId?.message,
                   error: !!errors.locationId,
@@ -130,7 +114,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 register: { ...register("name") },
                 label: "Rack Name",
                 required: true,
-                placeholder: "Enter Rack Name",
+                placeholder: "Enter New Rack Name",
                 type: InputTypes.TEXT,
 
                 errors: {
@@ -142,7 +126,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 register: { ...register("description") },
                 label: "Description",
                 required: true,
-                placeholder: "Enter Description",
+                placeholder: "Enter New Description",
                 type: InputTypes.TEXT,
 
                 errors: {
@@ -164,7 +148,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Update Material</span>{" "}
+              <span>Update Rack</span>{" "}
             </Button>
           </DialogFooter>
         </form>

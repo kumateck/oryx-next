@@ -7,10 +7,22 @@ export const CreateWarehouseSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   // productionDepartment: z.string().min(1, { message: "Location is required" }),
   description: z.string().optional(),
-  type: z.nativeEnum(WarehouseType, {
-    required_error: "Type is required",
-    invalid_type_error: "Type must be either 'Storage' or 'Production'",
-  }),
+  type: z
+    .string()
+    .transform((value) => {
+      const numValue = Number(value);
+      if (isNaN(numValue)) {
+        throw new Error("Invalid value for kind");
+      }
+      return numValue;
+    })
+    .refine(
+      (value) =>
+        value === WarehouseType.Storage || value === WarehouseType.Production,
+      {
+        message: "Type must be either 'Storage' (0) or 'Production' (1)",
+      },
+    ),
   code: z.string().min(1, { message: "Code is required" }),
 });
 

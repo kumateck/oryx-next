@@ -1,6 +1,4 @@
-// import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -13,23 +11,14 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseLocationQuery,
+  useLazyGetApiV1WarehouseRackQuery,
   usePostApiV1WarehouseByLocationIdRackMutation,
 } from "@/lib/redux/api/openapi.generated";
-import {
-  ErrorResponse,
-  GenerateCodeOptions,
-  cn,
-  generateCode,
-  getFirstCharacter,
-  isErrorResponse,
-} from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { CreateRackValidator, RackRequestDto } from "./types";
 
@@ -40,78 +29,26 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouseLocations] = useLazyGetApiV1WarehouseLocationQuery();
-  const [loadCodeSettings] =
-    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-
+  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
   const [createWarehouseLocationRack, { isLoading }] =
     usePostApiV1WarehouseByLocationIdRackMutation();
+
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
-    setValue,
   } = useForm<RackRequestDto>({
     resolver: CreateRackValidator,
     mode: "all",
   });
 
-  const name = useWatch<RackRequestDto>({
-    name: "name",
-    control,
-  }) as string;
-
-  const location = useWatch<RackRequestDto>({
-    name: "locationId",
-    control,
-  }) as string;
-
   const { data } = useGetApiV1CollectionByItemTypeQuery({
     itemType: COLLECTION_TYPES.WarehouseLocation,
   });
 
-  useEffect(() => {
-    handleLoadCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleLoadCode = async () => {
-    try {
-      const getCodeSettings = await loadCodeSettings({
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-      }).unwrap();
-
-      const prefix = getCodeSettings?.prefix;
-      const locationName = location || "";
-      const codePrefix = `${prefix}${getFirstCharacter(name)}${getFirstCharacter(locationName)}`;
-
-      const payload = {
-        modelType: CODE_SETTINGS.modelTypes.Warehouse,
-        prefix: codePrefix,
-      };
-
-      const res = await loadCodeMyModel(payload).unwrap();
-
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(getCodeSettings?.maximumNameLength),
-        minlength: Number(getCodeSettings?.minimumNameLength),
-        prefix: codePrefix,
-        type: 0,
-        seriesCounter: res + 1,
-      };
-
-      const code = generateCode(generatePayload);
-      setValue("code", code);
-    } catch (error) {
-      console.error("Error generating code:", error);
-    }
-  };
-
-  const warehouseLocationsOptions = data?.map((item) => ({
+  const locationOptions = data?.map((item) => ({
     label: item.name,
     value: item.id,
   })) as Option[];
@@ -122,11 +59,11 @@ const Create = ({ isOpen, onClose }: Props) => {
         ...data,
       } satisfies CreateWarehouseLocationRackRequest;
       await createWarehouseLocationRack({
+        locationId: data?.locationId.value,
         createWarehouseLocationRackRequest: payload,
-        locationId: data?.locationId?.value,
       });
       toast.success("Rack created successfully");
-      loadWarehouseLocations({
+      loadWarehouseLocationRacks({
         page: 1,
         pageSize: 10,
       });
@@ -141,20 +78,20 @@ const Create = ({ isOpen, onClose }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Rack</DialogTitle>
+          <DialogTitle>Add Location</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
               {
-                label: "Location",
+                label: "Location Name",
                 control,
                 type: InputTypes.SELECT,
                 name: "locationId",
                 required: true,
 
-                options: warehouseLocationsOptions,
+                options: locationOptions,
                 errors: {
                   message: errors.locationId?.message,
                   error: !!errors.locationId,
@@ -164,7 +101,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 register: { ...register("name") },
                 label: "Rack Name",
                 required: true,
-                placeholder: "Enter Rack Name",
+                placeholder: "Enter New Rack Name",
                 type: InputTypes.TEXT,
 
                 errors: {
@@ -176,7 +113,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 register: { ...register("description") },
                 label: "Description",
                 required: true,
-                placeholder: "Enter Description",
+                placeholder: "Enter New Description",
                 type: InputTypes.TEXT,
 
                 errors: {

@@ -13,10 +13,11 @@ import {
   Icon,
 } from "@/components/ui";
 // import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
-import { InputTypes } from "@/lib";
+import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   WarehouseLocationDto,
+  useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1WarehouseLocationQuery,
   usePutApiV1WarehouseLocationByLocationIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -34,19 +35,26 @@ interface Props {
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadLocations] = useLazyGetApiV1WarehouseLocationQuery();
 
-  const [createLocation, { isLoading }] =
+  const [editLocation, { isLoading }] =
     usePutApiV1WarehouseLocationByLocationIdMutation();
-  // const { data } = useGetApiV1CollectionByItemTypeQuery({
-  //   itemType: COLLECTION_TYPES.MaterialCategory,
-  // });
+
+  const { data } = useGetApiV1CollectionByItemTypeQuery({
+    itemType: COLLECTION_TYPES.Warehouse,
+  });
+
+  const warehouseOptions = data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
 
   const defaultWarehouse = {
-    label: details?.warehouse?.id as string,
+    label: details?.warehouse?.name as string,
     value: details?.warehouse?.id as string,
   };
 
   const {
     register,
+    control,
     formState: { errors },
     reset,
     handleSubmit,
@@ -56,8 +64,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       warehouseId: defaultWarehouse,
       description: details.description as string,
-      location: details.description as string,
-      floor: details.floorName as string,
+      name: details.name as string,
+      floorName: details.floorName as string,
     },
   });
 
@@ -66,11 +74,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       const payload = {
         ...data,
       } satisfies CreateWarehouseLocationRequest;
-      await createLocation({
+      console.log("LocationID", details.id);
+      await editLocation({
         locationId: details.id as string,
         createWarehouseLocationRequest: payload,
       });
-      toast.success("Material updated successfully");
+      toast.success("Location updated successfully");
       loadLocations({
         page: 1,
         pageSize: 10,
@@ -93,79 +102,49 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
           <FormWizard
             config={[
               {
-                register: { ...register("code") },
-                label: "Material Code",
-                readOnly: true,
+                label: "Warehouse Name",
+                control,
+                type: InputTypes.SELECT,
+                name: "warehouseId",
                 required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the product code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
+                defaultValue: defaultWarehouse,
+                placeholder: "Warehouse",
+                options: warehouseOptions,
                 errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
+                  message: errors.warehouseId?.message,
+                  error: !!errors.warehouseId,
                 },
               },
-              // {
-              //   label: "Kind",
-              //   control,
-              //   type: InputTypes.RADIO,
-              //   name: `kind`,
-              //   required: true,
-              //   disabled: true,
-              //   options: ["Raw", "Package"].map((option) => ({
-              //     label: option,
-              //     value: option,
-              //   })),
-              //   errors: {
-              //     message: errors?.kind?.message || "",
-              //     error: !!errors?.kind?.type,
-              //   },
-              // },
-              // {
-              //   label: "Material Category",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "materialCategoryId",
-              //   required: true,
-              //   defaultValue: defaultMaterialCategory,
-              //   placeholder: "Material Category",
-              //   options: materialCategoryOptions,
-              //   errors: {
-              //     message: errors.materialCategoryId?.message,
-              //     error: !!errors.materialCategoryId,
-              //   },
-              // },
-              // {
-              //   register: { ...register("name") },
-              //   label: "Name",
-              //   placeholder: "Enter Name",
-              //   type: InputTypes.TEXT,
+              {
+                register: { ...register("name") },
+                label: "Location Name",
+                required: true,
+                placeholder: "Enter New Location Name",
+                type: InputTypes.TEXT,
 
-              //   errors: {
-              //     message: errors.name?.message,
-              //     error: !!errors.name,
-              //   },
-              // },
-              // {
-              //   register: { ...register("pharmacopoeia") },
-              //   label: "Pharmacopoeia",
-              //   placeholder: "Enter Pharmacopoeia",
-              //   type: InputTypes.TEXT,
+                errors: {
+                  message: errors.name?.message,
+                  error: !!errors.name,
+                },
+              },
+              {
+                register: { ...register("floorName") },
+                label: "Floor Name",
+                required: true,
+                placeholder: "Enter New Floor Name",
+                type: InputTypes.TEXT,
 
-              //   errors: {
-              //     message: errors.pharmacopoeia?.message,
-              //     error: !!errors.pharmacopoeia,
-              //   },
-              // },
+                errors: {
+                  message: errors.floorName?.message,
+                  error: !!errors.floorName,
+                },
+              },
               {
                 register: { ...register("description") },
                 label: "Description",
-                placeholder: "Enter Description",
-                type: InputTypes.TEXTAREA,
+                required: true,
+                placeholder: "Enter New Description",
+                type: InputTypes.TEXT,
 
                 errors: {
                   message: errors.description?.message,

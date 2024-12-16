@@ -10,6 +10,8 @@ import {
   useLazyGetApiV1WarehouseShelfQuery,
 } from "@/lib/redux/api/openapi.generated";
 
+import Edit from "./edit";
+
 // import Edit from "../raw-materials/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -19,7 +21,7 @@ export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1WarehouseShelfByShelfIdMutation();
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<WarehouseLocationShelfDto>(
     {} as WarehouseLocationShelfDto,
   );
@@ -32,7 +34,7 @@ export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
           setDetails(row.original);
-          // setIsOpen(true);
+          setIsOpen(true);
         }}
       />
       <Icon
@@ -44,20 +46,20 @@ export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
         }}
       />
 
-      {/* {details.id && isOpen && (
+      {details.id && isOpen && (
         <Edit
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
         />
-      )} */}
+      )}
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
           try {
             await deleteMutation({
-              shelfId: details.code as string,
+              shelfId: details.id as string,
             }).unwrap();
             toast.success("Warehouse deleted successfully");
             loadShelves({
@@ -76,22 +78,22 @@ export const columns: ColumnDef<WarehouseLocationShelfDto>[] = [
   {
     accessorKey: "shelfCode",
     header: "Shelf Code",
-    cell: ({ row }) => <div>{row.getValue("shelfCode")}</div>,
+    cell: ({ row }) => <div>{row.original.code}</div>,
   },
   {
     accessorKey: "shelf",
     header: "Shelf",
-    cell: ({ row }) => <div>{row.getValue("shelf")}</div>,
-  },
-  {
-    accessorKey: "floor",
-    header: "Floor",
-    cell: ({ row }) => <div>{row.getValue("floor")}</div>,
+    cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
     accessorKey: "rack",
     header: "Rack",
-    cell: ({ row }) => <div>{row.getValue("rack")}</div>,
+    cell: ({ row }) => <div>{row.original.warehouseLocationRack?.name}</div>,
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => <div>{row.original.description}</div>,
   },
 
   {

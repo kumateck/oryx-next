@@ -46,7 +46,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
     useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-
   const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
   const {
     register,
@@ -84,7 +83,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       type: getCodeSettings?.namingType as NamingType,
       seriesCounter: res + 1,
     };
-    const code = generateCode(generatePayload);
+    const code = await generateCode(generatePayload);
     setValue("code", code);
   };
 
@@ -157,7 +156,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 label: "Description",
                 required: true,
                 placeholder: "Enter Warehouse Description",
-                type: InputTypes.TEXT,
+                type: InputTypes.TEXTAREA,
 
                 errors: {
                   message: errors.description?.message,
