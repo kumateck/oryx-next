@@ -1,11 +1,10 @@
 import Image from "next/image";
 import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "sonner";
 
 import logo from "@/app/assets/oryx_logo_dark.png";
 import { ListsTable } from "@/app/shared/datatable";
-import { useGetApiV1RequisitionSourceSupplierBySupplierIdQuery } from "@/lib/redux/api/openapi.generated";
-
 import {
   Button,
   Dialog,
@@ -13,7 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
   Icon,
-} from "../ui";
+} from "@/components/ui";
+import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg,
+  useGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
+  usePostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationMutation,
+} from "@/lib/redux/api/openapi.generated";
+
 import { columns } from "./column";
 
 interface Props {
@@ -22,6 +28,8 @@ interface Props {
   id: string;
 }
 const PrintPreview = ({ isOpen, onClose, id }: Props) => {
+  const [emailQuotation] =
+    usePostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationMutation();
   const { data, isLoading } =
     useGetApiV1RequisitionSourceSupplierBySupplierIdQuery({
       supplierId: id,
@@ -31,8 +39,31 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const supplier = data?.supplier;
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const onSubmit = async () => {
+    try {
+      await emailQuotation({
+        supplierId: id,
+        sendEmailRequest: {
+          attachments: [
+            `<!DOCTYPE html>
+            <html>
+            <body>
+            <h1>My First Heading</h1>
+            <p>My first paragraph.</p>
+            </body>
+            </html>`,
+          ],
+          subject: "Quotation Request",
+          body: "The attachment is your email request",
+        },
+      } as PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg).unwrap();
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
   const handlePrint = useReactToPrint({
-    // onAfterPrint: () => onClose(),
+    onBeforePrint: () => onSubmit(),
+    onAfterPrint: () => onClose(),
     contentRef,
     documentTitle: `Quotation`,
     pageStyle: `
@@ -42,7 +73,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             }
           }
           @page {
-            margin: 0 15mm;
+            margin: 2mm 15mm;
           }`,
   });
   const handleDialogChange = (open: boolean) => {
@@ -73,8 +104,8 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             </div>
             <div className="flex flex-col gap-0.5 text-sm">
               <span className="capitalize">{supplier?.name}</span>
-              <span>{supplier?.email}</span>
-              <span>{supplier?.contactNumber}</span>
+              {/* <span>{supplier?.code}</span> */}
+              <span>telephone</span>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 py-4">

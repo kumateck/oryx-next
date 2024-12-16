@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
+
 import { APP_NAME, CODE_SETTINGS, Status } from "./constants";
 import {
   NamingType,
@@ -160,4 +162,50 @@ export const quantityAvailable = (
   );
 
   return totalQuantityOnHand > totalQuantityRequested;
+};
+
+type GroupedBySupplier = {
+  supplierId: string;
+  items: {
+    materialId: string;
+    uomId: string;
+    quantity: number;
+    price: number;
+  }[];
+};
+export const findSelectedQuotation = (state: Quotations[]) => {
+  const data = state
+    ?.map((item) => {
+      const selected = item?.supplierQuotations?.find((p) => p?.selected);
+      return {
+        materialId: item?.materialId,
+        quantity: item?.quantity,
+        uomId: item?.uomId,
+        supplierId: selected?.supplierId,
+        price: selected?.price,
+      };
+    })
+    .filter((item) => item?.supplierId);
+  const grouped: { [key: string]: GroupedBySupplier } = {};
+
+  data.forEach((item) => {
+    const { supplierId, materialId, uomId, quantity, price } = item;
+    const supplier = supplierId as string;
+    const pricePerUnit = price as number;
+    if (!grouped[supplier]) {
+      grouped[supplier] = {
+        supplierId: supplier,
+        items: [],
+      };
+    }
+
+    grouped[supplier].items.push({
+      materialId,
+      uomId,
+      quantity,
+      price: pricePerUnit,
+    });
+  });
+
+  return Object.values(grouped);
 };

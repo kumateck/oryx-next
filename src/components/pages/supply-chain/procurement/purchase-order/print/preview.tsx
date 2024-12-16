@@ -1,11 +1,10 @@
 import Image from "next/image";
 import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "sonner";
 
 import logo from "@/app/assets/oryx_logo_dark.png";
 import { ListsTable } from "@/app/shared/datatable";
-import { useGetApiV1RequisitionSourceSupplierBySupplierIdQuery } from "@/lib/redux/api/openapi.generated";
-
 import {
   Button,
   Dialog,
@@ -13,7 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
   Icon,
-} from "../ui";
+} from "@/components/ui";
+import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
+  useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
+} from "@/lib/redux/api/openapi.generated";
+
 import { columns } from "./column";
 
 interface Props {
@@ -22,17 +28,29 @@ interface Props {
   id: string;
 }
 const PrintPreview = ({ isOpen, onClose, id }: Props) => {
+  const [emailQuotation] =
+    usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
   const { data, isLoading } =
-    useGetApiV1RequisitionSourceSupplierBySupplierIdQuery({
-      supplierId: id,
+    useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
+      purchaseOrderId: id,
     });
 
   const items = data?.items ?? [];
   const supplier = data?.supplier;
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const onSubmit = async () => {
+    try {
+      await emailQuotation({
+        purchaseOrderId: id,
+      } as PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg).unwrap();
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
   const handlePrint = useReactToPrint({
-    // onAfterPrint: () => onClose(),
+    onBeforePrint: () => onSubmit(),
+    onAfterPrint: () => onClose(),
     contentRef,
     documentTitle: `Quotation`,
     pageStyle: `
@@ -42,7 +60,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             }
           }
           @page {
-            margin: 0 15mm;
+            margin: 2mm 15mm;
           }`,
   });
   const handleDialogChange = (open: boolean) => {
@@ -73,12 +91,14 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             </div>
             <div className="flex flex-col gap-0.5 text-sm">
               <span className="capitalize">{supplier?.name}</span>
-              <span>{supplier?.email}</span>
-              <span>{supplier?.contactNumber}</span>
+              <span>{supplier?.code}</span>
+              <span>telephone</span>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 py-4">
-            <span className="text-2xl font-semibold">Quotation Request</span>
+            <span className="text-2xl font-semibold">
+              Profoma Invoice Request
+            </span>
           </div>
           <ListsTable columns={columns} data={items} isLoading={isLoading} />
         </article>

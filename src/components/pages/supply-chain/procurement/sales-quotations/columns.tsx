@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@/components/ui";
 import { SupplierQuotationDto } from "@/lib/redux/api/openapi.generated";
 
-import PrintPreview from "./print/preview";
+import Cost from "./cost";
 
 // import Edit from "./edit";
 
@@ -19,7 +19,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
-        <PrintPreview
+        <Cost
           id={supplierId}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
@@ -27,10 +27,10 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
       )}
       <Icon
         onClick={() => {
-          setSupplierId(row.original.supplier?.id as string);
+          setSupplierId(row.original?.id as string);
           setIsOpen(true);
         }}
-        name="Printer"
+        name="HandCoins"
         className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
       />
     </section>
