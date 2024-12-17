@@ -91,6 +91,11 @@ export const columns: ColumnDef<WarehouseLocationShelfDto>[] = [
     cell: ({ row }) => <div>{row.original.warehouseLocationRack?.name}</div>,
   },
   {
+    accessorKey: "location",
+    header: "Location",
+    cell: ({ row }) => <div>{row.original.warehouseLocationRack?.code}</div>,
+  },
+  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => <div>{row.original.description}</div>,

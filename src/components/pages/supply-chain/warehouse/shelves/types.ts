@@ -13,7 +13,7 @@ export const CreateShelfSchema = z.object({
     },
   ),
   description: z.string().optional(),
-  // code: z.string().min(1, { message: "Code is required" }),
+  code: z.string().min(1, { message: "Code is required" }),
 });
 
 export type ShelfRequestDto = z.infer<typeof CreateShelfSchema>;

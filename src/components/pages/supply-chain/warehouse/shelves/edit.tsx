@@ -1,5 +1,6 @@
 // import { useForm } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -12,15 +13,20 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { InputTypes, Option } from "@/lib";
 import {
   CreateWarehouseLocationShelfRequest,
   WarehouseLocationShelfDto,
-  useGetApiV1CollectionByItemTypeQuery,
+  useGetApiV1WarehouseRackQuery,
   useLazyGetApiV1WarehouseRackQuery,
   usePutApiV1WarehouseShelfByShelfIdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
+import {
+  ErrorResponse,
+  cn,
+  generateShelfCode,
+  isErrorResponse,
+} from "@/lib/utils";
 
 import { CreateShelfValidator, ShelfRequestDto } from "./types";
 
@@ -33,18 +39,12 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
-
+  const { data: result } = useGetApiV1WarehouseRackQuery({
+    page: 1,
+    pageSize: 100,
+  });
   const [editRack, { isLoading }] =
     usePutApiV1WarehouseShelfByShelfIdMutation();
-
-  const { data } = useGetApiV1CollectionByItemTypeQuery({
-    itemType: COLLECTION_TYPES.WarehouseLocationRack,
-  });
-
-  const rackOptions = data?.map((item) => ({
-    label: item.name,
-    value: item.id,
-  })) as Option[];
 
   const defaultRack = {
     label: details?.warehouseLocationRack?.name as string,
@@ -57,6 +57,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
+    setValue,
   } = useForm<ShelfRequestDto>({
     resolver: CreateShelfValidator,
     mode: "all",
@@ -64,8 +65,37 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       name: details.name as string,
       description: details.description as string,
       rackId: defaultRack,
+      code: details.code as string,
     },
   });
+
+  const name = useWatch<ShelfRequestDto>({
+    name: "name",
+    control,
+  }) as string;
+
+  const rack = useWatch<ShelfRequestDto>({
+    name: "rackId",
+    control,
+  }) as Option;
+
+  useEffect(() => {
+    const response = result?.data?.find((r) => r.id === rack?.value);
+    const floorName = response?.warehouseLocation?.floorName as string;
+    const rackName = response?.name as string;
+
+    const code = generateShelfCode(floorName, rackName, name);
+    setValue("code", code);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rack, name]);
+
+  const data = result?.data ?? [];
+  const rackOptions = data?.map((item) => ({
+    label: item?.warehouseLocation?.name + "-" + item.name,
+    value: item.id,
+  })) as Option[];
+  console.log(data, "Racks");
 
   const onSubmit = async (data: ShelfRequestDto) => {
     try {
@@ -98,23 +128,19 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   register: { ...register("code") },
-              //   label: "Shelf Code",
-              //   readOnly: true,
-              //   required: true,
-              //   description: (
-              //     <span className="text-sm text-neutral-500">
-              //       You can’t change the shelf code
-              //     </span>
-              //   ),
-              //   placeholder: "Code will be generated",
-              //   type: InputTypes.TEXT,
-              //   errors: {
-              //     message: errors.code?.message,
-              //     error: !!errors.code,
-              //   },
-              // },
+              {
+                label: "Rack",
+                control,
+                type: InputTypes.SELECT,
+                name: "rackId",
+                required: true,
+
+                options: rackOptions,
+                errors: {
+                  message: errors.rackId?.message,
+                  error: !!errors.rackId,
+                },
+              },
               {
                 register: { ...register("name") },
                 label: "Shelf Name",
@@ -128,16 +154,20 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 },
               },
               {
-                label: "Rack",
-                control,
-                type: InputTypes.SELECT,
-                name: "rackId",
+                register: { ...register("code") },
+                label: "Shelf Code",
+                readOnly: true,
                 required: true,
-
-                options: rackOptions,
+                description: (
+                  <span className="text-sm text-neutral-500">
+                    You can’t change the shelf code
+                  </span>
+                ),
+                placeholder: "Code will be generated",
+                type: InputTypes.TEXT,
                 errors: {
-                  message: errors.rackId?.message,
-                  error: !!errors.rackId,
+                  message: errors.code?.message,
+                  error: !!errors.code,
                 },
               },
               {
