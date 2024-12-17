@@ -1,13 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { ServerDatatable } from "@/app/shared/datatable";
+import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
 import {
-  useGetApiV1ProcurementPurchaseOrderQuery,
-  useLazyGetApiV1ProcurementPurchaseOrderQuery,
+  useGetApiV1ProcurementBillingSheetQuery,
+  useLazyGetApiV1ProcurementBillingSheetQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import { columns } from "./columns";
@@ -16,20 +18,18 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const { data: result, isLoading } = useGetApiV1ProcurementPurchaseOrderQuery({
+  const { data: result, isLoading } = useGetApiV1ProcurementBillingSheetQuery({
     page,
     pageSize,
-    status: 2,
   });
 
   const [loadData, { isFetching }] =
-    useLazyGetApiV1ProcurementPurchaseOrderQuery();
+    useLazyGetApiV1ProcurementBillingSheetQuery();
 
   useEffect(() => {
     loadData({
       page,
       pageSize,
-      status: 2,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,9 +40,13 @@ const Page = () => {
     <div className="w-full">
       <div className="flex items-center justify-between py-2">
         <span className="text-3xl font-bold text-secondary-500">
-          Purchase Orders Request
+          Billing Sheets
         </span>
-        <div className="flex items-center justify-end gap-2"></div>
+        <div className="flex items-center justify-end gap-2">
+          <Link href={"billing-sheet/create"}>
+            <Button>Create</Button>
+          </Link>
+        </div>
       </div>
 
       <ServerDatatable

@@ -2,11 +2,19 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
 
-import { Icon } from "@/components/ui";
-import { RequisitionStatus } from "@/lib/constants";
+import {
+  Button,
+  Calendar,
+  Icon,
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui";
+import { PurchaseOrderStatusList } from "@/lib/constants";
 import {
   PurchaseOrderDtoRead,
-  RequestStatus,
+  PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
 
 import PrintPreview from "./print/preview";
@@ -20,24 +28,53 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [supplierId, setSupplierId] = useState("");
+  const [purchaseOrderId, setPurchaseOrderId] = useState("");
+
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
         <PrintPreview
-          id={supplierId}
+          id={purchaseOrderId}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
+          date={date}
         />
       )}
-      <Icon
-        onClick={() => {
-          setSupplierId(row.original.id as string);
-          setIsOpen(true);
-        }}
-        name="Printer"
-        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-      />
+      <Popover>
+        <PopoverTrigger>
+          <Icon
+            name="Printer"
+            className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+          />
+        </PopoverTrigger>
+        <PopoverContent align="end" side="bottom">
+          <div className="w-full">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className=""
+              fromYear={1900}
+              initialFocus
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              onClick={() => {
+                setPurchaseOrderId(row.original.id as string);
+                setIsOpen(true);
+              }}
+            >
+              Print
+            </Button>
+            <PopoverClose>
+              <Button variant="outline">Cancel</Button>
+            </PopoverClose>
+          </div>
+        </PopoverContent>
+      </Popover>
     </section>
   );
 }
@@ -50,17 +87,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       <div className="min-w-36">{row.original.supplier?.name}</div>
     ),
   },
-  // {
-  //   accessorKey: "type",
-  //   header: "Type",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.requisitionType === RequisitionType.StockVoucher
-  //         ? "Stock Voucher"
-  //         : "Purchase Requisition Voucher"}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "createdAt",
     header: "Awarded Date",
@@ -72,22 +99,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "expectedDelivery",
-  //   header: "Expected Delivery Date",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.expectedDelivery
-  //         ? format(row.original.expectedDelivery, "MMM d, yyyy")
-  //         : "-"}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "department",
-  //   header: "Requested Department",
-  //   cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
-  // },
+
   {
     accessorKey: "total",
     header: "Total Items Requested",
@@ -115,7 +127,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
     header: "Status",
     cell: ({ row }) => (
       <div className="min-w-36">
-        {RequisitionStatus[row.original?.status as RequestStatus]}
+        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
       </div>
     ),
   },

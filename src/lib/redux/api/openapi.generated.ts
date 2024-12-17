@@ -334,6 +334,16 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
       }),
     }),
+    postApiV1FileByModelTypeAndModelId: build.mutation<
+      PostApiV1FileByModelTypeAndModelIdApiResponse,
+      PostApiV1FileByModelTypeAndModelIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
     deleteApiV1FileByModelId: build.mutation<
       DeleteApiV1FileByModelIdApiResponse,
       DeleteApiV1FileByModelIdApiArg
@@ -654,6 +664,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
         method: "POST",
+        body: queryArg.sendPurchaseOrderRequest,
       }),
     }),
     putApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
@@ -1890,6 +1901,16 @@ export type GetApiV1FileByModelTypeAndModelIdReferenceApiArg = {
   /** A reference name for the specific file (e.g., file name, document ID, etc.). */
   reference: string;
 };
+export type PostApiV1FileByModelTypeAndModelIdApiResponse = unknown;
+export type PostApiV1FileByModelTypeAndModelIdApiArg = {
+  /** Type of the model to associate the file with. */
+  modelType: string;
+  /** ID of the model to associate the file with. */
+  modelId: string;
+  body: {
+    files?: Blob[];
+  };
+};
 export type DeleteApiV1FileByModelIdApiResponse = unknown;
 export type DeleteApiV1FileByModelIdApiArg = {
   /** The ID of the model to delete attachments for. */
@@ -2117,6 +2138,8 @@ export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
 export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
   /** The ID of the purchase order you want to send to a supplier as an email. */
   purchaseOrderId: string;
+  /** The request metadata to send purchase orders to suppliers. */
+  sendPurchaseOrderRequest: SendPurchaseOrderRequest;
 };
 export type PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
   unknown;
@@ -3243,6 +3266,9 @@ export type PurchaseOrderDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type SendPurchaseOrderRequest = {
+  expectedDeliveryDate?: string;
+};
 export type CreateBatchItemRequest = {
   batchNumber?: string | null;
   manufacturerId?: string;
@@ -4035,6 +4061,7 @@ export const {
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   useDeleteApiV1FileByModelIdMutation,
   useDeleteApiV1FileByModelIdAndReferenceMutation,
   usePostApiV1MaterialMutation,

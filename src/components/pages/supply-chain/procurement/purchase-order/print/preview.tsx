@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import Image from "next/image";
 import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -26,8 +27,9 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   id: string;
+  date?: Date;
 }
-const PrintPreview = ({ isOpen, onClose, id }: Props) => {
+const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
   const [emailQuotation] =
     usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
   const { data, isLoading } =
@@ -35,6 +37,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
       purchaseOrderId: id,
     });
 
+  // console.log(date, "date");
   const items = data?.items ?? [];
   const supplier = data?.supplier;
   const contentRef = useRef<HTMLDivElement>(null);
@@ -43,6 +46,9 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     try {
       await emailQuotation({
         purchaseOrderId: id,
+        sendPurchaseOrderRequest: {
+          expectedDeliveryDate: date,
+        },
       } as PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg).unwrap();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -94,11 +100,10 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
               <span>{supplier?.code}</span>
               <span>telephone</span>
             </div>
+            <div>{date ? format(date, "MMM dd, yyyy") : "-"}</div>
           </div>
           <div className="flex items-center justify-center gap-4 py-4">
-            <span className="text-2xl font-semibold">
-              Profoma Invoice Request
-            </span>
+            <span className="text-2xl font-semibold">Purchase Order</span>
           </div>
           <ListsTable columns={columns} data={items} isLoading={isLoading} />
         </article>

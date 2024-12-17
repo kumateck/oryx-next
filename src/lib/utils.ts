@@ -211,6 +211,13 @@ export const findSelectedQuotation = (state: Quotations[]) => {
   return Object.values(grouped);
 };
 
+export const getFormData = (data: any) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => {
+    formData.append(key, data[key] ?? "");
+  });
+  return formData;
+};
 export function generateShelfCode(
   floor: string,
   rackNumber: string,

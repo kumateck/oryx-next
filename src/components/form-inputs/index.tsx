@@ -10,6 +10,7 @@ export { default as FormEmailInput } from "./form-email";
 export { default as FormPasswordInput } from "./form-password-input";
 export { default as FormFileInput } from "./form-file";
 export { default as FormFilesUploadInput } from "./form-files";
+export { default as FormFilesDropzoneInput } from "./form-dropzone";
 
 export { default as FormMomentInput } from "./form-moment";
 export { default as FormSelectInput } from "./form-select";
