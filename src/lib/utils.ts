@@ -71,6 +71,7 @@ export interface ErrorResponse {
 export const isErrorResponse = (error: ErrorResponse) => {
   const err = error.errors;
   const errorResponse = err[0];
+  console.log("Error message", errorResponse.description);
   return errorResponse;
 };
 
@@ -209,3 +210,21 @@ export const findSelectedQuotation = (state: Quotations[]) => {
 
   return Object.values(grouped);
 };
+
+export function generateShelfCode(
+  floor: string,
+  rackNumber: string,
+  shelfLevel: string,
+) {
+  console.log("Shelf code generation function called");
+  // Ensure all parameters are provided
+  if (!floor || !rackNumber || !shelfLevel) {
+    return "";
+  }
+  // Get the first letter of floor and shelfLevel, convert to uppercase
+  const floorCode = floor.trim()[0].toUpperCase();
+  const shelfCode = shelfLevel.trim()[0].toUpperCase();
+  // Combine into the desired format
+  const code = `${floorCode}/${rackNumber}/${shelfCode}`;
+  return code;
+}
