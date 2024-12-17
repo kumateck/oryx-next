@@ -18,6 +18,9 @@ export const COLLECTION_TYPES = {
   UnitOfMeasure: "UnitOfMeasure",
   Material: "Material",
   MaterialType: "MaterialType",
+  Warehouse: "Warehouse",
+  WarehouseLocation: "WarehouseLocation",
+  WarehouseLocationRack: "WarehouseLocationRack",
   Product: "Product",
   WorkCenter: "WorkCenter",
   Operation: "Operation",
@@ -34,6 +37,7 @@ export const CODE_SETTINGS = {
     RequestOrder: "RequestOrder",
     Requisition: "Requisition",
     RawMaterial: "RawMaterial",
+    Warehouse: "Warehouse",
     PackageMaterial: "PackageMaterial",
     ProductionSchedule: "ProductionSchedule",
     PurchaseOrder: "PurchaseOrder",
@@ -65,6 +69,12 @@ export enum EMaterialKind {
   Raw = 0,
   Package = 1,
 }
+
+export enum WarehouseType {
+  Storage = 0,
+  Production = 1,
+}
+
 export enum InputTypes {
   SWITCH = "switch",
   TEXT = "text",

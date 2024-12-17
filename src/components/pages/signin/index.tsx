@@ -92,7 +92,6 @@ const Signin = () => {
         password: data.password,
       },
     } satisfies PostApiV1AuthLoginApiArg;
-
     try {
       // Acquire lock
       await mutex.runExclusive(async () => {

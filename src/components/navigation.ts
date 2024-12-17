@@ -76,19 +76,23 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
-            title: "Lists",
-            url: "/warehouse/raw-materials",
+            title: "Warehouses",
+            url: "/warehouse/warehouses",
           },
           {
             title: "Locations",
-            url: "/warehouse/raw-materials",
+            url: "/warehouse/locations",
           },
           {
             title: "Racks",
-            url: "/warehouse/raw-materials",
+            url: "/warehouse/racks",
           },
           {
-            title: "Shelfs",
+            title: "Shelves",
+            url: "/warehouse/shelves",
+          },
+          {
+            title: "Lists",
             url: "/warehouse/raw-materials",
           },
           {
