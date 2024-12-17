@@ -14,6 +14,7 @@ export * from "./date-picker-2";
 export * from "./date-picker";
 export * from "./date-time-picker";
 export * from "./delete-dialog";
+export * from "./drawer";
 export * from "./dialog";
 export * from "./dropdown-menu";
 export * from "./icon";
