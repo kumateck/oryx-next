@@ -78,7 +78,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Location</DialogTitle>
+          <DialogTitle>Add Rack</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>

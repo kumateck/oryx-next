@@ -334,6 +334,16 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
       }),
     }),
+    postApiV1FileByModelTypeAndModelId: build.mutation<
+      PostApiV1FileByModelTypeAndModelIdApiResponse,
+      PostApiV1FileByModelTypeAndModelIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
     deleteApiV1FileByModelId: build.mutation<
       DeleteApiV1FileByModelIdApiResponse,
       DeleteApiV1FileByModelIdApiArg
@@ -654,6 +664,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
         method: "POST",
+        body: queryArg.sendPurchaseOrderRequest,
       }),
     }),
     putApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
@@ -1890,6 +1901,16 @@ export type GetApiV1FileByModelTypeAndModelIdReferenceApiArg = {
   /** A reference name for the specific file (e.g., file name, document ID, etc.). */
   reference: string;
 };
+export type PostApiV1FileByModelTypeAndModelIdApiResponse = unknown;
+export type PostApiV1FileByModelTypeAndModelIdApiArg = {
+  /** Type of the model to associate the file with. */
+  modelType: string;
+  /** ID of the model to associate the file with. */
+  modelId: string;
+  body: {
+    files?: Blob[];
+  };
+};
 export type DeleteApiV1FileByModelIdApiResponse = unknown;
 export type DeleteApiV1FileByModelIdApiArg = {
   /** The ID of the model to delete attachments for. */
@@ -2117,6 +2138,8 @@ export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
 export type PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
   /** The ID of the purchase order you want to send to a supplier as an email. */
   purchaseOrderId: string;
+  /** The request metadata to send purchase orders to suppliers. */
+  sendPurchaseOrderRequest: SendPurchaseOrderRequest;
 };
 export type PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse =
   unknown;
@@ -2463,7 +2486,7 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
   pageSize?: number;
 };
 export type GetApiV1RequisitionSourceSupplierApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
 export type GetApiV1RequisitionSourceSupplierApiArg = {
   /** The source of the requisition. (example Local, Foreign, Internal) */
   source?: ProcurementSource;
@@ -2475,7 +2498,7 @@ export type GetApiV1RequisitionSourceSupplierApiArg = {
   sent?: boolean;
 };
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse =
-  /** status 200 OK */ SupplierQuotationDto;
+  /** status 200 OK */ SupplierQuotationDtoRead;
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiArg = {
   /** The id of the supplier with associated requisition items. */
   supplierId: string;
@@ -2879,56 +2902,24 @@ export type TypeResponse = {
   value?: number;
   name?: string | null;
 };
+export type CreateDepartmentWarehouseRequest = {
+  warehouseId?: string;
+};
 export type CreateDepartmentRequest = {
   code?: string | null;
   name?: string | null;
   description?: string | null;
-  warehouseId?: string | null;
+  warehouses?: CreateDepartmentWarehouseRequest[] | null;
 };
-export type WarehouseType = 0 | 1;
-export type WareHouseLocationDto = {
-  id?: string;
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
+export type DepartmentWarehouseDto = {
   warehouse?: CollectionItemDto;
-};
-export type WarehouseLocationShelfDto = {
-  id?: string;
-  warehouseLocationRack?: CollectionItemDto;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-};
-export type WarehouseLocationRackDto = {
-  id?: string;
-  warehouseLocation?: WareHouseLocationDto;
-  name?: string | null;
-  description?: string | null;
-  shelves?: WarehouseLocationShelfDto[] | null;
-};
-export type WarehouseLocationDto = {
-  id?: string;
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
-  warehouse?: CollectionItemDto;
-  racks?: WarehouseLocationRackDto[] | null;
-};
-export type WarehouseDto = {
-  id?: string;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: WarehouseLocationDto[] | null;
 };
 export type DepartmentDto = {
   id?: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;
-  warehouse?: WarehouseDto;
+  warehouses?: DepartmentWarehouseDto[] | null;
 };
 export type DepartmentDtoIEnumerablePaginateable = {
   data?: DepartmentDto[] | null;
@@ -3042,6 +3033,44 @@ export type MaterialBatchDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type WarehouseType = 0 | 1;
+export type WareHouseLocationDto = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  warehouse?: CollectionItemDto;
+};
+export type WarehouseLocationShelfDto = {
+  id?: string;
+  warehouseLocationRack?: CollectionItemDto;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
+export type WarehouseLocationRackDto = {
+  id?: string;
+  warehouseLocation?: WareHouseLocationDto;
+  name?: string | null;
+  description?: string | null;
+  shelves?: WarehouseLocationShelfDto[] | null;
+};
+export type WarehouseLocationDto = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  warehouse?: CollectionItemDto;
+  racks?: WarehouseLocationRackDto[] | null;
+};
+export type WarehouseDto = {
+  id?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: WarehouseLocationDto[] | null;
 };
 export type WarehouseStockDto = {
   warehouse?: WarehouseDto;
@@ -3242,6 +3271,9 @@ export type PurchaseOrderDtoIEnumerablePaginateableRead = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type SendPurchaseOrderRequest = {
+  expectedDeliveryDate?: string;
 };
 export type CreateBatchItemRequest = {
   batchNumber?: string | null;
@@ -4035,6 +4067,7 @@ export const {
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   useDeleteApiV1FileByModelIdMutation,
   useDeleteApiV1FileByModelIdAndReferenceMutation,
   usePostApiV1MaterialMutation,

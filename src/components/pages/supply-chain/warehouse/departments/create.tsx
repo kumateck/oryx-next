@@ -13,15 +13,16 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, InputTypes, WarehouseType } from "@/lib";
+import { CODE_SETTINGS, InputTypes, Option } from "@/lib";
 import {
-  CreateWarehouseRequest,
+  CreateDepartmentRequest,
   GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   NamingType,
+  useGetApiV1WarehouseQuery,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseQuery,
-  usePostApiV1WarehouseMutation,
+  useLazyGetApiV1DepartmentQuery,
+  usePostApiV1DepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
   ErrorResponse,
@@ -32,7 +33,7 @@ import {
   isErrorResponse,
 } from "@/lib/utils";
 
-import { CreateWarehouseValidator, WarehouseRequestDto } from "./types";
+import { CreateDepartmentValidator, DepartmentRequestDto } from "./types";
 
 // import "./types";
 
@@ -41,38 +42,50 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
+  const [loadDepartments] = useLazyGetApiV1DepartmentQuery();
+  const [createDepartment, { isLoading }] = usePostApiV1DepartmentMutation();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
     useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-  const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+
   const {
     register,
     control,
     formState: { errors },
     reset,
-    handleSubmit,
     setValue,
-  } = useForm<WarehouseRequestDto>({
-    resolver: CreateWarehouseValidator,
+    handleSubmit,
+    // watch
+  } = useForm<DepartmentRequestDto>({
+    resolver: CreateDepartmentValidator,
     mode: "all",
   });
 
-  const name = useWatch<WarehouseRequestDto>({
+  const { data: result } = useGetApiV1WarehouseQuery({
+    page: 1,
+    pageSize: 100,
+  });
+
+  const name = useWatch<DepartmentRequestDto>({
     name: "name",
     control,
   }) as string;
 
+  // const warehouse = useWatch<DepartmentRequestDto>({
+  //   name: "warehouse",
+  //   control,
+  // }) as Option;
+
   const handleLoadCode = async () => {
     const getCodeSettings = await loadCodeSettings({
-      modelType: CODE_SETTINGS.modelTypes.Warehouse,
+      modelType: CODE_SETTINGS.modelTypes.Department,
     }).unwrap();
     const prefix = getCodeSettings?.prefix;
     const codePrefix = prefix + getFirstCharacter(name);
 
     const payload = {
-      modelType: CODE_SETTINGS.modelTypes.Warehouse,
+      modelType: CODE_SETTINGS.modelTypes.Department,
       prefix: codePrefix,
     } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
     const res = await loadCodeMyModel(payload).unwrap();
@@ -92,16 +105,38 @@ const Create = ({ isOpen, onClose }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = async (data: WarehouseRequestDto) => {
+  // useEffect(() => {
+  //   const response = result?.data?.find((r) => r.id === warehouse?.value);
+  //   const warehouseId = response?.id || "";
+
+  //   if (warehouseId && warehouseId !== watch("warehouseIds")) {
+  //     setValue("warehouseIds", warehouseId);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [warehouse, result, setValue]);
+
+  const data = result?.data ?? [];
+  const warehouseOptions = data?.map((item) => ({
+    label: item?.name,
+    value: item?.id,
+  })) as Option[];
+  console.log(data, "Warehouses");
+
+  const onSubmit = async (data: DepartmentRequestDto) => {
     try {
       const payload = {
         ...data,
-      } satisfies CreateWarehouseRequest;
-      await createWarehouse({
-        createWarehouseRequest: payload,
+        warehouses: data?.warehouseIds?.map((item) => {
+          return {
+            warehouseId: item.value,
+          };
+        }),
+      } satisfies CreateDepartmentRequest;
+      await createDepartment({
+        createDepartmentRequest: payload,
       });
-      toast.success("Warehouse created successfully");
-      loadWarehouses({
+      toast.success("Department created successfully");
+      loadDepartments({
         page: 1,
         pageSize: 10,
       });
@@ -116,51 +151,34 @@ const Create = ({ isOpen, onClose }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Warehouse</DialogTitle>
+          <DialogTitle>Add Department</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   register: { ...register("code") },
-              //   label: "Warehouse Code",
-              //   readOnly: true,
-              //   required: true,
-              //   description: (
-              //     <span className="text-sm text-neutral-500">
-              //       You can’t change the warehouse code
-              //     </span>
-              //   ),
-              //   placeholder: "Code will be generated",
-              //   type: InputTypes.TEXT,
-              //   errors: {
-              //     message: errors.code?.message,
-              //     error: !!errors.code,
-              //   },
-              // },
               {
-                label: "Warehouse Type",
-                control,
-                type: InputTypes.RADIO,
-                name: `type`,
+                register: { ...register("code") },
+                label: "Department Code",
+                readOnly: true,
                 required: true,
-                options: Object.entries(WarehouseType)
-                  .filter(([, value]) => typeof value === "number")
-                  .map(([key, value]) => ({
-                    label: key, // "Raw" or "Package"
-                    value: value.toString(), // 0 or 1
-                  })),
+                description: (
+                  <span className="text-sm text-neutral-500">
+                    You can’t change the department code
+                  </span>
+                ),
+                placeholder: "Code will be generated",
+                type: InputTypes.TEXT,
                 errors: {
-                  message: errors?.type?.message || "",
-                  error: !!errors?.type?.type,
+                  message: errors.code?.message,
+                  error: !!errors.code,
                 },
               },
               {
                 register: { ...register("name") },
-                label: "Warehouse Name",
+                label: "Department Name",
                 required: true,
-                placeholder: "Enter New Warehouse Name",
+                placeholder: "Enter New Department Name",
                 type: InputTypes.TEXT,
 
                 errors: {
@@ -169,11 +187,36 @@ const Create = ({ isOpen, onClose }: Props) => {
                 },
               },
               {
+                label: "Warehouse Selection",
+                control,
+                type: InputTypes.MULTIPLE,
+                name: "warehouseIds",
+                required: true,
+
+                options: warehouseOptions,
+                errors: {
+                  message: errors.warehouseIds?.message,
+                  error: !!errors.warehouseIds,
+                },
+              },
+              // {
+              //   register: { ...register("warehouseId") },
+              //   label: "Warehouse ID",
+              //   readOnly: true,
+              //   required: true,
+              //   placeholder: "Warehouse ID will be automatically selected",
+              //   type: InputTypes.TEXT,
+              //   errors: {
+              //     message: errors.warehouseId?.message,
+              //     error: !!errors.warehouseId,
+              //   },
+              // },
+              {
                 register: { ...register("description") },
                 label: "Description",
                 required: true,
-                placeholder: "Enter Warehouse Description",
-                type: InputTypes.TEXTAREA,
+                placeholder: "Enter New Description",
+                type: InputTypes.TEXT,
 
                 errors: {
                   message: errors.description?.message,
@@ -194,7 +237,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Add Warehouse</span>{" "}
+              <span>Add Department</span>{" "}
             </Button>
           </DialogFooter>
         </form>

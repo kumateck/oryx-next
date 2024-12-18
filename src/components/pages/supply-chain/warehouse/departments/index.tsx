@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { ServerDatatable } from "@/app/shared/datatable";
 import { Button, Icon } from "@/components/ui";
 import {
-  useGetApiV1WarehouseLocationQuery,
-  useLazyGetApiV1WarehouseLocationQuery,
+  useGetApiV1DepartmentQuery,
+  useLazyGetApiV1DepartmentQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import { useDispatch } from "~/redux/store";
@@ -17,15 +17,14 @@ const Page = () => {
   // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1WarehouseLocationQuery({
+  const { data: result, isLoading } = useGetApiV1DepartmentQuery({
     page,
     pageSize,
   });
-  const [loadLocations, { isFetching }] =
-    useLazyGetApiV1WarehouseLocationQuery();
+  const [loadMaterials, { isFetching }] = useLazyGetApiV1DepartmentQuery();
 
   useEffect(() => {
-    loadLocations({
+    loadMaterials({
       page,
       pageSize,
     });
@@ -40,7 +39,7 @@ const Page = () => {
       <div className="w-full">
         <div className="flex items-center justify-between py-2">
           <span className="text-3xl font-bold text-secondary-500">
-            Warehouse Locations
+            Warehouse Departments
           </span>
           <div className="flex items-center justify-end gap-2">
             <Button
@@ -48,7 +47,8 @@ const Page = () => {
               size={"sm"}
               onClick={() => setIsOpen(true)}
             >
-              <Icon name="Plus" className="h-4 w-4" /> <span>Add Location</span>
+              <Icon name="Plus" className="h-4 w-4" />{" "}
+              <span>Add Department</span>
             </Button>
           </div>
         </div>
