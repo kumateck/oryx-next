@@ -13,6 +13,7 @@ import {
   FormDateInput,
   FormEmailInput,
   FormFileInput,
+  FormFilesDropzoneInput,
   FormFilesUploadInput,
   FormMomentInput,
   FormNumberInput,
@@ -67,7 +68,7 @@ type PhoneInputProps = BaseInputProps & {
   defaultValue?: string;
 };
 type FilesUploadInputProps = BaseInputProps & {
-  type: InputTypes.UPLOAD;
+  type: InputTypes.UPLOAD | InputTypes.DRAGNDROP;
   control: any;
   name: string;
   defaultValue: FileList | null;
@@ -350,6 +351,22 @@ const FormWizardSwitch = (formInput: FormInput) => {
           name={formInput.name}
           render={({ field: { onChange } }) => (
             <FormFilesUploadInput
+              defaultValue={formInput.defaultValue}
+              label={formInput.label}
+              required={formInput.required}
+              onChange={onChange}
+              errors={formInput.errors}
+            />
+          )}
+        />
+      );
+    case InputTypes.DRAGNDROP:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange } }) => (
+            <FormFilesDropzoneInput
               defaultValue={formInput.defaultValue}
               label={formInput.label}
               required={formInput.required}

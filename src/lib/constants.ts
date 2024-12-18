@@ -41,6 +41,7 @@ export const CODE_SETTINGS = {
     PackageMaterial: "PackageMaterial",
     ProductionSchedule: "ProductionSchedule",
     Department: "Department",
+    PurchaseOrder: "PurchaseOrder",
   },
   nameTypes: {
     Time: 2,
@@ -49,6 +50,12 @@ export const CODE_SETTINGS = {
   },
 };
 
+export enum PurchaseOrderStatusList {
+  Pending = 0,
+  Delivered = 1,
+  Attached = 2,
+  Completed = 3,
+}
 export enum RequisitionStatus {
   Pending = 0,
   Sourced = 1,
@@ -87,6 +94,7 @@ export enum InputTypes {
   TEXTAREA = "textarea",
   RICHTEXT = "richtext",
   UPLOAD = "upload",
+  DRAGNDROP = "drag-n-drop",
   MOMENT = "moment",
   TIME = "time",
   IMAGE = "image",

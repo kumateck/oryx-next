@@ -3,13 +3,13 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { Icon } from "@/components/ui";
-import { RequisitionStatus } from "@/lib/constants";
+import { PurchaseOrderStatusList } from "@/lib/constants";
 import {
   PurchaseOrderDtoRead,
-  RequestStatus,
+  PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
 
-import PrintPreview from "./print/preview";
+import AttachDocuments from "./attachment";
 
 // import Edit from "./edit";
 
@@ -24,7 +24,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
-        <PrintPreview
+        <AttachDocuments
           id={supplierId}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
@@ -35,7 +35,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
           setSupplierId(row.original.id as string);
           setIsOpen(true);
         }}
-        name="Printer"
+        name="Paperclip"
         className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
       />
     </section>
@@ -50,17 +50,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       <div className="min-w-36">{row.original.supplier?.name}</div>
     ),
   },
-  // {
-  //   accessorKey: "type",
-  //   header: "Type",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.requisitionType === RequisitionType.StockVoucher
-  //         ? "Stock Voucher"
-  //         : "Purchase Requisition Voucher"}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "createdAt",
     header: "Awarded Date",
@@ -72,22 +62,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "expectedDelivery",
-  //   header: "Expected Delivery Date",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.expectedDelivery
-  //         ? format(row.original.expectedDelivery, "MMM d, yyyy")
-  //         : "-"}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "department",
-  //   header: "Requested Department",
-  //   cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
-  // },
+
   {
     accessorKey: "total",
     header: "Total Items Requested",
@@ -115,7 +90,7 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
     header: "Status",
     cell: ({ row }) => (
       <div className="min-w-36">
-        {RequisitionStatus[row.original?.status as RequestStatus]}
+        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
       </div>
     ),
   },
