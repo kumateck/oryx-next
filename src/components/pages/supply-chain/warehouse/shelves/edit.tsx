@@ -122,7 +122,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Rack</DialogTitle>
+          <DialogTitle>Edit Shelf</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -196,7 +196,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Update Rack</span>{" "}
+              <span>Update Shelf</span>{" "}
             </Button>
           </DialogFooter>
         </form>

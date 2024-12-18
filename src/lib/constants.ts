@@ -40,6 +40,7 @@ export const CODE_SETTINGS = {
     Warehouse: "Warehouse",
     PackageMaterial: "PackageMaterial",
     ProductionSchedule: "ProductionSchedule",
+    Department: "Department",
     PurchaseOrder: "PurchaseOrder",
   },
   nameTypes: {

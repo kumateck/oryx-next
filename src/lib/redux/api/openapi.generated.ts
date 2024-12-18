@@ -2486,7 +2486,7 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
   pageSize?: number;
 };
 export type GetApiV1RequisitionSourceSupplierApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
 export type GetApiV1RequisitionSourceSupplierApiArg = {
   /** The source of the requisition. (example Local, Foreign, Internal) */
   source?: ProcurementSource;
@@ -2498,7 +2498,7 @@ export type GetApiV1RequisitionSourceSupplierApiArg = {
   sent?: boolean;
 };
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse =
-  /** status 200 OK */ SupplierQuotationDto;
+  /** status 200 OK */ SupplierQuotationDtoRead;
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiArg = {
   /** The id of the supplier with associated requisition items. */
   supplierId: string;
@@ -2902,56 +2902,24 @@ export type TypeResponse = {
   value?: number;
   name?: string | null;
 };
+export type CreateDepartmentWarehouseRequest = {
+  warehouseId?: string;
+};
 export type CreateDepartmentRequest = {
   code?: string | null;
   name?: string | null;
   description?: string | null;
-  warehouseId?: string | null;
+  warehouses?: CreateDepartmentWarehouseRequest[] | null;
 };
-export type WarehouseType = 0 | 1;
-export type WareHouseLocationDto = {
-  id?: string;
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
+export type DepartmentWarehouseDto = {
   warehouse?: CollectionItemDto;
-};
-export type WarehouseLocationShelfDto = {
-  id?: string;
-  warehouseLocationRack?: CollectionItemDto;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-};
-export type WarehouseLocationRackDto = {
-  id?: string;
-  warehouseLocation?: WareHouseLocationDto;
-  name?: string | null;
-  description?: string | null;
-  shelves?: WarehouseLocationShelfDto[] | null;
-};
-export type WarehouseLocationDto = {
-  id?: string;
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
-  warehouse?: CollectionItemDto;
-  racks?: WarehouseLocationRackDto[] | null;
-};
-export type WarehouseDto = {
-  id?: string;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: WarehouseLocationDto[] | null;
 };
 export type DepartmentDto = {
   id?: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;
-  warehouse?: WarehouseDto;
+  warehouses?: DepartmentWarehouseDto[] | null;
 };
 export type DepartmentDtoIEnumerablePaginateable = {
   data?: DepartmentDto[] | null;
@@ -3065,6 +3033,44 @@ export type MaterialBatchDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type WarehouseType = 0 | 1;
+export type WareHouseLocationDto = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  warehouse?: CollectionItemDto;
+};
+export type WarehouseLocationShelfDto = {
+  id?: string;
+  warehouseLocationRack?: CollectionItemDto;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
+export type WarehouseLocationRackDto = {
+  id?: string;
+  warehouseLocation?: WareHouseLocationDto;
+  name?: string | null;
+  description?: string | null;
+  shelves?: WarehouseLocationShelfDto[] | null;
+};
+export type WarehouseLocationDto = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  warehouse?: CollectionItemDto;
+  racks?: WarehouseLocationRackDto[] | null;
+};
+export type WarehouseDto = {
+  id?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: WarehouseLocationDto[] | null;
 };
 export type WarehouseStockDto = {
   warehouse?: WarehouseDto;

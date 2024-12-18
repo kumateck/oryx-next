@@ -76,6 +76,10 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
+            title: "Departments",
+            url: "/warehouse/departments",
+          },
+          {
             title: "Warehouses",
             url: "/warehouse/warehouses",
           },

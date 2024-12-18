@@ -5,28 +5,24 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  WarehouseLocationShelfDto,
-  useDeleteApiV1WarehouseShelfByShelfIdMutation,
-  useLazyGetApiV1WarehouseShelfQuery,
+  DepartmentDto,
+  useDeleteApiV1DepartmentByDepartmentIdMutation,
+  useLazyGetApiV1DepartmentQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
 
-// import Edit from "../raw-materials/edit";
-
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
+export function DataTableRowActions<TData extends DepartmentDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseShelfByShelfIdMutation();
+  const [deleteMutation] = useDeleteApiV1DepartmentByDepartmentIdMutation();
   const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<WarehouseLocationShelfDto>(
-    {} as WarehouseLocationShelfDto,
-  );
+  const [details, setDetails] = useState<DepartmentDto>({} as DepartmentDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadShelves] = useLazyGetApiV1WarehouseShelfQuery();
+  const [loadDepartment] = useLazyGetApiV1DepartmentQuery();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -59,10 +55,10 @@ export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              shelfId: details.id as string,
+              departmentId: details.id as string,
             }).unwrap();
-            toast.success("Warehouse deleted successfully");
-            loadShelves({
+            toast.success("Department deleted successfully");
+            loadDepartment({
               pageSize: 30,
             });
           } catch (error) {
@@ -74,31 +70,27 @@ export function DataTableRowActions<TData extends WarehouseLocationShelfDto>({
   );
 }
 
-export const columns: ColumnDef<WarehouseLocationShelfDto>[] = [
+export const columns: ColumnDef<DepartmentDto>[] = [
   {
-    accessorKey: "shelfCode",
-    header: "Shelf Code",
-    cell: ({ row }) => <div>{row.original.code}</div>,
-  },
-  {
-    accessorKey: "shelf",
-    header: "Shelf",
+    accessorKey: "department",
+    header: "Department",
     cell: ({ row }) => <div>{row.original.name}</div>,
-  },
-  {
-    accessorKey: "rack",
-    header: "Rack",
-    cell: ({ row }) => <div>{row.original.warehouseLocationRack?.name}</div>,
-  },
-  {
-    accessorKey: "location",
-    header: "Location",
-    cell: ({ row }) => <div>{row.original.warehouseLocationRack?.name}</div>,
   },
   {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => <div>{row.original.description}</div>,
+  },
+  {
+    accessorKey: "warehouses",
+    header: "Warehouses",
+    cell: ({ row }) => (
+      <div>
+        {row.original.warehouses
+          ?.map((item) => item?.warehouse?.name)
+          .join(", ")}
+      </div>
+    ),
   },
 
   {
