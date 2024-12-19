@@ -3294,6 +3294,7 @@ export type PurchaseOrderStatus = 0 | 1 | 2 | 3;
 export type PurchaseOrderDto = {
   attachments?: AttachmentDto[] | null;
   id?: string;
+  code?: string | null;
   supplier?: CollectionItemDto;
   requestDate?: string;
   expectedDeliveryDate?: string | null;
@@ -3304,6 +3305,7 @@ export type PurchaseOrderDto = {
 export type PurchaseOrderDtoRead = {
   attachments?: AttachmentDto[] | null;
   id?: string;
+  code?: string | null;
   supplier?: CollectionItemDto;
   requestDate?: string;
   expectedDeliveryDate?: string | null;
@@ -3418,6 +3420,7 @@ export type BillingSheetDtoIEnumerablePaginateable = {
 export type CreateShipmentDocumentRequest = {
   code?: string | null;
   invoiceNumber?: string | null;
+  purchaseOrderId?: string;
 };
 export type ShipmentDocumentDto = {
   attachments?: AttachmentDto[] | null;

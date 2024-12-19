@@ -108,12 +108,11 @@ const Create = () => {
           };
         }),
       } satisfies CreateSupplierRequest;
-      console.log(payload, "payload", data);
       await createMutation({
         createSupplierRequest: payload,
       } as PostApiV1ProcurementSupplierApiArg);
       toast.success("Manufacturer created successfully");
-      router.push("");
+      router.push("/procurement/vendors");
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {

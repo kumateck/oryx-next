@@ -43,30 +43,30 @@ export const ROUTES: Route[] = [
         icon: "Forklift",
         //    isActive: false,
         items: [
-          {
-            title: "Manufacturers",
-            url: "/logistics/manufacturers",
-          },
-          {
-            title: "Vendors",
-            url: "/logistics/vendors",
-          },
+          // {
+          //   title: "Manufacturers",
+          //   url: "/logistics/manufacturers",
+          // },
+          // {
+          //   title: "Vendors",
+          //   url: "/logistics/vendors",
+          // },
           {
             title: "Available Stock",
             url: "/stock/available",
           },
           {
-            title: "Shipment",
-            url: "/logistics/shipment",
+            title: "Shipment Documents",
+            url: "/logistics/shipment-documents",
           },
-          {
-            title: "Billing Sheet",
-            url: "/logistics/billing-sheet",
-          },
-          {
-            title: "Purchase Order",
-            url: "/logistics/purchase-order",
-          },
+          // {
+          //   title: "Billing Sheet",
+          //   url: "/logistics/billing-sheet",
+          // },
+          // {
+          //   title: "Purchase Order",
+          //   url: "/logistics/purchase-order",
+          // },
         ],
       },
       {
@@ -95,10 +95,10 @@ export const ROUTES: Route[] = [
             title: "Shelves",
             url: "/warehouse/shelves",
           },
-          {
-            title: "Lists",
-            url: "/warehouse/raw-materials",
-          },
+          // {
+          //   title: "Lists",
+          //   url: "/warehouse/raw-materials",
+          // },
           {
             title: "Raw Materials",
             url: "/warehouse/raw-materials",

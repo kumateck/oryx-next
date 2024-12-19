@@ -42,6 +42,7 @@ export const CODE_SETTINGS = {
     ProductionSchedule: "ProductionSchedule",
     Department: "Department",
     PurchaseOrder: "PurchaseOrder",
+    ShipmentDocument: "ShipmentDocument",
   },
   nameTypes: {
     Time: 2,

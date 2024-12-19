@@ -8,8 +8,8 @@ import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
 import {
-  useGetApiV1ProcurementBillingSheetQuery,
-  useLazyGetApiV1ProcurementBillingSheetQuery,
+  useGetApiV1ProcurementShipmentDocumentQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import { columns } from "./columns";
@@ -18,13 +18,14 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const { data: result, isLoading } = useGetApiV1ProcurementBillingSheetQuery({
-    page,
-    pageSize,
-  });
+  const { data: result, isLoading } =
+    useGetApiV1ProcurementShipmentDocumentQuery({
+      page,
+      pageSize,
+    });
 
   const [loadData, { isFetching }] =
-    useLazyGetApiV1ProcurementBillingSheetQuery();
+    useLazyGetApiV1ProcurementShipmentDocumentQuery();
 
   useEffect(() => {
     loadData({
@@ -40,10 +41,10 @@ const Page = () => {
     <div className="w-full">
       <div className="flex items-center justify-between py-2">
         <span className="text-3xl font-bold text-secondary-500">
-          Billing Sheets
+          Shipment Documents
         </span>
         <div className="flex items-center justify-end gap-2">
-          <Link href={"billing-sheet/create"}>
+          <Link href={"shipment-documents/create"}>
             <Button>Create</Button>
           </Link>
         </div>
