@@ -48,8 +48,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       name: details.name as string,
       description: details.description as string,
-      type: details?.type as WarehouseType,
-      code: details.code as string,
+      type: details?.type?.toString() as unknown as WarehouseType,
     },
   });
 

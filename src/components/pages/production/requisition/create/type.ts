@@ -41,7 +41,7 @@ export const createRequisitionRequestSchema = z.object({
   //       invalid_type_error: "Expected Delivery Date must be a valid date",
   //     }),
   //   ),
-  expectedDelivery: z.string().optional(),
+  expectedDelivery: z.date().optional(),
   // .min(1, { message: "Expected Delivery Date is required" })
   // .refine((val) => !isNaN(Date.parse(val)), {
   //   message: "Invalid date format",

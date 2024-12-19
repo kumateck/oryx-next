@@ -13,10 +13,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, PurchaseOrderStatusList, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderQuery,
   usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -30,9 +31,8 @@ interface Props {
 const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation();
-  // const [emailQuotation] =
-  //   usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
 
+  const [loadData] = useLazyGetApiV1ProcurementPurchaseOrderQuery();
   const { data, isLoading } =
     useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
       purchaseOrderId: id,
@@ -53,7 +53,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   };
   const handlePrint = useReactToPrint({
     onBeforePrint: () => onSubmit(),
-    onAfterPrint: () => onClose(),
+    onAfterPrint: () => handleLoad(),
     contentRef,
     documentTitle: `Profoma Invoice Request`,
     pageStyle: `
@@ -69,6 +69,15 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const handleDialogChange = (open: boolean) => {
     // Only close if the "Close" button is clicked (open = false)
     if (!open) onClose();
+  };
+
+  const handleLoad = async () => {
+    await loadData({
+      page: 1,
+      pageSize: 30,
+      status: PurchaseOrderStatusList.Pending,
+    }).unwrap();
+    onClose();
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>

@@ -23,7 +23,7 @@ export const CreateWarehouseSchema = z.object({
         message: "Type must be either 'Storage' (0) or 'Production' (1)",
       },
     ),
-  code: z.string().min(1, { message: "Code is required" }),
+  // code: z.string().min(1, { message: "Code is required" }),
 });
 
 export type WarehouseRequestDto = z.infer<typeof CreateWarehouseSchema>;

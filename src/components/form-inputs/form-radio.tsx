@@ -27,7 +27,6 @@ export default function FormRadioInput({
   options,
   disabled,
 }: Props) {
-  console.log(defaultValue, "defaultValue");
   return (
     <div>
       <label className="space-y-1 capitalize">

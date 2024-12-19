@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { ServerDatatable } from "@/app/shared/datatable";
+import { PurchaseOrderStatusList } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
 import {
@@ -19,7 +20,7 @@ const Page = () => {
   const { data: result, isLoading } = useGetApiV1ProcurementPurchaseOrderQuery({
     page,
     pageSize,
-    status: 2,
+    status: PurchaseOrderStatusList.Attached,
   });
 
   const [loadData, { isFetching }] =
@@ -29,7 +30,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      status: 2,
+      status: PurchaseOrderStatusList.Attached,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

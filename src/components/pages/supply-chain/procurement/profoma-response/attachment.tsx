@@ -16,6 +16,7 @@ import {
   CODE_SETTINGS,
   ErrorResponse,
   InputTypes,
+  PurchaseOrderStatusList,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -56,7 +57,11 @@ const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
         body: formData,
       } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       toast.success("Attachment uploaded successfully");
-      await loadData({ page: 1, pageSize: 30, status: 1 });
+      await loadData({
+        page: 1,
+        pageSize: 30,
+        status: PurchaseOrderStatusList.Delivered,
+      });
       onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

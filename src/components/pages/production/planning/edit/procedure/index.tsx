@@ -102,7 +102,8 @@ const Page = () => {
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
           <span className="font-Bold text-xl">
-            Manufacturing Resource Planning (MRP)
+            {/* Manufacturing Resource Planning (MRP) */}
+            Procedure
           </span>
 
           <div className="flex gap-2">

@@ -39,17 +39,7 @@ export const columns: ColumnDef<RequisitionDtoRead>[] = [
     header: "Requisition Number",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
   },
-  // {
-  //   accessorKey: "type",
-  //   header: "Type",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.requisitionType === RequisitionType.StockVoucher
-  //         ? "Stock Voucher"
-  //         : "Purchase Requisition Voucher"}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "createdAt",
     header: "Requested Date",

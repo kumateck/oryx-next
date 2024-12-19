@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { ServerDatatable } from "@/app/shared/datatable";
+import { SupplierType } from "@/lib";
 import {
   useGetApiV1RequisitionSourceSupplierQuotationQuery,
   useLazyGetApiV1RequisitionSourceSupplierQuotationQuery,
@@ -18,7 +19,7 @@ const Page = () => {
     useGetApiV1RequisitionSourceSupplierQuotationQuery({
       page,
       pageSize,
-      supplierType: 0,
+      supplierType: SupplierType.Foreign,
     });
 
   const [loadData, { isFetching }] =
@@ -28,7 +29,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      supplierType: 0,
+      supplierType: SupplierType.Foreign,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

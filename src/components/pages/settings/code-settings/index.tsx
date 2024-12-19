@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import ScrollablePageWrapper from "@/app/shared/page-wrapper";
@@ -21,7 +21,7 @@ import EditCode from "./edit";
 
 function Codes() {
   const [pageSize] = useState(30);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [deleteCode, { isLoading: isDeleteLoading }] =
     useDeleteApiV1ConfigurationByConfigurationIdMutation();
 
@@ -29,26 +29,26 @@ function Codes() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [codeToEdit, setCodeToEdit] = useState<ConfigurationDto | null>(null);
   const { data: configResponse } = useGetApiV1ConfigurationQuery({
-    page,
+    // page:,
     pageSize,
   });
   const [loadCodes] = useLazyGetApiV1ConfigurationQuery();
 
   const codeLists = configResponse?.data;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 500
-      ) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (
+  //       window.innerHeight + window.scrollY >=
+  //       document.body.offsetHeight - 500
+  //     ) {
+  //       setPage((prevPage) => prevPage + 1);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const onSelectEdit = (code: ConfigurationDto) => {
     setCodeToEdit(code);

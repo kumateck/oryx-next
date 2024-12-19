@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { ServerDatatable } from "@/app/shared/datatable";
+import { SupplierType } from "@/lib";
 import {
   useGetApiV1RequisitionSourceSupplierQuery,
   useLazyGetApiV1RequisitionSourceSupplierQuery,
@@ -18,7 +19,7 @@ const Page = () => {
     {
       page,
       pageSize,
-      source: 0,
+      source: SupplierType.Foreign,
     },
   );
 
@@ -29,7 +30,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      source: 0,
+      source: SupplierType.Foreign,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

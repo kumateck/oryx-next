@@ -75,6 +75,9 @@ const Create = ({ isOpen, onClose }: Props) => {
     try {
       const payload = {
         ...data,
+        validityDate: data?.validityDate
+          ? data?.validityDate?.toISOString()
+          : "",
         materials: data?.materials?.map((item) => {
           return {
             materialId: item.value,
@@ -143,6 +146,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.DATE,
                 label: "Validity Date",
                 name: `validityDate`,
+                kind: "extensive",
                 control,
                 errors: {
                   message: errors.validityDate?.message,

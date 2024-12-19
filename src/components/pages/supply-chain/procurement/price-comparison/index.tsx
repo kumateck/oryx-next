@@ -18,12 +18,14 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  SupplierType,
   cn,
   findSelectedQuotation,
   isErrorResponse,
 } from "@/lib";
 import {
   useGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
+  useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -33,8 +35,11 @@ const Page = () => {
   const [saveProcess, { isLoading }] =
     usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation({});
   const { data } = useGetApiV1RequisitionSourceMaterialPriceComparisonQuery({
-    supplierType: 0,
+    supplierType: SupplierType.Foreign,
   });
+
+  const [loadData] =
+    useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery();
 
   const [state, setState] = useState<Quotations[]>([]);
   useEffect(() => {
@@ -92,6 +97,7 @@ const Page = () => {
         body: findSelectedQuotation(state),
       }).unwrap();
       toast.success("Vendors Selected successfully");
+      await loadData({ supplierType: SupplierType.Foreign }).unwrap();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

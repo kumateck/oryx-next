@@ -1,6 +1,5 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -13,22 +12,19 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, InputTypes, WarehouseType } from "@/lib";
+import { InputTypes, WarehouseType } from "@/lib";
 import {
-  CreateWarehouseRequest,
-  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
-  NamingType,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  CreateWarehouseRequest, // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  // NamingType,
+  // useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  // useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1WarehouseQuery,
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
-  ErrorResponse,
-  GenerateCodeOptions,
-  cn,
-  generateCode,
-  getFirstCharacter,
+  ErrorResponse, // GenerateCodeOptions,
+  cn, // generateCode,
+  // getFirstCharacter,
   isErrorResponse,
 } from "@/lib/utils";
 
@@ -42,10 +38,10 @@ interface Props {
 }
 const Create = ({ isOpen, onClose }: Props) => {
   const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
-  const [loadCodeSettings] =
-    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  // const [loadCodeSettings] =
+  //   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
+  // const [loadCodeMyModel] =
+  //   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
   const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
   const {
     register,
@@ -53,44 +49,44 @@ const Create = ({ isOpen, onClose }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-    setValue,
+    // setValue,
   } = useForm<WarehouseRequestDto>({
     resolver: CreateWarehouseValidator,
     mode: "all",
   });
 
-  const name = useWatch<WarehouseRequestDto>({
-    name: "name",
-    control,
-  }) as string;
+  // const name = useWatch<WarehouseRequestDto>({
+  //   name: "name",
+  //   control,
+  // }) as string;
 
-  const handleLoadCode = async () => {
-    const getCodeSettings = await loadCodeSettings({
-      modelType: CODE_SETTINGS.modelTypes.Warehouse,
-    }).unwrap();
-    const prefix = getCodeSettings?.prefix;
-    const codePrefix = prefix + getFirstCharacter(name);
+  // const handleLoadCode = async () => {
+  //   const getCodeSettings = await loadCodeSettings({
+  //     modelType: CODE_SETTINGS.modelTypes.Warehouse,
+  //   }).unwrap();
+  //   const prefix = getCodeSettings?.prefix;
+  //   const codePrefix = prefix + getFirstCharacter(name);
 
-    const payload = {
-      modelType: CODE_SETTINGS.modelTypes.Warehouse,
-      prefix: codePrefix,
-    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
-    const res = await loadCodeMyModel(payload).unwrap();
-    const generatePayload: GenerateCodeOptions = {
-      maxlength: Number(getCodeSettings?.maximumNameLength),
-      minlength: Number(getCodeSettings?.minimumNameLength),
-      prefix: codePrefix,
-      type: getCodeSettings?.namingType as NamingType,
-      seriesCounter: res + 1,
-    };
-    const code = await generateCode(generatePayload);
-    setValue("code", code);
-  };
+  //   const payload = {
+  //     modelType: CODE_SETTINGS.modelTypes.Warehouse,
+  //     prefix: codePrefix,
+  //   } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+  //   const res = await loadCodeMyModel(payload).unwrap();
+  //   const generatePayload: GenerateCodeOptions = {
+  //     maxlength: Number(getCodeSettings?.maximumNameLength),
+  //     minlength: Number(getCodeSettings?.minimumNameLength),
+  //     prefix: codePrefix,
+  //     type: getCodeSettings?.namingType as NamingType,
+  //     seriesCounter: res + 1,
+  //   };
+  //   const code = await generateCode(generatePayload);
+  //   setValue("code", code);
+  // };
 
-  useEffect(() => {
-    handleLoadCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   handleLoadCode();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const onSubmit = async (data: WarehouseRequestDto) => {
     try {
@@ -122,23 +118,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <FormWizard
             config={[
-              // {
-              //   register: { ...register("code") },
-              //   label: "Warehouse Code",
-              //   readOnly: true,
-              //   required: true,
-              //   description: (
-              //     <span className="text-sm text-neutral-500">
-              //       You can’t change the warehouse code
-              //     </span>
-              //   ),
-              //   placeholder: "Code will be generated",
-              //   type: InputTypes.TEXT,
-              //   errors: {
-              //     message: errors.code?.message,
-              //     error: !!errors.code,
-              //   },
-              // },
               {
                 label: "Warehouse Type",
                 control,
@@ -171,7 +150,6 @@ const Create = ({ isOpen, onClose }: Props) => {
               {
                 register: { ...register("description") },
                 label: "Description",
-                required: true,
                 placeholder: "Enter Warehouse Description",
                 type: InputTypes.TEXTAREA,
 

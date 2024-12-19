@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { ServerDatatable } from "@/app/shared/datatable";
+import { SupplierType } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
 import {
@@ -23,7 +24,7 @@ const Page = () => {
     {
       page,
       pageSize,
-      source: 1,
+      source: SupplierType.Local,
     },
   );
 
@@ -34,7 +35,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      source: 1,
+      source: SupplierType.Local,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

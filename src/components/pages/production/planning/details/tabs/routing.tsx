@@ -17,7 +17,7 @@ export const Routing = ({ data }: IProps) => {
   }
   return (
     <StepWrapper className="w-full space-y-6">
-      <span className="font-Medium block text-xl">Routing</span>
+      <span className="font-Medium block text-xl">Procedure</span>
       <ul className="space-y-2">
         <li className="flex justify-between gap-2 font-black text-secondary-500">
           <span className="flex-1">Operation</span>

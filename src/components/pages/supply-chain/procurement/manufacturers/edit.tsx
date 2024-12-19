@@ -70,7 +70,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       name: details.name as string,
       address: details?.address as string,
-      validityDate: details?.validityDate as string,
+      validityDate: details?.validityDate
+        ? new Date(details?.validityDate)
+        : new Date(),
       materials: defaultMaterials,
       country: defaultCountry,
     },
@@ -98,6 +100,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         ...data,
+        validityDate: data?.validityDate
+          ? data?.validityDate?.toISOString()
+          : "",
         materials: data?.materials?.map((item) => {
           return {
             materialId: item.value,
@@ -168,6 +173,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.DATE,
                 label: "Validity Date",
                 name: `validityDate`,
+                kind: "extensive",
                 control,
                 errors: {
                   message: errors.validityDate?.message,

@@ -75,6 +75,11 @@ export enum WarehouseType {
   Storage = 0,
   Production = 1,
 }
+export enum SupplierType {
+  Foreign = 0,
+  Local = 1,
+  Other = 3,
+}
 
 export enum InputTypes {
   SWITCH = "switch",

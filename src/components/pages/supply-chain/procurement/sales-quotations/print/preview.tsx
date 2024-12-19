@@ -13,10 +13,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, SupplierType, isErrorResponse } from "@/lib";
 import {
   PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg,
   useGetApiV1RequisitionSourceSupplierBySupplierIdQuery,
+  useLazyGetApiV1RequisitionSourceSupplierQuotationQuery,
   usePostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -34,6 +35,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     useGetApiV1RequisitionSourceSupplierBySupplierIdQuery({
       supplierId: id,
     });
+  const [loadData] = useLazyGetApiV1RequisitionSourceSupplierQuotationQuery();
 
   const items = data?.items ?? [];
   const supplier = data?.supplier;
@@ -63,7 +65,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   };
   const handlePrint = useReactToPrint({
     onBeforePrint: () => onSubmit(),
-    onAfterPrint: () => onClose(),
+    onAfterPrint: () => handleLoad(),
     contentRef,
     documentTitle: `Quotation`,
     pageStyle: `
@@ -76,10 +78,19 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             margin: 2mm 15mm;
           }`,
   });
+
   const handleDialogChange = (open: boolean) => {
     // Only close if the "Close" button is clicked (open = false)
     if (!open) onClose();
   };
+
+  const handleLoad = async () => {
+    await loadData({
+      supplierType: SupplierType.Foreign,
+    }).unwrap();
+    onClose();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>

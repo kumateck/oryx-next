@@ -170,8 +170,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   register: {
                     ...register("maximumNameLength", { valueAsNumber: true }),
                   },
-                  label: "Minimum Code Length",
-                  placeholder: "Add Min",
+                  label: "Maximum Code Length",
+                  placeholder: "Add Max",
                   type: InputTypes.NUMBER,
                   errors: {
                     message: errors.maximumNameLength?.message,

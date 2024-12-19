@@ -94,7 +94,7 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Route</DialogTitle>
+          <DialogTitle>Edit Procedure</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormWizard

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Card, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, RequisitionType, isErrorResponse } from "@/lib";
 import {
   CreateSourceRequisitionRequest,
   PostApiV1RequisitionSourceApiArg,
@@ -21,16 +21,16 @@ const Page = () => {
   const { id } = useParams();
   const router = useRouter();
   const [saveMutation, { isLoading }] = usePostApiV1RequisitionSourceMutation();
-  const { data: requisitions } = useGetApiV1RequisitionByRequisitionIdQuery({
+  const { data: requisition } = useGetApiV1RequisitionByRequisitionIdQuery({
     requisitionId: id as string,
   });
 
   const [purchaseLists, setPurchaseLists] = useState<MaterialRequestDto[]>([]);
-  // console.log(purchaseLists, "purchaseLists");
+  console.log(requisition, "requisitions");
 
   useEffect(() => {
-    if (requisitions) {
-      const items = requisitions?.items?.map((material) => ({
+    if (requisition) {
+      const items = requisition?.items?.map((material) => ({
         code: material.material?.code,
         materialName: material.material?.name,
         materialId: material.material?.id,
@@ -43,10 +43,9 @@ const Page = () => {
       })) as unknown as MaterialRequestDto[];
       setPurchaseLists(items);
     }
-  }, [requisitions]);
+  }, [requisition]);
 
   const onSubmit = async () => {
-    console.log(purchaseLists, "purchaseLists");
     try {
       const payload = {
         requisitionId: id as string,
@@ -85,7 +84,32 @@ const Page = () => {
       </div>
       <Card className="p-5">
         <div className="grid grid-cols-2 gap-4">
-          <div className="w-full space-y-2"></div>
+          <div className="w-full space-y-2">
+            <ul>
+              <li>
+                <span className="text-sm font-semibold">Requisition Code:</span>{" "}
+                <span>{requisition?.code}</span>
+              </li>
+              <li>
+                <span className="text-sm font-semibold">Requisition Type:</span>{" "}
+                <span>
+                  {
+                    RequisitionType[
+                      requisition?.requisitionType as RequisitionType
+                    ]
+                  }
+                </span>
+              </li>
+              <li>
+                <span className="text-sm font-semibold">Deparment:</span>{" "}
+                <span>{requisition?.requestedBy?.department?.name}</span>
+              </li>
+              <li>
+                <span className="text-sm font-semibold">Comments</span>
+                <p>{requisition?.comments}</p>
+              </li>
+            </ul>
+          </div>
         </div>
       </Card>
       <div className="w-full">

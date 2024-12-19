@@ -113,7 +113,7 @@ const Create = () => {
         createSupplierRequest: payload,
       } as PostApiV1ProcurementSupplierApiArg);
       toast.success("Manufacturer created successfully");
-      router.push("procurement/vendors");
+      router.push("");
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {

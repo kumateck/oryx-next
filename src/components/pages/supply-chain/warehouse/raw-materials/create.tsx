@@ -86,7 +86,6 @@ const Create = ({ isOpen, onClose }: Props) => {
   }) as Option;
 
   useEffect(() => {
-    console.log(kind, name, category, kind === EMaterialKind.Raw && name);
     if (
       (kind === EMaterialKind.Raw && name) ||
       (kind === EMaterialKind.Package && category)
@@ -96,7 +95,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, name, category]);
   const handleLoadCode = async () => {
-    console.log("abotut to load code");
     const getCodeSettings = await loadCodeSettings({
       modelType:
         kind === EMaterialKind.Raw
@@ -105,7 +103,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     }).unwrap();
 
     const prefix = getCodeSettings?.prefix;
-    console.log(prefix, "prefix");
+
     const codePrefix =
       kind === EMaterialKind.Raw
         ? prefix + getFirstCharacter(name)
@@ -232,7 +230,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 label: "Pharmacopoeia",
                 placeholder: "Enter Pharmacopoeia",
                 type: InputTypes.TEXT,
-
+                readOnly: kind === EMaterialKind.Package ? true : false,
                 errors: {
                   message: errors.pharmacopoeia?.message,
                   error: !!errors.pharmacopoeia,
@@ -263,7 +261,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Save Material</span>{" "}
+              <span>Save</span>{" "}
             </Button>
           </DialogFooter>
         </form>

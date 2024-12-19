@@ -110,7 +110,7 @@ const Purchase = ({ isOpen, onClose, lists }: Props) => {
         requisitionType: RequisitionType.Purchase,
         comments: data.comments,
         code: data.code,
-        expectedDelivery: data.expectedDelivery,
+        expectedDelivery: data.expectedDelivery?.toISOString(),
         items,
       },
     } satisfies PostApiV1RequisitionApiArg;

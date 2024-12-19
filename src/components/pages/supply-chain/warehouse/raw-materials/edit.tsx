@@ -12,7 +12,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, EMaterialKind, InputTypes, Option } from "@/lib";
 import {
   CreateMaterialRequest,
   MaterialDto,
@@ -60,7 +60,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       description: details.description as string,
       materialCategoryId: defaultMaterialCategory,
       pharmacopoeia: details.pharmacopoeia as string,
-      kind: details?.kind as MaterialKind,
+      kind: details?.kind?.toString() as unknown as MaterialKind,
       code: details.code as string,
     },
   });
@@ -126,11 +126,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.RADIO,
                 name: `kind`,
                 required: true,
-                disabled: true,
-                options: ["Raw", "Package"].map((option) => ({
-                  label: option,
-                  value: option,
-                })),
+                options: Object.entries(EMaterialKind)
+                  .filter(([, value]) => typeof value === "number")
+                  .map(([key, value]) => ({
+                    label: key, // "Raw" or "Package"
+                    value: value.toString(), // 0 or 1
+                  })),
                 errors: {
                   message: errors?.kind?.message || "",
                   error: !!errors?.kind?.type,

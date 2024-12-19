@@ -127,10 +127,10 @@ export const ROUTES: Route[] = [
             title: "Vendors",
             url: "/procurement/vendors",
           },
-          {
-            title: "Proforma Invoices",
-            url: "/procurement/proforma-invoice",
-          },
+          // {
+          //   title: "Proforma Invoices",
+          //   url: "/procurement/proforma-invoice",
+          // },
           {
             title: "Purchase Requisition",
             url: "/procurement/requisition",
@@ -256,16 +256,16 @@ export const ROUTES: Route[] = [
   {
     title: "Human Resource",
     menu: [
-      {
-        title: "string",
-        url: "string",
-        icon: "BookUser",
-        isActive: false,
-        // items: [{
-        //   title: "string",
-        //   url: "string"
-        // }]
-      },
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "BookUser",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
     ],
   },
   {
@@ -282,46 +282,46 @@ export const ROUTES: Route[] = [
   {
     title: "CRM",
     menu: [
-      {
-        title: "string",
-        url: "string",
-        icon: "UserRound",
-        isActive: false,
-        // items: [{
-        //   title: "string",
-        //   url: "string"
-        // }]
-      },
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "UserRound",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
     ],
   },
   {
     title: "Internal",
     menu: [
-      {
-        title: "string",
-        url: "string",
-        icon: "ShieldCheck",
-        isActive: false,
-        // items: [{
-        //   title: "string",
-        //   url: "string"
-        // }]
-      },
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "ShieldCheck",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
     ],
   },
   {
     title: "Reports",
     menu: [
-      {
-        title: "string",
-        url: "string",
-        icon: "ClipboardPlus",
-        isActive: false,
-        // items: [{
-        //   title: "string",
-        //   url: "string"
-        // }]
-      },
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "ClipboardPlus",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
     ],
   },
 ];
