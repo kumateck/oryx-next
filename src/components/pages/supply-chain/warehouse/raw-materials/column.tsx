@@ -97,11 +97,6 @@ export const columns: ColumnDef<MaterialDto>[] = [
     cell: ({ row }) => <div>{row.original.materialCategory?.name}</div>,
   },
   {
-    accessorKey: "pharmacopoeia",
-    header: "Pharmacopoeia",
-    cell: ({ row }) => <div>{row.original.pharmacopoeia}</div>,
-  },
-  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => <div>{row.getValue("description")}</div>,

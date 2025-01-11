@@ -59,7 +59,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       name: details.name as string,
       description: details.description as string,
       materialCategoryId: defaultMaterialCategory,
-      pharmacopoeia: details.pharmacopoeia as string,
       kind: details?.kind?.toString() as unknown as MaterialKind,
       code: details.code as string,
     },
@@ -160,17 +159,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 errors: {
                   message: errors.name?.message,
                   error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("pharmacopoeia") },
-                label: "Pharmacopoeia",
-                placeholder: "Enter Pharmacopoeia",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.pharmacopoeia?.message,
-                  error: !!errors.pharmacopoeia,
                 },
               },
               {

@@ -226,17 +226,6 @@ const Create = ({ isOpen, onClose }: Props) => {
                 },
               },
               {
-                register: { ...register("pharmacopoeia") },
-                label: "Pharmacopoeia",
-                placeholder: "Enter Pharmacopoeia",
-                type: InputTypes.TEXT,
-                readOnly: kind === EMaterialKind.Package ? true : false,
-                errors: {
-                  message: errors.pharmacopoeia?.message,
-                  error: !!errors.pharmacopoeia,
-                },
-              },
-              {
                 register: { ...register("description") },
                 label: "Description",
                 placeholder: "Enter Description",
