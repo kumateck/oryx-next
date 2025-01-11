@@ -17,15 +17,13 @@ import {
   useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-// import { useDispatch } from "~/redux/store";
 import { columns } from "./column";
 import Create from "./create";
 
 const Page = () => {
-  // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const [kind, setKind] = useState<EMaterialKind>(0);
+  const [kind, setKind] = useState<EMaterialKind>(0); // Default kind (Raw or Package).
   const { data: result, isLoading } = useGetApiV1MaterialQuery({
     page,
     pageSize,
@@ -34,15 +32,14 @@ const Page = () => {
   const [loadMaterials, { isFetching }] = useLazyGetApiV1MaterialQuery();
 
   useEffect(() => {
-    loadMaterials({
-      page,
-      pageSize,
-      kind,
-    });
+    loadMaterials({ page, pageSize, kind });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, kind]);
+
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log("KIND::::", kind);
 
   return (
     <div>
@@ -57,11 +54,7 @@ const Page = () => {
               onValueChange={(value) => {
                 const selectedKind = Number(value) as MaterialKind;
                 setKind(selectedKind);
-                loadMaterials({
-                  page,
-                  pageSize,
-                  kind: selectedKind,
-                }).unwrap();
+                loadMaterials({ page, pageSize, kind: selectedKind }).unwrap();
               }}
               defaultValue={EMaterialKind.Raw.toString()}
             >
@@ -89,7 +82,7 @@ const Page = () => {
 
         <ServerDatatable
           data={data}
-          columns={columns}
+          columns={columns(kind)} // Dynamically generate columns.
           isLoading={isLoading || isFetching}
           setPage={setPage}
           setPageSize={setPageSize}
@@ -107,4 +100,5 @@ const Page = () => {
     </div>
   );
 };
+
 export default Page;

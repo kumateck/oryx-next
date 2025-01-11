@@ -70,23 +70,20 @@ export function DataTableRowActions<TData extends MaterialDto>({
   );
 }
 
-export const columns: ColumnDef<MaterialDto>[] = [
+export const columns = (kind: number): ColumnDef<MaterialDto>[] => [
   {
     accessorKey: "code",
     header: "Code",
-
     cell: ({ row }) => <div>{row.getValue("code")}</div>,
   },
   {
     accessorKey: "name",
     header: "Name",
-
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     accessorKey: "kind",
     header: "Kind",
-
     cell: ({ row }) => (
       <div>{Number(row.original.kind) === 1 ? "Package" : "Raw"}</div>
     ),
@@ -96,12 +93,22 @@ export const columns: ColumnDef<MaterialDto>[] = [
     header: "Category",
     cell: ({ row }) => <div>{row.original.materialCategory?.name}</div>,
   },
+  ...(kind === 0
+    ? [
+        {
+          accessorKey: "pharmacopoeia",
+          header: "Pharmacopoeia",
+          cell: ({ row }: { row: Row<MaterialDto> }) => (
+            <div>{row.original.pharmacopoeia}</div>
+          ),
+        },
+      ]
+    : []),
   {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
-
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
