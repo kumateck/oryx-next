@@ -9,6 +9,7 @@ interface Option {
   value: string;
 }
 type Props = {
+  onModal?: boolean;
   autoFocus?: boolean;
   label: string;
   required?: boolean;
@@ -41,6 +42,7 @@ export default function FormSelectInput({
   placeholder,
   isMulti,
   components,
+  onModal,
 }: Props) {
   return (
     <div>
@@ -53,6 +55,7 @@ export default function FormSelectInput({
           {label} {required && <span className="text-danger-400">*</span>}
         </div>
         <SelectDropDown
+          onModal={onModal}
           isMulti={isMulti}
           classNames={{
             container: () =>

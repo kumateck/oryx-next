@@ -36,7 +36,7 @@ const ViewPage: React.FC = () => {
           />
           <h1 className="font-Medium text-2xl text-primary-500">Product</h1>
         </div>
-        <Link href={"../" + routes.editPlanning(singleDetailed?.id as string)}>
+        <Link href={routes.editPlanning(singleDetailed?.id as string)}>
           <div className="flex items-center gap-2 rounded-2xl border border-neutral-300 bg-white px-4 py-2 text-neutral-600">
             <Icon name="Pencil" size={16} />
             <span>Edit</span>

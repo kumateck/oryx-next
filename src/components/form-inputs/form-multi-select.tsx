@@ -16,6 +16,7 @@ type Props = {
   defaultValue?: Option[];
   placeholder?: string;
   onChange: (option: Option[]) => void;
+  onModal?: boolean;
 };
 
 export default function FormMultiSelectInput({
@@ -26,6 +27,7 @@ export default function FormMultiSelectInput({
   defaultValue,
   onChange,
   placeholder,
+  onModal,
 }: Props) {
   return (
     <div>
@@ -38,6 +40,7 @@ export default function FormMultiSelectInput({
           {label} {required && <span className="text-danger-400">*</span>}
         </div>
         <SpecialDropdown
+          onModal={onModal}
           placeholder={placeholder}
           classNames={cn("h-full text-sm border-neutral-300 hover:ring-0", {
             "border-danger-500": errors && errors.error,

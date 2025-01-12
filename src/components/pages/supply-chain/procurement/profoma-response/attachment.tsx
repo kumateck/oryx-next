@@ -47,9 +47,14 @@ const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
   const [loadData] = useLazyGetApiV1ProcurementPurchaseOrderQuery();
   const onSubmit = async (data: AttachmentRequestDto) => {
     const formData = new FormData();
-    data.attachments.forEach((attachment: File) => {
+    const attachmentsArray = Array.isArray(data.attachments)
+      ? data.attachments
+      : Array.from(data.attachments); // Convert FileList to an array
+
+    attachmentsArray.forEach((attachment: File) => {
       formData.append("files", attachment, attachment.name);
     });
+
     try {
       await uploadAttachment({
         modelType: CODE_SETTINGS.modelTypes.PurchaseOrder,

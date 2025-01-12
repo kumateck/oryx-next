@@ -83,6 +83,7 @@ const Create = ({ isOpen, onClose }: Props) => {
             materialId: item.value,
           };
         }),
+        countryId: data?.country?.value,
       } satisfies CreateManufacturerRequest;
       await createMutation({
         createManufacturerRequest: payload,
@@ -135,6 +136,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.SELECT,
                 name: "country",
                 required: true,
+                onModal: true,
                 placeholder: "Select Country",
                 options: countryOptions,
                 errors: {
@@ -162,6 +164,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.MULTIPLE,
                 name: "materials",
                 required: true,
+                onModal: true,
                 placeholder: "Materials",
                 options: materialOptions,
                 errors: {

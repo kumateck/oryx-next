@@ -1,14 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+const objectSchema = (msg: string) =>
+  z.object({
+    value: z.string({
+      required_error: msg,
+      message: msg,
+    }),
+    label: z.string({
+      required_error: msg,
+      message: msg,
+    }),
+  });
 const AssociatedManufacturersSchema = z.object({
-  material: z.object({
-    value: z.string(),
-    label: z.string(),
-  }),
-  manufacturer: z.object({
-    value: z.string(),
-    label: z.string(),
+  material: objectSchema("Material is required"),
+  manufacturer: z.array(objectSchema("Manufacturer is required")).min(1, {
+    message: "Manufacturer is required",
   }),
 });
 export const CreateVendorSchema = z.object({
