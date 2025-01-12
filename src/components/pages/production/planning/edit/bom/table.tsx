@@ -10,7 +10,7 @@ interface Props {
   setItems: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
 }
 const TableForData = ({ lists, setItems }: Props) => {
-  const columns = getColumns(setItems);
+  const columns = getColumns(setItems, lists);
 
   return (
     <div className="flex justify-center">

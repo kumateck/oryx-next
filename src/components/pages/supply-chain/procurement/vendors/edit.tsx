@@ -113,8 +113,8 @@ const Create = () => {
     const associatedManufacturers = data.associatedManufacturers.flatMap(
       (item) =>
         item.manufacturer.map((manufacturer) => ({
-          materialId: item.material.label,
-          manufacturerId: manufacturer.label,
+          materialId: item.material.value,
+          manufacturerId: manufacturer.value,
         })),
     );
     try {

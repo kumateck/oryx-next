@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -27,8 +28,9 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   setItemLists: React.Dispatch<React.SetStateAction<PackagingRequestDto[]>>;
+  itemLists?: PackagingRequestDto[];
 }
-const Create = ({ isOpen, onClose, setItemLists }: Props) => {
+const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
   const {
     register,
     control,
@@ -49,12 +51,27 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
     kind: 1,
   });
 
-  const materialOptions = materialResponse?.data
-    // ?.filter((item) => item.kind === 1)
-    ?.map((uom: MaterialDto) => ({
-      label: uom.name,
-      value: uom.id,
-    })) as Option[];
+  // const materialOptions = materialResponse?.data
+  //   // ?.filter((item) => item.kind === 1)
+  //   ?.map((uom: MaterialDto) => ({
+  //     label: uom.name,
+  //     value: uom.id,
+  //   })) as Option[];
+
+  // console.log(itemLists, "itemLists");
+  const materialOptions = _.isEmpty(itemLists)
+    ? (materialResponse?.data?.map((uom: MaterialDto) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[])
+    : (_.filter(
+        materialResponse?.data,
+        (itemA) =>
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId.value),
+      )?.map((uom: MaterialDto) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[]);
 
   useEffect(() => {
     loadCollection({
@@ -96,6 +113,7 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
                 label: "Package Type",
                 control,
                 type: InputTypes.SELECT,
+                onModal: true,
                 name: "packageTypeId",
                 required: true,
                 placeholder: "Package Type",
@@ -109,6 +127,7 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
                 label: "Material",
                 control,
                 type: InputTypes.SELECT,
+                onModal: true,
                 name: "materialId",
                 required: true,
                 placeholder: "Material",
