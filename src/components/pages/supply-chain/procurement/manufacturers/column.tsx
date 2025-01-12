@@ -88,6 +88,12 @@ export const columns: ColumnDef<ManufacturerDto>[] = [
     cell: ({ row }) => <div>{row.getValue("address")}</div>,
   },
   {
+    accessorKey: "country",
+    header: "Country",
+
+    cell: ({ row }) => <div>{row.original.country?.name}</div>,
+  },
+  {
     accessorKey: "approvedAt",
     header: "Approved At",
 

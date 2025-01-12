@@ -110,6 +110,7 @@ const InputSwitch = ({
           onChange={handleChange}
           onBlur={handleBlur}
           min={setMin || 0}
+          step="0.01"
         />
       );
     case ColumnType.SELECT:

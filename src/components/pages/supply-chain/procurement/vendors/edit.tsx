@@ -48,10 +48,12 @@ const Create = () => {
             label: "",
             value: "",
           },
-          manufacturer: {
-            label: "",
-            value: "",
-          },
+          manufacturer: [
+            {
+              label: "",
+              value: "",
+            },
+          ],
         },
       ],
     },
@@ -108,15 +110,17 @@ const Create = () => {
     return associatedManufacturers?.map((item) => item?.material) || [];
   }, [associatedManufacturers]);
   const onSubmit = async (data: VendorRequestDto) => {
+    const associatedManufacturers = data.associatedManufacturers.flatMap(
+      (item) =>
+        item.manufacturer.map((manufacturer) => ({
+          materialId: item.material.label,
+          manufacturerId: manufacturer.label,
+        })),
+    );
     try {
       const payload = {
         ...data,
-        associatedManufacturers: data?.associatedManufacturers?.map((item) => {
-          return {
-            manufacturerId: item.manufacturer.value,
-            materialId: item.material.value,
-          };
-        }),
+        associatedManufacturers,
       } satisfies CreateSupplierRequest;
       console.log(payload, "payload", data);
       await createMutation({
@@ -269,7 +273,7 @@ const Create = () => {
                 type="button"
                 onClick={() =>
                   append({
-                    manufacturer: { label: "", value: "" },
+                    manufacturer: [{ label: "", value: "" }],
                     material: { label: "", value: "" },
                   })
                 }

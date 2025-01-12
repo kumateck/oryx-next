@@ -97,6 +97,7 @@ type SelectInputProps = BaseInputProps & {
   defaultValue?: Option;
   value?: Option;
   components?: Partial<SelectComponents>;
+  onModal?: boolean;
 };
 type MultiSelectInputProps = BaseInputProps & {
   type: InputTypes.MULTIPLE;
@@ -106,6 +107,7 @@ type MultiSelectInputProps = BaseInputProps & {
   defaultValue?: Option[];
   value?: Option[];
   components?: Partial<SelectComponents>;
+  onModal?: boolean;
 };
 
 // type SearchableSelectInputProps = BaseInputProps & {
@@ -125,6 +127,7 @@ type MultiInputProps = BaseInputProps & {
   options: Option[];
   defaultValue?: Option[];
   values?: Option[];
+  onModal?: boolean;
 };
 type RadioInputProps = BaseInputProps & {
   control?: any;
@@ -251,6 +254,7 @@ const FormWizardSwitch = (formInput: FormInput) => {
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
             <FormSelectInput
+              onModal={formInput.onModal}
               isMulti={false}
               defaultValue={formInput.defaultValue}
               label={formInput.label}
@@ -273,6 +277,7 @@ const FormWizardSwitch = (formInput: FormInput) => {
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
             <FormSelectInput
+              onModal={formInput.onModal}
               isMulti={true}
               defaultValue={formInput.defaultValue}
               label={formInput.label}
@@ -315,6 +320,7 @@ const FormWizardSwitch = (formInput: FormInput) => {
           name={formInput.name}
           render={({ field: { onChange } }) => (
             <FormMultiSelectInput
+              onModal={formInput.onModal}
               defaultValue={formInput.defaultValue}
               label={formInput.label}
               required={formInput.required}

@@ -32,6 +32,7 @@ const Create = () => {
     label: item.name,
     value: item.id,
   })) as Option[];
+
   const {
     register,
     control,
@@ -47,10 +48,12 @@ const Create = () => {
             label: "",
             value: "",
           },
-          manufacturer: {
-            label: "",
-            value: "",
-          },
+          manufacturer: [
+            {
+              label: "",
+              value: "",
+            },
+          ],
         },
       ],
     },
@@ -97,16 +100,20 @@ const Create = () => {
   const typeValues = useMemo(() => {
     return associatedManufacturers?.map((item) => item?.material) || [];
   }, [associatedManufacturers]);
+
+  // console.log(typeValues, "typeValues", materialOptions);
   const onSubmit = async (data: VendorRequestDto) => {
     try {
+      const associatedManufacturers = data.associatedManufacturers.flatMap(
+        (item) =>
+          item.manufacturer.map((manufacturer) => ({
+            materialId: item.material.label,
+            manufacturerId: manufacturer.label,
+          })),
+      );
       const payload = {
         ...data,
-        associatedManufacturers: data?.associatedManufacturers?.map((item) => {
-          return {
-            manufacturerId: item.manufacturer.value,
-            materialId: item.material.value,
-          };
-        }),
+        associatedManufacturers,
       } satisfies CreateSupplierRequest;
       await createMutation({
         createSupplierRequest: payload,
@@ -174,6 +181,7 @@ const Create = () => {
     });
   }, [typeValues, loadMaterialManufacturers, fetchedMaterials]); // `fetchedMaterials` is now part of dependencies
 
+  // console.log(first)
   return (
     <div className="h-full w-full bg-white p-5">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -258,7 +266,7 @@ const Create = () => {
                 type="button"
                 onClick={() =>
                   append({
-                    manufacturer: { label: "", value: "" },
+                    manufacturer: [{ label: "", value: "" }],
                     material: { label: "", value: "" },
                   })
                 }
@@ -296,7 +304,12 @@ const Create = () => {
                           name: `associatedManufacturers.${index}.material`,
                           required: true,
                           placeholder: "Material",
-                          options: materialOptions,
+                          options: materialOptions?.filter(
+                            (item2) =>
+                              !typeValues?.some(
+                                (item1) => item1.value === item2.value,
+                              ),
+                          ),
                           errors: {
                             message:
                               errors.associatedManufacturers?.[
@@ -310,7 +323,7 @@ const Create = () => {
                         {
                           label: "Manufacturer",
                           control,
-                          type: InputTypes.SELECT,
+                          type: InputTypes.MULTI,
                           name: `associatedManufacturers.${index}.manufacturer`,
                           required: true,
                           placeholder: "Manufacturer",

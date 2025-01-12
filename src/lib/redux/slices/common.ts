@@ -5,10 +5,12 @@ import { ReduxState } from "../store";
 
 export interface CommonState {
   searchInput: string;
+  triggerReload?: boolean;
 }
 
 const initialState: CommonState = {
   searchInput: "",
+  triggerReload: false,
 };
 
 export const commonSlice = createSlice({
@@ -21,6 +23,12 @@ export const commonSlice = createSlice({
 
     clearSearchValue: (state) => {
       state.searchInput = "";
+    },
+    setTriggerReload: (state) => {
+      state.triggerReload = true;
+    },
+    unSetTriggerReload: (state) => {
+      state.triggerReload = false;
     },
   },
 });

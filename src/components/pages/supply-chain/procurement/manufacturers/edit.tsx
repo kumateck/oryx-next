@@ -108,6 +108,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             materialId: item.value,
           };
         }),
+        countryId: data?.country?.value,
       } satisfies CreateManufacturerRequest;
       await changeManufacturer({
         manufacturerId: details.id as string,
@@ -160,6 +161,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 control,
                 type: InputTypes.SELECT,
                 name: "country",
+                onModal: true,
                 required: true,
                 placeholder: "Select Country",
                 defaultValue: defaultCountry,
@@ -189,6 +191,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.MULTIPLE,
                 name: "materials",
                 required: true,
+                onModal: true,
                 placeholder: "Materials",
                 defaultValue: defaultMaterials,
                 options: materialOptions,

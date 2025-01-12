@@ -19,6 +19,7 @@ interface SpecialDropdownProps extends BaseProps {
   options: Option[];
   defaultValue: Option[];
   onChange?: (option: Option[]) => void;
+  onModal?: boolean;
 }
 export const SpecialDropdown = ({
   options,
