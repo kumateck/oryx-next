@@ -9,7 +9,7 @@ interface Props {
   setItemLists: React.Dispatch<React.SetStateAction<PackagingRequestDto[]>>;
 }
 const TableForData = ({ lists, setItemLists }: Props) => {
-  const columns = getColumns(setItemLists);
+  const columns = getColumns(setItemLists, lists);
   return (
     <div className="w-full">
       <ListsTable data={lists} columns={columns} />

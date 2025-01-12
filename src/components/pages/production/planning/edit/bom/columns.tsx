@@ -11,10 +11,12 @@ import { BomRequestDto } from "./types";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
   setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
+  itemLists: BomRequestDto[];
 }
 export function DataTableRowActions<TData extends BomRequestDto>({
   row,
   setItemLists,
+  itemLists,
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -52,6 +54,7 @@ export function DataTableRowActions<TData extends BomRequestDto>({
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
+          itemLists={itemLists}
         />
       )}
       <ConfirmDeleteDialog
@@ -65,6 +68,7 @@ export function DataTableRowActions<TData extends BomRequestDto>({
 
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>,
+  itemLists: BomRequestDto[],
 ): ColumnDef<BomRequestDto>[] => [
   {
     accessorKey: "order",
@@ -101,7 +105,11 @@ export const getColumns = (
   {
     id: "actions",
     cell: ({ row }) => (
-      <DataTableRowActions row={row} setItemLists={setItemLists} />
+      <DataTableRowActions
+        row={row}
+        setItemLists={setItemLists}
+        itemLists={itemLists}
+      />
     ),
   },
 ];

@@ -1,5 +1,6 @@
 "use client";
 
+import _ from "lodash";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -30,8 +31,9 @@ interface Props {
   onClose: () => void;
   setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
   details: BomRequestDto;
+  itemLists?: BomRequestDto[];
 }
-const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
+const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
   const {
     register,
     control,
@@ -53,12 +55,28 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
     kind: 0,
   });
 
-  const materialOptions = materialResponse?.data
-    // ?.filter((item) => item.kind === 0)
-    ?.map((uom: MaterialDto) => ({
-      label: uom.name,
-      value: uom.id,
-    })) as Option[];
+  // const materialOptions = materialResponse?.data
+  //   // ?.filter((item) => item.kind === 0)
+  //   ?.map((uom: MaterialDto) => ({
+  //     label: uom.name,
+  //     value: uom.id,
+  //   })) as Option[];
+  const materialOptions = _.isEmpty(itemLists)
+    ? (materialResponse?.data?.map((uom: MaterialDto) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[])
+    : (_.filter(
+        materialResponse?.data,
+        (itemA) =>
+          !_.some(
+            itemLists,
+            (itemB) => itemA?.id === itemB?.componentMaterialId?.value,
+          ),
+      )?.map((uom: MaterialDto) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[]);
 
   useEffect(() => {
     loadCollection({

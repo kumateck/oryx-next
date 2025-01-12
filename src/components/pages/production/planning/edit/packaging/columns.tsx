@@ -9,10 +9,12 @@ import { PackagingRequestDto } from "./types";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
   setItemLists: React.Dispatch<React.SetStateAction<PackagingRequestDto[]>>;
+  itemLists: PackagingRequestDto[];
 }
 export function DataTableRowActions<TData extends PackagingRequestDto>({
   row,
   setItemLists,
+  itemLists,
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<PackagingRequestDto>(
@@ -51,6 +53,7 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
+          itemLists={itemLists}
         />
       )}
       <ConfirmDeleteDialog
@@ -63,6 +66,7 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
 }
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<PackagingRequestDto[]>>,
+  lists: PackagingRequestDto[],
 ): ColumnDef<PackagingRequestDto>[] => [
   {
     accessorKey: "id",
@@ -70,21 +74,22 @@ export const getColumns = (
   },
   {
     accessorKey: "packageTypeId",
-    header: "Type",
+    header: "Package Type",
     cell: ({ row }) => (
       <div className="">{row.original.packageTypeId?.label}</div>
     ),
+  },
+  {
+    accessorKey: "materialId",
+    header: "Component Material",
+    cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
   },
   {
     accessorKey: "materialThickness",
     header: "Thickness",
     cell: ({ row }) => <div>{row.getValue("materialThickness")}</div>,
   },
-  {
-    accessorKey: "materialId",
-    header: "Material Type",
-    cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
-  },
+
   {
     accessorKey: "otherStandards",
     header: "Other Standards",
@@ -93,7 +98,11 @@ export const getColumns = (
   {
     id: "actions",
     cell: ({ row }) => (
-      <DataTableRowActions row={row} setItemLists={setItemLists} />
+      <DataTableRowActions
+        row={row}
+        setItemLists={setItemLists}
+        itemLists={lists}
+      />
     ),
   },
 ];

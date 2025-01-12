@@ -131,6 +131,7 @@ const Packaging = () => {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           setItemLists={setItemLists}
+          itemLists={itemLists}
         />
 
         <div className="w-full py-6">
