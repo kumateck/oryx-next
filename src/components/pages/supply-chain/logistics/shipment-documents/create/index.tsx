@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
-import { Button, Card, CardContent, Icon, Label } from "@/components/ui";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
   ErrorResponse,
@@ -26,6 +26,7 @@ import {
   useGetApiV1ProcurementPurchaseOrderQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProcurementShipmentDocumentMutation,
+  usePostApiV1ProcurementShipmentInvoiceMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
@@ -42,10 +43,13 @@ const Page = () => {
     });
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
+  const [saveShipmentInvoice, { isLoading: isSavingInvoice }] =
+    usePostApiV1ProcurementShipmentInvoiceMutation();
   const { data: purchaseOrders } = useGetApiV1ProcurementPurchaseOrderQuery({
     pageSize: 1000,
     status: PurchaseOrderStatusList.Completed,
   });
+  // console.log(isSavingInvoice)
   const {
     register,
     control,
@@ -63,6 +67,33 @@ const Page = () => {
       value: item?.id,
     };
   }) as Option[];
+
+  const poOptions = useWatch({
+    control,
+    name: "purchaseOrderId",
+  });
+
+  useEffect(() => {
+    if (poOptions?.value) {
+      const PO = purchaseOrders?.data?.find(
+        (item) => item.id === poOptions.value,
+      );
+      const payload = PO?.items?.map((item) => ({
+        materialId: item.material?.id as string,
+        uomId: item.uom?.id as string,
+        expectedQuantity: item.quantity as number,
+        materialName: item.material?.name as string,
+        uomName: item.uom?.name as string,
+        receivedQuantity: item.quantity as number,
+        reason: "",
+        code: item.material?.code as string,
+        costPrice: item.price?.toString(),
+      })) as MaterialRequestDto[];
+      setMaterialLists(payload);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poOptions]);
+
   useEffect(() => {
     const loadCodes = async () => {
       const generatePayload: GenerateCodeOptions = {
@@ -107,6 +138,20 @@ const Page = () => {
           modelId: shipmentId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+
+        await saveShipmentInvoice({
+          createShipmentInvoice: {
+            items: materialLists?.map((item) => ({
+              materialId: item.materialId,
+              expectedQuantity: item.expectedQuantity,
+              // manufacturerId: item.manufacturerId,
+              reason: item.reason,
+              receivedQuantity: item.receivedQuantity,
+              uoMId: item.uomId,
+            })),
+            shipmentDocumentId: shipmentId,
+          },
+        });
       }
       toast.success("Shipment Document Created");
       router.push("/logistics/shipment-documents");
@@ -116,15 +161,10 @@ const Page = () => {
     }
   };
 
-  const supplier = useWatch<ShipmentRequestDto>({
-    name: "purchaseOrderId.label",
-    control,
-  }) as string;
-
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   return (
-    <div>
+    <div className="space-y-6">
       <Card>
         <CardContent className="p-5">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -133,7 +173,7 @@ const Page = () => {
                 Create Shipment Document
               </span>
               <Button>
-                {(isLoading || isUploadingAttachment) && (
+                {(isLoading || isUploadingAttachment || isSavingInvoice) && (
                   <Icon name="LoaderCircle" className="animate-spin" />
                 )}
                 <span>Save Changes</span>
@@ -161,12 +201,12 @@ const Page = () => {
                   },
                 },
                 {
-                  label: "Purchase Order",
+                  label: "Vendor",
                   control,
                   type: InputTypes.SELECT,
                   name: "purchaseOrderId",
                   required: true,
-                  placeholder: "Purchase Order",
+                  placeholder: "Vendor",
                   options: purchaseOrderOptions,
                   errors: {
                     message: errors.purchaseOrderId?.message,
@@ -192,7 +232,7 @@ const Page = () => {
                   },
                 ]}
               />
-              <Label>{supplier}</Label>
+              {/* <Label>{supplier}</Label> */}
             </div>
             <div className="w-full">
               <FormWizard
@@ -215,6 +255,9 @@ const Page = () => {
         </CardContent>
       </Card>
       <div className="w-full">
+        <div>
+          <span>Invoice Items</span>
+        </div>
         <div className="space-y-2">
           <TableForData lists={materialLists} setItemLists={setMaterialLists} />
         </div>
