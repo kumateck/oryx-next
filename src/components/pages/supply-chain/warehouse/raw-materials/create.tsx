@@ -155,6 +155,13 @@ const Create = ({ isOpen, onClose }: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (kind === EMaterialKind.Package) {
+      setValue("pharmacopoeia", "");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind]);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -225,17 +232,27 @@ const Create = ({ isOpen, onClose }: Props) => {
                   error: !!errors.code,
                 },
               },
-              {
-                register: { ...register("pharmacopoeia") },
-                label: "Pharmacopoeia",
-                placeholder: "Enter Pharmacopoeia",
-                type: InputTypes.TEXT,
-                readOnly: kind === EMaterialKind.Package ? true : false,
-                errors: {
-                  message: errors.pharmacopoeia?.message,
-                  error: !!errors.pharmacopoeia,
+            ]}
+          />
+          {kind === EMaterialKind.Package && (
+            <FormWizard
+              config={[
+                {
+                  register: { ...register("pharmacopoeia") },
+                  label: "Pharmacopoeia",
+                  placeholder: "Enter Pharmacopoeia",
+                  type: InputTypes.TEXT,
+                  readOnly: kind === EMaterialKind.Package ? true : false,
+                  errors: {
+                    message: errors.pharmacopoeia?.message,
+                    error: !!errors.pharmacopoeia,
+                  },
                 },
-              },
+              ]}
+            />
+          )}
+          <FormWizard
+            config={[
               {
                 register: { ...register("description") },
                 label: "Description",
