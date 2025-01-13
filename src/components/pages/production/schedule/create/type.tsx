@@ -19,7 +19,7 @@ export const createRequisitionRequestSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  quantity: z.number().min(1, { message: "Quantity is required" }),
+  quantity: z.number().min(0.1, { message: "Quantity is required" }),
   remarks: z.string().nullable().optional(),
   items: z.array(createRequisitionItemRequestSchema).nullable().optional(),
   scheduledStartTime: z.preprocess(
