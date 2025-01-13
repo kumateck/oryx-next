@@ -9,7 +9,7 @@ export const createRequisitionItemRequestSchema = z.object({
   uomId: z
     .string({ required_error: "UOM is required" })
     .min(1, { message: "UOM is required" }),
-  quantity: z.number().min(1, { message: "Quantity is required" }),
+  quantity: z.number().min(0.1, { message: "Quantity is required" }),
 });
 
 export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);
