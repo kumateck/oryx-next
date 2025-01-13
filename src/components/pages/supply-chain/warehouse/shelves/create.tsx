@@ -122,7 +122,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 type: InputTypes.SELECT,
                 name: "rackId",
                 required: true,
-
+                onModal: true,
                 options: rackOptions,
                 errors: {
                   message: errors.rackId?.message,

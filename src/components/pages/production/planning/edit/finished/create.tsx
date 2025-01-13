@@ -95,6 +95,7 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
                 type: InputTypes.SELECT,
                 name: "uoMId",
                 required: true,
+                onModal: true,
                 placeholder: "Unit of Measurement",
                 options: unitOfMeasureOptions,
                 errors: {

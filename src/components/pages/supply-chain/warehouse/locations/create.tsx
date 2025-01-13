@@ -90,6 +90,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 control,
                 type: InputTypes.SELECT,
                 name: "warehouseId",
+                onModal: true,
                 required: true,
 
                 options: warehouseOptions,

@@ -154,6 +154,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 label: "Warehouse Select",
                 control,
                 type: InputTypes.MULTIPLE,
+                onModal: true,
                 name: "warehouse",
                 required: true,
 

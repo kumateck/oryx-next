@@ -134,7 +134,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.SELECT,
                 name: "rackId",
                 required: true,
-
+                onModal: true,
                 options: rackOptions,
                 errors: {
                   message: errors.rackId?.message,

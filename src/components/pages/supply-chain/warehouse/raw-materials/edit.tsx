@@ -155,6 +155,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.SELECT,
                 name: "materialCategoryId",
                 required: true,
+                onModal: true,
                 defaultValue: defaultMaterialCategory,
                 placeholder: "Material Category",
                 options: materialCategoryOptions,

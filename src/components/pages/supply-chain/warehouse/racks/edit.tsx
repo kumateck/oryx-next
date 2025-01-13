@@ -103,7 +103,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.SELECT,
                 name: "locationId",
                 required: true,
-
+                onModal: true,
                 options: locationOptions,
                 errors: {
                   message: errors.locationId?.message,

@@ -195,6 +195,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                 control,
                 type: InputTypes.SELECT,
                 name: "materialCategoryId",
+                onModal: true,
                 required: true,
                 placeholder: "Material Category",
                 options: materialCategoryOptions,

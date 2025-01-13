@@ -59,6 +59,10 @@ export const ROUTES: Route[] = [
             title: "Shipment Documents",
             url: "/logistics/shipment-documents",
           },
+          {
+            title: "Shipment Discrepancy",
+            url: "/logistics/shipment-discrepancy",
+          },
           // {
           //   title: "Billing Sheet",
           //   url: "/logistics/billing-sheet",
