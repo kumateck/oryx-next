@@ -24,7 +24,13 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
 
   const handleDelete = () => {
     if (details) {
-      setItemLists((prev) => prev.filter((item) => item !== details));
+      console.log(details, "details");
+      setItemLists((prev) =>
+        prev.filter((item) => {
+          console.log(item.idIndex, details.idIndex);
+          return item.idIndex !== details.idIndex;
+        }),
+      );
       setIsDeleteOpen(false);
     }
   };
@@ -69,7 +75,7 @@ export const getColumns = (
   lists: PackagingRequestDto[],
 ): ColumnDef<PackagingRequestDto>[] => [
   {
-    accessorKey: "id",
+    accessorKey: "idIndex",
     header: "#",
   },
   {

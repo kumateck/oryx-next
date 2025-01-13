@@ -71,7 +71,11 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
   ) as Option[];
   const onSubmit = (data: RoutingRequestDto) => {
     setItemLists((prevState) => {
-      return [...prevState, data]; // Add new item to the array
+      const payload = {
+        ...data,
+        idIndex: (prevState.length + 1).toString(),
+      };
+      return [...prevState, payload]; // Add new item to the array
     });
     reset(); // Reset the form after submission
     onClose(); // Close the form/modal if applicable

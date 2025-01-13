@@ -26,8 +26,9 @@ const Page = () => {
   const { data: product } = useGetApiV1ProductByProductIdQuery({
     productId,
   });
-  const defaultRouting = product?.routes?.map((r) => ({
+  const defaultRouting = product?.routes?.map((r, idx) => ({
     ...r,
+    idIndex: (idx + 1).toString(),
     resourceIds: r.resources?.map((res) => {
       return {
         label: res.name as string,
@@ -147,7 +148,17 @@ const Page = () => {
         />
 
         <div className="w-full py-6">
-          <TableForData lists={itemLists || []} setItems={setItemLists} />
+          <TableForData
+            lists={
+              itemLists?.map((item, idx) => {
+                return {
+                  ...item,
+                  idIndex: (idx + 1).toString(),
+                };
+              }) || []
+            }
+            setItems={setItemLists}
+          />
         </div>
       </StepWrapper>
     </div>

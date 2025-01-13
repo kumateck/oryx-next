@@ -4,6 +4,7 @@ import { z } from "zod";
 export const CreateRoutingSchema = z.object({
   estimatedTime: z.string().optional(),
   id: z.string().optional(),
+  idIndex: z.string().optional(),
   order: z.number().optional(),
   resourceIds: z
     .array(
