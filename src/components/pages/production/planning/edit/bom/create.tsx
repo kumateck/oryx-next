@@ -117,6 +117,8 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
                 type: InputTypes.SELECT,
                 name: "materialTypeId",
                 required: true,
+
+                onModal: true,
                 placeholder: "Ingredient Type",
                 options: materialTypeOptions,
                 errors: {
@@ -130,6 +132,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
                 type: InputTypes.SELECT,
                 name: "componentMaterialId",
                 required: true,
+                onModal: true,
                 placeholder: "Material",
                 options: materialOptions,
                 errors: {

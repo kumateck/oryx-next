@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, SupplierType, isErrorResponse } from "@/lib";
 import {
   MaterialDto,
   SupplierDtoRead,
@@ -73,6 +73,18 @@ export function DataTableRowActions<TData extends SupplierDtoRead>({
 }
 
 export const columns: ColumnDef<SupplierDtoRead>[] = [
+  {
+    accessorKey: "type",
+    header: "Vendor Type",
+
+    cell: ({ row }) => (
+      <div>
+        {row.original.type !== undefined
+          ? SupplierType[row.original.type]
+          : "Unknown"}
+      </div>
+    ),
+  },
   {
     accessorKey: "name",
     header: "Name",

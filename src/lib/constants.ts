@@ -79,7 +79,7 @@ export enum WarehouseType {
 export enum SupplierType {
   Foreign = 0,
   Local = 1,
-  Other = 3,
+  // Other = 3,
 }
 
 export enum InputTypes {
@@ -144,7 +144,7 @@ export const routes = {
   planning: () => "plannings",
   newPlanning: () => "plannings/create",
   viewPlanning: (id: string) => `plannings/${id}/details`,
-  editPlanning: (id: string) => `/production/plannings/${id}/edit/info`,
+  editPlanning: (id: string) => `/production/plannings/${id}/edit/bom`,
   editPlanningBom: () => `bom`,
   editPlanningInfo: () => `info`,
   editPlanningPackaging: () => `packaging`,

@@ -109,8 +109,8 @@ const Create = () => {
         createProductRequest: payload,
       }).unwrap();
       const productId = res as string;
-      router.push(`../${routes.editPlanning(productId)}`);
       toast.success("Product Info created successfully");
+      router.push(routes.editPlanning(productId));
       reset();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

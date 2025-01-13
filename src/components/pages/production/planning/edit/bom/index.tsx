@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +21,7 @@ import { BomRequestDto } from "./types";
 const BOM = () => {
   const { id } = useParams();
   const productId = id as string;
-
+  const router = useRouter();
   const { data: product } = useGetApiV1ProductByProductIdQuery({
     productId,
   });
@@ -69,6 +69,7 @@ const BOM = () => {
         },
       }).unwrap();
       toast.success("BOM Saved");
+      router.push(routes.editPlanningPackaging());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
