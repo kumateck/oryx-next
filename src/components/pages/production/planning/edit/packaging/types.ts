@@ -5,6 +5,7 @@ export const CreatePackagingSchema = z.object({
   materialThickness: z.string().optional(),
   otherStandards: z.string().optional(),
   id: z.string().optional(),
+  idIndex: z.string().optional(),
   materialId: z.object(
     {
       value: z.string().min(1, { message: "Material is required" }),

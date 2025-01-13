@@ -26,7 +26,7 @@ const Packaging = () => {
   const { data: product } = useGetApiV1ProductByProductIdQuery({
     productId,
   });
-  const defaultPackaging = product?.packages?.map((p) => ({
+  const defaultPackaging = product?.packages?.map((p, idx) => ({
     ...p,
     materialId: {
       label: p.material?.name as string,
@@ -36,6 +36,7 @@ const Packaging = () => {
       label: p.packageType?.name as string,
       value: p.packageType?.id as string,
     },
+    idIndex: (idx + 1).toString(),
   })) as PackagingRequestDto[];
 
   const [savePackaging, { isLoading }] =
@@ -141,7 +142,7 @@ const Packaging = () => {
               itemLists?.map((item, idx) => {
                 return {
                   ...item,
-                  id: (idx + 1).toString(),
+                  idIndex: (idx + 1).toString(),
                 };
               }) || []
             }

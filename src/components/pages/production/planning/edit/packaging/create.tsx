@@ -90,7 +90,11 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
 
   const onSubmit = (data: PackagingRequestDto) => {
     setItemLists((prevState) => {
-      return [...prevState, data]; // Add new item to the array
+      const payload = {
+        ...data,
+        idIndex: (prevState.length + 1).toString(),
+      };
+      return [...prevState, payload]; // Add new item to the array
     });
 
     reset(); // Reset the form after submission

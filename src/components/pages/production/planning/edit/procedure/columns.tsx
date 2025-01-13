@@ -25,7 +25,12 @@ export function DataTableRowActions<TData extends RoutingRequestDto>({
   );
   const handleDelete = () => {
     if (details) {
-      setItemLists((prev) => prev.filter((item) => item.id !== details.id));
+      setItemLists((prev) =>
+        prev.filter((item) => {
+          console.log(item, details);
+          return item.idIndex !== details.idIndex;
+        }),
+      );
       setIsDeleteOpen(false);
     }
   };

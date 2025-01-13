@@ -7,6 +7,7 @@ export const CreateBomSchema = z.object({
   grade: z.string().optional(),
   isSubstitutable: z.boolean().optional(),
   id: z.string().optional(),
+  idIndex: z.string().optional(),
   componentMaterialId: z.object(
     {
       value: z.string().min(1, { message: "Material is required" }),

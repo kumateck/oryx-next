@@ -27,8 +27,9 @@ const BOM = () => {
   });
 
   const defaultBillOfMaterials =
-    product?.currentBillOfMaterial?.billOfMaterial?.items?.map((bom) => ({
+    product?.currentBillOfMaterial?.billOfMaterial?.items?.map((bom, idx) => ({
       ...bom,
+      idIndex: (idx + 1).toString(),
       componentMaterialId: {
         label: bom.componentMaterial?.name as string,
         value: bom.componentMaterial?.id as string,
@@ -164,7 +165,17 @@ const BOM = () => {
         />
 
         <div className="w-full py-6">
-          <TableForData lists={itemLists || []} setItems={setItemLists} />
+          <TableForData
+            lists={
+              itemLists?.map((item, idx) => {
+                return {
+                  ...item,
+                  idIndex: (idx + 1).toString(),
+                };
+              }) || []
+            }
+            setItems={setItemLists}
+          />
         </div>
       </StepWrapper>
     </div>

@@ -24,7 +24,9 @@ export function DataTableRowActions<TData extends BomRequestDto>({
   const [details, setDetails] = useState<BomRequestDto>({} as BomRequestDto);
   const handleDelete = () => {
     if (details) {
-      setItemLists((prev) => prev.filter((item) => item.id !== details.id));
+      setItemLists((prev) =>
+        prev.filter((item) => item.idIndex !== details.idIndex),
+      );
       setIsDeleteOpen(false);
     }
   };
