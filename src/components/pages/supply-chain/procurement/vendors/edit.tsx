@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,21 +11,23 @@ import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
 import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
-  PostApiV1ProcurementSupplierApiArg,
+  PutApiV1ProcurementSupplierBySupplierIdApiArg,
   useGetApiV1MaterialAllQuery,
   useLazyGetApiV1ProcurementManufacturerMaterialByMaterialIdQuery,
   usePostApiV1CollectionMutation,
-  usePostApiV1ProcurementSupplierMutation,
+  usePutApiV1ProcurementSupplierBySupplierIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { CreateVendorValidator, VendorRequestDto } from "./types";
 
-const Create = () => {
+const Edit = () => {
   const router = useRouter();
+  const { id } = useParams();
+  const supplierId = id as string;
   // Rest of the existing code...
-  const [createMutation, { isLoading }] =
-    usePostApiV1ProcurementSupplierMutation();
+  const [updateMutation, { isLoading }] =
+    usePutApiV1ProcurementSupplierBySupplierIdMutation();
   const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const materialOptions = materialResponse?.map((item) => ({
@@ -121,12 +123,15 @@ const Create = () => {
       const payload = {
         ...data,
         associatedManufacturers,
+        type: data.country.label === "Ghana" ? 1 : 0,
+        countryId: data.country.value,
       } satisfies CreateSupplierRequest;
       console.log(payload, "payload", data);
-      await createMutation({
+      await updateMutation({
         createSupplierRequest: payload,
-      } as PostApiV1ProcurementSupplierApiArg);
-      toast.success("Manufacturer created successfully");
+        supplierId,
+      } as PutApiV1ProcurementSupplierBySupplierIdApiArg);
+      toast.success("Vendor updated successfully");
       router.push("vendors");
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
@@ -365,7 +370,7 @@ const Create = () => {
                 "animate-spin": isLoading,
               })}
             />
-            <span>Save Manufacturer</span>
+            <span>Save Changes</span>
           </Button>
         </div>
       </form>
@@ -373,4 +378,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Edit;
