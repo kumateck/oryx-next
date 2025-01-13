@@ -28,9 +28,9 @@ import {
   usePostApiV1ProcurementShipmentDocumentMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-import { MaterialRequestDto } from "../../../procurement/purchase-requisition/detail/type";
 import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
 import TableForData from "./table";
+import { MaterialRequestDto } from "./type";
 
 const Page = () => {
   const router = useRouter();
