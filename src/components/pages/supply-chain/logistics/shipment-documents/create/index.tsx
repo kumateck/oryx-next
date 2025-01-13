@@ -24,6 +24,7 @@ import {
   PostApiV1ProcurementShipmentDocumentApiArg,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useGetApiV1ProcurementPurchaseOrderQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProcurementShipmentDocumentMutation,
   usePostApiV1ProcurementShipmentInvoiceMutation,
@@ -49,6 +50,9 @@ const Page = () => {
     pageSize: 1000,
     status: PurchaseOrderStatusList.Completed,
   });
+
+  const [loadPurchaseOrder] =
+    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
   // console.log(isSavingInvoice)
   const {
     register,
@@ -63,7 +67,7 @@ const Page = () => {
 
   const purchaseOrderOptions = purchaseOrders?.data?.map((item) => {
     return {
-      label: item.supplier?.name,
+      label: item.supplier?.name + "-" + item.code,
       value: item?.id,
     };
   }) as Option[];
@@ -75,24 +79,33 @@ const Page = () => {
 
   useEffect(() => {
     if (poOptions?.value) {
-      const PO = purchaseOrders?.data?.find(
-        (item) => item.id === poOptions.value,
-      );
-      const payload = PO?.items?.map((item) => ({
-        materialId: item.material?.id as string,
-        uomId: item.uom?.id as string,
-        expectedQuantity: item.quantity as number,
-        materialName: item.material?.name as string,
-        uomName: item.uom?.name as string,
-        receivedQuantity: item.quantity as number,
-        reason: "",
-        code: item.material?.code as string,
-        costPrice: item.price?.toString(),
-      })) as MaterialRequestDto[];
-      setMaterialLists(payload);
+      loadPurchaseOrderDetailsHandler(poOptions.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poOptions]);
+
+  const loadPurchaseOrderDetailsHandler = async (poId: string) => {
+    const res = await loadPurchaseOrder({
+      purchaseOrderId: poId,
+    }).unwrap();
+
+    const payload = res?.items?.map((item) => ({
+      materialId: item.material?.id as string,
+      uomId: item.uom?.id as string,
+      expectedQuantity: item.quantity as number,
+      materialName: item.material?.name as string,
+      uomName: item.uom?.name as string,
+      receivedQuantity: item.quantity as number,
+      reason: "",
+      code: item.material?.code as string,
+      costPrice: item.price?.toString(),
+      options: item.manufacturers?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })),
+    })) as MaterialRequestDto[];
+    setMaterialLists(payload);
+  };
 
   useEffect(() => {
     const loadCodes = async () => {
@@ -144,7 +157,7 @@ const Page = () => {
             items: materialLists?.map((item) => ({
               materialId: item.materialId,
               expectedQuantity: item.expectedQuantity,
-              // manufacturerId: item.manufacturerId,
+              manufacturerId: item.manufacturerId,
               reason: item.reason,
               receivedQuantity: item.receivedQuantity,
               uoMId: item.uomId,
@@ -159,6 +172,7 @@ const Page = () => {
       console.log(error, "errors");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
+    // console.log(materialLists, "materialLists");
   };
 
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);

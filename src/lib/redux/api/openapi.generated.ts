@@ -3401,6 +3401,7 @@ export type PurchaseOrderItemDto = {
   quantity?: number;
   price?: number;
   currency?: CollectionItemDto;
+  manufacturers?: ManufacturerDto[] | null;
 };
 export type PurchaseOrderItemDtoRead = {
   purchaseOrder?: CollectionItemDto;
@@ -3409,6 +3410,7 @@ export type PurchaseOrderItemDtoRead = {
   quantity?: number;
   price?: number;
   currency?: CollectionItemDto;
+  manufacturers?: ManufacturerDto[] | null;
   cost?: number;
 };
 export type PurchaseOrderStatus = 0 | 1 | 2 | 3;

@@ -1,6 +1,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
+import { Icon } from "@/components/ui";
 import { ShipmentDocumentDtoRead } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "./edit";
@@ -13,7 +14,13 @@ export function DataTableRowActions<TData extends ShipmentDocumentDtoRead>({
 }: DataTableRowActionsProps<TData>) {
   return (
     <section className="flex items-center justify-end gap-2">
-      {row.original.code}
+      <Icon
+        name="View"
+        className="h-5 w-5 cursor-pointer text-neutral-500"
+        onClick={() => {
+          console.log(row.original.code);
+        }}
+      />
     </section>
   );
 }

@@ -11,10 +11,16 @@ export const createRequisitionItemRequestSchema = z.object({
     .string({ required_error: "UOM is required" })
     .min(1, { message: "UOM is required" }),
   expectedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
-  receivedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
+  receivedQuantity: z
+    .number()
+    .min(0.1, { message: "Received Quantity is required" }),
   reason: z.string().optional(),
   uomName: z.string().optional(),
   costPrice: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  options: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .optional(),
 });
 
 export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);
