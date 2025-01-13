@@ -56,7 +56,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
           <div className="absolute -right-36 flex flex-col gap-4">
             <Button variant="outline" onClick={() => handlePrint()}>
               <Icon name="Printer" />
-              <span>Print</span>
+              <span>Send Email</span>
             </Button>
             <Button variant="destructive" onClick={() => onClose()}>
               <span>Close</span>

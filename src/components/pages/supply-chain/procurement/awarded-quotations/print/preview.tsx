@@ -90,7 +90,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
               ) : (
                 <Icon name="Printer" />
               )}
-              <span>Print</span>
+              <span>Send Email</span>
             </Button>
             <Button variant="destructive" onClick={() => onClose()}>
               <span>Close</span>
