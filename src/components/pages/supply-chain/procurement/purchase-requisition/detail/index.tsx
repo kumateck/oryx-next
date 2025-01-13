@@ -26,7 +26,6 @@ const Page = () => {
   });
 
   const [purchaseLists, setPurchaseLists] = useState<MaterialRequestDto[]>([]);
-  console.log(requisition, "requisitions");
 
   useEffect(() => {
     if (requisition) {

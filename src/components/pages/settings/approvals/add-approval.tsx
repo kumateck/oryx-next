@@ -131,6 +131,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                   control,
                   type: InputTypes.SELECT,
                   name: "requisitionType",
+                  onModal: true,
                   required: true,
                   placeholder: "Select item",
                   options: requisitionTypeOptions,
@@ -168,7 +169,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                   type: InputTypes.SELECT,
                   name: `approvalStages.${index}.roleId`,
                   required: true,
-
+                  onModal: true,
                   placeholder: "Role",
                   options: roleOptions,
                   errors: {
@@ -186,6 +187,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                   name: `approvalStages.${index}.userId`,
                   required: true,
                   placeholder: "User",
+                  onModal: true,
                   options: userOptions,
                   errors: {
                     message:
@@ -243,6 +245,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                             type: InputTypes.SELECT,
                             name: `approvalStages.${index}.order`,
                             required: true,
+                            onModal: true,
                             placeholder: "Rank",
                             options: rankOptions,
                             errors: {

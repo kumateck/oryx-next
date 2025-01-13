@@ -106,6 +106,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 control,
                 type: InputTypes.SELECT,
                 name: "warehouseId",
+                onModal: true,
                 required: true,
                 defaultValue: defaultWarehouse,
                 placeholder: "Warehouse",

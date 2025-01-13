@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -29,6 +29,8 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
+import TableForData from "./table";
+import { MaterialRequestDto } from "./type";
 
 const Page = () => {
   const router = useRouter();
@@ -118,6 +120,9 @@ const Page = () => {
     name: "purchaseOrderId.label",
     control,
   }) as string;
+
+  const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
+
   return (
     <div>
       <Card>
@@ -209,6 +214,11 @@ const Page = () => {
           </form>
         </CardContent>
       </Card>
+      <div className="w-full">
+        <div className="space-y-2">
+          <TableForData lists={materialLists} setItemLists={setMaterialLists} />
+        </div>
+      </div>
     </div>
   );
 };

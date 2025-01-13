@@ -123,7 +123,7 @@ const BOM = () => {
               ) : (
                 <Icon name="Recycle" className="h-4 w-4" />
               )}
-              <span>Archieve BOM</span>{" "}
+              <span>Archive BOM</span>{" "}
             </Button>
             <Button
               onClick={() => {

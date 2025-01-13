@@ -1,5 +1,6 @@
 // import { useForm } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -45,13 +46,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     label: details?.materialCategory?.name as string,
     value: details?.materialCategory?.id as string,
   };
-
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
+    setValue,
   } = useForm<MaterialRequestDto>({
     resolver: CreateMaterialValidator,
     mode: "all",
@@ -64,6 +65,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       code: details.code as string,
     },
   });
+
+  const kindString = useWatch<MaterialRequestDto>({
+    name: "kind",
+    control,
+  });
+  const kind = Number(kindString) as EMaterialKind;
 
   const materialCategoryOptions = data?.map((item) => ({
     label: item.name,
@@ -92,7 +99,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
+  useEffect(() => {
+    if (kind === EMaterialKind.Package) {
+      setValue("pharmacopoeia", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind]);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -143,6 +155,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 type: InputTypes.SELECT,
                 name: "materialCategoryId",
                 required: true,
+                onModal: true,
                 defaultValue: defaultMaterialCategory,
                 placeholder: "Material Category",
                 options: materialCategoryOptions,
@@ -162,17 +175,27 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   error: !!errors.name,
                 },
               },
-              {
-                register: { ...register("pharmacopoeia") },
-                label: "Pharmacopoeia",
-                placeholder: "Enter Pharmacopoeia",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.pharmacopoeia?.message,
-                  error: !!errors.pharmacopoeia,
+            ]}
+          />
+          {kind === EMaterialKind.Package && (
+            <FormWizard
+              config={[
+                {
+                  register: { ...register("pharmacopoeia") },
+                  label: "Pharmacopoeia",
+                  placeholder: "Enter Pharmacopoeia",
+                  type: InputTypes.TEXT,
+                  readOnly: kind === EMaterialKind.Package ? true : false,
+                  errors: {
+                    message: errors.pharmacopoeia?.message,
+                    error: !!errors.pharmacopoeia,
+                  },
                 },
-              },
+              ]}
+            />
+          )}
+          <FormWizard
+            config={[
               {
                 register: { ...register("description") },
                 label: "Description",

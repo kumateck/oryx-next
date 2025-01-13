@@ -109,6 +109,7 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
                 type: InputTypes.SELECT,
                 name: "uoMId",
                 required: true,
+                onModal: true,
                 placeholder: "Unit of Measurement",
                 options: unitOfMeasureOptions,
                 defaultValue: details?.uoMId,
