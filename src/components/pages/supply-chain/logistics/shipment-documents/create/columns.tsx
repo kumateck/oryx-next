@@ -40,6 +40,18 @@ export const getColumns = (
     },
   },
   {
+    accessorKey: "manufacturerId",
+    header: "Manufacturers",
+    meta: {
+      edittableCell: {
+        type: ColumnType.SELECT,
+        editable: true,
+        setItemLists,
+        // options: vendorOptions,
+      },
+    },
+  },
+  {
     accessorKey: "reason",
     header: "Reason",
     meta: {
