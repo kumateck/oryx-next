@@ -28,15 +28,15 @@ const ManufacturerForm = <TFieldValues extends FieldValues, TContext>({
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="w-full">
+    <div className="w-full space-y-2">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
+        className="grid w-full grid-cols-2 gap-x-10 gap-y-5 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
           {
             register: register("name" as Path<TFieldValues>),
             label: "Name",
-            placeholder: "Ener name",
+            placeholder: "Enter name",
             type: InputTypes.TEXT,
 
             required: true,
@@ -46,7 +46,7 @@ const ManufacturerForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("address" as Path<TFieldValues>),
             label: "Address",
-            placeholder: "Ener address",
+            placeholder: "Enter address",
             type: InputTypes.TEXT,
             required: true,
             errors,

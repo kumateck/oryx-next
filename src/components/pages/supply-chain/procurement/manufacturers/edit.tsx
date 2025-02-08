@@ -1,6 +1,7 @@
 // import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -19,10 +20,10 @@ import {
   PostApiV1CollectionApiArg,
   PutApiV1ProcurementManufacturerByManufacturerIdApiArg,
   useGetApiV1MaterialAllQuery,
-  useLazyGetApiV1ProcurementManufacturerQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1ProcurementManufacturerByManufacturerIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import ManufacturerForm from "./form";
@@ -36,7 +37,7 @@ interface Props {
   details: ManufacturerDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
+  const dispatch = useDispatch();
   const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const [changeManufacturer, { isLoading }] =
@@ -58,6 +59,15 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     value: item.id,
   })) as Option[];
 
+  const defaultValues = {
+    name: details.name as string,
+    address: details?.address as string,
+    validityDate: details?.validityDate
+      ? new Date(details?.validityDate)
+      : new Date(),
+    materials: defaultMaterials,
+    country: defaultCountry,
+  };
   const {
     register,
     control,
@@ -67,15 +77,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   } = useForm<ManufacturerRequestDto>({
     resolver: CreateManufacturerValidator,
     mode: "all",
-    defaultValues: {
-      name: details.name as string,
-      address: details?.address as string,
-      validityDate: details?.validityDate
-        ? new Date(details?.validityDate)
-        : new Date(),
-      materials: defaultMaterials,
-      country: defaultCountry,
-    },
+    defaultValues,
   });
 
   const [loadCollection, { data: collectionResponse }] =
@@ -113,12 +115,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await changeManufacturer({
         manufacturerId: details.id as string,
         createManufacturerRequest: payload,
-      } satisfies PutApiV1ProcurementManufacturerByManufacturerIdApiArg);
+      } satisfies PutApiV1ProcurementManufacturerByManufacturerIdApiArg).unwrap();
       toast.success("Manufacturer updated successfully");
-      reload({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
+
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -128,86 +128,19 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Edit Manufacturer</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          {/* <FormWizard
-            config={[
-              {
-                register: { ...register("name") },
-                label: "Name",
-                placeholder: "Enter Name",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("address") },
-                label: "Address",
-                placeholder: "Enter Address",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.address?.message,
-                  error: !!errors.address,
-                },
-              },
-              {
-                label: "Country",
-                control,
-                type: InputTypes.SELECT,
-                name: "country",
-                onModal: true,
-                required: true,
-                placeholder: "Select Country",
-                defaultValue: defaultCountry,
-                options: countryOptions,
-                errors: {
-                  message: errors.country?.message,
-                  error: !!errors.country,
-                },
-              },
-              {
-                type: InputTypes.DATE,
-                label: "Validity Date",
-                name: `validityDate`,
-                kind: "extensive",
-                control,
-                errors: {
-                  message: errors.validityDate?.message,
-                  error: !!errors.validityDate,
-                },
-                disabled: {
-                  before: new Date(),
-                },
-              },
-              {
-                label: "Materials",
-                control,
-                type: InputTypes.MULTIPLE,
-                name: "materials",
-                required: true,
-                onModal: true,
-                placeholder: "Materials",
-                defaultValue: defaultMaterials,
-                options: materialOptions,
-                errors: {
-                  message: errors.materials?.message,
-                  error: !!errors.materials,
-                },
-              },
-            ]}
-          /> */}
           <ManufacturerForm
             register={register}
             control={control}
             countryOptions={countryOptions}
             materialOptions={materialOptions}
             errors={errors}
+            defaultValues={defaultValues}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -221,7 +154,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Update Material</span>{" "}
+              <span>Save Changes</span>{" "}
             </Button>
           </DialogFooter>
         </form>

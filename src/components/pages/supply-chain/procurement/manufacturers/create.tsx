@@ -1,6 +1,7 @@
 // import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -17,10 +18,10 @@ import {
   CreateManufacturerRequest,
   PostApiV1CollectionApiArg,
   useGetApiV1MaterialAllQuery,
-  useLazyGetApiV1ProcurementManufacturerQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ProcurementManufacturerMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import ManufacturerForm from "./form";
@@ -33,7 +34,7 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
+  const dispatch = useDispatch();
   const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const [createMutation, { isLoading }] =
@@ -87,12 +88,10 @@ const Create = ({ isOpen, onClose }: Props) => {
       } satisfies CreateManufacturerRequest;
       await createMutation({
         createManufacturerRequest: payload,
-      });
+      }).unwrap();
       toast.success("Manufacturer created successfully");
-      reload({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
+
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -102,7 +101,7 @@ const Create = ({ isOpen, onClose }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add Manufacturer</DialogTitle>
         </DialogHeader>
@@ -127,7 +126,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Save Manufacturer</span>{" "}
+              <span>Save </span>{" "}
             </Button>
           </DialogFooter>
         </form>
