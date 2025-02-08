@@ -1,0 +1,208 @@
+import React from "react";
+import {
+  Control,
+  FieldArrayWithId,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  // Path,
+  UseFormRegister,
+} from "react-hook-form";
+
+import { FormWizard } from "@/components/form-inputs";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
+import { InputTypes, Option, Units } from "@/lib";
+
+import { ProductRequestDto } from "./type";
+
+export interface OptionsUpdate extends Option {
+  uom: string;
+}
+interface Props<TFieldValues extends FieldValues, TContext> {
+  control: Control<TFieldValues, TContext>;
+  register: UseFormRegister<TFieldValues>;
+  errors: FieldErrors<TFieldValues>;
+  productOptions: OptionsUpdate[];
+  defaultValues?: TFieldValues;
+  fields: FieldArrayWithId<TFieldValues>[];
+  remove: UseFieldArrayRemove;
+  append: UseFieldArrayAppend<TFieldValues>;
+  associateProducts: ProductRequestDto[];
+}
+const defaultAssociated: ProductRequestDto = {
+  productId: { label: "", value: "" },
+  quantity: 0,
+  uom: "",
+};
+const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
+  control,
+  register,
+  errors,
+  defaultValues,
+  fields,
+  append,
+  remove,
+  productOptions,
+  associateProducts,
+}: Props<TFieldValues, TContext>) => {
+  const renderUOM = (productOptions: OptionsUpdate[], index: number) => {
+    const uom =
+      productOptions?.find(
+        (item) => item.value === associateProducts?.[index]?.productId?.value,
+      )?.uom ?? "";
+    let IndexUom = "";
+    if (uom === Units.ML) {
+      IndexUom = Units.L;
+    } else if (uom === Units.MG) {
+      IndexUom = Units.KG;
+    }
+    return IndexUom;
+  };
+  return (
+    <div className="w-full">
+      <Card className="p-5">
+        <CardContent>
+          <div className="grid w-full grid-cols-2 gap-6 space-y-0">
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    register: register("code" as Path<TFieldValues>),
+                    label: "Schedule Code",
+                    readOnly: true,
+                    required: true,
+                    description: (
+                      <span className="text-sm text-neutral-500">
+                        You can’t change the schedule code
+                      </span>
+                    ),
+                    placeholder: "Code will be generated",
+                    type: InputTypes.TEXT,
+                    errors,
+                  },
+                  {
+                    type: InputTypes.SPACE,
+                  },
+                  {
+                    label: "Start Date",
+                    control: control as Control,
+                    type: InputTypes.DATE,
+                    name: "scheduledStartTime",
+                    required: true,
+                    disabled: {
+                      before: new Date(),
+                      after: new Date(2027, 0, 1),
+                    },
+                    errors,
+                  },
+                  {
+                    label: "End Date",
+                    control: control as Control,
+                    type: InputTypes.DATE,
+                    name: "scheduledEndTime",
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    label: "Remarks",
+                    control: control as Control,
+                    type: InputTypes.RICHTEXT,
+                    name: "remarks",
+                    autoFocus: false,
+                    placeholder: "Enter remarks for schedule",
+                    suggestions: [],
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <div className="flex justify-between px-2 py-5">
+        <span className="font-medium">Add Product to schedule</span>
+        <Button
+          type="button"
+          variant={"ghost"}
+          className="bg-neutral-dark text-white"
+          onClick={() => append({ ...defaultAssociated } as any)}
+        >
+          <Icon name="Plus" />
+          <span> Add</span>
+        </Button>
+      </div>
+
+      <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
+        {fields.map((field, index) => {
+          return (
+            <div key={field.id} className="relative">
+              <div className="absolute right-2 top-2">
+                <Icon
+                  onClick={() => remove(index)}
+                  name="CircleMinus"
+                  className="text-danger-500 h-5 w-5 hover:cursor-pointer"
+                />
+              </div>
+              <Card>
+                <CardContent className="py-5">
+                  <FormWizard
+                    className="grid w-full grid-cols-3 gap-4 space-y-0"
+                    fieldWrapperClassName="flex-grow"
+                    config={[
+                      {
+                        label: "Product",
+                        control: control as Control,
+                        type: InputTypes.SELECT,
+                        name: `products.${index}.productId`,
+                        required: true,
+                        placeholder: "Product",
+                        defaultValue: defaultValues?.products[index]?.productId,
+                        options: productOptions?.filter(
+                          (item2) =>
+                            !associateProducts?.some(
+                              (item1) => item1.productId.value === item2.value,
+                            ),
+                        ),
+                        errors,
+                      },
+                      {
+                        label: "Quantity",
+                        register: register(
+                          `products.${index}.quantity` as Path<TFieldValues>,
+                          {
+                            valueAsNumber: true,
+                          },
+                        ),
+                        type: InputTypes.NUMBER,
+                        required: true,
+                        placeholder: "Quantity",
+                        errors,
+                      },
+                      {
+                        label: "UOM",
+                        type: InputTypes.LABEL,
+                        title: renderUOM(productOptions, index),
+                        className:
+                          "border border-neutral-input rounded-md px-2 py-1 text-sm font-semibold text-neutral-secondary",
+                      },
+                    ]}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default ScheduleForm;

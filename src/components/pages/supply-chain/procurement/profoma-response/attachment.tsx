@@ -93,10 +93,7 @@ const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
                 name: `attachments`,
                 defaultValue: null,
                 control,
-                errors: {
-                  message: errors.attachments?.message?.toString(),
-                  error: !!errors.attachments,
-                },
+                errors,
               },
             ]}
           />

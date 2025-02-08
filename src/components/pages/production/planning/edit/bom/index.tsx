@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import StepWrapper from "@/app/shared/wrapper";
 import { Button, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
@@ -13,6 +12,8 @@ import {
   usePostApiV1BomMutation,
   usePutApiV1ProductByProductIdBomArchiveMutation,
 } from "@/lib/redux/api/openapi.generated";
+import PageTitle from "@/shared/title";
+import StepWrapper from "@/shared/wrapper";
 
 import Create from "./create";
 import TableForData from "./table";
@@ -30,13 +31,17 @@ const BOM = () => {
     product?.currentBillOfMaterial?.billOfMaterial?.items?.map((bom, idx) => ({
       ...bom,
       idIndex: (idx + 1).toString(),
-      componentMaterialId: {
-        label: bom.componentMaterial?.name as string,
-        value: bom.componentMaterial?.id as string,
+      materialId: {
+        label: bom.material?.name as string,
+        value: bom.material?.id as string,
       },
       materialTypeId: {
         label: bom.materialType?.name as string,
         value: bom.materialType?.id as string,
+      },
+      baseUoMId: {
+        label: bom.baseUoM?.symbol as string,
+        value: bom.baseUoM?.id as string,
       },
     })) as BomRequestDto[];
   const [saveBom, { isLoading }] = usePostApiV1BomMutation();
@@ -63,8 +68,9 @@ const BOM = () => {
           productId,
           items: itemLists?.map((item) => ({
             ...item,
-            componentMaterialId: item.componentMaterialId.value,
+            materialId: item.materialId.value,
             materialTypeId: item.materialTypeId.value,
+            baseUoMId: item.baseUoMId.value,
             order: item.order,
           })),
         },
@@ -85,32 +91,40 @@ const BOM = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
   return (
-    <div>
-      <div className="flex justify-end gap-4">
-        <Link
-          href={routes.editPlanningInfo()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Info
-        </Link>
-        <Link
-          href={routes.editPlanningPackaging()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Packaging
-        </Link>
-        <Link
-          href={routes.editPlanningProcedure()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Procedure
-        </Link>
+    <div className="relative">
+      <div className="absolute right-0 -mt-10">
+        <div className="flex justify-end gap-4">
+          <Link
+            href={routes.editPlanningInfo()}
+            className="underline hover:text-primary-hover"
+          >
+            Edit Info
+          </Link>
+          <Link
+            href={routes.editPlanningPackaging()}
+            className="underline hover:text-primary-hover"
+          >
+            Edit Packaging
+          </Link>
+          <Link
+            href={routes.editPlanningProcedure()}
+            className="underline hover:text-primary-hover"
+          >
+            Edit Procedure
+          </Link>
+          <Link
+            href={routes.editPackingOrder()}
+            className="underline hover:text-primary-hover"
+          >
+            Packing Order Preparation
+          </Link>
+        </div>
       </div>
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
-          <span className="font-Bold text-xl">BOM List</span>
-
+          <PageTitle title="BOM List" />
           <div className="flex gap-2">
             <Button
               onClick={handleArchiveBom}
@@ -134,7 +148,6 @@ const BOM = () => {
                 handleSave();
               }}
               type="button"
-              variant={"primary"}
               className="flex items-center gap-2"
             >
               {isLoading ? (
@@ -165,17 +178,7 @@ const BOM = () => {
         />
 
         <div className="w-full py-6">
-          <TableForData
-            lists={
-              itemLists?.map((item, idx) => {
-                return {
-                  ...item,
-                  idIndex: (idx + 1).toString(),
-                };
-              }) || []
-            }
-            setItems={setItemLists}
-          />
+          <TableForData lists={itemLists} setItems={setItemLists} />
         </div>
       </StepWrapper>
     </div>

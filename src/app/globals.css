@@ -1,23 +1,34 @@
-@import "react-calendar/dist/Calendar.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "react-calendar/dist/Calendar.css";
+@import "./calendar.css";
+@import "./flow.css";
 
+body {
+  /* font-family: Arial, Helvetica, sans-serif; */
+  /* font-family: "Roboto", sans-serif; */
+  font-family: "Open Sans", sans-serif;
+}
+/* html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  margin: 0;
+  padding: 0;
+} */
 html,
 body {
-  font-family: "Krub", sans-serif;
-  /* font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif; */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
-  font-style: normal;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 @layer base {
   :root {
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 100%;
+    --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -38,109 +49,130 @@ body {
   }
 }
 
-.react-calendar,
-.react-calendar * {
-  font-family: "Krub", sans-serif;
-  -webkit-font-smoothing: grayscale;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: 14px;
-}
-.react-calendar__navigation {
-  height: 28px !important;
-  line-height: 44px !important;
-  margin-bottom: 0px !important;
-  gap: 4px !important;
-}
-.react-calendar__navigation button {
-  min-width: 28px !important;
-  height: 28px !important;
-  width: 28px !important;
-}
-.react-calendar__navigation__label:hover,
-.react-calendar__navigation__arrow:hover {
-  /* color: var(--colorBrandForegroundOnLightHover) !important; */
-  color: theme("colors.neutral.500") !important;
-  /* background: var(--colorBrandBackgroundInvertedHover) !important; */
-  /* background: theme("background.neutral.100") !important; */
-  background-color: theme("backgroundColor.neutral.50") !important;
-  background: theme("backgroundColor.neutral.50") !important;
-}
-.react-calendar__navigation__label {
-  vertical-align: middle !important;
-  text-align: center !important;
-  margin-bottom: 1em !important;
-  line-height: normal !important;
-}
-.react-calendar__navigation button:enabled:hover,
-.react-calendar__navigation button:enabled:focus {
-  /* color: var(--colorBrandForegroundOnLightHover) !important; */
-  color: theme("colors.neutral.500") !important;
-  background-color: theme("backgroundColor.neutral.50") !important;
-  background: theme("backgroundColor.neutral.50") !important;
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+  /* Link styles */
+  a {
+    @apply text-blue-600;
+    cursor: pointer;
 
-  /* background: var(--colorBrandBackgroundInvertedHover) !important; */
-}
-.react-calendar__year-view {
-  width: 100%;
-  max-width: 400px;
-  max-height: 300px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
+    &:hover {
+      @apply underline;
+    }
+  }
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+  }
 
-.react-calendar__year-view__months {
-  text-align: center;
-  border-radius: 5px;
-  background-color: #ffffff;
-  transition:
-    background-color 0.3s,
-    transform 0.3s;
-}
-.react-calendar__year-view .react-calendar__tile {
-  padding: 1.1rem 0.5rem !important;
-}
-.react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus {
-  background-color: theme("backgroundColor.primary.100") !important;
-  border-radius: 2px !important;
-  color: var(--stroke-accent) !important;
-}
-.react-calendar__tile--active {
-  background-color: theme("backgroundColor.primary.500") !important;
-  border-radius: 6px !important;
-  color: theme("colors.white") !important;
-}
-.react-calendar__tile--hasActive {
-  background: theme("backgroundColor.primary.500");
-  background-color: theme("backgroundColor.primary.500");
-  /*  var(--colorBrandBackground) !important; */
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 6px !important;
-}
-.react-calendar__tile--now {
-  background-color: theme("backgroundColor.secondary.200") !important;
-  color: theme("colors.primary.500") !important;
-  border-radius: 6px;
-}
-.react-calendar__decade-view {
-  width: 100%;
-  max-width: 400px;
-  max-height: 300px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-.react-calendar__decade-view .react-calendar__tile {
-  padding: 1rem 0.5rem !important;
-}
+  ol li {
+    list-style-type: decimal;
+    p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+  ul li {
+    list-style-type: disc;
+    p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
 
-.react-calendar__century-view {
-  width: 100%;
-  max-width: 500px;
-  max-height: 300px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-.react-calendar__century-view .react-calendar__tile {
-  padding: 0.75rem 0.25rem !important;
+  /* Task list specific styles */
+  ul[data-type="taskList"] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+
+    li {
+      align-items: start;
+      display: flex;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    ul[data-type="taskList"] {
+      margin: 0;
+    }
+  }
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.1;
+    margin-top: 2.5rem;
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2 {
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+  }
+
+  h3 {
+    font-size: 1.75rem;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+  }
+  h5 {
+    font-size: 1.25rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+  p {
+    font-size: 0.875rem;
+  }
+
+  /* Placeholder (at the top) */
+  p.is-editor-empty:first-child::before {
+    color: theme("textColor.neutral.secondary");
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
+  /* images specific styles */
+  img {
+    display: block;
+    height: auto;
+    margin: 1.5rem 0;
+    max-width: 100%;
+
+    &.ProseMirror-selectednode {
+      outline: 3px solid #b3d4fc;
+    }
+  }
 }

@@ -1,0 +1,450 @@
+/* pre::-webkit-scrollbar {
+  background: transparent;
+  width: 10px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: #999;
+}
+
+.suggestions {
+  pointer-events: auto;
+  z-index: 999;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 300px;
+  max-height: 530px;
+  overflow-y: auto;
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.14);
+}
+
+.suggestions button {
+  display: flex;
+  width: 100%;
+  padding: 0.5rem;
+  align-items: center;
+  text-align: left;
+}
+
+.suggestions button:hover {
+  background-color: #e6e6e6;
+}
+
+.suggestions img {
+  border-radius: 9999px;
+  margin-right: 0.75rem;
+}
+
+.mention {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.tiptap table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.tiptap table td,
+.tiptap table th {
+  border: 2px solid #ced4da;
+  box-sizing: border-box;
+  min-width: 1em;
+  padding: 3px 5px;
+  position: relative;
+  vertical-align: top;
+}
+
+.tiptap table td > *,
+.tiptap table th > * {
+  margin-bottom: 0;
+}
+
+.tiptap table th {
+  background-color: #f1f3f5;
+  font-weight: bold;
+  text-align: left;
+}
+
+.tiptap table .selectedCell:after {
+  background: rgba(200, 200, 255, 0.4);
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.tiptap table .column-resize-handle {
+  background-color: #adf;
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 4px;
+}
+
+.tiptap table p {
+  margin: 0;
+}
+
+.tableWrapper {
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+.tiptap-ordered-lists > * + * {
+  margin-top: 0.75em;
+}
+.tiptap-bullet-list {
+  list-style: disc;
+}
+.tiptap ol {
+  list-style: decimal;
+  padding: 0 1rem;
+}
+.tiptap ul {
+  list-style: disc;
+  padding: 0 1rem;
+}
+.tiptap-ordered-lists {
+  list-style: decimal;
+  padding: 0 1rem;
+}
+.tiptap-ordered-lists ul,
+.tiptap-ordered-lists ol {
+  padding: 0 1rem;
+}
+
+.tiptap-bullet-list > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap-bullet-list ul,
+.tiptap-bullet-list ol {
+  padding: 0 1rem;
+}
+
+.tiptap code {
+  background-color: #e1e1e1;
+  border-radius: 0.25em;
+  box-decoration-break: clone;
+  color: #616161;
+  font-size: 0.9rem;
+  padding: 0.25em;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.tiptap p.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap .menu-icon {
+  color: #2563eb;
+}
+
+.tiptap h1 {
+  font-size: 2em;
+  color: blue;
+}
+
+.tiptap h2 {
+  font-size: 1.5em;
+  color: green;
+}
+
+.tiptap h3 {
+  font-size: 1.17em;
+  color: red;
+}
+
+.tiptap a {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+} */
+/* Scrollbar Styling */
+pre::-webkit-scrollbar {
+  background: transparent;
+  width: 12px; /* Increased width for better visibility */
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: #888; /* Darker scrollbar thumb for contrast */
+  border-radius: 6px; /* Rounded scrollbar for a modern look */
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker on hover for feedback */
+}
+
+/* Suggestions Popover Styling */
+.suggestions {
+  pointer-events: auto;
+  z-index: 1050; /* Ensure it's above the dialog */
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 300px;
+  max-height: 530px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.14);
+  scroll-behavior: smooth; /* Smooth scrolling */
+  -webkit-overflow-scrolling: touch; /* Momentum scrolling for iOS */
+  max-width: calc(100vw - 20px); /* Prevent horizontal overflow */
+}
+
+.suggestions button {
+  display: flex;
+  width: 100%;
+  padding: 0.5rem;
+  align-items: center;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+.suggestions button:hover,
+.suggestions button:focus,
+.suggestions button.active {
+  background-color: #e6e6e6; /* Highlight active or hovered items */
+  outline: none;
+}
+
+.suggestions img {
+  border-radius: 9999px; /* Circular image */
+  margin-right: 0.75rem;
+  max-width: 40px; /* Ensure consistent image size */
+  max-height: 40px;
+}
+
+.suggestions::-webkit-scrollbar {
+  width: 10px; /* Scrollbar width */
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+  background: #888; /* Thumb color */
+  border-radius: 6px; /* Rounded scrollbar thumb */
+}
+
+.suggestions::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Hover feedback */
+}
+
+.suggestions::-webkit-scrollbar-track {
+  background: transparent; /* Match the popover background */
+}
+
+/* Mention Highlight Styling */
+.mention {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+/* Table Styling for Tiptap */
+.tiptap table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.tiptap table td,
+.tiptap table th {
+  border: 2px solid #ced4da;
+  box-sizing: border-box;
+  min-width: 1em;
+  padding: 3px 5px;
+  position: relative;
+  vertical-align: top;
+}
+
+.tiptap table td > *,
+.tiptap table th > * {
+  margin-bottom: 0;
+}
+
+.tiptap table th {
+  background-color: #f1f3f5;
+  font-weight: bold;
+  text-align: left;
+}
+
+.tiptap table .selectedCell:after {
+  background: rgba(200, 200, 255, 0.4);
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.tiptap table .column-resize-handle {
+  background-color: #adf;
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 4px;
+}
+
+.tiptap table p {
+  margin: 0;
+}
+
+/* Table Wrapper for Horizontal Scrolling */
+.tableWrapper {
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+/* Resize Cursor Styling */
+.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+/* List Styling for Tiptap */
+.tiptap-ordered-lists > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap-bullet-list {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+  padding: 0 1rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+  padding: 0 1rem;
+}
+
+.tiptap-ordered-lists {
+  list-style: decimal;
+  padding: 0 1rem;
+}
+
+.tiptap-ordered-lists ul,
+.tiptap-ordered-lists ol {
+  padding: 0 1rem;
+}
+
+.tiptap-bullet-list > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap-bullet-list ul,
+.tiptap-bullet-list ol {
+  padding: 0 1rem;
+}
+
+/* Inline Code Styling */
+.tiptap code {
+  background-color: #e1e1e1;
+  border-radius: 0.25em;
+  box-decoration-break: clone;
+  color: #616161;
+  font-size: 0.9rem;
+  padding: 0.25em;
+}
+
+/* Placeholder Styling */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap p.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Menu Icon Styling */
+.tiptap .menu-icon {
+  color: #2563eb;
+}
+
+/* Heading Styles */
+.tiptap h1 {
+  font-size: 2em;
+  color: blue;
+}
+
+.tiptap h2 {
+  font-size: 1.5em;
+  color: green;
+}
+
+.tiptap h3 {
+  font-size: 1.17em;
+  color: red;
+}
+
+/* Link Styling */
+.tiptap a {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Dialog Content Scrolling */
+.dialog-content {
+  max-height: 90vh; /* Limit to viewport height */
+  overflow-y: auto; /* Enable internal scrolling */
+}
+
+/* Overlay Styling */
+.dialog-overlay {
+  background: rgba(0, 0, 0, 0.8); /* Dim background */
+  z-index: 1000;
+}

@@ -1,9 +1,9 @@
-import { icons } from "lucide-react";
-import * as React from "react";
+import { forwardRef } from "react";
 
+import { InputTypes } from "@/lib";
 import { cn } from "@/lib/utils";
 
-import { Icon } from "./icon";
+import { Icon, type LucideIconProps } from "./icon";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -11,15 +11,13 @@ export interface InputProps
   onPrefixClick?: () => void;
   suffixClass?: string;
   prefixClass?: string;
-  prefix?: keyof typeof icons;
-  suffix?: keyof typeof icons;
-  // error?: {
-
-  // }
-  // placeholder?: string;
+  prefixText?: string;
+  prefix?: LucideIconProps;
+  suffix?: LucideIconProps;
+  overflowCount?: number;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
@@ -29,7 +27,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       prefix,
       onPrefixClick,
       prefixClass,
-      type,
+      prefixText,
+      overflowCount,
       ...props
     },
     ref,
@@ -37,41 +36,68 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative w-full">
         <div className="absolute inset-y-0 left-0 flex cursor-pointer items-center pl-2">
+          {prefixText && (
+            <div className="h-6 w-6">
+              <span className="text-xs">{prefixText}</span>
+            </div>
+          )}
           {prefix && (
             <Icon
               name={prefix}
               onClick={onPrefixClick}
-              className={cn("text-text h-6 w-6", prefixClass)}
+              className={cn("h-5 w-5 text-neutral-default", prefixClass)}
             />
           )}
         </div>
         <input
-          type={type}
           className={cn(
-            "text-text focus-within:border-b-compound-brand border-input shadow-shadow2a placeholder:text-muted-foreground flex h-9 w-full rounded-md border bg-white px-2 py-1 font-krub text-sm ring-offset-zinc-900 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-within:border-b focus-visible:outline-none focus-visible:ring-zinc-900 disabled:cursor-not-allowed disabled:opacity-50",
-            prefix && "pl-8",
-            suffix && "pr-8",
+            "flex h-8 w-full rounded-md border border-neutral-input bg-white px-3 py-2 text-sm text-black ring-offset-neutral-secondary transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-secondary focus-within:border-b-2 focus-within:border-b-primary-default focus-visible:outline-none focus-visible:ring-neutral-secondary disabled:cursor-not-allowed disabled:opacity-50",
+            {
+              "cursor-not-allowed bg-neutral-hover text-neutral-tertiary":
+                props.readOnly,
+              "pl-8": prefix,
+              "pl-10": prefixText,
+              "pr-8": suffix,
+            },
             className,
           )}
           ref={ref}
+          step={props.type === InputTypes.NUMBER ? "0.001" : undefined}
+          onWheel={(e: {
+            currentTarget: { blur: () => void };
+            stopPropagation: () => void;
+          }) => {
+            //prevent value from changing on scroll
+            e.currentTarget.blur();
+            e.stopPropagation();
+          }}
           {...props}
         />
-
-        <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-2">
+        <div
+          className={cn(
+            "absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3",
+            {
+              "pr-0.5": overflowCount,
+            },
+          )}
+        >
           {suffix && (
             <Icon
               name={suffix}
               onClick={onSuffixClick}
-              className={cn("text-text h-6 w-6", suffixClass)}
-              strokeWidth={1}
+              className={cn("h-5 w-5 text-neutral-default", suffixClass)}
             />
+          )}
+          {overflowCount && (
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-dark p-1 text-white shadow-sm">
+              <span className="text-xs font-normal">+{overflowCount}</span>
+            </div>
           )}
         </div>
       </div>
     );
   },
 );
-
 Input.displayName = "Input";
 
 export { Input };

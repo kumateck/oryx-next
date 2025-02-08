@@ -1,66 +1,71 @@
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 import { Button } from "./button";
-import { Calendar } from "./calendar";
+import { Icon } from "./icon";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Separator } from "./separator";
+import { TheAduseiCalendar, TheCalendarProps } from "./the-calendar";
 
-// type Props = React.ComponentProps<typeof Calendar>;
-type Props = React.ComponentProps<typeof Calendar> & {
+interface Props extends TheCalendarProps {
+  className?: string;
   open: boolean;
   onToggle: () => void;
-};
-export function DatePicker(props: Props): JSX.Element {
+}
+export function DatePicker(props: Props) {
   return (
     <Popover open={props.open}>
       <PopoverTrigger asChild>
         <Button
           onClick={() => props.onToggle()}
           className={cn(
-            "h-10 w-full justify-between border-gray-300 bg-white px-3 py-2.5 text-left font-normal",
-            !props.selected && "text-muted-foreground",
+            "h-8 w-full justify-between rounded-md border-neutral-input bg-white px-3 py-2.5 text-left font-normal hover:border-b-2 hover:border-b-primary-default hover:bg-white",
+            !props.value && "text-neutral-default",
             props.className,
           )}
           size="sm"
           variant="outline"
         >
-          <div className="text-muted-foreground text-sm">
-            {props.selected ? (
-              format(new Date(props.selected as unknown as string), "PPP")
+          <div className="text-sm text-neutral-default">
+            {props.value ? (
+              format(new Date(props.value as unknown as string), "PPP")
             ) : (
               <span>Pick a date</span>
             )}
           </div>
-          <CalendarIcon className="mr-0 h-4 w-4 text-primary-500" size={20} />
+          <Icon
+            name="CalendarDays"
+            className="text-primary-500 mr-0 h-4 w-4"
+            size={20}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent
+        alignOffset={0}
+        sideOffset={0}
         side="bottom"
-        align="end"
-        className="my-2 w-fit bg-white p-0"
+        align="start"
+        className="my-2 w-fit bg-white p-2"
       >
-        <Calendar
-          captionLayout="dropdown-buttons"
-          fromYear={1900}
-          initialFocus
-          toYear={new Date().getFullYear()}
-          {...props}
-        />
+        <TheAduseiCalendar {...props} />
         <div className="px-3">
-          <hr className="" />
+          <Separator className="my-2" />
         </div>
-        <div className="flex gap-3 p-5">
+        <div className="flex justify-end gap-3 pt-2">
           <Button
             onClick={() => props.onToggle()}
             className="flex-grow"
             variant="outline"
+            type="button"
           >
             Cancel
           </Button>
-          <Button onClick={() => props.onToggle()} className="flex-grow">
+          <Button
+            type="button"
+            onClick={() => props.onToggle()}
+            className="flex-grow"
+          >
             Apply
           </Button>
         </div>

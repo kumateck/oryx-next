@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-import { ServerDatatable } from "@/app/shared/datatable";
+import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
   GetApiV1ProcurementManufacturerApiArg,
   useGetApiV1ProcurementManufacturerQuery,
   useLazyGetApiV1ProcurementManufacturerQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { ServerDatatable } from "@/shared/datatable";
+import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
@@ -37,42 +39,33 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
-      <div className="w-full">
-        <div className="flex items-center justify-between py-2">
-          <span className="text-3xl font-bold text-secondary-500">
-            Approved Manufacturers
-          </span>
-          <div className="flex items-center justify-end gap-2">
-            <Button
-              variant="default"
-              size={"sm"}
-              onClick={() => setIsOpen(true)}
-            >
-              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-            </Button>
-          </div>
+      <div className="flex items-center justify-between py-2">
+        <PageTitle title="Approved Manufacturers" />
+        <div className="flex items-center justify-end gap-2">
+          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
+            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+          </Button>
         </div>
-
-        <ServerDatatable
-          data={data}
-          columns={columns}
-          isLoading={isLoading || isFetching}
-          setPage={setPage}
-          setPageSize={setPageSize}
-          meta={{
-            pageIndex: result?.pageIndex as number,
-            pageCount: result?.pageCount as number,
-            totalRecordCount: result?.totalRecordCount as number,
-            numberOfPagesToShow: result?.numberOfPagesToShow as number,
-            startPageIndex: result?.startPageIndex as number,
-            stopPageIndex: result?.stopPageIndex as number,
-            pageSize,
-          }}
-        />
       </div>
-    </div>
+      <ServerDatatable
+        data={data}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        setPage={setPage}
+        setPageSize={setPageSize}
+        meta={{
+          pageIndex: result?.pageIndex as number,
+          pageCount: result?.pageCount as number,
+          totalRecordCount: result?.totalRecordCount as number,
+          numberOfPagesToShow: result?.numberOfPagesToShow as number,
+          startPageIndex: result?.startPageIndex as number,
+          stopPageIndex: result?.stopPageIndex as number,
+          pageSize,
+        }}
+      />
+    </PageWrapper>
   );
 };
 export default Page;

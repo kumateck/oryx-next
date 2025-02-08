@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
   CreateDepartmentRequest,
   DepartmentDto,
@@ -22,6 +21,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import DepartmentForm from "./form";
 import { CreateDepartmentValidator, DepartmentRequestDto } from "./types";
 
 // import "./types";
@@ -119,76 +119,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                register: { ...register("code") },
-                label: "Department Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the department code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Department Name",
-                required: true,
-                placeholder: "Enter New Department Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                label: "Warehouse Select",
-                control,
-                type: InputTypes.MULTIPLE,
-                onModal: true,
-                name: "warehouse",
-                required: true,
-
-                options: warehouseOptions,
-                errors: {
-                  message: errors.warehouseIds?.message,
-                  error: !!errors.warehouseIds,
-                },
-              },
-              {
-                register: { ...register("warehouseIds") },
-                label: "Warehouse ID",
-                readOnly: true,
-                required: true,
-                placeholder: "Warehouse ID will be automatically selected",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.warehouseIds?.message,
-                  error: !!errors.warehouseIds,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                required: true,
-                placeholder: "Enter New Description",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
+          <DepartmentForm
+            control={control}
+            register={register}
+            errors={errors}
+            warehouseOptions={warehouseOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

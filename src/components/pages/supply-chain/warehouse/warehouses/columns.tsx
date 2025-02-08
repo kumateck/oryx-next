@@ -35,7 +35,7 @@ export function DataTableRowActions<TData extends WarehouseDto>({
       />
       <Icon
         name="Trash2"
-        className="h-5 w-5 cursor-pointer text-danger-500"
+        className="text-danger-500 h-5 w-5 cursor-pointer"
         onClick={() => {
           setDetails(row.original);
           setIsDeleteOpen(true);

@@ -1,4 +1,7 @@
+import { z } from "zod";
+
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const IS_DEV = process.env.NODE_ENV !== "production";
 
 export const APP_NAME = "Oryx ERP";
 
@@ -13,6 +16,7 @@ export const ORYX_ERP_COOKIE_ID = `${APP_CONTEXT.ORYX_ERP}-${COOKIE_ID}`;
 export const COLLECTION_TYPES = {
   ProductCategory: "ProductCategory",
   MaterialCategory: "MaterialCategory",
+  PackageCategory: "PackageCategory",
   PackageType: "PackageType",
   Resource: "Resource",
   UnitOfMeasure: "UnitOfMeasure",
@@ -82,9 +86,15 @@ export enum SupplierType {
   // Other = 3,
 }
 
+export enum FORM_BUILDER_CONFIG {
+  TEMPLATES = "Templates",
+  QUESTIONS = "Questions",
+}
+
 export enum InputTypes {
   SWITCH = "switch",
   TEXT = "text",
+  LABEL = "label",
   OTP = "otp",
   EMAIL = "email",
   MULTIPLE = "multiple",
@@ -92,6 +102,8 @@ export enum InputTypes {
   PASSWORD = "password",
   PHONE = "phone",
   SELECT = "select",
+  SPACE = "space",
+  PAGINATED_SELECT = "paginated-select",
   MULTI = "multi",
   DATE = "date",
   RANGE = "daterange",
@@ -107,6 +119,7 @@ export enum InputTypes {
   BUTTON = "button",
   SUBMIT = "submit",
   COLOR = "color",
+  SPECIAL_SELECT = "special-select",
 }
 
 export enum Status {
@@ -120,6 +133,23 @@ export enum Status {
   NonCompliant = "Non Compliant",
 }
 
+export enum TimeType {
+  Time = "time",
+  Moment = "moment",
+}
+
+export enum QuestionTypes {
+  ShortAnswer = 0,
+  LongAnswer = 1,
+  Paragraph = 2,
+  Datepicker = 3,
+  SingleChoice = 4,
+  Dropdown = 5,
+  Checkbox = 6,
+  FileUpload = 7,
+  Signature = 8,
+  Reference = 9,
+}
 export interface Option {
   label: string;
   value: string;
@@ -149,6 +179,7 @@ export const routes = {
   editPlanningInfo: () => `info`,
   editPlanningPackaging: () => `packaging`,
   editPlanningProcedure: () => `procedure`,
+  editPackingOrder: () => `packing-order`,
   rawMaterials: () => "raw-materials",
   finishedProducts: () => "finished-products",
   newEmployee: () => "/resource/employees/create",
@@ -167,3 +198,34 @@ export const routes = {
   editEmployee: (params: { id: string }) =>
     `/resource/employees/edit/${params.id}`,
 };
+
+export const formatClock = (hours: number, minutes: number, light: boolean) => {
+  const result = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${light ? "AM" : "PM"}`;
+  return result.trim(); // Ensure there are no extra spaces
+};
+
+export type OptionsMap = {
+  [key: string]: Option[];
+};
+
+export const IdSchema = (msg: string) =>
+  z.object(
+    {
+      value: z.string({
+        message: `${msg} is required`,
+      }),
+      label: z.string(),
+      uom: z.string().optional(),
+    },
+    {
+      message: `${msg} is required`,
+    },
+  );
+
+export enum Units {
+  ML = "ml",
+  MG = "mg",
+  L = "L",
+  KG = "kg",
+  G = "g",
+}

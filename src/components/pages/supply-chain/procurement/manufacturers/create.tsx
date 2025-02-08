@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,7 +12,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   CreateManufacturerRequest,
   PostApiV1CollectionApiArg,
@@ -24,6 +23,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import ManufacturerForm from "./form";
 import { CreateManufacturerValidator, ManufacturerRequestDto } from "./types";
 
 // import "./types";
@@ -108,71 +108,12 @@ const Create = ({ isOpen, onClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                register: { ...register("name") },
-                label: "Name",
-                placeholder: "Enter Name",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("address") },
-                label: "Address",
-                placeholder: "Enter Address",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.address?.message,
-                  error: !!errors.address,
-                },
-              },
-              {
-                label: "Country",
-                control,
-                type: InputTypes.SELECT,
-                name: "country",
-                required: true,
-                onModal: true,
-                placeholder: "Select Country",
-                options: countryOptions,
-                errors: {
-                  message: errors.country?.message,
-                  error: !!errors.country,
-                },
-              },
-              {
-                type: InputTypes.DATE,
-                label: "Validity Date",
-                name: `validityDate`,
-                kind: "extensive",
-                control,
-                errors: {
-                  message: errors.validityDate?.message,
-                  error: !!errors.validityDate,
-                },
-                disabled: {
-                  before: new Date(),
-                },
-              },
-              {
-                label: "Materials",
-                control,
-                type: InputTypes.MULTIPLE,
-                name: "materials",
-                required: true,
-                onModal: true,
-                placeholder: "Materials",
-                options: materialOptions,
-                errors: {
-                  message: errors.materials?.message,
-                  error: !!errors.materials,
-                },
-              },
-            ]}
+          <ManufacturerForm
+            register={register}
+            control={control}
+            countryOptions={countryOptions}
+            materialOptions={materialOptions}
+            errors={errors}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

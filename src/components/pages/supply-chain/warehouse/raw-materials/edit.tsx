@@ -1,9 +1,9 @@
 // import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,17 +13,18 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, EMaterialKind, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
   CreateMaterialRequest,
   MaterialDto,
   MaterialKind,
   useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1MaterialQuery,
   usePutApiV1MaterialByMaterialIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import MaterialForm from "./form";
 import { CreateMaterialValidator, MaterialRequestDto } from "./types";
 
 // import "./types";
@@ -32,19 +33,29 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   details: MaterialDto;
+  kind?: EMaterialKind;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
-
+  const dispatch = useDispatch();
   const [createMaterial, { isLoading }] =
     usePutApiV1MaterialByMaterialIdMutation();
   const { data } = useGetApiV1CollectionByItemTypeQuery({
     itemType: COLLECTION_TYPES.MaterialCategory,
+    materialKind: details.kind,
   });
 
   const defaultMaterialCategory = {
     label: details?.materialCategory?.name as string,
     value: details?.materialCategory?.id as string,
+  };
+
+  const defaultValues = {
+    name: details.name as string,
+    description: details.description as string,
+    materialCategoryId: defaultMaterialCategory,
+    pharmacopoeia: details.pharmacopoeia as string,
+    kind: details?.kind?.toString() as unknown as MaterialKind,
+    code: details.code as string,
   };
   const {
     register,
@@ -56,14 +67,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   } = useForm<MaterialRequestDto>({
     resolver: CreateMaterialValidator,
     mode: "all",
-    defaultValues: {
-      name: details.name as string,
-      description: details.description as string,
-      materialCategoryId: defaultMaterialCategory,
-      pharmacopoeia: details.pharmacopoeia as string,
-      kind: details?.kind?.toString() as unknown as MaterialKind,
-      code: details.code as string,
-    },
+    defaultValues,
   });
 
   const kindString = useWatch<MaterialRequestDto>({
@@ -89,10 +93,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         createMaterialRequest: payload,
       });
       toast.success("Material updated successfully");
-      loadMaterials({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
+
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -113,7 +115,16 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
+          <MaterialForm
+            register={register}
+            control={control}
+            categoryOptions={materialCategoryOptions}
+            errors={errors}
+            kind={kind}
+            defaultValues={defaultValues}
+          />
+
+          {/* <FormWizard
             config={[
               {
                 register: { ...register("code") },
@@ -208,7 +219,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 },
               },
             ]}
-          />
+          /> */}
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel

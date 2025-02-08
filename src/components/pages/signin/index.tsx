@@ -28,7 +28,7 @@ import { authActions } from "@/lib/redux/slices/auth";
 import { persistToken } from "@/lib/utilities";
 import { ErrorResponse, isErrorResponse } from "@/lib/utils";
 
-import { LoginValidator, TLogin } from "./types";
+import { LoginDto, LoginValidator, TLogin } from "./types";
 
 const mutex = new Mutex();
 const Signin = () => {
@@ -49,39 +49,6 @@ const Signin = () => {
       password: "",
     },
   });
-  // const onSubmit = async (data: TLogin) => {
-  //   if (!data.password) return;
-  //   const payload = {
-  //     loginRequest: {
-  //       email: data.email,
-  //       password: data.password,
-  //     },
-  //   } satisfies PostApiV1AuthLoginApiArg;
-
-  //   try {
-  //     const response = await loginMutation(payload).unwrap();
-  //     const { accessToken, refreshToken, userId, expiresIn, avatar } = response;
-  //     dispatch(
-  //       authActions.setTokens({
-  //         accessToken,
-  //         refreshToken,
-  //         userId,
-  //         expiresIn,
-  //         avatar,
-  //       }),
-  //     );
-  //     const redirectTo = searchParams.get("redirectTo") ?? routes.home();
-  //     if (userId) {
-  //       return navigate(redirectTo, {
-  //         replace: true,
-  //       });
-  //     } else {
-  //       return navigate(routes.signin());
-  //     }
-  //   } catch (error) {
-  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
-  //   }
-  // };
 
   const onSubmit = async (data: TLogin) => {
     if (!data.password) return;
@@ -125,7 +92,9 @@ const Signin = () => {
         }
       });
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      const err = error as { data: ErrorResponse };
+      console.log(err, "error");
+      toast.error(isErrorResponse(err.data as ErrorResponse)?.description);
     }
   };
   return (
@@ -145,26 +114,20 @@ const Signin = () => {
               config={[
                 {
                   autoFocus: true,
-                  register: { ...register("email") },
+                  register: register(LoginDto.email),
                   label: "Email",
                   required: true,
                   placeholder: "Enter Email",
-                  errors: {
-                    message: errors.email?.message,
-                    error: !!errors.email,
-                  },
+                  errors,
                   type: InputTypes.EMAIL,
                   suffix: "Mail",
                 },
                 {
-                  register: { ...register("password") },
+                  register: register(LoginDto.password),
                   label: "Password",
                   placeholder: "Enter Password",
                   required: true,
-                  errors: {
-                    message: errors.password?.message,
-                    error: !!errors.password,
-                  },
+                  errors,
                   type: InputTypes.PASSWORD,
                 },
               ]}
@@ -189,7 +152,7 @@ const Signin = () => {
             <Button
               type="submit"
               variant="default"
-              className="flex w-full items-center justify-center gap-2 bg-primary-500"
+              className="flex w-full items-center justify-center gap-2"
             >
               {isLoading && (
                 <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />

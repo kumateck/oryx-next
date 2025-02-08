@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-import LoginPageSideImage from "@/app/assets/images/auth/login.jpg";
+import LoginPageSideImage from "@/assets/images/auth/login.jpg";
 
 export default function AuthLayout({
   children,
@@ -19,7 +19,7 @@ export default function AuthLayout({
           height={1000}
         />
       </div>
-      <div className="flex items-center justify-center bg-white">
+      <div className="flex flex-grow items-center justify-center bg-white px-4 lg:col-span-1">
         {children}
       </div>
     </section>

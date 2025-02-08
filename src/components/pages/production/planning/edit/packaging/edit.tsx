@@ -1,9 +1,7 @@
 // import { useForm } from "react-hook-form";
 import _ from "lodash";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,14 +11,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib/constants";
+import { Option } from "@/lib/constants";
 import {
   MaterialDto,
-  PostApiV1CollectionApiArg,
   useGetApiV1MaterialQuery,
-  usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import PackageForm from "./form";
 import { CreatePackagingValidator, PackagingRequestDto } from "./types";
 
 // import "./types";
@@ -42,15 +39,8 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
   } = useForm<PackagingRequestDto>({
     resolver: CreatePackagingValidator,
     mode: "all",
-    defaultValues: {
-      ...details,
-      otherStandards: details.otherStandards,
-      materialThickness: details.materialThickness,
-    },
+    defaultValues: details,
   });
-
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
 
   const { data: materialResponse } = useGetApiV1MaterialQuery({
     page: 1,
@@ -78,20 +68,12 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
         value: uom.id,
       })) as Option[]);
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.PackageType],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const packageTypeOptions = collectionResponse?.[
-    COLLECTION_TYPES.PackageType
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  const directLinkMaterialOptions = materialResponse?.data?.map(
+    (uom: MaterialDto) => ({
+      label: uom.name,
+      value: uom.id,
+    }),
+  ) as Option[];
 
   // const onSubmit = (data: PackagingRequestDto) => {
   //   setItemLists((prevState) => {
@@ -123,70 +105,19 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Edit Package</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-6 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                label: "Package Type",
-                control,
-                type: InputTypes.SELECT,
-                name: "packageTypeId",
-                onModal: true,
-                required: true,
-                placeholder: "Package Type",
-                options: packageTypeOptions,
-                defaultValue: details?.packageTypeId,
-                errors: {
-                  message: errors.packageTypeId?.message,
-                  error: !!errors.packageTypeId,
-                },
-              },
-              {
-                label: "Material",
-                control,
-                type: InputTypes.SELECT,
-                name: "materialId",
-                onModal: true,
-                required: true,
-                placeholder: "Material",
-                options: materialOptions,
-                defaultValue: details?.materialId,
-                errors: {
-                  message: errors.materialId?.message,
-                  error: !!errors.materialId,
-                },
-              },
-
-              {
-                register: { ...register("materialThickness") },
-                label: "Material Thickness",
-                placeholder: "Enter Thickness",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.materialThickness?.message,
-                  error: !!errors.materialThickness,
-                },
-              },
-
-              {
-                register: { ...register("otherStandards") },
-                label: "Other Standards",
-                placeholder: "Enter Other Standards",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.otherStandards?.message,
-                  error: !!errors.otherStandards,
-                },
-              },
-            ]}
+          <PackageForm
+            register={register}
+            control={control}
+            errors={errors}
+            materialOptions={materialOptions}
+            directLinkMaterialOptions={directLinkMaterialOptions}
+            defaultValues={details}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

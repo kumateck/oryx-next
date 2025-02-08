@@ -1,7 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
+import { Option, Units, convertUnits } from "@/lib";
 import { ProductionScheduleDto } from "@/lib/redux/api/openapi.generated";
+import MultiSelectListViewer from "@/shared/multi-select-lists";
 
 // import Edit from "./edit";
 
@@ -34,16 +36,27 @@ export const columns: ColumnDef<ProductionScheduleDto>[] = [
   },
   {
     accessorKey: "product",
-    header: "Product",
+    header: "Products",
     cell: ({ row }) => (
-      <div className="min-w-36">{row.original.product?.name}</div>
-    ),
-  },
-  {
-    accessorKey: "quantity",
-    header: "Quantity",
-    cell: ({ row }) => (
-      <div className="min-w-36">{row.getValue("quantity")}</div>
+      <div className="">
+        <MultiSelectListViewer
+          className="max-w-[120ch]"
+          lists={
+            row.original.products?.map((p) => {
+              const productName = p.product?.name as string;
+              const qty = convertUnits(
+                p.quantity ?? 0,
+                p.product?.baseUoM?.symbol as string,
+                Units.L,
+              );
+              const label = `${productName} (${qty}${Units.L})`;
+              return {
+                label,
+              };
+            }) as Option[]
+          }
+        />
+      </div>
     ),
   },
   {
@@ -68,11 +81,11 @@ export const columns: ColumnDef<ProductionScheduleDto>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "remarks",
-    header: "Remarks",
-    cell: ({ row }) => <div>{row.original.remarks}</div>,
-  },
+  // {
+  //   accessorKey: "remarks",
+  //   header: "Remarks",
+  //   cell: ({ row }) => <div>{row.original.remarks}</div>,
+  // },
 
   // {
   //   id: "actions",

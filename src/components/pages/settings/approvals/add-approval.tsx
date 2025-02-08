@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { FieldError, useFieldArray, useForm, useWatch } from "react-hook-form";
+import React from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
-import { FormInput } from "@/components/form-inputs/wizard";
+// import { FormWizard } from "@/components/form-inputs";
+// import { FormInput } from "@/components/form-inputs/wizard";
 import {
   Button,
   Dialog,
@@ -13,17 +13,17 @@ import {
   Icon,
 } from "@/components/ui";
 import {
-  COLLECTION_TYPES,
+  // COLLECTION_TYPES,
   ErrorResponse,
-  InputTypes,
-  Option,
-  RequisitionType,
+  // InputTypes,
+  // Option,
+  // RequisitionType,
   isErrorResponse,
 } from "@/lib";
 import {
   PostApiV1ApprovalApiArg,
   usePostApiV1ApprovalMutation,
-  usePostApiV1CollectionMutation,
+  // usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { ApprovalRequestDto, ApprovalValidator } from "./types";
@@ -35,46 +35,46 @@ interface Props {
 
 const AddApproval = ({ isOpen, onClose }: Props) => {
   const [saveApproval, { isLoading }] = usePostApiV1ApprovalMutation();
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  // const [loadCollection, { data: collectionResponse }] =
+  //   usePostApiV1CollectionMutation();
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<ApprovalRequestDto>({
     resolver: ApprovalValidator,
     mode: "all",
   });
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.Role, COLLECTION_TYPES.User],
-    }).unwrap();
+  // useEffect(() => {
+  //   loadCollection({
+  //     body: [COLLECTION_TYPES.Role, COLLECTION_TYPES.User],
+  //   }).unwrap();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
-    (role) => ({
-      label: role.name,
-      value: role.id,
-    }),
-  ) as Option[];
+  // const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
+  //   (role) => ({
+  //     label: role.name,
+  //     value: role.id,
+  //   }),
+  // ) as Option[];
 
-  const userOptions = collectionResponse?.[COLLECTION_TYPES.User]?.map(
-    (user) => ({
-      label: user.name,
-      value: user.id,
-    }),
-  ) as Option[];
+  // const userOptions = collectionResponse?.[COLLECTION_TYPES.User]?.map(
+  //   (user) => ({
+  //     label: user.name,
+  //     value: user.id,
+  //   }),
+  // ) as Option[];
 
-  const requisitionTypeOptions = Object.keys(RequisitionType)
-    .filter((key) => isNaN(Number(key))) // Filter out numeric keys
-    .map((key, index) => ({
-      label: key,
-      value: index.toString(),
-    }));
+  // const requisitionTypeOptions = Object.keys(RequisitionType)
+  //   .filter((key) => isNaN(Number(key))) // Filter out numeric keys
+  //   .map((key, index) => ({
+  //     label: key,
+  //     value: index.toString(),
+  //   }));
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -105,11 +105,11 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const typeValues =
-    useWatch({
-      control,
-      name: "approvalStages",
-    })?.map((stage) => stage?.type) || [];
+  // const typeValues =
+  //   useWatch({
+  //     control,
+  //     name: "approvalStages",
+  //   })?.map((stage) => stage?.type) || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -124,7 +124,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full">
-            <FormWizard
+            {/* <FormWizard
               config={[
                 {
                   label: "Approval Type",
@@ -141,7 +141,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                   },
                 },
               ]}
-            />
+            /> */}
 
             <div>
               <div className="flex justify-between px-2 py-5">
@@ -162,42 +162,42 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
 
             <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
               {fields.map((field, index) => {
-                const type = typeValues[index];
-                const roleForm = {
-                  label: "Role",
-                  control,
-                  type: InputTypes.SELECT,
-                  name: `approvalStages.${index}.roleId`,
-                  required: true,
-                  onModal: true,
-                  placeholder: "Role",
-                  options: roleOptions,
-                  errors: {
-                    message:
-                      errors.approvalStages?.[
-                        index
-                      ]?.roleId?.message?.toString(),
-                    error: !!errors.approvalStages?.[index]?.roleId,
-                  },
-                };
-                const userForm = {
-                  label: "User",
-                  control,
-                  type: InputTypes.SELECT,
-                  name: `approvalStages.${index}.userId`,
-                  required: true,
-                  placeholder: "User",
-                  onModal: true,
-                  options: userOptions,
-                  errors: {
-                    message:
-                      errors.approvalStages?.[
-                        index
-                      ]?.userId?.message?.toString(),
-                    error: !!errors.approvalStages?.[index]?.userId,
-                  },
-                };
-                const typeSelect = type === "Role" ? roleForm : userForm;
+                // const type = typeValues[index];
+                // const roleForm = {
+                //   label: "Role",
+                //   control,
+                //   type: InputTypes.SELECT,
+                //   name: `approvalStages.${index}.roleId`,
+                //   required: true,
+                //   onModal: true,
+                //   placeholder: "Role",
+                //   options: roleOptions,
+                //   errors: {
+                //     message:
+                //       errors.approvalStages?.[
+                //         index
+                //       ]?.roleId?.message?.toString(),
+                //     error: !!errors.approvalStages?.[index]?.roleId,
+                //   },
+                // };
+                // const userForm = {
+                //   label: "User",
+                //   control,
+                //   type: InputTypes.SELECT,
+                //   name: `approvalStages.${index}.userId`,
+                //   required: true,
+                //   placeholder: "User",
+                //   onModal: true,
+                //   options: userOptions,
+                //   errors: {
+                //     message:
+                //       errors.approvalStages?.[
+                //         index
+                //       ]?.userId?.message?.toString(),
+                //     error: !!errors.approvalStages?.[index]?.userId,
+                //   },
+                // };
+                // const typeSelect = type === "Role" ? roleForm : userForm;
                 return (
                   <div
                     key={field.id}
@@ -207,10 +207,10 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                       <Icon
                         onClick={() => remove(index)}
                         name="CircleMinus"
-                        className="h-5 w-5 text-danger-500 hover:cursor-pointer"
+                        className="text-danger-500 h-5 w-5 hover:cursor-pointer"
                       />
                     </div>
-                    <FormWizard
+                    {/* <FormWizard
                       config={[
                         {
                           label: "Type",
@@ -232,8 +232,8 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                           },
                         },
                       ]}
-                    />
-                    <div className="flex w-full gap-2">
+                    /> */}
+                    {/* <div className="flex w-full gap-2">
                       <FormWizard
                         className="grid w-full grid-cols-2 gap-1 space-y-0"
                         fieldWrapperClassName="flex-grow"
@@ -277,7 +277,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                           },
                         ]}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 );
               })}
@@ -301,14 +301,14 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
   );
 };
 
-const rankOptions = [
-  { label: "Level 1", value: "1" },
-  { label: "Level 2", value: "2" },
-  { label: "Level 3", value: "3" },
-  { label: "Level 4", value: "4" },
-  { label: "Level 5", value: "5" },
-  { label: "Level 6", value: "6" },
-  { label: "Level 7", value: "7" },
-];
+// const rankOptions = [
+//   { label: "Level 1", value: "1" },
+//   { label: "Level 2", value: "2" },
+//   { label: "Level 3", value: "3" },
+//   { label: "Level 4", value: "4" },
+//   { label: "Level 5", value: "5" },
+//   { label: "Level 6", value: "6" },
+//   { label: "Level 7", value: "7" },
+// ];
 
 export default AddApproval;

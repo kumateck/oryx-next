@@ -1,13 +1,13 @@
 // import { FormWizard } from "adusei-ui";
 // import { useForm } from "react-hook-form";
 // import { toast } from "sonner";
-// import { Button, Icon } from "~/components/ui";
-// import { InputTypes } from "~/lib/constants";
+// import { Button, Icon } from "@/components/ui";
+// import { InputTypes } from "@/lib/constants";
 // import {
 //   PostApiV1AuthChangePasswordApiArg,
 //   ResetPasswordRequest,
 //   usePostApiV1AuthChangePasswordMutation,
-// } from "~/redux/api/openapi.generated";
+// } from "@/redux/api/openapi.generated";
 
 // import { ChangePwdValidator } from "./types";
 

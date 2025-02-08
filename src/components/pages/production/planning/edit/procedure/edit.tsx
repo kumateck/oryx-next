@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -11,13 +10,18 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib/constants";
+import { COLLECTION_TYPES, Option } from "@/lib/constants";
 import {
   PostApiV1CollectionApiArg,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-import { CreateRoutingValidator, RoutingRequestDto } from "./types";
+import ProcedureForm from "./form";
+import {
+  CreateRoutingValidator,
+  ProcedureType,
+  RoutingRequestDto,
+} from "./types";
 
 // import "./types";
 interface Props {
@@ -29,6 +33,7 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
   const {
+    register,
     control,
     formState: { errors },
     reset,
@@ -47,6 +52,8 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
         COLLECTION_TYPES.WorkCenter,
         COLLECTION_TYPES.Operation,
         COLLECTION_TYPES.Resource,
+        COLLECTION_TYPES.Role,
+        COLLECTION_TYPES.User,
       ],
     } as PostApiV1CollectionApiArg).unwrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,6 +78,24 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
       value: uom.id,
     }),
   ) as Option[];
+  const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
+    (role) => ({
+      label: role.name,
+      value: role.id,
+    }),
+  ) as Option[];
+
+  const userOptions = collectionResponse?.[COLLECTION_TYPES.User]?.map(
+    (user) => ({
+      label: user.name,
+      value: user.id,
+    }),
+  ) as Option[];
+
+  const typeValues = useWatch({
+    control,
+    name: "type",
+  }) as ProcedureType;
   const onSubmit = (data: RoutingRequestDto) => {
     setItemLists((prevState) => {
       // Check if the item already exists in the list
@@ -97,69 +122,17 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
           <DialogTitle>Edit Procedure</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-6 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                label: "Operation",
-                control,
-                type: InputTypes.SELECT,
-                onModal: true,
-                name: "operationId",
-                required: true,
-                placeholder: "Operation",
-                options: operationOptions,
-                defaultValue: details.operationId,
-                errors: {
-                  message: errors.operationId?.message,
-                  error: !!errors.operationId,
-                },
-              },
-              {
-                label: "Work Center",
-                control,
-                type: InputTypes.SELECT,
-                onModal: true,
-                name: "workCenterId",
-                required: true,
-                placeholder: "Work Center",
-                options: workCenterOptions,
-                defaultValue: details.workCenterId,
-                errors: {
-                  message: errors.workCenterId?.message,
-                  error: !!errors.workCenterId,
-                },
-              },
-              {
-                control,
-                name: "estimatedTime",
-                label: "Estimated Time",
-                placeholder: "Select Time",
-                type: InputTypes.MOMENT,
-                defaultValue: details.estimatedTime,
-                required: true,
-                errors: {
-                  message: errors.estimatedTime?.message,
-                  error: !!errors.estimatedTime,
-                },
-              },
-              {
-                label: "Resources",
-                control,
-                type: InputTypes.MULTIPLE,
-                onModal: true,
-                name: "resourceIds",
-                required: true,
-                placeholder: "Resources",
-                options: resourceOptions,
-                defaultValue: details.resourceIds,
-                errors: {
-                  message: errors.resourceIds?.message,
-                  error: !!errors.resourceIds,
-                },
-              },
-            ]}
+          <ProcedureForm
+            control={control}
+            errors={errors}
+            operationOptions={operationOptions}
+            resourceOptions={resourceOptions}
+            workCenterOptions={workCenterOptions}
+            register={register}
+            defaultValues={details}
+            selectedType={typeValues}
+            roleOptions={roleOptions}
+            userOptions={userOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

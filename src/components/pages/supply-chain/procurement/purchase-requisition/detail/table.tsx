@@ -1,9 +1,9 @@
-import { ListsTable, TableUpdateData } from "@/app/shared/datatable";
 import { Option } from "@/lib";
 import {
   SupplierType,
   useLazyGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { ListsTable, TableUpdateData } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
 import { MaterialRequestDto } from "./type";

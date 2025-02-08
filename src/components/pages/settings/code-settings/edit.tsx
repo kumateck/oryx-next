@@ -2,7 +2,6 @@ import { lowerFirst } from "lodash";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, InputTypes, Option, getKeyByValue } from "@/lib";
+import { CODE_SETTINGS, Option, getKeyByValue } from "@/lib";
 import {
   ConfigurationDto,
   CreateConfigurationRequest,
@@ -22,6 +21,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
+import CodeSettingsForm from "./form";
 import { CodeRequestDto, CreateCodeValidator } from "./types";
 
 interface Props {
@@ -115,72 +115,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             <DialogTitle>Edit Code</DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
-            <FormWizard
-              config={[
-                {
-                  label: "Item Type",
-                  control,
-                  type: InputTypes.SELECT,
-                  name: "modelType",
-                  onModal: true,
-                  required: true,
-                  placeholder: "Select item",
-                  defaultValue: defaultModelType,
-                  options: codeModelTypesOptions,
-                  errors: {
-                    message: errors.modelType?.message,
-                    error: !!errors.modelType,
-                  },
-                },
-                {
-                  label: "Naming Type",
-                  control,
-                  type: InputTypes.SELECT,
-                  onModal: true,
-                  name: "namingType",
-                  placeholder: "Select item",
-                  defaultValue: defaultNamingType,
-                  options: codeNameTypesOptions,
-                  errors: {
-                    message: errors.namingType?.message,
-                    error: !!errors.namingType,
-                  },
-                },
-                {
-                  register: { ...register("prefix") },
-                  label: "Prefix",
-                  placeholder: "Add Prefix",
-                  type: InputTypes.TEXT,
-                  errors: {
-                    message: errors.prefix?.message,
-                    error: !!errors.prefix,
-                  },
-                },
-                {
-                  register: {
-                    ...register("minimumNameLength", { valueAsNumber: true }),
-                  },
-                  label: "Minimum Code Length",
-                  placeholder: "Add Min",
-                  type: InputTypes.NUMBER,
-                  errors: {
-                    message: errors.minimumNameLength?.message,
-                    error: !!errors.minimumNameLength,
-                  },
-                },
-                {
-                  register: {
-                    ...register("maximumNameLength", { valueAsNumber: true }),
-                  },
-                  label: "Maximum Code Length",
-                  placeholder: "Add Max",
-                  type: InputTypes.NUMBER,
-                  errors: {
-                    message: errors.maximumNameLength?.message,
-                    error: !!errors.maximumNameLength,
-                  },
-                },
-              ]}
+            <CodeSettingsForm
+              control={control}
+              register={register}
+              errors={errors}
+              codeModelTypesOptions={codeModelTypesOptions}
+              codeNameTypesOptions={codeNameTypesOptions}
+              // defaultValues={details}
             />
           </div>
           <DialogFooter className="justify-end">

@@ -1,5 +1,5 @@
-import { ListsTable } from "@/app/shared/datatable";
 import { FinishedProductDto } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
 interface IProps {
   data: FinishedProductDto[];

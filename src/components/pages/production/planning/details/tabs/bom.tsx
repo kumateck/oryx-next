@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
-import { ListsTable } from "@/app/shared/datatable";
 import { ProductBillOfMaterialDto } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
 interface IProps {
   data?: ProductBillOfMaterialDto;
@@ -39,7 +39,7 @@ export const Bom = ({ data, title }: IProps) => {
           {
             accessorKey: "material",
             header: "Material",
-            cell: (info) => info.row.original.componentMaterial?.name,
+            cell: (info) => info.row.original.material?.name,
           },
           {
             accessorKey: "grade",

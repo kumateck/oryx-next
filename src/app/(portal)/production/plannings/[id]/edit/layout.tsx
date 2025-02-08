@@ -1,16 +1,20 @@
+// import Link from "next/link";
 import React from "react";
 
-import ScrollablePageWrapper from "@/app/shared/page-wrapper";
+import PageWrapper from "@/components/layout/wrapper";
+// import { routes } from "@/lib";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ScrollablePageWrapper className="w-full space-y-4 pr-12">
-      <div className="w-full space-y-4">
-        <span className="text-xl font-semibold text-black">
-          Product Planning
-        </span>
-      </div>
-      {children}
+    <ScrollablePageWrapper className="w-full">
+      <PageWrapper>
+        <div className="pb-3">
+          <PageTitle title={"Product Planning"} />
+        </div>
+        {children}
+      </PageWrapper>
     </ScrollablePageWrapper>
   );
 };

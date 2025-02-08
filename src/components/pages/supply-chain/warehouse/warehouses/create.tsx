@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -12,9 +11,9 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes, WarehouseType } from "@/lib";
 import {
-  CreateWarehouseRequest, // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  CreateWarehouseRequest,
+  // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   // NamingType,
   // useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   // useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
@@ -22,12 +21,15 @@ import {
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
-  ErrorResponse, // GenerateCodeOptions,
-  cn, // generateCode,
+  ErrorResponse,
+  // GenerateCodeOptions,
+  cn,
+  // generateCode,
   // getFirstCharacter,
   isErrorResponse,
 } from "@/lib/utils";
 
+import WarehousesForm from "./form";
 import { CreateWarehouseValidator, WarehouseRequestDto } from "./types";
 
 // import "./types";
@@ -116,49 +118,10 @@ const Create = ({ isOpen, onClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                label: "Warehouse Type",
-                control,
-                type: InputTypes.RADIO,
-                name: `type`,
-                required: true,
-                options: Object.entries(WarehouseType)
-                  .filter(([, value]) => typeof value === "number")
-                  .map(([key, value]) => ({
-                    label: key, // "Raw" or "Package"
-                    value: value.toString(), // 0 or 1
-                  })),
-                errors: {
-                  message: errors?.type?.message || "",
-                  error: !!errors?.type?.type,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Warehouse Name",
-                required: true,
-                placeholder: "Enter New Warehouse Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                placeholder: "Enter Warehouse Description",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
+          <WarehousesForm
+            register={register}
+            errors={errors}
+            control={control}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

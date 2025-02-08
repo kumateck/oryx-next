@@ -1,16 +1,25 @@
-import React from 'react'
+"use client";
+
+import React from "react";
+
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 const Page = () => {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-white dark:bg-neutral-800/50" />
-            <div className="aspect-video rounded-xl bg-white dark:bg-neutral-800/50" />
-            <div className="aspect-video rounded-xl bg-white dark:bg-neutral-800/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-neutral-100/50 md:min-h-min dark:bg-neutral-800/50" />
-        </div>
-  )
-}
+    <div className="h-full w-full bg-banner bg-cover bg-center bg-no-repeat px-10 py-12">
+      <div className="flex flex-col gap-0.5">
+        <span className="text-2xl font-medium text-primary-inverted">
+          Welcome Desmond Kofi Adusei
+        </span>
+        <span className="text-sm font-normal text-neutral-default">
+          Work smarter with Oryx and skip the back and forth.
+        </span>
+      </div>
+      <ScrollablePageWrapper>
+        <div></div>
+      </ScrollablePageWrapper>
+    </div>
+  );
+};
 
-export default Page
+export default Page;

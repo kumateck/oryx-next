@@ -1,8 +1,8 @@
 // import { useState } from "react";
-// import { restApi } from "~/redux/api";
-// import { modelActions } from "~/redux/slices/models";
-// import { useDispatch } from "~/redux/store";
-// import { NoIconStepper } from "@/app/shared/no-icon-stepper";
+// import { restApi } from "@/redux/api";
+// import { modelActions } from "@/redux/slices/models";
+// import { useDispatch } from "@/redux/store";
+// import { NoIconStepper } from "@/shared/no-icon-stepper";
 // import { Button } from "@/components/ui";
 // import { ErrorResponse } from "@/lib";
 // import BOM from "./bom";
@@ -14,7 +14,7 @@
 // import ProductInfo, { ProductDetailProps } from "./product";
 // import Routing from "./routing";
 // import { RoutingRequestDto } from "./routing/types";
-// import ScrollablePageWrapper from "@/app/shared/page-wrapper";
+// import ScrollablePageWrapper from "@/shared/page-wrapper";
 // import { useParams } from "next/navigation";
 // const Page = () => {
 //   const { id: productId } = useParams();

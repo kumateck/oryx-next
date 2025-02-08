@@ -1,9 +1,10 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import Link from "next/link";
 
-import { Icon } from "@/components/ui";
+import { DropdownMenuItem, Icon } from "@/components/ui";
 import { routes } from "@/lib/constants";
 import { ProductDto } from "@/lib/redux/api/openapi.generated";
+import { TableMenuAction } from "@/shared/table-menu";
 
 // import Edit from "./edit";
 
@@ -14,17 +15,36 @@ export function DataTableRowActions<TData extends ProductDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   return (
-    <section className="flex items-center justify-end gap-2">
-      <Link href={routes.viewPlanning(row.original.id as string)}>
-        <Icon name="Eye" className="h-5 w-5 cursor-pointer text-neutral-500" />
-      </Link>
-      <Link href={routes.editPlanning(row.original.id as string)}>
-        <Icon
-          name="Pencil"
-          className="h-5 w-5 cursor-pointer text-neutral-500"
-        />
-      </Link>
-    </section>
+    <TableMenuAction>
+      <DropdownMenuItem className="group">
+        <Link
+          href={routes.viewPlanning(row.original.id as string)}
+          className="flex cursor-pointer items-center justify-start gap-2"
+        >
+          <span className="cursor-pointer text-black">
+            <Icon
+              name="Eye"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+          </span>
+          <span>View Details</span>
+        </Link>
+      </DropdownMenuItem>{" "}
+      <DropdownMenuItem className="group">
+        <Link
+          href={routes.editPlanning(row.original.id as string)}
+          className="flex cursor-pointer items-center justify-start gap-2"
+        >
+          <span className="cursor-pointer text-black">
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+          </span>
+          <span>Edit</span>
+        </Link>
+      </DropdownMenuItem>
+    </TableMenuAction>
   );
 }
 
@@ -37,7 +57,7 @@ export const columns: ColumnDef<ProductDto>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="min-w-48">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "category",

@@ -1,6 +1,8 @@
-import StepWrapper from "@/app/shared/wrapper";
 import { Separator } from "@/components/ui";
+import { Option } from "@/lib";
 import { RouteDtoRead } from "@/lib/redux/api/openapi.generated";
+import MultiSelectListViewer from "@/shared/multi-select-lists";
+import StepWrapper from "@/shared/wrapper";
 
 interface IProps {
   data: RouteDtoRead[];
@@ -19,7 +21,7 @@ export const Routing = ({ data }: IProps) => {
     <StepWrapper className="w-full space-y-6">
       <span className="font-Medium block text-xl">Procedure</span>
       <ul className="space-y-2">
-        <li className="flex justify-between gap-2 font-black text-secondary-500">
+        <li className="text-secondary-500 flex justify-between gap-2 font-black">
           <span className="flex-1">Operation</span>
           <span className="flex-1">Work Center</span>
           <span className="flex-1">Estimated Time</span>
@@ -39,15 +41,31 @@ export const Routing = ({ data }: IProps) => {
               </div>
               <Separator orientation="vertical" className="mx-3 h-5" />
               <div className="flex-1">
-                <span className="text-black">{item?.workCenter?.name}</span>
+                {/* <span className="text-black">{item?.workCenter?.name}</span> */}
+                <MultiSelectListViewer
+                  lists={
+                    item?.workCenters?.map((item) => ({
+                      label: item?.workCenter?.name as string,
+                      value: item?.workCenter?.id as string,
+                    })) as Option[]
+                  }
+                />
               </div>
               <Separator orientation="vertical" className="mx-3 h-5" />
               <div className="flex-1">
                 <span className="text-neutral-500">{item?.estimatedTime}</span>
               </div>
               <Separator orientation="vertical" className="mx-3 h-5" />
-              <div className="flex-1">
-                <ul className="flex flex-wrap gap-2">
+              <div className="">
+                <MultiSelectListViewer
+                  lists={
+                    item?.resources?.map((item) => ({
+                      label: item?.resource?.name as string,
+                      value: item?.resource?.id as string,
+                    })) as Option[]
+                  }
+                />
+                {/* <ul className="flex flex-wrap gap-2">
                   {item?.resources?.map((res, index) => (
                     <li key={index}>
                       <div className="whitespace-nowrap rounded-3xl border border-neutral-300 px-2 text-sm text-neutral-700">
@@ -55,7 +73,7 @@ export const Routing = ({ data }: IProps) => {
                       </div>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
 
               {/* <div className="flex flex-1 gap-2">

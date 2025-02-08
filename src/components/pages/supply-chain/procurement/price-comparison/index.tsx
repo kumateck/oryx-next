@@ -4,7 +4,8 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import EmptyIcon from "@/app/assets/empty-icon.svg";
+import EmptyIcon from "@/assets/empty-icon.svg";
+import PageWrapper from "@/components/layout/wrapper";
 import {
   Accordion,
   AccordionContent,
@@ -28,6 +29,8 @@ import {
   useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
 } from "@/lib/redux/api/openapi.generated";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 import { Quotations } from "./type";
 
@@ -104,11 +107,9 @@ const Page = () => {
   };
 
   return (
-    <div className="">
+    <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex justify-between gap-4 py-5">
-        <span className="text-3xl font-bold text-secondary-500">
-          Price Comparison
-        </span>
+        <PageTitle title="Price Comparison" />
         <Button
           onClick={() => onSubmit()}
           disabled={findSelectedQuotation(state).length === 0}
@@ -120,70 +121,72 @@ const Page = () => {
         </Button>
       </div>
       {state.length === 0 && <EmptyState />}
-      <Accordion
-        type="single"
-        collapsible
-        className="w-full"
-        defaultValue={"group-0"}
-      >
-        {state?.map((item, idx) => (
-          <AccordionItem
-            key={idx}
-            value={`group-${idx}`}
-            className="shadow-shadow2a rounded-md bg-white"
-          >
-            <AccordionTrigger className="w-full gap-4 px-5">
-              <div>
-                {item?.materialCode} - {item?.materialName}
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="border-t bg-white p-5">
-              <RadioGroup
-                className="flex flex-col gap-6 lg:flex-row"
-                onValueChange={(v) => onChange(v, idx)}
-              >
-                {item?.supplierQuotations?.map((quote, index) => (
-                  <div
-                    key={index}
-                    // className="rounded-lg border p-4 transition hover:bg-stone-100"
-                    className={cn(
-                      "rounded-lg border p-4 transition hover:bg-stone-100",
-                      {
-                        "border-primary-500 bg-stone-100 shadow-lg ring-1 ring-primary-500":
-                          quote?.selected,
-                      },
-                    )}
-                  >
-                    <Label className="flex items-center space-x-4">
-                      <div className="flex-shrink-0">
-                        <RadioGroupItem
-                          value={quote?.supplierId}
-                          id="newPassport"
-                          className="h-8 w-8"
-                        >
-                          <Icon
-                            name="CheckCheck"
-                            className="h-7 w-7 text-current"
-                          />
-                        </RadioGroupItem>
-                      </div>
-                      <div className="space-y-6">
-                        <h3 className="text-xl font-semibold capitalize">
-                          {quote?.supplierName}
-                        </h3>
-                        <p className="text-muted-foreground text-sm capitalize leading-normal">
-                          {quote?.price}
-                        </p>
-                      </div>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
+      <ScrollablePageWrapper>
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          defaultValue={"group-0"}
+        >
+          {state?.map((item, idx) => (
+            <AccordionItem
+              key={idx}
+              value={`group-${idx}`}
+              className="shadow-shadow2a rounded-md bg-white"
+            >
+              <AccordionTrigger className="w-full gap-4 px-5">
+                <div>
+                  {item?.materialCode} - {item?.materialName}
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="border-t bg-white p-5">
+                <RadioGroup
+                  className="flex flex-col gap-6 lg:flex-row"
+                  onValueChange={(v) => onChange(v, idx)}
+                >
+                  {item?.supplierQuotations?.map((quote, index) => (
+                    <div
+                      key={index}
+                      // className="rounded-lg border p-4 transition hover:bg-stone-100"
+                      className={cn(
+                        "rounded-lg border p-4 transition hover:bg-stone-100",
+                        {
+                          "border-primary-500 ring-primary-500 bg-stone-100 shadow-lg ring-1":
+                            quote?.selected,
+                        },
+                      )}
+                    >
+                      <Label className="flex items-center space-x-4">
+                        <div className="flex-shrink-0">
+                          <RadioGroupItem
+                            value={quote?.supplierId}
+                            id="newPassport"
+                            className="h-8 w-8"
+                          >
+                            <Icon
+                              name="CheckCheck"
+                              className="h-7 w-7 text-current"
+                            />
+                          </RadioGroupItem>
+                        </div>
+                        <div className="space-y-6">
+                          <h3 className="text-xl font-semibold capitalize">
+                            {quote?.supplierName}
+                          </h3>
+                          <p className="text-muted-foreground text-sm capitalize leading-normal">
+                            {quote?.price}
+                          </p>
+                        </div>
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </ScrollablePageWrapper>
+    </PageWrapper>
   );
 };
 const EmptyState = () => {

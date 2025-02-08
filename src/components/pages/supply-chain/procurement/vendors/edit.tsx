@@ -5,9 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
@@ -19,6 +18,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import VendorForm from "./form";
 import { CreateVendorValidator, VendorRequestDto } from "./types";
 
 const Edit = () => {
@@ -197,8 +197,8 @@ const Edit = () => {
   return (
     <div className="h-full w-full bg-white p-5">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-        <div className="">
-          {/* Existing static fields */}
+        {/* <div className="">
+
           <FormWizard
             className="grid w-full grid-cols-2 gap-4 space-y-0"
             fieldWrapperClassName="flex-grow"
@@ -269,7 +269,7 @@ const Edit = () => {
             ]}
           />
         </div>
-        {/* Dynamic Associated Manufacturers Section */}
+
         <div>
           <div>
             <div className="flex justify-between px-2 py-5">
@@ -300,7 +300,7 @@ const Edit = () => {
                     <Icon
                       onClick={() => remove(index)}
                       name="CircleMinus"
-                      className="h-5 w-5 text-danger-500 hover:cursor-pointer"
+                      className="text-danger-500 h-5 w-5 hover:cursor-pointer"
                     />
                   </div>
 
@@ -352,8 +352,19 @@ const Edit = () => {
               );
             })}
           </div>
-        </div>
-
+        </div> */}
+        <VendorForm
+          control={control}
+          register={register}
+          errors={errors}
+          countryOptions={countryOptions}
+          fields={fields}
+          remove={remove}
+          materialOptions={materialOptions}
+          manufacturerOptionsMap={manufacturerOptionsMap}
+          typeValues={typeValues}
+          append={append}
+        />
         <div className="flex justify-end gap-4 py-6">
           <Button
             type="button"

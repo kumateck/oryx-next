@@ -1,7 +1,7 @@
+import _ from "lodash";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -11,13 +11,18 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib/constants";
+import { COLLECTION_TYPES, Option } from "@/lib/constants";
 import {
   PostApiV1CollectionApiArg,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-import { CreateRoutingValidator, RoutingRequestDto } from "./types";
+import ProcedureForm from "./form";
+import {
+  CreateRoutingValidator,
+  ProcedureType,
+  RoutingRequestDto,
+} from "./types";
 
 // import "./types";
 interface Props {
@@ -25,9 +30,11 @@ interface Props {
   onClose: () => void;
   setItemLists: React.Dispatch<React.SetStateAction<RoutingRequestDto[]>>;
   productId?: string;
+  itemLists?: RoutingRequestDto[];
 }
-const Create = ({ isOpen, onClose, setItemLists }: Props) => {
+const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
   const {
+    register,
     control,
     formState: { errors },
     reset,
@@ -45,17 +52,37 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
         COLLECTION_TYPES.WorkCenter,
         COLLECTION_TYPES.Operation,
         COLLECTION_TYPES.Resource,
+        COLLECTION_TYPES.Role,
+        COLLECTION_TYPES.User,
       ],
     } as PostApiV1CollectionApiArg).unwrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const operationOptions = collectionResponse?.[
-    COLLECTION_TYPES.Operation
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  const typeValues = useWatch({
+    control,
+    name: "type",
+  }) as ProcedureType;
+  // const operationOptions = collectionResponse?.[
+  //   COLLECTION_TYPES.Operation
+  // ]?.map((uom) => ({
+  //   label: uom.name,
+  //   value: uom.id,
+  // })) as Option[];
+
+  const operationOptions = _.isEmpty(itemLists)
+    ? (collectionResponse?.[COLLECTION_TYPES.Operation]?.map((uom) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[])
+    : (_.filter(
+        collectionResponse?.[COLLECTION_TYPES.Operation],
+        (itemA) =>
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.operationId.value),
+      )?.map((uom) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[]);
 
   const workCenterOptions = collectionResponse?.[
     COLLECTION_TYPES.WorkCenter
@@ -69,6 +96,20 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
       value: uom.id,
     }),
   ) as Option[];
+
+  const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
+    (role) => ({
+      label: role.name,
+      value: role.id,
+    }),
+  ) as Option[];
+
+  const userOptions = collectionResponse?.[COLLECTION_TYPES.User]?.map(
+    (user) => ({
+      label: user.name,
+      value: user.id,
+    }),
+  ) as Option[];
   const onSubmit = (data: RoutingRequestDto) => {
     setItemLists((prevState) => {
       const payload = {
@@ -80,6 +121,8 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
     reset(); // Reset the form after submission
     onClose(); // Close the form/modal if applicable
   };
+
+  console.log(errors, "errors");
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -87,65 +130,16 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
           <DialogTitle>Add Procedure</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-6 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                label: "Operation",
-                control,
-                type: InputTypes.SELECT,
-                name: "operationId",
-                onModal: true,
-                required: true,
-                placeholder: "Operation",
-                options: operationOptions,
-                errors: {
-                  message: errors.operationId?.message,
-                  error: !!errors.operationId,
-                },
-              },
-              {
-                label: "Work Center",
-                control,
-                type: InputTypes.SELECT,
-                name: "workCenterId",
-                onModal: true,
-                required: true,
-                placeholder: "Work Center",
-                options: workCenterOptions,
-                errors: {
-                  message: errors.workCenterId?.message,
-                  error: !!errors.workCenterId,
-                },
-              },
-              {
-                control,
-                name: "estimatedTime",
-                label: "Estimated Time",
-                placeholder: "Select Time",
-                type: InputTypes.MOMENT,
-                required: true,
-                errors: {
-                  message: errors.estimatedTime?.message,
-                  error: !!errors.estimatedTime,
-                },
-              },
-              {
-                label: "Resources",
-                control,
-                type: InputTypes.MULTIPLE,
-                onModal: true,
-                name: "resourceIds",
-                required: true,
-                placeholder: "Resources",
-                options: resourceOptions,
-                errors: {
-                  message: errors.resourceIds?.message,
-                  error: !!errors.resourceIds,
-                },
-              },
-            ]}
+          <ProcedureForm
+            control={control}
+            errors={errors}
+            operationOptions={operationOptions}
+            resourceOptions={resourceOptions}
+            workCenterOptions={workCenterOptions}
+            register={register}
+            selectedType={typeValues}
+            roleOptions={roleOptions}
+            userOptions={userOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

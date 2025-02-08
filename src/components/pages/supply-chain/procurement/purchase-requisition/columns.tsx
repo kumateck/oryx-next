@@ -7,7 +7,7 @@ import { RequisitionStatus, routes } from "@/lib/constants";
 import {
   ProductDto,
   RequestStatus,
-  RequisitionDtoRead,
+  RequisitionDto,
 } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "./edit";
@@ -33,7 +33,7 @@ export function DataTableRowActions<TData extends ProductDto>({
   );
 }
 
-export const columns: ColumnDef<RequisitionDtoRead>[] = [
+export const columns: ColumnDef<RequisitionDto>[] = [
   {
     accessorKey: "code",
     header: "Requisition Number",
@@ -67,17 +67,17 @@ export const columns: ColumnDef<RequisitionDtoRead>[] = [
     header: "Requested Department",
     cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
   },
-  {
-    accessorKey: "total",
-    header: "Total Items Requested",
-    cell: ({ row }) => (
-      <div>
-        {row.original.items?.reduce((accumulator, item) => {
-          return accumulator + (item.quantity || 0);
-        }, 0)}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "total",
+  //   header: "Total Items Requested",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       {row.original.items?.reduce((accumulator, item) => {
+  //         return accumulator + (item.quantity || 0);
+  //       }, 0)}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: "Status",

@@ -1,25 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
-import { Button, Icon } from "@/components/ui";
+import PageWrapper from "@/components/layout/wrapper";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
-import { COLLECTION_TYPES, InputTypes, Option, routes } from "@/lib/constants";
+import { COLLECTION_TYPES, Option, routes } from "@/lib/constants";
 import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,
   PutApiV1ProductByProductIdApiArg,
-  useGetApiV1ProductByProductIdQuery,
+  useGetApiV1CollectionUomQuery,
+  useLazyGetApiV1ProductByProductIdQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1ProductByProductIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-import { CreateProductValidator, ProductRequestDto } from "./types";
+import ProductForm from "../../create/form";
+import { CreateProductValidator, ProductRequestDto } from "../../types";
 
 export interface ProductDetailProps {
   code?: string | null;
@@ -38,48 +40,88 @@ export interface ProductDetailProps {
 const ProductInfo = () => {
   const { id } = useParams();
   const productId = id as string;
+  const router = useRouter();
   const [productMutation, { isLoading }] =
     usePutApiV1ProductByProductIdMutation();
-  const { data: product } = useGetApiV1ProductByProductIdQuery({
-    productId,
-  });
-
+  const [loadProductInfo] = useLazyGetApiV1ProductByProductIdQuery();
+  const [defaultCategory, setDefaultCategory] = useState<Option | undefined>(
+    undefined,
+  );
+  const [defaultUom, setDefaultUom] = useState<Option | undefined>(undefined);
+  const [defaultPackingUom, setDefaultPackingUom] = useState<
+    Option | undefined
+  >(undefined);
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-    reset,
+    // reset,
     setValue,
   } = useForm<ProductRequestDto>({
     resolver: CreateProductValidator,
     mode: "all",
-    // defaultValues: {
-    //   categoryId: defaultProduct.categoryId,
-    //   code: defaultProduct?.code,
-    //   name: defaultProduct?.name,
-    //   description: defaultProduct?.description,
-    // },
   });
+
   useEffect(() => {
-    if (product) {
-      const defaultProduct = {
-        code: product?.code as string,
-        name: product?.name as string,
-        description: product?.description as string,
-        categoryId: {
-          label: product?.category?.name as string,
-          value: product?.category?.id as string,
-        },
-      } as ProductRequestDto;
-      setValue("code", defaultProduct.code);
-      setValue("name", defaultProduct.name);
-      setValue("description", defaultProduct.description);
-      setValue("categoryId", defaultProduct.categoryId);
+    if (productId) {
+      handleLoadProduct(productId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product]);
+  }, [productId]);
+
+  const handleLoadProduct = async (productId: string) => {
+    const product = await loadProductInfo({
+      productId,
+    }).unwrap();
+    const category = {
+      label: product?.category?.name as string,
+      value: product?.category?.id as string,
+    } as Option;
+    const uom = {
+      label: product?.baseUoM?.symbol as string,
+      value: product?.baseUoM?.id as string,
+    } as Option;
+    const puom = {
+      label: product?.basePackingUoM?.symbol as string,
+      value: product?.basePackingUoM?.id as string,
+    } as Option;
+    setDefaultCategory(category);
+    setDefaultUom(uom);
+    setDefaultPackingUom(puom);
+    const defaultProduct = {
+      code: product?.code as string,
+      name: product?.name as string,
+      filledWeight: product?.filledWeight as string,
+      shelfLife: product?.shelfLife as string,
+      storageCondition: product?.storageCondition as string,
+      packageStyle: product?.packageStyle as string,
+      baseUomId: uom,
+      basePackingUomId: puom,
+      genericName: product?.genericName as string,
+      description: product?.description as string,
+      basePackingQuantity: product?.basePackingQuantity,
+      baseQuantity: product?.baseQuantity,
+      categoryId: {
+        label: product?.category?.name as string,
+        value: product?.category?.id as string,
+      },
+    } as ProductRequestDto;
+    setValue("code", defaultProduct.code);
+    setValue("name", defaultProduct.name);
+    setValue("description", defaultProduct.description);
+    setValue("categoryId", defaultProduct.categoryId);
+    setValue("baseUomId", defaultProduct.baseUomId);
+    setValue("basePackingUomId", defaultProduct.basePackingUomId);
+    setValue("filledWeight", defaultProduct.filledWeight);
+    setValue("shelfLife", defaultProduct.shelfLife);
+    setValue("storageCondition", defaultProduct.storageCondition);
+    setValue("packageStyle", defaultProduct.packageStyle);
+    setValue("genericName", defaultProduct.genericName);
+    setValue("basePackingQuantity", defaultProduct.basePackingQuantity);
+    setValue("baseQuantity", defaultProduct.baseQuantity);
+  };
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
@@ -103,10 +145,12 @@ const ProductInfo = () => {
     const payload = {
       ...data,
       categoryId: data.categoryId?.value,
-      finishedProducts: data.finishedProducts?.map((fp) => ({
-        ...fp,
-        uoMId: fp.uoMId?.value,
-      })),
+      baseUomId: data.baseUomId?.value,
+      basePackingUomId: data.basePackingUomId?.value,
+      // finishedProducts: data.finishedProducts?.map((fp) => ({
+      //   ...fp,
+      //   uoMId: fp.uoMId?.value,
+      // })),
     } satisfies CreateProductRequest;
 
     try {
@@ -115,114 +159,94 @@ const ProductInfo = () => {
         updateProductRequest: payload,
       } as PutApiV1ProductByProductIdApiArg).unwrap();
       toast.success("Product Info updated successfully");
-      reset();
+      // reset();
+      await handleLoadProduct(productId);
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
 
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+
+  const uomOptions = uomResponse
+    ?.filter((item) => item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
+  const packingUomOptions = uomResponse
+    ?.filter((item) => !item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
+
   return (
-    <div className="w-full">
-      <div className="flex justify-end gap-4">
-        <Link
-          href={routes.editPlanningBom()}
-          className="underline hover:text-primary-500"
-        >
-          Edit BOM
-        </Link>
-        <Link
-          href={routes.editPlanningPackaging()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Packaging
-        </Link>
-        <Link
-          href={routes.editPlanningProcedure()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Procedure
-        </Link>
+    <PageWrapper className="relative w-full">
+      <div className="absolute right-0 -mt-10">
+        <div className="flex justify-end gap-4">
+          <Link
+            href={routes.editPlanningInfo()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Info
+          </Link>
+          <Link
+            href={routes.editPlanningBom()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit BOM
+          </Link>
+          <Link
+            href={routes.editPlanningProcedure()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Procedure
+          </Link>
+          <Link
+            href={routes.editPackingOrder()}
+            className="underline hover:text-primary-hover"
+          >
+            Packing Order Preparation
+          </Link>
+        </div>
       </div>
       <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
-        <div className="rounded-xl border border-neutral-200 bg-white px-10 py-8">
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-x-10 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                register: { ...register("name") },
-                label: "Product Name",
-                placeholder: "Enter Product Name",
-                type: InputTypes.TEXT,
-                autoFocus: true,
-                required: true,
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("code") },
-                label: "Product Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the product code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Product Description",
-                placeholder: "Enter Product Description",
-                type: InputTypes.TEXTAREA,
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-              {
-                label: "Category",
-                control,
-                type: InputTypes.SELECT,
-                name: "categoryId",
-                defaultValue: product?.category?.name
-                  ? {
-                      label: product?.category?.name as string,
-                      value: product?.category?.id as string,
-                    }
-                  : undefined,
-                required: true,
-                placeholder: "Category",
-                options: categoryOptions,
-                errors: {
-                  message: errors.categoryId?.message,
-                  error: !!errors.categoryId,
-                },
-              },
-            ]}
-          />
-        </div>
+        <Card>
+          <CardContent className="px-8 pt-8">
+            <ProductForm
+              control={control}
+              register={register}
+              errors={errors}
+              categoryOptions={categoryOptions}
+              defaultCategory={defaultCategory}
+              defaultUom={defaultUom}
+              defaultPackingUom={defaultPackingUom}
+              uomOptions={uomOptions}
+              packingUomOptions={packingUomOptions}
+            />
+          </CardContent>
+        </Card>
 
-        <div className="flex w-full gap-4">
-          <Button variant={"primary"} type="submit" className="w-full">
+        <div className="flex w-full justify-end gap-4 px-12">
+          <Button
+            type="button"
+            onClick={() => router.push("/production/plannings")}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button type="submit">
             {isLoading ? (
               <Icon name="LoaderCircle" className="animate-spin" />
             ) : (
               <Icon name="Plus" />
             )}
-            <span className="px-1"> Save Changes </span>
+            <span className="px-1"> Save Changes</span>
           </Button>
         </div>
       </form>
-    </div>
+    </PageWrapper>
   );
 };
 

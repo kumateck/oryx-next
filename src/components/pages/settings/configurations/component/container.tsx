@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { Button, Icon, Skeleton } from "@/components/ui";
 import { FormOption } from "@/lib";
+import { MaterialKind } from "@/lib/redux/api/openapi.generated";
 
 import { FormOptionNode } from "./node";
 
@@ -11,6 +12,7 @@ interface Props {
   formOptions: FormOption[];
   refetchFormOptions: () => unknown;
   title: string;
+  kind?: MaterialKind;
   icon: keyof typeof icons;
   isLoading?: boolean;
   modelType: string;
@@ -24,6 +26,7 @@ export const FormOptionContainer = ({
   isLoading,
   modelType,
   dropDownType,
+  kind,
   refetchFormOptions,
 }: Props) => {
   const [editMode, setEditMode] = useState(false);
@@ -87,6 +90,7 @@ export const FormOptionContainer = ({
       <div className="brand-scrollbar flex max-h-[230px] flex-wrap gap-2 overflow-y-auto">
         {createMode && (
           <FormOptionNode
+            kind={kind}
             modelType={modelType}
             dropDownType={dropDownType}
             createMode={true}
@@ -110,6 +114,7 @@ export const FormOptionContainer = ({
               onClick={() => editMode && setFocusedId(formOption.id)}
             >
               <FormOptionNode
+                kind={kind}
                 modelType={modelType}
                 dropDownType={dropDownType}
                 onDelete={() => {

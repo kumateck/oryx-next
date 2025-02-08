@@ -5,14 +5,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
-import { Button, Icon } from "@/components/ui";
+import PageWrapper from "@/components/layout/wrapper";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
   COLLECTION_TYPES,
   ErrorResponse,
   GenerateCodeOptions,
-  InputTypes,
   Option,
   generateCode,
   isErrorResponse,
@@ -22,6 +21,7 @@ import {
   CreateProductRequest,
   NamingType,
   PostApiV1CollectionApiArg,
+  useGetApiV1CollectionUomQuery,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1CollectionMutation,
@@ -29,6 +29,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import { CreateProductValidator, ProductRequestDto } from "../types";
+import ProductForm from "./form";
 
 const Create = () => {
   const router = useRouter();
@@ -94,14 +95,29 @@ const Create = () => {
     label: uom.name,
     value: uom.id,
   })) as Option[];
+
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+
+  const uomOptions = uomResponse
+    ?.filter((item) => item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
+
+  const packingUomOptions = uomResponse
+    ?.filter((item) => !item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
+
   const onSubmit = async (data: ProductRequestDto) => {
     const payload = {
       ...data,
       categoryId: data.categoryId?.value,
-      finishedProducts: data.finishedProducts?.map((fp) => ({
-        ...fp,
-        uoMId: fp.uoMId?.value,
-      })),
+      baseUomId: data.baseUomId?.value,
+      basePackingUomId: data.basePackingUomId?.value,
     } satisfies CreateProductRequest;
 
     try {
@@ -117,83 +133,45 @@ const Create = () => {
     }
   };
 
+  const onBack = () => {
+    router.back();
+  };
   return (
-    <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
-      <div className="w-full space-y-4">
-        <span className="text-xl font-semibold text-black">Create Product</span>
-      </div>
-      <div className="rounded-xl border border-neutral-200 bg-white px-10 py-8">
-        <FormWizard
-          className="grid w-full grid-cols-2 gap-x-10 space-y-0"
-          fieldWrapperClassName="flex-grow"
-          config={[
-            {
-              register: { ...register("name") },
-              label: "Product Name",
-              placeholder: "Enter Product Name",
-              type: InputTypes.TEXT,
-              autoFocus: true,
-              required: true,
-              errors: {
-                message: errors.name?.message,
-                error: !!errors.name,
-              },
-            },
-            {
-              register: { ...register("code") },
-              label: "Product Code",
-              readOnly: true,
-              required: true,
-              description: (
-                <span className="text-sm text-neutral-500">
-                  You can’t change the product code
-                </span>
-              ),
-              placeholder: "Code will be generated",
-              type: InputTypes.TEXT,
-              errors: {
-                message: errors.code?.message,
-                error: !!errors.code,
-              },
-            },
-            {
-              register: { ...register("description") },
-              label: "Product Description",
-              placeholder: "Enter Product Description",
-              type: InputTypes.TEXTAREA,
-              errors: {
-                message: errors.description?.message,
-                error: !!errors.description,
-              },
-            },
-            {
-              label: "Category",
-              control,
-              type: InputTypes.SELECT,
-              name: "categoryId",
-              required: true,
-              placeholder: "Category",
-              options: categoryOptions,
-              errors: {
-                message: errors.categoryId?.message,
-                error: !!errors.categoryId,
-              },
-            },
-          ]}
-        />
-      </div>
+    <PageWrapper>
+      <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
+        <div className="w-full space-y-4">
+          <span className="text-xl font-semibold text-black">
+            Create Product
+          </span>
+        </div>
+        <Card>
+          <CardContent className="px-8 pt-8">
+            <ProductForm
+              control={control}
+              register={register}
+              errors={errors}
+              categoryOptions={categoryOptions}
+              uomOptions={uomOptions}
+              packingUomOptions={packingUomOptions}
+            />
+          </CardContent>
+        </Card>
 
-      <div className="w-full">
-        <Button type="submit" className="w-full">
-          {isLoading ? (
-            <Icon name="LoaderCircle" className="animate-spin" />
-          ) : (
-            <Icon name="Plus" />
-          )}
-          <span className="px-1"> Save </span>
-        </Button>
-      </div>
-    </form>
+        <div className="flex w-full justify-end gap-4 px-12">
+          <Button type="button" onClick={onBack} variant="outline">
+            Cancel
+          </Button>
+          <Button type="submit">
+            {isLoading ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              <Icon name="Plus" />
+            )}
+            <span className="px-1"> Save </span>
+          </Button>
+        </div>
+      </form>
+    </PageWrapper>
   );
 };
 

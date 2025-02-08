@@ -15,8 +15,9 @@ import {
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-// import { TeamSwitcher } from "@/components/team-switcher"
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -24,9 +25,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// import SideLogo from "./logo"
-import { ROUTES } from "./navigation";
 
 // This is sample data.
 const data = {
@@ -158,26 +156,15 @@ const data = {
   ],
 };
 
-interface Props extends React.ComponentProps<typeof Sidebar> {
-  currentPath?: string;
-}
-export function AppSidebar({ currentPath, ...props }: Props) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="floating" color="primary" collapsible="icon" {...props}>
-      <SidebarHeader>{/* <SideLogo /> */}</SidebarHeader>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher teams={data.teams} />
+      </SidebarHeader>
       <SidebarContent>
-        {ROUTES.map((route, idx) => {
-          return (
-            <NavMain
-              key={idx}
-              title={route.title}
-              items={route.menu}
-              currentPath={currentPath}
-            />
-          );
-        })}
-        {/* <NavMain items={data.navMain} /> */}
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

@@ -102,7 +102,7 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
             <Button variant={"outline"} onClick={onClose}>
               Cancel
             </Button>
-            <Button variant={"primary"} onClick={onSubmit}>
+            <Button onClick={onSubmit}>
               {isLoading && (
                 <Icon name="LoaderCircle" className="mr-2 animate-spin" />
               )}

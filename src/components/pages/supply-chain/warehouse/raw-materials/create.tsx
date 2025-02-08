@@ -1,9 +1,9 @@
 // import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,23 +13,18 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import {
-  CODE_SETTINGS,
-  COLLECTION_TYPES,
-  EMaterialKind,
-  InputTypes,
-  Option,
-} from "@/lib";
+import { CODE_SETTINGS, COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
   CreateMaterialRequest,
   GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  MaterialKind,
   NamingType,
   useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1MaterialQuery,
   usePostApiV1MaterialMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import {
   ErrorResponse,
   GenerateCodeOptions,
@@ -39,6 +34,7 @@ import {
   isErrorResponse,
 } from "@/lib/utils";
 
+import MaterialForm from "./form";
 import { CreateMaterialValidator, MaterialRequestDto } from "./types";
 
 // import "./types";
@@ -46,9 +42,10 @@ import { CreateMaterialValidator, MaterialRequestDto } from "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  kind?: EMaterialKind;
 }
-const Create = ({ isOpen, onClose }: Props) => {
-  const [loadMaterials] = useLazyGetApiV1MaterialQuery();
+const Create = ({ isOpen, onClose, kind }: Props) => {
+  const dispatch = useDispatch();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
@@ -57,6 +54,7 @@ const Create = ({ isOpen, onClose }: Props) => {
   const [createMaterial, { isLoading }] = usePostApiV1MaterialMutation();
   const { data } = useGetApiV1CollectionByItemTypeQuery({
     itemType: COLLECTION_TYPES.MaterialCategory,
+    materialKind: kind,
   });
   const {
     register,
@@ -68,13 +66,10 @@ const Create = ({ isOpen, onClose }: Props) => {
   } = useForm<MaterialRequestDto>({
     resolver: CreateMaterialValidator,
     mode: "all",
+    defaultValues: {
+      kind: kind?.toString() as unknown as MaterialKind,
+    },
   });
-
-  const kindString = useWatch<MaterialRequestDto>({
-    name: "kind",
-    control,
-  });
-  const kind = Number(kindString) as EMaterialKind;
 
   const name = useWatch<MaterialRequestDto>({
     name: "name",
@@ -144,10 +139,9 @@ const Create = ({ isOpen, onClose }: Props) => {
         createMaterialRequest: payload,
       });
       toast.success("Material created successfully");
-      loadMaterials({
-        page: 1,
-        pageSize: 10,
-      });
+
+      dispatch(commonActions.setTriggerReload());
+
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -159,7 +153,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     if (kind === EMaterialKind.Package) {
       setValue("pharmacopoeia", "");
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind]);
   return (
@@ -170,103 +163,14 @@ const Create = ({ isOpen, onClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                label: "Kind",
-                control,
-                type: InputTypes.RADIO,
-                name: `kind`,
-                required: true,
-
-                options: Object.entries(EMaterialKind)
-                  .filter(([, value]) => typeof value === "number")
-                  .map(([key, value]) => ({
-                    label: key, // "Raw" or "Package"
-                    value: value.toString(), // 0 or 1
-                  })),
-                errors: {
-                  message: errors?.kind?.message || "",
-                  error: !!errors?.kind?.type,
-                },
-              },
-              {
-                label: "Material Category",
-                control,
-                type: InputTypes.SELECT,
-                name: "materialCategoryId",
-                onModal: true,
-                required: true,
-                placeholder: "Material Category",
-                options: materialCategoryOptions,
-                errors: {
-                  message: errors.materialCategoryId?.message,
-                  error: !!errors.materialCategoryId,
-                },
-              },
-
-              {
-                register: { ...register("name") },
-                label: "Name",
-                placeholder: "Enter Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("code") },
-                label: "Material Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the product code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
-            ]}
+          <MaterialForm
+            register={register}
+            control={control}
+            categoryOptions={materialCategoryOptions}
+            errors={errors}
+            kind={kind}
           />
-          {kind === EMaterialKind.Package && (
-            <FormWizard
-              config={[
-                {
-                  register: { ...register("pharmacopoeia") },
-                  label: "Pharmacopoeia",
-                  placeholder: "Enter Pharmacopoeia",
-                  type: InputTypes.TEXT,
-                  readOnly: kind === EMaterialKind.Package ? true : false,
-                  errors: {
-                    message: errors.pharmacopoeia?.message,
-                    error: !!errors.pharmacopoeia,
-                  },
-                },
-              ]}
-            />
-          )}
-          <FormWizard
-            config={[
-              {
-                register: { ...register("description") },
-                label: "Description",
-                placeholder: "Enter Description",
-                type: InputTypes.TEXTAREA,
 
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
-          />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import ScrollablePageWrapper from "@/app/shared/page-wrapper";
 import { ConfirmDeleteDialog } from "@/components/ui";
 import { Icon } from "@/components/ui";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
   useGetApiV1ConfigurationQuery,
   useLazyGetApiV1ConfigurationQuery,
 } from "@/lib/redux/api/openapi.generated";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import CodeContainer from "./container";
 import CreateCode from "./create";
@@ -75,7 +75,7 @@ function Codes() {
   return (
     <div className="w-full pr-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-medium text-primary-500">Code Settings</h1>
+        <h1 className="text-primary-500 text-lg font-medium">Code Settings</h1>
         <Button
           type="button"
           onClick={() => setIsOpen(true)}
@@ -83,14 +83,14 @@ function Codes() {
           size="default"
           className="flex h-9 items-center gap-2"
         >
-          <Icon name="Plus" className="h-4 w-4 text-primary-500" />
+          <Icon name="Plus" className="text-primary-500 h-4 w-4" />
           <span>Create New Code</span>
         </Button>
       </div>
       <CreateCode isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <ScrollablePageWrapper className="pb-60">
         <div className="mt-6">
-          <div className="flex w-full items-center justify-between rounded-md bg-primary-500 px-4 py-2 font-bold text-white">
+          <div className="flex w-full items-center justify-between rounded-md bg-primary-default px-4 py-2 font-bold text-white">
             <div>Model Type</div>
             <div>Naming Type</div>
             <div>Prefix</div>
