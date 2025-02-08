@@ -25,14 +25,6 @@ export default function FormNumberInput({
       type="number"
       step="0.01"
       register={register}
-      // onWheel={(e: {
-      //   currentTarget: { blur: () => void };
-      //   stopPropagation: () => void;
-      // }) => {
-      //   //prevent value from changing on scroll
-      //   e.currentTarget.blur();
-      //   e.stopPropagation();
-      // }}
       onWheel={(e: any) => {
         e.preventDefault(); // Prevents changing the value when scrolling
       }}
