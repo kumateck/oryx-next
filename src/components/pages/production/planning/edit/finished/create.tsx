@@ -1,5 +1,4 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -12,11 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib/constants";
-import {
-  PostApiV1CollectionApiArg,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { InputTypes } from "@/lib/constants";
 
 import { CreateFinishedValidator, FinishedRequestDto } from "./types";
 
@@ -30,7 +25,7 @@ interface Props {
 const Create = ({ isOpen, onClose, setItemLists }: Props) => {
   const {
     register,
-    control,
+    // control,
     formState: { errors },
     reset,
     handleSubmit,
@@ -39,23 +34,23 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
     mode: "all",
   });
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
+  // const [loadCollection, { data: collectionResponse }] =
+  //   usePostApiV1CollectionMutation({});
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
+  // useEffect(() => {
+  //   loadCollection({
+  //     body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
+  //   } as PostApiV1CollectionApiArg).unwrap();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  const unitOfMeasureOptions = collectionResponse?.[
-    COLLECTION_TYPES.UnitOfMeasure
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  // const unitOfMeasureOptions = collectionResponse?.[
+  //   COLLECTION_TYPES.UnitOfMeasure
+  // ]?.map((uom) => ({
+  //   label: uom.name,
+  //   value: uom.id,
+  // })) as Option[];
 
   const onSubmit = (data: FinishedRequestDto) => {
     setItemLists((prevState) => {
@@ -79,44 +74,33 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
             fieldWrapperClassName="flex-grow"
             config={[
               {
-                register: { ...register("name") },
+                register: register("name"),
                 label: "Name",
                 placeholder: "Enter name",
                 type: InputTypes.TEXT,
                 required: true,
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
+                errors,
               },
-              {
-                label: "Unit of Measurement",
-                control,
-                type: InputTypes.SELECT,
-                name: "uoMId",
-                required: true,
-                onModal: true,
-                placeholder: "Unit of Measurement",
-                options: unitOfMeasureOptions,
-                errors: {
-                  message: errors.uoMId?.message,
-                  error: !!errors.uoMId,
-                },
-              },
+              // {
+              //   label: "Unit of Measurement",
+              //   control: control as Control,
+              //   type: InputTypes.SELECT,
+              //   name: "uoMId",
+              //   required: true,
+              //   onModal: true,
+              //   placeholder: "Unit of Measurement",
+              //   options: unitOfMeasureOptions,
+              //   errors
+              // },
 
               {
-                register: {
-                  ...register("standardCost", {
-                    valueAsNumber: true,
-                  }),
-                },
+                register: register("standardCost", {
+                  valueAsNumber: true,
+                }),
                 label: "Cost Price",
                 placeholder: "Enter price",
                 type: InputTypes.TEXT,
-                errors: {
-                  message: errors.standardCost?.message,
-                  error: !!errors.standardCost,
-                },
+                errors,
               },
 
               {
@@ -128,33 +112,24 @@ const Create = ({ isOpen, onClose, setItemLists }: Props) => {
                 label: "Selling Price",
                 placeholder: "Enter price",
                 type: InputTypes.TEXT,
-                errors: {
-                  message: errors.sellingPrice?.message,
-                  error: !!errors.sellingPrice,
-                },
+                errors,
               },
 
               {
-                register: { ...register("dosageForm") },
+                register: register("dosageForm"),
                 label: "Dosage Form",
                 placeholder: "Enter dosage",
                 type: InputTypes.TEXTAREA,
 
-                errors: {
-                  message: errors.dosageForm?.message,
-                  error: !!errors.dosageForm,
-                },
+                errors,
               },
               {
-                register: { ...register("strength") },
+                register: register("strength"),
                 label: "Strength",
                 placeholder: "Enter strength",
                 type: InputTypes.TEXTAREA,
 
-                errors: {
-                  message: errors.strength?.message,
-                  error: !!errors.strength,
-                },
+                errors,
               },
             ]}
           />

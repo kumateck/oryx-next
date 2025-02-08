@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { ServerDatatable } from "@/app/shared/datatable";
+import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
   GetApiV1ProcurementSupplierApiArg,
   useGetApiV1ProcurementSupplierQuery,
   useLazyGetApiV1ProcurementSupplierQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { ServerDatatable } from "@/shared/datatable";
+import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 
@@ -38,12 +40,9 @@ const Page = () => {
 
   return (
     <div>
-      {/* {isOpen && <Create />} */}
-      <div className="w-full">
+      <PageWrapper className="w-full space-y-2 py-1">
         <div className="flex items-center justify-between py-2">
-          <span className="text-3xl font-bold text-secondary-500">
-            Approved Vendors
-          </span>
+          <PageTitle title="Approved Vendors" />
           <div className="flex items-center justify-end gap-2">
             <Link href={"/procurement/vendors/create"}>
               <Button
@@ -73,7 +72,7 @@ const Page = () => {
             pageSize,
           }}
         />
-      </div>
+      </PageWrapper>
     </div>
   );
 };

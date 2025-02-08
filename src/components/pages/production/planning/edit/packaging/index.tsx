@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import StepWrapper from "@/app/shared/wrapper";
 import { Button, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
@@ -13,6 +12,8 @@ import {
   useGetApiV1ProductByProductIdQuery,
   usePostApiV1ProductByProductIdPackagesMutation,
 } from "@/lib/redux/api/openapi.generated";
+import PageTitle from "@/shared/title";
+import StepWrapper from "@/shared/wrapper";
 
 import Create from "./create";
 // import Edit from "./edit";
@@ -32,11 +33,15 @@ const Packaging = () => {
       label: p.material?.name as string,
       value: p.material?.id as string,
     },
-    packageTypeId: {
-      label: p.packageType?.name as string,
-      value: p.packageType?.id as string,
-    },
     idIndex: (idx + 1).toString(),
+    baseUoMId: {
+      label: p.baseUoM?.symbol as string,
+      value: p.baseUoM?.id as string,
+    },
+    directLinkMaterialId: {
+      label: p.directLinkMaterial?.name as string,
+      value: p.directLinkMaterial?.id as string,
+    },
   })) as PackagingRequestDto[];
 
   const [savePackaging, { isLoading }] =
@@ -60,8 +65,8 @@ const Packaging = () => {
         productId,
         body: itemLists?.map((item) => ({
           ...item,
-          packageTypeId: item.packageTypeId.value,
           materialId: item.materialId.value,
+          directLinkMaterialId: item.directLinkMaterialId?.value,
         })),
       } satisfies PostApiV1ProductByProductIdPackagesApiArg).unwrap();
       toast.success("Packaging Saved");
@@ -70,31 +75,38 @@ const Packaging = () => {
     }
   };
   return (
-    <div>
-      <div className="flex justify-end gap-4">
-        <Link
-          href={routes.editPlanningInfo()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Info
-        </Link>
-        <Link
-          href={routes.editPlanningBom()}
-          className="underline hover:text-primary-500"
-        >
-          Edit BOM
-        </Link>
-        <Link
-          href={routes.editPlanningProcedure()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Procedure
-        </Link>
+    <div className="relative">
+      <div className="absolute right-0 -mt-10">
+        <div className="flex justify-end gap-4">
+          <Link
+            href={routes.editPlanningInfo()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Info
+          </Link>
+          <Link
+            href={routes.editPlanningBom()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit BOM
+          </Link>
+          <Link
+            href={routes.editPlanningProcedure()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Procedure
+          </Link>
+          <Link
+            href={routes.editPackingOrder()}
+            className="underline hover:text-primary-hover"
+          >
+            Packing Order Preparation
+          </Link>
+        </div>
       </div>
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
-          <span className="font-Bold text-xl">Packaging List</span>
-
+          <PageTitle title="Package List" />
           <div className="flex gap-2">
             <Button
               onClick={() => {
@@ -105,7 +117,7 @@ const Packaging = () => {
                 handleSave();
               }}
               type="button"
-              variant={"primary"}
+              variant={"default"}
               className="flex items-center gap-2"
             >
               {isLoading ? (
@@ -136,17 +148,7 @@ const Packaging = () => {
         />
 
         <div className="w-full py-6">
-          <TableForData
-            setItemLists={setItemLists}
-            lists={
-              itemLists?.map((item, idx) => {
-                return {
-                  ...item,
-                  idIndex: (idx + 1).toString(),
-                };
-              }) || []
-            }
-          />
+          <TableForData lists={itemLists} setItemLists={setItemLists} />
         </div>
       </StepWrapper>
     </div>

@@ -1,27 +1,26 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-// import { RequisitionType } from "@/lib";
+import { IdSchema } from "@/lib";
 
-export const createRequisitionItemRequestSchema = z.object({
-  materialName: z.string().optional(),
-  materialId: z.string().min(1, { message: "Material is required" }),
-  uomId: z
-    .string({ required_error: "UOM is required" })
-    .min(1, { message: "UOM is required" }),
+// import { ScheduleType } from "@/lib";
+
+export const associateProductRequestSchema = z.object({
+  uom: z.string().optional(),
+  productId: IdSchema("Product"),
   quantity: z.number().min(0.1, { message: "Quantity is required" }),
 });
 
-export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);
+export const itemsRequestSchema = z.array(associateProductRequestSchema);
 
-// Define the CreateRequisitionRequest schema
-export const createRequisitionRequestSchema = z.object({
+// Define the CreateScheduleRequest schema
+export const createScheduleRequestSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  quantity: z.number().min(0.1, { message: "Quantity is required" }),
-  remarks: z.string().nullable().optional(),
-  items: z.array(createRequisitionItemRequestSchema).nullable().optional(),
+
+  remarks: z.string().optional(),
+  products: z.array(associateProductRequestSchema),
   scheduledStartTime: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -38,18 +37,12 @@ export const createRequisitionRequestSchema = z.object({
   ),
 });
 
-export type RequisitionRequestDto = z.infer<
-  typeof createRequisitionRequestSchema
->;
+export type ScheduleRequestDto = z.infer<typeof createScheduleRequestSchema>;
 
-export type MaterialRequestDto = z.infer<
-  typeof createRequisitionItemRequestSchema
->;
+export type ProductRequestDto = z.infer<typeof associateProductRequestSchema>;
 
-export const CreateRequisitionValidator = zodResolver(
-  createRequisitionRequestSchema,
-);
+export const CreateScheduleValidator = zodResolver(createScheduleRequestSchema);
 
-// requisitionType?: RequisitionType;
+// ScheduleType?: ScheduleType;
 // comments?: string | null;
-// items?: CreateRequisitionItemRequest[] | null;
+// items?: CreateScheduleItemRequest[] | null;

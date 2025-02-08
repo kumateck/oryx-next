@@ -56,16 +56,16 @@ export const AttachInvoiceSchema = z.object({
 export type AttachmentRequestDto = z.infer<typeof AttachInvoiceSchema>;
 export const AttachmentValidator = zodResolver(AttachInvoiceSchema);
 
-export interface Permit {
-  id: string;
-  regulation: string | null;
-  name: string;
-  description: string | null;
-  documentNumber: string;
-  number: string | null;
-  startDate: string; // ISO date string
-  expiryDate: string; // ISO date string
-  isActive: boolean;
-  tags: string[]; // Assuming tags is an array of strings
-  attachments: any[]; // If attachments are files or another structure, you can refine this further
-}
+// export interface Permit {
+//   id: string;
+//   regulation: string | null;
+//   name: string;
+//   description: string | null;
+//   documentNumber: string;
+//   number: string | null;
+//   startDate: string; // ISO date string
+//   expiryDate: string; // ISO date string
+//   isActive: boolean;
+//   tags: string[]; // Assuming tags is an array of strings
+//   attachments: any[]; // If attachments are files or another structure, you can refine this further
+// }

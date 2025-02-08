@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ColumnType } from "@/app/shared/datatable";
+import { ColumnType } from "@/shared/datatable";
 
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";

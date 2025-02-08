@@ -1,5 +1,3 @@
-import { MdClose } from "react-icons/md";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,6 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  // AlertDialogTrigger,
+  // Button,
   Icon,
 } from ".";
 
@@ -33,12 +33,12 @@ export const ConfirmDeleteDialog = ({
     <AlertDialog onOpenChange={onClose} open={open}>
       <AlertDialogContent>
         <div className="flex h-12 items-center justify-between">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-100">
-            <Icon name="Trash2" className="h-6 w-6 text-danger-500" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-disabled">
+            <Icon name="Trash2" className="h-6 w-6 text-danger-default" />
           </div>
 
           <AlertDialogCancel className="border-0 p-0">
-            <MdClose className="h-6 w-6 text-gray-500" />
+            <Icon name="X" className="h-6 w-6 text-neutral-dark" />
           </AlertDialogCancel>
         </div>
 
@@ -49,7 +49,7 @@ export const ConfirmDeleteDialog = ({
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            className="bg-danger-500 text-white hover:bg-danger-600"
+            className="hover:bg-danger-600 bg-danger-default text-white"
             onClick={onConfirm}
           >
             {confirmText}

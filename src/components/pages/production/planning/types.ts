@@ -7,7 +7,7 @@ export const CreateFinishedProductSchema = z.object({
   }),
   dosageForm: z.string().optional(),
   strength: z.string().optional(),
-  uoMId: z.object(
+  baseUomId: z.object(
     {
       value: z.string().min(1, { message: "Unit of Measurement is required" }),
       label: z.string(),
@@ -39,7 +39,55 @@ export const CreateProductSchema = z.object({
     message: "Code is required",
   }),
   description: z.string().optional(),
-
+  genericName: z.string().optional(),
+  storageCondition: z.string().optional(),
+  packageStyle: z.string().optional(),
+  shelfLife: z.string().optional(),
+  actionuse: z.string().optional(),
+  filledWeight: z.string().optional(),
+  baseUomId: z.object(
+    {
+      value: z.string().min(1, { message: "Unit of Measurement is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Unit of Measurement is required",
+    },
+  ),
+  packingExcessMargin: z
+    .number({
+      required_error: "Excess Packing Margin is required",
+      invalid_type_error: "Excess Packing Margin must be a number",
+    })
+    .positive({
+      message: "Excess Packing Margin must be greater than 0",
+    })
+    .optional(),
+  baseQuantity: z
+    .number({
+      required_error: "BaseQuantity is required",
+      invalid_type_error: "Base Quantity must be a number",
+    })
+    .positive({
+      message: "Base Quantity must be greater than 0",
+    }),
+  basePackingQuantity: z
+    .number({
+      required_error: "BaseQuantity is required",
+      invalid_type_error: "Base Quantity must be a number",
+    })
+    .positive({
+      message: "Base Quantity must be greater than 0",
+    }),
+  basePackingUomId: z.object(
+    {
+      value: z.string().min(1, { message: "Unit of Measurement is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Unit of Measurement is required",
+    },
+  ),
   categoryId: z.object(
     {
       value: z.string().min(1, { message: "Category is required" }),

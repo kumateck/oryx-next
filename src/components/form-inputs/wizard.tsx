@@ -1,35 +1,41 @@
-"use client";
-
+// import { Controller } from "react-hook-form";
 import { icons } from "lucide-react";
 import React from "react";
-import { Controller } from "react-hook-form";
-
-import { Button, Icon, SelectComponents } from "@/components/ui";
-import { InputTypes, Option } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-
 import {
-  ErrorProps,
-  FormDateInput,
-  FormEmailInput,
-  FormFileInput,
-  FormFilesDropzoneInput,
-  FormFilesUploadInput,
-  FormMomentInput,
-  FormNumberInput,
-  FormPasswordInput,
-  FormRadioInput,
-  FormRichtextInput,
-  FormSelectInput,
-  FormSwitchInput,
-  FormTextInput,
-  FormTextareaInput,
-} from ".";
-import FormDate2Input from "./form-date-2";
-import FormMultiSelectInput from "./form-multi-select";
+  Control,
+  Controller,
+  FieldErrors,
+  FieldValues,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 
-interface BaseInputProps {
-  errors: ErrorProps;
+import { InputTypes, Option, TimeType, cn } from "@/lib";
+
+import { Button, Icon, Label } from "../ui";
+import { SuggestionProps } from "../ui/adusei-editor/suggestion";
+import { FetchOptionsResult } from "../ui/paginated-select";
+import { FormDateInput } from "./date-input";
+import FormDropzoneInput from "./dragzone-input";
+import { FormRadioInput } from "./radio-input";
+import FormRichTextInput from "./rich-input";
+import { FormSpecialAddSelect } from "./special-add-input";
+import { FormSpecialSelect } from "./special-input";
+import { FormSpecialMultiSelect } from "./special-multi-input";
+import { FormTextInput } from "./text-input";
+import { FormTextareaInput } from "./textarea-input";
+import { FormClockInput } from "./time-input";
+
+interface SpaceProps {
+  type: InputTypes.SPACE;
+}
+interface LabelProps {
+  type: InputTypes.LABEL;
+  title: string;
+  label: string;
+  className?: string;
+}
+interface BaseInputProps<TFieldValues extends FieldValues> {
+  errors: FieldErrors<TFieldValues>;
   autoFocus?: boolean;
   readOnly?: boolean;
   required?: boolean;
@@ -37,105 +43,121 @@ interface BaseInputProps {
   className?: string;
   placeholder?: string;
 }
-type TextInputProps = BaseInputProps & {
+
+interface TextInputProps<TFieldValues extends FieldValues>
+  extends BaseInputProps<TFieldValues> {
   type:
     | InputTypes.TEXT
     | InputTypes.TEXTAREA
     | InputTypes.EMAIL
     | InputTypes.PASSWORD
     | InputTypes.NUMBER;
-  register: any;
-  suffix?: keyof typeof icons;
-  suffixClass?: string;
-  description?: React.ReactNode;
+  register: UseFormRegisterReturn;
   rows?: number;
-};
+  suffix?: keyof typeof icons;
+  prefix?: keyof typeof icons;
+  suffixClass?: string;
+  prefixText?: string;
+  description?: React.ReactNode;
+}
 
-type SwitchInputProps = BaseInputProps & {
-  value?: string | undefined;
-  type: InputTypes.SWITCH;
-  control: any;
-  name: string;
-};
-type PhoneInputProps = BaseInputProps & {
-  type:
-    | InputTypes.PHONE
-    | InputTypes.OTP
-    | InputTypes.RICHTEXT
-    | InputTypes.MOMENT;
-  control: any;
+interface FileInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.IMAGE | InputTypes.COLOR;
+  control: Control<FieldValues>;
   name: string;
   defaultValue?: string;
-};
-type FilesUploadInputProps = BaseInputProps & {
+}
+
+interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.UPLOAD | InputTypes.DRAGNDROP;
-  control: any;
+  control: Control<FieldValues>;
   name: string;
   defaultValue: FileList | null;
-};
-type FileInputProps = BaseInputProps & {
-  type: InputTypes.IMAGE | InputTypes.COLOR;
-  control: any;
+  multiple?: boolean;
+}
+
+interface DateInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.DATE;
+  control: Control<FieldValues>;
+  name: string;
+  disabled?: { after?: Date; before?: Date };
+}
+
+interface TimeInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.TIME | InputTypes.MOMENT;
+  control: Control<FieldValues>;
   name: string;
   defaultValue?: string;
-};
-type DateInputProps = BaseInputProps & {
-  type: InputTypes.DATE;
-  kind?: "default" | "extensive";
-  control: any;
+  moment?: boolean;
+}
+interface RichTextInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.RICHTEXT;
+  control: Control<FieldValues>;
   name: string;
-  disabled: {
-    after?: Date;
-    before?: Date;
-  };
-};
-type SelectInputProps = BaseInputProps & {
+  suggestions?: SuggestionProps[];
+}
+interface SelectInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.SELECT;
-  control?: any;
+  control?: Control<FieldValues>;
   name: string;
   options: Option[];
   defaultValue?: Option;
   value?: Option;
-  components?: Partial<SelectComponents>;
+  searchPlaceholder?: string;
+  isLoading?: boolean;
+  onChange?: (...event: any[]) => void;
+  isDisabled?: boolean;
   onModal?: boolean;
-};
-type MultiSelectInputProps = BaseInputProps & {
-  type: InputTypes.MULTIPLE;
-  control?: any;
+}
+
+interface PaginatedSelectInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.PAGINATED_SELECT;
+  control?: Control<FieldValues>;
+  name: string;
+  defaultValue?: Option;
+  value?: Option;
+  searchPlaceholder?: string;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
+  isLoading?: boolean;
+  onChange?: (...event: any[]) => void;
+  isDisabled?: boolean;
+  onModal?: boolean;
+}
+
+interface SpecialSelectInputProps<TFieldValues extends FieldValues, TContext>
+  extends BaseInputProps<TFieldValues> {
+  type: InputTypes.SPECIAL_SELECT;
+  handleCreateNew?: (input: string) => void;
+  isBtnLoading?: boolean;
+  control?: Control<TFieldValues, TContext>;
   name: string;
   options: Option[];
-  defaultValue?: Option[];
-  value?: Option[];
-  components?: Partial<SelectComponents>;
-  onModal?: boolean;
-};
+  defaultValue?: Option;
+  value?: Option;
+  searchPlaceholder?: string;
+  isLoading?: boolean;
+  onChange?: (...event: any[]) => void;
+  isDisabled?: boolean;
+}
 
-// type SearchableSelectInputProps = BaseInputProps & {
-//   type: InputTypes.SEARCHABLE_SELECT;
-//   control?: any;
-//   name: string;
-//   options: Option[];
-//   defaultValue?: Option;
-//   value?: Option;
-//   searchPlaceholder?: string;
-//   prefix?: React.FC;
-// };
-type MultiInputProps = BaseInputProps & {
+interface MultiInputProps<TFieldValues extends FieldValues, TContext>
+  extends BaseInputProps<TFieldValues> {
   type: InputTypes.MULTI;
-  control?: any;
+  control?: Control<TFieldValues, TContext>;
   name: string;
   options: Option[];
   defaultValue?: Option[];
   values?: Option[];
-  onModal?: boolean;
-};
-type RadioInputProps = BaseInputProps & {
-  control?: any;
+}
+
+interface RadioInputProps extends BaseInputProps<FieldValues> {
+  control?: Control<FieldValues>;
   name: string;
   options: Option[];
   type: InputTypes.RADIO;
   disabled?: boolean;
-};
+}
+
 interface ButtonProps {
   type: InputTypes.SUBMIT;
   title: string;
@@ -150,81 +172,158 @@ interface ButtonProps {
   suffixClass?: string;
   variant?: "default" | "outline" | "ghost" | "secondary" | "destructive";
 }
-export type FormInput =
-  | TextInputProps
+
+export type FormInput<TFieldValues extends FieldValues, TContext> =
+  | TextInputProps<TFieldValues>
   | SelectInputProps
-  | MultiSelectInputProps
-  | MultiInputProps
-  | PhoneInputProps
+  | MultiInputProps<TFieldValues, TContext>
   | FileInputProps
   | FilesUploadInputProps
   | DateInputProps
   | RadioInputProps
-  | SwitchInputProps
-  | ButtonProps;
+  | RichTextInputProps
+  | TimeInputProps
+  | PaginatedSelectInputProps
+  | SpecialSelectInputProps<TFieldValues, TContext>
+  | ButtonProps
+  | SpaceProps
+  | LabelProps
+  | null
+  | undefined;
 
-interface Props {
+interface Props<TFieldValues extends FieldValues, TContext> {
   className?: string;
-  config: FormInput[];
+  config: FormInput<TFieldValues, TContext>[];
   fieldWrapperClassName?: string;
+  wizardWrapperClassName?: string;
+  suffix?: React.FC;
 }
 
-export default function FormWizard({
+export function FormWizard({
   className,
   fieldWrapperClassName,
   config,
-}: Props) {
+  wizardWrapperClassName,
+}: Props<FieldValues, any>) {
   return (
-    <div className={cn("space-y-4", className)}>
-      {config?.map((formInput: FormInput, index) => (
-        <div key={index} className={cn(fieldWrapperClassName)}>
-          {FormWizardSwitch(formInput)}
-        </div>
-      ))}
+    <div className={cn("w-full", wizardWrapperClassName)}>
+      <div className={cn("space-y-4", className)}>
+        {config?.map(
+          (formInput: FormInput<FieldValues, any>, index) =>
+            formInput && (
+              <div key={index} className={cn(fieldWrapperClassName)}>
+                {FormWizardSwitch(formInput)}
+              </div>
+            ),
+        )}
+      </div>
     </div>
   );
 }
 
-const FormWizardSwitch = (formInput: FormInput) => {
+const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
+  if (formInput === null || formInput === undefined) return null;
+
   switch (formInput.type) {
     case InputTypes.TEXT:
-      return <FormTextInput {...formInput} />;
+    case InputTypes.PASSWORD:
     case InputTypes.NUMBER:
-      return <FormNumberInput {...formInput} />;
+    case InputTypes.EMAIL:
+      return <FormTextInput {...formInput} />;
     case InputTypes.TEXTAREA:
       return <FormTextareaInput {...formInput} />;
+    case InputTypes.TIME:
     case InputTypes.MOMENT:
       return (
         <Controller
           control={formInput.control}
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
-            <FormMomentInput
+            <FormClockInput
               defaultValue={formInput.defaultValue}
               label={formInput.label}
               required={formInput.required}
               errors={formInput.errors}
               value={value}
               onChange={onChange}
+              name={formInput.name}
+              type={formInput.type as unknown as TimeType}
             />
           )}
         />
       );
-    case InputTypes.SWITCH:
+
+    case InputTypes.MULTI:
       return (
         <Controller
           control={formInput.control}
           name={formInput.name}
-          render={({ field }) => (
-            <FormSwitchInput
+          render={({ field: { onChange, value } }) => (
+            <FormSpecialMultiSelect
+              defaultValue={formInput.defaultValue || value}
               label={formInput.label}
-              // className="h-4 w-10"
-              // thumbClassName="w-4 h-4"
-              onChange={field.onChange}
+              required={formInput.required}
+              onChange={onChange}
               errors={formInput.errors}
-              value={field.value}
+              name={formInput.name}
+              options={formInput.options}
+              autoFocus={formInput.autoFocus}
+              placeholder={formInput.placeholder}
             />
           )}
+        />
+      );
+    case InputTypes.SELECT:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => {
+            if (formInput.onChange) {
+              formInput.onChange(value);
+            }
+            return (
+              <FormSpecialSelect
+                value={value || formInput.defaultValue}
+                defaultValue={formInput.defaultValue}
+                label={formInput.label}
+                required={formInput.required}
+                onChange={onChange}
+                errors={formInput.errors}
+                name={formInput.name}
+                options={formInput.options}
+                autoFocus={formInput.autoFocus}
+                placeholder={formInput.placeholder}
+                searchPlaceholder={formInput.searchPlaceholder}
+              />
+            );
+          }}
+        />
+      );
+    case InputTypes.SPECIAL_SELECT:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <FormSpecialAddSelect
+                value={value || formInput.defaultValue}
+                defaultValue={formInput.defaultValue}
+                label={formInput.label}
+                required={formInput.required}
+                onChange={onChange}
+                errors={formInput.errors}
+                name={formInput.name}
+                options={formInput.options}
+                autoFocus={formInput.autoFocus}
+                placeholder={formInput.placeholder}
+                searchPlaceholder={formInput.searchPlaceholder}
+                handleCreateNew={formInput.handleCreateNew}
+                isBtnLoading={formInput.isBtnLoading}
+              />
+            );
+          }}
         />
       );
     case InputTypes.RICHTEXT:
@@ -232,63 +331,54 @@ const FormWizardSwitch = (formInput: FormInput) => {
         <Controller
           control={formInput.control}
           name={formInput.name}
-          render={({ field }) => (
-            <FormRichtextInput
+          render={({ field: { onChange, value } }) => (
+            <FormRichTextInput
+              name={formInput.name}
               label={formInput.label}
               required={formInput.required}
+              autoFocus={formInput.autoFocus}
+              readOnly={formInput.readOnly}
+              onChange={onChange}
+              value={value}
+              suggestions={formInput.suggestions}
               errors={formInput.errors}
-              field={field}
+              placeholder={formInput.placeholder}
             />
           )}
         />
       );
-    case InputTypes.EMAIL:
-      return <FormEmailInput {...formInput} />;
-    case InputTypes.PASSWORD:
-      return <FormPasswordInput {...formInput} />;
-
-    case InputTypes.SELECT:
+    case InputTypes.DRAGNDROP:
       return (
         <Controller
           control={formInput.control}
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
-            <FormSelectInput
-              onModal={formInput.onModal}
-              isMulti={false}
-              defaultValue={formInput.defaultValue}
+            <FormDropzoneInput
+              name={formInput.name}
+              defaultValue={formInput.defaultValue ?? value}
               label={formInput.label}
               required={formInput.required}
-              value={value}
               onChange={onChange}
               errors={formInput.errors}
-              options={formInput.options}
-              autoFocus={formInput.autoFocus}
-              placeholder={formInput.placeholder}
-              components={formInput.components}
             />
           )}
         />
       );
-    case InputTypes.MULTIPLE:
+    case InputTypes.DATE:
       return (
         <Controller
           control={formInput.control}
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
-            <FormSelectInput
-              onModal={formInput.onModal}
-              isMulti={true}
-              defaultValue={formInput.defaultValue}
+            <FormDateInput
               label={formInput.label}
               required={formInput.required}
-              value={value}
               onChange={onChange}
+              value={value}
+              disabled={formInput.disabled}
+              className={formInput.className}
               errors={formInput.errors}
-              options={formInput.options}
-              autoFocus={formInput.autoFocus}
-              placeholder={formInput.placeholder}
-              components={formInput.components}
+              name={formInput.name}
             />
           )}
         />
@@ -308,109 +398,8 @@ const FormWizardSwitch = (formInput: FormInput) => {
               disabled={formInput.disabled}
               options={formInput.options}
               autoFocus={formInput.autoFocus}
+              name={formInput.name}
             />
-          )}
-        />
-      );
-
-    case InputTypes.MULTI:
-      return (
-        <Controller
-          control={formInput.control}
-          name={formInput.name}
-          render={({ field: { onChange } }) => (
-            <FormMultiSelectInput
-              onModal={formInput.onModal}
-              defaultValue={formInput.defaultValue}
-              label={formInput.label}
-              required={formInput.required}
-              onChange={onChange}
-              errors={formInput.errors}
-              options={formInput.options}
-              autoFocus={formInput.autoFocus}
-              placeholder={formInput.placeholder}
-            />
-          )}
-        />
-      );
-
-    case InputTypes.IMAGE:
-      return (
-        <Controller
-          control={formInput.control}
-          name={formInput.name}
-          render={({ field: { onChange } }) => (
-            <FormFileInput
-              defaultValue={formInput.defaultValue}
-              label={formInput.label}
-              required={formInput.required}
-              onChange={onChange}
-              errors={formInput.errors}
-            />
-          )}
-        />
-      );
-    case InputTypes.UPLOAD:
-      return (
-        <Controller
-          control={formInput.control}
-          name={formInput.name}
-          render={({ field: { onChange } }) => (
-            <FormFilesUploadInput
-              defaultValue={formInput.defaultValue}
-              label={formInput.label}
-              required={formInput.required}
-              onChange={onChange}
-              errors={formInput.errors}
-            />
-          )}
-        />
-      );
-    case InputTypes.DRAGNDROP:
-      return (
-        <Controller
-          control={formInput.control}
-          name={formInput.name}
-          render={({ field: { onChange } }) => (
-            <FormFilesDropzoneInput
-              defaultValue={formInput.defaultValue}
-              label={formInput.label}
-              required={formInput.required}
-              onChange={onChange}
-              errors={formInput.errors}
-            />
-          )}
-        />
-      );
-    case InputTypes.DATE:
-      return (
-        <Controller
-          control={formInput.control}
-          name={formInput.name}
-          render={({ field: { onChange, value } }) => (
-            <>
-              {formInput.kind === "extensive" ? (
-                <FormDate2Input
-                  label={formInput.label}
-                  required={formInput.required}
-                  onChange={onChange}
-                  value={value}
-                  disabled={formInput.disabled}
-                  className={formInput.className}
-                  errors={formInput.errors}
-                />
-              ) : (
-                <FormDateInput
-                  label={formInput.label}
-                  required={formInput.required}
-                  onChange={onChange}
-                  value={value}
-                  disabled={formInput?.disabled}
-                  className={formInput.className}
-                  errors={formInput.errors}
-                />
-              )}
-            </>
           )}
         />
       );
@@ -437,7 +426,21 @@ const FormWizardSwitch = (formInput: FormInput) => {
           {formInput.title}
         </Button>
       );
+    case InputTypes.LABEL:
+      return (
+        <div className={cn("flex w-full flex-col gap-2")}>
+          {formInput.label && <Label>{formInput.label}</Label>}
+          {formInput.title && (
+            <div className={cn("", formInput.className)}>
+              <p>{formInput.title}</p>
+            </div>
+          )}
+          <p>.</p>
+        </div>
+      );
+    case InputTypes.SPACE:
+      return <div></div>;
     default:
-      return null;
+      return <div></div>;
   }
 };

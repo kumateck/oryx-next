@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { subtract } from "lodash";
 
-import { ColumnType } from "@/app/shared/datatable";
+import { ColumnType } from "@/shared/datatable";
 
 // import { Option } from "@/lib";
 // import Edit from "./edit";

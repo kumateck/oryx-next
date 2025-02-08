@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { ServerDatatable } from "@/app/shared/datatable";
+import PageWrapper from "@/components/layout/wrapper";
 import { RequisitionStatus } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
@@ -11,6 +11,8 @@ import {
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { ServerDatatable } from "@/shared/datatable";
+import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
@@ -40,11 +42,9 @@ const Page = () => {
 
   const data = result?.data || [];
   return (
-    <div className="w-full">
+    <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <span className="text-3xl font-bold text-secondary-500">
-          Purchase Requisitions
-        </span>
+        <PageTitle title="Purchase Requisitions" />
         <div className="flex items-center justify-end gap-2"></div>
       </div>
 
@@ -65,7 +65,7 @@ const Page = () => {
           pageSize,
         }}
       />
-    </div>
+    </PageWrapper>
   );
 };
 

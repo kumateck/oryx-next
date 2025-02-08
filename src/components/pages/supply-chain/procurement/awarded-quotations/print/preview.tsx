@@ -3,8 +3,7 @@ import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 
-import logo from "@/app/assets/oryx_logo_dark.png";
-import { ListsTable } from "@/app/shared/datatable";
+import logo from "@/assets/oryx_logo_dark.png";
 import {
   Button,
   Dialog,
@@ -20,6 +19,7 @@ import {
   useLazyGetApiV1ProcurementPurchaseOrderQuery,
   usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
 import { columns } from "./column";
 
@@ -90,7 +90,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
               ) : (
                 <Icon name="Printer" />
               )}
-              <span>Print</span>
+              <span>Send Email</span>
             </Button>
             <Button variant="destructive" onClick={() => onClose()}>
               <span>Close</span>

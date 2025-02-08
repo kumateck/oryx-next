@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -11,7 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   useGetApiV1CollectionByItemTypeQuery,
@@ -20,6 +19,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import RackForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
 
 // import "./types";
@@ -82,46 +82,11 @@ const Create = ({ isOpen, onClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                label: "Location Name",
-                control,
-                type: InputTypes.SELECT,
-                name: "locationId",
-                required: true,
-                onModal: true,
-                options: locationOptions,
-                errors: {
-                  message: errors.locationId?.message,
-                  error: !!errors.locationId,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Rack Name",
-                required: true,
-                placeholder: "Enter New Rack Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                required: true,
-                placeholder: "Enter New Description",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
+          <RackForm
+            register={register}
+            control={control}
+            errors={errors}
+            locationOptions={locationOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

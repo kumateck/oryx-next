@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,7 +12,7 @@ import {
   Icon,
 } from "@/components/ui";
 // import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   WarehouseLocationDto,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import LocationForm from "./form";
 import { CreateLocationValidator, LocationRequestDto } from "./types";
 
 // import "./types";
@@ -99,7 +99,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
+          {/* <FormWizard
             config={[
               {
                 label: "Warehouse Name",
@@ -153,6 +153,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 },
               },
             ]}
+          /> */}
+          <LocationForm
+            register={register}
+            control={control}
+            errors={errors}
+            warehouseOptions={warehouseOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

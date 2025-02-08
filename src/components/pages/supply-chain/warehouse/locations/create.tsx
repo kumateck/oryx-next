@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   useGetApiV1CollectionByItemTypeQuery,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
+import LocationForm from "./form";
 import { CreateLocationValidator, LocationRequestDto } from "./types";
 
 // import "./types";
@@ -83,59 +83,11 @@ const Create = ({ isOpen, onClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                label: "Warehouse Name",
-                control,
-                type: InputTypes.SELECT,
-                name: "warehouseId",
-                onModal: true,
-                required: true,
-
-                options: warehouseOptions,
-                errors: {
-                  message: errors.warehouseId?.message,
-                  error: !!errors.warehouseId,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Location Name",
-                required: true,
-                placeholder: "Enter New Location Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("floorName") },
-                label: "Floor Name",
-                required: true,
-                placeholder: "Enter New Floor Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.floorName?.message,
-                  error: !!errors.floorName,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                required: true,
-                placeholder: "Enter New Description",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
+          <LocationForm
+            register={register}
+            control={control}
+            errors={errors}
+            warehouseOptions={warehouseOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

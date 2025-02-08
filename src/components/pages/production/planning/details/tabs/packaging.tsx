@@ -1,5 +1,5 @@
-import { ListsTable } from "@/app/shared/datatable";
 import { ProductPackageDto } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
 interface IProps {
   data: ProductPackageDto[];
@@ -13,11 +13,11 @@ export const Packaging = ({ data }: IProps) => {
     <div>
       <ListsTable
         columns={[
-          {
-            accessorKey: "packageType",
-            header: "Material",
-            cell: (info) => info.row.original.packageType?.name,
-          },
+          // {
+          //   accessorKey: "packageType",
+          //   header: "Material",
+          //   cell: (info) => info.row.original.packageType?.name,
+          // },
           {
             accessorKey: "material",
             header: "Material",

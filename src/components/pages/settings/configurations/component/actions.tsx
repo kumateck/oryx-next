@@ -48,7 +48,7 @@ export const FormOptionActions = ({
                 }
               }}
               className={cn("text-success-500", {
-                "animate-spin text-primary-500": isLoading,
+                "text-primary-500 animate-spin": isLoading,
               })}
               size={20}
             />
@@ -74,7 +74,7 @@ export const FormOptionActions = ({
                 deleteOption();
               }}
               className={cn("text-danger-400", {
-                "animate-spin text-primary-500": isBeingDeleted,
+                "text-primary-500 animate-spin": isBeingDeleted,
               })}
               size={20}
             />
@@ -91,7 +91,7 @@ export const FormOptionActions = ({
                 }
               }}
               className={cn("text-success-500", {
-                "animate-spin text-primary-500": isLoading,
+                "text-primary-500 animate-spin": isLoading,
               })}
               size={20}
             />
@@ -118,7 +118,7 @@ export const FormOptionActions = ({
                   deleteOption();
                 }}
                 className={cn("text-danger-400", {
-                  "animate-spin text-primary-500": isBeingDeleted,
+                  "text-primary-500 animate-spin": isBeingDeleted,
                 })}
                 size={20}
               />

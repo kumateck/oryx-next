@@ -2,6 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import MultiSelectListViewer from "@/shared/multi-select-lists";
 
 import Edit from "./edit";
 // import { Icon } from "adusei-ui";
@@ -47,7 +48,7 @@ export function DataTableRowActions<TData extends RoutingRequestDto>({
       />
       <Icon
         name="Trash2"
-        className="h-5 w-5 cursor-pointer text-danger-500"
+        className="text-danger-500 h-5 w-5 cursor-pointer"
         onClick={() => {
           setDetails(row.original);
           setIsDeleteOpen(true);
@@ -87,9 +88,16 @@ export const getColumns = (
     ),
   },
   {
-    accessorKey: "workCenterId",
-    header: "Work Center",
-    cell: ({ row }) => <div>{row.original.workCenterId?.label}</div>,
+    accessorKey: "workCenters",
+    header: "Work Centers",
+    cell: ({ row }) => (
+      <div>
+        <MultiSelectListViewer
+          className="max-w-[20ch]"
+          lists={row.original.workCenters}
+        />
+      </div>
+    ),
   },
   {
     accessorKey: "estimatedTime",
@@ -98,19 +106,29 @@ export const getColumns = (
   },
 
   {
-    accessorKey: "resourceIds",
+    accessorKey: "resources",
     header: "Resources",
     cell: ({ row }) => (
       <div>
-        <ul className="flex flex-wrap gap-2">
-          {row.original?.resourceIds?.map((res, index) => (
-            <li key={index}>
-              <div className="whitespace-nowrap rounded-3xl border border-neutral-300 px-2 text-sm text-neutral-700">
-                {res?.label}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <MultiSelectListViewer
+          className="max-w-[20ch]"
+          lists={row.original.resources}
+        />
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "responsible",
+    header: "Responsible Parties",
+    cell: ({ row }) => (
+      <div>
+        <MultiSelectListViewer
+          className="max-w-[20ch]"
+          lists={
+            row.original.responsibleRoles ?? row.original.responsibleUsers ?? []
+          }
+        />
       </div>
     ),
   },

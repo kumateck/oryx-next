@@ -4,7 +4,6 @@ import _ from "lodash";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -14,14 +13,16 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   MaterialDto,
   PostApiV1CollectionApiArg,
+  useGetApiV1CollectionUomQuery,
   useGetApiV1MaterialQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import BomForm from "./form";
 import { BomRequestDto, CreateBomValidator } from "./types";
 
 // import "./types";
@@ -55,12 +56,6 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     kind: 0,
   });
 
-  // const materialOptions = materialResponse?.data
-  //   // ?.filter((item) => item.kind === 0)
-  //   ?.map((uom: MaterialDto) => ({
-  //     label: uom.name,
-  //     value: uom.id,
-  //   })) as Option[];
   const materialOptions = _.isEmpty(itemLists)
     ? (materialResponse?.data?.map((uom: MaterialDto) => ({
         label: uom.name,
@@ -69,10 +64,7 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     : (_.filter(
         materialResponse?.data,
         (itemA) =>
-          !_.some(
-            itemLists,
-            (itemB) => itemA?.id === itemB?.componentMaterialId?.value,
-          ),
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId?.value),
       )?.map((uom: MaterialDto) => ({
         label: uom.name,
         value: uom.id,
@@ -89,6 +81,13 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     COLLECTION_TYPES.MaterialType
   ]?.map((uom) => ({
     label: uom.name,
+    value: uom.id,
+  })) as Option[];
+
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+
+  const uomOptions = uomResponse?.map((uom) => ({
+    label: uom.symbol,
     value: uom.id,
   })) as Option[];
 
@@ -114,81 +113,20 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Edit BOM</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-6 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                label: "Ingredient Type",
-                control,
-                type: InputTypes.SELECT,
-                name: "materialTypeId",
-                required: true,
-                onModal: true,
-                placeholder: "Ingredient Type",
-                options: materialTypeOptions,
-                defaultValue: details?.materialTypeId,
-                errors: {
-                  message: errors.materialTypeId?.message,
-                  error: !!errors.materialTypeId,
-                },
-              },
-              {
-                label: "Material",
-                control,
-                type: InputTypes.SELECT,
-                name: "componentMaterialId",
-                required: true,
-                onModal: true,
-                placeholder: "Material",
-                options: materialOptions,
-                defaultValue: details?.componentMaterialId,
-                errors: {
-                  message: errors.componentMaterialId?.message,
-                  error: !!errors.componentMaterialId,
-                },
-              },
-              {
-                register: { ...register("grade") },
-                label: "Grade/Purity",
-                placeholder: "Enter Grade/Purity",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.grade?.message,
-                  error: !!errors.grade,
-                },
-              },
-
-              {
-                register: { ...register("casNumber") },
-                label: "CAS Number",
-                placeholder: "Enter CAS Number",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.casNumber?.message,
-                  error: !!errors.casNumber,
-                },
-              },
-              {
-                register: { ...register("function") },
-                label: "Function",
-                placeholder: "Enter function",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.function?.message,
-                  error: !!errors.function,
-                },
-              },
-            ]}
+          <BomForm
+            register={register}
+            errors={errors}
+            control={control}
+            materialTypeOptions={materialTypeOptions}
+            materialOptions={materialOptions}
+            uomOptions={uomOptions}
+            defaultValues={details}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

@@ -1,7 +1,7 @@
 "use client";
 
-import { CheckIcon } from "@radix-ui/react-icons";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { Circle } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -28,13 +28,13 @@ const RadioGroupItem = React.forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        "aspect-square h-4 w-4 rounded-full border border-neutral-200 border-neutral-900 text-neutral-900 shadow focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-50 dark:border-neutral-800 dark:text-neutral-50 dark:focus-visible:ring-neutral-300",
+        "aspect-square h-5 w-5 rounded-full border border-neutral-secondary text-neutral-default shadow focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary-default dark:border-neutral-50 dark:border-neutral-800 dark:text-neutral-50 dark:focus-visible:ring-neutral-300",
         className,
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <CheckIcon className="fill-primary h-3.5 w-3.5" />
+      <RadioGroupPrimitive.Indicator className="flex items-center justify-center data-[state=checked]:border-primary-default">
+        <Circle className="h-4 w-4 fill-primary-default text-primary-default" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );

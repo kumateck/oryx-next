@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 
 import {
   GetApiV1CollectionByItemTypeApiArg,
+  MaterialKind,
   useLazyGetApiV1CollectionByItemTypeQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { FormOption, splitWords } from "@/lib/utils";
@@ -13,6 +14,7 @@ export interface ViewProps {
   modelType: string;
   title: string;
   icon: keyof typeof icons;
+  kind?: MaterialKind;
 }
 interface Props {
   view: ViewProps;
@@ -25,6 +27,7 @@ const Page = ({ view }: Props) => {
   const refetchFormOptions = useCallback(async () => {
     await collectionsQuery({
       itemType: view.modelType,
+      materialKind: view.kind as MaterialKind,
     } satisfies GetApiV1CollectionByItemTypeApiArg).unwrap();
   }, [collectionsQuery, view]);
 
@@ -45,6 +48,7 @@ const Page = ({ view }: Props) => {
         icon={view.icon}
         refetchFormOptions={refetchFormOptions}
         formOptions={formOptionResults ?? []}
+        kind={view.kind}
       />
     </div>
   );

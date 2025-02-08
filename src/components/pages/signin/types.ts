@@ -15,3 +15,8 @@ export const LoginSchema = z.object({
 export const LoginValidator = zodResolver(LoginSchema);
 
 export type TLogin = z.infer<typeof LoginSchema>;
+
+export enum LoginDto {
+  email = "email",
+  password = "password",
+}

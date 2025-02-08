@@ -1,4 +1,4 @@
-import { DraggableTable } from "@/app/shared/datatable";
+import { DraggableTable } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
 import { RoutingRequestDto } from "./types";

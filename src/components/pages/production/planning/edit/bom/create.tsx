@@ -3,7 +3,6 @@ import _ from "lodash";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,14 +12,16 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   MaterialDto,
   PostApiV1CollectionApiArg,
+  useGetApiV1CollectionUomQuery,
   useGetApiV1MaterialQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import BomForm from "./form";
 import { BomRequestDto, CreateBomValidator } from "./types";
 
 // import "./types";
@@ -48,7 +49,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
 
   const { data: materialResponse } = useGetApiV1MaterialQuery({
     page: 1,
-    pageSize: 100,
+    pageSize: 1000,
     kind: 0,
   });
 
@@ -61,20 +62,17 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     : (_.filter(
         materialResponse?.data,
         (itemA) =>
-          !_.some(
-            itemLists,
-            (itemB) => itemA?.id === itemB?.componentMaterialId?.value,
-          ),
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId?.value),
       )?.map((uom: MaterialDto) => ({
         label: uom.name,
         value: uom.id,
       })) as Option[]);
-  // const materialOptions = materialResponse?.data
-  //   // ?.filter((item) => item.kind === 0)
-  //   ?.map((uom: MaterialDto) => ({
-  //     label: uom.name,
-  //     value: uom.id,
-  //   })) as Option[];
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+
+  const uomOptions = uomResponse?.map((uom) => ({
+    label: uom.symbol,
+    value: uom.id,
+  })) as Option[];
 
   useEffect(() => {
     loadCollection({
@@ -91,9 +89,11 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
   })) as Option[];
 
   const onSubmit = (data: BomRequestDto) => {
+    // console.log(data);
     setItemLists((prevState) => {
       const payload = {
         ...data,
+        id: (prevState.length + 1).toString(),
         idIndex: (prevState.length + 1).toString(),
       };
       return [...prevState, payload]; // Add new item to the array
@@ -105,92 +105,19 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add BOM</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            className="grid w-full grid-cols-2 gap-6 space-y-0"
-            fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                label: "Ingredient Type",
-                control,
-                type: InputTypes.SELECT,
-                name: "materialTypeId",
-                required: true,
-
-                onModal: true,
-                placeholder: "Ingredient Type",
-                options: materialTypeOptions,
-                errors: {
-                  message: errors.materialTypeId?.message,
-                  error: !!errors.materialTypeId,
-                },
-              },
-              {
-                label: "Material",
-                control,
-                type: InputTypes.SELECT,
-                name: "componentMaterialId",
-                required: true,
-                onModal: true,
-                placeholder: "Material",
-                options: materialOptions,
-                errors: {
-                  message: errors.componentMaterialId?.message,
-                  error: !!errors.componentMaterialId,
-                },
-              },
-              {
-                register: { ...register("grade") },
-                label: "Grade/Purity",
-                placeholder: "Enter Grade/Purity",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.grade?.message,
-                  error: !!errors.grade,
-                },
-              },
-              // {
-              //   label: "Order of Insertion",
-              //   control,
-              //   type: InputTypes.SELECT,
-              //   name: "order",
-              //   required: true,
-              //   placeholder: "Order of Insertion",
-              //   options: orderOfInsertionOptions,
-              //   errors: {
-              //     message: errors.order?.message,
-              //     error: !!errors.order,
-              //   },
-              // },
-              {
-                register: { ...register("casNumber") },
-                label: "CAS Number",
-                placeholder: "Enter CAS Number",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.casNumber?.message,
-                  error: !!errors.casNumber,
-                },
-              },
-              {
-                register: { ...register("function") },
-                label: "Function",
-                placeholder: "Enter function",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.function?.message,
-                  error: !!errors.function,
-                },
-              },
-            ]}
+          <BomForm
+            register={register}
+            errors={errors}
+            control={control}
+            materialTypeOptions={materialTypeOptions}
+            materialOptions={materialOptions}
+            uomOptions={uomOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

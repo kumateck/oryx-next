@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ColumnType } from "@/app/shared/datatable";
 import { Option } from "@/lib";
+import { ColumnType } from "@/shared/datatable";
+
+import { MaterialRequestDto } from "../details/products/type";
 
 // import Edit from "./edit";
-import { MaterialRequestDto } from "./type";
+// import { MaterialRequestDto } from "./type";
 
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,

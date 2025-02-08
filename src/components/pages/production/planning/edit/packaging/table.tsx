@@ -1,4 +1,4 @@
-import { ListsTable } from "@/app/shared/datatable";
+import { ListsTable } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
 // import Edit from "./edit";

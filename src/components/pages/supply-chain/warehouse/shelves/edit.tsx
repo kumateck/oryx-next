@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import {
   Button,
   Dialog,
@@ -13,7 +12,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
   CreateWarehouseLocationShelfRequest,
   WarehouseLocationShelfDto,
@@ -28,6 +27,7 @@ import {
   isErrorResponse,
 } from "@/lib/utils";
 
+import ShelfForm from "./form";
 import { CreateShelfValidator, ShelfRequestDto } from "./types";
 
 // import "./types";
@@ -126,63 +126,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <FormWizard
-            config={[
-              {
-                label: "Rack",
-                control,
-                type: InputTypes.SELECT,
-                name: "rackId",
-                required: true,
-                onModal: true,
-                options: rackOptions,
-                errors: {
-                  message: errors.rackId?.message,
-                  error: !!errors.rackId,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Shelf Name",
-                required: true,
-                placeholder: "Enter Shelf Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("code") },
-                label: "Shelf Code",
-                readOnly: true,
-                required: true,
-                description: (
-                  <span className="text-sm text-neutral-500">
-                    You can’t change the shelf code
-                  </span>
-                ),
-                placeholder: "Code will be generated",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.code?.message,
-                  error: !!errors.code,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                required: true,
-                placeholder: "Enter Description",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
+          <ShelfForm
+            control={control}
+            register={register}
+            errors={errors}
+            rackOptions={rackOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

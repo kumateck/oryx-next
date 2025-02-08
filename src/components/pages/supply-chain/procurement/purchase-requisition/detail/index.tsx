@@ -5,7 +5,13 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Card, Icon } from "@/components/ui";
-import { ErrorResponse, RequisitionType, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  RequisitionType,
+  Units,
+  convertToLargestUnit,
+  isErrorResponse,
+} from "@/lib";
 import {
   CreateSourceRequisitionRequest,
   PostApiV1RequisitionSourceApiArg,
@@ -13,6 +19,7 @@ import {
   useGetApiV1RequisitionByRequisitionIdQuery,
   usePostApiV1RequisitionSourceMutation,
 } from "@/lib/redux/api/openapi.generated";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
@@ -33,8 +40,14 @@ const Page = () => {
         code: material.material?.code,
         materialName: material.material?.name,
         materialId: material.material?.id,
-        uom: material.uoM?.name,
-        quantity: material.quantity,
+        uom: convertToLargestUnit(
+          material.quantity as number,
+          material.uoM?.symbol as Units,
+        ).unit,
+        quantity: convertToLargestUnit(
+          material.quantity as number,
+          material.uoM?.symbol as Units,
+        ).value,
         uomId: material.uoM?.id,
         source: "",
         sourceVendors: [],
@@ -73,10 +86,10 @@ const Page = () => {
     }
   };
   return (
-    <div className="space-y-4">
+    <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">
         <span className="text-2xl font-semibold">Requisition Sourcing</span>
-        <Button className="flex gap-2" variant={"primary"} onClick={onSubmit}>
+        <Button className="flex gap-2" onClick={onSubmit}>
           {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}
           <span>Save</span>
         </Button>
@@ -116,7 +129,7 @@ const Page = () => {
           <TableForData lists={purchaseLists} setItemLists={setPurchaseLists} />
         </div>
       </div>
-    </div>
+    </ScrollablePageWrapper>
   );
 };
 

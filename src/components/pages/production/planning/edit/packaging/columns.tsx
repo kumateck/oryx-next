@@ -24,7 +24,6 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
 
   const handleDelete = () => {
     if (details) {
-      console.log(details, "details");
       setItemLists((prev) =>
         prev.filter((item) => {
           console.log(item.idIndex, details.idIndex);
@@ -46,7 +45,7 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
       />
       <Icon
         name="Trash2"
-        className="h-5 w-5 cursor-pointer text-danger-500"
+        className="text-danger-500 h-5 w-5 cursor-pointer"
         onClick={() => {
           setDetails(row.original);
           setIsDeleteOpen(true);
@@ -78,24 +77,35 @@ export const getColumns = (
     accessorKey: "idIndex",
     header: "#",
   },
-  {
-    accessorKey: "packageTypeId",
-    header: "Package Type",
-    cell: ({ row }) => (
-      <div className="">{row.original.packageTypeId?.label}</div>
-    ),
-  },
+
   {
     accessorKey: "materialId",
     header: "Component Material",
     cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
   },
   {
-    accessorKey: "materialThickness",
-    header: "Thickness",
-    cell: ({ row }) => <div>{row.getValue("materialThickness")}</div>,
+    accessorKey: "baseQuantity",
+    header: "Base Quantity",
+    cell: ({ row }) => <div>{row.original.baseQuantity}</div>,
   },
 
+  {
+    accessorKey: "directLinkMaterialId",
+    header: "Direct Link Material",
+    cell: ({ row }) => (
+      <div className="">{row.original.directLinkMaterialId?.label}</div>
+    ),
+  },
+  {
+    accessorKey: "unitCapacity",
+    header: "Unit Capacity",
+    cell: ({ row }) => <div>{row.original.unitCapacity}</div>,
+  },
+  {
+    accessorKey: "materialThickness",
+    header: "Material Thickness",
+    cell: ({ row }) => <div>{row.original.materialThickness}</div>,
+  },
   {
     accessorKey: "otherStandards",
     header: "Other Standards",

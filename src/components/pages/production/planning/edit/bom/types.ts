@@ -8,7 +8,7 @@ export const CreateBomSchema = z.object({
   isSubstitutable: z.boolean().optional(),
   id: z.string().optional(),
   idIndex: z.string().optional(),
-  componentMaterialId: z.object(
+  materialId: z.object(
     {
       value: z.string().min(1, { message: "Material is required" }),
       label: z.string(),
@@ -17,15 +17,24 @@ export const CreateBomSchema = z.object({
       message: "Material is required",
     },
   ),
-  // order: z.object(
-  //   {
-  //     value: z.string().min(1, { message: "order is required" }),
-  //     label: z.string(),
-  //   },
-  //   {
-  //     message: "order is required",
-  //   },
-  // ),
+  baseUoMId: z.object(
+    {
+      value: z.string().min(1, { message: "UOM is required" }),
+      label: z.string(),
+    },
+    {
+      message: "UOM is required",
+    },
+  ),
+
+  baseQuantity: z
+    .number({
+      required_error: "Quantity is required",
+      invalid_type_error: "Quantity must be a number",
+    })
+    .positive({
+      message: "Quantity must be greater than 0",
+    }),
   order: z.number().optional(),
   materialTypeId: z.object(
     {

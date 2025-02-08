@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
-import { ListsTable } from "@/app/shared/datatable";
 import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
+import { MaterialRequestDto } from "../details/products/type";
 import { getColumns } from "./columns";
-import { MaterialRequestDto } from "./type";
 
 interface Props {
   lists: MaterialRequestDto[];

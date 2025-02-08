@@ -5,13 +5,11 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { FormWizard } from "@/components/form-inputs";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
   ErrorResponse,
   GenerateCodeOptions,
-  InputTypes,
   Option,
   PurchaseOrderStatusList,
   generateCode,
@@ -29,8 +27,11 @@ import {
   usePostApiV1ProcurementShipmentDocumentMutation,
   usePostApiV1ProcurementShipmentInvoiceMutation,
 } from "@/lib/redux/api/openapi.generated";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
+import DocumentForm from "./form";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
 
@@ -178,105 +179,36 @@ const Page = () => {
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-5">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex w-full items-center justify-between space-y-4">
-              <span className="text-xl font-semibold text-black">
-                Create Shipment Document
-              </span>
-              <Button>
-                {(isLoading || isUploadingAttachment || isSavingInvoice) && (
-                  <Icon name="LoaderCircle" className="animate-spin" />
-                )}
-                <span>Save Changes</span>
-              </Button>
-            </div>
-            <FormWizard
-              className="grid w-full grid-cols-2 gap-x-10 space-y-0"
-              fieldWrapperClassName="flex-grow"
-              config={[
-                {
-                  register: { ...register("code") },
-                  label: "Document Code",
-                  readOnly: true,
-                  required: true,
-                  description: (
-                    <span className="text-sm text-neutral-500">
-                      You can’t change the document code
-                    </span>
-                  ),
-                  placeholder: "Code will be generated",
-                  type: InputTypes.TEXT,
-                  errors: {
-                    message: errors.code?.message,
-                    error: !!errors.code,
-                  },
-                },
-                {
-                  label: "Vendor",
-                  control,
-                  type: InputTypes.SELECT,
-                  name: "purchaseOrderId",
-                  required: true,
-                  placeholder: "Vendor",
-                  options: purchaseOrderOptions,
-                  errors: {
-                    message: errors.purchaseOrderId?.message,
-                    error: !!errors.purchaseOrderId,
-                  },
-                },
-              ]}
-            />
-            <div className="grid w-full grid-cols-2 gap-x-10 space-y-0">
-              <FormWizard
-                config={[
-                  {
-                    register: { ...register("invoiceNumber") },
-                    label: "Invoice Number",
-                    placeholder: "Enter Invoice Number",
-                    type: InputTypes.TEXT,
-                    autoFocus: true,
-                    required: true,
-                    errors: {
-                      message: errors.invoiceNumber?.message,
-                      error: !!errors.invoiceNumber,
-                    },
-                  },
-                ]}
-              />
-              {/* <Label>{supplier}</Label> */}
-            </div>
-            <div className="w-full">
-              <FormWizard
-                config={[
-                  {
-                    type: InputTypes.DRAGNDROP,
-                    label: "Attach Documents",
-                    name: `attachments`,
-                    defaultValue: null,
-                    control,
-                    errors: {
-                      message: errors.attachments?.message?.toString(),
-                      error: !!errors.attachments,
-                    },
-                  },
-                ]}
-              />
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-      <div className="w-full">
-        <div>
-          <span>Invoice Items</span>
+    <ScrollablePageWrapper className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex w-full items-center justify-between space-y-4">
+          <PageTitle title="Create Shipment Document" />
+          <Button>
+            {(isLoading || isUploadingAttachment || isSavingInvoice) && (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            )}
+            <span>Save Changes</span>
+          </Button>
         </div>
-        <div className="space-y-2">
+        <Card>
+          <CardContent className="p-5">
+            <DocumentForm
+              control={control}
+              register={register}
+              errors={errors}
+              purchaseOrderOptions={purchaseOrderOptions}
+              // defaultValues={{} as ShipmentRequestDto}
+            />
+          </CardContent>
+        </Card>
+      </form>
+      <div className="w-full space-y-4">
+        <PageTitle title="Invoice Items" />
+        <div className="">
           <TableForData lists={materialLists} setItemLists={setMaterialLists} />
         </div>
       </div>
-    </div>
+    </ScrollablePageWrapper>
   );
 };
 

@@ -4,7 +4,6 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 
 import logo from "@/app/assets/oryx_logo_dark.png";
-import { ListsTable } from "@/app/shared/datatable";
 import {
   Button,
   Dialog,
@@ -20,6 +19,7 @@ import {
   useLazyGetApiV1RequisitionSourceSupplierQuotationQuery,
   usePostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 
 import { columns } from "./column";
 
@@ -98,7 +98,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
           <div className="absolute -right-36 flex flex-col gap-4">
             <Button variant="outline" onClick={() => handlePrint()}>
               <Icon name="Printer" />
-              <span>Print</span>
+              <span>Send Email</span>
             </Button>
             <Button variant="destructive" onClick={() => onClose()}>
               <span>Close</span>

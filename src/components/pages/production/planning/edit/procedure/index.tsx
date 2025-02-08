@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import StepWrapper from "@/app/shared/wrapper";
 import { Button, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
@@ -14,6 +13,8 @@ import {
   useGetApiV1ProductByProductIdQuery,
   usePostApiV1ProductByProductIdRoutesMutation,
 } from "@/lib/redux/api/openapi.generated";
+import PageTitle from "@/shared/title";
+import StepWrapper from "@/shared/wrapper";
 
 import Create from "./create";
 import TableForData from "./table";
@@ -29,20 +30,34 @@ const Page = () => {
   const defaultRouting = product?.routes?.map((r, idx) => ({
     ...r,
     idIndex: (idx + 1).toString(),
-    resourceIds: r.resources?.map((res) => {
+    resources: r.resources?.map((res) => {
       return {
-        label: res.name as string,
-        value: res.id as string,
+        label: res.resource?.name as string,
+        value: res.resource?.id as string,
       };
     }),
     operationId: {
       label: r.operation?.name as string,
       value: r.operation?.id as string,
     },
-    workCenterId: {
-      label: r.workCenter?.name as string,
-      value: r.workCenter?.id as string,
-    },
+    workCenters: r.workCenters?.map((res) => {
+      return {
+        label: res.workCenter?.name as string,
+        value: res.workCenter?.id as string,
+      };
+    }),
+    responsibleRoles: r.responsibleRoles?.map((res) => {
+      return {
+        label: res?.role?.name as string,
+        value: res?.role?.id as string,
+      };
+    }),
+    responsibleUsers: r.responsibleUsers?.map((res) => {
+      return {
+        label: res?.user?.name as string,
+        value: res.user?.id as string,
+      };
+    }),
   })) as RoutingRequestDto[];
 
   const [saveRouting, { isLoading }] =
@@ -68,8 +83,19 @@ const Page = () => {
           estimatedTime: item.estimatedTime,
           order: idx + 1,
           operationId: item.operationId.value,
-          resourceIds: item.resourceIds?.map((item) => item.value),
-          workCenterId: item.workCenterId.value,
+          resourceIds: item.resources?.map((item) => ({
+            resourceId: item.value,
+          })),
+          responsibleUsers: item.responsibleUsers?.map((item) => ({
+            userId: item.value,
+          })),
+          responsibleRoles: item.responsibleRoles?.map((item) => ({
+            roleId: item.value,
+          })),
+          workCenters: item.workCenters?.map((item) => ({
+            workCenterId: item.value,
+          })),
+          // workCenterId: item.workCenterId.value,
         })) as CreateRouteRequest[],
       } satisfies PostApiV1ProductByProductIdRoutesApiArg).unwrap();
 
@@ -79,34 +105,38 @@ const Page = () => {
     }
   };
   return (
-    <div>
-      <div className="flex justify-end gap-4">
-        <Link
-          href={routes.editPlanningInfo()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Info
-        </Link>
-        <Link
-          href={routes.editPlanningBom()}
-          className="underline hover:text-primary-500"
-        >
-          Edit BOM
-        </Link>
-        <Link
-          href={routes.editPlanningPackaging()}
-          className="underline hover:text-primary-500"
-        >
-          Edit Packaging
-        </Link>
+    <div className="relative">
+      <div className="absolute right-0 -mt-10">
+        <div className="flex justify-end gap-4">
+          <Link
+            href={routes.editPlanningInfo()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Info
+          </Link>
+          <Link
+            href={routes.editPlanningBom()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit BOM
+          </Link>
+          <Link
+            href={routes.editPlanningPackaging()}
+            className="hover:text-primary-500 underline"
+          >
+            Edit Packaging
+          </Link>
+          <Link
+            href={routes.editPackingOrder()}
+            className="underline hover:text-primary-hover"
+          >
+            Packing Order Preparation
+          </Link>
+        </div>
       </div>
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
-          <span className="font-Bold text-xl">
-            {/* Manufacturing Resource Planning (MRP) */}
-            Procedure
-          </span>
-
+          <PageTitle title="Procedure" />
           <div className="flex gap-2">
             <Button
               onClick={() => {
@@ -117,7 +147,6 @@ const Page = () => {
                 handleSave();
               }}
               type="button"
-              variant={"primary"}
               className="flex items-center gap-2"
             >
               {isLoading ? (
@@ -145,20 +174,11 @@ const Page = () => {
           onClose={() => setIsOpen(false)}
           setItemLists={setItemLists}
           productId={productId}
+          itemLists={itemLists}
         />
 
         <div className="w-full py-6">
-          <TableForData
-            lists={
-              itemLists?.map((item, idx) => {
-                return {
-                  ...item,
-                  idIndex: (idx + 1).toString(),
-                };
-              }) || []
-            }
-            setItems={setItemLists}
-          />
+          <TableForData lists={itemLists} setItems={setItemLists} />
         </div>
       </StepWrapper>
     </div>

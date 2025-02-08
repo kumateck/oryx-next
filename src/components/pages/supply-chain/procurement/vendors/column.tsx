@@ -6,7 +6,7 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, SupplierType, isErrorResponse } from "@/lib";
 import {
   MaterialDto,
-  SupplierDtoRead,
+  SupplierDto,
   useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
   useLazyGetApiV1ProcurementSupplierQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -16,7 +16,7 @@ import {
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends SupplierDtoRead>({
+export function DataTableRowActions<TData extends SupplierDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] =
@@ -37,7 +37,7 @@ export function DataTableRowActions<TData extends SupplierDtoRead>({
       />
       <Icon
         name="Trash2"
-        className="h-5 w-5 cursor-pointer text-danger-500"
+        className="text-danger-500 h-5 w-5 cursor-pointer"
         onClick={() => {
           setDetails(row.original);
           setIsDeleteOpen(true);
@@ -72,7 +72,7 @@ export function DataTableRowActions<TData extends SupplierDtoRead>({
   );
 }
 
-export const columns: ColumnDef<SupplierDtoRead>[] = [
+export const columns: ColumnDef<SupplierDto>[] = [
   {
     accessorKey: "type",
     header: "Vendor Type",

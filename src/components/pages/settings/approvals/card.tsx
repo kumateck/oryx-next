@@ -27,7 +27,7 @@ const ApprovalCard = ({ approval, number }: Props) => {
                 {approval?.approvalStages?.map((res, index) => (
                   <li key={index}>
                     <div className="whitespace-nowrap rounded-3xl border border-neutral-300 p-1 px-2 text-sm text-neutral-700">
-                      <span className="text-base text-danger-500">
+                      <span className="text-danger-500 text-base">
                         {res.required ? "*" : ""}
                       </span>
                       <span className="text-neutral-500">
@@ -55,7 +55,7 @@ const ApprovalCard = ({ approval, number }: Props) => {
             <Button
               // onClick={() => onDelete(question.id)}
               variant={"outline"}
-              className="text-destructive-500 flex items-center gap-1.5 border-danger-500"
+              className="text-destructive-500 border-danger-500 flex items-center gap-1.5"
             >
               {isDeleting ? (
                 <Icon name="LoaderCircle" size={14} className="animate-spin" />

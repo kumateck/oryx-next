@@ -1,5 +1,4 @@
 // import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -12,11 +11,6 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib/constants";
-import {
-  PostApiV1CollectionApiArg,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
 
 import { CreateFinishedValidator, FinishedRequestDto } from "./types";
 
@@ -30,9 +24,9 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
   const {
-    register,
-    control,
-    formState: { errors },
+    // register,
+    // control,
+    // formState: { errors },
     reset,
     handleSubmit,
   } = useForm<FinishedRequestDto>({
@@ -43,22 +37,22 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
     },
   });
 
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
+  // const [loadCollection, { data: collectionResponse }] =
+  //   usePostApiV1CollectionMutation({});
+  // useEffect(() => {
+  //   loadCollection({
+  //     body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
+  //   } as PostApiV1CollectionApiArg).unwrap();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  const unitOfMeasureOptions = collectionResponse?.[
-    COLLECTION_TYPES.UnitOfMeasure
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  // const unitOfMeasureOptions = collectionResponse?.[
+  //   COLLECTION_TYPES.UnitOfMeasure
+  // ]?.map((uom) => ({
+  //   label: uom.name,
+  //   value: uom.id,
+  // })) as Option[];
 
   const onSubmit = (data: FinishedRequestDto) => {
     setItemLists((prevState) => {
@@ -91,87 +85,84 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
           <FormWizard
             className="grid w-full grid-cols-2 gap-6 space-y-0"
             fieldWrapperClassName="flex-grow"
-            config={[
-              {
-                register: { ...register("name") },
-                label: "Name",
-                placeholder: "Enter name",
-                type: InputTypes.TEXT,
-                required: true,
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                label: "Unit of Measurement",
-                control,
-                type: InputTypes.SELECT,
-                name: "uoMId",
-                required: true,
-                onModal: true,
-                placeholder: "Unit of Measurement",
-                options: unitOfMeasureOptions,
-                defaultValue: details?.uoMId,
-                errors: {
-                  message: errors.uoMId?.message,
-                  error: !!errors.uoMId,
-                },
-              },
-
-              {
-                register: {
-                  ...register("standardCost", {
-                    valueAsNumber: true,
-                  }),
-                },
-                label: "Cost Price",
-                placeholder: "Enter price",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.standardCost?.message,
-                  error: !!errors.standardCost,
-                },
-              },
-
-              {
-                register: {
-                  ...register("sellingPrice", {
-                    valueAsNumber: true,
-                  }),
-                },
-                label: "Selling Price",
-                placeholder: "Enter price",
-                type: InputTypes.TEXT,
-                errors: {
-                  message: errors.sellingPrice?.message,
-                  error: !!errors.sellingPrice,
-                },
-              },
-
-              {
-                register: { ...register("dosageForm") },
-                label: "Dosage Form",
-                placeholder: "Enter dosage",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.dosageForm?.message,
-                  error: !!errors.dosageForm,
-                },
-              },
-              {
-                register: { ...register("strength") },
-                label: "Strength",
-                placeholder: "Enter strength",
-                type: InputTypes.TEXTAREA,
-
-                errors: {
-                  message: errors.strength?.message,
-                  error: !!errors.strength,
-                },
-              },
-            ]}
+            config={
+              [
+                // {
+                //   register: { ...register("name") },
+                //   label: "Name",
+                //   placeholder: "Enter name",
+                //   type: InputTypes.TEXT,
+                //   required: true,
+                //   errors: {
+                //     message: errors.name?.message,
+                //     error: !!errors.name,
+                //   },
+                // },
+                // {
+                //   label: "Unit of Measurement",
+                //   control,
+                //   type: InputTypes.SELECT,
+                //   name: "uoMId",
+                //   required: true,
+                //   onModal: true,
+                //   placeholder: "Unit of Measurement",
+                //   options: unitOfMeasureOptions,
+                //   defaultValue: details?.uoMId,
+                //   errors: {
+                //     message: errors.uoMId?.message,
+                //     error: !!errors.uoMId,
+                //   },
+                // },
+                // {
+                //   register: {
+                //     ...register("standardCost", {
+                //       valueAsNumber: true,
+                //     }),
+                //   },
+                //   label: "Cost Price",
+                //   placeholder: "Enter price",
+                //   type: InputTypes.TEXT,
+                //   errors: {
+                //     message: errors.standardCost?.message,
+                //     error: !!errors.standardCost,
+                //   },
+                // },
+                // {
+                //   register: {
+                //     ...register("sellingPrice", {
+                //       valueAsNumber: true,
+                //     }),
+                //   },
+                //   label: "Selling Price",
+                //   placeholder: "Enter price",
+                //   type: InputTypes.TEXT,
+                //   errors: {
+                //     message: errors.sellingPrice?.message,
+                //     error: !!errors.sellingPrice,
+                //   },
+                // },
+                // {
+                //   register: { ...register("dosageForm") },
+                //   label: "Dosage Form",
+                //   placeholder: "Enter dosage",
+                //   type: InputTypes.TEXTAREA,
+                //   errors: {
+                //     message: errors.dosageForm?.message,
+                //     error: !!errors.dosageForm,
+                //   },
+                // },
+                // {
+                //   register: { ...register("strength") },
+                //   label: "Strength",
+                //   placeholder: "Enter strength",
+                //   type: InputTypes.TEXTAREA,
+                //   errors: {
+                //     message: errors.strength?.message,
+                //     error: !!errors.strength,
+                //   },
+                // },
+              ]
+            }
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
