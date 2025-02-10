@@ -30,34 +30,6 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     header: "Code",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
   },
-  {
-    accessorKey: "invoice",
-    header: "Invoice No",
-    cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
-  },
-  // {
-  //   accessorKey: "supplier",
-  //   header: "Supplier",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.in?.supplier?.name}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "date",
-  //   header: "Expected Delivery Date",
-  //   cell: ({ row }) => (
-  //     <div className="min-w-36">
-  //       {row.original.purchaseOrder?.expectedDeliveryDate
-  //         ? format(
-  //             row.original.purchaseOrder?.expectedDeliveryDate,
-  //             "MMM d, yyyy",
-  //           )
-  //         : ""}
-  //     </div>
-  //   ),
-  // },
 
   // {
   //   accessorKey: "status",

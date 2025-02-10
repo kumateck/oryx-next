@@ -1,10 +1,8 @@
-import { format } from "date-fns";
-import Image from "next/image";
 import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 
-import logo from "@/assets/oryx_logo_dark.png";
 import {
   Button,
   Dialog,
@@ -16,10 +14,13 @@ import {
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
+  SupplierDto,
   useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ListsTable } from "@/shared/datatable";
+import InvoiceHeader from "@/shared/invoice/header";
 
 import { columns } from "./column";
 
@@ -30,7 +31,8 @@ interface Props {
   date?: Date;
 }
 const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
-  const [emailQuotation] =
+  const dispatch = useDispatch();
+  const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
   const { data, isLoading } =
     useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
@@ -56,7 +58,7 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
   };
   const handlePrint = useReactToPrint({
     onBeforePrint: () => onSubmit(),
-    onAfterPrint: () => onClose(),
+    onAfterPrint: () => handleLoad(),
     contentRef,
     documentTitle: `Quotation`,
     pageStyle: `
@@ -69,6 +71,12 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
             margin: 2mm 15mm;
           }`,
   });
+
+  const handleLoad = () => {
+    dispatch(commonActions.setTriggerReload());
+    onClose();
+  };
+
   const handleDialogChange = (open: boolean) => {
     // Only close if the "Close" button is clicked (open = false)
     if (!open) onClose();
@@ -76,32 +84,25 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
-        <div className="relative">
-          <div className="absolute -right-36 flex flex-col gap-4">
-            <Button variant="outline" onClick={() => handlePrint()}>
+        <div className="absolute -right-36 flex flex-col gap-4">
+          <Button variant="outline" onClick={() => handlePrint()}>
+            {isSending ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
               <Icon name="Printer" />
-              <span>Send Email</span>
-            </Button>
-            <Button variant="destructive" onClick={() => onClose()}>
-              <span>Close</span>
-            </Button>
-          </div>
+            )}
+            <span>Send Email</span>
+          </Button>
+          <Button variant="destructive" onClick={() => onClose()}>
+            <span>Close</span>
+          </Button>
         </div>
+
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
         </DialogHeader>
         <article ref={contentRef} className="bg-white">
-          <div className="flex justify-between gap-4">
-            <div>
-              <Image src={logo} alt="logo" width={100} height={100} />
-            </div>
-            <div className="flex flex-col gap-0.5 text-sm">
-              <span className="capitalize">{supplier?.name}</span>
-              <span>{supplier?.code}</span>
-              <span>telephone</span>
-            </div>
-            <div>{date ? format(date, "MMM dd, yyyy") : "-"}</div>
-          </div>
+          <InvoiceHeader supplier={supplier as SupplierDto} />
           <div className="flex items-center justify-center gap-4 py-4">
             <span className="text-2xl font-semibold">Purchase Order</span>
           </div>

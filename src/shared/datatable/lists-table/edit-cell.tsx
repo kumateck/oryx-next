@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SpecialMultiSelect } from "@/components/ui/special-multi-select";
 import { SpecialSelect } from "@/components/ui/special-select";
 import { Option } from "@/lib";
 import { cn } from "@/lib/utils";
@@ -29,7 +30,7 @@ interface EditableCellProps {
   min?: boolean;
   cellContext: any; // Type this based on your row data
   updateData: (rowIndex: number, columnId: string, value: unknown) => void;
-  options?: { label: string; value: string }[]; // Options for react-select and combobox
+  options?: Option[]; // Options for react-select and combobox
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -72,16 +73,30 @@ const EditableCell: React.FC<EditableCellProps> = ({
     }
   };
 
+  const handleSpecialOnchange = (opt: Option | Option[]) => {
+    // const evalue = e.target ? e.target.value : e.value;
+    setEditingValue(opt); // Handle value for select and combobox
+
+    if (opt !== value) {
+      updateData(rowIndex, columnId, opt);
+    }
+    if (extraEvents) {
+      extraEvents(rowIndex, opt);
+    }
+  };
   return (
-    <InputSwitch
-      type={type}
-      editingValue={editingValue}
-      handleChange={handleChange}
-      handleSelectChange={handleSelectChange}
-      handleBlur={handleBlur}
-      options={options}
-      setMin={setMin}
-    />
+    <div className="w-full min-w-72">
+      <InputSwitch
+        type={type}
+        editingValue={editingValue}
+        handleChange={handleChange}
+        handleSelectChange={handleSelectChange}
+        handleSpecialOnchange={handleSpecialOnchange}
+        handleBlur={handleBlur}
+        options={options}
+        setMin={setMin}
+      />
+    </div>
   );
 };
 
@@ -90,6 +105,7 @@ const InputSwitch = ({
   editingValue,
   handleChange,
   handleSelectChange,
+  handleSpecialOnchange,
   handleBlur,
   options,
   setMin,
@@ -98,6 +114,7 @@ const InputSwitch = ({
   editingValue: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
   handleSelectChange: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
+  handleSpecialOnchange: (opt: Option | Option[]) => void;
   handleBlur: () => void;
   options?: { label: string; value: string }[];
   setMin?: number;
@@ -124,6 +141,22 @@ const InputSwitch = ({
           // isClearable
         />
       );
+    case ColumnType.MULTI:
+      return (
+        <SpecialMultiSelect
+          defaultValue={
+            (Array.isArray(editingValue) && editingValue) as Option[]
+          }
+          options={options as Option[]}
+          onChange={(selectedOptions) => {
+            // const opts = selectedOptions as Option[];
+            // const values = Array.isArray(opts) && opts.map((opt) => opt.value);
+            // handleChange({ value: values });
+            handleSpecialOnchange(selectedOptions);
+          }}
+        />
+      );
+
     // case ColumnType.MULTI:
     //   return (
     //     <SelectDropDown

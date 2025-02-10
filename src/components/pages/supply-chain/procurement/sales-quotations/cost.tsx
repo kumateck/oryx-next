@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -13,9 +14,9 @@ import {
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   useGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery,
-  useLazyGetApiV1RequisitionSourceSupplierQuotationQuery,
   usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./table/type";
@@ -26,7 +27,7 @@ interface Props {
   id: string;
 }
 const Cost = ({ isOpen, onClose, id }: Props) => {
-  const [loadData] = useLazyGetApiV1RequisitionSourceSupplierQuotationQuery();
+  const dispatch = useDispatch();
   const [updatePrices, { isLoading }] =
     usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation();
   const { data } =
@@ -45,7 +46,7 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
         uomId: item.uoM?.id,
         price: item.quotedPrice ?? 0,
         materialName: item.material?.name,
-        uom: item.uoM?.name,
+        uom: item.uoM?.symbol,
       })) as MaterialRequestDto[];
     }
     return [];
@@ -72,18 +73,18 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
 
   const onSubmit = async () => {
     try {
-      const res = await updatePrices({
+      await updatePrices({
         supplierQuotationId: id,
         body: itemLists?.map((item) => ({
           id: item.id,
           price: item.price,
         })),
       }).unwrap();
-      if (res) {
-        toast.success("Prices updated successfully");
-        loadData({ supplierType: 0 });
-        onClose();
-      }
+
+      toast.success("Prices updated successfully");
+      dispatch(commonActions.setTriggerReload());
+
+      onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -91,7 +92,7 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent>
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>Update Prices </DialogTitle>
           </DialogHeader>

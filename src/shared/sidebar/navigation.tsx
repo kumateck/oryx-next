@@ -49,6 +49,10 @@ export const ROUTES: Route[] = [
             url: "/stock/available",
           },
           {
+            title: "Shipment Invoices",
+            url: "/logistics/shipment-invoices",
+          },
+          {
             title: "Shipment Documents",
             url: "/logistics/shipment-documents",
           },
@@ -84,10 +88,7 @@ export const ROUTES: Route[] = [
             title: "Shelves",
             url: "/warehouse/shelves",
           },
-          // {
-          //   title: "Lists",
-          //   url: "/warehouse/raw-materials",
-          // },
+
           {
             title: "Raw Materials",
             url: "/warehouse/raw-materials",
@@ -116,10 +117,7 @@ export const ROUTES: Route[] = [
             title: "Vendors",
             url: "/procurement/vendors",
           },
-          // {
-          //   title: "Proforma Invoices",
-          //   url: "/procurement/proforma-invoice",
-          // },
+
           {
             title: "Purchase Requisition",
             url: "/procurement/requisition",
@@ -138,17 +136,9 @@ export const ROUTES: Route[] = [
               },
             ],
           },
-          // {
-          //   title: "Foreign Quotations",
-          //   url: "/procurement/foreign-quotation",
-          // },
-          // {
-          //   title: "Local Quotations",
-          //   url: "/procurement/local-quotation",
-          // },
 
           {
-            title: "Sales Quotations",
+            title: "Quotations Reponses",
             url: "/procurement/sales",
             children: [
               {

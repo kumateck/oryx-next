@@ -87,7 +87,7 @@ export function DropZone({ onChange, defaultValue, name }: Props) {
   };
   return (
     <div className="w-full">
-      <div {...getRootProps()} onClick={(e) => e.stopPropagation()}>
+      <div {...getRootProps()}>
         <input id={name} key={files.length} {...getInputProps()} />
         <div className="flex w-full flex-col items-center rounded-md border border-dashed border-neutral-400 p-4">
           <div className="inline-flex cursor-pointer flex-col items-center justify-center rounded-md px-4 py-2">

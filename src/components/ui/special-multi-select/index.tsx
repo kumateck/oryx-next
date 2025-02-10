@@ -111,7 +111,7 @@
 import Fuse from "fuse.js";
 import React, { useEffect, useState } from "react";
 
-import { Option, cn } from "@/lib";
+import { Option, cleanArrayObject, cn } from "@/lib";
 
 import { Checkbox } from "../checkbox";
 import { Input } from "../input";
@@ -160,7 +160,7 @@ export const SpecialMultiSelect = ({
   // Update state when defaultValue changes
   useEffect(() => {
     if (defaultValue) {
-      setSelectedOptions(defaultValue);
+      setSelectedOptions(cleanArrayObject(defaultValue));
     }
   }, [defaultValue]);
 
@@ -202,7 +202,7 @@ export const SpecialMultiSelect = ({
           />
 
           <ul className="flex max-h-72 flex-col gap-0 overflow-y-auto">
-            {filteredOptions.map((item, index) => (
+            {filteredOptions?.map((item, index) => (
               <li
                 key={index}
                 onClick={() => handleCheckboxChange(item)}

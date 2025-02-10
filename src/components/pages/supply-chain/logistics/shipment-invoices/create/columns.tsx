@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Option } from "@/lib";
 import { ColumnType } from "@/shared/datatable";
 
 // import Edit from "./edit";
@@ -8,8 +7,6 @@ import { MaterialRequestDto } from "./type";
 
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
-  options: Option[],
-  extraEvents?: (rowIndex: number, value: unknown) => void,
 ): ColumnDef<MaterialRequestDto>[] => [
   {
     accessorKey: "code",
@@ -20,47 +17,49 @@ export const getColumns = (
     header: "Material Name",
   },
   {
-    accessorKey: "uom",
-    header: "UOM",
+    accessorKey: "uomName",
+    header: "Unit of Measurement",
   },
   {
-    accessorKey: "quantity",
-    header: "Quantity",
+    accessorKey: "costPrice",
+    header: "Cost Price",
   },
   {
-    accessorKey: "source",
-    header: "Source",
+    accessorKey: "expectedQuantity",
+    header: "Expected Quantity",
+  },
+  {
+    accessorKey: "receivedQuantity",
+    header: "Received Quantity",
     meta: {
       edittableCell: {
-        type: ColumnType.COMBOBOX,
+        type: ColumnType.NUMBER,
         editable: true,
         setItemLists,
-        options,
-        extraEvents,
       },
     },
   },
   {
-    accessorKey: "sourceVendors",
-    header: "Vendor",
+    accessorKey: "manufacturerId",
+    header: "Manufacturers",
     meta: {
       edittableCell: {
-        type: ColumnType.MULTI,
+        type: ColumnType.SELECT,
         editable: true,
         setItemLists,
         // options: vendorOptions,
       },
     },
   },
-  // {
-  //   accessorKey: "quantity",
-  //   header: "Request Qty",
-  //   meta: {
-  //     edittableCell: {
-  //       type: ColumnType.NUMBER,
-  //       editable: true,
-  //       setItemLists,
-  //     },
-  //   },
-  // },
+  {
+    accessorKey: "reason",
+    header: "Reason",
+    meta: {
+      edittableCell: {
+        type: ColumnType.TEXT,
+        editable: true,
+        setItemLists,
+      },
+    },
+  },
 ];

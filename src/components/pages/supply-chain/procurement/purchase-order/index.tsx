@@ -1,31 +1,28 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { PurchaseOrderStatusList } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
-import {
-  useGetApiV1ProcurementPurchaseOrderQuery,
-  useLazyGetApiV1ProcurementPurchaseOrderQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProcurementPurchaseOrderQuery } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
 const Page = () => {
+  const dispatch = useDispatch();
+
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const { data: result, isLoading } = useGetApiV1ProcurementPurchaseOrderQuery({
-    page,
-    pageSize,
-    status: PurchaseOrderStatusList.Attached,
-  });
-
-  const [loadData, { isFetching }] =
+  const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1ProcurementPurchaseOrderQuery();
 
   useEffect(() => {
@@ -34,9 +31,11 @@ const Page = () => {
       pageSize,
       status: PurchaseOrderStatusList.Attached,
     });
-
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   const data = result?.data || [];
   return (

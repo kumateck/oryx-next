@@ -1,48 +1,53 @@
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { PurchaseOrderStatusList } from "@/lib";
+import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
-import { useLazyGetApiV1ProcurementPurchaseOrderQuery } from "@/lib/redux/api/openapi.generated";
-import { commonActions } from "@/lib/redux/slices/common";
-import { useSelector } from "@/lib/redux/store";
+import {
+  useGetApiV1ProcurementShipmentDocumentQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
 const Page = () => {
-  const dispatch = useDispatch();
-
-  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const [loadData, { isFetching, data: result, isLoading }] =
-    useLazyGetApiV1ProcurementPurchaseOrderQuery();
+  const { data: result, isLoading } =
+    useGetApiV1ProcurementShipmentDocumentQuery({
+      page,
+      pageSize,
+    });
+
+  const [loadData, { isFetching }] =
+    useLazyGetApiV1ProcurementShipmentDocumentQuery();
 
   useEffect(() => {
     loadData({
       page,
       pageSize,
-      status: PurchaseOrderStatusList.Delivered,
     });
-    if (triggerReload) {
-      dispatch(commonActions.unSetTriggerReload());
-    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize]);
 
   const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Profoma Invoice Responses" />
-        <div className="flex items-center justify-end gap-2"></div>
+        <PageTitle title="Shipment Invoices" />
+        <div className="flex items-center justify-end gap-2">
+          <Link href={"shipment-invoices/create"}>
+            <Button>Create</Button>
+          </Link>
+        </div>
       </div>
 
       <ServerDatatable

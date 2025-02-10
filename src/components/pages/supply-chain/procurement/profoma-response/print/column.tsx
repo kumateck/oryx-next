@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Units, convertToLargestUnit } from "@/lib";
 import { PurchaseOrderItemDtoRead } from "@/lib/redux/api/openapi.generated";
 
 export const columns: ColumnDef<PurchaseOrderItemDtoRead>[] = [
@@ -8,15 +9,43 @@ export const columns: ColumnDef<PurchaseOrderItemDtoRead>[] = [
     header: "Material",
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
-  {
-    accessorKey: "uom",
-    header: "Unit of Measurement",
-    cell: ({ row }) => <div>{row.original.uom?.name}</div>,
-  },
+  // {
+  //   accessorKey: "uom",
+  //   header: "Unit of Measurement",
+  //   cell: ({ row }) => <div>{row.original.uom?.name}</div>,
+  // },
+  // {
+  //   accessorKey: "quantity",
+  //   header: "Quantity",
+  //   cell: ({ row }) => <div>{row.original.quantity}</div>,
+  // },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uom?.symbol as Units,
+          ).value
+        }
+      </div>
+    ),
+  },
+  {
+    accessorKey: "uom",
+    header: "UOM",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uom?.symbol as Units,
+          ).unit
+        }
+      </div>
+    ),
   },
   {
     accessorKey: "price",
@@ -27,7 +56,15 @@ export const columns: ColumnDef<PurchaseOrderItemDtoRead>[] = [
     accessorKey: "total",
     header: "Total",
     cell: ({ row }) => (
-      <div>{(row.original.price || 0) * (row.original.quantity || 0)}</div>
+      <div>
+        {(
+          (row.original.price || 0) *
+          (convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uom?.symbol as Units,
+          ).value || 0)
+        ).toFixed(2)}
+      </div>
     ),
   },
 ];

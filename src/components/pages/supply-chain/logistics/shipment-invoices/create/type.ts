@@ -6,29 +6,25 @@ import { IdSchema } from "@/lib";
 // import { RequisitionType } from "@/lib";
 
 export const createRequisitionItemRequestSchema = z.object({
+  code: z.string().optional(),
   materialName: z.string().optional(),
   materialId: z.string().min(1, { message: "Material is required" }),
   uomId: z
     .string({ required_error: "UOM is required" })
     .min(1, { message: "UOM is required" }),
-  quantity: z.number().min(0.1, { message: "Quantity is required" }),
-  // code: z.string().optional(),
-  uom: z.string().optional(),
-  source: z.string().optional(),
-  sourceVendors: z.array(IdSchema("Vendor")).optional(),
-  // options: z.array(z.string()).optional(),
-  // id: z.string().optional(),
+  expectedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
+  receivedQuantity: z
+    .number()
+    .min(0.1, { message: "Received Quantity is required" }),
+  reason: z.string().optional(),
+  uomName: z.string().optional(),
+  costPrice: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  purchaseOrderId: z.string().optional(),
+  options: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .optional(),
 });
-
-// code: material.material?.code,
-// materialName: material.material?.name,
-// materialId: material.material?.id,
-// uom: material.uoM?.name,
-// quantity: material.quantity,
-// uomId: material.uoM?.id,
-// source: "",
-// sourceVendors: [],
-// options: [],
 
 export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);
 
@@ -37,9 +33,12 @@ export const createRequisitionRequestSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  comments: z.string().nullable().optional(),
+  vendorId: IdSchema("Vendor"),
+  purchaseOrderIds: z.array(IdSchema("Purchase Order")).min(1, {
+    message: "Purchase Order is required",
+  }),
   items: z.array(createRequisitionItemRequestSchema).nullable().optional(),
-  expectedDelivery: z.preprocess(
+  shipmentArrivedAt: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
       required_error: "Expected Delivery Date is required",

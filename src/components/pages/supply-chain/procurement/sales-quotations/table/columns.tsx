@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Units, convertToLargestUnit } from "@/lib";
 import { ColumnType } from "@/shared/datatable";
 
 // import Edit from "./edit";
@@ -13,12 +14,32 @@ export const getColumns = (
     header: "Material Name",
   },
   {
-    accessorKey: "uom",
-    header: "UOM",
-  },
-  {
     accessorKey: "quantity",
     header: "Quantity",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uom as Units,
+          ).value
+        }
+      </div>
+    ),
+  },
+  {
+    accessorKey: "uom",
+    header: "Unit of Measurement",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uom as Units,
+          ).unit
+        }
+      </div>
+    ),
   },
   {
     accessorKey: "price",

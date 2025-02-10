@@ -5,7 +5,6 @@ import { twMerge } from "tailwind-merge";
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
 // import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
-
 import { APP_NAME, CODE_SETTINGS, Option, Status, Units } from "./constants";
 import {
   NamingType,
@@ -279,7 +278,7 @@ export const calculateFitAndOverflow = (
   let currentTotal = 0;
 
   // Track the items that fit within the maxCharacters
-  options.forEach((item) => {
+  cleanArrayObject(options)?.forEach((item) => {
     const itemLength = calculateTotalLength(item.label);
     if (currentTotal + itemLength <= maxChars) {
       fitItems.push(item);
@@ -290,7 +289,28 @@ export const calculateFitAndOverflow = (
   // Calculate overflow count
   const overflowCount = options.length - fitItems.length;
 
-  return { currentTotal, fitItems, overflowCount };
+  const cleanedArray = cleanArrayObject(fitItems);
+
+  // console.log(cleanedArray, "cleanedArray", options, fitItems);
+
+  return { currentTotal, fitItems: cleanedArray, overflowCount };
+};
+
+// export const cleanArrayObject = (fitItems: Option[]) => {
+//   const cleanedArray = fitItems?.filter(
+//     (item) => item && Object.keys(item).length > 0,
+//   );
+//   return cleanedArray;
+// };
+export const cleanArrayObject = (fitItems: Option[]) => {
+  const cleanedArray = fitItems?.filter(
+    (item) =>
+      item && // Ensure item is not null or undefined
+      Object.keys(item).length > 0 && // Ensure the object is not empty
+      item.label?.trim() !== "" && // Check that 'label' is not an empty string
+      item.value?.trim() !== "", // Check that 'value' is not an empty string
+  );
+  return cleanedArray;
 };
 
 export const findSelectedQuotation = (state: Quotations[]) => {
@@ -377,6 +397,15 @@ export const renderUOM = (productOptions: OptionsUpdate[], value: string) => {
   }
   return IndexUom;
 };
+export const formulaForRawMaterialCalc = (
+  materialQty: number,
+  baseQty: number,
+  batchSize: number,
+) => {
+  const res = (materialQty / baseQty) * batchSize;
+  return res;
+};
+
 interface UnitFactor {
   name: Units;
   factor: number;
@@ -392,19 +421,11 @@ export const massUnits: UnitFactor[] = [
   { name: Units.G, factor: 1_000 },
   { name: Units.KG, factor: 1_000_000 },
 ];
-export const formulaForRawMaterialCalc = (
-  materialQty: number,
-  baseQty: number,
-  batchSize: number,
-) => {
-  const res = (materialQty / baseQty) * batchSize;
-  return res;
-};
 
 export function convertToLargestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: string } {
+): { value: number; unit: Units } {
   // 2a) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {

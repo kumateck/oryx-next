@@ -49,13 +49,13 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="w-full">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
+        className="grid w-full grid-cols-2 gap-x-10 gap-y-3 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
           {
             register: register("name" as Path<TFieldValues>),
             label: "Name",
-            placeholder: "Etner name",
+            placeholder: "Enter name",
 
             type: InputTypes.TEXT,
 
@@ -90,7 +90,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             label: "Contact Number",
             placeholder: "Enter telephone",
 
-            type: InputTypes.EMAIL,
+            type: InputTypes.TEXT,
 
             required: true,
 

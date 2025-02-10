@@ -5,27 +5,13 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Button, Card, CardContent, Icon } from "@/components/ui";
-import {
-  CODE_SETTINGS,
-  ErrorResponse,
-  GenerateCodeOptions,
-  Option,
-  PurchaseOrderStatusList,
-  generateCode,
-  isErrorResponse,
-} from "@/lib";
+import { Card, CardContent } from "@/components/ui";
+import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   CreateShipmentDocumentRequest,
-  NamingType,
-  PostApiV1FileByModelTypeAndModelIdApiArg,
   PostApiV1ProcurementShipmentDocumentApiArg,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useGetApiV1ProcurementPurchaseOrderQuery,
   useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
-  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProcurementShipmentDocumentMutation,
-  usePostApiV1ProcurementShipmentInvoiceMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -37,21 +23,19 @@ import { MaterialRequestDto } from "./type";
 
 const Page = () => {
   const router = useRouter();
-  const [saveMutation, { isLoading }] =
-    usePostApiV1ProcurementShipmentDocumentMutation();
-  const { data: codeConfig } =
-    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-      modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
-    });
-  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
-    usePostApiV1FileByModelTypeAndModelIdMutation();
-  const [saveShipmentInvoice, { isLoading: isSavingInvoice }] =
-    usePostApiV1ProcurementShipmentInvoiceMutation();
-  const { data: purchaseOrders } = useGetApiV1ProcurementPurchaseOrderQuery({
-    pageSize: 1000,
-    status: PurchaseOrderStatusList.Completed,
-  });
+  const [saveMutation] = usePostApiV1ProcurementShipmentDocumentMutation();
+  // const { data: codeConfig } =
+  //   useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
+  //     modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
+  //   });
+  // const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+  //   usePostApiV1FileByModelTypeAndModelIdMutation();
+  // const [saveShipmentInvoice, { isLoading: isSavingInvoice }] =
+  //   usePostApiV1ProcurementShipmentInvoiceMutation();
+  // const [loadPOS, { data: purchaseOrders }] =
+  //   useLazyGetApiV1ProcurementPurchaseOrderQuery();
 
+  // console.log(purchaseOrders, "purchaseOrders");
   const [loadPurchaseOrder] =
     useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
   // console.log(isSavingInvoice)
@@ -59,25 +43,27 @@ const Page = () => {
     register,
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<ShipmentRequestDto>({
     resolver: CreateManufacturerValidator,
     mode: "all",
   });
 
-  const purchaseOrderOptions = purchaseOrders?.data?.map((item) => {
-    return {
-      label: item.supplier?.name + "-" + item.code,
-      value: item?.id,
-    };
-  }) as Option[];
+  // const purchaseOrderOptions = purchaseOrders?.data?.map((item) => {
+  //   return {
+  //     label: item.supplier?.name + "-" + item.code,
+  //     value: item?.id,
+  //   };
+  // }) as Option[];
 
   const poOptions = useWatch({
     control,
     name: "purchaseOrderId",
   });
 
+  // const handleLoadPO = async () => {
+  //   // const res = await loadPurchaseOrder({}).unwrap();
+  // };
   useEffect(() => {
     if (poOptions?.value) {
       loadPurchaseOrderDetailsHandler(poOptions.value);
@@ -108,65 +94,16 @@ const Page = () => {
     setMaterialLists(payload);
   };
 
-  useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(codeConfig?.maximumNameLength),
-        minlength: Number(codeConfig?.minimumNameLength),
-        prefix: codeConfig?.prefix as string,
-        type: codeConfig?.namingType as NamingType,
-      };
-
-      generatePayload.seriesCounter = 1;
-      const code = await generateCode(generatePayload);
-      setValue("code", code);
-    };
-
-    loadCodes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [codeConfig]);
   const onSubmit = async (data: ShipmentRequestDto) => {
     const payload = {
       code: data.code,
-      // invoiceNumber: data.invoiceNumber,
       // purchaseOrderId: data.purchaseOrderId.value,
     } satisfies CreateShipmentDocumentRequest;
     try {
-      const shipmentId = await saveMutation({
+      await saveMutation({
         createShipmentDocumentRequest: payload,
       } as PostApiV1ProcurementShipmentDocumentApiArg).unwrap();
 
-      if (shipmentId) {
-        const formData = new FormData();
-        // Ensure attachments are an array
-        const attachmentsArray = Array.isArray(data.attachments)
-          ? data.attachments
-          : Array.from(data.attachments); // Convert FileList to an array
-
-        attachmentsArray.forEach((attachment: File) => {
-          formData.append("files", attachment, attachment.name);
-        });
-
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
-          modelId: shipmentId,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-
-        await saveShipmentInvoice({
-          createShipmentInvoice: {
-            items: materialLists?.map((item) => ({
-              materialId: item.materialId,
-              expectedQuantity: item.expectedQuantity,
-              manufacturerId: item.manufacturerId,
-              reason: item.reason,
-              receivedQuantity: item.receivedQuantity,
-              uoMId: item.uomId,
-            })),
-            // shipmentDocumentId: shipmentId,
-          },
-        });
-      }
       toast.success("Shipment Document Created");
       router.push("/logistics/shipment-documents");
     } catch (error) {
@@ -182,13 +119,13 @@ const Page = () => {
     <ScrollablePageWrapper className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex w-full items-center justify-between space-y-4">
-          <PageTitle title="Create Shipment Document" />
-          <Button>
+          <PageTitle title="Create Shipment Invoice" />
+          {/* <Button>
             {(isLoading || isUploadingAttachment || isSavingInvoice) && (
               <Icon name="LoaderCircle" className="animate-spin" />
             )}
             <span>Save Changes</span>
-          </Button>
+          </Button> */}
         </div>
         <Card>
           <CardContent className="p-5">
@@ -196,7 +133,7 @@ const Page = () => {
               control={control}
               register={register}
               errors={errors}
-              purchaseOrderOptions={purchaseOrderOptions}
+              purchaseOrderOptions={[]}
               // defaultValues={{} as ShipmentRequestDto}
             />
           </CardContent>
