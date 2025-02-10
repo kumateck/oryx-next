@@ -397,6 +397,15 @@ export const renderUOM = (productOptions: OptionsUpdate[], value: string) => {
   }
   return IndexUom;
 };
+export const formulaForRawMaterialCalc = (
+  materialQty: number,
+  baseQty: number,
+  batchSize: number,
+) => {
+  const res = (materialQty / baseQty) * batchSize;
+  return res;
+};
+
 interface UnitFactor {
   name: Units;
   factor: number;
@@ -412,19 +421,11 @@ export const massUnits: UnitFactor[] = [
   { name: Units.G, factor: 1_000 },
   { name: Units.KG, factor: 1_000_000 },
 ];
-export const formulaForRawMaterialCalc = (
-  materialQty: number,
-  baseQty: number,
-  batchSize: number,
-) => {
-  const res = (materialQty / baseQty) * batchSize;
-  return res;
-};
 
 export function convertToLargestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: string } {
+): { value: number; unit: Units } {
   // 2a) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {

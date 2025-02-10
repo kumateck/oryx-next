@@ -147,7 +147,7 @@ export const ListsTable = <TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="even:bg-primary-50 hover:bg-primary-100 odd:bg-white"
+                className="odd:bg-white even:bg-neutral-secondary hover:bg-neutral-hover"
               >
                 {row.getVisibleCells().map((cell) => {
                   // console.log(cell, "cells");

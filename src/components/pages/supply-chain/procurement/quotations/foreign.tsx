@@ -1,31 +1,25 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { SupplierType } from "@/lib";
-import {
-  useGetApiV1RequisitionSourceSupplierQuery,
-  useLazyGetApiV1RequisitionSourceSupplierQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1RequisitionSourceSupplierQuery } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
 const Page = () => {
+  const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
 
-  const { data: result, isLoading } = useGetApiV1RequisitionSourceSupplierQuery(
-    {
-      page,
-      pageSize,
-      source: SupplierType.Foreign,
-    },
-  );
-
-  const [loadData, { isFetching }] =
+  const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1RequisitionSourceSupplierQuery();
 
   useEffect(() => {
@@ -34,9 +28,11 @@ const Page = () => {
       pageSize,
       source: SupplierType.Foreign,
     });
-
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   const data = result?.data || [];
 

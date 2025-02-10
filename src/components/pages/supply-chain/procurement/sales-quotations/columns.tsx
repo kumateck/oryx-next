@@ -47,20 +47,10 @@ export const columns: ColumnDef<SupplierQuotationDto>[] = [
   },
   {
     accessorKey: "total",
-    header: "Total Material Requested lists",
+    header: "Total Material Requested",
     cell: ({ row }) => <div>{row.original.items?.length}</div>,
   },
-  {
-    accessorKey: "totalQty",
-    header: "Total Items Requested Qty",
-    cell: ({ row }) => (
-      <div>
-        {row.original.items?.reduce((accumulator, item) => {
-          return accumulator + (item.quantity || 0);
-        }, 0)}
-      </div>
-    ),
-  },
+
   {
     accessorKey: "status",
     header: "Status",

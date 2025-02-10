@@ -172,9 +172,9 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
           },
 
           {
-            register: register("function" as Path<TFieldValues>),
-            label: "Function",
-            placeholder: "Enter function",
+            register: register("description" as Path<TFieldValues>),
+            label: "Label Claims",
+            placeholder: "Enter label claims",
             type: InputTypes.TEXTAREA,
             errors,
           },

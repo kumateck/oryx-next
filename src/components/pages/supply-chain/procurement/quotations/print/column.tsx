@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Units, convertToLargestUnit } from "@/lib";
 import { SourceRequisitionItemDto } from "@/lib/redux/api/openapi.generated";
 
 export const columns: ColumnDef<SourceRequisitionItemDto>[] = [
@@ -9,13 +10,31 @@ export const columns: ColumnDef<SourceRequisitionItemDto>[] = [
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
   {
-    accessorKey: "uom",
-    header: "Unit of Measurement",
-    cell: ({ row }) => <div>{row.original.uoM?.name}</div>,
-  },
-  {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uoM?.symbol as Units,
+          ).value
+        }
+      </div>
+    ),
+  },
+  {
+    accessorKey: "uom",
+    header: "Unit of Measurement",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uoM?.symbol as Units,
+          ).unit
+        }
+      </div>
+    ),
   },
 ];

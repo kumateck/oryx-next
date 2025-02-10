@@ -1,9 +1,8 @@
-import Image from "next/image";
 import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 
-import logo from "@/assets/oryx_logo_dark.png";
 import {
   Button,
   Dialog,
@@ -12,14 +11,16 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, PurchaseOrderStatusList, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
+  SupplierDto,
   useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
-  useLazyGetApiV1ProcurementPurchaseOrderQuery,
   usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ListsTable } from "@/shared/datatable";
+import InvoiceHeader from "@/shared/invoice/header";
 
 import { columns } from "./column";
 
@@ -29,10 +30,10 @@ interface Props {
   id: string;
 }
 const PrintPreview = ({ isOpen, onClose, id }: Props) => {
+  const dispatch = useDispatch();
   const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation();
 
-  const [loadData] = useLazyGetApiV1ProcurementPurchaseOrderQuery();
   const { data, isLoading } =
     useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
       purchaseOrderId: id,
@@ -71,46 +72,33 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     if (!open) onClose();
   };
 
-  const handleLoad = async () => {
-    await loadData({
-      page: 1,
-      pageSize: 30,
-      status: PurchaseOrderStatusList.Pending,
-    }).unwrap();
+  const handleLoad = () => {
+    dispatch(commonActions.setTriggerReload());
     onClose();
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
-        <div className="relative">
-          <div className="absolute -right-36 flex flex-col gap-4">
-            <Button variant="outline" onClick={() => handlePrint()}>
-              {isSending ? (
-                <Icon name="LoaderCircle" className="animate-spin" />
-              ) : (
-                <Icon name="Printer" />
-              )}
-              <span>Send Email</span>
-            </Button>
-            <Button variant="destructive" onClick={() => onClose()}>
-              <span>Close</span>
-            </Button>
-          </div>
+        <div className="absolute -right-36 flex flex-col gap-4">
+          <Button variant="outline" onClick={() => handlePrint()}>
+            {isSending ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              <Icon name="Printer" />
+            )}
+            <span>Send Email</span>
+          </Button>
+          <Button variant="destructive" onClick={() => onClose()}>
+            <span>Close</span>
+          </Button>
         </div>
+
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
         </DialogHeader>
         <article ref={contentRef} className="bg-white">
-          <div className="flex justify-between gap-4">
-            <div>
-              <Image src={logo} alt="logo" width={100} height={100} />
-            </div>
-            <div className="flex flex-col gap-0.5 text-sm">
-              <span className="capitalize">{supplier?.name}</span>
-              {/* <span>{supplier?.}</span> */}
-              <span>telephone</span>
-            </div>
-          </div>
+          <InvoiceHeader supplier={supplier as SupplierDto} />
+
           <div className="flex items-center justify-center gap-4 py-4">
             <span className="text-2xl font-semibold">
               Profoma Invoice Request

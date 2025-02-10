@@ -10,6 +10,7 @@ import {
   RequisitionType,
   Units,
   convertToLargestUnit,
+  convertToSmallestUnit,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -64,10 +65,11 @@ const Page = () => {
         items: purchaseLists?.map((item) => ({
           source: Number(item.source) as ProcurementSource,
           materialId: item.materialId,
-          quantity: item.quantity,
+          quantity: convertToSmallestUnit(item.quantity, item.uom as Units)
+            .value,
           suppliers: item.sourceVendors?.map((item) => {
             return {
-              supplierId: item,
+              supplierId: item?.value,
             };
           }),
           uoMId: item.uomId,
@@ -78,7 +80,7 @@ const Page = () => {
         createSourceRequisitionRequest: payload,
       } as PostApiV1RequisitionSourceApiArg);
       toast.success("Sourcing created successfully");
-      router.push("requisition");
+      router.push("/procurement/requisition");
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {

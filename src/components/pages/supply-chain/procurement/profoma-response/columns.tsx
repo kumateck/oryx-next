@@ -63,28 +63,28 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
     ),
   },
 
-  {
-    accessorKey: "total",
-    header: "Total Items Requested",
-    cell: ({ row }) => (
-      <div>
-        {row.original.items?.reduce((accumulator, item) => {
-          return accumulator + (item.quantity || 0);
-        }, 0)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "totalprice",
-    header: "Total Items Requested",
-    cell: ({ row }) => (
-      <div>
-        {row.original.items?.reduce((accumulator, item) => {
-          return accumulator + (item.price || 0) * (item?.quantity || 0);
-        }, 0)}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "total",
+  //   header: "Total Items Requested",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       {row.original.items?.reduce((accumulator, item) => {
+  //         return accumulator + (item.quantity || 0);
+  //       }, 0)}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "totalprice",
+  //   header: "Total Items Requested",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       {row.original.items?.reduce((accumulator, item) => {
+  //         return accumulator + (item.price || 0) * (item?.quantity || 0);
+  //       }, 0)}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: "Status",
