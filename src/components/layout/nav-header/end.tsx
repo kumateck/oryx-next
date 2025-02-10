@@ -2,12 +2,16 @@
 
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
+import { ChangePasswordForm } from "@/components/pages/change-password/ChangePasswordForm";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -21,6 +25,7 @@ import SearchWithAnimation from "@/components/ui/search";
 import { ORYX_ERP_COOKIE_ID, routes } from "@/lib";
 
 const HeaderEnd = () => {
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const cookies = useCookies();
   const router = useRouter();
   const handleLogout = () => {
@@ -64,6 +69,13 @@ const HeaderEnd = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="flex items-center gap-1"
+            onClick={() => setPasswordOpen(true)}
+          >
+            <Icon name={"LockKeyholeOpen"} />
+            <span>Change Password</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex items-center gap-1"
             onClick={handleLogout}
           >
             <Icon name={"LogOut"} />
@@ -71,6 +83,14 @@ const HeaderEnd = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <Dialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+        <DialogContent className="max-w-md rounded-xl bg-neutral-50 p-4">
+          <DialogTitle className="mb-4 text-lg font-semibold">
+            Change Password
+          </DialogTitle>
+          <ChangePasswordForm onSuccess={() => setPasswordOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -86,11 +106,6 @@ const userProfile: DropdownMenuProps[] = [
   {
     name: "Profile",
     icon: "CircleUserRound",
-    path: "/profile",
-  },
-  {
-    name: "Change Password",
-    icon: "LockKeyholeOpen",
     path: "/profile",
   },
 ];

@@ -143,7 +143,7 @@ const Signin = () => {
                 </label>
               </div>
               <Link
-                href="/forgot"
+                href="/forgot-password"
                 className="ml-auto inline-block text-sm underline"
               >
                 Forgot your password?
