@@ -252,6 +252,21 @@ export const ROUTES: Route[] = [
     ],
   },
   {
+    title: "Quality Assurance",
+    menu: [
+      {
+        title: "Issue BMR",
+        url: "/qa/issue-bmr",
+        icon: "BookUser",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+    ],
+  },
+  {
     title: "System Settings",
     menu: [
       {

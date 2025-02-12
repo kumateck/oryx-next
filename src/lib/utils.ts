@@ -269,7 +269,12 @@ export function generateShelfCode(
 export const calculateFitAndOverflow = (
   options: Option[],
   maxCharacters: number,
-): { fitItems: Option[]; overflowCount: number; currentTotal: number } => {
+): {
+  fitItems: Option[];
+  overflowItems: Option[];
+  overflowCount: number;
+  currentTotal: number;
+} => {
   // Function to calculate total length (label length + 3)
   const calculateTotalLength = (label: string): number => label.length + 4;
   const maxChars = maxCharacters - 5;
@@ -286,6 +291,11 @@ export const calculateFitAndOverflow = (
     }
   });
 
+  const fitItemsValues = fitItems?.map((item) => item.value);
+  const overflowItems = options.filter(
+    (item) => !fitItemsValues?.includes(item.value),
+  );
+
   // Calculate overflow count
   const overflowCount = options.length - fitItems.length;
 
@@ -293,7 +303,7 @@ export const calculateFitAndOverflow = (
 
   // console.log(cleanedArray, "cleanedArray", options, fitItems);
 
-  return { currentTotal, fitItems: cleanedArray, overflowCount };
+  return { currentTotal, fitItems: cleanedArray, overflowCount, overflowItems };
 };
 
 // export const cleanArrayObject = (fitItems: Option[]) => {

@@ -6,20 +6,31 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Card, CardContent } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  Option,
+  Units,
+  convertToLargestUnit,
+  isErrorResponse,
+} from "@/lib";
 import {
   CreateShipmentDocumentRequest,
   PostApiV1ProcurementShipmentDocumentApiArg,
-  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  PurchaseOrderDtoRead,
+  useGetApiV1ProcurementPurchaseOrderNotLinkedQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery,
   usePostApiV1ProcurementShipmentDocumentMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
-import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
 import DocumentForm from "./form";
-import TableForData from "./table";
-import { MaterialRequestDto } from "./type";
+import PurchaseOrders from "./pos";
+import {
+  CreateInvoiceValidator,
+  InvoiceRequestDto,
+  MaterialRequestDto,
+} from "./type";
 
 const Page = () => {
   const router = useRouter();
@@ -36,16 +47,33 @@ const Page = () => {
   //   useLazyGetApiV1ProcurementPurchaseOrderQuery();
 
   // console.log(purchaseOrders, "purchaseOrders");
-  const [loadPurchaseOrder] =
-    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
-  // console.log(isSavingInvoice)
+  const { data: suppliers } =
+    useGetApiV1ProcurementPurchaseOrderNotLinkedQuery();
+
+  const [loadPurchaseOrder, { data: purchaseOrders }] =
+    useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery();
+
+  // console.log(purchaseOrders, "purchaseOrders");
+  const poOptions = purchaseOrders?.map((item) => {
+    return {
+      label: item.code,
+      value: item?.id,
+    };
+  }) as Option[];
+  const suppliersOptions = suppliers?.map((item) => {
+    return {
+      label: item.name,
+      value: item?.id,
+    };
+  }) as Option[];
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ShipmentRequestDto>({
-    resolver: CreateManufacturerValidator,
+    setValue,
+  } = useForm<InvoiceRequestDto>({
+    resolver: CreateInvoiceValidator,
     mode: "all",
   });
 
@@ -56,45 +84,78 @@ const Page = () => {
   //   };
   // }) as Option[];
 
-  const poOptions = useWatch({
+  const [poLists, setPoLists] = useState<PurchaseOrderDtoRead[]>([]);
+  const vendorId = useWatch<InvoiceRequestDto>({
     control,
-    name: "purchaseOrderId",
-  });
+    name: "vendorId",
+  }) as Option;
+
+  const purchaseOrderIds = useWatch<InvoiceRequestDto>({
+    control,
+    name: "purchaseOrderIds",
+  }) as Option[];
+
+  // console.log(purchaseOrderIds, "purchaseOrderIds");
+  useEffect(() => {
+    if (vendorId?.value) {
+      loadPurchaseOrder({
+        supplierId: vendorId.value,
+      });
+      setValue("purchaseOrderIds", []);
+      setPoLists([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vendorId]);
+
+  useEffect(() => {
+    // if (purchaseOrderIds?.length > 0 && Number(purchaseOrderIds?.length) > 0) {
+    // purchaseOrders
+
+    const array2Values = purchaseOrderIds?.map((item) => item.value);
+
+    const filteredArray = purchaseOrders?.filter((item) =>
+      array2Values.includes(item?.id as string),
+    );
+
+    console.log(filteredArray, "filteredArray");
+    setPoLists(filteredArray as PurchaseOrderDtoRead[]);
+    // }
+  }, [purchaseOrderIds, purchaseOrders]);
 
   // const handleLoadPO = async () => {
   //   // const res = await loadPurchaseOrder({}).unwrap();
   // };
-  useEffect(() => {
-    if (poOptions?.value) {
-      loadPurchaseOrderDetailsHandler(poOptions.value);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poOptions]);
+  // useEffect(() => {
+  //   if (poOptions?.value) {
+  //     loadPurchaseOrderDetailsHandler(poOptions.value);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [poOptions]);
 
-  const loadPurchaseOrderDetailsHandler = async (poId: string) => {
-    const res = await loadPurchaseOrder({
-      purchaseOrderId: poId,
-    }).unwrap();
+  // const loadPurchaseOrderDetailsHandler = async (poId: string) => {
+  //   const res = await loadPurchaseOrder({
+  //     purchaseOrderId: poId,
+  //   }).unwrap();
 
-    const payload = res?.items?.map((item) => ({
-      materialId: item.material?.id as string,
-      uomId: item.uom?.id as string,
-      expectedQuantity: item.quantity as number,
-      materialName: item.material?.name as string,
-      uomName: item.uom?.name as string,
-      receivedQuantity: item.quantity as number,
-      reason: "",
-      code: item.material?.code as string,
-      costPrice: item.price?.toString(),
-      options: item.manufacturers?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })),
-    })) as MaterialRequestDto[];
-    setMaterialLists(payload);
-  };
+  //   const payload = res?.items?.map((item) => ({
+  //     materialId: item.material?.id as string,
+  //     uomId: item.uom?.id as string,
+  //     expectedQuantity: item.quantity as number,
+  //     materialName: item.material?.name as string,
+  //     uomName: item.uom?.name as string,
+  //     receivedQuantity: item.quantity as number,
+  //     reason: "",
+  //     code: item.material?.code as string,
+  //     costPrice: item.price?.toString(),
+  //     options: item.manufacturers?.map((item) => ({
+  //       label: item.name,
+  //       value: item.id,
+  //     })),
+  //   })) as MaterialRequestDto[];
+  //   setMaterialLists(payload);
+  // };
 
-  const onSubmit = async (data: ShipmentRequestDto) => {
+  const onSubmit = async (data: InvoiceRequestDto) => {
     const payload = {
       code: data.code,
       // purchaseOrderId: data.purchaseOrderId.value,
@@ -113,7 +174,7 @@ const Page = () => {
     // console.log(materialLists, "materialLists");
   };
 
-  const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
+  // const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   return (
     <ScrollablePageWrapper className="space-y-6">
@@ -133,18 +194,47 @@ const Page = () => {
               control={control}
               register={register}
               errors={errors}
-              purchaseOrderOptions={[]}
+              suppliersOptions={suppliersOptions}
+              poOptions={poOptions}
               // defaultValues={{} as ShipmentRequestDto}
             />
           </CardContent>
         </Card>
       </form>
-      <div className="w-full space-y-4">
-        <PageTitle title="Invoice Items" />
-        <div className="">
-          <TableForData lists={materialLists} setItemLists={setMaterialLists} />
+
+      {poLists?.map((item, idx) => (
+        <div className="w-full space-y-4" key={idx}>
+          <PageTitle title={item.code as string} />
+          {item.items && (
+            <PurchaseOrders
+              lists={
+                item.items?.map((x) => {
+                  const converted = convertToLargestUnit(
+                    x.quantity as number,
+                    x.uom?.symbol as Units,
+                  );
+                  console.log(x, "x");
+                  return {
+                    materialId: x.material?.id as string,
+                    uomId: x.uom?.id as string,
+                    materialName: x.material?.name as string,
+                    expectedQuantity: converted.value,
+                    uomName: converted.unit,
+                    receivedQuantity: converted.value,
+                    reason: "",
+                    code: x.material?.code as string,
+                    costPrice: x.price?.toString(),
+                    options: x.manufacturers?.map((item) => ({
+                      label: item.name,
+                      value: item.id,
+                    })),
+                  };
+                }) as MaterialRequestDto[]
+              }
+            />
+          )}
         </div>
-      </div>
+      ))}
     </ScrollablePageWrapper>
   );
 };
