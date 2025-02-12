@@ -14,16 +14,14 @@ import {
 } from "@/components/ui";
 import {
   // COLLECTION_TYPES,
-  ErrorResponse,
-  // InputTypes,
+  ErrorResponse, // InputTypes,
   // Option,
   // RequisitionType,
   isErrorResponse,
 } from "@/lib";
 import {
   PostApiV1ApprovalApiArg,
-  usePostApiV1ApprovalMutation,
-  // usePostApiV1CollectionMutation,
+  usePostApiV1ApprovalMutation, // usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { ApprovalRequestDto, ApprovalValidator } from "./types";
@@ -201,7 +199,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                 return (
                   <div
                     key={field.id}
-                    className="relative rounded-2xl border p-2"
+                    className="relative rounded-md border p-2"
                   >
                     <div className="absolute right-2 top-2">
                       <Icon
