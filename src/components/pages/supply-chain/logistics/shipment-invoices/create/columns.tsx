@@ -16,10 +16,7 @@ export const getColumns = (
     accessorKey: "materialName",
     header: "Material Name",
   },
-  {
-    accessorKey: "uomName",
-    header: "Unit of Measurement",
-  },
+
   {
     accessorKey: "costPrice",
     header: "Cost Price",
@@ -27,6 +24,10 @@ export const getColumns = (
   {
     accessorKey: "expectedQuantity",
     header: "Expected Quantity",
+  },
+  {
+    accessorKey: "uomName",
+    header: "UOM",
   },
   {
     accessorKey: "receivedQuantity",

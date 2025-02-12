@@ -14,7 +14,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  purchaseOrderOptions: Option[];
+  suppliersOptions: Option[];
+  poOptions: Option[];
 
   defaultValues?: TFieldValues;
 }
@@ -22,8 +23,9 @@ const DocumentForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  purchaseOrderOptions,
   defaultValues,
+  suppliersOptions,
+  poOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -59,18 +61,18 @@ const DocumentForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             onModal: true,
             placeholder: "Select vendor",
-            options: purchaseOrderOptions,
+            options: suppliersOptions,
             errors,
           },
           {
             label: "Purchase Order",
             control: control as Control,
             type: InputTypes.MULTI,
-            name: "purchaseOrderId",
-            defaultValue: defaultValues?.purchaseOrderId,
+            name: "purchaseOrderIds",
+            defaultValue: defaultValues?.purchaseOrderIds,
             required: true,
             placeholder: "Select PO",
-            options: purchaseOrderOptions,
+            options: poOptions,
             errors,
           },
         ]}

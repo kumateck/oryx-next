@@ -47,15 +47,13 @@ export const createRequisitionRequestSchema = z.object({
   ),
 });
 
-export type RequisitionRequestDto = z.infer<
-  typeof createRequisitionRequestSchema
->;
+export type InvoiceRequestDto = z.infer<typeof createRequisitionRequestSchema>;
 
 export type MaterialRequestDto = z.infer<
   typeof createRequisitionItemRequestSchema
 >;
 
-export const CreateRequisitionValidator = zodResolver(
+export const CreateInvoiceValidator = zodResolver(
   createRequisitionRequestSchema,
 );
 

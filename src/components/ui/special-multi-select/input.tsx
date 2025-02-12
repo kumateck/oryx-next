@@ -5,6 +5,7 @@ import { Option, calculateFitAndOverflow, cn } from "@/lib";
 import { BaseProps } from ".";
 import { Icon } from "../icon";
 import { Input } from "../input";
+import { ToolTipLists } from "../tooltip-lists";
 
 interface FormInputProps extends BaseProps {
   selectedOptions: Option[];
@@ -112,15 +113,28 @@ export const SpecialInput = ({
             <li className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-1">
               {calculateFitAndOverflow(selectedOptions, charCount)
                 ?.overflowCount > 0 && (
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-dark p-1 text-white shadow-sm">
-                  <span className="text-xs font-normal">
-                    +
-                    {
-                      calculateFitAndOverflow(selectedOptions, charCount)
-                        ?.overflowCount
-                    }
-                  </span>
-                </div>
+                <ToolTipLists
+                  component={
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-dark p-1 text-white shadow-sm">
+                      <span className="text-xs font-normal">
+                        +
+                        {
+                          calculateFitAndOverflow(selectedOptions, charCount)
+                            ?.overflowCount
+                        }
+                      </span>
+                    </div>
+                  }
+                >
+                  <ul>
+                    {calculateFitAndOverflow(
+                      selectedOptions,
+                      charCount,
+                    ).overflowItems?.map((item, idx) => (
+                      <li key={idx}>{item.label}</li>
+                    ))}
+                  </ul>
+                </ToolTipLists>
               )}
               <div>
                 <Icon name="ChevronDown" className="h-4 w-4" />
