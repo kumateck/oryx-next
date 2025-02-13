@@ -57,8 +57,7 @@ export const ShipmentDocumentSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  invoiceNumber: z.string().min(1, { message: "Name is required" }),
-  purchaseOrderId: z.object({
+  shipmentInvoiceId: z.object({
     value: z.string(),
     label: z.string(),
   }),
@@ -66,4 +65,4 @@ export const ShipmentDocumentSchema = z.object({
 });
 
 export type ShipmentRequestDto = z.infer<typeof ShipmentDocumentSchema>;
-export const CreateManufacturerValidator = zodResolver(ShipmentDocumentSchema);
+export const CreateShipmentValidator = zodResolver(ShipmentDocumentSchema);

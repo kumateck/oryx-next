@@ -365,7 +365,6 @@ export const convertUnits = (
   fromUnit: string,
   toUnit: string,
 ): number | string => {
-  console.log(quantity, fromUnit, toUnit);
   // Handle ml to L and vice versa
   if (fromUnit === Units.ML && toUnit === Units.L) {
     return quantity / 1000;

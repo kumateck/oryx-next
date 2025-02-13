@@ -132,11 +132,12 @@ const InputSwitch = ({
         />
       );
     case ColumnType.SELECT:
+      // console.log("editingvalue", editingValue);
       return (
         <SpecialSelect
-          value={options?.find((option) => option.value === editingValue)}
+          value={editingValue as unknown as Option}
           options={options as Option[]}
-          onChange={(option) => handleChange(option)}
+          onChange={(option) => handleSpecialOnchange(option)}
           // onBlur={handleBlur}
           // isClearable
         />

@@ -1012,6 +1012,16 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    putApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrived:
+      build.mutation<
+        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiResponse,
+        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/arrived`,
+          method: "PUT",
+        }),
+      }),
     postApiV1ProcurementShipmentInvoice: build.mutation<
       PostApiV1ProcurementShipmentInvoiceApiResponse,
       PostApiV1ProcurementShipmentInvoiceApiArg
@@ -1022,14 +1032,42 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.createShipmentInvoice,
       }),
     }),
-    getApiV1ProcurementShipmentInvoiceByShipmentDocumentId: build.query<
-      GetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdApiResponse,
-      GetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdApiArg
+    getApiV1ProcurementShipmentInvoice: build.query<
+      GetApiV1ProcurementShipmentInvoiceApiResponse,
+      GetApiV1ProcurementShipmentInvoiceApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/${queryArg.shipmentDocumentId}`,
+        url: `/api/v1/procurement/shipment-invoice`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
       }),
     }),
+    getApiV1ProcurementShipmentInvoiceById: build.query<
+      GetApiV1ProcurementShipmentInvoiceByIdApiResponse,
+      GetApiV1ProcurementShipmentInvoiceByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/shipment-invoice/${queryArg.id}`,
+      }),
+    }),
+    getApiV1ProcurementShipmentInvoiceUnattached: build.query<
+      GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse,
+      GetApiV1ProcurementShipmentInvoiceUnattachedApiArg
+    >({
+      query: () => ({ url: `/api/v1/procurement/shipment-invoice/unattached` }),
+    }),
+    getApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentId:
+      build.query<
+        GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse,
+        GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/shipment-document/${queryArg.shipmentDocumentId}`,
+        }),
+      }),
     putApiV1ProcurementShipmentInvoiceByShipmentInvoiceId: build.mutation<
       PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse,
       PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg
@@ -1110,6 +1148,25 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/procurement/materials/by-purchase-orders`,
         method: "POST",
         body: queryArg.body,
+      }),
+    }),
+    getApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistribution:
+      build.query<
+        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiResponse,
+        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/material-distribution`,
+        }),
+      }),
+    postApiV1ProcurementConfirmDistribution: build.mutation<
+      PostApiV1ProcurementConfirmDistributionApiResponse,
+      PostApiV1ProcurementConfirmDistributionApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/confirm-distribution`,
+        method: "POST",
+        body: queryArg.materialDistributionSectionRequest,
       }),
     }),
     postApiV1Product: build.mutation<
@@ -2931,16 +2988,42 @@ export type DeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg = {
   /** The ID of the shipment document to delete. */
   shipmentDocumentId: string;
 };
+export type PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiResponse =
+  unknown;
+export type PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg =
+  {
+    /** The ID of the shipment document. */
+    shipmentDocumentId: string;
+  };
 export type PostApiV1ProcurementShipmentInvoiceApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1ProcurementShipmentInvoiceApiArg = {
   createShipmentInvoice: CreateShipmentInvoice;
 };
-export type GetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDto;
-export type GetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdApiArg = {
-  shipmentDocumentId: string;
+export type GetApiV1ProcurementShipmentInvoiceApiResponse =
+  /** status 200 OK */ ShipmentInvoiceDtoIEnumerablePaginateable;
+export type GetApiV1ProcurementShipmentInvoiceApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
 };
+export type GetApiV1ProcurementShipmentInvoiceByIdApiResponse =
+  /** status 200 OK */ ShipmentInvoiceDto;
+export type GetApiV1ProcurementShipmentInvoiceByIdApiArg = {
+  id: string;
+};
+export type GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse =
+  /** status 200 OK */ ShipmentInvoiceDto;
+export type GetApiV1ProcurementShipmentInvoiceUnattachedApiArg = void;
+export type GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse =
+  /** status 200 OK */ ShipmentInvoiceDto;
+export type GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiArg =
+  {
+    shipmentDocumentId: string;
+  };
 export type PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse =
   unknown;
 export type PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg = {
@@ -2991,6 +3074,18 @@ export type PostApiV1ProcurementMaterialsByPurchaseOrdersApiResponse =
 export type PostApiV1ProcurementMaterialsByPurchaseOrdersApiArg = {
   /** A list of purchase order IDs. */
   body: string[];
+};
+export type GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiResponse =
+  /** status 200 OK */ MaterialDistributionDto;
+export type GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiArg =
+  {
+    /** The ID of the shipment document. */
+    shipmentDocumentId: string;
+  };
+export type PostApiV1ProcurementConfirmDistributionApiResponse = unknown;
+export type PostApiV1ProcurementConfirmDistributionApiArg = {
+  /** The MaterialDistributionSection object. */
+  materialDistributionSectionRequest: MaterialDistributionSectionRequest;
 };
 export type PostApiV1ProductApiResponse = /** status 201 Created */ string;
 export type PostApiV1ProductApiArg = {
@@ -4069,6 +4164,7 @@ export type AttachmentDto = {
   reference?: string | null;
 };
 export type FormResponseDto = {
+  createdBy?: UserDto;
   attachments?: AttachmentDto[] | null;
   id?: string;
   formField?: FormFieldDto;
@@ -4290,6 +4386,7 @@ export type ManufacturerDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type SupplierType = 0 | 1;
+export type SupplierStatus = 0 | 1 | 2;
 export type CreateSupplierManufacturerRequest = {
   manufacturerId?: string;
   materialId?: string | null;
@@ -4303,6 +4400,7 @@ export type CreateSupplierRequest = {
   countryId?: string | null;
   currencyId?: string | null;
   type?: SupplierType;
+  status?: SupplierStatus;
   associatedManufacturers?: CreateSupplierManufacturerRequest[] | null;
 };
 export type CurrencyDto = {
@@ -4329,6 +4427,7 @@ export type SupplierDto = {
   country?: CountryDto;
   currency?: CurrencyDto;
   type?: SupplierType;
+  status?: SupplierStatus;
   associatedManufacturers?: SupplierManufacturerDto[] | null;
 };
 export type SupplierDtoIEnumerablePaginateable = {
@@ -4397,7 +4496,9 @@ export type RevisedPurchaseOrderDtoRead = {
   items?: PurchaseOrderItemDtoRead[] | null;
   status?: PurchaseOrderStatus;
 };
+export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
 export type PurchaseOrderDto = {
+  createdBy?: UserDto;
   attachments?: AttachmentDto[] | null;
   id?: string;
   code?: string | null;
@@ -4407,9 +4508,11 @@ export type PurchaseOrderDto = {
   items?: PurchaseOrderItemDto[] | null;
   status?: PurchaseOrderStatus;
   revisedPurchaseOrders?: RevisedPurchaseOrderDto[] | null;
+  attachmentStatus?: PurchaseOrderAttachmentStatus;
   createdAt?: string;
 };
 export type PurchaseOrderDtoRead = {
+  createdBy?: UserDto;
   attachments?: AttachmentDto[] | null;
   id?: string;
   code?: string | null;
@@ -4419,6 +4522,7 @@ export type PurchaseOrderDtoRead = {
   items?: PurchaseOrderItemDtoRead[] | null;
   status?: PurchaseOrderStatus;
   revisedPurchaseOrders?: RevisedPurchaseOrderDtoRead[] | null;
+  attachmentStatus?: PurchaseOrderAttachmentStatus;
   createdAt?: string;
 };
 export type PurchaseOrderDtoIEnumerablePaginateable = {
@@ -4502,6 +4606,8 @@ export type CreateBillingSheetRequest = {
   packageDescription?: string | null;
 };
 export type BillingSheetDto = {
+  createdBy?: UserDto;
+  createdAt?: string;
   attachments?: AttachmentDto[] | null;
   id?: string;
   code?: string | null;
@@ -4530,18 +4636,25 @@ export type CreateShipmentDocumentRequest = {
   shipmentInvoiceId?: string | null;
 };
 export type ShipmentInvoiceItemDto = {
+  id?: string;
   material?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
   manufacturer?: CollectionItemDto;
+  purchaseOrder?: CollectionItemDto;
   expectedQuantity?: number;
   receivedQuantity?: number;
+  price?: number;
   reason?: string | null;
 };
 export type ShipmentInvoiceDto = {
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   code?: string | null;
+  supplier?: SupplierDto;
   shipmentArrivedAt?: string | null;
   items?: ShipmentInvoiceItemDto[] | null;
+  isAttached?: boolean;
 };
 export type ShipmentDiscrepancyItemDto = {
   material?: CollectionItemDto;
@@ -4556,10 +4669,14 @@ export type ShipmentDiscrepancyDto = {
   items?: ShipmentDiscrepancyItemDto[] | null;
 };
 export type ShipmentDocumentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   attachments?: AttachmentDto[] | null;
   code?: string | null;
   shipmentInvoice?: ShipmentInvoiceDto;
   discrepancies?: ShipmentDiscrepancyDto[] | null;
+  arrivedAt?: string | null;
 };
 export type ShipmentDocumentDtoIEnumerablePaginateable = {
   data?: ShipmentDocumentDto[] | null;
@@ -4582,7 +4699,47 @@ export type CreateShipmentInvoiceItem = {
 export type CreateShipmentInvoice = {
   code?: string | null;
   shipmentArrivedAt?: string | null;
+  supplierId?: string;
   items?: CreateShipmentInvoiceItem[] | null;
+};
+export type ShipmentInvoiceDtoIEnumerablePaginateable = {
+  data?: ShipmentInvoiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type Country = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  nationality?: string | null;
+  code?: string | null;
+};
+export type Currency = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
 };
 export type MaterialCategory = {
   id?: string;
@@ -4727,6 +4884,7 @@ export type MaterialBatch = {
   dateApproved?: string | null;
   dateRejected?: string | null;
   expiryDate?: string;
+  isFrozen?: boolean;
   events?: MaterialBatchEvent[] | null;
   movements?: MaterialBatchMovement[] | null;
 };
@@ -4754,9 +4912,11 @@ export type MaterialBatchRead = {
   dateApproved?: string | null;
   dateRejected?: string | null;
   expiryDate?: string;
+  isFrozen?: boolean;
   events?: MaterialBatchEventRead[] | null;
   movements?: MaterialBatchMovementRead[] | null;
 };
+export type BatchKind = 0 | 1;
 export type Material = {
   id?: string;
   createdAt?: string;
@@ -4779,6 +4939,7 @@ export type Material = {
   maximumStockLevel?: number;
   batches?: MaterialBatch[] | null;
   kind?: MaterialKind;
+  status?: BatchKind;
 };
 export type MaterialRead = {
   id?: string;
@@ -4802,21 +4963,7 @@ export type MaterialRead = {
   maximumStockLevel?: number;
   batches?: MaterialBatchRead[] | null;
   kind?: MaterialKind;
-};
-export type Country = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  nationality?: string | null;
-  code?: string | null;
+  status?: BatchKind;
 };
 export type ManufacturerMaterial = {
   id?: string;
@@ -4853,6 +5000,48 @@ export type Manufacturer = {
   countryId?: string | null;
   country?: Country;
   materials?: ManufacturerMaterial[] | null;
+};
+export type SupplierManufacturer = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  supplierId?: string;
+  supplier?: Supplier;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  materialId?: string | null;
+  material?: Material;
+};
+export type Supplier = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  email?: string | null;
+  address?: string | null;
+  contactPerson?: string | null;
+  contactNumber?: string | null;
+  countryId?: string | null;
+  country?: Country;
+  currencyId?: string | null;
+  currency?: Currency;
+  type?: SupplierType;
+  status?: SupplierStatus;
+  associatedManufacturers?: SupplierManufacturer[] | null;
 };
 export type RequestStatus = 0 | 1 | 2 | 3;
 export type Role = {
@@ -4909,6 +5098,7 @@ export type RequisitionItem = {
   uomId?: string | null;
   uoM?: UnitOfMeasure;
   quantity?: number;
+  quantityReceived?: number;
 };
 export type Requisition = {
   id?: string;
@@ -4931,62 +5121,6 @@ export type Requisition = {
   expectedDelivery?: string | null;
   approvals?: RequisitionApproval[] | null;
   items?: RequisitionItem[] | null;
-};
-export type Currency = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-};
-export type SupplierManufacturer = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  supplierId?: string;
-  supplier?: Supplier;
-  manufacturerId?: string;
-  manufacturer?: Manufacturer;
-  materialId?: string | null;
-  material?: Material;
-};
-export type Supplier = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  email?: string | null;
-  address?: string | null;
-  contactPerson?: string | null;
-  contactNumber?: string | null;
-  countryId?: string | null;
-  country?: Country;
-  currencyId?: string | null;
-  currency?: Currency;
-  type?: SupplierType;
-  associatedManufacturers?: SupplierManufacturer[] | null;
 };
 export type ProcurementSource = 0 | 1 | 2;
 export type SourceRequisitionItem = {
@@ -5141,6 +5275,7 @@ export type ShipmentInvoiceItem = {
   expectedQuantity?: number;
   receivedQuantity?: number;
   reason?: string | null;
+  distributed?: boolean;
 };
 export type ShipmentInvoice = {
   id?: string;
@@ -5154,6 +5289,8 @@ export type ShipmentInvoice = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   code?: string | null;
+  supplierId?: string;
+  supplier?: Supplier;
   shipmentArrived?: string | null;
   items?: ShipmentInvoiceItem[] | null;
 };
@@ -5172,6 +5309,7 @@ export type ShipmentDocument = {
   discrepancies?: ShipmentDiscrepancy[] | null;
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoice;
+  arrivedAt?: string | null;
 };
 export type ShipmentDiscrepancy = {
   id?: string;
@@ -5228,6 +5366,37 @@ export type ShipmentDiscrepancyItem = {
 export type CreateShipmentDiscrepancy = {
   shipmentDocumentId?: string;
   items?: ShipmentDiscrepancyItem[] | null;
+};
+export type RequisitionItemDto = {
+  id?: string;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type DistributionRequisitionItem = {
+  department?: DepartmentDto;
+  requistionItem?: RequisitionItemDto;
+  quantityRequested?: number;
+  quantityAllocated?: number;
+  quantityRemaining?: number;
+};
+export type MaterialDistributionSection = {
+  material?: MaterialDto;
+  shipmentInvoiceItem?: ShipmentInvoiceItemDto;
+  totalQuantity?: number;
+  items?: DistributionRequisitionItem[] | null;
+};
+export type MaterialDistributionDto = {
+  sections?: MaterialDistributionSection[] | null;
+};
+export type DistributionRequisitionItemRequest = {
+  departmentId?: string;
+  requistionItemId?: string;
+  quantityAllocated?: number;
+};
+export type MaterialDistributionSectionRequest = {
+  shipmentInvoiceItemId?: string;
+  items?: DistributionRequisitionItemRequest[] | null;
 };
 export type CreateFinishedProductRequest = {
   name?: string | null;
@@ -5788,11 +5957,6 @@ export type CreateRequisitionRequest = {
   expectedDelivery?: string | null;
   items?: CreateRequisitionItemRequest[] | null;
 };
-export type RequisitionItemDto = {
-  material?: MaterialDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
 export type RoleDto = {
   name?: string | null;
   displayName?: string | null;
@@ -5856,6 +6020,7 @@ export type SourceRequisitionItemDto = {
   createdAt?: string;
 };
 export type SourceRequisitionDto = {
+  createdBy?: UserDto;
   attachments?: AttachmentDto[] | null;
   id?: string;
   code?: string | null;
@@ -6282,9 +6447,16 @@ export const {
   useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery,
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdMutation,
   useDeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdMutation,
+  usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
   usePostApiV1ProcurementShipmentInvoiceMutation,
-  useGetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdQuery,
-  useLazyGetApiV1ProcurementShipmentInvoiceByShipmentDocumentIdQuery,
+  useGetApiV1ProcurementShipmentInvoiceQuery,
+  useLazyGetApiV1ProcurementShipmentInvoiceQuery,
+  useGetApiV1ProcurementShipmentInvoiceByIdQuery,
+  useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery,
+  useGetApiV1ProcurementShipmentInvoiceUnattachedQuery,
+  useLazyGetApiV1ProcurementShipmentInvoiceUnattachedQuery,
+  useGetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdQuery,
+  useLazyGetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdQuery,
   usePutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdMutation,
   useDeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdMutation,
   usePostApiV1ProcurementShipmentDiscrepancyMutation,
@@ -6297,6 +6469,9 @@ export const {
   useGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery,
   useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery,
   usePostApiV1ProcurementMaterialsByPurchaseOrdersMutation,
+  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
+  usePostApiV1ProcurementConfirmDistributionMutation,
   usePostApiV1ProductMutation,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductQuery,

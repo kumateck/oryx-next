@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { Option, Units, convertUnits } from "@/lib";
+import { Option, Units, convertToLargestUnit } from "@/lib";
 import { ProductionScheduleDto } from "@/lib/redux/api/openapi.generated";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
 
@@ -44,12 +44,11 @@ export const columns: ColumnDef<ProductionScheduleDto>[] = [
           lists={
             row.original.products?.map((p) => {
               const productName = p.product?.name as string;
-              const qty = convertUnits(
+              const convertProduct = convertToLargestUnit(
                 p.quantity ?? 0,
-                p.product?.baseUoM?.symbol as string,
-                Units.L,
+                p.product?.baseUoM?.symbol as Units,
               );
-              const label = `${productName} (${qty}${Units.L})`;
+              const label = `${productName} (${convertProduct.value}${convertProduct.unit})`;
               return {
                 label,
               };

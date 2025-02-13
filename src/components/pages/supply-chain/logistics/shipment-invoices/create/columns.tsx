@@ -1,13 +1,36 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 
+import { Icon } from "@/components/ui";
 import { ColumnType } from "@/shared/datatable";
 
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
 
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+}
+export function DataTableRowActions<TData extends MaterialRequestDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  return (
+    <section className="flex items-center justify-end gap-2">
+      <Icon
+        name="Trash2"
+        className="h-5 w-5 cursor-pointer text-red-500"
+        onClick={() => {
+          console.log(row.original);
+        }}
+      />
+    </section>
+  );
+}
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
 ): ColumnDef<MaterialRequestDto>[] => [
+  {
+    accessorKey: "purchaseOrderId",
+    header: "PO",
+  },
   {
     accessorKey: "code",
     header: "Material Code",
@@ -19,7 +42,7 @@ export const getColumns = (
 
   {
     accessorKey: "costPrice",
-    header: "Cost Price",
+    header: "Price per Unit",
   },
   {
     accessorKey: "expectedQuantity",
@@ -39,6 +62,10 @@ export const getColumns = (
         setItemLists,
       },
     },
+  },
+  {
+    accessorKey: "totalCost",
+    header: "Total Cost",
   },
   {
     accessorKey: "manufacturerId",
@@ -62,5 +89,9 @@ export const getColumns = (
         setItemLists,
       },
     },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

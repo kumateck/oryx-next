@@ -1,34 +1,76 @@
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
-import { Icon } from "@/components/ui";
-import { ShipmentDocumentDto } from "@/lib/redux/api/openapi.generated";
+import { Option } from "@/lib";
+// import { Icon } from "@/components/ui";
+import { ShipmentInvoiceDto } from "@/lib/redux/api/openapi.generated";
+import MultiSelectListViewer from "@/shared/multi-select-lists";
 
 // import Edit from "./edit";
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
-export function DataTableRowActions<TData extends ShipmentDocumentDto>({
-  row,
-}: DataTableRowActionsProps<TData>) {
-  return (
-    <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="View"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          console.log(row.original.code);
-        }}
-      />
-    </section>
-  );
-}
+// interface DataTableRowActionsProps<TData> {
+//   row: Row<TData>;
+// }
+// export function DataTableRowActions<TData extends ShipmentInvoiceDto>({
+//   row,
+// }: DataTableRowActionsProps<TData>) {
+//   return (
+//     <section className="flex items-center justify-end gap-2">
+//       <Icon
+//         name="View"
+//         className="h-5 w-5 cursor-pointer text-neutral-500"
+//         onClick={() => {
+//           console.log(row.original.code);
+//         }}
+//       />
+//     </section>
+//   );
+// }
 
-export const columns: ColumnDef<ShipmentDocumentDto>[] = [
+export const columns: ColumnDef<ShipmentInvoiceDto>[] = [
   {
     accessorKey: "code",
-    header: "Code",
+    header: "Invoice No",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Invoice Date",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.createdAt
+          ? format(row.original.createdAt, "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "purchaseOrders",
+    header: "Purchase Orders",
+    cell: ({ row }) => {
+      const uniquePurchaseOrders = Array.from(
+        new Map(
+          row.original.items?.map((item) => [
+            item?.purchaseOrder?.id,
+            item.purchaseOrder,
+          ]),
+        ).values(),
+      );
+      return (
+        <div className="min-w-36">
+          <MultiSelectListViewer
+            className="max-w-[120ch]"
+            lists={
+              uniquePurchaseOrders?.map((item) => {
+                return {
+                  label: item?.code,
+                };
+              }) as Option[]
+            }
+          />
+        </div>
+      );
+    },
   },
 
   // {
@@ -40,8 +82,8 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   //     </div>
   //   ),
   // },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];
