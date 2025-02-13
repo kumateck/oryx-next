@@ -41,16 +41,7 @@ const DocumentForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Invoice Date",
-            control: control as Control,
-            type: InputTypes.DATE,
-            name: "shipmentArrivedAt",
-            required: true,
-            disabled: {
-              before: new Date(),
-              after: new Date(2027, 0, 1),
-            },
-            errors,
+            type: InputTypes.SPACE,
           },
           {
             label: "Vendor",

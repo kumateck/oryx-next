@@ -1,13 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ColumnType } from "@/shared/datatable";
-
-// import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
 
-export const getColumns = (
-  setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
-): ColumnDef<MaterialRequestDto>[] => [
+export const columns: ColumnDef<MaterialRequestDto>[] = [
   {
     accessorKey: "code",
     header: "Material Code",
@@ -31,35 +26,13 @@ export const getColumns = (
   {
     accessorKey: "receivedQuantity",
     header: "Received Quantity",
-    meta: {
-      edittableCell: {
-        type: ColumnType.NUMBER,
-        editable: true,
-        setItemLists,
-      },
-    },
   },
   {
-    accessorKey: "manufacturerId",
+    accessorKey: "manufacturer",
     header: "Manufacturers",
-    meta: {
-      edittableCell: {
-        type: ColumnType.SELECT,
-        editable: true,
-        setItemLists,
-        // options: vendorOptions,
-      },
-    },
   },
   {
     accessorKey: "reason",
     header: "Reason",
-    meta: {
-      edittableCell: {
-        type: ColumnType.TEXT,
-        editable: true,
-        setItemLists,
-      },
-    },
   },
 ];

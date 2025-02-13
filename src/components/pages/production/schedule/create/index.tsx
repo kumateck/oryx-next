@@ -104,7 +104,7 @@ const Page = () => {
           const uom = renderUOM(productOptions, item.productId?.value) as Units;
           return {
             productId: item.productId?.value,
-            quantity: convertToSmallestUnit(item.quantity, uom).value, //convertUnits(item.quantity, uom, Units.ML),
+            quantity: convertToSmallestUnit(item.quantity, uom).value,
           };
         }),
         remarks: data.remarks,

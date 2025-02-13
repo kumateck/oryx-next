@@ -7,10 +7,7 @@ import PageWrapper from "@/components/layout/wrapper";
 import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib/constants";
-import {
-  useGetApiV1ProcurementShipmentDocumentQuery,
-  useLazyGetApiV1ProcurementShipmentDocumentQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProcurementShipmentInvoiceQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -20,14 +17,8 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const { data: result, isLoading } =
-    useGetApiV1ProcurementShipmentDocumentQuery({
-      page,
-      pageSize,
-    });
-
-  const [loadData, { isFetching }] =
-    useLazyGetApiV1ProcurementShipmentDocumentQuery();
+  const [loadData, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1ProcurementShipmentInvoiceQuery();
 
   useEffect(() => {
     loadData({

@@ -11,7 +11,6 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
-  PurchaseOrderStatusList,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -21,16 +20,16 @@ import {
   PostApiV1FileByModelTypeAndModelIdApiArg,
   PostApiV1ProcurementShipmentDocumentApiArg,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useGetApiV1ProcurementPurchaseOrderQuery,
-  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  useGetApiV1ProcurementShipmentInvoiceQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentQuery,
+  useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProcurementShipmentDocumentMutation,
-  usePostApiV1ProcurementShipmentInvoiceMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
-import { CreateManufacturerValidator, ShipmentRequestDto } from "../types";
+import { CreateShipmentValidator, ShipmentRequestDto } from "../types";
 import DocumentForm from "./form";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
@@ -39,22 +38,32 @@ const Page = () => {
   const router = useRouter();
   const [saveMutation, { isLoading }] =
     usePostApiV1ProcurementShipmentDocumentMutation();
+  const [loadDataforCodes] = useLazyGetApiV1ProcurementShipmentDocumentQuery();
+
   const { data: codeConfig } =
     useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
       modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
     });
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
-  const [saveShipmentInvoice, { isLoading: isSavingInvoice }] =
-    usePostApiV1ProcurementShipmentInvoiceMutation();
-  const { data: purchaseOrders } = useGetApiV1ProcurementPurchaseOrderQuery({
-    pageSize: 1000,
-    status: PurchaseOrderStatusList.Completed,
-  });
 
   const [loadPurchaseOrder] =
-    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
-  // console.log(isSavingInvoice)
+    useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
+
+  const { data: invoicesResponse } = useGetApiV1ProcurementShipmentInvoiceQuery(
+    {
+      page: 1,
+      pageSize: 10000,
+    },
+  );
+
+  const invoiceOptions = invoicesResponse?.data?.map((item) => {
+    return {
+      label: item.code,
+      value: item?.id,
+    };
+  }) as Option[];
+
   const {
     register,
     control,
@@ -62,74 +71,69 @@ const Page = () => {
     setValue,
     formState: { errors },
   } = useForm<ShipmentRequestDto>({
-    resolver: CreateManufacturerValidator,
+    resolver: CreateShipmentValidator,
     mode: "all",
   });
 
-  const purchaseOrderOptions = purchaseOrders?.data?.map((item) => {
-    return {
-      label: item.supplier?.name + "-" + item.code,
-      value: item?.id,
-    };
-  }) as Option[];
-
-  const poOptions = useWatch({
+  const invoiceIdOption = useWatch({
     control,
-    name: "purchaseOrderId",
+    name: "shipmentInvoiceId",
   });
 
   useEffect(() => {
-    if (poOptions?.value) {
-      loadPurchaseOrderDetailsHandler(poOptions.value);
+    if (invoiceIdOption?.value) {
+      loadInvoiceDetailsHandler(invoiceIdOption.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poOptions]);
+  }, [invoiceIdOption]);
 
-  const loadPurchaseOrderDetailsHandler = async (poId: string) => {
+  const loadInvoiceDetailsHandler = async (id: string) => {
     const res = await loadPurchaseOrder({
-      purchaseOrderId: poId,
+      id,
     }).unwrap();
 
     const payload = res?.items?.map((item) => ({
       materialId: item.material?.id as string,
-      uomId: item.uom?.id as string,
-      expectedQuantity: item.quantity as number,
+      uomId: item.uoM?.id as string,
+      expectedQuantity: item.expectedQuantity as number,
       materialName: item.material?.name as string,
-      uomName: item.uom?.name as string,
-      receivedQuantity: item.quantity as number,
-      reason: "",
+      uomName: item.uoM?.symbol as string,
+      receivedQuantity: item.receivedQuantity as number,
+      reason: item.reason as string,
       code: item.material?.code as string,
-      costPrice: item.price?.toString(),
-      options: item.manufacturers?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })),
+      // costPrice: item.material?.?.toString(),
+      manufacturer: item.manufacturer?.name as string,
     })) as MaterialRequestDto[];
     setMaterialLists(payload);
   };
 
   useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(codeConfig?.maximumNameLength),
-        minlength: Number(codeConfig?.minimumNameLength),
-        prefix: codeConfig?.prefix as string,
-        type: codeConfig?.namingType as NamingType,
-      };
-
-      generatePayload.seriesCounter = 1;
-      const code = await generateCode(generatePayload);
-      setValue("code", code);
-    };
-
     loadCodes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codeConfig]);
+  const loadCodes = async () => {
+    //loadDataforCodes
+    const generatePayload: GenerateCodeOptions = {
+      maxlength: Number(codeConfig?.maximumNameLength),
+      minlength: Number(codeConfig?.minimumNameLength),
+      prefix: codeConfig?.prefix as string,
+      type: codeConfig?.namingType as NamingType,
+    };
+    const productsResponse = await loadDataforCodes({
+      page: 1,
+      pageSize: 1,
+    }).unwrap();
+
+    const products = productsResponse?.totalRecordCount ?? 0;
+
+    generatePayload.seriesCounter = products + 1;
+    const code = await generateCode(generatePayload);
+    setValue("code", code);
+  };
   const onSubmit = async (data: ShipmentRequestDto) => {
     const payload = {
       code: data.code,
-      // invoiceNumber: data.invoiceNumber,
-      // purchaseOrderId: data.purchaseOrderId.value,
+      shipmentInvoiceId: data.shipmentInvoiceId.value,
     } satisfies CreateShipmentDocumentRequest;
     try {
       const shipmentId = await saveMutation({
@@ -152,20 +156,6 @@ const Page = () => {
           modelId: shipmentId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-
-        await saveShipmentInvoice({
-          createShipmentInvoice: {
-            items: materialLists?.map((item) => ({
-              materialId: item.materialId,
-              expectedQuantity: item.expectedQuantity,
-              manufacturerId: item.manufacturerId,
-              reason: item.reason,
-              receivedQuantity: item.receivedQuantity,
-              uoMId: item.uomId,
-            })),
-            // shipmentDocumentId: shipmentId,
-          },
-        });
       }
       toast.success("Shipment Document Created");
       router.push("/logistics/shipment-documents");
@@ -173,7 +163,6 @@ const Page = () => {
       console.log(error, "errors");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
-    // console.log(materialLists, "materialLists");
   };
 
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
@@ -184,7 +173,7 @@ const Page = () => {
         <div className="flex w-full items-center justify-between space-y-4">
           <PageTitle title="Create Shipment Document" />
           <Button>
-            {(isLoading || isUploadingAttachment || isSavingInvoice) && (
+            {(isLoading || isUploadingAttachment) && (
               <Icon name="LoaderCircle" className="animate-spin" />
             )}
             <span>Save Changes</span>
@@ -196,8 +185,7 @@ const Page = () => {
               control={control}
               register={register}
               errors={errors}
-              purchaseOrderOptions={purchaseOrderOptions}
-              // defaultValues={{} as ShipmentRequestDto}
+              invoiceOptions={invoiceOptions}
             />
           </CardContent>
         </Card>

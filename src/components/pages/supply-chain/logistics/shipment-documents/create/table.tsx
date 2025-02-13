@@ -1,15 +1,13 @@
 import { ListsTable } from "@/shared/datatable";
 
-import { getColumns } from "./columns";
+import { columns } from "./columns";
 import { MaterialRequestDto } from "./type";
 
 interface Props {
   lists: MaterialRequestDto[];
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
 }
-const TableForData = ({ lists, setItemLists }: Props) => {
-  const columns = getColumns(setItemLists);
-
+const TableForData = ({ lists }: Props) => {
   return (
     <div className="w-full">
       <ListsTable data={lists} columns={columns} />

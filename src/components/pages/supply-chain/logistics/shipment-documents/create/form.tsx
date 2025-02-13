@@ -14,7 +14,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  purchaseOrderOptions: Option[];
+  invoiceOptions: Option[];
 
   defaultValues?: TFieldValues;
 }
@@ -22,7 +22,7 @@ const DocumentForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  purchaseOrderOptions,
+  invoiceOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -46,23 +46,15 @@ const DocumentForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Vendor",
+            label: "Invoice Number",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "purchaseOrderId",
-            defaultValue: defaultValues?.purchaseOrderId,
+            name: "shipmentInvoiceId",
+            defaultValue: defaultValues?.shipmentInvoiceId,
             required: true,
             onModal: true,
-            placeholder: "Select vendor",
-            options: purchaseOrderOptions,
-            errors,
-          },
-
-          {
-            register: register("invoiceNumber" as Path<TFieldValues>),
-            label: "Invoice Number",
-            placeholder: "Enter Invoice Number",
-            type: InputTypes.TEXT,
+            placeholder: "Select Invoice",
+            options: invoiceOptions,
             errors,
           },
         ]}

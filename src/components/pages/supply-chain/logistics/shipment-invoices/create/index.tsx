@@ -5,21 +5,21 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Card, CardContent } from "@/components/ui";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   Option,
   Units,
   convertToLargestUnit,
+  convertToSmallestUnit,
   isErrorResponse,
 } from "@/lib";
 import {
-  CreateShipmentDocumentRequest,
-  PostApiV1ProcurementShipmentDocumentApiArg,
-  PurchaseOrderDtoRead,
+  CreateShipmentInvoice,
+  PostApiV1ProcurementShipmentInvoiceApiArg,
   useGetApiV1ProcurementPurchaseOrderNotLinkedQuery,
   useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery,
-  usePostApiV1ProcurementShipmentDocumentMutation,
+  usePostApiV1ProcurementShipmentInvoiceMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -30,30 +30,20 @@ import {
   CreateInvoiceValidator,
   InvoiceRequestDto,
   MaterialRequestDto,
+  invoiceItemsDto,
 } from "./type";
 
 const Page = () => {
   const router = useRouter();
-  const [saveMutation] = usePostApiV1ProcurementShipmentDocumentMutation();
-  // const { data: codeConfig } =
-  //   useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-  //     modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
-  //   });
-  // const [uploadAttachment, { isLoading: isUploadingAttachment }] =
-  //   usePostApiV1FileByModelTypeAndModelIdMutation();
-  // const [saveShipmentInvoice, { isLoading: isSavingInvoice }] =
-  //   usePostApiV1ProcurementShipmentInvoiceMutation();
-  // const [loadPOS, { data: purchaseOrders }] =
-  //   useLazyGetApiV1ProcurementPurchaseOrderQuery();
+  const [saveMutation, { isLoading }] =
+    usePostApiV1ProcurementShipmentInvoiceMutation();
 
-  // console.log(purchaseOrders, "purchaseOrders");
   const { data: suppliers } =
     useGetApiV1ProcurementPurchaseOrderNotLinkedQuery();
 
   const [loadPurchaseOrder, { data: purchaseOrders }] =
     useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery();
 
-  // console.log(purchaseOrders, "purchaseOrders");
   const poOptions = purchaseOrders?.map((item) => {
     return {
       label: item.code,
@@ -77,17 +67,10 @@ const Page = () => {
     mode: "all",
   });
 
-  // const purchaseOrderOptions = purchaseOrders?.data?.map((item) => {
-  //   return {
-  //     label: item.supplier?.name + "-" + item.code,
-  //     value: item?.id,
-  //   };
-  // }) as Option[];
-
-  const [poLists, setPoLists] = useState<PurchaseOrderDtoRead[]>([]);
-  const vendorId = useWatch<InvoiceRequestDto>({
+  const [poLists, setPoLists] = useState<invoiceItemsDto[]>([]);
+  const supplierId = useWatch<InvoiceRequestDto>({
     control,
-    name: "vendorId",
+    name: "supplierId",
   }) as Option;
 
   const purchaseOrderIds = useWatch<InvoiceRequestDto>({
@@ -95,30 +78,62 @@ const Page = () => {
     name: "purchaseOrderIds",
   }) as Option[];
 
-  // console.log(purchaseOrderIds, "purchaseOrderIds");
   useEffect(() => {
-    if (vendorId?.value) {
+    if (supplierId?.value) {
       loadPurchaseOrder({
-        supplierId: vendorId.value,
+        supplierId: supplierId.value,
       });
       setValue("purchaseOrderIds", []);
       setPoLists([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vendorId]);
+  }, [supplierId]);
 
   useEffect(() => {
-    // if (purchaseOrderIds?.length > 0 && Number(purchaseOrderIds?.length) > 0) {
-    // purchaseOrders
-
     const array2Values = purchaseOrderIds?.map((item) => item.value);
 
     const filteredArray = purchaseOrders?.filter((item) =>
       array2Values.includes(item?.id as string),
     );
 
-    console.log(filteredArray, "filteredArray");
-    setPoLists(filteredArray as PurchaseOrderDtoRead[]);
+    // console.log(filteredArray, "filteredArray");
+    const formatArray = filteredArray?.map((item) => {
+      const items = item.items?.map((x) => {
+        const converted = convertToLargestUnit(
+          x.quantity as number,
+          x.uom?.symbol as Units,
+        );
+
+        const totalCost = ((x.price || 0) * (converted.value || 0)).toFixed(2);
+        return {
+          materialId: x.material?.id as string,
+          uomId: x.uom?.id as string,
+          materialName: x.material?.name as string,
+          expectedQuantity: converted.value,
+          uomName: converted.unit,
+          receivedQuantity: converted.value,
+          reason: "",
+          manufacturerId: {
+            label: "",
+            value: "",
+          },
+          purchaseOrderId: item.id as string,
+          code: x.material?.code as string,
+          costPrice: x.price?.toString(),
+          totalCost: totalCost?.toString(),
+          options: x.manufacturers?.map((item) => ({
+            label: item.name,
+            value: item.id,
+          })),
+        };
+      }) as MaterialRequestDto[];
+      return {
+        id: item.id as string,
+        code: item.code as string,
+        items,
+      };
+    }) as invoiceItemsDto[];
+    setPoLists(formatArray);
     // }
   }, [purchaseOrderIds, purchaseOrders]);
 
@@ -156,17 +171,35 @@ const Page = () => {
   // };
 
   const onSubmit = async (data: InvoiceRequestDto) => {
+    const flatItems = poLists.flatMap((obj) => obj.items);
     const payload = {
       code: data.code,
-      // purchaseOrderId: data.purchaseOrderId.value,
-    } satisfies CreateShipmentDocumentRequest;
+      supplierId: data.supplierId?.value,
+      items: flatItems?.map((item) => {
+        return {
+          materialId: item.materialId,
+          uoMId: item.uomId,
+          manufacturerId: item.manufacturerId?.value,
+          purchaseOrderId: item.purchaseOrderId,
+          expectedQuantity: convertToSmallestUnit(
+            item.expectedQuantity,
+            item.uomName as Units,
+          ).value,
+          receivedQuantity: convertToSmallestUnit(
+            item.receivedQuantity,
+            item.uomName as Units,
+          ).value,
+          reason: item.reason,
+        };
+      }),
+    } satisfies CreateShipmentInvoice;
     try {
       await saveMutation({
-        createShipmentDocumentRequest: payload,
-      } as PostApiV1ProcurementShipmentDocumentApiArg).unwrap();
+        createShipmentInvoice: payload,
+      } as PostApiV1ProcurementShipmentInvoiceApiArg).unwrap();
 
-      toast.success("Shipment Document Created");
-      router.push("/logistics/shipment-documents");
+      toast.success("Shipment Invoice Created");
+      router.push("/logistics/shipment-invoices");
     } catch (error) {
       console.log(error, "errors");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -174,19 +207,32 @@ const Page = () => {
     // console.log(materialLists, "materialLists");
   };
 
+  console.log(poLists, "poLists");
   // const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
+  const updateParentState = (
+    poId: string,
+    updatedItem: MaterialRequestDto[],
+  ) => {
+    const index = poLists?.findIndex((item) => item.id === poId);
+    if (index !== undefined && index !== null && index !== -1) {
+      const updatedLists = [...poLists];
+      updatedLists[index] = {
+        ...updatedLists[index],
+        items: updatedItem,
+      };
+      setPoLists(updatedLists);
+    }
+  };
   return (
     <ScrollablePageWrapper className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex w-full items-center justify-between space-y-4">
           <PageTitle title="Create Shipment Invoice" />
-          {/* <Button>
-            {(isLoading || isUploadingAttachment || isSavingInvoice) && (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            )}
+          <Button>
+            {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}
             <span>Save Changes</span>
-          </Button> */}
+          </Button>
         </div>
         <Card>
           <CardContent className="p-5">
@@ -207,30 +253,9 @@ const Page = () => {
           <PageTitle title={item.code as string} />
           {item.items && (
             <PurchaseOrders
-              lists={
-                item.items?.map((x) => {
-                  const converted = convertToLargestUnit(
-                    x.quantity as number,
-                    x.uom?.symbol as Units,
-                  );
-                  console.log(x, "x");
-                  return {
-                    materialId: x.material?.id as string,
-                    uomId: x.uom?.id as string,
-                    materialName: x.material?.name as string,
-                    expectedQuantity: converted.value,
-                    uomName: converted.unit,
-                    receivedQuantity: converted.value,
-                    reason: "",
-                    code: x.material?.code as string,
-                    costPrice: x.price?.toString(),
-                    options: x.manufacturers?.map((item) => ({
-                      label: item.name,
-                      value: item.id,
-                    })),
-                  };
-                }) as MaterialRequestDto[]
-              }
+              poId={item.id}
+              updateParentState={updateParentState}
+              lists={item.items}
             />
           )}
         </div>
