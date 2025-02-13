@@ -1,6 +1,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
@@ -10,6 +11,7 @@ import {
   ShipmentDocumentDto,
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 // import MultiSelectListViewer from "@/shared/multi-select-lists";
@@ -22,10 +24,23 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends ShipmentDocumentDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const dispatch = useDispatch();
   const [id, setId] = useState<string>("");
   const [isArrivedOpen, setIsArrivedOpen] = useState(false);
   const [arrivedMutation, { isLoading }] =
     usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation();
+
+  const handleArrived = async () => {
+    try {
+      await arrivedMutation({
+        shipmentDocumentId: id,
+      }).unwrap();
+      toast.success("Shipment Arrived successfully");
+      dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
   return (
     <section className="flex items-center justify-end gap-2">
       {isLoading && (
@@ -52,16 +67,7 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
       <ConfirmDeleteDialog
         open={isArrivedOpen}
         onClose={() => setIsArrivedOpen(false)}
-        onConfirm={async () => {
-          try {
-            await arrivedMutation({
-              shipmentDocumentId: id,
-            }).unwrap();
-            toast.success("Shipment Arrived successfully");
-          } catch (error) {
-            toast.error(isErrorResponse(error as ErrorResponse)?.description);
-          }
-        }}
+        onConfirm={handleArrived}
       />
     </section>
   );
@@ -117,9 +123,10 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   //     );
   //   },
   // },
+
   {
     accessorKey: "createdAt",
-    header: "Shipment Date",
+    header: "Shipment Arrival Date",
     cell: ({ row }) => (
       <div className="min-w-36">
         {row.original.arrivedAt

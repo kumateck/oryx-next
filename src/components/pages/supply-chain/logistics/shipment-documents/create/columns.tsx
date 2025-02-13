@@ -17,7 +17,7 @@ export const columns: ColumnDef<MaterialRequestDto>[] = [
   },
   {
     accessorKey: "costPrice",
-    header: "Cost Price",
+    header: "Price per Unit",
   },
   {
     accessorKey: "expectedQuantity",

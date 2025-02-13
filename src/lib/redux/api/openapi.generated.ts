@@ -3016,7 +3016,7 @@ export type GetApiV1ProcurementShipmentInvoiceByIdApiArg = {
   id: string;
 };
 export type GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDto;
+  /** status 200 OK */ ShipmentInvoiceDto[];
 export type GetApiV1ProcurementShipmentInvoiceUnattachedApiArg = void;
 export type GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse =
   /** status 200 OK */ ShipmentInvoiceDto;
@@ -4699,7 +4699,7 @@ export type CreateShipmentInvoiceItem = {
 export type CreateShipmentInvoice = {
   code?: string | null;
   shipmentArrivedAt?: string | null;
-  supplierId?: string;
+  supplierId?: string | null;
   items?: CreateShipmentInvoiceItem[] | null;
 };
 export type ShipmentInvoiceDtoIEnumerablePaginateable = {
@@ -5289,7 +5289,7 @@ export type ShipmentInvoice = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   code?: string | null;
-  supplierId?: string;
+  supplierId?: string | null;
   supplier?: Supplier;
   shipmentArrived?: string | null;
   items?: ShipmentInvoiceItem[] | null;
