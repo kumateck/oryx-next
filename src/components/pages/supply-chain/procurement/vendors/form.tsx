@@ -134,7 +134,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             manufacturerOptionsMap[type?.value] || []; // Get the options for the selected material
 
           return (
-            <div key={field.id} className="relative rounded-2xl border p-2">
+            <div key={field.id} className="relative rounded-md border p-2">
               <div className="absolute right-2 top-2">
                 <Icon
                   onClick={() => remove(index)}

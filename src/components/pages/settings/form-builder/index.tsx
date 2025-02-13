@@ -57,7 +57,7 @@ const FormBuilder = () => {
             {activeTab === FORM_BUILDER_CONFIG.TEMPLATES ? (
               <Link
                 href={"create-template"}
-                className="bg-primary-500 rounded-2xl text-white"
+                className="bg-primary-500 rounded-md text-white"
               >
                 <Button
                   type="button"

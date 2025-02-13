@@ -123,7 +123,7 @@ export const Card: FC<CardProps> = ({
   return (
     <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
       <div
-        className={cn("relative w-full rounded-2xl border bg-white p-8", {
+        className={cn("relative w-full rounded-md border bg-white p-8", {
           "border-secondary-500 shadow-secondary-500 shadow-sm":
             highlightedQuestion?.id === question.id,
         })}
@@ -142,13 +142,13 @@ export const Card: FC<CardProps> = ({
 
             {(QuestionTypes.ShortAnswer === question.type ||
               QuestionTypes.LongAnswer === question.type) && (
-              <div className="rounded-2xl border px-3 py-2.5">
+              <div className="rounded-md border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Short Answer</span>
               </div>
             )}
 
             {QuestionTypes.Paragraph === question.type && (
-              <div className="h-28 rounded-2xl border px-3 py-2.5">
+              <div className="h-28 rounded-md border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Paragraph</span>
               </div>
             )}
@@ -171,19 +171,19 @@ export const Card: FC<CardProps> = ({
             )}
 
             {QuestionTypes.Dropdown === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Select One</span>
                 <Icon name="ChevronDown" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
             {QuestionTypes.Datepicker === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">DD/MM/YY</span>
                 <Icon name="Calendar" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
             {/* {QuestionTypes.Time === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">12:00</span>
                 <Icon name="Clock" className="h-5 w-5 text-neutral-500" />
               </div>

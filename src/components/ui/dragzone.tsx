@@ -109,7 +109,7 @@ export function DropZone({ onChange, defaultValue, name }: Props) {
         {files.map((file) => (
           <div
             key={file.name}
-            className="flex w-full items-center gap-3 rounded-2xl border bg-neutral-50 px-4 py-4"
+            className="flex w-full items-center gap-3 rounded-md border bg-neutral-50 px-4 py-4"
           >
             <div className="bg-secondary-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
               <Icon name="FileText" className="text-primary-500" />

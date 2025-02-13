@@ -133,7 +133,7 @@ const Create = () => {
                 {packOrderItems?.primaryPackDescription && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-xs bg-neutral-dark" />
+                      <div className="size-2 rounded-md bg-neutral-dark" />
                       <span className="text-xl font-semibold italic">
                         Primary Pack
                       </span>
@@ -147,7 +147,7 @@ const Create = () => {
                 {packOrderItems?.secondaryPackDescription && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-xs bg-neutral-dark" />
+                      <div className="size-2 rounded-md bg-neutral-dark" />
                       <span className="text-xl font-semibold italic">
                         Secondary Pack
                       </span>
@@ -161,7 +161,7 @@ const Create = () => {
                 {packOrderItems?.tertiaryPackDescription && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-xs bg-neutral-dark" />
+                      <div className="size-2 rounded-md bg-neutral-dark" />
                       <span className="text-xl font-semibold italic">
                         Tertiary Pack
                       </span>

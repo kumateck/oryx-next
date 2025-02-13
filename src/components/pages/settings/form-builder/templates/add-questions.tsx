@@ -133,7 +133,7 @@ const AddQuestions = ({ questions, setQuestions, isOpen, onClose }: Props) => {
               <label
                 htmlFor={item.id}
                 className={cn(
-                  "text-primary-500 flex w-full cursor-pointer items-center justify-start gap-4 rounded-2xl border border-neutral-200 bg-background px-8 py-4 text-sm shadow-sm",
+                  "text-primary-500 flex w-full cursor-pointer items-center justify-start gap-4 rounded-md border border-neutral-200 bg-background px-8 py-4 text-sm shadow-sm",
                   {
                     "border-secondary-500": questions.some(
                       (opt) => opt.id === item.id,
