@@ -1,0 +1,1 @@
+export { default } from "@/components/pages/supply-chain/warehouse/receiving-area/create-checklist";

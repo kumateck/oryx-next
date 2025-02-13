@@ -55,6 +55,10 @@ export const CODE_SETTINGS = {
   },
 };
 
+export enum ProductionStatus {
+  New = 0,
+  Checked = 1,
+}
 export enum PurchaseOrderStatusList {
   Pending = 0,
   Delivered = 1,
@@ -181,6 +185,9 @@ export const routes = {
   editPlanningProcedure: () => `procedure`,
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "raw-materials",
+  createChecklist: (id: string) =>
+    `/warehouse/receiving-area/${id}/create-checklist`,
+  // createChecklist: () => `/warehouse/receiving-area/create-checklist`,
   finishedProducts: () => "finished-products",
   newEmployee: () => "/resource/employees/create",
   newRegulation: () => "/compliance/external/regulations/create",

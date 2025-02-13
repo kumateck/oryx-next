@@ -1,0 +1,55 @@
+import { ColumnDef } from "@tanstack/react-table";
+
+import { ChecklistBatchRequestDto } from "./types";
+
+export const getColumns =
+  () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
+  // options?: Option[],
+  : ColumnDef<ChecklistBatchRequestDto>[] => [
+    {
+      accessorKey: "batchNumber",
+      header: "Batch Number",
+      cell: ({ row }) => <div>{row.original.batchNumber}</div>,
+    },
+    {
+      accessorKey: "numberOfBags",
+      header: "Number of Bags",
+      cell: ({ row }) => <div>{row.original.numberOfBags}</div>,
+    },
+    {
+      accessorKey: "expriyDate",
+      header: "Expiry Date",
+      cell: ({ row }) => <div>{row.original.expriyDate}</div>,
+    },
+    {
+      accessorKey: "manufacturingDate",
+      header: "Manufacturing Date",
+      cell: ({ row }) => <div>{row.original.manufacturingDate}</div>,
+    },
+    {
+      accessorKey: "retestDate",
+      header: "Retest Date",
+      cell: ({ row }) => <div>{row.original.retestDate}</div>,
+    },
+    {
+      accessorKey: "batchQuantity",
+      header: "Batch Quantity",
+      cell: ({ row }) => <div>{row.original.batchQuantity}</div>,
+    },
+
+    // {
+    //   accessorKey: "finalTotalStock",
+    //   header: "All other Source Stock",
+    //   cell: ({ row }) => (
+    //     <div>
+    //       <DataRowAllStock row={row}>
+    //         {/* <ToolTipEllipsis
+    //           title={row.original.finalTotalStock as string}
+    //           className="max-w-[50ch]"
+    //         /> */}
+    //         {row.original.finalTotalStock}
+    //       </DataRowAllStock>
+    //     </div>
+    //   ),
+    // },
+  ];

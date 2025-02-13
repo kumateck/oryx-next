@@ -73,6 +73,10 @@ export const ROUTES: Route[] = [
             url: "/warehouse/departments",
           },
           {
+            title: "Receiving Area",
+            url: "/warehouse/receiving-area",
+          },
+          {
             title: "Warehouses",
             url: "/warehouse/warehouses",
           },
@@ -166,6 +170,10 @@ export const ROUTES: Route[] = [
           {
             title: "Purchase Orders",
             url: "/procurement/purchase-orders",
+          },
+          {
+            title: "Material Distribution",
+            url: "/procurement/material-distribution",
           },
         ],
       },
