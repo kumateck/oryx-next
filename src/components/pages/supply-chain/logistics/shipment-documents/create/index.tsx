@@ -20,7 +20,7 @@ import {
   PostApiV1FileByModelTypeAndModelIdApiArg,
   PostApiV1ProcurementShipmentDocumentApiArg,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useGetApiV1ProcurementShipmentInvoiceQuery,
+  useGetApiV1ProcurementShipmentInvoiceUnattachedQuery,
   useLazyGetApiV1ProcurementShipmentDocumentQuery,
   useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
@@ -50,14 +50,10 @@ const Page = () => {
   const [loadPurchaseOrder] =
     useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
 
-  const { data: invoicesResponse } = useGetApiV1ProcurementShipmentInvoiceQuery(
-    {
-      page: 1,
-      pageSize: 10000,
-    },
-  );
+  const { data: invoicesResponse } =
+    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
 
-  const invoiceOptions = invoicesResponse?.data?.map((item) => {
+  const invoiceOptions = invoicesResponse?.map((item) => {
     return {
       label: item.code,
       value: item?.id,
@@ -101,7 +97,7 @@ const Page = () => {
       receivedQuantity: item.receivedQuantity as number,
       reason: item.reason as string,
       code: item.material?.code as string,
-      // costPrice: item.material?.?.toString(),
+      costPrice: item.price?.toString(),
       manufacturer: item.manufacturer?.name as string,
     })) as MaterialRequestDto[];
     setMaterialLists(payload);
