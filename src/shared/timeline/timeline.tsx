@@ -149,22 +149,22 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
         >
           <div className="grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4">
             <div className="pr-4 text-right">
-              <div className="bg-muted h-4 w-24 animate-pulse rounded" />
+              <div className="h-4 w-24 animate-pulse rounded bg-neutral-input" />
             </div>
 
             <div className="mx-3 flex flex-col items-center justify-start gap-y-2">
-              <div className="bg-muted relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full ring-8 ring-background">
+              <div className="relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-neutral-input ring-8 ring-background">
                 <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
               </div>
               {showConnector && (
-                <div className="bg-muted h-full w-0.5 animate-pulse" />
+                <div className="h-full w-0.5 animate-pulse bg-neutral-input" />
               )}
             </div>
 
             <div className="flex flex-col gap-2 pl-2">
               <div className="space-y-2">
-                <div className="bg-muted h-4 w-24 animate-pulse rounded" />
-                <div className="bg-muted h-3 w-48 animate-pulse rounded" />
+                <div className="h-4 w-24 animate-pulse rounded bg-neutral-input" />
+                <div className="h-3 w-48 animate-pulse rounded bg-neutral-input" />
               </div>
             </div>
           </div>
@@ -215,6 +215,8 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
       );
     }
 
+    console.log(showConnector, "showConnector");
+
     const content = (
       <div
         className="grid grid-cols-[1fr_auto_1fr] items-start gap-4"
@@ -235,7 +237,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
               iconSize={iconsize}
             />
           </div>
-          {showConnector && <div className="bg-border mt-2 h-16 w-0.5" />}
+          {showConnector && <div className="mt-2 h-16 w-0.5 bg-neutral-dark" />}
         </div>
 
         {/* Content */}
@@ -323,7 +325,7 @@ const TimelineTime = React.forwardRef<HTMLTimeElement, TimelineTimeProps>(
         ref={ref}
         dateTime={date ? new Date(date).toISOString() : undefined}
         className={cn(
-          "text-muted-foreground text-sm font-medium tracking-tight",
+          "text-sm font-medium tracking-tight text-neutral-secondary",
           className,
         )}
         {...props}
@@ -347,11 +349,13 @@ const TimelineConnector = React.forwardRef<
     className={cn(
       "w-0.5",
       {
-        "bg-primary": color === "primary" || (!color && status === "completed"),
-        "bg-muted": color === "muted" || (!color && status === "pending"),
-        "bg-secondary": color === "secondary",
-        "bg-accent": color === "accent",
-        "from-primary to-muted bg-gradient-to-b":
+        "bg-primary-default":
+          color === "primary" || (!color && status === "completed"),
+        "bg-neutral-input":
+          color === "muted" || (!color && status === "pending"),
+        "bg-neutral-default": color === "secondary",
+        "bg-neutral-tertiary": color === "accent",
+        "bg-gradient-to-b from-primary-default to-neutral-input":
           !color && status === "in-progress",
       },
       className,
@@ -380,7 +384,7 @@ const TimelineTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-secondary-foreground font-semibold leading-none tracking-tight",
+      "font-semibold leading-none tracking-tight text-neutral-secondary",
       className,
     )}
     {...props}
@@ -416,8 +420,8 @@ const TimelineIcon = ({
   const colorClasses = {
     primary: "bg-primary-default text-white",
     secondary: "bg-neutral-default text-neutral-dark",
-    muted: "bg-muted text-muted-foreground",
-    accent: "bg-accent text-accent-foreground",
+    muted: "bg-neutral-input text-neutral-secondary",
+    accent: "bg-neutral-tertiary text-white",
     destructive: "bg-red-500 text-neutral-50 ",
   };
 
@@ -451,7 +455,7 @@ const TimelineDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-muted-foreground max-w-sm text-sm", className)}
+    className={cn("max-w-sm text-sm text-neutral-secondaryAlt", className)}
     {...props}
   />
 ));
@@ -481,7 +485,7 @@ const TimelineEmpty = React.forwardRef<
     )}
     {...props}
   >
-    <p className="text-muted-foreground text-sm">
+    <p className="text-sm text-neutral-input">
       {children || "No timeline items to display"}
     </p>
   </div>

@@ -72,6 +72,7 @@ export const Datatable = <TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
@@ -121,10 +122,22 @@ export const Datatable = <TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    // data-state={row?.getIsSelected() && "selected"}
+                    // className={cn({
+                    //   "bg-primary-selected": row?.getIsSelected(),
+                    // })}
+                    data-state={
+                      rowSelection
+                        ? row?.getIsSelected() && "selected"
+                        : undefined
+                    }
+                    className={cn({
+                      "bg-primary-selected":
+                        rowSelection && row?.getIsSelected(),
+                    })}
                     onClick={() => onRowClick?.(row.original)}
                   >
-                    {row.getVisibleCells().map((cell) => {
+                    {row?.getVisibleCells().map((cell) => {
                       const isNonClickable = (
                         cell.column.columnDef as ExtendedColumnDef<
                           TData,
