@@ -76,9 +76,9 @@ const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
 
   return (
     <Dialog open={isGRNOpen} onOpenChange={onGRNClose}>
-      <DialogContent>
+      <DialogContent className="w-full max-w-6xl">
         <DialogHeader>
-          <DialogTitle>Add Rack</DialogTitle>
+          <DialogTitle>Create GRN</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -100,7 +100,7 @@ const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Add Rack</span>{" "}
+              <span>Create GRN</span>{" "}
             </Button>
           </DialogFooter>
         </form>

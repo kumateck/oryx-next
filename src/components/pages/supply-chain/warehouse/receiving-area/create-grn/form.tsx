@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Control,
   FieldErrors,
@@ -9,6 +9,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
+import { useGetApiV1ProductionScheduleQuery } from "@/lib/redux/api/openapi.generated";
 
 import TableForData from "./table";
 import { GRNRequestDto } from "./types";
@@ -27,10 +28,52 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   locationOptions,
-
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   const [packageLists, setPackageLists] = useState<GRNRequestDto[]>([]);
+  const { data: result } = useGetApiV1ProductionScheduleQuery({ page: 1 });
+
+  useEffect(() => {
+    const data = result?.data || [];
+    if (data) {
+      const packOptions = data?.map((item) => {
+        const batchNumber = item?.id?.split("-")[0] as string;
+
+        const materialName = item?.code as string;
+
+        const manufacturerName = item?.products?.map(
+          (product) => product.product?.genericName as string,
+        );
+
+        const invoiceNumber = item?.products?.map(
+          (product) => product.product?.shelfLife as string,
+        );
+
+        const quantity = item?.products?.map(
+          (product) => product.product?.baseQuantity as number,
+        );
+
+        const expiryDate = item.scheduledEndTime;
+
+        const manufacturingDate = item?.scheduledStartTime;
+
+        const retestDate = item?.scheduledStartTime;
+
+        return {
+          batchNumber,
+          materialName,
+          manufacturerName,
+          invoiceNumber,
+          quantity,
+          expiryDate,
+          manufacturingDate,
+          retestDate,
+        };
+      }) as GRNRequestDto[];
+      setPackageLists(packOptions);
+    }
+  }, [result]);
+
   return (
     <div className="w-full">
       <FormWizard
