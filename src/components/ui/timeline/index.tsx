@@ -15,7 +15,11 @@ interface Props {
   }[];
 }
 
-export const Timeline = ({ currentStep, steps, setCurrentStep }: Props) => {
+export const TimelineLayout = ({
+  currentStep,
+  steps,
+  setCurrentStep,
+}: Props) => {
   const isFinalStep = (index: number) => index === steps.length - 1;
   const isLastActiveStep = (index: number) =>
     currentStep === index && isFinalStep(index);
@@ -25,7 +29,7 @@ export const Timeline = ({ currentStep, steps, setCurrentStep }: Props) => {
   const isLastNotActiveStep = (index: number) => index === steps.length - 1;
   return (
     <div className="mx-auto w-full pl-0 pr-0 sm:pl-2 md:pl-4 lg:pl-6 xl:pl-12 2xl:pl-24">
-      <ol className="flex w-full flex-col items-start">
+      <ol className="flex w-full items-start">
         {steps?.map((item, index) => {
           return (
             <Fragment key={index}>

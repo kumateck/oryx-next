@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Card, CardContent } from "@/components/ui";
+
 const TestTimeline = () => {
   return (
     <div className="h-full w-full bg-primary-inverted p-5">
@@ -108,14 +110,53 @@ const TestTimeline = () => {
           </p>
         </li>
       </ol> */}
-      <div className="border border-black p-5">
-        <ol className="relative border-r-2 border-solid border-gray-600">
-          <li>des wedsdjsksksksd</li>
+      {/* <div className="border-4 border-black p-5">
+        <ol className="relative h-full w-0.5 border border-solid border-gray-600">
+          <li className="">
+            <div>
+              <div className="absolute start-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary-default"></div>
+            </div>
+          </li>
           <li>des</li>
           <li>des</li>
           <li>des</li>
           <li>des</li>
         </ol>
+      </div> */}
+      <div className="w-full">
+        {/* <ol>
+          <li>
+            <div className="flex w-full items-start gap-2">
+              <div className="h-full w-5 border border-neutral-dark"></div>
+              <div className="flex-grow">
+                <span>Timeline one</span>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Odio euismod lacinia at quis risus sed vulputate odio ut. Quam
+                  viverra orci sagittis eu volutpat odio facilisis mauris.
+                </p>
+              </div>
+            </div>
+          </li>
+        </ol> */}
+        <ul>
+          <li>
+            <Card className="relative">
+              <div className="absolute left-0 top-0 flex h-7 w-7 rounded-full border border-black bg-primary-default" />
+              <CardContent className="relative">
+                <div className="h-5 w-5 !border-4 border-indigo-600"></div>
+                <span>Timeline one</span>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Odio euismod lacinia at quis risus sed vulputate odio ut. Quam
+                  viverra orci sagittis eu volutpat odio facilisis mauris.
+                </p>
+              </CardContent>
+            </Card>
+          </li>
+        </ul>
       </div>
     </div>
   );
