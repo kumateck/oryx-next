@@ -378,6 +378,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         xs: "calc(var(--radius) - 6px)",
       },
+
+      borderWidth: {},
       keyframes: {
         "accordion-down": {
           from: {
