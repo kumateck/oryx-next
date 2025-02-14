@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, RowSelectionState } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
 
 import { TPaginationResponse } from "../types";
@@ -12,8 +12,8 @@ interface IProps<TData> {
   setPageSize: Dispatch<SetStateAction<number>>;
   setPage: Dispatch<SetStateAction<number>>;
   meta: TPaginationResponse;
-  onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
-  selectedRows?: string[];
+  rowSelection?: RowSelectionState;
+  setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   tablePrefixComponent?: React.FC;
   onRowClick?: (row: TData) => void;
 }
@@ -25,7 +25,8 @@ export const ServerDatatable = <TData,>({
   onRowClick,
   setPage,
   setPageSize,
-  onChangeSelectedRows,
+  rowSelection,
+  setRowSelection,
   meta,
   // ...props
 }: IProps<TData>) => {
@@ -52,6 +53,8 @@ export const ServerDatatable = <TData,>({
 
   return (
     <Datatable
+      rowSelection={rowSelection}
+      setRowSelection={setRowSelection}
       onRowClick={onRowClick}
       data={data}
       columns={columns}
@@ -78,7 +81,6 @@ export const ServerDatatable = <TData,>({
             : false,
         hasPreviousPage: (meta?.pageIndex as number) > 1 ? true : false,
       }}
-      onChangeSelectedRows={onChangeSelectedRows}
     />
   );
 };

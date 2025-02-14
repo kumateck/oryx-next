@@ -523,3 +523,22 @@ export function convertToSmallestUnit(
 
   return { value: finalValue, unit: smallestUnit.name };
 }
+
+type ObjectType = {
+  [key: number]: boolean;
+};
+interface DataProps {
+  id: string;
+}
+export function getMatchingIds(
+  array: DataProps[],
+  object: ObjectType,
+): string[] {
+  const result: string[] = [];
+  array.forEach((item, index) => {
+    if (object[index] === true) {
+      result.push(item.id);
+    }
+  });
+  return result;
+}

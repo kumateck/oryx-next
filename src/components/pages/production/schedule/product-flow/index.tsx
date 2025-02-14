@@ -640,8 +640,14 @@
 // export default Page;
 import React from "react";
 
+import ProductionTimeLine from "@/shared/timeline";
+
 const Page = () => {
-  return <div>Page</div>;
+  return (
+    <div>
+      <ProductionTimeLine />
+    </div>
+  );
 };
 
 export default Page;

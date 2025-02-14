@@ -1,6 +1,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  RowSelectionState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -10,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Table,
@@ -39,11 +40,12 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   pagination?: paginationParams;
   tableParams?: TPaginationResponse;
-  onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
+
   tablePrefixComponent?: React.FC;
   selectedRows?: string[];
   onRowClick?: (row: TData) => void;
-  resetSelection?: boolean;
+  rowSelection?: RowSelectionState;
+  setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
 }
 export const Datatable = <TData, TValue>({
   data,
@@ -51,38 +53,15 @@ export const Datatable = <TData, TValue>({
   isLoading,
   pagination,
   tableParams,
+  rowSelection,
+  setRowSelection,
   onRowClick,
-  onChangeSelectedRows,
-  ...props
+  // ...props
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const selectedRows = useMemo(
-    () =>
-      Object.keys(rowSelection).map((rowId) => ({
-        ...data[Number(rowId)],
-        rowId: rowId,
-      })),
-    [rowSelection, data],
-  );
-  useEffect(() => {
-    if (!props.selectedRows) return;
-    setRowSelection(
-      props.selectedRows.reduce(
-        (acc, rowId) => {
-          acc[rowId] = true;
-          return acc;
-        },
-        {} as { [key: string]: boolean },
-      ),
-    );
-  }, [props.selectedRows]);
-  useEffect(() => {
-    onChangeSelectedRows?.(selectedRows);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedRows]);
+
   const table = useReactTable({
     data,
     columns,

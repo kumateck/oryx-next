@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -244,6 +245,12 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
                   <div className="rounded-md border px-1.5 py-0.5 text-sm">
                     {activity?.currentStep?.operation?.name}
                   </div>
+                  <Link
+                    className="rounded-md border px-1.5 py-0.5 text-sm"
+                    href={`/production/product/${productId}/board`}
+                  >
+                    Flow
+                  </Link>
                 </div>
               ) : (
                 <div>
