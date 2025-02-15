@@ -7,6 +7,90 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    // Common class
+    "border",
+    // Red
+    "border-red-300",
+    "bg-red-100",
+    "text-red-800",
+    // Blue
+    "border-blue-300",
+    "bg-blue-100",
+    "text-blue-800",
+    // Green
+    "border-green-300",
+    "bg-green-100",
+    "text-green-800",
+    // Yellow
+    "border-yellow-300",
+    "bg-yellow-100",
+    "text-yellow-800",
+    // Indigo
+    "border-indigo-300",
+    "bg-indigo-100",
+    "text-indigo-800",
+    // Purple
+    "border-purple-300",
+    "bg-purple-100",
+    "text-purple-800",
+    // Pink
+    "border-pink-300",
+    "bg-pink-100",
+    "text-pink-800",
+    // Amber
+    "border-amber-300",
+    "bg-amber-100",
+    "text-amber-800",
+    // Orange
+    "border-orange-300",
+    "bg-orange-100",
+    "text-orange-800",
+    // Lime
+    "border-lime-300",
+    "bg-lime-100",
+    "text-lime-800",
+    // Emerald
+    "border-emerald-300",
+    "bg-emerald-100",
+    "text-emerald-800",
+    // Teal
+    "border-teal-300",
+    "bg-teal-100",
+    "text-teal-800",
+    // Cyan
+    "border-cyan-300",
+    "bg-cyan-100",
+    "text-cyan-800",
+    // Sky
+    "border-sky-300",
+    "bg-sky-100",
+    "text-sky-800",
+    // Violet
+    "border-violet-300",
+    "bg-violet-100",
+    "text-violet-800",
+    // Fuchsia
+    "border-fuchsia-300",
+    "bg-fuchsia-100",
+    "text-fuchsia-800",
+    // Rose
+    "border-rose-300",
+    "bg-rose-100",
+    "text-rose-800",
+    // Gray
+    "border-gray-300",
+    "bg-gray-100",
+    "text-gray-800",
+    // Stone
+    "border-stone-300",
+    "bg-stone-100",
+    "text-stone-800",
+    // Zinc
+    "border-zinc-300",
+    "bg-zinc-100",
+    "text-zinc-800",
+  ],
   theme: {
     // extend: {
     //   colors: {

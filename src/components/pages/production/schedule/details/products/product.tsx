@@ -247,9 +247,9 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
                   </div>
                   <Link
                     className="rounded-md border px-1.5 py-0.5 text-sm"
-                    href={`/production/product/${productId}/board`}
+                    href={`/production/activities/${activity?.id}/board`}
                   >
-                    Flow
+                    View Activity Board
                   </Link>
                 </div>
               ) : (
