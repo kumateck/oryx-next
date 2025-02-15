@@ -12,6 +12,8 @@ import React from "react";
 // import { Timeline } from "@/components/ui/timeline";
 // import TimeLineIcon from "./cs";
 // import { TimelineLayout } from "./layout";
+// import TestTimeline from "./test";
+// import { TimelineLayout } from "@/components/ui/timeline";
 import TestTimeline from "./test";
 
 // import { TimelineElement } from "./types";
@@ -43,6 +45,11 @@ const ProductionTimeLine = () => {
 
       {/* <TimelineLayout items={timelineData} size="md" animate={true} /> */}
       <TestTimeline />
+      {/* <TimelineLayout
+        steps={steps}
+        setCurrentStep={setCurrentStep}
+        currentStep={currentStep}
+      /> */}
     </div>
   );
 };
