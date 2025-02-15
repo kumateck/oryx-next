@@ -89,9 +89,9 @@ export enum ActivityStepStatus {
   New = 0,
   Progress = 1,
   Completed = 2,
-  Active = 3,
-  Paused = 4,
-  Stopped = 5,
+  Delayed = 3,
+  Cancelled = 4,
+  Active = 5,
 }
 
 export enum FORM_BUILDER_CONFIG {
