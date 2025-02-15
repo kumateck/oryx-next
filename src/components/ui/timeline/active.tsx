@@ -1,37 +1,21 @@
-import { Icon } from "../icon";
+import React from "react";
+import { FaRegCircleDot } from "react-icons/fa6";
+
+import TimelineCard from "./card";
+import { TimelineItemProps } from "./type";
 
 interface Props {
-  title: string;
-  setCurrentStep: (step: number) => void;
-  step: number;
+  item: TimelineItemProps;
 }
-const ActiveStep = ({ title, setCurrentStep, step }: Props) => {
+const Active = ({ item }: Props) => {
   return (
-    <li
-      className="w-full hover:cursor-pointer"
-      onClick={() => setCurrentStep(step)}
-    >
-      {/* <div className="text-info-500 after:border-info-500 flex w-full items-center after:inline-block after:h-full after:w-0.5 after:border-4 after:border-b after:content-['']">
-        <div className="bg-info-500 h-9 w-9 rounded-full p-1.5">
-          <Icon
-            name="Check"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
-          />
-        </div>
-      </div> */}
-      <div className="text-info-500 after:border-info-500 flex w-full items-center justify-center after:inline-block after:h-full after:w-0.5 after:border-4 after:border-l after:content-['']">
-        <div className="bg-info-500 h-9 w-9 rounded-full p-1.5">
-          <Icon
-            name="Check"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
-          />
-        </div>
-      </div>
-      <div className="pt-2">
-        <span className="text-base font-medium">{title}</span>
-      </div>
+    <li className="mb-10 ms-6">
+      <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white ring-8 ring-white">
+        <FaRegCircleDot className="size-9 text-green-500" />
+      </span>
+      <TimelineCard item={item} />
     </li>
   );
 };
 
-export default ActiveStep;
+export default Active;

@@ -1,5 +1,6 @@
 import { type VariantProps } from "class-variance-authority";
 
+import { avatarFallbackColors } from "@/lib";
 import { avatarStackVariants, cn } from "@/lib/utils";
 
 import ActionToolTip from "./action-tooltip";
@@ -8,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 export interface AvatarStackProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof avatarStackVariants> {
-  avatars: { url?: string; name?: string; fullname?: string }[];
+  avatars: { url?: string; name?: string; fullname?: string; color?: string }[];
   avatarsOffset?: number;
   maxAvatarsAmount?: number;
 }
@@ -39,7 +40,9 @@ export function AvatarStack({
         <ActionToolTip key={index} title={avatar?.fullname as string}>
           <Avatar className={cn(avatarStackVariants(), avatarClass)}>
             <AvatarImage src={avatar?.url} className="object-cover" />
-            <AvatarFallback className={fallbackClass}>
+            <AvatarFallback
+              className={cn(fallbackClass, avatarFallbackColors[index])}
+            >
               {avatar?.name}
             </AvatarFallback>
           </Avatar>

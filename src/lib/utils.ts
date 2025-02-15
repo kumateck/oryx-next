@@ -542,3 +542,18 @@ export function getMatchingIds(
   });
   return result;
 }
+export const fullname = (name?: string, surname?: string) =>
+  `${name} ${surname}`;
+export const getInitials = (name: string) => {
+  if (!name || typeof name !== "string") return "";
+
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length === 0) return "";
+
+  const initials =
+    (parts[0][0]?.toUpperCase() ?? "") +
+    (parts[parts.length - 1][0]?.toUpperCase() ?? "");
+
+  return initials;
+};
