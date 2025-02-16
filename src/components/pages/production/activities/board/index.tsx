@@ -7,6 +7,7 @@ import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
 import { ActivityStepStatus, fullname } from "@/lib";
 import { useGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
+import BgWrapper from "@/shared/bg-wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 const Board = () => {
@@ -34,9 +35,33 @@ const Board = () => {
     })),
   })) as TimelineItemProps[];
   return (
-    <ScrollablePageWrapper className="px-10 py-5">
-      <TimelineLayout steps={activities} />
-    </ScrollablePageWrapper>
+    <BgWrapper>
+      <div className="flex flex-col gap-0.5">
+        <span className="text-2xl font-medium text-primary-inverted">
+          {data?.product?.name}
+        </span>
+        <div>
+          <ul className="flex items-center gap-4">
+            <li>
+              <span className="block text-sm font-normal">Product Code:</span>
+              <span className="block font-semibold">
+                {data?.product?.code}{" "}
+              </span>
+            </li>{" "}
+            <li>
+              <span className="block">Schedule Code:</span>
+              <span className="block">{data?.productionSchedule?.code}</span>
+            </li>
+          </ul>
+        </div>
+        <span className="text-sm font-normal text-neutral-default">
+          {data?.product?.description}
+        </span>
+      </div>
+      <ScrollablePageWrapper className="px-10 py-5">
+        <TimelineLayout steps={activities} />
+      </ScrollablePageWrapper>
+    </BgWrapper>
   );
 };
 

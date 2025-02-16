@@ -33,6 +33,12 @@ export const ROUTES: Route[] = [
         icon: "LayoutDashboard",
         isActive: false,
       },
+      {
+        title: "Product Board",
+        url: "/production/activities",
+        icon: "SquareDashedKanban",
+        isActive: false,
+      },
     ],
   },
   {

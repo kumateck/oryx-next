@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = (props) => {
   return (
     <header
       className={cn(
-        "flex h-12 shrink-0 items-center gap-2 border-b bg-neutral-lightAlt px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+        "flex h-12 flex-none shrink-0 items-center gap-2 border-b bg-neutral-lightAlt px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
         className,
       )}
     >

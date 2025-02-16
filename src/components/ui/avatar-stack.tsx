@@ -21,7 +21,6 @@ export function AvatarStack({
   spacing,
   avatarClass,
   fallbackClass,
-  // avatarsOffset = 2,
   maxAvatarsAmount = 4,
   ...props
 }: AvatarStackProps & { avatarClass?: string; fallbackClass?: string }) {
@@ -50,7 +49,10 @@ export function AvatarStack({
       ))}
 
       {limitedAvatars.length < avatars.length ? (
-        <Avatar key={"Excesive avatars"}>
+        <Avatar
+          key={"Excesive avatars"}
+          className={cn(avatarStackVariants(), avatarClass)}
+        >
           <AvatarFallback>
             +{avatars.length - limitedAvatars.length}
           </AvatarFallback>

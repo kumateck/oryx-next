@@ -13,7 +13,7 @@ const Active = ({ item }: Props) => {
       <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white ring-8 ring-white">
         <FaRegCircleDot className="size-9 text-green-500" />
       </span>
-      <TimelineCard item={item} />
+      <TimelineCard item={item} className="border border-primary-inverted" />
     </li>
   );
 };
