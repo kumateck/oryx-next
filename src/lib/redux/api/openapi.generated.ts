@@ -6996,12 +6996,14 @@ export type MaterialBatchDto = {
   locations?: CurrentLocationDto[] | null;
 };
 export type CreateSrRequest = {
+  materialBatchId?: string;
   srNumber?: string | null;
   grossWeight?: number;
 };
 export type CreateMaterialBatchRequest = {
   code?: string | null;
   materialId?: string;
+  checklistId?: string;
   quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
