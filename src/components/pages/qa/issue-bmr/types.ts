@@ -1,22 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-export const CreateDepartmentSchema = z.object({
-  // warehouseId: z.a().min(1, {message: "Warehouse ID is required",},),
-  warehouseIds: z
-    .array(
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      }),
-    )
-    .min(1, {
-      message: "Warehouses are required",
+export const CreateIssueSchema = z
+  .object({
+    batchNumber: z.string().min(1, { message: "Batch Number is required" }),
+    manufacturingDate: z.date({
+      required_error: "Manufacturing Date is required",
     }),
-  name: z.string().min(1, { message: "Location Name is required" }),
-  code: z.string().min(1, { message: "Code is required" }),
-  description: z.string().optional(),
-});
+    expiryDate: z.date({ required_error: "Expiry Date is required" }),
+    batchQuantity: z.string().optional(),
+    uom: z.string().optional(),
+  })
+  .refine((data) => data.expiryDate > data.manufacturingDate, {
+    message: "Expiry Date must be after Manufacturing Date",
+    path: ["expiryDate"], // Targets expiryDate field
+  });
 
-export type DepartmentRequestDto = z.infer<typeof CreateDepartmentSchema>;
-export const CreateDepartmentValidator = zodResolver(CreateDepartmentSchema);
+export type IssueRequestDto = z.infer<typeof CreateIssueSchema>;
+export const CreateIssueValidator = zodResolver(CreateIssueSchema);

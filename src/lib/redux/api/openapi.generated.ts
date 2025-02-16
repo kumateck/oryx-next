@@ -667,6 +667,16 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1MaterialBatchStatus: build.mutation<
+      PutApiV1MaterialBatchStatusApiResponse,
+      PutApiV1MaterialBatchStatusApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batch/status`,
+        method: "PUT",
+        body: queryArg.updateBatchStatusRequest,
+      }),
+    }),
     postApiV1ProcurementManufacturer: build.mutation<
       PostApiV1ProcurementManufacturerApiResponse,
       PostApiV1ProcurementManufacturerApiArg
@@ -2317,6 +2327,25 @@ const injectedRtkApi = api.injectEndpoints({
           url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/material-batch`,
         }),
       }),
+    postApiV1WarehouseGrn: build.mutation<
+      PostApiV1WarehouseGrnApiResponse,
+      PostApiV1WarehouseGrnApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/grn`,
+        method: "POST",
+        body: queryArg.createGrnRequest,
+        params: {
+          materialBatchIds: queryArg.materialBatchIds,
+        },
+      }),
+    }),
+    getApiV1WarehouseGrnById: build.query<
+      GetApiV1WarehouseGrnByIdApiResponse,
+      GetApiV1WarehouseGrnByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/warehouse/grn/${queryArg.id}` }),
+    }),
     postApiV1WorkOrder: build.mutation<
       PostApiV1WorkOrderApiResponse,
       PostApiV1WorkOrderApiArg
@@ -2826,6 +2855,11 @@ export type PostApiV1MaterialUploadApiArg = {
   body: {
     file?: Blob;
   };
+};
+export type PutApiV1MaterialBatchStatusApiResponse = unknown;
+export type PutApiV1MaterialBatchStatusApiArg = {
+  /** The UpdateBatchStatusRequest object. */
+  updateBatchStatusRequest: UpdateBatchStatusRequest;
 };
 export type PostApiV1ProcurementManufacturerApiResponse =
   /** status 200 OK */ string;
@@ -3864,11 +3898,20 @@ export type GetApiV1WarehouseChecklistByIdApiArg = {
   id: string;
 };
 export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiResponse =
-  /** status 200 OK */ MaterialBatchDto;
+  /** status 200 OK */ MaterialBatchDto[];
 export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiArg =
   {
     distributedMaterialId: string;
   };
+export type PostApiV1WarehouseGrnApiResponse = unknown;
+export type PostApiV1WarehouseGrnApiArg = {
+  materialBatchIds?: string[];
+  createGrnRequest: CreateGrnRequest;
+};
+export type GetApiV1WarehouseGrnByIdApiResponse = /** status 200 OK */ GrnDto;
+export type GetApiV1WarehouseGrnByIdApiArg = {
+  id: string;
+};
 export type PostApiV1WorkOrderApiResponse = /** status 201 Created */ string;
 export type PostApiV1WorkOrderApiArg = {
   /** The ID of the user creating the work order. */
@@ -4979,6 +5022,40 @@ export type ChecklistRead = {
   consignmentCarrierStatus?: ConsignmentCarrier;
   materialBatches?: MaterialBatch[] | null;
 };
+export type Grn = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: MaterialBatch[] | null;
+};
+export type GrnRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: MaterialBatch[] | null;
+};
 export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type Sr = {
   id?: string;
@@ -5122,6 +5199,8 @@ export type MaterialBatch = {
   material?: Material;
   checklistId?: string | null;
   checklist?: Checklist;
+  grnId?: string | null;
+  grn?: Grn;
   totalQuantity?: number;
   consumedQuantity?: number;
   uoMId?: string;
@@ -5152,6 +5231,8 @@ export type MaterialBatchRead = {
   material?: Material;
   checklistId?: string | null;
   checklist?: ChecklistRead;
+  grnId?: string | null;
+  grn?: GrnRead;
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
@@ -6995,14 +7076,12 @@ export type MaterialBatchDto = {
   locations?: CurrentLocationDto[] | null;
 };
 export type CreateSrRequest = {
-  materialBatchId?: string;
   srNumber?: string | null;
   grossWeight?: number;
 };
 export type CreateMaterialBatchRequest = {
   code?: string | null;
   materialId?: string;
-  checklistId?: string;
   quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
@@ -7034,6 +7113,10 @@ export type WarehouseDto = {
 export type WarehouseStockDto = {
   warehouse?: WarehouseDto;
   stockQuantity?: number;
+};
+export type UpdateBatchStatusRequest = {
+  status?: string | null;
+  materialBatchIds?: string[] | null;
 };
 export type CreateManufacturerMaterialRequest = {
   materialId?: string;
@@ -8473,6 +8556,7 @@ export type DistributedRequisitionMaterialDto = {
   shipmentInvoice?: ShipmentInvoiceDto;
   quantity?: number;
   confirmArrival?: boolean;
+  isChecked?: boolean;
 };
 export type WarehouseArrivalLocationDto = {
   id?: string;
@@ -8528,6 +8612,18 @@ export type ChecklistDto = {
   intactnessStatus?: Intactness;
   consignmentCarrierStatus?: ConsignmentCarrier;
   materialBatches?: MaterialBatchDto[] | null;
+};
+export type CreateGrnRequest = {
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+};
+export type GrnDto = {
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
 };
 export type CreateProductionStepRequest = {
   description?: string | null;
@@ -8662,6 +8758,7 @@ export const {
   useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   useLazyGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   usePostApiV1MaterialUploadMutation,
+  usePutApiV1MaterialBatchStatusMutation,
   usePostApiV1ProcurementManufacturerMutation,
   useGetApiV1ProcurementManufacturerQuery,
   useLazyGetApiV1ProcurementManufacturerQuery,
@@ -8910,6 +9007,9 @@ export const {
   useLazyGetApiV1WarehouseChecklistByIdQuery,
   useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
   useLazyGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
+  usePostApiV1WarehouseGrnMutation,
+  useGetApiV1WarehouseGrnByIdQuery,
+  useLazyGetApiV1WarehouseGrnByIdQuery,
   usePostApiV1WorkOrderMutation,
   useGetApiV1WorkOrderQuery,
   useLazyGetApiV1WorkOrderQuery,

@@ -8,29 +8,25 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { InputTypes } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
-  warehouseOptions: Option[];
-
   defaultValues?: TFieldValues;
 }
 const IssueForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  warehouseOptions,
 
-  defaultValues,
+  // defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
+        className="grid w-full grid-cols-2 gap-x-10 gap-y-4 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
           {
@@ -38,10 +34,11 @@ const IssueForm = <TFieldValues extends FieldValues, TContext>({
             label: "Batch Number",
             placeholder: "Enter number",
             type: InputTypes.TEXT,
-
             required: true,
-
             errors,
+          },
+          {
+            type: InputTypes.SPACE,
           },
           {
             label: "Manufacturing Date",
@@ -68,33 +65,19 @@ const IssueForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("address" as Path<TFieldValues>),
-            label: "Address",
-            placeholder: "Ener address",
+            register: register("batchQuantity" as Path<TFieldValues>),
+            label: "Batch Size",
+            placeholder: "Enter number",
             type: InputTypes.TEXT,
-            required: true,
+            readOnly: true,
             errors,
           },
           {
-            label: "Warehouse Selection",
-            control: control as Control,
-            type: InputTypes.MULTI,
-            name: "warehouseIds",
-            defaultValue: defaultValues?.warehouseIds,
-            required: true,
-            placeholder: "Select warehouses",
-            options: warehouseOptions,
-            errors,
-          },
-          {
-            label: "Description",
-            control: control as Control,
-            type: InputTypes.RICHTEXT,
-            name: "description",
-            required: true,
-            autoFocus: true,
-            placeholder: "Enter Remarks",
-            suggestions: [],
+            register: register("uom" as Path<TFieldValues>),
+            label: "Unit of Measurement",
+            placeholder: "Select UOM",
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
         ]}
