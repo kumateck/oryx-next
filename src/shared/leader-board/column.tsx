@@ -12,6 +12,7 @@ export const Column: React.FC<ColumnProps> = ({
   steps,
   onDrop,
 }) => {
+  console.log(steps, columnId, "steps");
   const [{ isOver }, drop] = useDrop({
     accept: "TASK",
     drop: (item: DragItem) => {
