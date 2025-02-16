@@ -7439,10 +7439,8 @@ export type CreateSrRequest = {
 export type CreateMaterialBatchRequest = {
   code?: string | null;
   materialId?: string;
-  totalQuantity?: number;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  uoMId?: string | null;
+  checklistId?: string;
+  quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
   expiryDate?: string;

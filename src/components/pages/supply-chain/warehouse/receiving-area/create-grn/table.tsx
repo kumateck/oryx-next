@@ -14,7 +14,6 @@ interface Props {
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   const columns = getColumns();
-
   return (
     <div className="w-full">
       <ListsTable data={lists} columns={defaultColumns || columns} />
