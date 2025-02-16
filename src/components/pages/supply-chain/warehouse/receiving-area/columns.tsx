@@ -1,38 +1,21 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
 
-import { Button, Checkbox, Icon } from "@/components/ui";
-import { Option, ProductionStatus, Units, convertUnits, routes } from "@/lib";
-import { ProductionScheduleDto } from "@/lib/redux/api/openapi.generated";
-import MultiSelectListViewer from "@/shared/multi-select-lists";
-
-import { SelectedRowsContext } from ".";
-
-// import Edit from "./edit";
+import { Button, Icon } from "@/components/ui";
+import { routes } from "@/lib";
+import {
+  DistributedRequisitionMaterialDto,
+  WarehouseArrivalLocationDto,
+} from "@/lib/redux/api/openapi.generated";
+import { TableCheckbox } from "@/shared/datatable/table-check";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-export function DataTableRowCheck<TData extends ProductionScheduleDto>({
-  row,
-}: DataTableRowActionsProps<TData>) {
-  const { selectedRows, toggleRow } = useContext(SelectedRowsContext);
-  const id = row.original.id as string;
-
-  return (
-    <Checkbox
-      checked={selectedRows.includes(id)}
-      onCheckedChange={() => toggleRow(id)}
-    />
-  );
-}
-
-export function DataTableRowActions<TData extends ProductionScheduleDto>({
+export function DataTableRowActions<TData extends WarehouseArrivalLocationDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter();
@@ -53,73 +36,36 @@ export function DataTableRowActions<TData extends ProductionScheduleDto>({
   );
 }
 
-export const columns: ColumnDef<ProductionScheduleDto>[] = [
+export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
+  TableCheckbox(),
   {
-    id: "check",
-    cell: ({ row }) => <DataTableRowCheck row={row} />,
-  },
-  {
-    accessorKey: "code",
+    accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div className="min-w-36">{row.getValue("code")}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">{row.original.material?.name}</div>
+    ),
   },
   {
-    accessorKey: "product",
+    accessorKey: "manufacturerName",
     header: "Manufacturer Name",
     cell: ({ row }) => (
-      <div className="">
-        <MultiSelectListViewer
-          className="max-w-[120ch]"
-          lists={
-            row.original.products?.map((p) => {
-              const productName = p.product?.name as string;
-              const qty = convertUnits(
-                p.quantity ?? 0,
-                p.product?.baseUoM?.symbol as string,
-                Units.L,
-              );
-              const label = `${productName} (${qty}${Units.L})`;
-              return {
-                label,
-              };
-            }) as Option[]
-          }
-        />
-      </div>
+      <div className="">{row.original.manufacturer?.name}</div>
     ),
   },
   {
-    accessorKey: "scheduledStartTime",
+    accessorKey: "invoiceNumber",
     header: "Invoice Number",
-    cell: ({ row }) => (
-      <div>
-        {row.original.scheduledStartTime
-          ? format(new Date(row.original.scheduledStartTime), "MMM dd, yyyy")
-          : "-"}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.shipmentInvoice?.code}</div>,
   },
   {
-    accessorKey: "scheduledEndTime",
+    accessorKey: "orderQuantity",
     header: "Order Quantity",
-    cell: ({ row }) => (
-      <div>
-        {row.original.scheduledEndTime
-          ? format(new Date(row.original.scheduledEndTime), "MMM dd, yyyy")
-          : "-"}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.quantity}</div>,
   },
   {
-    accessorKey: "remarks",
+    accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div>
-        {row?.original?.status !== undefined
-          ? ProductionStatus[row.original.status as ProductionStatus]
-          : "-"}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.confirmArrival}</div>,
   },
   {
     id: "actions",

@@ -4,16 +4,18 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { useLazyGetApiV1ProcurementShipmentDocumentArrivedQuery } from "@/lib/redux/api/openapi.generated";
+import { Button, Icon } from "@/components/ui";
+import { routes } from "@/lib/constants";
+import { useLazyGetApiV1ProductionScheduleQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
-const MaterialDistribution = () => {
+const Page = () => {
   const router = useRouter();
   const [loadData, { data: result, isFetching, isLoading }] =
-    useLazyGetApiV1ProcurementShipmentDocumentArrivedQuery();
+    useLazyGetApiV1ProductionScheduleQuery();
 
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -29,12 +31,21 @@ const MaterialDistribution = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Material Distribution" />
+        <PageTitle title="Approved Raw Materials" />
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="default"
+            size={"sm"}
+            onClick={() => router.push(routes.newSchedule())}
+          >
+            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+          </Button>
+        </div>
       </div>
 
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(`/procurement/material-distribution/${row.id}/details`);
+          router.push(`/warehouse/approved-raw-materials/${row.id}/details`);
         }}
         data={data}
         columns={columns}
@@ -55,4 +66,4 @@ const MaterialDistribution = () => {
   );
 };
 
-export default MaterialDistribution;
+export default Page;

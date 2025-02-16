@@ -9,71 +9,34 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
-import { useGetApiV1ProductionScheduleQuery } from "@/lib/redux/api/openapi.generated";
 
-import TableForData from "./table";
+// import TableForData from "./table";
 import { GRNRequestDto } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
   locationOptions: Option[];
-
-  defaultValues?: TFieldValues;
+  filteredData: GRNRequestDto[];
 }
-const RackForm = <TFieldValues extends FieldValues, TContext>({
+
+const GRNForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   locationOptions,
-  defaultValues,
+  filteredData, // Only selected rows
 }: Props<TFieldValues, TContext>) => {
   const [packageLists, setPackageLists] = useState<GRNRequestDto[]>([]);
-  const { data: result } = useGetApiV1ProductionScheduleQuery({ page: 1 });
 
+  console.log("Data in the form:::", filteredData);
   useEffect(() => {
-    const data = result?.data || [];
-    if (data) {
-      const packOptions = data?.map((item) => {
-        const batchNumber = item?.id?.split("-")[0] as string;
-
-        const materialName = item?.code as string;
-
-        const manufacturerName = item?.products?.map(
-          (product) => product.product?.genericName as string,
-        );
-
-        const invoiceNumber = item?.products?.map(
-          (product) => product.product?.shelfLife as string,
-        );
-
-        const quantity = item?.products?.map(
-          (product) => product.product?.baseQuantity as number,
-        );
-
-        const expiryDate = item.scheduledEndTime;
-
-        const manufacturingDate = item?.scheduledStartTime;
-
-        const retestDate = item?.scheduledStartTime;
-
-        return {
-          batchNumber,
-          materialName,
-          manufacturerName,
-          invoiceNumber,
-          quantity,
-          expiryDate,
-          manufacturingDate,
-          retestDate,
-        };
-      }) as GRNRequestDto[];
-      setPackageLists(packOptions);
+    if (filteredData?.length) {
+      setPackageLists(filteredData); // Only update if filteredData is valid
     }
-  }, [result]);
-
+  }, [filteredData]);
+  console.log("Package List Data:::", packageLists);
   return (
     <div className="w-full">
       <FormWizard
@@ -81,44 +44,38 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
         fieldWrapperClassName="flex-grow"
         config={[
           {
-            label: "Location Name",
+            label: "Carrier's Name",
             control: control as Control,
             type: InputTypes.SELECT,
             name: "locationId",
-            defaultValue: defaultValues?.locationId,
             required: true,
-            placeholder: "Select location",
+            placeholder: "Desmond Kofi Adusei",
             options: locationOptions,
             errors,
           },
           {
-            register: register("name" as Path<TFieldValues>),
-            label: "Name",
-            placeholder: "Ener name",
+            register: register("vehicleNumber" as Path<TFieldValues>),
+            label: "Vehicle Number",
+            placeholder: "GE-1238-19",
             type: InputTypes.TEXT,
-
             required: true,
-
             errors,
           },
-
           {
             label: "Description",
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
             required: true,
-            autoFocus: true,
             placeholder: "Enter Remarks",
-            suggestions: [],
             errors,
           },
         ]}
       />
 
-      <TableForData lists={packageLists} setItemLists={setPackageLists} />
+      {/* <TableForData lists={packageLists} setItemLists={setPackageLists} /> */}
     </div>
   );
 };
 
-export default RackForm;
+export default GRNForm;

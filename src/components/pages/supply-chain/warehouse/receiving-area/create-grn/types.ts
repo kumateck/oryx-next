@@ -19,13 +19,13 @@ export type RackRequestDto = z.infer<typeof CreateRackSchema>;
 export const CreateRackValidator = zodResolver(CreateRackSchema);
 
 export const createGRNRequestSchema = z.object({
-  batchNumber: z.string().optional(),
+  code: z.string().optional(),
   numberOfBags: z.string().optional(),
-  expriyDate: z.string().optional(),
+  expiryDate: z.string().optional(),
   manufacturingDate: z.string().optional(),
   retestDate: z.string().optional(),
   batchQuantity: z.string().optional(),
-  materialName: z.string().optional(),
+  product: z.string().optional(),
   manufacturerName: z.string().optional(),
   invoiceNumber: z.string().optional(),
   expriryDate: z.string().optional(),

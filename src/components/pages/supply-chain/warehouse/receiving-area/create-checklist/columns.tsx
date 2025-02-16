@@ -19,17 +19,31 @@ export const getColumns =
     {
       accessorKey: "expriyDate",
       header: "Expiry Date",
-      cell: ({ row }) => <div>{row.original.expriyDate}</div>,
+      cell: ({ row }) => (
+        <div>
+          {new Date(row?.original?.expriyDate ?? "").toLocaleDateString()}
+        </div>
+      ),
     },
     {
       accessorKey: "manufacturingDate",
       header: "Manufacturing Date",
-      cell: ({ row }) => <div>{row.original.manufacturingDate}</div>,
+      cell: ({ row }) => (
+        <div>
+          {new Date(
+            row?.original?.manufacturingDate ?? "",
+          ).toLocaleDateString()}
+        </div>
+      ),
     },
     {
       accessorKey: "retestDate",
       header: "Retest Date",
-      cell: ({ row }) => <div>{row.original.retestDate}</div>,
+      cell: ({ row }) => (
+        <div>
+          {new Date(row?.original?.retestDate ?? "").toLocaleDateString()}
+        </div>
+      ),
     },
     {
       accessorKey: "batchQuantity",

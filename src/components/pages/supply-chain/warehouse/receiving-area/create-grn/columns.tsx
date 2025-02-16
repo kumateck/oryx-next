@@ -1,65 +1,47 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { GRNRequestDto } from "./types";
+import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 
 export const getColumns =
-  () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
-  // options?: Option[],
-  : ColumnDef<GRNRequestDto>[] => [
+  (): ColumnDef<DistributedRequisitionMaterialDto>[] => [
     {
       accessorKey: "batchNumber",
       header: "Batch Number",
-      cell: ({ row }) => <div>{row.original.batchNumber}</div>,
+      cell: ({ row }) => <div>{row.original.id}</div>,
     },
     {
       accessorKey: "materialName",
       header: "Material Name",
-      cell: ({ row }) => <div>{row.original.materialName}</div>,
+      cell: ({ row }) => <div>{row.original.material?.name}</div>,
     },
     {
       accessorKey: "manufacturerName",
       header: "Manufacturer Name",
-      cell: ({ row }) => <div>{row.original.manufacturerName}</div>,
+      cell: ({ row }) => <div>{row.original.manufacturer?.name}</div>,
     },
     {
       accessorKey: "invoiceNumber",
       header: "Invoice Number",
-      cell: ({ row }) => <div>{row.original.invoiceNumber}</div>,
+      cell: ({ row }) => <div>{row.original.shipmentInvoice?.code}</div>,
     },
     {
       accessorKey: "batchQuantity",
       header: "Batch Quantity",
-      cell: ({ row }) => <div>{row.original.batchQuantity}</div>,
+      cell: ({ row }) => <div>{row.original.quantity}</div>,
     },
     {
-      accessorKey: "expriryDate",
-      header: "Expriy Date",
-      cell: ({ row }) => <div>{row.original.expriryDate}</div>,
+      accessorKey: "expiryDate",
+      header: "Expiry Date",
+      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
     },
     {
       accessorKey: "manufacturingDate",
       header: "Manufacturing Date",
-      cell: ({ row }) => <div>{row.original.manufacturingDate}</div>,
+      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
     },
     {
       accessorKey: "retestDate",
       header: "Retest Date",
-      cell: ({ row }) => <div>{row.original.retestDate}</div>,
+      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
     },
-
-    // {
-    //   accessorKey: "finalTotalStock",
-    //   header: "All other Source Stock",
-    //   cell: ({ row }) => (
-    //     <div>
-    //       <DataRowAllStock row={row}>
-    //         {/* <ToolTipEllipsis
-    //           title={row.original.finalTotalStock as string}
-    //           className="max-w-[50ch]"
-    //         /> */}
-    //         {row.original.finalTotalStock}
-    //       </DataRowAllStock>
-    //     </div>
-    //   ),
-    // },
   ];

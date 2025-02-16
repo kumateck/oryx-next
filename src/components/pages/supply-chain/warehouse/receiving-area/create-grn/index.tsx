@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -10,16 +12,15 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
-  useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1WarehouseRackQuery,
   usePostApiV1WarehouseByLocationIdRackMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
-import RackForm from "./form";
+import GRNForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
 
 // import "./types";
@@ -27,8 +28,11 @@ import { CreateRackValidator, RackRequestDto } from "./types";
 interface Props {
   isGRNOpen: boolean;
   onGRNClose: () => void;
+  selectedIds: string[];
+  data: any[];
 }
-const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
+
+const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
   const [createWarehouseLocationRack, { isLoading }] =
     usePostApiV1WarehouseByLocationIdRackMutation();
@@ -42,10 +46,6 @@ const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
   } = useForm<RackRequestDto>({
     resolver: CreateRackValidator,
     mode: "all",
-  });
-
-  const { data } = useGetApiV1CollectionByItemTypeQuery({
-    itemType: COLLECTION_TYPES.WarehouseLocation,
   });
 
   const locationOptions = data?.map((item) => ({
@@ -62,17 +62,19 @@ const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
         locationId: data?.locationId.value,
         createWarehouseLocationRackRequest: payload,
       });
-      toast.success("Rack created successfully");
+      toast.success("GRN created successfully");
       loadWarehouseLocationRacks({
         page: 1,
         pageSize: 10,
       });
-      reset(); // Reset the form after submission
-      onGRNClose(); // Close the form/modal if applicable
+      reset();
+      onGRNClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  const filteredData = data?.filter((item) => selectedIds?.includes(item.id));
 
   return (
     <Dialog open={isGRNOpen} onOpenChange={onGRNClose}>
@@ -82,11 +84,12 @@ const CreateGRN = ({ isGRNOpen, onGRNClose }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <RackForm
+          <GRNForm
             register={register}
             control={control}
             errors={errors}
             locationOptions={locationOptions}
+            filteredData={filteredData}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onGRNClose}>

@@ -38,18 +38,6 @@ export const createRequisitionItemRequestSchema = z.object({
   manufacturingDate: z.string().optional(),
   retestDate: z.string().optional(),
   batchQuantity: z.string().optional(),
-  finalQuantityRequested: z.string().optional(),
-  finalTotalStock: z.string().optional(),
-  floatedQuantity: z.string().optional(),
-  totalStockLabel: z.string().optional(),
-  materialId: z.string().min(1, { message: "Material is required" }),
-  uomId: z
-    .string({ required_error: "UOM is required" })
-    .min(1, { message: "UOM is required" }),
-  quantityOnHand: z.number().min(1, { message: "Quantity is required" }),
-  quantityRequested: z.number().min(1, { message: "Quantity is required" }),
-  quantity: z.number().optional(),
-  totalStock: z.number().min(1, { message: "Quantity is required" }),
 });
 
 export type ChecklistBatchRequestDto = z.infer<

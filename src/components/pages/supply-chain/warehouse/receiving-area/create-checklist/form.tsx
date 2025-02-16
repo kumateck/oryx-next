@@ -16,8 +16,8 @@ import { FormWizard } from "@/components/form-inputs";
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 
+import AddBatchDialog from "./add-batch";
 import TableForData from "./table";
-import { ProductRequestDto } from "./type";
 import { ChecklistBatchRequestDto } from "./types";
 
 export interface OptionsUpdate extends Option {
@@ -33,11 +33,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   remove: UseFieldArrayRemove;
   append: UseFieldArrayAppend<TFieldValues>;
 }
-const defaultAssociated: ProductRequestDto = {
-  productId: { label: "", value: "" },
-  quantity: 0,
-  uom: "",
-};
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -63,9 +58,10 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   append,
   remove,
 }: Props<TFieldValues, TContext>) => {
-  const [packageLists, setPackageLists] = useState<ChecklistBatchRequestDto[]>(
-    [],
-  );
+  // const [packageLists, setPackageLists] = useState<ChecklistBatchRequestDto[]>(
+  //   [],
+  // );
+  const [showAddDialog, setShowAddDialog] = useState(false);
   return (
     <div>
       <Card className="pt-8">
@@ -76,27 +72,21 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
             fieldWrapperClassName="flex-grow"
             config={[
               {
+                register: register("materialName" as Path<TFieldValues>),
                 label: "Material Name",
-                control: control as Control,
-                type: InputTypes.SELECT,
-                name: "baseUomId",
+                type: InputTypes.TEXT,
                 required: true,
-                onModal: true,
-                defaultValue: defaultUom,
-                placeholder: "Select Material",
-                options: uomOptions,
+                placeholder: "Enter Material Name",
+                readOnly: true,
                 errors,
               },
               {
+                register: register("supplierStatus" as Path<TFieldValues>),
                 label: "Supplier Status",
-                control: control as Control,
-                type: InputTypes.SELECT,
-                name: "baseUomId",
+                type: InputTypes.TEXT,
                 required: true,
-                onModal: true,
-                defaultValue: defaultUom,
-                placeholder: "Select Supplier Status",
-                options: uomOptions,
+                placeholder: "Enter Supplier Status",
+                readOnly: true,
                 errors,
               },
               {
@@ -128,6 +118,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Invoice Number",
                 placeholder: "Enter Invoice number",
                 type: InputTypes.TEXT,
+                readOnly: true,
                 errors,
               },
               {
@@ -147,6 +138,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Supplier Name",
                 placeholder: "Enter supplier name",
                 type: InputTypes.TEXT,
+                readOnly: true,
                 errors,
               },
               {
@@ -166,6 +158,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Manufacturer Name",
                 placeholder: "Enter manufacturer name",
                 type: InputTypes.TEXT,
+                readOnly: true,
                 errors,
               },
               {
@@ -192,15 +185,32 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
           type="button"
           variant={"ghost"}
           className="bg-neutral-dark text-white"
-          onClick={() => append({ ...defaultAssociated } as any)}
+          onClick={() => setShowAddDialog(true)}
         >
           <Icon name="Plus" />
           <span> Add</span>
         </Button>
       </div>
 
+      <AddBatchDialog
+        isOpen={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        onSave={(data) => {
+          append(data as any);
+        }}
+      />
+
       <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
         {fields.map((field, index) => {
+          const batchData: ChecklistBatchRequestDto = {
+            batchNumber: (field as any).batchNumber,
+            numberOfBags: (field as any).numberOfContainers, // Ensure this matches your form field name
+            expriyDate: (field as any).expiryDate, // Note the typo in the column definition
+            manufacturingDate: (field as any).manufacturingDate,
+            retestDate: (field as any).retestDate,
+            batchQuantity: (field as any).quantityPerContainer,
+          };
+
           return (
             <div key={field.id} className="relative">
               <div className="absolute right-2 top-2">
@@ -214,48 +224,16 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
               <Card className="space-y-4 p-5">
                 <CardTitle>Batch Information</CardTitle>
                 <TableForData
-                  lists={packageLists}
-                  setItemLists={setPackageLists}
+                  lists={[batchData]}
+                  // columns={getColumns()}
+                  // If your table component needs any additional props
                 />
                 <div className="grid grid-cols-3 gap-x-12 gap-y-2">
-                  <div className="col-span-1 grid grid-cols-2 gap-2 text-sm font-semibold">
-                    <span>SR Number</span>
-                    <span>Gross Weight</span>
-                  </div>
-                  <div className="col-span-1 grid grid-cols-2 gap-2 text-sm font-semibold">
-                    <span>SR Number</span>
-                    <span>Gross Weight</span>
-                  </div>
-                  <div className="col-span-1 grid grid-cols-2 gap-2 text-sm font-semibold">
-                    <span>SR Number</span>
-                    <span>Gross Weight</span>
-                  </div>
                   {[...Array(18)].map((_, i) => (
-                    <FormWizard
-                      key={i}
-                      className="grid w-full grid-cols-2 gap-2 space-y-0"
-                      fieldWrapperClassName="flex-grow"
-                      config={[
-                        {
-                          register: register(
-                            "genericName" as Path<TFieldValues>,
-                          ),
-                          label: "",
-                          placeholder: "",
-                          type: InputTypes.TEXT,
-                          errors,
-                        },
-                        {
-                          register: register(
-                            "genericName" as Path<TFieldValues>,
-                          ),
-                          label: "",
-                          placeholder: "",
-                          type: InputTypes.TEXT,
-                          errors,
-                        },
-                      ]}
-                    />
+                    <div key={i} className="col-span-1 grid grid-cols-2 gap-2">
+                      <span>{(field as any)[`srNumber${i}`]}</span>
+                      <span>{(field as any)[`grossWeight${i}`]}</span>
+                    </div>
                   ))}
                 </div>
               </Card>

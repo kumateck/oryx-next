@@ -1022,6 +1022,19 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
+    getApiV1ProcurementShipmentDocumentArrived: build.query<
+      GetApiV1ProcurementShipmentDocumentArrivedApiResponse,
+      GetApiV1ProcurementShipmentDocumentArrivedApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/shipment-document/arrived`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
     postApiV1ProcurementShipmentInvoice: build.mutation<
       PostApiV1ProcurementShipmentInvoiceApiResponse,
       PostApiV1ProcurementShipmentInvoiceApiArg
@@ -2227,6 +2240,83 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1WarehouseByWarehouseIdArrivalLocation: build.query<
+      GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse,
+      GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/${queryArg.warehouseId}/arrival-location`,
+      }),
+    }),
+    getApiV1WarehouseByWarehouseIdDistributedRequisitionMaterials: build.query<
+      GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiResponse,
+      GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/${queryArg.warehouseId}/distributed-requisition-materials`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    postApiV1WarehouseArrivalLocation: build.mutation<
+      PostApiV1WarehouseArrivalLocationApiResponse,
+      PostApiV1WarehouseArrivalLocationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/arrival-location`,
+        method: "POST",
+        body: queryArg.createArrivalLocationRequest,
+      }),
+    }),
+    putApiV1WarehouseArrivalLocation: build.mutation<
+      PutApiV1WarehouseArrivalLocationApiResponse,
+      PutApiV1WarehouseArrivalLocationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/arrival-location`,
+        method: "PUT",
+        body: queryArg.updateArrivalLocationRequest,
+      }),
+    }),
+    postApiV1WarehouseConfirmArrivalByDistributedMaterialId: build.mutation<
+      PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiResponse,
+      PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/confirm-arrival/${queryArg.distributedMaterialId}`,
+        method: "POST",
+      }),
+    }),
+    postApiV1WarehouseChecklist: build.mutation<
+      PostApiV1WarehouseChecklistApiResponse,
+      PostApiV1WarehouseChecklistApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/checklist`,
+        method: "POST",
+        body: queryArg.createChecklistRequest,
+      }),
+    }),
+    getApiV1WarehouseChecklistById: build.query<
+      GetApiV1WarehouseChecklistByIdApiResponse,
+      GetApiV1WarehouseChecklistByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/checklist/${queryArg.id}`,
+      }),
+    }),
+    getApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatch:
+      build.query<
+        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiResponse,
+        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/material-batch`,
+        }),
+      }),
     postApiV1WorkOrder: build.mutation<
       PostApiV1WorkOrderApiResponse,
       PostApiV1WorkOrderApiArg
@@ -2552,7 +2642,7 @@ export type PostApiV1FormApiArg = {
   createFormRequest: CreateFormRequest;
 };
 export type GetApiV1FormApiResponse =
-  /** status 200 OK */ FormDtoIEnumerablePaginateable;
+  /** status 200 OK */ FormDtoIEnumerablePaginateableRead;
 export type GetApiV1FormApiArg = {
   pageSize?: number;
   page?: number;
@@ -2561,7 +2651,7 @@ export type GetApiV1FormApiArg = {
   /** Search query for filtering results. */
   searchQuery?: string;
 };
-export type GetApiV1FormByFormIdApiResponse = /** status 200 OK */ FormDto;
+export type GetApiV1FormByFormIdApiResponse = /** status 200 OK */ FormDtoRead;
 export type GetApiV1FormByFormIdApiArg = {
   /** The ID of the form. */
   formId: string;
@@ -2584,7 +2674,7 @@ export type PostApiV1FormResponsesApiArg = {
   createResponseRequest: CreateResponseRequest;
 };
 export type GetApiV1FormResponsesByFormResponseIdApiResponse =
-  /** status 200 OK */ FormResponseDto;
+  /** status 200 OK */ FormResponseDtoRead;
 export type GetApiV1FormResponsesByFormResponseIdApiArg = {
   /** The ID of the form response. */
   formResponseId: string;
@@ -2595,7 +2685,7 @@ export type PostApiV1FormQuestionApiArg = {
   createQuestionRequest: CreateQuestionRequest;
 };
 export type GetApiV1FormQuestionApiResponse =
-  /** status 200 OK */ QuestionDtoIEnumerablePaginateable;
+  /** status 200 OK */ QuestionDtoIEnumerablePaginateableRead;
 export type GetApiV1FormQuestionApiArg = {
   pageSize?: number;
   page?: number;
@@ -2605,7 +2695,7 @@ export type GetApiV1FormQuestionApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1FormQuestionByQuestionIdApiResponse =
-  /** status 200 OK */ QuestionDto;
+  /** status 200 OK */ QuestionDtoRead;
 export type GetApiV1FormQuestionByQuestionIdApiArg = {
   /** The ID of the question. */
   questionId: string;
@@ -2995,6 +3085,13 @@ export type PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
     /** The ID of the shipment document. */
     shipmentDocumentId: string;
   };
+export type GetApiV1ProcurementShipmentDocumentArrivedApiResponse =
+  /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateable;
+export type GetApiV1ProcurementShipmentDocumentArrivedApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
 export type PostApiV1ProcurementShipmentInvoiceApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1ProcurementShipmentInvoiceApiArg = {
@@ -3314,9 +3411,7 @@ export type GetApiV1ProductionScheduleActivityStatusGroupedApiResponse =
   };
 export type GetApiV1ProductionScheduleActivityStatusGroupedApiArg = void;
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiResponse =
-  /** status 200 OK */ {
-    [key: string]: ProductionActivityDto[];
-  };
+  /** status 200 OK */ ProductionActivityGroupResultDto[];
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiArg = void;
 export type PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiResponse =
   unknown;
@@ -3732,6 +3827,48 @@ export type GetApiV1WarehouseShelfApiArg = {
   pageSize?: number;
   searchQuery?: string;
 };
+export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse =
+  /** status 200 OK */ WarehouseArrivalLocationDto;
+export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg = {
+  warehouseId: string;
+};
+export type GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiResponse =
+  /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateable;
+export type GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiArg =
+  {
+    warehouseId: string;
+    page?: number;
+    pageSize?: number;
+    searchQuery?: string;
+  };
+export type PostApiV1WarehouseArrivalLocationApiResponse = unknown;
+export type PostApiV1WarehouseArrivalLocationApiArg = {
+  createArrivalLocationRequest: CreateArrivalLocationRequest;
+};
+export type PutApiV1WarehouseArrivalLocationApiResponse = unknown;
+export type PutApiV1WarehouseArrivalLocationApiArg = {
+  updateArrivalLocationRequest: UpdateArrivalLocationRequest;
+};
+export type PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiResponse =
+  unknown;
+export type PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiArg = {
+  distributedMaterialId: string;
+};
+export type PostApiV1WarehouseChecklistApiResponse = unknown;
+export type PostApiV1WarehouseChecklistApiArg = {
+  createChecklistRequest: CreateChecklistRequest;
+};
+export type GetApiV1WarehouseChecklistByIdApiResponse =
+  /** status 200 OK */ ChecklistDto;
+export type GetApiV1WarehouseChecklistByIdApiArg = {
+  id: string;
+};
+export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiResponse =
+  /** status 200 OK */ MaterialBatchDto;
+export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiArg =
+  {
+    distributedMaterialId: string;
+  };
 export type PostApiV1WorkOrderApiResponse = /** status 201 Created */ string;
 export type PostApiV1WorkOrderApiArg = {
   /** The ID of the user creating the work order. */
@@ -3999,6 +4136,23 @@ export type WarehouseLocationShelf = {
   name?: string | null;
   description?: string | null;
 };
+export type WarehouseLocationShelfRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  warehouseLocationRackId?: string;
+  warehouseLocationRack?: WarehouseLocationRack;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
 export type WarehouseLocationRack = {
   id?: string;
   createdAt?: string;
@@ -4015,6 +4169,23 @@ export type WarehouseLocationRack = {
   name?: string | null;
   description?: string | null;
   shelves?: WarehouseLocationShelf[] | null;
+};
+export type WarehouseLocationRackRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  warehouseLocationId?: string;
+  warehouseLocation?: WarehouseLocation;
+  name?: string | null;
+  description?: string | null;
+  shelves?: WarehouseLocationShelfRead[] | null;
 };
 export type WarehouseLocation = {
   id?: string;
@@ -4034,6 +4205,2362 @@ export type WarehouseLocation = {
   description?: string | null;
   racks?: WarehouseLocationRack[] | null;
 };
+export type WarehouseLocationRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  racks?: WarehouseLocationRackRead[] | null;
+};
+export type RequestStatus = 0 | 1 | 2 | 3;
+export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
+export type ProductCategory = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type ProductCategoryRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type UnitOfMeasure = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+  isScalable?: boolean;
+  isRawMaterial?: boolean;
+};
+export type UnitOfMeasureRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+  isScalable?: boolean;
+  isRawMaterial?: boolean;
+};
+export type FinishedProduct = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  productId?: string;
+  product?: Product;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  standardCost?: number;
+  sellingPrice?: number;
+  dosageForm?: string | null;
+  strength?: string | null;
+};
+export type FinishedProductRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  productId?: string;
+  product?: Product;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  standardCost?: number;
+  sellingPrice?: number;
+  dosageForm?: string | null;
+  strength?: string | null;
+};
+export type MaterialCategory = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+  materialKind?: MaterialKind;
+};
+export type MaterialCategoryRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+  materialKind?: MaterialKind;
+};
+export type Country = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  nationality?: string | null;
+  code?: string | null;
+};
+export type CountryRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  nationality?: string | null;
+  code?: string | null;
+};
+export type Currency = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+};
+export type CurrencyRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+};
+export type SupplierType = 0 | 1;
+export type SupplierStatus = 0 | 1 | 2;
+export type ManufacturerMaterial = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  materialId?: string;
+  material?: Material;
+};
+export type ManufacturerMaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  materialId?: string;
+  material?: Material;
+};
+export type Manufacturer = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  address?: string | null;
+  email?: string | null;
+  approvedAt?: string | null;
+  validityDate?: string | null;
+  countryId?: string | null;
+  country?: Country;
+  materials?: ManufacturerMaterial[] | null;
+};
+export type ManufacturerRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  address?: string | null;
+  email?: string | null;
+  approvedAt?: string | null;
+  validityDate?: string | null;
+  countryId?: string | null;
+  country?: CountryRead;
+  materials?: ManufacturerMaterialRead[] | null;
+};
+export type SupplierManufacturer = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  supplierId?: string;
+  supplier?: Supplier;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  materialId?: string | null;
+  material?: Material;
+};
+export type SupplierManufacturerRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  supplierId?: string;
+  supplier?: Supplier;
+  manufacturerId?: string;
+  manufacturer?: ManufacturerRead;
+  materialId?: string | null;
+  material?: Material;
+};
+export type Supplier = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  email?: string | null;
+  address?: string | null;
+  contactPerson?: string | null;
+  contactNumber?: string | null;
+  countryId?: string | null;
+  country?: Country;
+  currencyId?: string | null;
+  currency?: Currency;
+  type?: SupplierType;
+  status?: SupplierStatus;
+  associatedManufacturers?: SupplierManufacturer[] | null;
+};
+export type SupplierRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  email?: string | null;
+  address?: string | null;
+  contactPerson?: string | null;
+  contactNumber?: string | null;
+  countryId?: string | null;
+  country?: CountryRead;
+  currencyId?: string | null;
+  currency?: CurrencyRead;
+  type?: SupplierType;
+  status?: SupplierStatus;
+  associatedManufacturers?: SupplierManufacturerRead[] | null;
+};
+export type ProcurementSource = 0 | 1 | 2;
+export type SourceRequisitionItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  sourceRequisitionId?: string;
+  sourceRequisition?: SourceRequisition;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  quantity?: number;
+  source?: ProcurementSource;
+};
+export type SourceRequisitionItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  sourceRequisitionId?: string;
+  sourceRequisition?: SourceRequisition;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  quantity?: number;
+  source?: ProcurementSource;
+};
+export type SourceRequisition = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  requisitionId?: string;
+  requisition?: Requisition;
+  supplierId?: string;
+  supplier?: Supplier;
+  sentQuotationRequestAt?: string | null;
+  items?: SourceRequisitionItem[] | null;
+  requisitionIds?: string[] | null;
+};
+export type SourceRequisitionRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  requisitionId?: string;
+  requisition?: Requisition;
+  supplierId?: string;
+  supplier?: SupplierRead;
+  sentQuotationRequestAt?: string | null;
+  items?: SourceRequisitionItemRead[] | null;
+  requisitionIds?: string[] | null;
+};
+export type PurchaseOrderItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  quantity?: number;
+  price?: number;
+  currencyId?: string | null;
+  currency?: Currency;
+};
+export type PurchaseOrderItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  quantity?: number;
+  price?: number;
+  currencyId?: string | null;
+  currency?: CurrencyRead;
+};
+export type PurchaseOrderStatus = 0 | 1 | 2 | 3;
+export type RevisedPurchaseOrderItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  revisedPurchaseOrderId?: string;
+  revisedPurchaseOrder?: RevisedPurchaseOrder;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  quantity?: number;
+  price?: number;
+  currencyId?: string | null;
+  currency?: Currency;
+};
+export type RevisedPurchaseOrderItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  revisedPurchaseOrderId?: string;
+  revisedPurchaseOrder?: RevisedPurchaseOrder;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  quantity?: number;
+  price?: number;
+  currencyId?: string | null;
+  currency?: CurrencyRead;
+};
+export type RevisedPurchaseOrder = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: RevisedPurchaseOrderItem[] | null;
+  deliveryDate?: string | null;
+  sentAt?: string | null;
+  status?: PurchaseOrderStatus;
+};
+export type RevisedPurchaseOrderRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: RevisedPurchaseOrderItemRead[] | null;
+  deliveryDate?: string | null;
+  sentAt?: string | null;
+  status?: PurchaseOrderStatus;
+};
+export type PurchaseOrder = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  sourceRequisitionId?: string | null;
+  sourceRequisition?: SourceRequisition;
+  supplierId?: string;
+  supplier?: Supplier;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: PurchaseOrderItem[] | null;
+  deliveryDate?: string | null;
+  sentAt?: string | null;
+  status?: PurchaseOrderStatus;
+  revisedPurchaseOrders?: RevisedPurchaseOrder[] | null;
+};
+export type PurchaseOrderRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  sourceRequisitionId?: string | null;
+  sourceRequisition?: SourceRequisitionRead;
+  supplierId?: string;
+  supplier?: SupplierRead;
+  requestDate?: string;
+  expectedDeliveryDate?: string | null;
+  items?: PurchaseOrderItemRead[] | null;
+  deliveryDate?: string | null;
+  sentAt?: string | null;
+  status?: PurchaseOrderStatus;
+  revisedPurchaseOrders?: RevisedPurchaseOrderRead[] | null;
+};
+export type ShipmentInvoiceItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  shipmentInvoiceId?: string;
+  shipmentInvoice?: ShipmentInvoice;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  expectedQuantity?: number;
+  receivedQuantity?: number;
+  reason?: string | null;
+  distributed?: boolean;
+};
+export type ShipmentInvoiceItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  shipmentInvoiceId?: string;
+  shipmentInvoice?: ShipmentInvoice;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  manufacturerId?: string;
+  manufacturer?: ManufacturerRead;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrderRead;
+  expectedQuantity?: number;
+  receivedQuantity?: number;
+  reason?: string | null;
+  distributed?: boolean;
+};
+export type ShipmentInvoice = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  supplierId?: string | null;
+  supplier?: Supplier;
+  shipmentArrived?: string | null;
+  items?: ShipmentInvoiceItem[] | null;
+};
+export type ShipmentInvoiceRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  supplierId?: string | null;
+  supplier?: SupplierRead;
+  shipmentArrived?: string | null;
+  items?: ShipmentInvoiceItemRead[] | null;
+};
+export type Intactness = 0 | 1;
+export type ConsignmentCarrier = 0 | 1;
+export type Checklist = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  distributedRequisitionMaterialId?: string;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
+  materialId?: string;
+  material?: Material;
+  checkedAt?: string | null;
+  shipmentInvoiceId?: string;
+  shipmentInvoice?: ShipmentInvoice;
+  supplierId?: string;
+  supplier?: Supplier;
+  manufacturerId?: string;
+  manufacturer?: Manufacturer;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+  materialBatches?: MaterialBatch[] | null;
+};
+export type ChecklistRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  distributedRequisitionMaterialId?: string;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
+  materialId?: string;
+  material?: Material;
+  checkedAt?: string | null;
+  shipmentInvoiceId?: string;
+  shipmentInvoice?: ShipmentInvoiceRead;
+  supplierId?: string;
+  supplier?: SupplierRead;
+  manufacturerId?: string;
+  manufacturer?: ManufacturerRead;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+  materialBatches?: MaterialBatch[] | null;
+};
+export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type Sr = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatch;
+  srNumber?: string | null;
+  grossWeight?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+};
+export type SrRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatch;
+  srNumber?: string | null;
+  grossWeight?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+};
+export type EventType = 0 | 1 | 2 | 3;
+export type MaterialBatchEvent = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  batchId?: string;
+  batch?: MaterialBatch;
+  quantity?: number;
+  userId?: string;
+  user?: User;
+  type?: EventType;
+  consumptionWarehouseId?: string | null;
+  consumptionWarehouse?: Warehouse;
+  consumedAt?: string | null;
+};
+export type MaterialBatchEventRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  batchId?: string;
+  batch?: MaterialBatch;
+  quantity?: number;
+  userId?: string;
+  user?: User;
+  type?: EventType;
+  consumptionWarehouseId?: string | null;
+  consumptionWarehouse?: Warehouse;
+  consumedAt?: string | null;
+};
+export type MovementType = 0 | 1 | 2;
+export type MaterialBatchMovement = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  batchId?: string;
+  batch?: MaterialBatch;
+  fromLocationId?: string | null;
+  fromLocation?: WarehouseLocation;
+  toLocationId?: string;
+  toLocation?: WarehouseLocation;
+  quantity?: number;
+  movedAt?: string;
+  movedById?: string;
+  movedBy?: User;
+  movementType?: MovementType;
+};
+export type MaterialBatchMovementRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  batchId?: string;
+  batch?: MaterialBatch;
+  fromLocationId?: string | null;
+  fromLocation?: WarehouseLocationRead;
+  toLocationId?: string;
+  toLocation?: WarehouseLocationRead;
+  quantity?: number;
+  movedAt?: string;
+  movedById?: string;
+  movedBy?: User;
+  movementType?: MovementType;
+};
+export type MaterialBatch = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  materialId?: string;
+  material?: Material;
+  checklistId?: string | null;
+  checklist?: Checklist;
+  totalQuantity?: number;
+  consumedQuantity?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  status?: BatchStatus;
+  dateReceived?: string;
+  dateApproved?: string | null;
+  dateRejected?: string | null;
+  expiryDate?: string;
+  isFrozen?: boolean;
+  sampleWeights?: Sr[] | null;
+  events?: MaterialBatchEvent[] | null;
+  movements?: MaterialBatchMovement[] | null;
+};
+export type MaterialBatchRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  materialId?: string;
+  material?: Material;
+  checklistId?: string | null;
+  checklist?: ChecklistRead;
+  totalQuantity?: number;
+  consumedQuantity?: number;
+  remainingQuantity?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  status?: BatchStatus;
+  dateReceived?: string;
+  dateApproved?: string | null;
+  dateRejected?: string | null;
+  expiryDate?: string;
+  isFrozen?: boolean;
+  sampleWeights?: SrRead[] | null;
+  events?: MaterialBatchEventRead[] | null;
+  movements?: MaterialBatchMovementRead[] | null;
+};
+export type BatchKind = 0 | 1;
+export type Material = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  pharmacopoeia?: string | null;
+  alphabet?: string | null;
+  materialCategoryId?: string | null;
+  materialCategory?: MaterialCategory;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+  batches?: MaterialBatch[] | null;
+  kind?: MaterialKind;
+  status?: BatchKind;
+};
+export type MaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  pharmacopoeia?: string | null;
+  alphabet?: string | null;
+  materialCategoryId?: string | null;
+  materialCategory?: MaterialCategoryRead;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+  batches?: MaterialBatchRead[] | null;
+  kind?: MaterialKind;
+  status?: BatchKind;
+};
+export type MaterialType = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type MaterialTypeRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type BillOfMaterialItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  billOfMaterialId?: string;
+  billOfMaterial?: BillOfMaterial;
+  materialId?: string;
+  material?: Material;
+  materialTypeId?: string | null;
+  materialType?: MaterialType;
+  grade?: string | null;
+  casNumber?: string | null;
+  function?: string | null;
+  order?: number;
+  isSubstitutable?: boolean;
+  baseQuantity?: number;
+  baseUoMId?: string | null;
+  baseUoM?: UnitOfMeasure;
+};
+export type BillOfMaterialItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  billOfMaterialId?: string;
+  billOfMaterial?: BillOfMaterial;
+  materialId?: string;
+  material?: MaterialRead;
+  materialTypeId?: string | null;
+  materialType?: MaterialTypeRead;
+  grade?: string | null;
+  casNumber?: string | null;
+  function?: string | null;
+  order?: number;
+  isSubstitutable?: boolean;
+  baseQuantity?: number;
+  baseUoMId?: string | null;
+  baseUoM?: UnitOfMeasureRead;
+};
+export type BillOfMaterial = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  version?: number;
+  isActive?: boolean;
+  items?: BillOfMaterialItem[] | null;
+};
+export type BillOfMaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  version?: number;
+  isActive?: boolean;
+  items?: BillOfMaterialItemRead[] | null;
+};
+export type ProductBillOfMaterial = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  billOfMaterialId?: string;
+  billOfMaterial?: BillOfMaterial;
+  quantity?: number;
+  version?: number;
+  effectiveDate?: string;
+  isActive?: boolean;
+};
+export type ProductBillOfMaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  billOfMaterialId?: string;
+  billOfMaterial?: BillOfMaterialRead;
+  quantity?: number;
+  version?: number;
+  effectiveDate?: string;
+  isActive?: boolean;
+};
+export type ProductPackage = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  materialId?: string;
+  material?: Material;
+  materialThickness?: string | null;
+  otherStandards?: string | null;
+  baseQuantity?: number;
+  baseUoMId?: string | null;
+  baseUoM?: UnitOfMeasure;
+  unitCapacity?: number;
+  directLinkMaterialId?: string | null;
+  directLinkMaterial?: Material;
+};
+export type ProductPackageRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  materialId?: string;
+  material?: MaterialRead;
+  materialThickness?: string | null;
+  otherStandards?: string | null;
+  baseQuantity?: number;
+  baseUoMId?: string | null;
+  baseUoM?: UnitOfMeasureRead;
+  unitCapacity?: number;
+  directLinkMaterialId?: string | null;
+  directLinkMaterial?: MaterialRead;
+};
+export type Operation = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+  order?: number;
+};
+export type OperationRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+  order?: number;
+};
+export type QuestionOption = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  questionId?: string;
+  question?: Question;
+  name?: string | null;
+};
+export type QuestionOptionRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  questionId?: string;
+  question?: Question;
+  name?: string | null;
+};
+export type Question = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  label?: string | null;
+  type?: QuestionType;
+  validation?: QuestionValidationType;
+  options?: QuestionOption[] | null;
+  isMultiSelect?: boolean;
+  reference?: string | null;
+};
+export type QuestionRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  label?: string | null;
+  type?: QuestionType;
+  validation?: QuestionValidationType;
+  options?: QuestionOptionRead[] | null;
+  isMultiSelect?: boolean;
+  reference?: string | null;
+};
+export type FormField = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formSectionId?: string;
+  formSection?: FormSection;
+  questionId?: string;
+  question?: Question;
+  required?: boolean;
+  response?: string | null;
+  rank?: number;
+  assigneeId?: string | null;
+  assignee?: User;
+  reviewerId?: string | null;
+  reviewer?: User;
+};
+export type FormFieldRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formSectionId?: string;
+  formSection?: FormSection;
+  questionId?: string;
+  question?: QuestionRead;
+  required?: boolean;
+  response?: string | null;
+  rank?: number;
+  assigneeId?: string | null;
+  assignee?: User;
+  reviewerId?: string | null;
+  reviewer?: User;
+};
+export type FormSection = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formId?: string;
+  form?: Form;
+  name?: string | null;
+  description?: string | null;
+  fields?: FormField[] | null;
+};
+export type FormSectionRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formId?: string;
+  form?: Form;
+  name?: string | null;
+  description?: string | null;
+  fields?: FormFieldRead[] | null;
+};
+export type Response = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formId?: string;
+  form?: Form;
+  formResponses?: FormResponse[] | null;
+};
+export type ResponseRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  formId?: string;
+  form?: Form;
+  formResponses?: FormResponse[] | null;
+};
+export type FormResponse = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  responseId?: string;
+  response?: Response;
+  formFieldId?: string;
+  formField?: FormField;
+  value?: string | null;
+};
+export type FormResponseRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  responseId?: string;
+  response?: ResponseRead;
+  formFieldId?: string;
+  formField?: FormFieldRead;
+  value?: string | null;
+};
+export type FormAssignee = {
+  id?: string;
+  formId?: string;
+  form?: Form;
+  userId?: string;
+  user?: User;
+};
+export type FormAssigneeRead = {
+  id?: string;
+  formId?: string;
+  form?: Form;
+  userId?: string;
+  user?: User;
+};
+export type FormReviewer = {
+  id?: string;
+  formId?: string;
+  form?: Form;
+  userId?: string;
+  user?: User;
+};
+export type FormReviewerRead = {
+  id?: string;
+  formId?: string;
+  form?: Form;
+  userId?: string;
+  user?: User;
+};
+export type Form = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  sections?: FormSection[] | null;
+  responses?: FormResponse[] | null;
+  assignees?: FormAssignee[] | null;
+  reviewers?: FormReviewer[] | null;
+};
+export type FormRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  sections?: FormSectionRead[] | null;
+  responses?: FormResponseRead[] | null;
+  assignees?: FormAssigneeRead[] | null;
+  reviewers?: FormReviewerRead[] | null;
+};
+export type Resource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  type?: string | null;
+  isAvailable?: boolean;
+};
+export type ResourceRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  type?: string | null;
+  isAvailable?: boolean;
+};
+export type RouteResource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  resourceId?: string;
+  resource?: Resource;
+};
+export type RouteResourceRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  resourceId?: string;
+  resource?: ResourceRead;
+};
+export type RouteResponsibleUser = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  userId?: string;
+  user?: User;
+};
+export type RouteResponsibleUserRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  userId?: string;
+  user?: User;
+};
+export type Role = {
+  id?: string;
+  name?: string | null;
+  normalizedName?: string | null;
+  concurrencyStamp?: string | null;
+  displayName?: string | null;
+  createdAt?: string;
+  createdById?: string | null;
+  updatedAt?: string | null;
+  lastUpdatedById?: string | null;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+};
+export type RouteResponsibleRole = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  roleId?: string;
+  role?: Role;
+};
+export type RouteResponsibleRoleRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  roleId?: string;
+  role?: Role;
+};
+export type WorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type WorkCenterRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type RouteWorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  workCenterId?: string;
+  workCenter?: WorkCenter;
+};
+export type RouteWorkCenterRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  routeId?: string;
+  route?: Route;
+  workCenterId?: string;
+  workCenter?: WorkCenterRead;
+};
+export type Route = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  operationId?: string;
+  operation?: Operation;
+  estimatedTime?: string | null;
+  workflowId?: string | null;
+  workFlow?: Form;
+  order?: number;
+  resources?: RouteResource[] | null;
+  responsibleUsers?: RouteResponsibleUser[] | null;
+  responsibleRoles?: RouteResponsibleRole[] | null;
+  workCenters?: RouteWorkCenter[] | null;
+};
+export type RouteRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  operationId?: string;
+  operation?: OperationRead;
+  estimatedTime?: string | null;
+  workflowId?: string | null;
+  workFlow?: FormRead;
+  order?: number;
+  resources?: RouteResourceRead[] | null;
+  responsibleUsers?: RouteResponsibleUserRead[] | null;
+  responsibleRoles?: RouteResponsibleRoleRead[] | null;
+  workCenters?: RouteWorkCenterRead[] | null;
+};
+export type Product = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  genericName?: string | null;
+  storageCondition?: string | null;
+  packageStyle?: string | null;
+  filledWeight?: string | null;
+  shelfLife?: string | null;
+  actionUse?: string | null;
+  description?: string | null;
+  fdaRegistrationNumber?: string | null;
+  masterFormulaNumber?: string | null;
+  primaryPackDescription?: string | null;
+  secondaryPackDescription?: string | null;
+  tertiaryPackDescription?: string | null;
+  categoryId?: string;
+  category?: ProductCategory;
+  baseQuantity?: number;
+  basePackingQuantity?: number;
+  baseUomId?: string | null;
+  baseUoM?: UnitOfMeasure;
+  basePackingUomId?: string | null;
+  basePackingUoM?: UnitOfMeasure;
+  packingExcessMargin?: number;
+  finishedProducts?: FinishedProduct[] | null;
+  billOfMaterials?: ProductBillOfMaterial[] | null;
+  packages?: ProductPackage[] | null;
+  routes?: Route[] | null;
+};
+export type ProductRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  genericName?: string | null;
+  storageCondition?: string | null;
+  packageStyle?: string | null;
+  filledWeight?: string | null;
+  shelfLife?: string | null;
+  actionUse?: string | null;
+  description?: string | null;
+  fdaRegistrationNumber?: string | null;
+  masterFormulaNumber?: string | null;
+  primaryPackDescription?: string | null;
+  secondaryPackDescription?: string | null;
+  tertiaryPackDescription?: string | null;
+  categoryId?: string;
+  category?: ProductCategoryRead;
+  baseQuantity?: number;
+  basePackingQuantity?: number;
+  baseUomId?: string | null;
+  baseUoM?: UnitOfMeasureRead;
+  basePackingUomId?: string | null;
+  basePackingUoM?: UnitOfMeasureRead;
+  packingExcessMargin?: number;
+  finishedProducts?: FinishedProductRead[] | null;
+  billOfMaterials?: ProductBillOfMaterialRead[] | null;
+  packages?: ProductPackageRead[] | null;
+  routes?: RouteRead[] | null;
+};
+export type ProductionScheduleProduct = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  quantity?: number;
+};
+export type ProductionScheduleProductRead = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: ProductRead;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  quantity?: number;
+};
+export type ProductionSchedule = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  status?: ProductionStatus;
+  remarks?: string | null;
+  products?: ProductionScheduleProduct[] | null;
+};
+export type ProductionScheduleRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  status?: ProductionStatus;
+  remarks?: string | null;
+  products?: ProductionScheduleProductRead[] | null;
+};
+export type ProductionActivityLog = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  message?: string | null;
+  userId?: string | null;
+  user?: User;
+  timestamp?: string;
+};
+export type ProductionActivityLogRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  message?: string | null;
+  userId?: string | null;
+  user?: User;
+  timestamp?: string;
+};
+export type ProductionActivity = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLog[] | null;
+};
+export type ProductionActivityRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionScheduleRead;
+  productId?: string;
+  product?: ProductRead;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLogRead[] | null;
+};
+export type ProductionActivityStepResource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  resourceId?: string;
+  resource?: Resource;
+};
+export type ProductionActivityStepResourceRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  resourceId?: string;
+  resource?: ResourceRead;
+};
+export type ProductionActivityStepWorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  workCenterId?: string;
+  workCenter?: WorkCenter;
+};
+export type ProductionActivityStepWorkCenterRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  workCenterId?: string;
+  workCenter?: WorkCenterRead;
+};
+export type ProductionActivityStepUser = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  userId?: string;
+  user?: User;
+};
+export type ProductionActivityStepUserRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  userId?: string;
+  user?: User;
+};
+export type ProductionActivityStep = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  operationId?: string;
+  operation?: Operation;
+  workflowId?: string | null;
+  workFlow?: Form;
+  order?: number;
+  resources?: ProductionActivityStepResource[] | null;
+  workCenters?: ProductionActivityStepWorkCenter[] | null;
+  responsibleUsers?: ProductionActivityStepUser[] | null;
+  status?: ProductionStatus;
+  startedAt?: string | null;
+  completedAt?: string | null;
+};
+export type ProductionActivityStepRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivityRead;
+  operationId?: string;
+  operation?: OperationRead;
+  workflowId?: string | null;
+  workFlow?: FormRead;
+  order?: number;
+  resources?: ProductionActivityStepResourceRead[] | null;
+  workCenters?: ProductionActivityStepWorkCenterRead[] | null;
+  responsibleUsers?: ProductionActivityStepUserRead[] | null;
+  status?: ProductionStatus;
+  startedAt?: string | null;
+  completedAt?: string | null;
+};
+export type RequisitionApproval = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionId?: string;
+  requisition?: Requisition;
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  order?: number;
+};
+export type RequisitionApprovalRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionId?: string;
+  requisition?: Requisition;
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  order?: number;
+};
+export type Requisition = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  requestedById?: string;
+  requestedBy?: User;
+  status?: RequestStatus;
+  requisitionType?: RequisitionType;
+  comments?: string | null;
+  approved?: boolean;
+  expectedDelivery?: string | null;
+  activityStepId?: string | null;
+  activityStep?: ProductionActivityStep;
+  approvals?: RequisitionApproval[] | null;
+  items?: RequisitionItem[] | null;
+};
+export type RequisitionRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  requestedById?: string;
+  requestedBy?: User;
+  status?: RequestStatus;
+  requisitionType?: RequisitionType;
+  comments?: string | null;
+  approved?: boolean;
+  expectedDelivery?: string | null;
+  activityStepId?: string | null;
+  activityStep?: ProductionActivityStepRead;
+  approvals?: RequisitionApprovalRead[] | null;
+  items?: RequisitionItem[] | null;
+};
+export type RequisitionItem = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionId?: string;
+  requisition?: Requisition;
+  materialId?: string;
+  material?: Material;
+  uomId?: string | null;
+  uoM?: UnitOfMeasure;
+  quantity?: number;
+  quantityReceived?: number;
+};
+export type RequisitionItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionId?: string;
+  requisition?: RequisitionRead;
+  materialId?: string;
+  material?: MaterialRead;
+  uomId?: string | null;
+  uoM?: UnitOfMeasureRead;
+  quantity?: number;
+  quantityReceived?: number;
+};
+export type DistributedRequisitionMaterial = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionItemId?: string | null;
+  requisitionItem?: RequisitionItem;
+  warehouseArrivalLocationId?: string | null;
+  warehouseArrivalLocation?: WarehouseArrivalLocation;
+  shipmentInvoiceItemId?: string | null;
+  shipmentInvoiceItem?: ShipmentInvoiceItem;
+  shipmentInvoiceId?: string | null;
+  shipmentInvoice?: ShipmentInvoice;
+  materialId?: string | null;
+  material?: Material;
+  supplierId?: string | null;
+  supplier?: Supplier;
+  manufacturerId?: string | null;
+  manufacturer?: Manufacturer;
+  uomId?: string | null;
+  uoM?: UnitOfMeasure;
+  quantity?: number;
+  confirmArrival?: boolean;
+  arrivedAt?: string | null;
+  isChecked?: boolean;
+};
+export type DistributedRequisitionMaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  requisitionItemId?: string | null;
+  requisitionItem?: RequisitionItemRead;
+  warehouseArrivalLocationId?: string | null;
+  warehouseArrivalLocation?: WarehouseArrivalLocation;
+  shipmentInvoiceItemId?: string | null;
+  shipmentInvoiceItem?: ShipmentInvoiceItemRead;
+  shipmentInvoiceId?: string | null;
+  shipmentInvoice?: ShipmentInvoiceRead;
+  materialId?: string | null;
+  material?: MaterialRead;
+  supplierId?: string | null;
+  supplier?: SupplierRead;
+  manufacturerId?: string | null;
+  manufacturer?: ManufacturerRead;
+  uomId?: string | null;
+  uoM?: UnitOfMeasureRead;
+  quantity?: number;
+  confirmArrival?: boolean;
+  arrivedAt?: string | null;
+  isChecked?: boolean;
+};
+export type WarehouseArrivalLocation = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  distributedRequisitionMaterials?: DistributedRequisitionMaterial[] | null;
+};
+export type WarehouseArrivalLocationRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  distributedRequisitionMaterials?: DistributedRequisitionMaterialRead[] | null;
+};
 export type WarehouseType = 0 | 1;
 export type Warehouse = {
   id?: string;
@@ -4049,6 +6576,24 @@ export type Warehouse = {
   name?: string | null;
   description?: string | null;
   locations?: WarehouseLocation[] | null;
+  arrivalLocation?: WarehouseArrivalLocation;
+  type?: WarehouseType;
+};
+export type WarehouseRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+  locations?: WarehouseLocationRead[] | null;
+  arrivalLocation?: WarehouseArrivalLocationRead;
   type?: WarehouseType;
 };
 export type DepartmentWarehouse = {
@@ -4067,6 +6612,22 @@ export type DepartmentWarehouse = {
   warehouseId?: string;
   warehouse?: Warehouse;
 };
+export type DepartmentWarehouseRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  departmentId?: string;
+  department?: Department;
+  warehouseId?: string;
+  warehouse?: WarehouseRead;
+};
 export type Department = {
   id?: string;
   code?: string | null;
@@ -4079,6 +6640,19 @@ export type Department = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   warehouses?: DepartmentWarehouse[] | null;
+};
+export type DepartmentRead = {
+  id?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  lastUpdatedById?: string | null;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  warehouses?: DepartmentWarehouseRead[] | null;
 };
 export type User = {
   id?: string;
@@ -4111,6 +6685,37 @@ export type User = {
   departmentId?: string | null;
   department?: Department;
 };
+export type UserRead = {
+  id?: string;
+  userName?: string | null;
+  normalizedUserName?: string | null;
+  email?: string | null;
+  normalizedEmail?: string | null;
+  emailConfirmed?: boolean;
+  passwordHash?: string | null;
+  securityStamp?: string | null;
+  concurrencyStamp?: string | null;
+  phoneNumber?: string | null;
+  phoneNumberConfirmed?: boolean;
+  twoFactorEnabled?: boolean;
+  lockoutEnd?: string | null;
+  lockoutEnabled?: boolean;
+  accessFailedCount?: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  title?: string | null;
+  dateOfBirth?: string | null;
+  createdAt?: string;
+  updatedAt?: string | null;
+  lastUpdatedById?: string | null;
+  createdById?: string | null;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  avatar?: string | null;
+  isDisabled?: boolean;
+  departmentId?: string | null;
+  department?: DepartmentRead;
+};
 export type QuestionOptionDto = {
   id?: string;
   createdAt?: string;
@@ -4125,6 +6730,20 @@ export type QuestionOptionDto = {
   question?: CollectionItemDto;
   name?: string | null;
 };
+export type QuestionOptionDtoRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  question?: CollectionItemDto;
+  name?: string | null;
+};
 export type QuestionDto = {
   id?: string;
   createdBy?: UserDto;
@@ -4136,12 +6755,35 @@ export type QuestionDto = {
   reference?: string | null;
   options?: QuestionOptionDto[] | null;
 };
+export type QuestionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  label?: string | null;
+  type?: QuestionType;
+  validation?: QuestionValidationType;
+  isMultiSelect?: boolean;
+  reference?: string | null;
+  options?: QuestionOptionDtoRead[] | null;
+};
 export type FormFieldDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   formSection?: CollectionItemDto;
   question?: QuestionDto;
+  required?: boolean;
+  response?: string | null;
+  rank?: number;
+  assignee?: CollectionItemDto;
+  reviewer?: CollectionItemDto;
+};
+export type FormFieldDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  formSection?: CollectionItemDto;
+  question?: QuestionDtoRead;
   required?: boolean;
   response?: string | null;
   rank?: number;
@@ -4157,6 +6799,15 @@ export type FormSectionDto = {
   description?: string | null;
   fields?: FormFieldDto[] | null;
 };
+export type FormSectionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  name?: string | null;
+  description?: string | null;
+  fields?: FormFieldDtoRead[] | null;
+};
 export type AttachmentDto = {
   link?: string | null;
   name?: string | null;
@@ -4164,12 +6815,20 @@ export type AttachmentDto = {
   reference?: string | null;
 };
 export type FormResponseDto = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   formField?: FormFieldDto;
   value?: string | null;
+};
+export type FormResponseDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
   createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  formField?: FormFieldDtoRead;
+  value?: string | null;
 };
 export type FormAssigneeDto = {
   id?: string;
@@ -4195,8 +6854,27 @@ export type FormDto = {
   assignees?: FormAssigneeDto[] | null;
   reviewers?: FormReviewerDto[] | null;
 };
+export type FormDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  sections?: FormSectionDtoRead[] | null;
+  responses?: FormResponseDtoRead[] | null;
+  assignees?: FormAssigneeDto[] | null;
+  reviewers?: FormReviewerDto[] | null;
+};
 export type FormDtoIEnumerablePaginateable = {
   data?: FormDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FormDtoIEnumerablePaginateableRead = {
+  data?: FormDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -4226,6 +6904,15 @@ export type CreateQuestionRequest = {
 };
 export type QuestionDtoIEnumerablePaginateable = {
   data?: QuestionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type QuestionDtoIEnumerablePaginateableRead = {
+  data?: QuestionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -4270,15 +6957,12 @@ export type MaterialDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5;
-export type EventType = 0 | 1 | 2 | 3;
 export type MaterialBatchEventDto = {
   type?: EventType;
   quantity?: number;
   user?: CollectionItemDto;
   createdAt?: string;
 };
-export type MovementType = 0 | 1 | 2;
 export type MaterialBatchMovementDto = {
   id?: string;
   createdBy?: UserDto;
@@ -4310,13 +6994,19 @@ export type MaterialBatchDto = {
   movements?: MaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
 };
+export type CreateSrRequest = {
+  srNumber?: string | null;
+  grossWeight?: number;
+};
 export type CreateMaterialBatchRequest = {
   code?: string | null;
   materialId?: string;
+  checklistId?: string;
   quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
   expiryDate?: string;
+  sampleWeights?: CreateSrRequest[] | null;
 };
 export type MaterialBatchDtoIEnumerablePaginateable = {
   data?: MaterialBatchDto[] | null;
@@ -4385,8 +7075,6 @@ export type ManufacturerDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type SupplierType = 0 | 1;
-export type SupplierStatus = 0 | 1 | 2;
 export type CreateSupplierManufacturerRequest = {
   manufacturerId?: string;
   materialId?: string | null;
@@ -4473,7 +7161,6 @@ export type PurchaseOrderItemDtoRead = {
   manufacturers?: ManufacturerDto[] | null;
   cost?: number;
 };
-export type PurchaseOrderStatus = 0 | 1 | 2 | 3;
 export type RevisedPurchaseOrderDto = {
   id?: string;
   createdBy?: UserDto;
@@ -4498,9 +7185,10 @@ export type RevisedPurchaseOrderDtoRead = {
 };
 export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
 export type PurchaseOrderDto = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   code?: string | null;
   supplier?: SupplierDto;
   requestDate?: string;
@@ -4509,12 +7197,12 @@ export type PurchaseOrderDto = {
   status?: PurchaseOrderStatus;
   revisedPurchaseOrders?: RevisedPurchaseOrderDto[] | null;
   attachmentStatus?: PurchaseOrderAttachmentStatus;
-  createdAt?: string;
 };
 export type PurchaseOrderDtoRead = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   code?: string | null;
   supplier?: SupplierDto;
   requestDate?: string;
@@ -4523,7 +7211,6 @@ export type PurchaseOrderDtoRead = {
   status?: PurchaseOrderStatus;
   revisedPurchaseOrders?: RevisedPurchaseOrderDtoRead[] | null;
   attachmentStatus?: PurchaseOrderAttachmentStatus;
-  createdAt?: string;
 };
 export type PurchaseOrderDtoIEnumerablePaginateable = {
   data?: PurchaseOrderDto[] | null;
@@ -4606,10 +7293,10 @@ export type CreateBillingSheetRequest = {
   packageDescription?: string | null;
 };
 export type BillingSheetDto = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   code?: string | null;
   billOfLading?: string | null;
   supplier?: CollectionItemDto;
@@ -4711,589 +7398,6 @@ export type ShipmentInvoiceDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type Country = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  nationality?: string | null;
-  code?: string | null;
-};
-export type Currency = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-};
-export type MaterialCategory = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  description?: string | null;
-  materialKind?: MaterialKind;
-};
-export type UnitOfMeasure = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-  isScalable?: boolean;
-  isRawMaterial?: boolean;
-};
-export type MaterialBatchEvent = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  batchId?: string;
-  batch?: MaterialBatch;
-  quantity?: number;
-  userId?: string;
-  user?: User;
-  type?: EventType;
-  consumedLocationId?: string | null;
-  consumedLocation?: WarehouseLocation;
-  consumedAt?: string | null;
-};
-export type MaterialBatchEventRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  batchId?: string;
-  batch?: MaterialBatch;
-  quantity?: number;
-  userId?: string;
-  user?: User;
-  type?: EventType;
-  consumedLocationId?: string | null;
-  consumedLocation?: WarehouseLocation;
-  consumedAt?: string | null;
-};
-export type MaterialBatchMovement = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  batchId?: string;
-  batch?: MaterialBatch;
-  fromLocationId?: string | null;
-  fromLocation?: WarehouseLocation;
-  toLocationId?: string;
-  toLocation?: WarehouseLocation;
-  quantity?: number;
-  movedAt?: string;
-  movedById?: string;
-  movedBy?: User;
-  movementType?: MovementType;
-};
-export type MaterialBatchMovementRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  batchId?: string;
-  batch?: MaterialBatch;
-  fromLocationId?: string | null;
-  fromLocation?: WarehouseLocation;
-  toLocationId?: string;
-  toLocation?: WarehouseLocation;
-  quantity?: number;
-  movedAt?: string;
-  movedById?: string;
-  movedBy?: User;
-  movementType?: MovementType;
-};
-export type MaterialBatch = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  materialId?: string;
-  material?: Material;
-  totalQuantity?: number;
-  consumedQuantity?: number;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  status?: BatchStatus;
-  dateReceived?: string;
-  dateApproved?: string | null;
-  dateRejected?: string | null;
-  expiryDate?: string;
-  isFrozen?: boolean;
-  events?: MaterialBatchEvent[] | null;
-  movements?: MaterialBatchMovement[] | null;
-};
-export type MaterialBatchRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  materialId?: string;
-  material?: Material;
-  totalQuantity?: number;
-  consumedQuantity?: number;
-  remainingQuantity?: number;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  status?: BatchStatus;
-  dateReceived?: string;
-  dateApproved?: string | null;
-  dateRejected?: string | null;
-  expiryDate?: string;
-  isFrozen?: boolean;
-  events?: MaterialBatchEventRead[] | null;
-  movements?: MaterialBatchMovementRead[] | null;
-};
-export type BatchKind = 0 | 1;
-export type Material = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  pharmacopoeia?: string | null;
-  alphabet?: string | null;
-  materialCategoryId?: string | null;
-  materialCategory?: MaterialCategory;
-  minimumStockLevel?: number;
-  maximumStockLevel?: number;
-  batches?: MaterialBatch[] | null;
-  kind?: MaterialKind;
-  status?: BatchKind;
-};
-export type MaterialRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  pharmacopoeia?: string | null;
-  alphabet?: string | null;
-  materialCategoryId?: string | null;
-  materialCategory?: MaterialCategory;
-  minimumStockLevel?: number;
-  maximumStockLevel?: number;
-  batches?: MaterialBatchRead[] | null;
-  kind?: MaterialKind;
-  status?: BatchKind;
-};
-export type ManufacturerMaterial = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  manufacturerId?: string;
-  manufacturer?: Manufacturer;
-  materialId?: string;
-  material?: Material;
-};
-export type Manufacturer = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  address?: string | null;
-  email?: string | null;
-  approvedAt?: string | null;
-  validityDate?: string | null;
-  countryId?: string | null;
-  country?: Country;
-  materials?: ManufacturerMaterial[] | null;
-};
-export type SupplierManufacturer = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  supplierId?: string;
-  supplier?: Supplier;
-  manufacturerId?: string;
-  manufacturer?: Manufacturer;
-  materialId?: string | null;
-  material?: Material;
-};
-export type Supplier = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  email?: string | null;
-  address?: string | null;
-  contactPerson?: string | null;
-  contactNumber?: string | null;
-  countryId?: string | null;
-  country?: Country;
-  currencyId?: string | null;
-  currency?: Currency;
-  type?: SupplierType;
-  status?: SupplierStatus;
-  associatedManufacturers?: SupplierManufacturer[] | null;
-};
-export type RequestStatus = 0 | 1 | 2 | 3;
-export type Role = {
-  id?: string;
-  name?: string | null;
-  normalizedName?: string | null;
-  concurrencyStamp?: string | null;
-  displayName?: string | null;
-  createdAt?: string;
-  createdById?: string | null;
-  updatedAt?: string | null;
-  lastUpdatedById?: string | null;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-};
-export type RequisitionApproval = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  requisitionId?: string;
-  requisition?: Requisition;
-  userId?: string | null;
-  user?: User;
-  roleId?: string | null;
-  role?: Role;
-  required?: boolean;
-  approved?: boolean;
-  approvalTime?: string | null;
-  comments?: string | null;
-  order?: number;
-};
-export type RequisitionItem = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  requisitionId?: string;
-  requisition?: Requisition;
-  materialId?: string;
-  material?: Material;
-  uomId?: string | null;
-  uoM?: UnitOfMeasure;
-  quantity?: number;
-  quantityReceived?: number;
-};
-export type Requisition = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  requestedById?: string;
-  requestedBy?: User;
-  status?: RequestStatus;
-  requisitionType?: RequisitionType;
-  comments?: string | null;
-  approved?: boolean;
-  expectedDelivery?: string | null;
-  approvals?: RequisitionApproval[] | null;
-  items?: RequisitionItem[] | null;
-};
-export type ProcurementSource = 0 | 1 | 2;
-export type SourceRequisitionItem = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  sourceRequisitionId?: string;
-  sourceRequisition?: SourceRequisition;
-  materialId?: string;
-  material?: Material;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  quantity?: number;
-  source?: ProcurementSource;
-};
-export type SourceRequisition = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  requisitionId?: string;
-  requisition?: Requisition;
-  supplierId?: string;
-  supplier?: Supplier;
-  sentQuotationRequestAt?: string | null;
-  items?: SourceRequisitionItem[] | null;
-  requisitionIds?: string[] | null;
-};
-export type PurchaseOrderItem = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  purchaseOrderId?: string;
-  purchaseOrder?: PurchaseOrder;
-  materialId?: string;
-  material?: Material;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  quantity?: number;
-  price?: number;
-  currencyId?: string | null;
-  currency?: Currency;
-};
-export type RevisedPurchaseOrderItem = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  revisedPurchaseOrderId?: string;
-  revisedPurchaseOrder?: RevisedPurchaseOrder;
-  materialId?: string;
-  material?: Material;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  quantity?: number;
-  price?: number;
-  currencyId?: string | null;
-  currency?: Currency;
-};
-export type RevisedPurchaseOrder = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  purchaseOrderId?: string;
-  purchaseOrder?: PurchaseOrder;
-  requestDate?: string;
-  expectedDeliveryDate?: string | null;
-  items?: RevisedPurchaseOrderItem[] | null;
-  deliveryDate?: string | null;
-  sentAt?: string | null;
-  status?: PurchaseOrderStatus;
-};
-export type PurchaseOrder = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  sourceRequisitionId?: string | null;
-  sourceRequisition?: SourceRequisition;
-  supplierId?: string;
-  supplier?: Supplier;
-  requestDate?: string;
-  expectedDeliveryDate?: string | null;
-  items?: PurchaseOrderItem[] | null;
-  deliveryDate?: string | null;
-  sentAt?: string | null;
-  status?: PurchaseOrderStatus;
-  revisedPurchaseOrders?: RevisedPurchaseOrder[] | null;
-};
-export type ShipmentInvoiceItem = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  shipmentInvoiceId?: string;
-  shipmentInvoice?: ShipmentInvoice;
-  materialId?: string;
-  material?: Material;
-  uoMId?: string;
-  uoM?: UnitOfMeasure;
-  manufacturerId?: string;
-  manufacturer?: Manufacturer;
-  purchaseOrderId?: string;
-  purchaseOrder?: PurchaseOrder;
-  expectedQuantity?: number;
-  receivedQuantity?: number;
-  reason?: string | null;
-  distributed?: boolean;
-};
-export type ShipmentInvoice = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  supplierId?: string | null;
-  supplier?: Supplier;
-  shipmentArrived?: string | null;
-  items?: ShipmentInvoiceItem[] | null;
-};
 export type ShipmentDocument = {
   id?: string;
   createdAt?: string;
@@ -5310,6 +7414,25 @@ export type ShipmentDocument = {
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoice;
   arrivedAt?: string | null;
+  completedDistributionAt?: string | null;
+};
+export type ShipmentDocumentRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  code?: string | null;
+  discrepancies?: ShipmentDiscrepancy[] | null;
+  shipmentInvoiceId?: string | null;
+  shipmentInvoice?: ShipmentInvoiceRead;
+  arrivedAt?: string | null;
+  completedDistributionAt?: string | null;
 };
 export type ShipmentDiscrepancy = {
   id?: string;
@@ -5326,6 +7449,21 @@ export type ShipmentDiscrepancy = {
   shipmentDocument?: ShipmentDocument;
   items?: ShipmentDiscrepancyItem[] | null;
 };
+export type ShipmentDiscrepancyRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  shipmentDocumentId?: string;
+  shipmentDocument?: ShipmentDocumentRead;
+  items?: ShipmentDiscrepancyItem[] | null;
+};
 export type ShipmentDiscrepancyType = {
   id?: string;
   createdAt?: string;
@@ -5337,6 +7475,20 @@ export type ShipmentDiscrepancyType = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type ShipmentDiscrepancyTypeRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
   name?: string | null;
   description?: string | null;
 };
@@ -5363,9 +7515,36 @@ export type ShipmentDiscrepancyItem = {
   reason?: string | null;
   resolved?: boolean;
 };
+export type ShipmentDiscrepancyItemRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  shipmentDiscrepancyId?: string;
+  shipmentDiscrepancy?: ShipmentDiscrepancyRead;
+  materialId?: string;
+  material?: MaterialRead;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  receivedQuantity?: number;
+  typeId?: string | null;
+  type?: ShipmentDiscrepancyTypeRead;
+  reason?: string | null;
+  resolved?: boolean;
+};
 export type CreateShipmentDiscrepancy = {
   shipmentDocumentId?: string;
   items?: ShipmentDiscrepancyItem[] | null;
+};
+export type CreateShipmentDiscrepancyRead = {
+  shipmentDocumentId?: string;
+  items?: ShipmentDiscrepancyItemRead[] | null;
 };
 export type RequisitionItemDto = {
   id?: string;
@@ -5376,12 +7555,13 @@ export type RequisitionItemDto = {
 export type DistributionRequisitionItem = {
   department?: DepartmentDto;
   requistionItem?: RequisitionItemDto;
-  quantityRequested?: number;
-  quantityAllocated?: number;
-  quantityRemaining?: number;
+  quantityRequested?: number | null;
+  quantityAllocated?: number | null;
+  quantityRemaining?: number | null;
 };
 export type MaterialDistributionSection = {
   material?: MaterialDto;
+  shipmentInvoice?: ShipmentInvoiceDto;
   shipmentInvoiceItem?: ShipmentInvoiceItemDto;
   totalQuantity?: number;
   items?: DistributionRequisitionItem[] | null;
@@ -5390,12 +7570,14 @@ export type MaterialDistributionDto = {
   sections?: MaterialDistributionSection[] | null;
 };
 export type DistributionRequisitionItemRequest = {
-  departmentId?: string;
-  requistionItemId?: string;
+  departmentId?: string | null;
+  requistionItemId?: string | null;
   quantityAllocated?: number;
 };
 export type MaterialDistributionSectionRequest = {
-  shipmentInvoiceItemId?: string;
+  shipmentInvoiceItemId?: string | null;
+  supplierId?: string | null;
+  manufacturerId?: string | null;
   items?: DistributionRequisitionItemRequest[] | null;
 };
 export type CreateFinishedProductRequest = {
@@ -5662,7 +7844,6 @@ export type CreateProductPackageRequest = {
   unitCapacity?: number;
   directLinkMaterialId?: string | null;
 };
-export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
 export type CreateMasterProductionScheduleRequest = {
   productId?: string;
   plannedStartDate?: string;
@@ -5845,6 +8026,21 @@ export type ProductionActivityDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type ProductionActivityGroupDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: CollectionItemDto;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  currentStep?: ProductionActivityStepDto;
+};
+export type ProductionActivityGroupResultDto = {
+  operation?: CollectionItemDto;
+  activities?: ProductionActivityGroupDto[] | null;
+};
 export type ProductionActivityStepDtoIEnumerablePaginateable = {
   data?: ProductionActivityStepDto[] | null;
   pageIndex?: number;
@@ -5953,6 +8149,7 @@ export type CreateRequisitionItemRequest = {
 export type CreateRequisitionRequest = {
   code?: string | null;
   requisitionType?: RequisitionType;
+  activityStepId?: string | null;
   comments?: string | null;
   expectedDelivery?: string | null;
   items?: CreateRequisitionItemRequest[] | null;
@@ -6020,14 +8217,14 @@ export type SourceRequisitionItemDto = {
   createdAt?: string;
 };
 export type SourceRequisitionDto = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   code?: string | null;
   requisition?: CollectionItemDto;
   supplier?: CollectionItemDto;
   items?: SourceRequisitionItemDto[] | null;
-  createdAt?: string;
 };
 export type SourceRequisitionDtoIEnumerablePaginateable = {
   data?: SourceRequisitionDto[] | null;
@@ -6264,6 +8461,73 @@ export type WarehouseLocationShelfDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type DistributedRequisitionMaterialDto = {
+  id?: string;
+  requisitionItem?: RequisitionItemDto;
+  material?: MaterialDto;
+  uom?: UnitOfMeasureDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
+  shipmentInvoiceItem?: ShipmentInvoiceItemDto;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  quantity?: number;
+  confirmArrival?: boolean;
+};
+export type WarehouseArrivalLocationDto = {
+  id?: string;
+  warehouse?: WarehouseDto;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  distributedRequisitionMaterials?: DistributedRequisitionMaterialDto[] | null;
+};
+export type DistributedRequisitionMaterialDtoIEnumerablePaginateable = {
+  data?: DistributedRequisitionMaterialDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateArrivalLocationRequest = {
+  warehouseId?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+};
+export type UpdateArrivalLocationRequest = {
+  id?: string;
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+};
+export type CreateChecklistRequest = {
+  distributedRequisitionMaterialId?: string;
+  materialId?: string;
+  checkedAt?: string | null;
+  shipmentInvoiceId?: string;
+  supplierId?: string;
+  manufacturerId?: string;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+  materialBatches?: CreateMaterialBatchRequest[] | null;
+};
+export type ChecklistDto = {
+  distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
+  material?: MaterialDto;
+  checkedAt?: string | null;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+  materialBatches?: MaterialBatchDto[] | null;
+};
 export type CreateProductionStepRequest = {
   description?: string | null;
   resourceId?: string;
@@ -6448,6 +8712,8 @@ export const {
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdMutation,
   useDeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdMutation,
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
+  useGetApiV1ProcurementShipmentDocumentArrivedQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentArrivedQuery,
   usePostApiV1ProcurementShipmentInvoiceMutation,
   useGetApiV1ProcurementShipmentInvoiceQuery,
   useLazyGetApiV1ProcurementShipmentInvoiceQuery,
@@ -6631,6 +8897,18 @@ export const {
   useDeleteApiV1WarehouseShelfByShelfIdMutation,
   useGetApiV1WarehouseShelfQuery,
   useLazyGetApiV1WarehouseShelfQuery,
+  useGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
+  useLazyGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
+  useGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,
+  useLazyGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,
+  usePostApiV1WarehouseArrivalLocationMutation,
+  usePutApiV1WarehouseArrivalLocationMutation,
+  usePostApiV1WarehouseConfirmArrivalByDistributedMaterialIdMutation,
+  usePostApiV1WarehouseChecklistMutation,
+  useGetApiV1WarehouseChecklistByIdQuery,
+  useLazyGetApiV1WarehouseChecklistByIdQuery,
+  useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
+  useLazyGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
   usePostApiV1WorkOrderMutation,
   useGetApiV1WorkOrderQuery,
   useLazyGetApiV1WorkOrderQuery,
