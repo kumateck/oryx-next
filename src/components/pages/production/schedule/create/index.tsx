@@ -82,7 +82,7 @@ const Page = () => {
       };
       const productsResponse = await loadProduct({
         page: 1,
-        pageSize: 100000000,
+        pageSize: 1,
       }).unwrap();
 
       const products = productsResponse?.totalRecordCount ?? 0;
