@@ -2,11 +2,12 @@
 
 import React from "react";
 
+import BgWrapper from "@/shared/bg-wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 const Page = () => {
   return (
-    <div className="h-full w-full bg-banner bg-cover bg-center bg-no-repeat px-10 py-12">
+    <BgWrapper>
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
           Welcome Desmond Kofi Adusei
@@ -18,7 +19,7 @@ const Page = () => {
       <ScrollablePageWrapper>
         <div></div>
       </ScrollablePageWrapper>
-    </div>
+    </BgWrapper>
   );
 };
 

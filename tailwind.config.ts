@@ -92,17 +92,6 @@ export default {
     "text-zinc-800",
   ],
   theme: {
-    // extend: {
-    //   colors: {
-    //     background: "var(--background)",
-    //     foreground: "var(--foreground)",
-    //   },
-    //   borderRadius: {
-    //     lg: "var(--radius)",
-    //     md: "calc(var(--radius) - 2px)",
-    //     sm: "calc(var(--radius) - 4px)",
-    //   },
-    // },
     extend: {
       fontSize: {
         xs: "0.75rem",
@@ -113,6 +102,7 @@ export default {
       height: {
         "scroll-height": "calc(100vh - 50px)",
         "container-scroll": "calc(100vh - 202px)",
+        "container-scroll-height": "calc(100vh - 132px)",
       },
       maxHeight: {
         scroll: "calc(100vh - 50px)",
