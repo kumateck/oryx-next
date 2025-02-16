@@ -1,4 +1,5 @@
 import { api } from "./index";
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     postApiV1Approval: build.mutation<
@@ -7001,7 +7002,6 @@ export type CreateSrRequest = {
 export type CreateMaterialBatchRequest = {
   code?: string | null;
   materialId?: string;
-  checklistId?: string;
   quantity?: number;
   initialLocationId?: string;
   dateReceived?: string;
