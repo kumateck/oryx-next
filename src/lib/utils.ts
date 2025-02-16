@@ -557,3 +557,97 @@ export const getInitials = (name: string) => {
 
   return initials;
 };
+
+// Define types for the objects in the arrays
+interface Operation {
+  id: string;
+  name: string;
+  code: string | null;
+  description: string | null;
+}
+
+interface Step {
+  productionActivity: {
+    id: string;
+    name: string | null;
+    code: string;
+    description: string | null;
+  };
+  operation: {
+    id: string;
+    name: string;
+    code: string | null;
+    description: string | null;
+  };
+  workCenters: Array<any>;
+  responsibleUsers: Array<any>;
+  status: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  order: number;
+  id: string;
+  createdBy: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar: string | null;
+    department: {
+      id: string;
+      code: string;
+      name: string;
+      description: string;
+      warehouses: Array<any>;
+    };
+  };
+  createdAt: string;
+  activityId?: string; // Add activityId
+  product?: Product; // Add product field
+  productionSchedule?: Product; // Add productSchedule field
+}
+
+interface Product {
+  id: string;
+  name?: string;
+  code: string;
+}
+
+interface Activity {
+  id: string;
+  steps: Step[];
+  product?: Product;
+  productionSchedule?: Product;
+}
+
+// Example data (operations and steps should be assigned here)
+
+// Function to group steps by operation id and append activityId
+export const groupStepsByOperation = (
+  operations: Operation[],
+  activities: Activity[],
+) => {
+  return operations.map((operation) => {
+    // For each operation, we need to find the related steps from the activities
+    const relatedSteps = activities.flatMap((activity) =>
+      activity.steps
+        .filter((step) => step.operation.id === operation.id)
+        .map((step) => ({
+          ...step, // Spread the existing step object
+          activityId: activity.id, // Add the activityId field
+          product: activity.product || null, // Include product from activity, default to null if not available
+          productionSchedule: activity.productionSchedule || null, // Include productSchedule from activity, default to null if not available
+        })),
+    );
+
+    // Return the operation with its related steps
+    return {
+      ...operation,
+      steps: relatedSteps,
+    };
+  });
+};
+
+// // Apply the grouping function
+// const groupedActivities = groupStepsByOperation(operations, activities);
+
+// console.log(groupedActivities);

@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from "react";
 
 import { ScrollArea } from "@/components/ui";
@@ -10,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-const ScrollablePageWrapper = ({ children, className }: Props) => {
+const ScrollableWrapper = ({ children, className }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [availableHeight, setAvailableHeight] = useState<number>(0);
 
@@ -38,11 +36,11 @@ const ScrollablePageWrapper = ({ children, className }: Props) => {
       className="w-full overflow-auto"
     >
       {/* Attach ref to the inner wrapper (if ScrollArea doesn’t forward refs, wrap it in a div) */}
-      <div ref={containerRef} className={cn("p-5 pb-10", className)}>
+      <div ref={containerRef} className={cn("", className)}>
         {children}
       </div>
     </ScrollArea>
   );
 };
 
-export default ScrollablePageWrapper;
+export default ScrollableWrapper;

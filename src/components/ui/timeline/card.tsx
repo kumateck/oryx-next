@@ -8,10 +8,16 @@ import { TimelineItemProps } from "./type";
 
 interface Props {
   item: TimelineItemProps;
+  className?: string;
 }
-const TimelineCard = ({ item }: Props) => {
+const TimelineCard = ({ item, className }: Props) => {
   return (
-    <div className="max-w-4xl rounded-md bg-white p-4 shadow">
+    <div
+      className={cn(
+        "max-w-4xl rounded-md bg-white p-4 shadow transition-opacity",
+        className,
+      )}
+    >
       <h3 className="mb-1 flex items-center justify-between text-lg font-semibold text-neutral-dark">
         {item.title}
 
