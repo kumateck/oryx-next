@@ -15,6 +15,7 @@ interface Props {
   lists: MaterialRequestDto[];
   setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
   defaultColumns?: ColumnDef<MaterialRequestDto>[];
+  notEdittable?: boolean;
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   // const [loadCollection, { data: collectionResponse }] =

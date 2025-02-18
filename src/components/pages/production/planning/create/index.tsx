@@ -27,6 +27,8 @@ import {
   usePostApiV1CollectionMutation,
   usePostApiV1ProductMutation,
 } from "@/lib/redux/api/openapi.generated";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
+import PageTitle from "@/shared/title";
 
 import { CreateProductValidator, ProductRequestDto } from "../types";
 import ProductForm from "./form";
@@ -139,37 +141,37 @@ const Create = () => {
   return (
     <PageWrapper>
       <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full space-y-4">
-          <span className="text-xl font-semibold text-black">
-            Create Product
-          </span>
+        <div className="flex w-full justify-between gap-4 px-5">
+          <PageTitle title="Create Product" />
+          <div className="flex items-center gap-2">
+            <Button type="button" onClick={onBack} variant="outline">
+              Cancel
+            </Button>
+            <Button type="submit">
+              {isLoading ? (
+                <Icon name="LoaderCircle" className="animate-spin" />
+              ) : (
+                <Icon name="Plus" />
+              )}
+              <span className="px-1"> Save </span>
+            </Button>
+          </div>
         </div>
-        <Card>
-          <CardContent className="px-8 pt-8">
-            <ProductForm
-              control={control}
-              register={register}
-              errors={errors}
-              categoryOptions={categoryOptions}
-              uomOptions={uomOptions}
-              packingUomOptions={packingUomOptions}
-            />
-          </CardContent>
-        </Card>
 
-        <div className="flex w-full justify-end gap-4 px-12">
-          <Button type="button" onClick={onBack} variant="outline">
-            Cancel
-          </Button>
-          <Button type="submit">
-            {isLoading ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              <Icon name="Plus" />
-            )}
-            <span className="px-1"> Save </span>
-          </Button>
-        </div>
+        <ScrollableWrapper>
+          <Card>
+            <CardContent className="px-8 pt-8">
+              <ProductForm
+                control={control}
+                register={register}
+                errors={errors}
+                categoryOptions={categoryOptions}
+                uomOptions={uomOptions}
+                packingUomOptions={packingUomOptions}
+              />
+            </CardContent>
+          </Card>
+        </ScrollableWrapper>
       </form>
     </PageWrapper>
   );

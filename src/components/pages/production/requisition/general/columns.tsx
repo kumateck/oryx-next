@@ -46,7 +46,7 @@ export const columns: ColumnDef<RequisitionDto>[] = [
       <div className="min-w-36">
         {row.original.requisitionType === RequisitionType.StockVoucher
           ? "Stock Voucher"
-          : "Purchase Requisition Voucher"}
+          : "Purchase Voucher"}
       </div>
     ),
   },
