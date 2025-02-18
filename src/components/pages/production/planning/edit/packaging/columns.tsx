@@ -26,7 +26,6 @@ export function DataTableRowActions<TData extends PackagingRequestDto>({
     if (details) {
       setItemLists((prev) =>
         prev.filter((item) => {
-          console.log(item.idIndex, details.idIndex);
           return item.idIndex !== details.idIndex;
         }),
       );

@@ -114,9 +114,8 @@ const Page = () => {
     } as PostApiV1ProductionScheduleApiArg;
 
     try {
-      console.log(payload, "payload");
-      const res = await saveMutation(payload).unwrap();
-      console.log(res, "res");
+      await saveMutation(payload).unwrap();
+
       toast.success("Schedule created successfully");
       router.push(`/production/schedules`);
     } catch (error) {

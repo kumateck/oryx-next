@@ -132,7 +132,6 @@ const InputSwitch = ({
         />
       );
     case ColumnType.SELECT:
-      // console.log("editingvalue", editingValue);
       return (
         <SpecialSelect
           value={editingValue as unknown as Option}

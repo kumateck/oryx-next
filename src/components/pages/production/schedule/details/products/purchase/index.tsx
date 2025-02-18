@@ -24,8 +24,7 @@ import {
 import {
   NamingType,
   PostApiV1RequisitionApiArg,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  // useGetApiV1ProductQuery, // useLazyGetApiV1ProductByProductIdQuery,
+  useGetApiV1ConfigurationByModelTypeByModelTypeQuery, // useGetApiV1ProductQuery, // useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1RequisitionQuery,
   usePostApiV1RequisitionMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -134,8 +133,8 @@ const Purchase = ({ isOpen, onClose, lists }: Props) => {
       toast.error(errors.join(". "));
     } else {
       try {
-        const res = await saveMutation(payload).unwrap();
-        console.log(res, "res");
+        await saveMutation(payload).unwrap();
+
         toast.success("Purchase Requisition created successfully");
         router.push(`/production/requisition`);
       } catch (error) {

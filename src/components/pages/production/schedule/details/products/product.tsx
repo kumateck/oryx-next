@@ -207,19 +207,22 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   };
 
   const StepWorkflowActivity = (order: number, status: ProductionStatus) => {
-    console.log(order, status);
     switch (order) {
       case 1:
         return <div></div>;
       case 2:
         return (
-          <Button
-            onClick={() => setIsOpenStock(true)}
-            className="flex items-center gap-2"
-          >
-            <Icon name="Layers" />
-            <span>Stock Requisition</span>
-          </Button>
+          <div>
+            {status === 0 && (
+              <Button
+                onClick={() => setIsOpenStock(true)}
+                className="flex items-center gap-2"
+              >
+                <Icon name="Layers" />
+                <span>Stock Requisition</span>
+              </Button>
+            )}
+          </div>
         );
 
       default:

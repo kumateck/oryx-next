@@ -105,9 +105,6 @@ const Stock = ({ isOpen, onClose, lists }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codeConfig]);
   const onSubmit = async (data: RequisitionRequestDto) => {
-    // console.log(data);
-    // const materials = [...packageLists, ...rawLists];
-
     const items = lists?.map((item) => ({
       materialId: item.materialId,
       quantity: convertToSmallestUnit(
@@ -117,7 +114,6 @@ const Stock = ({ isOpen, onClose, lists }: Props) => {
       uomId: item.uomId,
     }));
 
-    console.log(lists, "items");
     const payload = {
       createRequisitionRequest: {
         requisitionType: RequisitionType.StockVoucher,
@@ -128,7 +124,6 @@ const Stock = ({ isOpen, onClose, lists }: Props) => {
       },
     } satisfies PostApiV1RequisitionApiArg;
 
-    // console.log(items, "items");
     const validate = itemsRequestSchema.safeParse(items);
 
     if (!validate.success) {
@@ -140,8 +135,8 @@ const Stock = ({ isOpen, onClose, lists }: Props) => {
       toast.error(errors.join(". "));
     } else {
       try {
-        const res = await saveMutation(payload).unwrap();
-        console.log(res, "res");
+        await saveMutation(payload).unwrap();
+
         toast.success("Purchase Requisition created successfully");
         router.push(`/production/requisition`);
       } catch (error) {
