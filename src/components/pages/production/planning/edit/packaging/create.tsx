@@ -79,7 +79,6 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     onClose(); // Close the form/modal if applicable
   };
 
-  console.log(errors, "errors");
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">

@@ -74,7 +74,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       const payload = {
         ...data,
       } satisfies CreateWarehouseLocationRequest;
-      console.log("LocationID", details.id);
+
       await editLocation({
         locationId: details.id as string,
         createWarehouseLocationRequest: payload,

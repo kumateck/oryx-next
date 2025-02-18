@@ -28,7 +28,6 @@ export function DataTableRowActions<TData extends RoutingRequestDto>({
     if (details) {
       setItemLists((prev) =>
         prev.filter((item) => {
-          console.log(item, details);
           return item.idIndex !== details.idIndex;
         }),
       );
