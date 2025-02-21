@@ -105,7 +105,7 @@ export const ROUTES: Route[] = [
           },
           {
             title: "Stock Requisitions",
-            url: "/stock/requisitions",
+            url: "/warehouse/stock-requisition",
           },
         ],
       },

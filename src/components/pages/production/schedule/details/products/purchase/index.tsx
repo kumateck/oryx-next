@@ -43,8 +43,16 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   lists: MaterialRequestDto[];
+  productId?: string;
+  productionScheduleId?: string;
 }
-const Purchase = ({ isOpen, onClose, lists }: Props) => {
+const Purchase = ({
+  isOpen,
+  onClose,
+  lists,
+  productId,
+  productionScheduleId,
+}: Props) => {
   const router = useRouter();
   // const { data: response } = useGetApiV1ProductQuery({
   //   page: 1,
@@ -118,6 +126,8 @@ const Purchase = ({ isOpen, onClose, lists }: Props) => {
         code: data.code,
         expectedDelivery: data.expectedDelivery?.toISOString(),
         items,
+        productId,
+        productionScheduleId,
       },
     } satisfies PostApiV1RequisitionApiArg;
 
