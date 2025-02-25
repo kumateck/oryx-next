@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -12,18 +13,26 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { CODE_SETTINGS } from "@/lib";
 import {
-  CreateWarehouseLocationRackRequest,
-  useLazyGetApiV1WarehouseRackQuery,
-  usePostApiV1WarehouseByLocationIdRackMutation,
+  CreateGrnRequest,
+  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  NamingType,
+  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation,
+  usePostApiV1WarehouseGrnMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
+import {
+  ErrorResponse,
+  GenerateCodeOptions,
+  cn,
+  generateCode,
+  isErrorResponse,
+} from "@/lib/utils";
 
 import GRNForm from "./form";
-import { CreateRackValidator, RackRequestDto } from "./types";
-
-// import "./types";
+import { CreateGRNValidator, GRNRequestDto } from "./types";
 
 interface Props {
   isGRNOpen: boolean;
@@ -33,9 +42,13 @@ interface Props {
 }
 
 const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
-  const [createWarehouseLocationRack, { isLoading }] =
-    usePostApiV1WarehouseByLocationIdRackMutation();
+  const [createGRN, { isLoading }] = usePostApiV1WarehouseGrnMutation();
+  const [getBatchDetails, { isLoading: isBatchLoading }] =
+    usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation();
+  const [loadCodeSettings] =
+    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
+  const [loadCodeMyModel] =
+    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
 
   const {
     register,
@@ -43,30 +56,35 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<RackRequestDto>({
-    resolver: CreateRackValidator,
+    // setValue,
+  } = useForm<GRNRequestDto>({
+    resolver: CreateGRNValidator,
     mode: "all",
   });
 
-  const locationOptions = data?.map((item) => ({
-    label: item.name,
-    value: item.id,
-  })) as Option[];
+  const filteredData = data?.filter((item) => selectedIds?.includes(item.id));
 
-  const onSubmit = async (data: RackRequestDto) => {
+  const onSubmit = async (data: GRNRequestDto) => {
     try {
+      const selectedMaterialIds = filteredData.map((item) => item.id);
+
+      const batchDetails = await getBatchDetails({
+        body: selectedMaterialIds,
+      }).unwrap();
+
+      const materialBatchIds = batchDetails.map((detail) => detail.id);
+      console.log("Material Batch Ids:::", materialBatchIds);
+
       const payload = {
         ...data,
-      } satisfies CreateWarehouseLocationRackRequest;
-      await createWarehouseLocationRack({
-        locationId: data?.locationId.value,
-        createWarehouseLocationRackRequest: payload,
+      } satisfies CreateGrnRequest;
+
+      await createGRN({
+        createGrnRequest: payload,
+        materialBatchIds: materialBatchIds as string[],
       });
+
       toast.success("GRN created successfully");
-      loadWarehouseLocationRacks({
-        page: 1,
-        pageSize: 10,
-      });
       reset();
       onGRNClose();
     } catch (error) {
@@ -74,7 +92,36 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
     }
   };
 
-  const filteredData = data?.filter((item) => selectedIds?.includes(item.id));
+  useEffect(() => {
+    handleLoadCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleLoadCode = async () => {
+    const getCodeSettings = await loadCodeSettings({
+      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
+    }).unwrap();
+
+    const prefix = getCodeSettings?.prefix;
+
+    const codePrefix = prefix;
+
+    const payload = {
+      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
+      prefix: codePrefix,
+    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+    const res = await loadCodeMyModel(payload).unwrap();
+    const generatePayload: GenerateCodeOptions = {
+      maxlength: Number(getCodeSettings?.maximumNameLength),
+      minlength: Number(getCodeSettings?.minimumNameLength),
+      prefix: codePrefix as string,
+      type: getCodeSettings?.namingType as NamingType,
+      seriesCounter: res + 1,
+    };
+    const code = await generateCode(generatePayload);
+    // setValue("grnNumber", code);
+    console.log("CODE:::", code);
+  };
 
   return (
     <Dialog open={isGRNOpen} onOpenChange={onGRNClose}>
@@ -88,7 +135,6 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
             register={register}
             control={control}
             errors={errors}
-            locationOptions={locationOptions}
             filteredData={filteredData}
           />
           <DialogFooter className="justify-end gap-4 py-6">
@@ -98,9 +144,9 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
 
             <Button variant={"default"} className="flex items-center gap-2">
               <Icon
-                name={isLoading ? "LoaderCircle" : "Plus"}
+                name={isLoading || isBatchLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": isLoading,
+                  "animate-spin": isLoading || isBatchLoading,
                 })}
               />
               <span>Create GRN</span>{" "}

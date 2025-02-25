@@ -29,12 +29,12 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="GRN/GRA" />
+        <PageTitle title="Stock Transfer Request" />
       </div>
 
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(`/warehouse/quarantine-area/${row.id}/details`);
+          router.push(`/warehouse/stock-transfer-requests/${row.id}/details`);
         }}
         data={data}
         columns={columns}

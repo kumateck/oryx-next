@@ -1,11 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ChecklistBatchRequestDto } from "./types";
+import { ChecklistBatchDto } from "./types";
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
   // options?: Option[],
-  : ColumnDef<ChecklistBatchRequestDto>[] => [
+  : ColumnDef<ChecklistBatchDto>[] => [
     {
       accessorKey: "batchNumber",
       header: "Batch Number",
@@ -14,14 +14,14 @@ export const getColumns =
     {
       accessorKey: "numberOfBags",
       header: "Number of Bags",
-      cell: ({ row }) => <div>{row.original.numberOfBags}</div>,
+      cell: ({ row }) => <div>{row.original.numberOfContainers}</div>,
     },
     {
       accessorKey: "expriyDate",
       header: "Expiry Date",
       cell: ({ row }) => (
         <div>
-          {new Date(row?.original?.expriyDate ?? "").toLocaleDateString()}
+          {new Date(row?.original?.expiryDate ?? "").toLocaleDateString()}
         </div>
       ),
     },
@@ -48,7 +48,7 @@ export const getColumns =
     {
       accessorKey: "batchQuantity",
       header: "Batch Quantity",
-      cell: ({ row }) => <div>{row.original.batchQuantity}</div>,
+      cell: ({ row }) => <div>{row.original.quantityPerContainer}</div>,
     },
 
     // {

@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { Control, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { FormWizard } from "@/components/form-inputs";
 import {
@@ -11,56 +14,52 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui";
-import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
-import {
-  PostApiV1CollectionApiArg,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { InputTypes, Option } from "@/lib";
+
+import { checklistBatchRequestSchema } from "./types";
 
 interface AddBatchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
+  packingUomOptions: Option[];
 }
 
-const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+const AddBatchDialog = ({
+  isOpen,
+  onClose,
+  onSave,
+  packingUomOptions,
+}: AddBatchDialogProps) => {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm();
-  //   const {
-  //     register,
-  //     control,
-  //     formState: { errors },
-  //     reset,
-  //     handleSubmit,
-  //   } = useForm<RackRequestDto>({
-  //     resolver: CreateRackValidator,
-  //     mode: "all",
-  //   });
-  const onSubmit = (data: any) => {
-    onSave(data);
-    onClose();
-  };
+  } = useForm({
+    resolver: zodResolver(checklistBatchRequestSchema),
+    mode: "all",
+  });
 
-  const categoryOptions = collectionResponse?.[
-    COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  const onSubmit = (data: any) => {
+    try {
+      const filteredWeights = data.weights.filter(
+        (weight: any) => weight.srNumber || weight.grossWeight,
+      );
+
+      const validatedData = checklistBatchRequestSchema.parse({
+        ...data,
+        weights: filteredWeights,
+      });
+
+      onSave(validatedData);
+      onClose();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error("Please fix validation errors before submitting");
+      }
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -68,7 +67,12 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
         <DialogHeader>
           <DialogTitle>Add Batch Information</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(onSubmit)(e);
+          }}
+        >
           <FormWizard
             className="w-full gap-x-2 space-y-0"
             fieldWrapperClassName="flex-grow"
@@ -78,6 +82,7 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
                 label: "Batch Number",
                 type: InputTypes.TEXT,
                 errors,
+                required: true,
                 className: "col-span-2",
               },
             ]}
@@ -89,8 +94,25 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
               {
                 register: register("numberOfContainers"),
                 label: "Number of Containers/Bags/Shippers",
-                type: InputTypes.TEXT,
+                type: InputTypes.NUMBER,
                 errors,
+                required: true,
+              },
+              {
+                name: "numberOfContainersUom",
+                label: "Unit of Measure",
+                type: InputTypes.SELECT,
+                control: control as Control,
+                required: true,
+                options: packingUomOptions,
+                errors,
+              },
+              {
+                register: register("quantityPerContainer"),
+                label: "Quantity per Container/bag/shipper",
+                type: InputTypes.NUMBER,
+                errors,
+                required: true,
               },
               {
                 name: "uom",
@@ -98,28 +120,13 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
                 type: InputTypes.SELECT,
                 control: control as Control,
                 required: true,
-                onModal: true,
-                placeholder: "Select Category",
-                options: categoryOptions,
-                errors,
-              },
-              {
-                register: register("quantityPerContainer"),
-                label: "Quantity per Container/bag/shipper",
-                type: InputTypes.TEXT,
-                errors,
-              },
-              {
-                register: register("uom"),
-                label: "Unit of Measure",
-                type: InputTypes.TEXT,
-                readOnly: true,
+                options: packingUomOptions,
                 errors,
               },
             ]}
           />
           <FormWizard
-            className="w-full gap-x-2 space-y-0"
+            className="w-full gap-x-2 space-y-2"
             fieldWrapperClassName="flex-grow"
             config={[
               {
@@ -151,7 +158,6 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
                 control: control as Control,
                 type: InputTypes.DATE,
                 name: "retestDate",
-                required: true,
                 disabled: {
                   before: new Date(),
                   after: new Date(2027, 0, 1),
@@ -173,20 +179,20 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
               <span>SR Number</span>
               <span>Gross Weight</span>
             </div>
-            {[...Array(18)].map((_, i) => (
+            {Array.from({ length: 18 }).map((_, i) => (
               <FormWizard
                 key={i}
                 className="grid w-full grid-cols-2 gap-2 space-y-0"
                 fieldWrapperClassName="flex-grow"
                 config={[
                   {
-                    register: register(`srNumber${i}`),
+                    register: register(`weights.${i}.srNumber`),
                     label: "",
                     type: InputTypes.TEXT,
                     errors,
                   },
                   {
-                    register: register(`grossWeight${i}`),
+                    register: register(`weights.${i}.grossWeight`),
                     label: "",
                     type: InputTypes.TEXT,
                     errors,
@@ -199,7 +205,9 @@ const AddBatchDialog = ({ isOpen, onClose, onSave }: AddBatchDialogProps) => {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Add</Button>
+            <Button type="button" onClick={handleSubmit(onSubmit)}>
+              Add
+            </Button>
           </div>
         </form>
       </DialogContent>

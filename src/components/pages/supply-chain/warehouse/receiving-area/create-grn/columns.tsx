@@ -1,23 +1,30 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { DistributedMaterialStatus } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
+
+const batchStatusColors: Record<DistributedMaterialStatus, string> = {
+  [DistributedMaterialStatus.Distrubted]: "bg-blue-100 text-blue-800",
+  [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
+  [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
+  [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
+};
 
 export const getColumns =
   (): ColumnDef<DistributedRequisitionMaterialDto>[] => [
     {
-      accessorKey: "batchNumber",
-      header: "Batch Number",
-      cell: ({ row }) => <div>{row.original.id}</div>,
-    },
-    {
       accessorKey: "materialName",
       header: "Material Name",
-      cell: ({ row }) => <div>{row.original.material?.name}</div>,
+      cell: ({ row }) => (
+        <div className="min-w-36">{row.original.material?.name}</div>
+      ),
     },
     {
       accessorKey: "manufacturerName",
       header: "Manufacturer Name",
-      cell: ({ row }) => <div>{row.original.manufacturer?.name}</div>,
+      cell: ({ row }) => (
+        <div className="">{row.original.manufacturer?.name}</div>
+      ),
     },
     {
       accessorKey: "invoiceNumber",
@@ -25,23 +32,22 @@ export const getColumns =
       cell: ({ row }) => <div>{row.original.shipmentInvoice?.code}</div>,
     },
     {
-      accessorKey: "batchQuantity",
-      header: "Batch Quantity",
+      accessorKey: "orderQuantity",
+      header: "Order Quantity",
       cell: ({ row }) => <div>{row.original.quantity}</div>,
     },
     {
-      accessorKey: "expiryDate",
-      header: "Expiry Date",
-      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
-    },
-    {
-      accessorKey: "manufacturingDate",
-      header: "Manufacturing Date",
-      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
-    },
-    {
-      accessorKey: "retestDate",
-      header: "Retest Date",
-      cell: ({ row }) => <div>{row.original.manufacturer?.country?.name}</div>,
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status as DistributedMaterialStatus;
+        return (
+          <div
+            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+          >
+            {DistributedMaterialStatus[status]}
+          </div>
+        );
+      },
     },
   ];

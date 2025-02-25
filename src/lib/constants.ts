@@ -47,6 +47,7 @@ export const CODE_SETTINGS = {
     Department: "Department",
     PurchaseOrder: "PurchaseOrder",
     ShipmentDocument: "ShipmentDocument",
+    GRNNumber: "GrnNumber",
   },
   nameTypes: {
     Time: 2,
@@ -96,6 +97,28 @@ export enum ActivityStepStatus {
   Delayed = 3,
   Cancelled = 4,
   Active = 5,
+}
+export enum ChecklistBoolean {
+  No = 0,
+  Yes = 1,
+}
+export enum ChecklistCarrierCondition {
+  Clean = 0,
+  Dirty = 1,
+  Wet = 2,
+  Insect_Infested = 3,
+  Excessive_Dust = 4,
+  Damaged = 5,
+}
+
+export enum Intactness {
+  No = 0,
+  Yes = 1,
+}
+
+export enum ConsignmentCarrier {
+  Bad = 0,
+  Good = 1,
 }
 
 export enum FORM_BUILDER_CONFIG {
@@ -165,6 +188,24 @@ export enum QuestionTypes {
 export interface Option {
   label: string;
   value: string;
+}
+
+export enum BatchStatus {
+  Received = 0,
+  Quarantine = 1,
+  Testing = 2,
+  Available = 3,
+  Rejected = 4,
+  Retest = 5,
+  Frozen = 6,
+  Consumed = 7,
+}
+
+export enum DistributedMaterialStatus {
+  Distrubted = 0,
+  Arrived = 1,
+  Checked = 2,
+  GrnGenerated = 3,
 }
 
 export const routes = {

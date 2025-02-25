@@ -18,7 +18,7 @@ import { InputTypes, Option } from "@/lib";
 
 import AddBatchDialog from "./add-batch";
 import TableForData from "./table";
-import { ChecklistBatchRequestDto } from "./types";
+import { ChecklistBatchDto } from "./types";
 
 export interface OptionsUpdate extends Option {
   uom: string;
@@ -38,29 +38,30 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  categoryOptions: Option[];
   uomOptions: Option[];
   packingUomOptions: Option[];
+  checklistBooleanOptions: Option[];
+  checklistContainersOptions: Option[];
+  consignmentCarrierOptions: Option[];
   defaultValues?: TFieldValues;
   defaultCategory?: Option;
   defaultUom?: Option;
   defaultPackingUom?: Option;
+  defaultIntactnessOption?: Option;
 }
 const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  defaultUom,
-  defaultPackingUom,
-  uomOptions,
   packingUomOptions,
+  checklistBooleanOptions,
+  checklistContainersOptions,
+  consignmentCarrierOptions,
+  defaultIntactnessOption,
   fields,
   append,
   remove,
 }: Props<TFieldValues, TContext>) => {
-  // const [packageLists, setPackageLists] = useState<ChecklistBatchRequestDto[]>(
-  //   [],
-  // );
   const [showAddDialog, setShowAddDialog] = useState(false);
   return (
     <div>
@@ -81,12 +82,13 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
-                register: register("supplierStatus" as Path<TFieldValues>),
+                register: register("supplierStatus" as Path<TFieldValues>, {
+                  valueAsNumber: true,
+                }),
                 label: "Supplier Status",
-                type: InputTypes.TEXT,
+                type: InputTypes.NUMBER,
                 required: true,
                 placeholder: "Enter Supplier Status",
-                readOnly: true,
                 errors,
               },
               {
@@ -105,12 +107,12 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Certificate of Analysis Delivered?",
                 control: control as Control,
                 type: InputTypes.SELECT,
-                name: "baseUomId",
+                name: "certificateOfAnalysisDelivered",
                 required: true,
                 onModal: true,
-                defaultValue: defaultUom,
+                defaultValue: checklistBooleanOptions?.[1] || null,
                 placeholder: "Yes",
-                options: uomOptions,
+                options: checklistBooleanOptions,
                 errors,
               },
               {
@@ -125,16 +127,16 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Condition of the consignment Carrier",
                 control: control as Control,
                 type: InputTypes.SELECT,
-                name: "baseUomId",
+                name: "conditionOfConsignmentCarrier",
                 required: true,
                 onModal: true,
-                defaultValue: defaultUom,
+                defaultValue: consignmentCarrierOptions?.[0],
                 placeholder: "Dirty",
-                options: uomOptions,
+                options: consignmentCarrierOptions,
                 errors,
               },
               {
-                register: register("batchNumber" as Path<TFieldValues>),
+                register: register("supplierName" as Path<TFieldValues>),
                 label: "Supplier Name",
                 placeholder: "Enter supplier name",
                 type: InputTypes.TEXT,
@@ -142,15 +144,15 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
-                label: "Intactness of containers/bags/shippers",
+                label: "Visible proper labelling of containers/bags/shippers",
                 control: control as Control,
                 type: InputTypes.SELECT,
-                name: "basePackingUomId",
+                name: "visibleLabelingOfContainers",
                 required: true,
                 onModal: true,
-                defaultValue: defaultPackingUom,
+                defaultValue: checklistBooleanOptions?.[1] || null,
                 placeholder: "Yes",
-                options: packingUomOptions,
+                options: checklistBooleanOptions,
                 errors,
               },
               {
@@ -165,12 +167,12 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Intactness of containers/bags/shippers",
                 control: control as Control,
                 type: InputTypes.SELECT,
-                name: "basePackingUomId",
+                name: "intactnessOfContainers",
                 required: true,
                 onModal: true,
-                defaultValue: defaultPackingUom,
+                defaultValue: defaultIntactnessOption,
                 placeholder: "Good",
-                options: packingUomOptions,
+                options: checklistContainersOptions,
                 errors,
               },
             ]}
@@ -198,18 +200,24 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
         onSave={(data) => {
           append(data as any);
         }}
+        packingUomOptions={packingUomOptions}
       />
 
       <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
         {fields.map((field, index) => {
-          const batchData: ChecklistBatchRequestDto = {
+          const batchData: ChecklistBatchDto = {
             batchNumber: (field as any).batchNumber,
-            numberOfBags: (field as any).numberOfContainers, // Ensure this matches your form field name
-            expriyDate: (field as any).expiryDate, // Note the typo in the column definition
+            numberOfContainers: (field as any).numberOfContainers,
+            numberOfContainersUom: (field as any).numberOfContainersUom,
+            quantityPerContainer: (field as any).quantityPerContainer,
+            uom: (field as any).uom,
+            expiryDate: (field as any).expiryDate,
             manufacturingDate: (field as any).manufacturingDate,
             retestDate: (field as any).retestDate,
-            batchQuantity: (field as any).quantityPerContainer,
+            // weights: (field as any).weights,
           };
+
+          const weights = (field as any).weights || [];
 
           return (
             <div key={field.id} className="relative">
@@ -228,14 +236,69 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                   // columns={getColumns()}
                   // If your table component needs any additional props
                 />
-                <div className="grid grid-cols-3 gap-x-12 gap-y-2">
-                  {[...Array(18)].map((_, i) => (
-                    <div key={i} className="col-span-1 grid grid-cols-2 gap-2">
-                      <span>{(field as any)[`srNumber${i}`]}</span>
-                      <span>{(field as any)[`grossWeight${i}`]}</span>
+                {weights &&
+                  weights.some(
+                    (w: { srNumber: any; grossWeight: any }) =>
+                      w && (w.srNumber || w.grossWeight),
+                  ) && (
+                    <div className="space-y-4 rounded-lg border bg-gray-50 p-4">
+                      <h3 className="text-md border-b pb-2 font-semibold">
+                        SR Numbers and Weights
+                      </h3>
+
+                      {/* Header row */}
+                      <div className="mb-2 grid grid-cols-3 gap-x-12">
+                        {[1, 2, 3].map((col) => (
+                          <div
+                            key={col}
+                            className="col-span-1 grid grid-cols-2 gap-2"
+                          >
+                            <span className="text-sm font-medium text-gray-600">
+                              SR Number
+                            </span>
+                            <span className="text-sm font-medium text-gray-600">
+                              Gross Weight
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Data rows */}
+                      <div className="grid grid-cols-3 gap-x-12 gap-y-2">
+                        {weights.map(
+                          (
+                            weight: { srNumber: any; grossWeight: any },
+                            i: React.Key | null | undefined,
+                          ) =>
+                            weight &&
+                            (weight.srNumber || weight.grossWeight) ? (
+                              <div
+                                key={i}
+                                className="col-span-1 grid grid-cols-2 gap-2"
+                              >
+                                <span className="rounded border bg-white px-2 py-1 text-sm">
+                                  {weight.srNumber || "-"}
+                                </span>
+                                <span className="rounded border bg-white px-2 py-1 text-sm">
+                                  {weight.grossWeight || "-"}
+                                </span>
+                              </div>
+                            ) : null,
+                        )}
+                      </div>
+
+                      {/* Summary */}
+                      <div className="mt-3 text-sm italic text-gray-500">
+                        {
+                          weights.filter(
+                            (w: { srNumber: any; grossWeight: any }) =>
+                              w && (w.srNumber || w.grossWeight),
+                          ).length
+                        }{" "}
+                        entries recorded
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  )}
               </Card>
             </div>
           );

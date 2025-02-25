@@ -3,14 +3,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ListsTable } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
-import { ChecklistBatchRequestDto } from "./types";
+import { ChecklistBatchDto } from "./types";
 
 interface Props {
-  lists: ChecklistBatchRequestDto[];
-  setItemLists?: React.Dispatch<
-    React.SetStateAction<ChecklistBatchRequestDto[]>
-  >;
-  defaultColumns?: ColumnDef<ChecklistBatchRequestDto>[];
+  lists: ChecklistBatchDto[];
+  setItemLists?: React.Dispatch<React.SetStateAction<ChecklistBatchDto[]>>;
+  defaultColumns?: ColumnDef<ChecklistBatchDto>[];
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   const columns = getColumns();

@@ -15,8 +15,8 @@ export const columns: ColumnDef<GrnDto>[] = [
     cell: ({ row }) => <div>{row.original.materialBatches?.length}</div>,
   },
   {
-    accessorKey: "dateReceived",
-    header: "Date Received",
+    accessorKey: "scheduledStartTime",
+    header: "Vehicle Number",
     cell: ({ row }) => (
       // <div>{row.original.materialBatches?.map((batch)=>(batch.dateReceived))}</div>
       <div>
@@ -32,14 +32,4 @@ export const columns: ColumnDef<GrnDto>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "remarks",
-  //   header: "Remarks",
-  //   cell: ({ row }) => <div>{row.original.remarks}</div>,
-  // },
-
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
 ];

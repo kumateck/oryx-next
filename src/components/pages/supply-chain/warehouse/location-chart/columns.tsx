@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
-import { BatchStatus as BatchStatusEnum } from "@/lib";
-import { BatchStatus } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
@@ -59,7 +57,7 @@ export interface BatchColumns {
   materialName?: string | null;
   manufacturerName?: string | null;
   invoiceNumber?: string | null;
-  status?: BatchStatus;
+  status?: number;
   dateReceived?: string;
   dateApproved?: string | null;
   totalQuantity?: number;
@@ -67,15 +65,6 @@ export interface BatchColumns {
   remainingQuantity?: number;
   expiryDate?: string;
 }
-
-const batchStatusColors: Record<BatchStatus, string> = {
-  [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
-  [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
-  [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
-  [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
-  [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-};
 
 export const getColumns = (): ColumnDef<BatchColumns>[] => [
   {
@@ -110,7 +99,7 @@ export const getColumns = (): ColumnDef<BatchColumns>[] => [
   },
   {
     accessorKey: "manufacturingDate",
-    header: "Manufacturing Date",
+    header: "Expiry Date",
     cell: ({ row }) => <div>{row.original.expiryDate}</div>,
   },
   {
@@ -121,16 +110,7 @@ export const getColumns = (): ColumnDef<BatchColumns>[] => [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.status as BatchStatus;
-      return (
-        <div
-          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-        >
-          {BatchStatusEnum[status]}
-        </div>
-      );
-    },
+    cell: ({ row }) => <div>{row.original.status}</div>,
   },
   {
     id: "actions",

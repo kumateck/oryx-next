@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui";
 import { ProductionScheduleProductDto } from "@/lib/redux/api/openapi.generated";
-
-import Product from "./product";
 
 interface Props {
   products: ProductionScheduleProductDto[];
   scheduleId: string;
 }
-const Products = ({ products, scheduleId }: Props) => {
+const Products = ({ products }: Props) => {
   const [activeTab, setActiveTab] = useState<string>(
     products[0].product?.id as string,
   );
@@ -29,7 +27,7 @@ const Products = ({ products, scheduleId }: Props) => {
           ))}
         </TabsList>
 
-        <div className="">
+        {/* <div className="">
           {products.map((tab, idx) => (
             <TabsContent key={idx} value={tab.product?.id as string}>
               <Product
@@ -39,7 +37,7 @@ const Products = ({ products, scheduleId }: Props) => {
               />
             </TabsContent>
           ))}
-        </div>
+        </div> */}
       </Tabs>
     </div>
   );
