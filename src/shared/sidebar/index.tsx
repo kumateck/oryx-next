@@ -2,11 +2,9 @@
 
 import React from "react";
 
-// import { Skeleton } from "@/components/ui";
 import {
   Sidebar,
-  SidebarContent,
-  // SidebarFooter,
+  SidebarContent, // SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
@@ -33,26 +31,7 @@ export interface ModuleGroup {
   menus: MenuItem[];
 }
 
-// type GroupedByModule = ModuleGroup[];
-
-// function groupByModule(items: MenuItem[]): GroupedByModule {
-//   const moduleMap: { [module: string]: ModuleGroup } = {};
-
-//   items.forEach((item) => {
-//     if (!moduleMap[item.module]) {
-//       moduleMap[item.module] = {
-//         heading: item.module,
-//         menus: [],
-//       };
-//     }
-//     moduleMap[item.module].menus.push(item);
-//   });
-
-//   return Object.values(moduleMap);
-// }
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // console.log(first)
   return (
     <Sidebar collapsible="icon" {...props} className="z-20">
       <SidebarHeader>
