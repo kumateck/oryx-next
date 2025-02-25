@@ -44,8 +44,18 @@ interface Props {
   onClose: () => void;
   lists: MaterialRequestDto[];
   notEdittable?: boolean;
+  productId?: string;
+  productionScheduleId?: string;
+  productionActivityStepId?: string;
 }
-const Stock = ({ isOpen, onClose, lists }: Props) => {
+const Stock = ({
+  isOpen,
+  onClose,
+  lists,
+  productId,
+  productionScheduleId,
+  productionActivityStepId,
+}: Props) => {
   const router = useRouter();
   // const { data: response } = useGetApiV1ProductQuery({
   //   page: 1,
@@ -121,6 +131,9 @@ const Stock = ({ isOpen, onClose, lists }: Props) => {
         code: data.code,
         expectedDelivery: data.expectedDelivery?.toISOString(),
         items,
+        productId,
+        productionScheduleId,
+        productionActivityStepId,
       },
     } satisfies PostApiV1RequisitionApiArg;
 

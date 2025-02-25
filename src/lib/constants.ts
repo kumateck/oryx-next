@@ -99,7 +99,6 @@ export enum ActivityStepStatus {
   Active = 5,
 }
 
-
 export enum FORM_BUILDER_CONFIG {
   TEMPLATES = "Templates",
   QUESTIONS = "Questions",

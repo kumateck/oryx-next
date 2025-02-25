@@ -207,6 +207,7 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   };
 
   const StepWorkflowActivity = (order: number, status: ProductionStatus) => {
+    console.log(status, order, "status");
     switch (order) {
       case 1:
         return <div></div>;
@@ -229,6 +230,8 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
         break;
     }
   };
+
+  console.log(activity, "activity");
   return (
     <div className="flex-1 space-y-2 overflow-auto">
       <Card className="space-y-1 p-5 pb-0">
@@ -346,6 +349,8 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
           lists={purchaseLists}
           onClose={() => setIsOpenPurchase(false)}
           isOpen={isOpenPurchase}
+          productId={productId}
+          productionScheduleId={scheduleId}
         />
       )}
       {isOpenStock && (
@@ -354,6 +359,9 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
           onClose={() => setIsOpenStock(false)}
           isOpen={isOpenStock}
           notEdittable
+          productId={productId}
+          productionScheduleId={scheduleId}
+          productionActivityStepId={activity?.currentStep?.id}
         />
       )}
     </div>
