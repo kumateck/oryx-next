@@ -30,7 +30,6 @@ const GRNForm = <TFieldValues extends FieldValues, TContext>({
     DistributedRequisitionMaterialDto[]
   >([]);
 
-  console.log("Data in the form:::", filteredData);
   useEffect(() => {
     if (filteredData?.length) {
       setPackageLists(filteredData);
