@@ -79,6 +79,14 @@ export const ROUTES: Route[] = [
             url: "/warehouse/departments",
           },
           {
+            title: "Receiving Area",
+            url: "/warehouse/receiving-area",
+          },
+          {
+            title: "Quarantine Area/GRN",
+            url: "/warehouse/quarantine-area",
+          },
+          {
             title: "Warehouses",
             url: "/warehouse/warehouses",
           },
@@ -94,18 +102,29 @@ export const ROUTES: Route[] = [
             title: "Shelves",
             url: "/warehouse/shelves",
           },
-
           {
             title: "Raw Materials",
             url: "/warehouse/raw-materials",
+          },
+          {
+            title: "Raw Materials Requests",
+            url: "/warehouse/raw-materials-requests",
+          },
+          {
+            title: "Approved Raw Materials",
+            url: "/warehouse/approved-raw-materials",
           },
           {
             title: "Available Stock",
             url: "/stock/available",
           },
           {
-            title: "Stock Requisitions",
-            url: "/stock/requisitions",
+            title: "Stock Transfer Requests",
+            url: "/warehouse/stock-transfer-requests",
+          },
+          {
+            title: "Location Chart Record",
+            url: "/warehouse/location-chart",
           },
         ],
       },
@@ -172,6 +191,10 @@ export const ROUTES: Route[] = [
           {
             title: "Purchase Orders",
             url: "/procurement/purchase-orders",
+          },
+          {
+            title: "Material Distribution",
+            url: "/procurement/material-distribution",
           },
         ],
       },

@@ -1,0 +1,53 @@
+import { ColumnDef } from "@tanstack/react-table";
+
+import { DistributedMaterialStatus } from "@/lib";
+import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
+
+const batchStatusColors: Record<DistributedMaterialStatus, string> = {
+  [DistributedMaterialStatus.Distrubted]: "bg-blue-100 text-blue-800",
+  [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
+  [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
+  [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
+};
+
+export const getColumns =
+  (): ColumnDef<DistributedRequisitionMaterialDto>[] => [
+    {
+      accessorKey: "materialName",
+      header: "Material Name",
+      cell: ({ row }) => (
+        <div className="min-w-36">{row.original.material?.name}</div>
+      ),
+    },
+    {
+      accessorKey: "manufacturerName",
+      header: "Manufacturer Name",
+      cell: ({ row }) => (
+        <div className="">{row.original.manufacturer?.name}</div>
+      ),
+    },
+    {
+      accessorKey: "invoiceNumber",
+      header: "Invoice Number",
+      cell: ({ row }) => <div>{row.original.shipmentInvoice?.code}</div>,
+    },
+    {
+      accessorKey: "orderQuantity",
+      header: "Order Quantity",
+      cell: ({ row }) => <div>{row.original.quantity}</div>,
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status as DistributedMaterialStatus;
+        return (
+          <div
+            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+          >
+            {DistributedMaterialStatus[status]}
+          </div>
+        );
+      },
+    },
+  ];

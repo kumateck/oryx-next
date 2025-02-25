@@ -47,6 +47,7 @@ export const CODE_SETTINGS = {
     Department: "Department",
     PurchaseOrder: "PurchaseOrder",
     ShipmentDocument: "ShipmentDocument",
+    GRNNumber: "GrnNumber",
   },
   nameTypes: {
     Time: 2,
@@ -55,6 +56,10 @@ export const CODE_SETTINGS = {
   },
 };
 
+export enum ProductionStatus {
+  New = 0,
+  Checked = 1,
+}
 export enum PurchaseOrderStatusList {
   Pending = 0,
   Delivered = 1,
@@ -93,6 +98,7 @@ export enum ActivityStepStatus {
   Cancelled = 4,
   Active = 5,
 }
+
 
 export enum FORM_BUILDER_CONFIG {
   TEMPLATES = "Templates",
@@ -163,6 +169,24 @@ export interface Option {
   value: string;
 }
 
+export enum BatchStatus {
+  Received = 0,
+  Quarantine = 1,
+  Testing = 2,
+  Available = 3,
+  Rejected = 4,
+  Retest = 5,
+  Frozen = 6,
+  Consumed = 7,
+}
+
+export enum DistributedMaterialStatus {
+  Distrubted = 0,
+  Arrived = 1,
+  Checked = 2,
+  GrnGenerated = 3,
+}
+
 export const routes = {
   home: () => "/home",
   signin: () => "/signin",
@@ -189,6 +213,9 @@ export const routes = {
   editPlanningProcedure: () => `procedure`,
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "raw-materials",
+  createChecklist: (id: string) =>
+    `/warehouse/receiving-area/${id}/create-checklist`,
+  // createChecklist: () => `/warehouse/receiving-area/create-checklist`,
   finishedProducts: () => "finished-products",
   newEmployee: () => "/resource/employees/create",
   newRegulation: () => "/compliance/external/regulations/create",
@@ -283,3 +310,25 @@ export const avatarFallbackColors = [
   "border border-stone-300 bg-stone-100 text-stone-800",
   "border border-zinc-300 bg-zinc-100 text-zinc-800",
 ];
+export enum ChecklistBoolean {
+  No = 0,
+  Yes = 1,
+}
+export enum ChecklistCarrierCondition {
+  Clean = 0,
+  Dirty = 1,
+  Wet = 2,
+  Insect_Infested = 3,
+  Excessive_Dust = 4,
+  Damaged = 5,
+}
+
+export enum Intactness {
+  No = 0,
+  Yes = 1,
+}
+
+export enum ConsignmentCarrier {
+  Bad = 0,
+  Good = 1,
+}

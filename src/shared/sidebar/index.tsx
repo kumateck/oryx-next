@@ -5,14 +5,13 @@ import React from "react";
 // import { Skeleton } from "@/components/ui";
 import {
   Sidebar,
-  SidebarContent,
-  // SidebarFooter,
+  SidebarContent, // SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
 
 // import { NavSecondary } from "./bottom";
-import SidebarIcon from "./icon";
+import SideLogo from "./logo";
 import { NavMain } from "./menu";
 import { ROUTES } from "./navigation";
 
@@ -56,7 +55,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props} className="z-20">
       <SidebarHeader>
-        <SidebarIcon />
+        <SideLogo />
       </SidebarHeader>
       <SidebarContent className="-mt-8 overflow-y-auto pb-24">
         {ROUTES?.map((group, idx) => <NavMain group={group} key={idx} />)}
