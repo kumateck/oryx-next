@@ -66,7 +66,12 @@ export const checklistBatchRequestSchema = z.object({
       }),
     )
     .optional(),
-  weights: z.array(batchWeightsRequestSchema).optional(),
+  weights: z
+    .array(batchWeightsRequestSchema)
+    .refine(
+      (weights) => weights.some((w) => w.srNumber && w.grossWeight),
+      "At least one SR Number and Gross Weight pair is required",
+    ),
 });
 
 export const CreateChecklistSchema = z.object({
@@ -150,7 +155,9 @@ export const CreateChecklistSchema = z.object({
       message: "Intactness of Containers Status is required",
     },
   ),
-  batches: z.array(checklistBatchRequestSchema),
+  batches: z.array(checklistBatchRequestSchema).min(1, {
+    message: "At least one batch must be added",
+  }),
 });
 
 export type ChecklistRequestDto = z.infer<typeof CreateChecklistSchema>;
