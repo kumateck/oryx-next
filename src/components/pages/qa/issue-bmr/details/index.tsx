@@ -118,7 +118,7 @@ const IssueDetails = () => {
         {data?.product?.id && (
           <ProductView
             productId={data?.product?.id as string}
-            batchQty={data?.batchQuantity as number}
+            scheduleId={data?.productionSchedule?.id as string}
             rawLists={rawLists}
             packageLists={packageLists}
             setRawLists={setRawLists}

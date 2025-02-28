@@ -1,11 +1,18 @@
 import { cva } from "class-variance-authority";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
 // import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
-import { APP_NAME, CODE_SETTINGS, Option, Status, Units } from "./constants";
+import {
+  APP_NAME,
+  CODE_SETTINGS,
+  MaterialStatus,
+  Option,
+  Units,
+} from "./constants";
 import {
   NamingType,
   ProductionScheduleProcurementDto,
@@ -106,27 +113,30 @@ export interface GenerateCodeOptions {
   seriesCounter?: number;
 }
 
-export const generateCode = async (
-  options: GenerateCodeOptions,
-): Promise<string> => {
+enum CodeGenType {
+  Sequencial = 0,
+  Random = 1,
+  Timestamp = 2,
+}
+export const generateCode = (options: GenerateCodeOptions) => {
   const { prefix, minlength, maxlength, type, seriesCounter = 1 } = options; // Default to 1 if seriesCounter is not provided
 
   let generatedCode = "";
 
   switch (type) {
-    case 2:
+    case CodeGenType.Timestamp:
       // Generate code based on the current timestamp
       generatedCode = Date.now().toString();
       break;
 
-    case 1:
+    case CodeGenType.Random:
       // Generate a random numeric string
       generatedCode = Math.random()
         .toString()
         .slice(2, 2 + maxlength); // Slice to fit the max length
       break;
 
-    case 0:
+    case CodeGenType.Sequencial:
       // Increment the series counter and pad it with zeros to match the length
       generatedCode = seriesCounter.toString().padStart(minlength, "0");
       break;
@@ -147,26 +157,21 @@ export const generateCode = async (
   return `${prefix}${generatedCode}`;
 };
 
-export const getStatusColor = (status: string) => {
+export const getStatusColor = (status: MaterialStatus) => {
   switch (status) {
-    case Status.New:
-      return "bg-neutral-300 text-neutral-600";
-    case Status.Open:
-      return "bg-accent-200 text-accent-900";
-    case Status.InProgress:
-      return "bg-info-100 text-info-500";
-    case Status.Resolved:
-      return "bg-success-100 text-success-500";
-    case Status.Rejected:
-      return "bg-danger-200 text-danger-500";
-    case Status.NonCompliant:
-      return "bg-warning-200 text-warning-800";
-    case Status.Overdue:
-      return "bg-danger-500 text-white";
-    case Status.Closed:
-      return "bg-success-500 text-white";
+    case MaterialStatus.None:
+      return "bg-platinum-default text-platinum-disabled";
+    case MaterialStatus.StockTransfer:
+      return "bg-warning-default text-warning-disabled";
+    case MaterialStatus.Requisition:
+      return "bg-teal-default text-teal-disabled";
+    case MaterialStatus.Foreign:
+      return "bg-severe-default text-severe-disabled";
+    case MaterialStatus.Local:
+      return "bg-danger-default text-danger-disabled";
+
     default:
-      return "bg-gray-100 text-neutral-500";
+      return "bg-white text-neutral-dark";
   }
 };
 
@@ -651,3 +656,15 @@ export const groupStepsByOperation = (
 // const groupedActivities = groupStepsByOperation(operations, activities);
 
 // console.log(groupedActivities);
+
+export const objectSchema = (msg: string) =>
+  z.object({
+    value: z.string({
+      required_error: msg,
+      message: msg,
+    }),
+    label: z.string({
+      required_error: msg,
+      message: msg,
+    }),
+  });

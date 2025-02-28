@@ -23,6 +23,7 @@ export const TableCheckbox = <T extends object>(): ColumnDef<T> => ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        // disabled={row.getIsSelected() && !row.getCanSelect()}
       />
     </div>
   ),

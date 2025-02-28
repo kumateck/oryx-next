@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  RowSelectionState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -50,6 +51,8 @@ interface DatatableProps<TData extends { options?: Option[] }, TValue> {
   columns: ExtendedColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
+  rowSelection?: RowSelectionState;
+  setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
 }
 
 interface TableUpdateDataProps<TData> {
@@ -75,16 +78,12 @@ export const ListsTable = <TData, TValue>({
   data,
   columns,
   isLoading,
+  rowSelection,
+  setRowSelection,
 }: DatatableProps<TData & { options?: Option[] }, TValue>) => {
   const [tableData, setTableData] = useState(data);
 
   const updateData = (rowIndex: number, columnId: string, value: unknown) => {
-    // setTableData((oldData) =>
-    //   oldData.map((row, index) =>
-    //     index === rowIndex ? { ...row, [columnId]: value } : row,
-    //   ),
-    // );
-
     TableUpdateData({
       rowIndex,
       columnId,
@@ -106,7 +105,9 @@ export const ListsTable = <TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
     state: {
+      rowSelection,
       pagination: {
         pageIndex: 0,
         pageSize: tableData.length,
@@ -146,7 +147,9 @@ export const ListsTable = <TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={
+                  rowSelection ? row?.getIsSelected() && "selected" : undefined
+                }
                 className="odd:bg-white even:bg-neutral-secondary hover:bg-neutral-hover"
               >
                 {row.getVisibleCells().map((cell) => {
