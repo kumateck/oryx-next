@@ -3,16 +3,17 @@ import React, { useEffect } from "react";
 import { Card, CardTitle } from "@/components/ui";
 import { Units, convertToLargestUnit } from "@/lib";
 import {
-  useGetApiV1ProductionScheduleMaterialStockByProductIdAndQuantityRequiredQuery,
-  useGetApiV1ProductionSchedulePackageMaterialStockByProductIdAndQuantityRequiredQuery,
+  useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery,
 } from "@/lib/redux/api/openapi.generated";
+import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
 
 interface Props {
   productId: string;
-  batchQty: number;
+  scheduleId: string;
   rawLists: MaterialRequestDto[];
   packageLists: MaterialRequestDto[];
   setRawLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
@@ -23,21 +24,22 @@ const ProductView = ({
   packageLists,
   setRawLists,
   setPackageLists,
-  batchQty,
+
   productId,
+  scheduleId,
 }: Props) => {
-  const { data: materialStockResponse } =
-    useGetApiV1ProductionScheduleMaterialStockByProductIdAndQuantityRequiredQuery(
+  const { data: materialStockResponse, isLoading: isLoadingRawStock } =
+    useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery(
       {
         productId,
-        quantityRequired: batchQty as number,
+        productionScheduleId: scheduleId,
       },
     );
-  const { data: packageStockResponse } =
-    useGetApiV1ProductionSchedulePackageMaterialStockByProductIdAndQuantityRequiredQuery(
+  const { data: packageStockResponse, isLoading: isLoadingPackageStock } =
+    useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery(
       {
         productId,
-        quantityRequired: batchQty as number,
+        productionScheduleId: scheduleId,
       },
     );
   //   console.log(data, "data");
@@ -123,14 +125,22 @@ const ProductView = ({
 
   return (
     <div className="flex gap-4">
-      <Card className="space-y-4 p-5 pb-0">
-        <CardTitle>Raw Material</CardTitle>
-        <TableForData lists={rawLists} setItemLists={setRawLists} />
-      </Card>
-      <Card className="space-y-4 p-5 pb-0">
-        <CardTitle>Packaging Material</CardTitle>
-        <TableForData lists={packageLists} setItemLists={setPackageLists} />
-      </Card>
+      {isLoadingRawStock ? (
+        <SkeletonLoadingPage />
+      ) : (
+        <Card className="space-y-4 p-5 pb-0">
+          <CardTitle>Raw Material</CardTitle>
+          <TableForData lists={rawLists} setItemLists={setRawLists} />
+        </Card>
+      )}
+      {isLoadingPackageStock ? (
+        <SkeletonLoadingPage />
+      ) : (
+        <Card className="space-y-4 p-5 pb-0">
+          <CardTitle>Packaging Material</CardTitle>
+          <TableForData lists={packageLists} setItemLists={setPackageLists} />
+        </Card>
+      )}
     </div>
   );
 };
