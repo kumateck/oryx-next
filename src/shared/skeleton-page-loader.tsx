@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function SkeletonLoadingPage() {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <div className="w-full space-y-4 rounded-lg bg-white p-6 shadow-lg">
+      <div className="w-full space-y-4 rounded-lg bg-white p-6 shadow-sm">
         <div className="flex items-center space-x-4">
           <Skeleton className="h-12 w-12 rounded-full bg-neutral-quaternary" />
           <div className="space-y-2">

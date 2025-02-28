@@ -178,8 +178,9 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
         const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
 
         const materialId = item?.material?.id as string;
-
+        const materialStatus = item?.status;
         return {
+          materialStatus,
           code,
           materialName,
           materialId,
