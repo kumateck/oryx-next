@@ -11,18 +11,15 @@ import {
   CODE_SETTINGS,
   COLLECTION_TYPES,
   ErrorResponse,
-  GenerateCodeOptions,
   Option,
-  generateCode,
   isErrorResponse,
   routes,
 } from "@/lib";
+import { useCodeGen } from "@/lib/code-gen";
 import {
   CreateProductRequest,
-  NamingType,
   PostApiV1CollectionApiArg,
   useGetApiV1CollectionUomQuery,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ProductMutation,
@@ -35,12 +32,8 @@ import ProductForm from "./form";
 
 const Create = () => {
   const router = useRouter();
-  const { data: productCodeConfig } =
-    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-      modelType: CODE_SETTINGS.modelTypes.Product,
-    });
 
-  const [loadProduct] = useLazyGetApiV1ProductQuery();
+  const [loadCodeModelCount] = useLazyGetApiV1ProductQuery();
   const [productMutation, { isLoading }] = usePostApiV1ProductMutation();
   const {
     register,
@@ -52,9 +45,6 @@ const Create = () => {
   } = useForm<ProductRequestDto>({
     resolver: CreateProductValidator,
     mode: "all",
-    defaultValues: {
-      //   code: ,
-    },
   });
 
   const [loadCollection, { data: collectionResponse }] =
@@ -67,29 +57,6 @@ const Create = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(productCodeConfig?.maximumNameLength),
-        minlength: Number(productCodeConfig?.minimumNameLength),
-        prefix: productCodeConfig?.prefix as string,
-        type: productCodeConfig?.namingType as NamingType,
-      };
-      const productsResponse = await loadProduct({
-        page: 1,
-        pageSize: 100000,
-      }).unwrap();
-
-      const products = productsResponse?.totalRecordCount ?? 0;
-      generatePayload.seriesCounter = products + 1;
-      const code = await generateCode(generatePayload);
-      setValue("code", code);
-    };
-
-    loadCodes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productCodeConfig]);
 
   const categoryOptions = collectionResponse?.[
     COLLECTION_TYPES.ProductCategory
@@ -134,6 +101,16 @@ const Create = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  // Function to fetch count (wraps RTK query)
+  const fetchCount = async () => {
+    const countResponse = await loadCodeModelCount({}).unwrap();
+    return { totalRecordCount: countResponse?.totalRecordCount };
+  };
+
+  const setCodeToInput = (code: string) => {
+    setValue("code", code ?? "");
+  };
+  useCodeGen(CODE_SETTINGS.modelTypes.Product, fetchCount, setCodeToInput);
 
   const onBack = () => {
     router.back();

@@ -49,6 +49,9 @@ const Page = () => {
         isLoading={isLoading || isFetching}
         setPage={setPage}
         setPageSize={setPageSize}
+        onRowClick={(row) => {
+          router.push(routes.viewPlanning(row.id as string));
+        }}
         meta={{
           pageIndex: result?.pageIndex as number,
           pageCount: result?.pageCount as number,

@@ -111,6 +111,7 @@ const Create = ({ isOpen, onClose, kind }: Props) => {
           : CODE_SETTINGS.modelTypes.PackageMaterial,
       prefix: codePrefix,
     } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+
     const res = await loadCodeMyModel(payload).unwrap();
     const generatePayload: GenerateCodeOptions = {
       maxlength: Number(getCodeSettings?.maximumNameLength),

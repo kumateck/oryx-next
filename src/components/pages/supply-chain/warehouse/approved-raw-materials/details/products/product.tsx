@@ -14,10 +14,11 @@ import {
   ProductionScheduleProductDto,
   useGetApiV1ProductByProductIdQuery,
   useGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery,
-  useGetApiV1ProductionScheduleMaterialStockByProductIdAndQuantityRequiredQuery,
-  useGetApiV1ProductionSchedulePackageMaterialStockByProductIdAndQuantityRequiredQuery,
+  useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
 import Purchase from "./purchase";
 import TableForData from "./table";
@@ -42,18 +43,18 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   const { data } = useGetApiV1ProductByProductIdQuery({
     productId,
   });
-  const { data: materialStockResponse } =
-    useGetApiV1ProductionScheduleMaterialStockByProductIdAndQuantityRequiredQuery(
+  const { data: materialStockResponse, isLoading: isLoadingRawStock } =
+    useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery(
       {
         productId,
-        quantityRequired: tab.quantity as number,
+        productionScheduleId: scheduleId,
       },
     );
-  const { data: packageStockResponse } =
-    useGetApiV1ProductionSchedulePackageMaterialStockByProductIdAndQuantityRequiredQuery(
+  const { data: packageStockResponse, isLoading: isLoadingPackageStock } =
+    useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery(
       {
         productId,
-        quantityRequired: tab.quantity as number,
+        productionScheduleId: scheduleId,
       },
     );
 
@@ -281,14 +282,22 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
           </div>
         </CardContent>
       </Card>
-      <Card className="space-y-4 p-5 pb-0">
-        <CardTitle>Raw Material</CardTitle>
-        <TableForData lists={rawLists} setItemLists={setRawLists} />
-      </Card>
-      <Card className="space-y-4 p-5">
-        <CardTitle>Packaging Material</CardTitle>
-        <TableForData lists={packageLists} setItemLists={setPackageLists} />
-      </Card>
+      {isLoadingRawStock ? (
+        <SkeletonLoadingPage />
+      ) : (
+        <Card className="space-y-4 p-5 pb-0">
+          <CardTitle>Raw Material</CardTitle>
+          <TableForData lists={rawLists} setItemLists={setRawLists} />
+        </Card>
+      )}
+      {isLoadingPackageStock ? (
+        <SkeletonLoadingPage />
+      ) : (
+        <Card className="space-y-4 p-5">
+          <CardTitle>Packaging Material</CardTitle>
+          <TableForData lists={packageLists} setItemLists={setPackageLists} />
+        </Card>
+      )}
       {enablePurchase && isOpenPurchase && (
         <Purchase
           lists={purchaseLists}
