@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { CODE_SETTINGS } from "./constants";
 import {
   NamingType,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
@@ -24,7 +25,7 @@ export const useCodeGen = (
 
     let seriesCounter = 1;
 
-    if (modelType && fetchCountQuery) {
+    if (modelType === CODE_SETTINGS.modelTypes.Product && fetchCountQuery) {
       try {
         const countResponse = await fetchCountQuery();
         seriesCounter = (countResponse?.totalRecordCount ?? 0) + 1;

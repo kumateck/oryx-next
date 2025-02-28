@@ -136,10 +136,7 @@ const Purchase = ({
   };
 
   const fetchCount = async () => {
-    const countResponse = await loadCodeModelCount({
-      type: RequisitionType.Purchase,
-    }).unwrap();
-    console.log(countResponse, "countResponse");
+    const countResponse = await loadCodeModelCount({}).unwrap();
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
 

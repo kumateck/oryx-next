@@ -53,13 +53,10 @@ export const getColumns =
       header: "Status",
       cell: ({ row }) => (
         <div className="flex items-center">
-          {(row.original?.materialStatus as unknown as MaterialStatus) !==
-            MaterialStatus.None && (
-            <TableBadge
-              className="rounded-full px-3 py-1 text-sm font-medium capitalize"
-              status={row.original?.materialStatus as unknown as MaterialStatus}
-            />
-          )}
+          <TableBadge
+            className="rounded-full px-3 py-1 text-sm font-medium capitalize"
+            status={row.original?.materialStatus as unknown as MaterialStatus}
+          />
         </div>
       ),
     },
