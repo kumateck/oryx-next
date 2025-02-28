@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
-  GrnDto,
   MaterialBatchDto,
   useGetApiV1WarehouseGrnByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -24,42 +23,12 @@ const GRNDetail = () => {
   const [packageLists, setPackageLists] = useState<MaterialBatchDto[]>([]);
 
   useEffect(() => {
-    if (grnResponse) {
-      const batchOptions = grnResponse.materialBatches?.map((item) => {
-        const batchNumber = item?.batchNumber as string;
-
-        const materialName = item?.checklist?.material?.name as string;
-
-        const manufacturerName = item?.checklist?.manufacturer?.name as string;
-
-        // const invoiceNumber = parseFloat(qtyNeeded.toString()).toFixed(2);
-        const invoiceNumber = item?.checklist?.shipmentInvoice?.code as string;
-
-        const totalQuantity = item?.totalQuantity as number;
-
-        const expiryDate = item.expiryDate;
-
-        const manufacturingDate = item.dateReceived;
-
-        const retestDate = item.dateReceived;
-
-        const status = item.status;
-
-        return {
-          batchNumber,
-          materialName,
-          manufacturerName,
-          invoiceNumber,
-          totalQuantity,
-          expiryDate,
-          manufacturingDate,
-          retestDate,
-          status,
-        };
-      }) as GrnDto[];
-      setPackageLists(batchOptions);
+    if (grnResponse?.materialBatches) {
+      // Directly set the materialBatches array to state
+      setPackageLists(grnResponse.materialBatches);
     }
   }, [grnResponse]);
+  console.log("Package List:::", packageLists);
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
@@ -102,13 +71,10 @@ const GRNDetail = () => {
             </div>
           </CardContent>
         </Card>
-        {/* <DragLists /> */}
-        {/* {data?.products && data?.products?.length > 0 && (
-          <Products scheduleId={scheduleId} products={data?.products ?? []} />
-        )} */}
+
         <Card className="space-y-4 p-5">
           <CardTitle>GRN/GRA Items</CardTitle>
-          <TableForData lists={packageLists} setItemLists={setPackageLists} />
+          <TableForData lists={packageLists} />
         </Card>
       </div>
     </ScrollablePageWrapper>
