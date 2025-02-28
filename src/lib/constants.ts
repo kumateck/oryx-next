@@ -150,7 +150,13 @@ export enum TimeType {
   Time = "time",
   Moment = "moment",
 }
-
+export enum MaterialStatus {
+  None = 0,
+  StockTransfer = 1,
+  Requisition = 2,
+  Local = 3,
+  Foreign = 4,
+}
 export enum QuestionTypes {
   ShortAnswer = 0,
   LongAnswer = 1,
@@ -211,7 +217,11 @@ export const routes = {
   editPlanningPackaging: () => `packaging`,
   editPlanningProcedure: () => `procedure`,
   editPackingOrder: () => `packing-order`,
-  rawMaterials: () => "raw-materials",
+  rawMaterials: () => "/warehouse/materials",
+  viewMaterial: (id: string) => `/warehouse/materials/${id}/details`,
+  viewScheduleRequisition: (scheduleId: string, productId: string) =>
+    `/production/schedules/${scheduleId}/product/${productId}/requisition`,
+
   createChecklist: (id: string) =>
     `/warehouse/receiving-area/${id}/create-checklist`,
   // createChecklist: () => `/warehouse/receiving-area/create-checklist`,

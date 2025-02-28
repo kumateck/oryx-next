@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
@@ -10,9 +11,8 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui";
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, routes } from "@/lib";
 import {
-  MaterialDtoIEnumerablePaginateable,
   MaterialKind,
   useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -26,19 +26,9 @@ import Create from "./create";
 
 const Page = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchQuery = useSelector((state) => state.common.searchInput);
-
-  const [rawMaterials, setRawMaterials] =
-    useState<MaterialDtoIEnumerablePaginateable>({
-      pageIndex: 0,
-      pageCount: 0,
-      data: [],
-      numberOfPagesToShow: 0,
-      startPageIndex: 0,
-      stopPageIndex: 0,
-      totalRecordCount: 0,
-    });
 
   const handleLoadMaterials = async (
     kind: EMaterialKind,
@@ -46,20 +36,18 @@ const Page = () => {
     pageSize: number,
     searchQuery: string,
   ) => {
-    const response = await loadMaterials({
+    await loadMaterials({
       page,
       pageSize,
       kind,
       searchQuery,
     }).unwrap();
-
-    setRawMaterials(response);
   };
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const [kind, setKind] = useState<EMaterialKind>(0);
 
-  const [loadMaterials, { isLoading, isFetching }] =
+  const [loadMaterials, { isLoading, isFetching, data: rawMaterials }] =
     useLazyGetApiV1MaterialQuery();
 
   useEffect(() => {
@@ -117,6 +105,9 @@ const Page = () => {
         isLoading={isLoading || isFetching}
         setPage={setPage}
         setPageSize={setPageSize}
+        onRowClick={(row) => {
+          router.push(routes.viewMaterial(row?.id as string));
+        }}
         meta={{
           pageIndex: rawMaterials?.pageIndex as number,
           pageCount: rawMaterials?.pageCount as number,

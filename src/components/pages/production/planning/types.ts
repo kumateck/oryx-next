@@ -35,9 +35,12 @@ export const CreateProductSchema = z.object({
   name: z.string({ required_error: "Name is required" }).min(1, {
     message: "Name is required",
   }),
-  code: z.string({ required_error: "Code is required" }).min(1, {
-    message: "Code is required",
-  }),
+  code: z
+    .string({ required_error: "Code is required" })
+    .min(1, {
+      message: "Code is required",
+    })
+    .refine((val) => val !== "undefined", { message: "Invalid code value" }),
   description: z.string().optional(),
   genericName: z.string().optional(),
   storageCondition: z.string().optional(),

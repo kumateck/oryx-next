@@ -1,29 +1,24 @@
 "use client";
 
-import { format } from "date-fns";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Icon } from "@/components/ui";
-import { routes } from "@/lib";
-import { useGetApiV1ProductByProductIdQuery } from "@/lib/redux/api/openapi.generated";
-import { cn } from "@/lib/utils";
+import { useGetApiV1MaterialByMaterialIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import StepWrapper from "@/shared/wrapper";
 
-import { Bom, OutdatedBom, Packaging, Routing } from "./tabs";
-
 const ViewPage: React.FC = () => {
   const { id } = useParams();
-  const { data: singleDetailed } = useGetApiV1ProductByProductIdQuery({
-    productId: id as string,
+  const materialId = id as string;
+  const { data: singleDetailed } = useGetApiV1MaterialByMaterialIdQuery({
+    materialId,
   });
 
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<string>(tablists[0]);
+  // const [activeTab, setActiveTab] = useState<string>(tablists[0]);
   return (
     <PageWrapper>
       <ScrollablePageWrapper className="space-y-8 pr-32">
@@ -37,15 +32,15 @@ const ViewPage: React.FC = () => {
           >
             <Icon name="ArrowLeft" className="h-5 w-5" />
             <div className="group-hover:underline">
-              <PageTitle title={"Products"} />
+              <PageTitle title={"Materials"} />
             </div>
           </div>
-          <Link href={routes.editPlanning(singleDetailed?.id as string)}>
+          {/* <Link href={routes.editPlanning(singleDetailed?.id as string)}>
             <div className="flex items-center gap-1 rounded-md border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
               <Icon name="Pencil" className="size-4" />
               <span className="text-sm">Edit</span>
             </div>
-          </Link>
+          </Link> */}
         </div>
         <StepWrapper className="w-full">
           <div className="space-y-6">
@@ -54,16 +49,6 @@ const ViewPage: React.FC = () => {
                 <span className="text-base font-normal text-primary-default">
                   {singleDetailed?.code}
                 </span>
-                <span className="text-sm font-normal text-neutral-default">
-                  | Created on{" "}
-                  {singleDetailed?.createdAt
-                    ? format(singleDetailed?.createdAt, "MMM d, yyyy. h:mma")
-                    : ""}
-                </span>
-                <span className="text-sm font-normal">
-                  {" "}
-                  | by: {singleDetailed?.createdBy?.name}
-                </span>
               </div>
               <span className="font-Medium block text-3xl text-neutral-secondary">
                 {singleDetailed?.name}{" "}
@@ -71,7 +56,12 @@ const ViewPage: React.FC = () => {
               <ul className="flex gap-2">
                 <li>
                   <div className="rounded-3xl border border-neutral-input px-2 text-sm text-neutral-700">
-                    {singleDetailed?.category?.name}
+                    {singleDetailed?.materialCategory?.name}
+                  </div>
+                </li>{" "}
+                <li>
+                  <div className="rounded-3xl border border-neutral-input px-2 text-sm text-neutral-700">
+                    {singleDetailed?.pharmacopoeia}
                   </div>
                 </li>
               </ul>
@@ -88,7 +78,7 @@ const ViewPage: React.FC = () => {
           </div>
         </StepWrapper>
 
-        <div>
+        {/* <div>
           <div className="border-b border-neutral-200 text-center text-sm font-medium">
             <ul className="-mb-px flex flex-wrap">
               {tablists.map((tab, idx) => (
@@ -114,9 +104,6 @@ const ViewPage: React.FC = () => {
           </div>
         </div>
         <div className="w-full">
-          {/* {activeTab === "Finished Goods" && (
-            <FinishedGoods data={singleDetailed?.finishedProducts ?? []} />
-          )} */}
           {activeTab === "Active BOM" && (
             <Bom
               data={singleDetailed?.currentBillOfMaterial}
@@ -133,17 +120,17 @@ const ViewPage: React.FC = () => {
           {activeTab === "Outdated BOM" && (
             <OutdatedBom data={singleDetailed?.outdatedBillOfMaterials ?? []} />
           )}
-        </div>
+        </div> */}
       </ScrollablePageWrapper>
     </PageWrapper>
   );
 };
 
-const tablists = [
-  // "Finished Goods",
-  "Active BOM",
-  "Packaging",
-  "Routing",
-  "Outdated BOM",
-];
+// const tablists = [
+//   // "Finished Goods",
+//   "Active BOM",
+//   "Packaging",
+//   "Routing",
+//   "Outdated BOM",
+// ];
 export default ViewPage;

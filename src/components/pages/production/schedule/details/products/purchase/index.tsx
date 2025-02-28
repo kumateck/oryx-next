@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -14,17 +14,14 @@ import {
 import {
   CODE_SETTINGS,
   ErrorResponse,
-  GenerateCodeOptions,
   RequisitionType,
   Units,
   convertToSmallestUnit,
-  generateCode,
   isErrorResponse,
 } from "@/lib";
+import { useCodeGen } from "@/lib/code-gen";
 import {
-  NamingType,
   PostApiV1RequisitionApiArg,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery, // useGetApiV1ProductQuery, // useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1RequisitionQuery,
   usePostApiV1RequisitionMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -54,23 +51,10 @@ const Purchase = ({
   productionScheduleId,
 }: Props) => {
   const router = useRouter();
-  // const { data: response } = useGetApiV1ProductQuery({
-  //   page: 1,
-  //   pageSize: 100,
-  // });
-  const { data: codeConfig } =
-    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-      modelType: CODE_SETTINGS.modelTypes.Requisition,
-    });
-  const [loadProduct] = useLazyGetApiV1RequisitionQuery();
-  // const [loadPlanning, { data: planning }] =
-  //   useLazyGetApiV1ProductByProductIdQuery();
+
+  const [loadCodeModelCount] = useLazyGetApiV1RequisitionQuery();
+
   const [saveMutation, { isLoading }] = usePostApiV1RequisitionMutation();
-  // const products = response?.data || [];
-  // const productOptions = products.map((product) => ({
-  //   label: product.name,
-  //   value: product.id,
-  // })) as Option[];
 
   const [purchaseLists, setPurchaseLists] =
     useState<MaterialRequestDto[]>(lists);
@@ -85,32 +69,30 @@ const Purchase = ({
     mode: "all",
   });
 
-  useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(codeConfig?.maximumNameLength),
-        minlength: Number(codeConfig?.minimumNameLength),
-        prefix: codeConfig?.prefix as string,
-        type: codeConfig?.namingType as NamingType,
-      };
-      const productsResponse = await loadProduct({
-        page: 1,
-        pageSize: 100000,
-      }).unwrap();
+  // useEffect(() => {
+  //   const loadCodes = async () => {
+  //     const generatePayload: GenerateCodeOptions = {
+  //       maxlength: Number(codeConfig?.maximumNameLength),
+  //       minlength: Number(codeConfig?.minimumNameLength),
+  //       prefix: codeConfig?.prefix as string,
+  //       type: codeConfig?.namingType as NamingType,
+  //     };
+  //     const productsResponse = await loadProduct({
+  //       page: 1,
+  //       pageSize: 100000,
+  //     }).unwrap();
 
-      const products = productsResponse?.totalRecordCount ?? 0;
-      generatePayload.seriesCounter = products + 1;
-      const code = await generateCode(generatePayload);
-      setValue("code", code);
-    };
+  //     const products = productsResponse?.totalRecordCount ?? 0;
+  //     generatePayload.seriesCounter = products + 1;
+  //     const code = await generateCode(generatePayload);
+  //     setValue("code", code);
+  //   };
 
-    loadCodes();
+  //   loadCodes();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [codeConfig]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [codeConfig]);
   const onSubmit = async (data: RequisitionRequestDto) => {
-    // console.log(data);
-    // const materials = [...packageLists, ...rawLists];
     const items = purchaseLists?.map((item) => ({
       materialId: item.materialId,
       quantity: convertToSmallestUnit(
@@ -152,6 +134,20 @@ const Purchase = ({
       }
     }
   };
+
+  const fetchCount = async () => {
+    const countResponse = await loadCodeModelCount({
+      type: RequisitionType.Purchase,
+    }).unwrap();
+    console.log(countResponse, "countResponse");
+    return { totalRecordCount: countResponse?.totalRecordCount };
+  };
+
+  const setCodeToInput = (code: string) => {
+    setValue("code", code ?? "");
+  };
+  useCodeGen(CODE_SETTINGS.modelTypes.Requisition, fetchCount, setCodeToInput);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
