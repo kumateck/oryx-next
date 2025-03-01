@@ -47,8 +47,7 @@ const Page = () => {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
 
-  const [loadPurchaseOrder] =
-    useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
+  const [loadInvoice] = useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
 
   const { data: invoicesResponse } =
     useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
@@ -84,7 +83,7 @@ const Page = () => {
   }, [invoiceIdOption]);
 
   const loadInvoiceDetailsHandler = async (id: string) => {
-    const res = await loadPurchaseOrder({
+    const res = await loadInvoice({
       id,
     }).unwrap();
 
@@ -99,6 +98,8 @@ const Page = () => {
       code: item.material?.code as string,
       costPrice: item.price?.toString(),
       manufacturer: item.manufacturer?.name as string,
+      purchaseOrderCode: item?.purchaseOrder?.code as string,
+      purchaseOrderId: item?.purchaseOrder?.id as string,
     })) as MaterialRequestDto[];
     setMaterialLists(payload);
   };

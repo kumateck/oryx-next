@@ -100,6 +100,8 @@ export default {
     "text-severe-disabled",
     "bg-danger-default",
     "text-danger-disabled",
+    "bg-gold-default",
+    "text-gold-disabled",
   ],
   theme: {
     extend: {
@@ -196,6 +198,14 @@ export default {
           inverted: "#038387",
           default: "#00666D",
           hover: "#02494C",
+        },
+        gold: {
+          disabled: "#FFDDB3",
+          bg: "#ECDFA5",
+          selected: "#F9E2AE",
+          inverted: "#F2C661",
+          default: "#C19C00",
+          hover: "#EAA300",
         },
         sidebar: {
           DEFAULT: "#F0F0F0",

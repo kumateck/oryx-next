@@ -163,12 +163,16 @@ export const getStatusColor = (status: MaterialStatus) => {
       return "bg-platinum-default text-platinum-disabled";
     case MaterialStatus.StockTransfer:
       return "bg-warning-default text-warning-disabled";
-    case MaterialStatus.Requisition:
+    case MaterialStatus.PurchaseRequisition:
       return "bg-teal-default text-teal-disabled";
     case MaterialStatus.Foreign:
       return "bg-severe-default text-severe-disabled";
     case MaterialStatus.Local:
       return "bg-danger-default text-danger-disabled";
+    case MaterialStatus.StockRequisition:
+      return "bg-gold-default text-gold-disabled";
+    case MaterialStatus.Issued:
+      return "bg-success-default text-success-disabled";
 
     default:
       return "bg-white text-neutral-dark";

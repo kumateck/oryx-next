@@ -153,9 +153,11 @@ export enum TimeType {
 export enum MaterialStatus {
   None = 0,
   StockTransfer = 1,
-  Requisition = 2,
+  PurchaseRequisition = 2,
   Local = 3,
   Foreign = 4,
+  StockRequisition = 5,
+  Issued = 6,
 }
 export enum QuestionTypes {
   ShortAnswer = 0,

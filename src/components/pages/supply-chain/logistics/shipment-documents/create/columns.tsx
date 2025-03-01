@@ -1,8 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Units, convertToLargestUnit } from "@/lib";
+
 import { MaterialRequestDto } from "./type";
 
 export const columns: ColumnDef<MaterialRequestDto>[] = [
+  {
+    accessorKey: "purchaseOrderCode",
+    header: "PO Code",
+  },
   {
     accessorKey: "code",
     header: "Material Code",
@@ -22,10 +28,32 @@ export const columns: ColumnDef<MaterialRequestDto>[] = [
   {
     accessorKey: "expectedQuantity",
     header: "Expected Quantity",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.expectedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "receivedQuantity",
     header: "Received Quantity",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.receivedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "manufacturer",
