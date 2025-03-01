@@ -1,23 +1,21 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialDetailsDto } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<MaterialBatchDto>[] = [
+export const columns: ColumnDef<MaterialDetailsDto>[] = [
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original.checklist?.material?.name}</div>,
+    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
   },
   {
     accessorKey: "materialCode",
     header: "Material Code",
-    cell: ({ row }) => <div>{row.original.checklist?.material?.code}</div>,
+    cell: ({ row }) => <div>{row.original?.material?.code}</div>,
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => (
-      <div>{row.original.checklist?.material?.totalStock}</div>
-    ),
+    cell: ({ row }) => <div>{row.original?.material?.totalStock}</div>,
   },
 ];
