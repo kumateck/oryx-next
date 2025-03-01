@@ -1,4 +1,4 @@
-import { MaterialStatus, cn, getStatusColor } from "@/lib";
+import { MaterialStatus, cn, getStatusColor, splitWords } from "@/lib";
 
 interface Props {
   status: MaterialStatus;
@@ -12,7 +12,7 @@ const TableBadge = ({ status, className }: Props) => {
         className,
       )}
     >
-      <span>{MaterialStatus[status]}</span>
+      <span>{splitWords(MaterialStatus[status])}</span>
     </div>
   );
 };

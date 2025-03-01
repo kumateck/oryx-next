@@ -130,6 +130,7 @@ const Purchase = ({
         toast.success("Purchase Requisition created successfully");
         router.push(`/production/requisition`);
       } catch (error) {
+        console.log(error, "error");
         toast.error(isErrorResponse(error as ErrorResponse)?.description);
       }
     }

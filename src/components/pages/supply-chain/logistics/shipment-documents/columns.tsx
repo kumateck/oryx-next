@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
+import { ConfirmDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 // import { Option } from "@/lib";
 import {
@@ -64,10 +64,14 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
         </DropdownMenuItem>
       </TableMenuAction>
 
-      <ConfirmDeleteDialog
+      <ConfirmDialog
         open={isArrivedOpen}
         onClose={() => setIsArrivedOpen(false)}
         onConfirm={handleArrived}
+        title="Mark as Arrived"
+        description="Are you sure you want to mark this shipment as arrived?"
+        icon="CircleCheck"
+        confirmText="Confirm"
       />
     </section>
   );

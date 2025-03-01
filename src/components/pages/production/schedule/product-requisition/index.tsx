@@ -78,7 +78,6 @@ const Page = () => {
         uomId: material.baseUoM?.id,
       };
     }) as unknown as MaterialRequestDto[];
-    console.log(filtered, "filtered");
     setPurchaseLists(filtered);
     setIsOpenPurchase(true);
   };

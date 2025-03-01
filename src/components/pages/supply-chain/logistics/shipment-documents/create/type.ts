@@ -18,6 +18,8 @@ export const createRequisitionItemRequestSchema = z.object({
   uomName: z.string().optional(),
   costPrice: z.string().optional(),
   manufacturerId: z.string().optional(),
+  purchaseOrderId: z.string().optional(),
+  purchaseOrderCode: z.string().optional(),
   options: z
     .array(z.object({ value: z.string(), label: z.string() }))
     .optional(),

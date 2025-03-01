@@ -27,10 +27,10 @@ export function DataTableRowActions<TData extends MaterialRequestDto>({
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
 ): ColumnDef<MaterialRequestDto>[] => [
-  {
-    accessorKey: "purchaseOrderId",
-    header: "PO",
-  },
+  // {
+  //   accessorKey: "purchaseOrderCode",
+  //   header: "PO",
+  // },
   {
     accessorKey: "code",
     header: "Material Code",

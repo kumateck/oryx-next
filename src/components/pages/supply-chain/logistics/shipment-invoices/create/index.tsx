@@ -118,6 +118,7 @@ const Page = () => {
             value: "",
           },
           purchaseOrderId: item.id as string,
+          purchaseOrderCode: item.code as string,
           code: x.material?.code as string,
           costPrice: x.price?.toString(),
           totalCost: totalCost?.toString(),
@@ -207,7 +208,7 @@ const Page = () => {
     // console.log(materialLists, "materialLists");
   };
 
-  console.log(poLists, "poLists");
+  // console.log(poLists, "poLists");
   // const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   const updateParentState = (

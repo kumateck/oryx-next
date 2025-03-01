@@ -8,8 +8,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  // AlertDialogTrigger,
+  AlertDialogTitle, // AlertDialogTrigger,
   // Button,
   Icon,
   LucideIconProps,
@@ -58,7 +57,7 @@ export const ConfirmDialog = ({
           >
             <Icon
               name={icon}
-              className={cn("text-danger-500 h-6 w-6", textClassName)}
+              className={cn("h-6 w-6 text-primary-inverted", textClassName)}
             />
           </div>
 
@@ -82,7 +81,7 @@ export const ConfirmDialog = ({
           )}
           <AlertDialogAction
             className={cn(
-              "bg-danger-500 hover:bg-danger-600 text-white",
+              "bg-primary-default text-white hover:bg-primary-pressed",
               buttonClassName,
             )}
             onClick={onConfirm}
