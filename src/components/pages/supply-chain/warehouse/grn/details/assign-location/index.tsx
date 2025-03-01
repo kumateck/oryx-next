@@ -13,11 +13,13 @@ import {
 } from "@/components/ui";
 import { ErrorResponse, Option, isErrorResponse } from "@/lib";
 import {
+  MaterialBatchDto,
+  SupplyMaterialBatchRequest,
   useGetApiV1WarehouseRackQuery,
   useGetApiV1WarehouseShelfQuery,
+  usePostApiV1MaterialBatchSupplyMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-import { BatchColumns } from "../columns";
 import AssignLocationForm from "./form";
 import { LocationRequestDto, LocationValidator } from "./type";
 
@@ -25,7 +27,7 @@ interface AssignLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
-  selectedBatch: BatchColumns | null;
+  selectedBatch: MaterialBatchDto | null;
 }
 
 const AssignLocationDialog = ({
@@ -34,6 +36,18 @@ const AssignLocationDialog = ({
   onSuccess,
   selectedBatch,
 }: AssignLocationDialogProps) => {
+  const [supplyShelf, { isLoading }] =
+    usePostApiV1MaterialBatchSupplyMutation();
+
+  const { data: racks } = useGetApiV1WarehouseRackQuery({
+    page: 1,
+    pageSize: 100,
+  });
+
+  const { data: shelves } = useGetApiV1WarehouseShelfQuery({
+    page: 1,
+    pageSize: 100,
+  });
   const {
     control,
     register,
@@ -45,18 +59,8 @@ const AssignLocationDialog = ({
     resolver: LocationValidator,
     mode: "onSubmit",
     defaultValues: {
-      locations: [], // Start with empty array for dynamic fields
+      locations: [],
     },
-  });
-
-  const { data: racks } = useGetApiV1WarehouseRackQuery({
-    page: 1,
-    pageSize: 100,
-  });
-
-  const { data: shelves } = useGetApiV1WarehouseShelfQuery({
-    page: 1,
-    pageSize: 100,
   });
 
   const shelfOptions = shelves?.data?.map((item) => ({
@@ -76,19 +80,20 @@ const AssignLocationDialog = ({
         return;
       }
 
-      // Prepare payload
       const payload = {
         materialBatchId: selectedBatch.id,
         shelfMaterialBatches: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
-          materialBatchId: selectedBatch.id,
           quantity: location.quantity,
-          uomId: "", // Generate random UUID
-          note: location.note,
+          uomId: "dd7c90e9-54db-47b6-bbb7-9107a5e9a9e4",
+          note: location.note || "",
         })),
-      };
+      } satisfies SupplyMaterialBatchRequest;
 
-      console.log("Payload:", payload);
+      await supplyShelf({
+        supplyMaterialBatchRequest: payload,
+      });
+
       toast.success("Location assigned successfully");
       onSuccess();
       handleClose();
@@ -134,7 +139,7 @@ const AssignLocationDialog = ({
               </Button>
               <Button type="submit" className="flex items-center gap-2">
                 <Icon name="Plus" className="h-4 w-4" />
-                <span>Assign</span>
+                <span>{isLoading ? "Assigning..." : "Assign"}</span>
               </Button>
             </div>
           </div>

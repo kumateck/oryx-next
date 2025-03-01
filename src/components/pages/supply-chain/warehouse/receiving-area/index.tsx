@@ -37,6 +37,11 @@ const ReceivingArea = () => {
   }));
   const selectedIds = getMatchingIds(data, rowSelection);
 
+  const selectedData = data.filter((item) => selectedIds.includes(item.id));
+
+  const isCreateGRNDisabled =
+    selectedData.length === 0 || selectedData.some((row) => row.status === 0);
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -55,7 +60,7 @@ const ReceivingArea = () => {
             className="bg-neutral-dark text-white"
             size={"sm"}
             onClick={() => setIsGRNOpen(true)}
-            disabled={Object.keys(rowSelection).length === 0}
+            disabled={isCreateGRNDisabled}
           >
             <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
           </Button>

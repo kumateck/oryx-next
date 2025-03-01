@@ -22,6 +22,7 @@ interface AddBatchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
+  uomOptions: Option[];
   packingUomOptions: Option[];
 }
 
@@ -29,12 +30,14 @@ const AddBatchDialog = ({
   isOpen,
   onClose,
   onSave,
+  uomOptions,
   packingUomOptions,
 }: AddBatchDialogProps) => {
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(checklistBatchRequestSchema),
@@ -44,8 +47,13 @@ const AddBatchDialog = ({
   const onSubmit = (data: any) => {
     try {
       const filteredWeights = data.weights.filter(
-        (weight: any) => weight.srNumber || weight.grossWeight,
+        (weight: any) => weight.srNumber && weight.grossWeight,
       );
+
+      if (filteredWeights.length === 0) {
+        toast.error("At least one SR Number and Gross Weight pair is required");
+        return;
+      }
 
       const validatedData = checklistBatchRequestSchema.parse({
         ...data,
@@ -53,6 +61,7 @@ const AddBatchDialog = ({
       });
 
       onSave(validatedData);
+      reset();
       onClose();
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -120,7 +129,7 @@ const AddBatchDialog = ({
                 type: InputTypes.SELECT,
                 control: control as Control,
                 required: true,
-                options: packingUomOptions,
+                options: uomOptions,
                 errors,
               },
             ]}
