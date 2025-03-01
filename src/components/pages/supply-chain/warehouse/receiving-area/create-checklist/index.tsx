@@ -137,6 +137,11 @@ const CreateChecklist = () => {
       return;
     }
 
+    if (data.batches.length === 0) {
+      toast.error("Please add at least one batch");
+      return;
+    }
+
     const payload: CreateChecklistRequest = {
       distributedRequisitionMaterialId: distributedMaterialId,
       materialId: distributedMaterial.material?.id,
@@ -166,6 +171,8 @@ const CreateChecklist = () => {
           Number(batch.numberOfContainers) * Number(batch.quantityPerContainer),
         initialLocationId: "d959476f-7a2e-459a-b13b-9a41708c7299", // Replace with actual location ID
         dateReceived: batch.manufacturingDate.toISOString(),
+        uoMId: batch.uom.value,
+        manufacturingDate: batch.manufacturingDate.toISOString(),
         expiryDate: batch.expiryDate.toISOString(),
         sampleWeights: batch?.weights
           ?.filter((weight) => weight.srNumber || weight.grossWeight)
@@ -179,7 +186,7 @@ const CreateChecklist = () => {
     try {
       await checklistMutation({ createChecklistRequest: payload }).unwrap();
       toast.success("Checklist created successfully");
-      // router.push("/checklists");
+      router.push("/warehouse/receving-area");
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

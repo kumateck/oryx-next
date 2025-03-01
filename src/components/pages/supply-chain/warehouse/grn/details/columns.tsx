@@ -5,7 +5,10 @@ import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
 import { BatchStatus as BatchStatusEnum } from "@/lib";
-import { BatchStatus } from "@/lib/redux/api/openapi.generated";
+import {
+  BatchStatus,
+  MaterialBatchDto,
+} from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
@@ -15,11 +18,13 @@ interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-export function DataTableRowActions<TData extends BatchColumns>({
+export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [selectedBatch, setSelectedBatch] = useState<BatchColumns | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<MaterialBatchDto | null>(
+    null,
+  );
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
 
   return (
@@ -52,22 +57,6 @@ export function DataTableRowActions<TData extends BatchColumns>({
   );
 }
 
-export interface BatchColumns {
-  id?: string;
-  code?: string | null;
-  batchNumber?: string | null;
-  materialName?: string | null;
-  manufacturerName?: string | null;
-  invoiceNumber?: string | null;
-  status?: BatchStatus;
-  dateReceived?: string;
-  dateApproved?: string | null;
-  totalQuantity?: number;
-  consumedQuantity?: number;
-  remainingQuantity?: number;
-  expiryDate?: string;
-}
-
 const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
   [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
@@ -79,46 +68,58 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
 };
 
-export const getColumns = (): ColumnDef<BatchColumns>[] => [
+export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
-    accessorKey: "code",
+    accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batchNumber ?? "N/A"}</div>,
+    cell: ({ row }) => <div>{row.original.batchNumber ?? "-"}</div>,
   },
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original.materialName ?? "N/A"}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.material?.name ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "manufacturerName",
     header: "Manufacturer Name",
-    cell: ({ row }) => <div>{row.original.manufacturerName ?? "N/A"}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.manufacturer?.name ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",
-    cell: ({ row }) => <div>{row.original.invoiceNumber ?? "N/A"}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.shipmentInvoice?.code ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "totalQuantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.totalQuantity}</div>,
+    cell: ({ row }) => <div>{row.original.totalQuantity ?? "-"}</div>,
   },
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.expiryDate?.split("T")[0] ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.manufacturingDate?.split("T")[0] ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "retestDate",
     header: "Retest Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.retestDate?.split("T")[0] ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "status",

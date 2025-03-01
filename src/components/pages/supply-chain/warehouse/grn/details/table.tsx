@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { GrnDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 // import { useEffect } from "react";
 import { ListsTable } from "@/shared/datatable";
 
@@ -12,9 +12,9 @@ import { ListsTable } from "@/shared/datatable";
 import { getColumns } from "./columns";
 
 interface Props {
-  lists: GrnDto[];
-  setItemLists?: React.Dispatch<React.SetStateAction<GrnDto[]>>;
-  defaultColumns?: ColumnDef<GrnDto>[];
+  lists: MaterialBatchDto[];
+  setItemLists?: React.Dispatch<React.SetStateAction<MaterialBatchDto[]>>;
+  defaultColumns?: ColumnDef<MaterialBatchDto>[];
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   const columns = getColumns();

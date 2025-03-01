@@ -53,6 +53,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  uomOptions,
   packingUomOptions,
   checklistBooleanOptions,
   checklistContainersOptions,
@@ -180,7 +181,6 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
         </CardContent>
       </Card>
 
-      {/* BATCHES */}
       <div className="flex justify-between px-2 py-5">
         <span className="font-medium">Batch Information</span>
         <Button
@@ -200,6 +200,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
         onSave={(data) => {
           append(data as any);
         }}
+        uomOptions={uomOptions}
         packingUomOptions={packingUomOptions}
       />
 
@@ -214,7 +215,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
             expiryDate: (field as any).expiryDate,
             manufacturingDate: (field as any).manufacturingDate,
             retestDate: (field as any).retestDate,
-            // weights: (field as any).weights,
+            weights: (field as any).retestDate,
           };
 
           const weights = (field as any).weights || [];
@@ -231,11 +232,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
 
               <Card className="space-y-4 p-5">
                 <CardTitle>Batch Information</CardTitle>
-                <TableForData
-                  lists={[batchData]}
-                  // columns={getColumns()}
-                  // If your table component needs any additional props
-                />
+                <TableForData lists={[batchData]} />
                 {weights &&
                   weights.some(
                     (w: { srNumber: any; grossWeight: any }) =>
