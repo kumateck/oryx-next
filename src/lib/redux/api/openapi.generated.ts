@@ -4518,15 +4518,23 @@ export type CreateItemRequest = {
   isAvailable?: boolean;
   materialKind?: MaterialKind;
 };
-export type DepartmentWarehouseDto = {
-  warehouse?: CollectionItemDto;
+export type DepartmentType = 0 | 1;
+export type WarehouseType = 0 | 1 | 2 | 3;
+export type WarehouseDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  materialKind?: MaterialKind;
+  locations?: CollectionItemDto[] | null;
 };
 export type DepartmentDto = {
   id?: string;
   code?: string | null;
   name?: string | null;
+  type?: DepartmentType;
   description?: string | null;
-  warehouses?: DepartmentWarehouseDto[] | null;
+  warehouses?: WarehouseDto[] | null;
 };
 export type UserDto = {
   id?: string;
@@ -4575,14 +4583,35 @@ export type TypeResponse = {
   value?: number;
   name?: string | null;
 };
-export type CreateDepartmentWarehouseRequest = {
-  warehouseId?: string;
+export type CreateWarehouseLocationShelfRequest = {
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
+export type CreateWarehouseLocationRackRequest = {
+  name?: string | null;
+  description?: string | null;
+  shelves?: CreateWarehouseLocationShelfRequest[] | null;
+};
+export type CreateWarehouseLocationRequest = {
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  racks?: CreateWarehouseLocationRackRequest[] | null;
+};
+export type CreateWarehouseRequest = {
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  materialKind?: MaterialKind;
+  locations?: CreateWarehouseLocationRequest[] | null;
 };
 export type CreateDepartmentRequest = {
   code?: string | null;
   name?: string | null;
   description?: string | null;
-  warehouses?: CreateDepartmentWarehouseRequest[] | null;
+  type?: DepartmentType;
+  warehouses?: CreateWarehouseRequest[] | null;
 };
 export type DepartmentDtoIEnumerablePaginateable = {
   data?: DepartmentDto[] | null;
@@ -6650,6 +6679,8 @@ export type ShipmentInvoiceItem = {
   lastDeletedBy?: User;
   shipmentInvoiceId?: string;
   shipmentInvoice?: ShipmentInvoice;
+  distributedRequisitionMaterialId?: string | null;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
   materialId?: string;
   material?: Material;
   uoMId?: string;
@@ -6676,6 +6707,8 @@ export type ShipmentInvoiceItemRead = {
   lastDeletedBy?: User;
   shipmentInvoiceId?: string;
   shipmentInvoice?: ShipmentInvoiceRead;
+  distributedRequisitionMaterialId?: string | null;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
   materialId?: string;
   material?: MaterialRead;
   uoMId?: string;
@@ -6705,8 +6738,7 @@ export type DistributedRequisitionMaterial = {
   requisitionItem?: RequisitionItem;
   warehouseArrivalLocationId?: string | null;
   warehouseArrivalLocation?: WarehouseArrivalLocation;
-  shipmentInvoiceItemId?: string | null;
-  shipmentInvoiceItem?: ShipmentInvoiceItem;
+  shipmentInvoiceItems?: ShipmentInvoiceItem[] | null;
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoice;
   materialId?: string | null;
@@ -6739,8 +6771,7 @@ export type DistributedRequisitionMaterialRead = {
   requisitionItem?: RequisitionItemRead;
   warehouseArrivalLocationId?: string | null;
   warehouseArrivalLocation?: WarehouseArrivalLocationRead;
-  shipmentInvoiceItemId?: string | null;
-  shipmentInvoiceItem?: ShipmentInvoiceItemRead;
+  shipmentInvoiceItems?: ShipmentInvoiceItemRead[] | null;
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoiceRead;
   materialId?: string | null;
@@ -7195,7 +7226,6 @@ export type WarehouseLocationRead = {
   description?: string | null;
   racks?: WarehouseLocationRackRead[] | null;
 };
-export type WarehouseType = 0 | 1;
 export type Warehouse = {
   id?: string;
   createdAt?: string;
@@ -7208,6 +7238,8 @@ export type Warehouse = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  departmentId?: string | null;
+  department?: Department;
   description?: string | null;
   locations?: WarehouseLocation[] | null;
   arrivalLocation?: WarehouseArrivalLocation;
@@ -7226,69 +7258,41 @@ export type WarehouseRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  departmentId?: string | null;
+  department?: Department;
   description?: string | null;
   locations?: WarehouseLocationRead[] | null;
   arrivalLocation?: WarehouseArrivalLocationRead;
   type?: WarehouseType;
   materialKind?: MaterialKind;
 };
-export type DepartmentWarehouse = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  departmentId?: string;
-  department?: Department;
-  warehouseId?: string;
-  warehouse?: Warehouse;
-};
-export type DepartmentWarehouseRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  departmentId?: string;
-  department?: Department;
-  warehouseId?: string;
-  warehouse?: WarehouseRead;
-};
 export type Department = {
   id?: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;
+  type?: DepartmentType;
   createdAt?: string;
   updatedAt?: string | null;
   createdById?: string | null;
   lastUpdatedById?: string | null;
   deletedAt?: string | null;
   lastDeletedById?: string | null;
-  warehouses?: DepartmentWarehouse[] | null;
+  warehouses?: Warehouse[] | null;
 };
 export type DepartmentRead = {
   id?: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;
+  type?: DepartmentType;
   createdAt?: string;
   updatedAt?: string | null;
   createdById?: string | null;
   lastUpdatedById?: string | null;
   deletedAt?: string | null;
   lastDeletedById?: string | null;
-  warehouses?: DepartmentWarehouseRead[] | null;
+  warehouses?: WarehouseRead[] | null;
 };
 export type User = {
   id?: string;
@@ -7711,7 +7715,7 @@ export type DistributedRequisitionMaterialDto = {
   uom?: UnitOfMeasureDto;
   supplier?: SupplierDto;
   manufacturer?: ManufacturerDto;
-  shipmentInvoiceItem?: ShipmentInvoiceItemDto;
+  shipmentInvoiceItems?: ShipmentInvoiceItemDto[] | null;
   shipmentInvoice?: ShipmentInvoiceDto;
   quantity?: number;
   arrivedAt?: string | null;
@@ -7819,14 +7823,6 @@ export type MoveMaterialBatchRequest = {
   fromWarehouseId?: string;
   toWarehouseId?: string;
   quantity?: number;
-};
-export type WarehouseDto = {
-  id?: string;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  materialKind?: MaterialKind;
-  locations?: CollectionItemDto[] | null;
 };
 export type WarehouseStockDto = {
   warehouse?: WarehouseDto;
@@ -8339,7 +8335,7 @@ export type DistributionRequisitionItem = {
 export type MaterialDistributionSection = {
   material?: MaterialDto;
   shipmentInvoice?: ShipmentInvoiceDto;
-  shipmentInvoiceItem?: ShipmentInvoiceItemDto;
+  shipmentInvoiceItems?: ShipmentInvoiceItemDto[] | null;
   totalQuantity?: number;
   items?: DistributionRequisitionItem[] | null;
 };
@@ -8352,7 +8348,7 @@ export type DistributionRequisitionItemRequest = {
   quantityAllocated?: number;
 };
 export type MaterialDistributionSectionRequest = {
-  shipmentInvoiceItemId?: string | null;
+  shipmentInvoiceItemIds?: string[] | null;
   supplierId?: string | null;
   manufacturerId?: string | null;
   items?: DistributionRequisitionItemRequest[] | null;
@@ -9257,29 +9253,6 @@ export type UpdateUserRoleRequest = {
 };
 export type UploadFileRequest = {
   file?: string | null;
-};
-export type CreateWarehouseLocationShelfRequest = {
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-};
-export type CreateWarehouseLocationRackRequest = {
-  name?: string | null;
-  description?: string | null;
-  shelves?: CreateWarehouseLocationShelfRequest[] | null;
-};
-export type CreateWarehouseLocationRequest = {
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
-  racks?: CreateWarehouseLocationRackRequest[] | null;
-};
-export type CreateWarehouseRequest = {
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  materialKind?: MaterialKind;
-  locations?: CreateWarehouseLocationRequest[] | null;
 };
 export type WarehouseDtoIEnumerablePaginateable = {
   data?: WarehouseDto[] | null;

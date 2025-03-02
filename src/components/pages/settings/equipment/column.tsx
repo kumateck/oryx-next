@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, IsYesorNo, isErrorResponse } from "@/lib";
 import {
   EquipmentDto,
   useDeleteApiV1ProductEquipmentByEquipmentIdMutation,
@@ -13,7 +13,6 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
-import { IsYesorNo } from "./types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;

@@ -8,30 +8,21 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { DepartmentType, InputTypes } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
-  warehouseOptions: Option[];
-
-  defaultValues?: TFieldValues;
 }
 const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  warehouseOptions,
-
-  defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
-        fieldWrapperClassName="flex-grow"
         config={[
           {
             register: register("code" as Path<TFieldValues>),
@@ -52,7 +43,7 @@ const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("name" as Path<TFieldValues>),
             label: "Name",
-            placeholder: "Ener name",
+            placeholder: "Enter name",
             type: InputTypes.TEXT,
 
             required: true,
@@ -60,22 +51,17 @@ const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("address" as Path<TFieldValues>),
-            label: "Address",
-            placeholder: "Ener address",
-            type: InputTypes.TEXT,
-            required: true,
-            errors,
-          },
-          {
-            label: "Warehouse Selection",
+            label: "Type",
             control: control as Control,
-            type: InputTypes.MULTI,
-            name: "warehouseIds",
-            defaultValue: defaultValues?.warehouseIds,
+            type: InputTypes.RADIO,
+            name: "type",
             required: true,
-            placeholder: "Select warehouses",
-            options: warehouseOptions,
+            options: Object.entries(DepartmentType)
+              .filter(([, value]) => typeof value === "number")
+              .map(([key, value]) => ({
+                label: key, // "Raw" or "Package"
+                value: value.toString(), // 0 or 1
+              })),
             errors,
           },
           {

@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { IsYesorNo } from "@/lib";
+
 export const CreateEquipmentSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   machineId: z.string().min(1, { message: "Machine No is required" }),
@@ -61,8 +63,3 @@ export const CreateEquipmentSchema = z.object({
 
 export type EquipmentRequestDto = z.infer<typeof CreateEquipmentSchema>;
 export const CreateEquipmentValidator = zodResolver(CreateEquipmentSchema);
-
-export enum IsYesorNo {
-  Yes = 1,
-  No = 0,
-}

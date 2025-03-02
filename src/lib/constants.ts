@@ -83,8 +83,10 @@ export enum EMaterialKind {
 }
 
 export enum WarehouseType {
-  Storage = 0,
-  Production = 1,
+  RawMaterialStorage = 0,
+  PackagedMaterialStorage = 1,
+  FinishedGoodsStorage = 2,
+  Production = 3,
 }
 export enum SupplierType {
   Foreign = 0,
@@ -177,7 +179,14 @@ export interface Option {
   label: string;
   value: string;
 }
-
+export enum IsYesorNo {
+  Yes = 1,
+  No = 0,
+}
+export enum IsTrueorFalse {
+  True = 1,
+  False = 0,
+}
 export enum BatchStatus {
   Received = 0,
   Quarantine = 1,
@@ -346,4 +355,9 @@ export enum Intactness {
 export enum ConsignmentCarrier {
   Bad = 0,
   Good = 1,
+}
+
+export enum DepartmentType {
+  Production = 0,
+  NonProduction = 1,
 }

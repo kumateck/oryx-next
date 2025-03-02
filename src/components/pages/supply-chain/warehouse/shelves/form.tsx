@@ -46,7 +46,7 @@ const WarehouseForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("name" as Path<TFieldValues>),
             label: "Name",
-            placeholder: "Ener name",
+            placeholder: "Enter name",
             type: InputTypes.TEXT,
 
             required: true,

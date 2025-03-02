@@ -80,7 +80,7 @@ export const getColumns = (
   {
     accessorKey: "materialId",
     header: "Component Material",
-    cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
+    cell: ({ row }) => <div>{row.original.material?.label}</div>,
   },
   {
     accessorKey: "baseQuantity",
@@ -92,13 +92,18 @@ export const getColumns = (
     accessorKey: "directLinkMaterialId",
     header: "Direct Link Material",
     cell: ({ row }) => (
-      <div className="">{row.original.directLinkMaterialId?.label}</div>
+      <div className="">{row.original.directLinkMaterial?.label}</div>
     ),
   },
   {
     accessorKey: "unitCapacity",
     header: "Unit Capacity",
     cell: ({ row }) => <div>{row.original.unitCapacity}</div>,
+  },
+  {
+    accessorKey: "packingExcessMargin",
+    header: "Packing Excess",
+    cell: ({ row }) => <div>{row.original.packingExcessMargin}</div>,
   },
   {
     accessorKey: "materialThickness",

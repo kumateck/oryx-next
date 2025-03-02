@@ -30,6 +30,7 @@ interface Props {
   itemLists: PackagingRequestDto[];
 }
 const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
+  console.log(details, "details");
   const {
     register,
     control,
@@ -48,12 +49,6 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     kind: 1,
   });
 
-  // const materialOptions = materialResponse?.data
-  //   // ?.filter((item) => item.kind === 1)
-  //   ?.map((uom: MaterialDto) => ({
-  //     label: uom.name,
-  //     value: uom.id,
-  //   })) as Option[];
   const materialOptions = _.isEmpty(itemLists)
     ? (materialResponse?.data?.map((uom: MaterialDto) => ({
         label: uom.name,
@@ -62,7 +57,7 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     : (_.filter(
         materialResponse?.data,
         (itemA) =>
-          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId.value),
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.material.value),
       )?.map((uom: MaterialDto) => ({
         label: uom.name,
         value: uom.id,

@@ -20,6 +20,7 @@ import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,
   useGetApiV1CollectionUomQuery,
+  useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ProductMutation,
@@ -49,6 +50,11 @@ const Create = () => {
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery();
+  const equipmentOptions = equipmentResponse?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
 
   useEffect(() => {
     loadCollection({
@@ -86,6 +92,7 @@ const Create = () => {
       ...data,
       categoryId: data.categoryId?.value,
       baseUomId: data.baseUomId?.value,
+      equipmentId: data.equipment?.value,
       basePackingUomId: data.basePackingUomId?.value,
     } satisfies CreateProductRequest;
 
@@ -145,6 +152,7 @@ const Create = () => {
                 categoryOptions={categoryOptions}
                 uomOptions={uomOptions}
                 packingUomOptions={packingUomOptions}
+                equipmentOptions={equipmentOptions}
               />
             </CardContent>
           </Card>

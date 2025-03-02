@@ -15,6 +15,7 @@ import {
   PostApiV1CollectionApiArg,
   PutApiV1ProductByProductIdApiArg,
   useGetApiV1CollectionUomQuery,
+  useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductByProductIdQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1ProductByProductIdMutation,
@@ -48,6 +49,9 @@ const ProductInfo = () => {
     undefined,
   );
   const [defaultUom, setDefaultUom] = useState<Option | undefined>(undefined);
+  const [defaultEquipment, setDefaultEquipment] = useState<Option | undefined>(
+    undefined,
+  );
   const [defaultPackingUom, setDefaultPackingUom] = useState<
     Option | undefined
   >(undefined);
@@ -62,6 +66,11 @@ const ProductInfo = () => {
     resolver: CreateProductValidator,
     mode: "all",
   });
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery();
+  const equipmentOptions = equipmentResponse?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
 
   useEffect(() => {
     if (productId) {
@@ -79,6 +88,11 @@ const ProductInfo = () => {
       label: product?.category?.name as string,
       value: product?.category?.id as string,
     } as Option;
+    const equipment = {
+      label: product?.equipment?.name as string,
+      value: product?.equipment?.id as string,
+    } as Option;
+
     const uom = {
       label: product?.baseUoM?.symbol as string,
       value: product?.baseUoM?.id as string,
@@ -90,6 +104,7 @@ const ProductInfo = () => {
     setDefaultCategory(category);
     setDefaultUom(uom);
     setDefaultPackingUom(puom);
+    setDefaultEquipment(equipment);
     const defaultProduct = {
       code: product?.code as string,
       name: product?.name as string,
@@ -107,6 +122,10 @@ const ProductInfo = () => {
         label: product?.category?.name as string,
         value: product?.category?.id as string,
       },
+      equipment: {
+        label: product?.equipment?.name as string,
+        value: product?.equipment?.id as string,
+      },
     } as ProductRequestDto;
     setValue("code", defaultProduct.code);
     setValue("name", defaultProduct.name);
@@ -114,6 +133,7 @@ const ProductInfo = () => {
     setValue("categoryId", defaultProduct.categoryId);
     setValue("baseUomId", defaultProduct.baseUomId);
     setValue("basePackingUomId", defaultProduct.basePackingUomId);
+    setValue("equipment", defaultProduct.equipment);
     setValue("filledWeight", defaultProduct.filledWeight);
     setValue("shelfLife", defaultProduct.shelfLife);
     setValue("storageCondition", defaultProduct.storageCondition);
@@ -147,10 +167,7 @@ const ProductInfo = () => {
       categoryId: data.categoryId?.value,
       baseUomId: data.baseUomId?.value,
       basePackingUomId: data.basePackingUomId?.value,
-      // finishedProducts: data.finishedProducts?.map((fp) => ({
-      //   ...fp,
-      //   uoMId: fp.uoMId?.value,
-      // })),
+      equipmentId: data.equipment?.value,
     } satisfies CreateProductRequest;
 
     try {
@@ -221,9 +238,11 @@ const ProductInfo = () => {
               categoryOptions={categoryOptions}
               defaultCategory={defaultCategory}
               defaultUom={defaultUom}
+              defaultEquipment={defaultEquipment}
               defaultPackingUom={defaultPackingUom}
               uomOptions={uomOptions}
               packingUomOptions={packingUomOptions}
+              equipmentOptions={equipmentOptions}
             />
           </CardContent>
         </Card>

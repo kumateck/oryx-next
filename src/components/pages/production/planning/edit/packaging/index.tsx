@@ -29,19 +29,19 @@ const Packaging = () => {
   });
   const defaultPackaging = product?.packages?.map((p, idx) => ({
     ...p,
-    materialId: {
-      label: p.material?.name as string,
-      value: p.material?.id as string,
-    },
+    material: p.material
+      ? {
+          label: p.material?.name as string,
+          value: p.material?.id as string,
+        }
+      : undefined,
     idIndex: (idx + 1).toString(),
-    baseUoMId: {
-      label: p.baseUoM?.symbol as string,
-      value: p.baseUoM?.id as string,
-    },
-    directLinkMaterialId: {
-      label: p.directLinkMaterial?.name as string,
-      value: p.directLinkMaterial?.id as string,
-    },
+    directLinkMaterial: p.directLinkMaterial
+      ? {
+          label: p.directLinkMaterial?.name as string,
+          value: p.directLinkMaterial?.id as string,
+        }
+      : undefined,
   })) as PackagingRequestDto[];
 
   const [savePackaging, { isLoading }] =
@@ -65,8 +65,8 @@ const Packaging = () => {
         productId,
         body: itemLists?.map((item) => ({
           ...item,
-          materialId: item.materialId.value,
-          directLinkMaterialId: item.directLinkMaterialId?.value,
+          materialId: item.material.value,
+          directLinkMaterialId: item.directLinkMaterial?.value,
         })),
       } satisfies PostApiV1ProductByProductIdPackagesApiArg).unwrap();
       toast.success("Packaging Saved");

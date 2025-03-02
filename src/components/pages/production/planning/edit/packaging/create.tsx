@@ -37,6 +37,9 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
   } = useForm<PackagingRequestDto>({
     resolver: CreatePackagingValidator,
     mode: "all",
+    defaultValues: {
+      packingExcessMargin: 0,
+    },
   });
 
   const { data: materialResponse } = useGetApiV1MaterialQuery({
@@ -53,7 +56,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     : (_.filter(
         materialResponse?.data,
         (itemA) =>
-          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId.value),
+          !_.some(itemLists, (itemB) => itemA?.id === itemB?.material.value),
       )?.map((uom: MaterialDto) => ({
         label: uom.name,
         value: uom.id,

@@ -55,7 +55,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         ...data,
-        type: data.type,
+        type: data.type as WarehouseType,
       } satisfies CreateWarehouseRequest;
       await createWarehouse({
         warehouseId: details.id as string,
