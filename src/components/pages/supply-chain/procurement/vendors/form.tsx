@@ -17,7 +17,7 @@ import { InputTypes, Option } from "@/lib";
 import { ManufacturerMap } from "./create";
 
 const defaultAssociated = {
-  material: "",
+  material: { label: "", value: "" },
   manufacturer: [{ label: "", value: "" }],
 };
 interface Props<TFieldValues extends FieldValues, TContext> {
@@ -25,6 +25,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   countryOptions: Option[];
+  currencyOptions: Option[];
   materialOptions: Option[];
   manufacturerOptionsMap: ManufacturerMap;
   defaultValues?: TFieldValues;
@@ -38,6 +39,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   countryOptions,
+  currencyOptions,
   defaultValues,
   fields,
   append,
@@ -108,6 +110,18 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             options: countryOptions,
             errors,
           },
+          {
+            label: "Currency",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "currency",
+            defaultValue: defaultValues?.currency,
+            required: true,
+            onModal: true,
+            placeholder: "Select currency",
+            options: currencyOptions,
+            errors,
+          },
 
           {
             register: register("address" as Path<TFieldValues>),
@@ -132,6 +146,8 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
           const type = typeValues[index];
           const currentManufacturerOptions =
             manufacturerOptionsMap[type?.value] || []; // Get the options for the selected material
+          const defaultMaterial =
+            defaultValues?.associatedManufacturers[index]?.material;
 
           return (
             <div key={field.id} className="relative rounded-md border p-2">
@@ -154,6 +170,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
                       type: InputTypes.SELECT,
                       name: `associatedManufacturers.${index}.material`,
                       required: true,
+                      defaultValue: defaultMaterial,
                       placeholder: "Material",
                       options: materialOptions?.filter(
                         (item2) =>

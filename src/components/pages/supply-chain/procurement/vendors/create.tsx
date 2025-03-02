@@ -6,7 +6,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { COLLECTION_TYPES, Option, routes } from "@/lib";
 import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
@@ -67,7 +67,7 @@ const Create = () => {
 
   useEffect(() => {
     loadCollection({
-      body: [COLLECTION_TYPES.Country],
+      body: [COLLECTION_TYPES.Country, COLLECTION_TYPES.Currency],
     } as PostApiV1CollectionApiArg).unwrap();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,6 +79,13 @@ const Create = () => {
       value: uom.id,
     }),
   ) as Option[];
+  const currencyOptions = collectionResponse?.[COLLECTION_TYPES.Currency]?.map(
+    (uom) => ({
+      label: uom.name,
+      value: uom.id,
+    }),
+  ) as Option[];
+
   const [manufacturerOptionsMap, setManufacturerOptionsMap] =
     useState<ManufacturerMap>({}); // To store manufacturers by material ID
   const { fields, append, remove } = useFieldArray({
@@ -113,43 +120,25 @@ const Create = () => {
             manufacturerId: manufacturer.value,
           })),
       );
+      const { country, currency, ...rest } = data;
       const payload = {
-        ...data,
+        ...rest,
         associatedManufacturers,
-        type: data.country.label === "Ghana" ? 1 : 0,
-        countryId: data.country.value,
+        type: country.label === "Ghana" ? 1 : 0,
+        countryId: country.value,
+        currencyId: currency.value,
       } satisfies CreateSupplierRequest;
       await createMutation({
         createSupplierRequest: payload,
       } as PostApiV1ProcurementSupplierApiArg);
-      toast.success("Manufacturer created successfully");
-      router.push("/procurement/vendors");
+      toast.success("Vendor created successfully");
+      router.push(routes.vendors());
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  // Watch for changes in the materials and fetch corresponding manufacturers
-  // useEffect(() => {
-  //   typeValues.forEach((material, index) => {
-  //     if (material?.value && !manufacturerOptionsMap[material.value]) {
-  //       loadMaterialManufacturers({ materialId: material.value })
-  //         .unwrap()
-  //         .then((response) => {
-  //           if (response) {
-  //             setManufacturerOptionsMap((prev) => ({
-  //               ...prev,
-  //               [material.value]: response.map((item) => ({
-  //                 label: item.name,
-  //                 value: item.id,
-  //               })),
-  //             }));
-  //           }
-  //         });
-  //     }
-  //   });
-  // }, [typeValues, manufacturerOptionsMap, loadMaterialManufacturers]);
 
   // Track previously fetched materials to avoid refetching them
   const [fetchedMaterials, setFetchedMaterials] = useState<Set<string>>(
@@ -194,6 +183,7 @@ const Create = () => {
           register={register}
           errors={errors}
           countryOptions={countryOptions}
+          currencyOptions={currencyOptions}
           fields={fields}
           remove={remove}
           materialOptions={materialOptions}
@@ -205,7 +195,7 @@ const Create = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => console.log("d")}
+            onClick={() => router.push(routes.vendors())}
           >
             Cancel
           </Button>

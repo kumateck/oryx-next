@@ -16,9 +16,10 @@ import TableForData from "./table";
 interface Props {
   products: DistributionRequisitionItem[];
   shipmentDocumentId: string;
+  totalQty: number;
 }
 
-const Products = ({ products, shipmentDocumentId }: Props) => {
+const Products = ({ products, shipmentDocumentId, totalQty }: Props) => {
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [approveDistribution] =
     usePostApiV1ProcurementConfirmDistributionMutation();
@@ -69,8 +70,10 @@ const Products = ({ products, shipmentDocumentId }: Props) => {
                 </h3>
                 <p className="text-sm">
                   Total Quantity Supplied -
-                  {(item.quantityRemaining ?? 0) +
-                    (item.quantityAllocated ?? 0)}
+                  {/* {(item.quantityRemaining ?? 0) +
+                    (item.quantityAllocated ?? 0)} */}
+                  {/* {item.requistionItem?.} */}
+                  {totalQty}
                 </p>
               </div>
 

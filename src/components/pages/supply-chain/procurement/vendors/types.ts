@@ -24,10 +24,8 @@ export const CreateVendorSchema = z.object({
   contactPerson: z.string().min(1, { message: "Contact Person is required" }),
   contactNumber: z.string().min(1, { message: "Contact Number is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  country: z.object({
-    value: z.string(),
-    label: z.string(),
-  }),
+  country: objectSchema("Country is required"),
+  currency: objectSchema("Currency is required"),
   associatedManufacturers: z.array(AssociatedManufacturersSchema).min(1, {
     message: "Associated Manufacturers is required",
   }),

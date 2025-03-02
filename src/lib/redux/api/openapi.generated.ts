@@ -713,10 +713,10 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material/approved-raw-materials`,
         params: {
+          warehouseId: queryArg.warehouseId,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
-          warehouseId: queryArg.warehouseId,
         },
       }),
     }),
@@ -727,9 +727,10 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material/${queryArg.materialId}/batches/v2`,
         params: {
+          warehouseId: queryArg.warehouseId,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
-          warehouseId: queryArg.warehouseId,
+          searchQuery: queryArg.searchQuery,
         },
       }),
     }),
@@ -1439,6 +1440,62 @@ const injectedRtkApi = api.injectEndpoints({
         method: "PUT",
       }),
     }),
+    postApiV1ProductEquipment: build.mutation<
+      PostApiV1ProductEquipmentApiResponse,
+      PostApiV1ProductEquipmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product/equipment`,
+        method: "POST",
+        body: queryArg.createEquipmentRequest,
+      }),
+    }),
+    getApiV1ProductEquipment: build.query<
+      GetApiV1ProductEquipmentApiResponse,
+      GetApiV1ProductEquipmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product/equipment`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductEquipmentByEquipmentId: build.query<
+      GetApiV1ProductEquipmentByEquipmentIdApiResponse,
+      GetApiV1ProductEquipmentByEquipmentIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+      }),
+    }),
+    putApiV1ProductEquipmentByEquipmentId: build.mutation<
+      PutApiV1ProductEquipmentByEquipmentIdApiResponse,
+      PutApiV1ProductEquipmentByEquipmentIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+        method: "PUT",
+        body: queryArg.createEquipmentRequest,
+      }),
+    }),
+    deleteApiV1ProductEquipmentByEquipmentId: build.mutation<
+      DeleteApiV1ProductEquipmentByEquipmentIdApiResponse,
+      DeleteApiV1ProductEquipmentByEquipmentIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+        method: "DELETE",
+      }),
+    }),
+    getApiV1ProductEquipmentAll: build.query<
+      GetApiV1ProductEquipmentAllApiResponse,
+      GetApiV1ProductEquipmentAllApiArg
+    >({
+      query: () => ({ url: `/api/v1/product/equipment/all` }),
+    }),
     postApiV1ProductionScheduleMaster: build.mutation<
       PostApiV1ProductionScheduleMasterApiResponse,
       PostApiV1ProductionScheduleMasterApiArg
@@ -1560,6 +1617,9 @@ const injectedRtkApi = api.injectEndpoints({
       >({
         query: (queryArg) => ({
           url: `/api/v1/production-schedule/material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          params: {
+            status: queryArg.status,
+          },
         }),
       }),
     getApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductId:
@@ -1569,6 +1629,9 @@ const injectedRtkApi = api.injectEndpoints({
       >({
         query: (queryArg) => ({
           url: `/api/v1/production-schedule/package-material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          params: {
+            status: queryArg.status,
+          },
         }),
       }),
     getApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductId:
@@ -2383,6 +2446,46 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialId: build.query<
+      GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiResponse,
+      GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-material/${queryArg.materialId}`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchId:
+      build.query<
+        GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiResponse,
+        GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-materialbatch/${queryArg.materialBatchId}`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+      }),
+    getApiV1WarehouseByWarehouseIdShelves: build.query<
+      GetApiV1WarehouseByWarehouseIdShelvesApiResponse,
+      GetApiV1WarehouseByWarehouseIdShelvesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
     getApiV1WarehouseByWarehouseIdArrivalLocation: build.query<
       GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse,
       GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg
@@ -3055,26 +3158,28 @@ export type PostApiV1MaterialBatchMoveV2ApiArg = {
 export type GetApiV1MaterialApprovedRawMaterialsApiResponse =
   /** status 200 OK */ MaterialDetailsDtoIEnumerablePaginateable;
 export type GetApiV1MaterialApprovedRawMaterialsApiArg = {
+  /** The ID of the warehouse. */
+  warehouseId?: string;
   /** The current page number. */
   page?: number;
   /** The number of items per page. */
   pageSize?: number;
   /** Search query for filtering results. */
   searchQuery?: string;
-  /** The ID of the warehouse. */
-  warehouseId?: string;
 };
 export type GetApiV1MaterialByMaterialIdBatchesV2ApiResponse =
   /** status 200 OK */ ShelfMaterialBatchDtoIEnumerablePaginateable;
 export type GetApiV1MaterialByMaterialIdBatchesV2ApiArg = {
-  /** The current page number. */
-  page?: number;
-  /** The number of items per page. */
-  pageSize?: number;
   /** The ID of the material. */
   materialId: string;
   /** The ID of the warehouse. */
   warehouseId?: string;
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search material */
+  searchQuery?: string;
 };
 export type GetApiV1MaterialByMaterialIdStockWarehousesApiResponse =
   /** status 200 OK */ MaterialStockByWarehouseDto[];
@@ -3539,6 +3644,35 @@ export type PutApiV1ProductByProductIdBomArchiveApiArg = {
   /** The ID of the Product for which the bom should be archived. */
   productId: string;
 };
+export type PostApiV1ProductEquipmentApiResponse =
+  /** status 201 Created */ string;
+export type PostApiV1ProductEquipmentApiArg = {
+  createEquipmentRequest: CreateEquipmentRequest;
+};
+export type GetApiV1ProductEquipmentApiResponse =
+  /** status 200 OK */ EquipmentDtoIEnumerablePaginateable;
+export type GetApiV1ProductEquipmentApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type GetApiV1ProductEquipmentByEquipmentIdApiResponse =
+  /** status 200 OK */ EquipmentDto;
+export type GetApiV1ProductEquipmentByEquipmentIdApiArg = {
+  equipmentId: string;
+};
+export type PutApiV1ProductEquipmentByEquipmentIdApiResponse = unknown;
+export type PutApiV1ProductEquipmentByEquipmentIdApiArg = {
+  equipmentId: string;
+  createEquipmentRequest: CreateEquipmentRequest;
+};
+export type DeleteApiV1ProductEquipmentByEquipmentIdApiResponse = unknown;
+export type DeleteApiV1ProductEquipmentByEquipmentIdApiArg = {
+  equipmentId: string;
+};
+export type GetApiV1ProductEquipmentAllApiResponse =
+  /** status 200 OK */ EquipmentDto[];
+export type GetApiV1ProductEquipmentAllApiArg = void;
 export type PostApiV1ProductionScheduleMasterApiResponse =
   /** status 201 Created */ string;
 export type PostApiV1ProductionScheduleMasterApiArg = {
@@ -3624,6 +3758,7 @@ export type GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProd
   {
     productionScheduleId: string;
     productId: string;
+    status?: MaterialRequisitionStatus;
   };
 export type GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiResponse =
   /** status 200 OK */ ProductionScheduleProcurementPackageDto[];
@@ -3631,6 +3766,7 @@ export type GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleId
   {
     productionScheduleId: string;
     productId: string;
+    status?: MaterialRequisitionStatus;
   };
 export type GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiResponse =
   /** status 200 OK */ ProductionScheduleProcurementDto[];
@@ -4128,6 +4264,34 @@ export type GetApiV1WarehouseShelfApiArg = {
   pageSize?: number;
   searchQuery?: string;
 };
+export type GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiResponse =
+  /** status 200 OK */ WarehouseLocationShelfDtoIEnumerablePaginateable;
+export type GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiArg =
+  {
+    warehouseId: string;
+    materialId: string;
+    page?: number;
+    pageSize?: number;
+    searchQuery?: string;
+  };
+export type GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiResponse =
+  /** status 200 OK */ WarehouseLocationShelfDtoIEnumerablePaginateable;
+export type GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiArg =
+  {
+    warehouseId: string;
+    materialBatchId: string;
+    page?: number;
+    pageSize?: number;
+    searchQuery?: string;
+  };
+export type GetApiV1WarehouseByWarehouseIdShelvesApiResponse =
+  /** status 200 OK */ WarehouseLocationShelfDtoIEnumerablePaginateable;
+export type GetApiV1WarehouseByWarehouseIdShelvesApiArg = {
+  warehouseId: string;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
 export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse =
   /** status 200 OK */ WarehouseArrivalLocationDto;
 export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg = {
@@ -4199,10 +4363,10 @@ export type GetApiV1WarehouseGrnsApiArg = {
 export type GetApiV1WarehouseBincardinformationByMaterialIdApiResponse =
   /** status 200 OK */ BinCardInformationDtoIEnumerablePaginateableRead;
 export type GetApiV1WarehouseBincardinformationByMaterialIdApiArg = {
+  materialId: string;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
-  materialId: string;
 };
 export type PostApiV1WorkOrderApiResponse = /** status 201 Created */ string;
 export type PostApiV1WorkOrderApiArg = {
@@ -4266,6 +4430,7 @@ export type CollectionItemDto = {
   name?: string | null;
   code?: string | null;
   description?: string | null;
+  symbol?: string | null;
 };
 export type ApprovalStageDto = {
   user?: CollectionItemDto;
@@ -4596,6 +4761,50 @@ export type UnitOfMeasureRead = {
   isScalable?: boolean;
   isRawMaterial?: boolean;
 };
+export type Equipment = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  machineId?: string | null;
+  isStorage?: boolean;
+  capacityQuantity?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasure;
+  relevanceCheck?: boolean;
+  departmentId?: string;
+  department?: Department;
+  storageLocation?: string | null;
+};
+export type EquipmentRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  machineId?: string | null;
+  isStorage?: boolean;
+  capacityQuantity?: number;
+  uoMId?: string;
+  uoM?: UnitOfMeasureRead;
+  relevanceCheck?: boolean;
+  departmentId?: string;
+  department?: Department;
+  storageLocation?: string | null;
+};
 export type FinishedProduct = {
   id?: string;
   createdAt?: string;
@@ -4815,6 +5024,7 @@ export type ProductPackage = {
   unitCapacity?: number;
   directLinkMaterialId?: string | null;
   directLinkMaterial?: Material;
+  packingExcessMargin?: number;
 };
 export type ProductPackageRead = {
   id?: string;
@@ -4839,6 +5049,7 @@ export type ProductPackageRead = {
   unitCapacity?: number;
   directLinkMaterialId?: string | null;
   directLinkMaterial?: MaterialRead;
+  packingExcessMargin?: number;
 };
 export type Operation = {
   id?: string;
@@ -5422,7 +5633,8 @@ export type Product = {
   baseUoM?: UnitOfMeasure;
   basePackingUomId?: string | null;
   basePackingUoM?: UnitOfMeasure;
-  packingExcessMargin?: number;
+  equipmentId?: string | null;
+  equipment?: Equipment;
   finishedProducts?: FinishedProduct[] | null;
   billOfMaterials?: ProductBillOfMaterial[] | null;
   packages?: ProductPackage[] | null;
@@ -5461,7 +5673,8 @@ export type ProductRead = {
   baseUoM?: UnitOfMeasureRead;
   basePackingUomId?: string | null;
   basePackingUoM?: UnitOfMeasureRead;
-  packingExcessMargin?: number;
+  equipmentId?: string | null;
+  equipment?: EquipmentRead;
   finishedProducts?: FinishedProductRead[] | null;
   billOfMaterials?: ProductBillOfMaterialRead[] | null;
   packages?: ProductPackageRead[] | null;
@@ -7426,6 +7639,9 @@ export type CountryDto = {
   code?: string | null;
 };
 export type CurrencyDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   name?: string | null;
   symbol?: string | null;
   description?: string | null;
@@ -8166,11 +8382,24 @@ export type CreateProductRequest = {
   tertiaryPackDescription?: string | null;
   categoryId?: string;
   finishedProducts?: CreateFinishedProductRequest[] | null;
+  equipmentId?: string | null;
   baseQuantity?: number;
   baseUomId?: string | null;
   basePackingQuantity?: number;
   basePackingUomId?: string | null;
-  packingExcessMargin?: number;
+};
+export type EquipmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  machineId?: string | null;
+  isStorage?: boolean;
+  capacityQuantity?: number;
+  uoM?: UnitOfMeasureDto;
+  relevanceCheck?: boolean;
+  department?: CollectionItemDto;
+  storageLocation?: string | null;
 };
 export type ProductListDto = {
   id?: string;
@@ -8191,9 +8420,9 @@ export type ProductListDto = {
   category?: CollectionItemDto;
   baseQuantity?: number;
   basePackingQuantity?: number;
-  packingExcessMargin?: number;
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
   createdAt?: string;
 };
 export type ProductListDtoIEnumerablePaginateable = {
@@ -8249,6 +8478,7 @@ export type ProductPackageDto = {
   baseUoM?: UnitOfMeasureDto;
   unitCapacity?: number;
   directLinkMaterial?: CollectionItemDto;
+  packingExcessMargin?: number;
 };
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
@@ -8304,9 +8534,9 @@ export type ProductDto = {
   category?: CollectionItemDto;
   baseQuantity?: number;
   basePackingQuantity?: number;
-  packingExcessMargin?: number;
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
   createdAt?: string;
   finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -8335,9 +8565,9 @@ export type ProductDtoRead = {
   category?: CollectionItemDto;
   baseQuantity?: number;
   basePackingQuantity?: number;
-  packingExcessMargin?: number;
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
   createdAt?: string;
   finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -8364,11 +8594,11 @@ export type UpdateProductRequest = {
   tertiaryPackDescription?: string | null;
   categoryId?: string;
   finishedProducts?: CreateFinishedProductRequest[] | null;
+  equipmentId?: string | null;
   baseQuantity?: number;
   baseUomId?: string | null;
   basePackingQuantity?: number;
   basePackingUomId?: string | null;
-  packingExcessMargin?: number;
 };
 export type UpdateProductPackageDescriptionRequest = {
   primaryPackDescription?: string | null;
@@ -8404,6 +8634,26 @@ export type CreateProductPackageRequest = {
   baseUoMId?: string | null;
   unitCapacity?: number;
   directLinkMaterialId?: string | null;
+  packingExcessMargin?: number;
+};
+export type CreateEquipmentRequest = {
+  name?: string | null;
+  machineId?: string | null;
+  isStorage?: boolean;
+  capacityQuantity?: number;
+  uoMId?: string;
+  relevanceCheck?: boolean;
+  departmentId?: string;
+  storageLocation?: string | null;
+};
+export type EquipmentDtoIEnumerablePaginateable = {
+  data?: EquipmentDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type CreateMasterProductionScheduleRequest = {
   productId?: string;
@@ -8496,7 +8746,7 @@ export type ProductionScheduleDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type UpdateProductionScheduleRequest = object;
-export type MaterialRequisitionStatus = 0 | 1 | 2 | 3 | 4;
+export type MaterialRequisitionStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type BatchLocation = {
   consumptionLocation?: WareHouseLocationDto;
   batch?: MaterialBatchDto;
@@ -9040,13 +9290,28 @@ export type WarehouseDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type WarehouseLocationShelfDto = {
+  id?: string;
+  warehouseLocationRack?: WareHouseLocationRackDto;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  materialBatches?: ShelfMaterialBatchDto[] | null;
+};
+export type WarehouseLocationRackDto = {
+  id?: string;
+  warehouseLocation?: WareHouseLocationDto;
+  name?: string | null;
+  description?: string | null;
+  shelves?: WarehouseLocationShelfDto[] | null;
+};
 export type WarehouseLocationDto = {
   id?: string;
   name?: string | null;
   floorName?: string | null;
   description?: string | null;
   warehouse?: CollectionItemDto;
-  racks?: CollectionItemDto[] | null;
+  racks?: WarehouseLocationRackDto[] | null;
 };
 export type WarehouseLocationDtoIEnumerablePaginateable = {
   data?: WarehouseLocationDto[] | null;
@@ -9057,13 +9322,6 @@ export type WarehouseLocationDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type WarehouseLocationRackDto = {
-  id?: string;
-  warehouseLocation?: WareHouseLocationDto;
-  name?: string | null;
-  description?: string | null;
-  shelves?: CollectionItemDto[] | null;
-};
 export type WarehouseLocationRackDtoIEnumerablePaginateable = {
   data?: WarehouseLocationRackDto[] | null;
   pageIndex?: number;
@@ -9072,14 +9330,6 @@ export type WarehouseLocationRackDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type WarehouseLocationShelfDto = {
-  id?: string;
-  warehouseLocationRack?: WareHouseLocationRackDto;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  materialBatches?: ShelfMaterialBatchDto[] | null;
 };
 export type WarehouseLocationShelfDtoIEnumerablePaginateable = {
   data?: WarehouseLocationShelfDto[] | null;
@@ -9459,6 +9709,15 @@ export const {
   useDeleteApiV1ProductPackagesByProductPackageIdMutation,
   usePostApiV1ProductByProductIdFinishedMutation,
   usePutApiV1ProductByProductIdBomArchiveMutation,
+  usePostApiV1ProductEquipmentMutation,
+  useGetApiV1ProductEquipmentQuery,
+  useLazyGetApiV1ProductEquipmentQuery,
+  useGetApiV1ProductEquipmentByEquipmentIdQuery,
+  useLazyGetApiV1ProductEquipmentByEquipmentIdQuery,
+  usePutApiV1ProductEquipmentByEquipmentIdMutation,
+  useDeleteApiV1ProductEquipmentByEquipmentIdMutation,
+  useGetApiV1ProductEquipmentAllQuery,
+  useLazyGetApiV1ProductEquipmentAllQuery,
   usePostApiV1ProductionScheduleMasterMutation,
   useGetApiV1ProductionScheduleMasterByMasterScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleMasterByMasterScheduleIdQuery,
@@ -9602,6 +9861,12 @@ export const {
   useDeleteApiV1WarehouseShelfByShelfIdMutation,
   useGetApiV1WarehouseShelfQuery,
   useLazyGetApiV1WarehouseShelfQuery,
+  useGetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdQuery,
+  useLazyGetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdQuery,
+  useGetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdQuery,
+  useLazyGetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdQuery,
+  useGetApiV1WarehouseByWarehouseIdShelvesQuery,
+  useLazyGetApiV1WarehouseByWarehouseIdShelvesQuery,
   useGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
   useLazyGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
   useGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,

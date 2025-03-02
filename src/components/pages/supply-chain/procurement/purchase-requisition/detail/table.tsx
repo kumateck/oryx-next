@@ -64,9 +64,5 @@ const sourceOptions = [
     label: "Local Procurement",
     value: "1",
   },
-  {
-    label: "Other Warehouses",
-    value: "2",
-  },
 ];
 export default TableForData;
