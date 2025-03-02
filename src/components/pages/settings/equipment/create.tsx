@@ -12,7 +12,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { IsYesorNo, Option } from "@/lib";
 import {
   CreateEquipmentRequest,
   useGetApiV1CollectionUomQuery,
@@ -23,11 +23,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import EquipmentForm from "./form";
-import {
-  CreateEquipmentValidator,
-  EquipmentRequestDto,
-  IsYesorNo,
-} from "./types";
+import { CreateEquipmentValidator, EquipmentRequestDto } from "./types";
 
 // import "./types";
 

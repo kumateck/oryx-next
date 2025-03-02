@@ -9,9 +9,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { FetchOptionsResult } from "@/components/ui";
-import { EMaterialKind, InputTypes, Option } from "@/lib";
-
-import { IsYesorNo } from "./types";
+import { EMaterialKind, InputTypes, IsYesorNo, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;

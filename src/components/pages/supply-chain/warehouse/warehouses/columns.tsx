@@ -3,7 +3,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  WarehouseType,
+  isErrorResponse,
+  splitWords,
+} from "@/lib";
 import {
   WarehouseDto,
   useDeleteApiV1WarehouseByWarehouseIdMutation,
@@ -75,6 +80,13 @@ export const columns: ColumnDef<WarehouseDto>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => <div>{row.original.name}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <div>{splitWords(WarehouseType[row.original.type as WarehouseType])}</div>
+    ),
   },
   {
     accessorKey: "description",

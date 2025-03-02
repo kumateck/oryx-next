@@ -1,21 +1,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { IsYesorNo } from "@/lib";
+
 export const CreateDepartmentSchema = z.object({
-  // warehouseId: z.a().min(1, {message: "Warehouse ID is required",},),
-  warehouseIds: z
-    .array(
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      }),
-    )
-    .min(1, {
-      message: "Warehouses are required",
-    }),
   name: z.string().min(1, { message: "Location Name is required" }),
   code: z.string().min(1, { message: "Code is required" }),
   description: z.string().optional(),
+  type: z
+    .string()
+    .transform((value) => {
+      const numValue = Number(value);
+      if (isNaN(numValue)) {
+        throw new Error("Invalid value for Type ");
+      }
+      return numValue;
+    })
+    .refine((value) => value === IsYesorNo.Yes || value === IsYesorNo.No, {
+      message: "Type must be either 'Yes' (1) or 'No' (0)",
+    }),
 });
 
 export type DepartmentRequestDto = z.infer<typeof CreateDepartmentSchema>;

@@ -1,6 +1,7 @@
 // import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -12,17 +13,16 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, Option } from "@/lib";
+import { CODE_SETTINGS } from "@/lib";
 import {
   CreateDepartmentRequest,
   GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   NamingType,
-  useGetApiV1WarehouseQuery,
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1DepartmentQuery,
   usePostApiV1DepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import {
   ErrorResponse,
   GenerateCodeOptions,
@@ -42,12 +42,13 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadDepartments] = useLazyGetApiV1DepartmentQuery();
+  const dispatch = useDispatch();
   const [createDepartment, { isLoading }] = usePostApiV1DepartmentMutation();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   const [loadCodeMyModel] =
     useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  // const [loadCodeModelCount] = useLazyGetApiV1DepartmentQuery();
 
   const {
     register,
@@ -60,11 +61,6 @@ const Create = ({ isOpen, onClose }: Props) => {
   } = useForm<DepartmentRequestDto>({
     resolver: CreateDepartmentValidator,
     mode: "all",
-  });
-
-  const { data: result } = useGetApiV1WarehouseQuery({
-    page: 1,
-    pageSize: 100,
   });
 
   const name = useWatch<DepartmentRequestDto>({
@@ -105,47 +101,32 @@ const Create = ({ isOpen, onClose }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   const response = result?.data?.find((r) => r.id === warehouse?.value);
-  //   const warehouseId = response?.id || "";
-
-  //   if (warehouseId && warehouseId !== watch("warehouseIds")) {
-  //     setValue("warehouseIds", warehouseId);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [warehouse, result, setValue]);
-
-  const data = result?.data ?? [];
-  const warehouseOptions = data?.map((item) => ({
-    label: item?.name,
-    value: item?.id,
-  })) as Option[];
-  console.log(data, "Warehouses");
-
   const onSubmit = async (data: DepartmentRequestDto) => {
     try {
       const payload = {
         ...data,
-        warehouses: data?.warehouseIds?.map((item) => {
-          return {
-            warehouseId: item.value,
-          };
-        }),
       } satisfies CreateDepartmentRequest;
       await createDepartment({
         createDepartmentRequest: payload,
       });
       toast.success("Department created successfully");
-      loadDepartments({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  // const fetchCount = async () => {
+  //   const countResponse = await loadCodeModelCount({}).unwrap();
+  //   return { totalRecordCount: countResponse?.totalRecordCount };
+  // };
+
+  // const setCodeToInput = (code: string) => {
+  //   setValue("code", code ?? "");
+  // };
+  // useCodeGen(CODE_SETTINGS.modelTypes.Department, fetchCount, setCodeToInput);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -159,7 +140,6 @@ const Create = ({ isOpen, onClose }: Props) => {
             control={control}
             register={register}
             errors={errors}
-            warehouseOptions={warehouseOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

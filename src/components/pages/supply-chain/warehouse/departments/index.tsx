@@ -8,6 +8,8 @@ import {
   useGetApiV1DepartmentQuery,
   useLazyGetApiV1DepartmentQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch, useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -16,22 +18,26 @@ import { columns } from "./columns";
 import Create from "./create";
 
 const Page = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const { data: result, isLoading } = useGetApiV1DepartmentQuery({
     page,
     pageSize,
   });
-  const [loadMaterials, { isFetching }] = useLazyGetApiV1DepartmentQuery();
+  const [loadDepartment, { isFetching }] = useLazyGetApiV1DepartmentQuery();
 
   useEffect(() => {
-    loadMaterials({
+    loadDepartment({
       page,
       pageSize,
     });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 

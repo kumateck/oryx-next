@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { DepartmentType, ErrorResponse, isErrorResponse } from "@/lib";
 import {
   DepartmentDto,
   useDeleteApiV1DepartmentByDepartmentIdMutation,
@@ -72,25 +72,26 @@ export function DataTableRowActions<TData extends DepartmentDto>({
 
 export const columns: ColumnDef<DepartmentDto>[] = [
   {
+    accessorKey: "code",
+    header: "Code",
+    cell: ({ row }) => <div>{row.original.code}</div>,
+  },
+  {
     accessorKey: "department",
     header: "Department",
     cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <div>{DepartmentType[row.original.type as DepartmentType]}</div>
+    ),
+  },
+  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => <div>{row.original.description}</div>,
-  },
-  {
-    accessorKey: "warehouses",
-    header: "Warehouses",
-    cell: ({ row }) => (
-      <div>
-        {row.original.warehouses
-          ?.map((item) => item?.warehouse?.name)
-          .join(", ")}
-      </div>
-    ),
   },
 
   {
