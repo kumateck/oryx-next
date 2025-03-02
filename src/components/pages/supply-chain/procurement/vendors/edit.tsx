@@ -6,13 +6,14 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { COLLECTION_TYPES, Option, routes } from "@/lib";
 import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
   PutApiV1ProcurementSupplierBySupplierIdApiArg,
   useGetApiV1MaterialAllQuery,
   useLazyGetApiV1ProcurementManufacturerMaterialByMaterialIdQuery,
+  useLazyGetApiV1ProcurementSupplierBySupplierIdQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1ProcurementSupplierBySupplierIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -28,6 +29,11 @@ const Edit = () => {
   // Rest of the existing code...
   const [updateMutation, { isLoading }] =
     usePutApiV1ProcurementSupplierBySupplierIdMutation();
+  const [defaultValues, setDefaultValues] = useState<VendorRequestDto>();
+  const [loadSupplierInfo] =
+    useLazyGetApiV1ProcurementSupplierBySupplierIdQuery();
+
+  // console.log(supplierInfo, "supplierInfo");
   const { data: materialResponse } = useGetApiV1MaterialAllQuery();
 
   const materialOptions = materialResponse?.map((item) => ({
@@ -38,35 +44,92 @@ const Edit = () => {
     register,
     control,
     formState: { errors },
-    // reset,
+    reset,
     handleSubmit,
   } = useForm<VendorRequestDto>({
     resolver: CreateVendorValidator,
     mode: "all",
-    defaultValues: {
-      associatedManufacturers: [
-        {
-          material: {
-            label: "",
-            value: "",
-          },
-          manufacturer: [
-            {
-              label: "",
-              value: "",
-            },
-          ],
-        },
-      ],
-    },
+    // defaultValues: {
+    //   associatedManufacturers: [
+    //     {
+    //       material: {
+    //         label: "",
+    //         value: "",
+    //       },
+    //       manufacturer: [
+    //         {
+    //           label: "",
+    //           value: "",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
   });
+
+  useEffect(() => {
+    if (supplierId) {
+      handleLoadSupplier(supplierId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supplierId]);
+
+  const handleLoadSupplier = async (supplierId: string) => {
+    const res = await loadSupplierInfo({ supplierId }).unwrap();
+    const associatedManufacturers = res?.associatedManufacturers || [];
+
+    const groupedManufacturers = associatedManufacturers.reduce((acc, item) => {
+      if (!item.material) return acc; // Skip if material is missing
+
+      const materialKey = item.material.id as string; // Use material ID as key
+      const materialEntry = {
+        label: item.material.name as string,
+        value: item.material.id as string,
+      };
+
+      const manufacturerEntry = item.manufacturer
+        ? {
+            label: item.manufacturer.name as string,
+            value: item.manufacturer.id as string,
+          }
+        : { label: "", value: "" };
+
+      if (!acc.has(materialKey)) {
+        acc.set(materialKey, { material: materialEntry, manufacturer: [] });
+      }
+
+      acc.get(materialKey)?.manufacturer.push(manufacturerEntry);
+      return acc;
+    }, new Map<string, { material: { label: string; value: string }; manufacturer: { label: string; value: string }[] }>());
+
+    const defaultSupplier = {
+      address: res.address as string,
+      name: res.name as string,
+      contactPerson: res.contactPerson as string,
+      contactNumber: res.contactNumber as string,
+      email: res.email as string,
+      country: {
+        label: res.country?.name as string,
+        value: res.country?.id as string,
+      },
+      currency: {
+        label: res.currency?.name as string,
+        value: res.currency?.id as string,
+      },
+
+      associatedManufacturers: Array.from(groupedManufacturers.values()),
+    } as VendorRequestDto;
+
+    setDefaultValues(defaultSupplier);
+    reset(defaultSupplier);
+  };
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
   useEffect(() => {
     loadCollection({
-      body: [COLLECTION_TYPES.Country],
+      body: [COLLECTION_TYPES.Country, COLLECTION_TYPES.Currency],
     } as PostApiV1CollectionApiArg).unwrap();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +141,13 @@ const Edit = () => {
       value: uom.id,
     }),
   ) as Option[];
+  const currencyOptions = collectionResponse?.[COLLECTION_TYPES.Currency]?.map(
+    (uom) => ({
+      label: uom.name,
+      value: uom.id,
+    }),
+  ) as Option[];
+
   const [manufacturerOptionsMap, setManufacturerOptionsMap] = useState<{
     [key: string]: Option[];
   }>({}); // To store manufacturers by material ID
@@ -125,6 +195,7 @@ const Edit = () => {
         associatedManufacturers,
         type: data.country.label === "Ghana" ? 1 : 0,
         countryId: data.country.value,
+        currencyId: data.currency.value,
       } satisfies CreateSupplierRequest;
       console.log(payload, "payload", data);
       await updateMutation({
@@ -132,33 +203,13 @@ const Edit = () => {
         supplierId,
       } as PutApiV1ProcurementSupplierBySupplierIdApiArg);
       toast.success("Vendor updated successfully");
-      router.push("vendors");
+      router.push(routes.vendors());
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  // Watch for changes in the materials and fetch corresponding manufacturers
-  // useEffect(() => {
-  //   typeValues.forEach((material, index) => {
-  //     if (material?.value && !manufacturerOptionsMap[material.value]) {
-  //       loadMaterialManufacturers({ materialId: material.value })
-  //         .unwrap()
-  //         .then((response) => {
-  //           if (response) {
-  //             setManufacturerOptionsMap((prev) => ({
-  //               ...prev,
-  //               [material.value]: response.map((item) => ({
-  //                 label: item.name,
-  //                 value: item.id,
-  //               })),
-  //             }));
-  //           }
-  //         });
-  //     }
-  //   });
-  // }, [typeValues, manufacturerOptionsMap, loadMaterialManufacturers]);
 
   // Track previously fetched materials to avoid refetching them
   const [fetchedMaterials, setFetchedMaterials] = useState<Set<string>>(
@@ -202,7 +253,9 @@ const Edit = () => {
           register={register}
           errors={errors}
           countryOptions={countryOptions}
+          currencyOptions={currencyOptions}
           fields={fields}
+          defaultValues={defaultValues}
           remove={remove}
           materialOptions={materialOptions}
           manufacturerOptionsMap={manufacturerOptionsMap}
@@ -213,7 +266,7 @@ const Edit = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => console.log("d")}
+            onClick={() => router.push(routes.vendors())}
           >
             Cancel
           </Button>

@@ -31,6 +31,7 @@ export const COLLECTION_TYPES = {
   Role: "Role",
   User: "User",
   Country: "Country",
+  Currency: "Currency",
 };
 
 export const CODE_SETTINGS = {
@@ -115,6 +116,7 @@ export enum InputTypes {
   PASSWORD = "password",
   PHONE = "phone",
   SELECT = "select",
+  ASYNC_SELECT = "async-select",
   SPACE = "space",
   PAGINATED_SELECT = "paginated-select",
   MULTI = "multi",
@@ -221,6 +223,8 @@ export const routes = {
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "/warehouse/materials",
   viewMaterial: (id: string) => `/warehouse/materials/${id}/details`,
+  vendors: () => `/procurement/vendors`,
+  editVendor: (id: string) => `/procurement/vendors/${id}/edit`,
   viewScheduleRequisition: (scheduleId: string, productId: string) =>
     `/production/schedules/${scheduleId}/product/${productId}/requisition`,
 

@@ -13,7 +13,9 @@ import { InputTypes, Option, TimeType, cn } from "@/lib";
 
 import { Button, Icon, Label } from "../ui";
 import { SuggestionProps } from "../ui/adusei-editor/suggestion";
-import { FetchOptionsResult } from "../ui/paginated-select";
+import { FetchOptionsResult } from "../ui/async-select";
+// import { FetchOptionsResult } from "../ui/paginated-select";
+import { FormAsyncSelect } from "./async-select-input";
 import { FormDateInput } from "./date-input";
 import FormDropzoneInput from "./dragzone-input";
 import { FormRadioInput } from "./radio-input";
@@ -110,6 +112,13 @@ interface SelectInputProps extends BaseInputProps<FieldValues> {
   onModal?: boolean;
 }
 
+interface AsyncSelectInputProps
+  extends Omit<SelectInputProps, "options" | "type"> {
+  type: InputTypes.ASYNC_SELECT;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
+  isLoading: boolean;
+}
+
 interface PaginatedSelectInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.PAGINATED_SELECT;
   control?: Control<FieldValues>;
@@ -176,6 +185,7 @@ interface ButtonProps {
 export type FormInput<TFieldValues extends FieldValues, TContext> =
   | TextInputProps<TFieldValues>
   | SelectInputProps
+  | AsyncSelectInputProps
   | MultiInputProps<TFieldValues, TContext>
   | FileInputProps
   | FilesUploadInputProps
@@ -271,6 +281,34 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               placeholder={formInput.placeholder}
             />
           )}
+        />
+      );
+    case InputTypes.ASYNC_SELECT:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => {
+            if (formInput.onChange) {
+              formInput.onChange(value);
+            }
+            return (
+              <FormAsyncSelect
+                value={value || formInput.defaultValue}
+                defaultValue={formInput.defaultValue}
+                label={formInput.label}
+                required={formInput.required}
+                onChange={onChange}
+                errors={formInput.errors}
+                name={formInput.name}
+                fetchOptions={formInput.fetchOptions}
+                isLoading={formInput.isLoading}
+                autoFocus={formInput.autoFocus}
+                placeholder={formInput.placeholder}
+                searchPlaceholder={formInput.searchPlaceholder}
+              />
+            );
+          }}
         />
       );
     case InputTypes.SELECT:

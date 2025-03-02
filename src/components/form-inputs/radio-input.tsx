@@ -39,14 +39,13 @@ export const FormRadioInput = ({
         name={name}
         disabled={disabled}
         onValueChange={onChange}
-        defaultValue={defaultValue}
-        // defaultChecked={defaultValue}
+        defaultValue={defaultValue?.toString()}
         className="flex flex-col items-start gap-6 py-1 lg:flex-row"
       >
         {options?.map((item: Option, key: number) => (
           <div className="flex items-center space-x-2" key={key}>
             <RadioGroupItem
-              checked={item.value === defaultValue}
+              checked={item.value.toString() === defaultValue?.toString()}
               value={item.value}
               id={"option-" + (key + 1)}
             />

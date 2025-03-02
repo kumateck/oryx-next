@@ -110,6 +110,10 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     name: "Currency Settings",
     tag: "currency-settings",
   },
+  {
+    name: "Equipment",
+    tag: "/settings/equipments",
+  },
 ];
 
 export type SidebarProps = {

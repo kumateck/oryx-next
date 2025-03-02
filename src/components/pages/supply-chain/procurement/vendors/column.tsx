@@ -1,15 +1,18 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
+import Link from "next/link";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, SupplierType, isErrorResponse } from "@/lib";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
+import { ErrorResponse, SupplierType, isErrorResponse, routes } from "@/lib";
 import {
   MaterialDto,
   SupplierDto,
   useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
-  useLazyGetApiV1ProcurementSupplierQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { TableMenuAction } from "@/shared/table-menu";
 
 // import Edit from "./edit";
 
@@ -19,38 +22,43 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends SupplierDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const dispatch = useDispatch();
   const [deleteMutation] =
     useDeleteApiV1ProcurementSupplierBySupplierIdMutation();
   // const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [reload] = useLazyGetApiV1ProcurementSupplierQuery();
-  return (
-    <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          // setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
 
-      {/* {details.id && isOpen && (
-        <Edit
-          details={details}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-        />
-      )} */}
+  return (
+    <div className="flex items-center justify-end gap-2">
+      <TableMenuAction>
+        <DropdownMenuItem className="group">
+          <Link
+            className="flex cursor-pointer items-center justify-start gap-2"
+            href={routes.editVendor(row.original.id as string)}
+          >
+            <span className="text-black">
+              <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
+            </span>
+            <span>Edit</span>
+          </Link>
+        </DropdownMenuItem>{" "}
+        <DropdownMenuItem className="group">
+          <div
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <span className="text-black">
+              <Icon name="Trash2" className="h-5 w-5 text-danger-default" />
+            </span>
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
+
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -60,15 +68,13 @@ export function DataTableRowActions<TData extends SupplierDto>({
               supplierId: details.id as string,
             }).unwrap();
             toast.success("Vendor deleted successfully");
-            reload({
-              pageSize: 30,
-            });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
         }}
       />
-    </section>
+    </div>
   );
 }
 
@@ -88,26 +94,41 @@ export const columns: ColumnDef<SupplierDto>[] = [
   {
     accessorKey: "name",
     header: "Name",
-
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     accessorKey: "contactPerson",
     header: "Contact Person",
-
     cell: ({ row }) => <div>{row.getValue("contactPerson")}</div>,
   },
   {
     accessorKey: "contactNumber",
     header: "Telephone Number",
-
     cell: ({ row }) => <div>{row.getValue("contactNumber")}</div>,
   },
   {
     accessorKey: "email",
     header: "Email",
-
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "country",
+    header: "Country",
+    cell: ({ row }) => <div>{row.original.country?.name}</div>,
+  },
+  {
+    accessorKey: "currency",
+    header: "Currency",
+    cell: ({ row }) => (
+      <div>
+        {row.original.currency && (
+          <span>
+            {" "}
+            {row.original.currency?.name} ({row.original.currency?.symbol})
+          </span>
+        )}
+      </div>
+    ),
   },
   {
     id: "actions",
