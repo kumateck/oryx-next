@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { Button, Icon } from "@/components/ui";
+// import { Button, Icon } from "@/components/ui";
 import {
   useGetApiV1WarehouseQuery,
   useLazyGetApiV1WarehouseQuery,
@@ -40,11 +40,11 @@ const Page = () => {
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Warehouses" />
-        <div className="flex items-center justify-end gap-2">
+        {/* <div className="flex items-center justify-end gap-2">
           <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
             <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <ServerDatatable

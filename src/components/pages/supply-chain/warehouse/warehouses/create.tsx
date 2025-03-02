@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import {
   CreateWarehouseRequest,
-  // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
+  WarehouseType, // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   // NamingType,
   // useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   // useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
@@ -21,10 +21,8 @@ import {
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
-  ErrorResponse,
-  // GenerateCodeOptions,
-  cn,
-  // generateCode,
+  ErrorResponse, // GenerateCodeOptions,
+  cn, // generateCode,
   // getFirstCharacter,
   isErrorResponse,
 } from "@/lib/utils";
@@ -94,6 +92,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     try {
       const payload = {
         ...data,
+        type: data.type as WarehouseType,
       } satisfies CreateWarehouseRequest;
       await createWarehouse({
         createWarehouseRequest: payload,
