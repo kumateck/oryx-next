@@ -75,9 +75,38 @@ export const columns: ColumnDef<ProductDto>[] = [
     cell: ({ row }) => <div>{row.original.category?.name}</div>,
   },
   {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
+    accessorKey: "equipment",
+    header: "Equipment",
+    cell: ({ row }) => <div>{row.original.equipment?.name}</div>,
+  },
+  {
+    accessorKey: "packageStyle",
+    header: "Package Style",
+    cell: ({ row }) => <div>{row.original.packageStyle}</div>,
+  },
+  {
+    accessorKey: "base",
+    header: "Base Unit",
+    cell: ({ row }) => (
+      <div>
+        {row.original.baseQuantity}
+        {row.original.baseUoM?.symbol}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "basePack",
+    header: "Base Package",
+    cell: ({ row }) => (
+      <div>
+        {row.original.basePackingQuantity} {row.original.basePackingUoM?.symbol}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "shelfLife",
+    header: "Shelf Life",
+    cell: ({ row }) => <div>{row.getValue("shelfLife")}</div>,
   },
 
   // {

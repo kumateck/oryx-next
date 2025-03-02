@@ -57,15 +57,6 @@ export const CreateProductSchema = z.object({
       message: "Unit of Measurement is required",
     },
   ),
-  packingExcessMargin: z
-    .number({
-      required_error: "Excess Packing Margin is required",
-      invalid_type_error: "Excess Packing Margin must be a number",
-    })
-    .positive({
-      message: "Excess Packing Margin must be greater than 0",
-    })
-    .optional(),
   baseQuantity: z
     .number({
       required_error: "BaseQuantity is required",
@@ -100,7 +91,15 @@ export const CreateProductSchema = z.object({
       message: "Category is required",
     },
   ),
-
+  equipment: z.object(
+    {
+      value: z.string().min(1, { message: "Equipment is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Equipment is required",
+    },
+  ),
   finishedProducts: z.array(CreateFinishedProductSchema).optional(),
 });
 

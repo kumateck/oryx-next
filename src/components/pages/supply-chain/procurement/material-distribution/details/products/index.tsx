@@ -27,16 +27,17 @@ const Products = ({ products, shipmentDocumentId, totalQty }: Props) => {
     useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery(
       { shipmentDocumentId },
     );
+  console.log(result, "result");
   const [loadMaterials] =
     useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery();
-  const id = result?.sections?.[0]?.shipmentInvoiceItem?.id || null;
+  // const id = result?.sections?.[0]?.shipmentInvoiceItem?.id || null;
 
   const handleApprove = async (item: DistributionRequisitionItem) => {
     try {
       setApprovingId(item.requistionItem?.id || null);
 
       const payload = {
-        shipmentInvoiceItemId: id as string,
+        // shipmentInvoiceItemId: id as string,
         items: [
           {
             departmentId: item.department?.id as string,

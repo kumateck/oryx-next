@@ -17,22 +17,24 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   categoryOptions: Option[];
   uomOptions: Option[];
   packingUomOptions: Option[];
-  defaultValues?: TFieldValues;
+  equipmentOptions: Option[];
   defaultCategory?: Option;
   defaultUom?: Option;
   defaultPackingUom?: Option;
+  defaultEquipment?: Option;
 }
 const ProductForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   categoryOptions,
-  // defaultValues,
   defaultCategory,
   defaultUom,
   defaultPackingUom,
   uomOptions,
   packingUomOptions,
+  equipmentOptions,
+  defaultEquipment,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -125,16 +127,16 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("packingExcessMargin" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
-            label: "Excess Packing Margin",
-            placeholder: "Enter margin",
-            type: InputTypes.NUMBER,
-            suffix: "Percent",
+            label: "Equipment",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "equipment",
+            required: true,
+            defaultValue: defaultEquipment,
+            placeholder: "Select Equipment",
+            options: equipmentOptions,
             errors,
           },
-
           {
             register: register("storageCondition" as Path<TFieldValues>),
             label: "Storage Condition",
