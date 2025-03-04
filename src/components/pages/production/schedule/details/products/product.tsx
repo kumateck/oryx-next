@@ -14,6 +14,7 @@ import {
   routes,
 } from "@/lib";
 import {
+  EquipmentDto,
   ProductionScheduleProductDto,
   ProductionStatus,
   useGetApiV1ProductByProductIdQuery,
@@ -33,9 +34,16 @@ interface ProductProps {
   productId: string;
   scheduleId: string;
   tab: ProductionScheduleProductDto;
+  productEquipment?: EquipmentDto;
 }
-const Product = ({ productId, scheduleId, tab }: ProductProps) => {
+const Product = ({
+  productId,
+  scheduleId,
+  tab,
+  productEquipment,
+}: ProductProps) => {
   const router = useRouter();
+  console.log(productEquipment?.capacityQuantity, tab.quantity);
   const [startProductionMutation, { isLoading: isProcessingStart }] =
     usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation();
   const { data: activity } =
@@ -201,6 +209,7 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
     tab?.product?.baseUoM?.symbol as Units,
   );
 
+  console.log(productEquipment?.capacityQuantity, "productEquipment");
   const handleStartProduction = async () => {
     try {
       await startProductionMutation({

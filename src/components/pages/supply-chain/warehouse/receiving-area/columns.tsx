@@ -68,7 +68,11 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
     accessorKey: "manufacturerName",
     header: "Manufacturer Name",
     cell: ({ row }) => (
-      <div className="">{row.original.manufacturer?.name}</div>
+      <div className="">
+        {row.original.material?.code}
+        {/* {row.original.material?.manufacturer?.name} */}
+        check
+      </div>
     ),
   },
   {

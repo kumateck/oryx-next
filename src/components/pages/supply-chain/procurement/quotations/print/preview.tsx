@@ -23,6 +23,34 @@ import InvoiceHeader from "@/shared/invoice/header";
 
 import { columns } from "./column";
 
+// type UoM = {
+//   name: string;
+//   symbol: string;
+//   description: string;
+//   isScalable: boolean;
+//   isRawMaterial: boolean;
+// };
+
+// type Material = {
+//   id: string;
+//   name: string;
+//   code: string;
+// };
+
+// type Item = {
+//   id: string;
+//   material: Material;
+//   uoM: UoM;
+//   quantity: number;
+// };
+
+// type GroupedMaterial = {
+//   materialId: string;
+//   materialName: string;
+//   uom: UoM;
+//   totalQuantity: number;
+// };
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -38,6 +66,31 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     });
 
   const items = data?.items ?? [];
+  // const grouped = items?.reduce<Record<string, GroupedMaterial>>(
+  //   (acc, curr) => {
+  //     const materialId = curr.material?.id;
+
+  //     // If the material id is not in the accumulator, add it with the current quantity and uom
+  //     if (!acc[materialId]) {
+  //       acc[materialId] = {
+  //         materialId: materialId,
+  //         material: curr.material,
+  //         uoM: curr.uoM, // Store the UOM from the first occurrence of the material
+  //         quantity: 0,
+  //       };
+  //     }
+
+  //     // Add the current quantity to the existing sum
+  //     acc[materialId].quantity += curr.quantity;
+
+  //     return acc;
+  //   },
+  //   {},
+  // );
+
+  // const result: GroupedMaterial[] = Object.values(grouped);
+
+  // console.log(result, "result");
   const supplier = data?.supplier;
   const contentRef = useRef<HTMLDivElement>(null);
 

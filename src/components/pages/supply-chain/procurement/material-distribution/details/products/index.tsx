@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { toast } from "sonner";
+import React from "react";
 
-import { Button, Card, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+// import { toast } from "sonner";
+// import { Button, Card, Icon } from "@/components/ui";
+// import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
-  useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
-  usePostApiV1ProcurementConfirmDistributionMutation,
+  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery, // useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { DistributionRequisitionItem } from "@/lib/redux/api/openapi.generated";
 
-import { getColumns } from "./columns";
-import TableForData from "./table";
+// import { getColumns } from "./columns";
+// import TableForData from "./table";
 
 interface Props {
   products: DistributionRequisitionItem[];
@@ -20,48 +18,49 @@ interface Props {
 }
 
 const Products = ({ products, shipmentDocumentId, totalQty }: Props) => {
-  const [approvingId, setApprovingId] = useState<string | null>(null);
-  const [approveDistribution] =
-    usePostApiV1ProcurementConfirmDistributionMutation();
+  console.log(products, "products", totalQty, "totalQty");
+  // const [approvingId, setApprovingId] = useState<string | null>(null);
+  // const [approveDistribution] =
+  //   usePostApiV1ProcurementConfirmDistributionMutation();
   const { data: result } =
     useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery(
       { shipmentDocumentId },
     );
   console.log(result, "result");
-  const [loadMaterials] =
-    useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery();
-  // const id = result?.sections?.[0]?.shipmentInvoiceItem?.id || null;
+  // const [loadMaterials] =
+  //   useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery();
+  // // const id = result?.sections?.[0]?.shipmentInvoiceItem?.id || null;
 
-  const handleApprove = async (item: DistributionRequisitionItem) => {
-    try {
-      setApprovingId(item.requistionItem?.id || null);
+  // const handleApprove = async (item: DistributionRequisitionItem) => {
+  //   try {
+  //     setApprovingId(item.requistionItem?.id || null);
 
-      const payload = {
-        // shipmentInvoiceItemId: id as string,
-        items: [
-          {
-            departmentId: item.department?.id as string,
-            requistionItemId: item.requistionItem?.id as string,
-            quantityAllocated: item.quantityAllocated as number,
-          },
-        ],
-      };
+  //     const payload = {
+  //       // shipmentInvoiceItemId: id as string,
+  //       items: [
+  //         {
+  //           departmentId: item.department?.id as string,
+  //           requistionItemId: item.requistionItem?.id as string,
+  //           quantityAllocated: item.quantityAllocated as number,
+  //         },
+  //       ],
+  //     };
 
-      await approveDistribution({
-        materialDistributionSectionRequest: payload,
-      }).unwrap();
-      toast.success("Distribution approved successfully");
-      loadMaterials({ shipmentDocumentId });
-    } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
-    } finally {
-      setApprovingId(null);
-    }
-  };
+  //     await approveDistribution({
+  //       materialDistributionSectionRequest: payload,
+  //     }).unwrap();
+  //     toast.success("Distribution approved successfully");
+  //     loadMaterials({ shipmentDocumentId });
+  //   } catch (error) {
+  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
+  //   } finally {
+  //     setApprovingId(null);
+  //   }
+  // };
 
   return (
     <div className="w-full space-y-4">
-      {products?.map((item, index) => (
+      {/* {products?.map((item, index) => (
         <Card key={index} className="p-6">
           <div className="mb-6">
             <div className="mb-2 flex items-center justify-between px-2">
@@ -69,13 +68,7 @@ const Products = ({ products, shipmentDocumentId, totalQty }: Props) => {
                 <h3 className="text-lg font-semibold">
                   {item.requistionItem?.material?.name}
                 </h3>
-                <p className="text-sm">
-                  Total Quantity Supplied -
-                  {/* {(item.quantityRemaining ?? 0) +
-                    (item.quantityAllocated ?? 0)} */}
-                  {/* {item.requistionItem?.} */}
-                  {totalQty}
-                </p>
+                <p className="text-sm">Total Quantity Supplied -{totalQty}</p>
               </div>
 
               <div>
@@ -97,7 +90,7 @@ const Products = ({ products, shipmentDocumentId, totalQty }: Props) => {
             <TableForData lists={[item]} defaultColumns={getColumns()} />
           </div>
         </Card>
-      ))}
+      ))} */}
     </div>
   );
 };

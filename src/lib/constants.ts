@@ -154,14 +154,19 @@ export enum TimeType {
   Time = "time",
   Moment = "moment",
 }
+
+export enum ProcurementType {
+  Local = "Local",
+  Foreign = "Foreign",
+}
 export enum MaterialStatus {
-  None = 0,
+  NoSource = 0,
   StockTransfer = 1,
   PurchaseRequisition = 2,
-  Local = 3,
-  Foreign = 4,
+  LocalProcurement = 3,
+  ForeignProcurement = 4,
   StockRequisition = 5,
-  Issued = 6,
+  IssuedRequisition = 6,
 }
 export enum QuestionTypes {
   ShortAnswer = 0,

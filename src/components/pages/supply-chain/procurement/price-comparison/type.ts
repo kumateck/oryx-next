@@ -4,6 +4,7 @@ interface SupplierQuotation {
   supplierName: string;
   price: number; // assuming price is a number
   selected: boolean;
+  sourceRequisitionId: string; // or number
 }
 
 // Define the type for Material

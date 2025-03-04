@@ -19,6 +19,7 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  Quotations,
   SupplierType,
   cn,
   findSelectedQuotation,
@@ -30,9 +31,8 @@ import {
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
-
-import { Quotations } from "./type";
 
 const Page = () => {
   const [saveProcess, { isLoading }] =
@@ -41,7 +41,7 @@ const Page = () => {
     supplierType: SupplierType.Foreign,
   });
 
-  const [loadData] =
+  const [loadData, { isLoading: isLoadingData, isFetching }] =
     useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery();
 
   const [state, setState] = useState<Quotations[]>([]);
@@ -58,6 +58,7 @@ const Page = () => {
           supplierQuotations: item?.supplierQuotation?.map((p) => {
             return {
               supplierId: p?.supplier?.id,
+              sourceRequisitionId: p?.sourceRequisition?.id,
               supplierName: p?.supplier?.name,
               price: p?.price,
               selected: false,
@@ -96,6 +97,7 @@ const Page = () => {
 
   const onSubmit = async () => {
     try {
+      console.log(findSelectedQuotation(state), "state");
       await saveProcess({
         body: findSelectedQuotation(state),
       }).unwrap();
@@ -120,72 +122,78 @@ const Page = () => {
           <span>Apply Changes</span>
         </Button>
       </div>
-      {state.length === 0 && <EmptyState />}
-      <ScrollablePageWrapper>
-        <Accordion
-          type="single"
-          collapsible
-          className="w-full"
-          defaultValue={"group-0"}
-        >
-          {state?.map((item, idx) => (
-            <AccordionItem
-              key={idx}
-              value={`group-${idx}`}
-              className="shadow-shadow2a rounded-md bg-white"
+      {isLoadingData || isFetching ? (
+        <SkeletonLoadingPage />
+      ) : (
+        <div>
+          {state.length === 0 && <EmptyState />}
+          <ScrollablePageWrapper>
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full"
+              defaultValue={"group-0"}
             >
-              <AccordionTrigger className="w-full gap-4 px-5">
-                <div>
-                  {item?.materialCode} - {item?.materialName}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="border-t bg-white p-5">
-                <RadioGroup
-                  className="flex flex-col gap-6 lg:flex-row"
-                  onValueChange={(v) => onChange(v, idx)}
+              {state?.map((item, idx) => (
+                <AccordionItem
+                  key={idx}
+                  value={`group-${idx}`}
+                  className="shadow-shadow2a rounded-md bg-white"
                 >
-                  {item?.supplierQuotations?.map((quote, index) => (
-                    <div
-                      key={index}
-                      // className="rounded-lg border p-4 transition hover:bg-stone-100"
-                      className={cn(
-                        "rounded-lg border p-4 transition hover:bg-stone-100",
-                        {
-                          "border-primary-500 ring-primary-500 bg-stone-100 shadow-lg ring-1":
-                            quote?.selected,
-                        },
-                      )}
-                    >
-                      <Label className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <RadioGroupItem
-                            value={quote?.supplierId}
-                            id="newPassport"
-                            className="h-8 w-8"
-                          >
-                            <Icon
-                              name="CheckCheck"
-                              className="h-7 w-7 text-current"
-                            />
-                          </RadioGroupItem>
-                        </div>
-                        <div className="space-y-6">
-                          <h3 className="text-xl font-semibold capitalize">
-                            {quote?.supplierName}
-                          </h3>
-                          <p className="text-muted-foreground text-sm capitalize leading-normal">
-                            {quote?.price}
-                          </p>
-                        </div>
-                      </Label>
+                  <AccordionTrigger className="w-full gap-4 px-5">
+                    <div>
+                      {item?.materialCode} - {item?.materialName}
                     </div>
-                  ))}
-                </RadioGroup>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </ScrollablePageWrapper>
+                  </AccordionTrigger>
+                  <AccordionContent className="border-t bg-white p-5">
+                    <RadioGroup
+                      className="flex flex-col gap-6 lg:flex-row"
+                      onValueChange={(v) => onChange(v, idx)}
+                    >
+                      {item?.supplierQuotations?.map((quote, index) => (
+                        <div
+                          key={index}
+                          // className="rounded-lg border p-4 transition hover:bg-stone-100"
+                          className={cn(
+                            "rounded-lg border p-4 transition hover:bg-stone-100",
+                            {
+                              "border-primary-500 ring-primary-500 bg-stone-100 shadow-lg ring-1":
+                                quote?.selected,
+                            },
+                          )}
+                        >
+                          <Label className="flex items-center space-x-4">
+                            <div className="flex-shrink-0">
+                              <RadioGroupItem
+                                value={quote?.supplierId}
+                                id="newPassport"
+                                className="h-8 w-8"
+                              >
+                                <Icon
+                                  name="CheckCheck"
+                                  className="h-7 w-7 text-current"
+                                />
+                              </RadioGroupItem>
+                            </div>
+                            <div className="space-y-6">
+                              <h3 className="text-xl font-semibold capitalize">
+                                {quote?.supplierName}
+                              </h3>
+                              <p className="text-muted-foreground text-sm capitalize leading-normal">
+                                {quote?.price}
+                              </p>
+                            </div>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </ScrollablePageWrapper>
+        </div>
+      )}
     </PageWrapper>
   );
 };

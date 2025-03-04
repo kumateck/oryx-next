@@ -11,6 +11,7 @@ import {
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
+  fullname,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -87,6 +88,7 @@ const Page = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  console.log(requisition, "requisition");
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">
@@ -117,6 +119,15 @@ const Page = () => {
               <li>
                 <span className="text-sm font-semibold">Deparment:</span>{" "}
                 <span>{requisition?.requestedBy?.department?.name}</span>
+                <span>
+                  {" "}
+                  by: (
+                  {fullname(
+                    requisition?.requestedBy?.firstName as string,
+                    requisition?.requestedBy?.lastName as string,
+                  )}
+                  )
+                </span>
               </li>
               <li>
                 <span className="text-sm font-semibold">Comments</span>
