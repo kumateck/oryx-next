@@ -36,6 +36,7 @@ const Products = ({ products, scheduleId }: Props) => {
                 scheduleId={scheduleId}
                 tab={tab}
                 productId={tab.product?.id as string}
+                productEquipment={tab.product?.equipment}
               />
             </TabsContent>
           ))}

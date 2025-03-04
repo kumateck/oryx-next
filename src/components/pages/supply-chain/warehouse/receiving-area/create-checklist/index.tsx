@@ -68,13 +68,13 @@ const CreateChecklist = () => {
         (item) => item.id === distributedMaterialId,
       );
       if (distributedMaterial) {
-        reset({
-          materialName: distributedMaterial.material?.name || "N/A",
-          supplierStatus: distributedMaterial.supplier?.status || 0,
-          invoiceNumber: distributedMaterial.shipmentInvoice?.code || "N/A",
-          supplierName: distributedMaterial.supplier?.name || "N/A",
-          manufacturerName: distributedMaterial.manufacturer?.name || "N/A",
-        });
+        // reset({
+        //   materialName: distributedMaterial.material?.name || "N/A",
+        //   supplierStatus: distributedMaterial.supplier?.status || 0,
+        //   invoiceNumber: distributedMaterial.shipmentInvoice?.code || "N/A",
+        //   supplierName: distributedMaterial.supplier?.name || "N/A",
+        //   manufacturerName: distributedMaterial.manufacturer?.name || "N/A",
+        // });
       }
     }
   }, [data, distributedMaterialId, reset]);
@@ -147,8 +147,8 @@ const CreateChecklist = () => {
       materialId: distributedMaterial.material?.id,
       checkedAt: data.date.toISOString(),
       shipmentInvoiceId: distributedMaterial.shipmentInvoice?.id,
-      supplierId: distributedMaterial.supplier?.id,
-      manufacturerId: distributedMaterial.manufacturer?.id,
+      // supplierId: distributedMaterial.supplier?.id,
+      // manufacturerId: distributedMaterial.manufacturer?.id,
       certificateOfAnalysisDelivered:
         data.certificateOfAnalysisDelivered.value ===
         ChecklistBoolean.Yes.toString(),

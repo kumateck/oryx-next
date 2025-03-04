@@ -22,9 +22,7 @@ export const getColumns =
     {
       accessorKey: "manufacturerName",
       header: "Manufacturer Name",
-      cell: ({ row }) => (
-        <div className="">{row.original.manufacturer?.name}</div>
-      ),
+      cell: ({ row }) => <div className="">{row.original.material?.name}</div>,
     },
     {
       accessorKey: "invoiceNumber",

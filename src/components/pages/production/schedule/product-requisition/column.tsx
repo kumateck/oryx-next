@@ -3,7 +3,10 @@ import { useState } from "react";
 
 import { DropdownMenuItem } from "@/components/ui";
 import { Units, convertToLargestUnit } from "@/lib";
-import { ProductionScheduleProcurementDto } from "@/lib/redux/api/openapi.generated";
+import {
+  ProductionScheduleProcurementDto,
+  ProductionScheduleProcurementPackageDto,
+} from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
 import { TableMenuAction } from "@/shared/table-menu";
 
@@ -56,7 +59,7 @@ export function DataTableRowActions<
   );
 }
 
-export const columns: ColumnDef<ProductionScheduleProcurementDto>[] = [
+export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
   TableCheckbox(),
   {
     accessorKey: "code",
@@ -78,7 +81,78 @@ export const columns: ColumnDef<ProductionScheduleProcurementDto>[] = [
       );
       return (
         <div className="">
+          {qty.value.toFixed(2)} {qty.unit}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "stock",
+    header: "Stock Available",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantityOnHand as number,
+        row.original.baseUoM?.symbol as Units,
+      );
+      return (
+        <div className="">
           {qty.value} {qty.unit}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "otherstock",
+    header: "Other Sources Available",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.material?.totalStock as number,
+        row.original.baseUoM?.symbol as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
+  },
+
+  {
+    id: "tools",
+    enableHiding: false,
+    meta: { omitRowClick: true, pin: "right" },
+    cell: ({ row }) => {
+      return <DataTableRowActions row={row} />;
+    },
+  },
+];
+
+export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
+  TableCheckbox(),
+  {
+    accessorKey: "code",
+    header: "Code",
+    cell: ({ row }) => <div className="">{row.original.material?.code}</div>,
+  },
+  {
+    accessorKey: "material",
+    header: "Material",
+    cell: ({ row }) => <div className="">{row.original.material?.name}</div>,
+  },
+  {
+    accessorKey: "qty",
+    header: "Quantity Needed",
+    cell: ({ row }) => {
+      const quantity = row.original.quantityNeeded ?? 0;
+      const packingExcessMargin = row.original.packingExcessMargin ?? 0;
+      const total = quantity + packingExcessMargin;
+      const qty = convertToLargestUnit(
+        total,
+        row.original.baseUoM?.symbol as Units,
+      );
+      return (
+        <div className="">
+          {qty.value.toFixed(2)} {qty.unit}
         </div>
       );
     },

@@ -8,8 +8,8 @@ import {
   useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import PageTitle from "@/shared/title";
 
+// import PageTitle from "@/shared/title";
 import Products from "./products";
 
 const ScheduleDetail = () => {
@@ -31,7 +31,7 @@ const ScheduleDetail = () => {
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
-        <p className="text-sm text-neutral-500">
+        {/* <p className="text-sm text-neutral-500">
           {data.map((section) => section.shipmentInvoice?.supplier?.name)}
         </p>
         <PageTitle
@@ -39,7 +39,7 @@ const ScheduleDetail = () => {
             .map((section) => section.shipmentInvoice?.code)
             .filter(Boolean)
             .join(", ")}
-        />
+        /> */}
 
         {data.map((section, sectionIndex) => (
           <div key={sectionIndex} className="space-y-4">

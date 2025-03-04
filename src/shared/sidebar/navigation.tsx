@@ -154,31 +154,11 @@ export const ROUTES: Route[] = [
           {
             title: "Quotations Request",
             url: "/procurement/quotations",
-            children: [
-              {
-                title: "Foreign",
-                url: "/procurement/foreign-quotation",
-              },
-              {
-                title: "Local",
-                url: "/procurement/local-quotation",
-              },
-            ],
           },
 
           {
             title: "Quotations Reponses",
-            url: "/procurement/sales",
-            children: [
-              {
-                title: "Foreign",
-                url: "/procurement/foreign-sales-quotation",
-              },
-              {
-                title: "Local",
-                url: "/procurement/local-sales-quotation",
-              },
-            ],
+            url: "/procurement/sales-quotation",
           },
           {
             title: "Price Comparison",

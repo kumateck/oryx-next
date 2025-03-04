@@ -159,19 +159,19 @@ export const generateCode = (options: GenerateCodeOptions) => {
 
 export const getStatusColor = (status: MaterialStatus) => {
   switch (status) {
-    case MaterialStatus.None:
+    case MaterialStatus.NoSource:
       return "bg-platinum-default text-platinum-disabled";
     case MaterialStatus.StockTransfer:
       return "bg-warning-default text-warning-disabled";
     case MaterialStatus.PurchaseRequisition:
       return "bg-teal-default text-teal-disabled";
-    case MaterialStatus.Foreign:
+    case MaterialStatus.ForeignProcurement:
       return "bg-severe-default text-severe-disabled";
-    case MaterialStatus.Local:
+    case MaterialStatus.LocalProcurement:
       return "bg-danger-default text-danger-disabled";
     case MaterialStatus.StockRequisition:
       return "bg-gold-default text-gold-disabled";
-    case MaterialStatus.Issued:
+    case MaterialStatus.IssuedRequisition:
       return "bg-success-default text-success-disabled";
 
     default:
@@ -206,6 +206,7 @@ export const calcQuantityMargin = (quantity: number, margin: number) => {
 };
 type GroupedBySupplier = {
   supplierId: string;
+  sourceRequisitionId: string;
   items: {
     materialId: string;
     uomId: string;
@@ -342,18 +343,27 @@ export const findSelectedQuotation = (state: Quotations[]) => {
         uomId: item?.uomId,
         supplierId: selected?.supplierId,
         price: selected?.price,
+        sourceRequisitionId: selected?.sourceRequisitionId,
       };
     })
     .filter((item) => item?.supplierId);
   const grouped: { [key: string]: GroupedBySupplier } = {};
 
   data.forEach((item) => {
-    const { supplierId, materialId, uomId, quantity, price } = item;
+    const {
+      supplierId,
+      materialId,
+      uomId,
+      quantity,
+      price,
+      sourceRequisitionId,
+    } = item;
     const supplier = supplierId as string;
     const pricePerUnit = price as number;
     if (!grouped[supplier]) {
       grouped[supplier] = {
         supplierId: supplier,
+        sourceRequisitionId: sourceRequisitionId as string,
         items: [],
       };
     }

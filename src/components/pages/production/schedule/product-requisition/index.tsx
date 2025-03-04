@@ -6,7 +6,12 @@ import React, { useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon, Separator } from "@/components/ui";
-import { Units, convertToLargestUnit, getMatchingIds } from "@/lib";
+import {
+  EMaterialKind,
+  Units,
+  convertToLargestUnit,
+  getMatchingIds,
+} from "@/lib";
 import {
   useGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery,
   useGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery,
@@ -44,7 +49,7 @@ const Page = () => {
       },
     );
 
-  const loadPurchaseData = () => {
+  const loadRawPurchaseData = () => {
     const material =
       materialResponse?.map((item) => ({
         id: item.material?.id as string,
@@ -81,16 +86,57 @@ const Page = () => {
     setPurchaseLists(filtered);
     setIsOpenPurchase(true);
   };
-  // console.log(materialResponse, packageResponse, "materialResponse");
+  const loadPackagePurchaseData = () => {
+    const material =
+      packageResponse?.map((item) => ({
+        id: item.material?.id as string,
+      })) ?? [];
+    const ids = getMatchingIds(material, pRowSelection);
+    const filteredItems = packageResponse?.filter((item) =>
+      ids.includes(item?.material?.id as string),
+    );
+    const filtered = filteredItems?.map((material) => {
+      const uom = convertToLargestUnit(
+        Number(material.quantityNeeded),
+        material.baseUoM?.symbol as Units,
+      ).unit;
+      const quantityOnHand = convertToLargestUnit(
+        Number(material.quantityOnHand),
+        material.baseUoM?.symbol as Units,
+      ).value;
+      const quantity = material.quantityNeeded ?? 0;
+      const packingExcessMargin = material.packingExcessMargin ?? 0;
+      const totalQuantityNeeded =
+        Math.round((quantity + packingExcessMargin) * 100) / 100;
+      const qty = convertToLargestUnit(
+        Number(totalQuantityNeeded),
+        material.baseUoM?.symbol as Units,
+      ).value;
+      return {
+        code: material.material?.code,
+        materialName: material.material?.name,
+        materialId: material.material?.id,
+        uom,
+        quantityOnHand,
+        quantityRequested: qty,
+        quantity: qty,
+        totalStock: material.material?.totalStock,
+        uomId: material.baseUoM?.id,
+      };
+    }) as unknown as MaterialRequestDto[];
+    setPurchaseLists(filtered);
+    setIsOpenPurchase(true);
+  };
 
   return (
     <PageWrapper className="space-y-5">
-      <PageTitle title="Materials Requisition" />
+      <PageTitle title="Materials Purchase Requisition" />
       <ScrollableWrapper className="space-y-5">
         {isRawLoading ? (
           <SkeletonLoadingPage />
         ) : (
           <TableCard
+            type={EMaterialKind.Raw}
             rowSelection={rRowSelection}
             setRowSelection={setRRowSelection}
             title="Raw Materials"
@@ -108,7 +154,7 @@ const Page = () => {
                       {Object.keys(rRowSelection).length > 1 && "s"}
                     </span>
                     <Separator orientation="vertical" />
-                    <Button size="sm" onClick={loadPurchaseData}>
+                    <Button size="sm" onClick={loadRawPurchaseData}>
                       Purchase Requisition
                     </Button>
                   </div>
@@ -121,6 +167,7 @@ const Page = () => {
           <SkeletonLoadingPage />
         ) : (
           <TableCard
+            type={EMaterialKind.Package}
             rowSelection={pRowSelection}
             setRowSelection={setPRowSelection}
             title="Package Materials"
@@ -138,7 +185,9 @@ const Page = () => {
                       {Object.keys(pRowSelection).length > 1 && "s"}
                     </span>
                     <Separator orientation="vertical" />
-                    <Button size="sm">Purchase Requisition</Button>
+                    <Button size="sm" onClick={loadPackagePurchaseData}>
+                      Purchase Requisition
+                    </Button>
                   </div>
                 )}
               </div>

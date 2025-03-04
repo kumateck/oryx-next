@@ -1255,14 +1255,23 @@ const injectedRtkApi = api.injectEndpoints({
           url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/material-distribution`,
         }),
       }),
-    postApiV1ProcurementConfirmDistribution: build.mutation<
-      PostApiV1ProcurementConfirmDistributionApiResponse,
-      PostApiV1ProcurementConfirmDistributionApiArg
+    postApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialId:
+      build.mutation<
+        PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiResponse,
+        PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution/${queryArg.materialId}`,
+          method: "POST",
+        }),
+      }),
+    postApiV1ProcurementByShipmentDocumentIdConfirmDistribution: build.mutation<
+      PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiResponse,
+      PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/procurement/confirm-distribution`,
+        url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution`,
         method: "POST",
-        body: queryArg.materialDistributionSectionRequest,
       }),
     }),
     postApiV1Product: build.mutation<
@@ -2198,6 +2207,12 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createClientRequest,
       }),
+    }),
+    getApiV1UserAuthenticated: build.query<
+      GetApiV1UserAuthenticatedApiResponse,
+      GetApiV1UserAuthenticatedApiArg
+    >({
+      query: () => ({ url: `/api/v1/user/authenticated` }),
     }),
     putApiV1UserById: build.mutation<
       PutApiV1UserByIdApiResponse,
@@ -3545,11 +3560,21 @@ export type GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistr
     /** The ID of the shipment document. */
     shipmentDocumentId: string;
   };
-export type PostApiV1ProcurementConfirmDistributionApiResponse = unknown;
-export type PostApiV1ProcurementConfirmDistributionApiArg = {
-  /** The MaterialDistributionSection object. */
-  materialDistributionSectionRequest: MaterialDistributionSectionRequest;
-};
+export type PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiResponse =
+  unknown;
+export type PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiArg =
+  {
+    /** The shipment document id for which you want to approve distribution */
+    shipmentDocumentId: string;
+    materialId: string;
+  };
+export type PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiResponse =
+  unknown;
+export type PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiArg =
+  {
+    /** The shipment document id for which you want to approve distribution */
+    shipmentDocumentId: string;
+  };
 export type PostApiV1ProductApiResponse = /** status 201 Created */ string;
 export type PostApiV1ProductApiArg = {
   createProductRequest: CreateProductRequest;
@@ -4025,8 +4050,8 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
 export type GetApiV1RequisitionSourceSupplierApiResponse =
   /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceSupplierApiArg = {
-  /** The source of the requisition. (example Local, Foreign, Internal) */
-  source?: ProcurementSource;
+  /** The source of the requisition. (example Local, Foreign) */
+  source?: SupplierType;
   /** The current page number. */
   page?: number;
   /** The number of items per page. */
@@ -4135,6 +4160,8 @@ export type PostApiV1UserSignUpApiResponse = unknown;
 export type PostApiV1UserSignUpApiArg = {
   createClientRequest: CreateClientRequest;
 };
+export type GetApiV1UserAuthenticatedApiResponse = unknown;
+export type GetApiV1UserAuthenticatedApiArg = void;
 export type PutApiV1UserByIdApiResponse = unknown;
 export type PutApiV1UserByIdApiArg = {
   id: string;
@@ -6412,7 +6439,7 @@ export type ShipmentInvoiceRead = {
   shipmentArrived?: string | null;
   items?: ShipmentInvoiceItem[] | null;
 };
-export type ProcurementSource = 0 | 1 | 2;
+export type ProcurementSource = 0 | 1;
 export type SourceRequisitionItem = {
   id?: string;
   createdAt?: string;
@@ -6630,7 +6657,7 @@ export type PurchaseOrder = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   code?: string | null;
-  sourceRequisitionId?: string | null;
+  sourceRequisitionId?: string;
   sourceRequisition?: SourceRequisition;
   supplierId?: string;
   supplier?: Supplier;
@@ -6654,7 +6681,7 @@ export type PurchaseOrderRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   code?: string | null;
-  sourceRequisitionId?: string | null;
+  sourceRequisitionId?: string;
   sourceRequisition?: SourceRequisitionRead;
   supplierId?: string;
   supplier?: SupplierRead;
@@ -6679,8 +6706,6 @@ export type ShipmentInvoiceItem = {
   lastDeletedBy?: User;
   shipmentInvoiceId?: string;
   shipmentInvoice?: ShipmentInvoice;
-  distributedRequisitionMaterialId?: string | null;
-  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
   materialId?: string;
   material?: Material;
   uoMId?: string;
@@ -6707,8 +6732,6 @@ export type ShipmentInvoiceItemRead = {
   lastDeletedBy?: User;
   shipmentInvoiceId?: string;
   shipmentInvoice?: ShipmentInvoiceRead;
-  distributedRequisitionMaterialId?: string | null;
-  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
   materialId?: string;
   material?: MaterialRead;
   uoMId?: string;
@@ -6721,6 +6744,14 @@ export type ShipmentInvoiceItemRead = {
   receivedQuantity?: number;
   reason?: string | null;
   distributed?: boolean;
+};
+export type MaterialItemDistribution = {
+  id?: string;
+  distributedRequisitionMaterialId?: string;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterial;
+  shipmentInvoiceItemId?: string;
+  shipmentInvoiceItem?: ShipmentInvoiceItem;
+  quantity?: number;
 };
 export type DistributedRequisitionMaterialStatus = 0 | 1 | 2 | 3;
 export type DistributedRequisitionMaterial = {
@@ -6738,15 +6769,11 @@ export type DistributedRequisitionMaterial = {
   requisitionItem?: RequisitionItem;
   warehouseArrivalLocationId?: string | null;
   warehouseArrivalLocation?: WarehouseArrivalLocation;
-  shipmentInvoiceItems?: ShipmentInvoiceItem[] | null;
+  materialItemDistributions?: MaterialItemDistribution[] | null;
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoice;
   materialId?: string | null;
   material?: Material;
-  supplierId?: string | null;
-  supplier?: Supplier;
-  manufacturerId?: string | null;
-  manufacturer?: Manufacturer;
   uomId?: string | null;
   uoM?: UnitOfMeasure;
   quantity?: number;
@@ -6771,15 +6798,11 @@ export type DistributedRequisitionMaterialRead = {
   requisitionItem?: RequisitionItemRead;
   warehouseArrivalLocationId?: string | null;
   warehouseArrivalLocation?: WarehouseArrivalLocationRead;
-  shipmentInvoiceItems?: ShipmentInvoiceItemRead[] | null;
+  materialItemDistributions?: MaterialItemDistribution[] | null;
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoiceRead;
   materialId?: string | null;
   material?: MaterialRead;
-  supplierId?: string | null;
-  supplier?: SupplierRead;
-  manufacturerId?: string | null;
-  manufacturer?: ManufacturerRead;
   uomId?: string | null;
   uoM?: UnitOfMeasureRead;
   quantity?: number;
@@ -7708,20 +7731,22 @@ export type ShipmentInvoiceDto = {
   items?: ShipmentInvoiceItemDto[] | null;
   isAttached?: boolean;
 };
+export type MaterialItemDistributionDto = {
+  shipmentInvoiceItem?: ShipmentInvoiceItemDto;
+  quantity?: number;
+};
 export type DistributedRequisitionMaterialDto = {
   id?: string;
   requisitionItem?: RequisitionItemDto;
   material?: MaterialDto;
   uom?: UnitOfMeasureDto;
-  supplier?: SupplierDto;
-  manufacturer?: ManufacturerDto;
-  shipmentInvoiceItems?: ShipmentInvoiceItemDto[] | null;
   shipmentInvoice?: ShipmentInvoiceDto;
   quantity?: number;
   arrivedAt?: string | null;
   checkedAt?: string | null;
   distributedAt?: string | null;
   grnGeneratedAt?: string | null;
+  materialItemDistributions?: MaterialItemDistributionDto[] | null;
   status?: DistributedRequisitionMaterialStatus;
 };
 export type BatchChecklistDto = {
@@ -7937,7 +7962,7 @@ export type CreatePurchaseOrderItemRequest = {
 export type CreatePurchaseOrderRequest = {
   code?: string | null;
   supplierId?: string;
-  sourceRequisitionId?: string | null;
+  sourceRequisitionId?: string;
   requestDate?: string;
   expectedDeliveryDate?: string | null;
   items?: CreatePurchaseOrderItemRequest[] | null;
@@ -8327,31 +8352,20 @@ export type CreateShipmentDiscrepancyRead = {
 };
 export type DistributionRequisitionItem = {
   department?: DepartmentDto;
-  requistionItem?: RequisitionItemDto;
-  quantityRequested?: number | null;
-  quantityAllocated?: number | null;
-  quantityRemaining?: number | null;
+  requisitionItem?: RequisitionItemDto;
+  quantityRequested?: number;
+  quantityAllocated?: number;
+  quantityRemaining?: number;
+  distributions?: MaterialItemDistributionDto[] | null;
 };
 export type MaterialDistributionSection = {
   material?: MaterialDto;
-  shipmentInvoice?: ShipmentInvoiceDto;
-  shipmentInvoiceItems?: ShipmentInvoiceItemDto[] | null;
   totalQuantity?: number;
+  uoM?: UnitOfMeasureDto;
   items?: DistributionRequisitionItem[] | null;
 };
 export type MaterialDistributionDto = {
   sections?: MaterialDistributionSection[] | null;
-};
-export type DistributionRequisitionItemRequest = {
-  departmentId?: string | null;
-  requistionItemId?: string | null;
-  quantityAllocated?: number;
-};
-export type MaterialDistributionSectionRequest = {
-  shipmentInvoiceItemIds?: string[] | null;
-  supplierId?: string | null;
-  manufacturerId?: string | null;
-  items?: DistributionRequisitionItemRequest[] | null;
 };
 export type CreateFinishedProductRequest = {
   name?: string | null;
@@ -8765,6 +8779,7 @@ export type ProductionScheduleProcurementPackageDto = {
   quantityOnHand?: number;
   unitCapacity?: number;
   status?: MaterialRequisitionStatus;
+  packingExcessMargin?: number;
 };
 export type ProductionActivityStepResourceDto = {
   id?: string;
@@ -9656,7 +9671,8 @@ export const {
   usePostApiV1ProcurementMaterialsByPurchaseOrdersMutation,
   useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
   useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
-  usePostApiV1ProcurementConfirmDistributionMutation,
+  usePostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdMutation,
+  usePostApiV1ProcurementByShipmentDocumentIdConfirmDistributionMutation,
   usePostApiV1ProductMutation,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductQuery,
@@ -9800,6 +9816,8 @@ export const {
   useGetApiV1UserQuery,
   useLazyGetApiV1UserQuery,
   usePostApiV1UserSignUpMutation,
+  useGetApiV1UserAuthenticatedQuery,
+  useLazyGetApiV1UserAuthenticatedQuery,
   usePutApiV1UserByIdMutation,
   useDeleteApiV1UserByIdMutation,
   usePutApiV1UserRoleByIdMutation,
