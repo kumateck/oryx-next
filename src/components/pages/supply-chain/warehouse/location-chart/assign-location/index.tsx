@@ -13,11 +13,11 @@ import {
 } from "@/components/ui";
 import { ErrorResponse, Option, isErrorResponse } from "@/lib";
 import {
+  MaterialBatchDto,
   useGetApiV1WarehouseRackQuery,
   useGetApiV1WarehouseShelfQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-import { BatchColumns } from "../columns";
 import AssignLocationForm from "./form";
 import { LocationRequestDto, LocationValidator } from "./type";
 
@@ -25,7 +25,7 @@ interface AssignLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
-  selectedBatch: BatchColumns | null;
+  selectedBatch: MaterialBatchDto | null;
 }
 
 const AssignLocationDialog = ({

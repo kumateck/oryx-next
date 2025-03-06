@@ -12,8 +12,7 @@ import {
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
-
-import { BatchColumns } from "../columns";
+import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 
 interface FormProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -21,7 +20,7 @@ interface FormProps<TFieldValues extends FieldValues> {
   errors: FieldErrors<TFieldValues>;
   rackOptions: Option[];
   shelfOptions: Option[];
-  selectedBatch: BatchColumns | null;
+  selectedBatch: MaterialBatchDto | null;
 }
 
 // Default location object
@@ -52,7 +51,7 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
           <div>
             <span className="block text-gray-500">Material Name</span>
             <span className="block font-bold">
-              {selectedBatch?.materialName || "N/A"}
+              {selectedBatch?.checklist?.material?.name || "N/A"}
             </span>
           </div>
           <div>

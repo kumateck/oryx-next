@@ -16,10 +16,9 @@ import {
 import { CODE_SETTINGS } from "@/lib";
 import {
   CreateGrnRequest,
-  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   NamingType,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  useLazyGetApiV1ProductionScheduleQuery,
   usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation,
   usePostApiV1WarehouseGrnMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -45,10 +44,11 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
   const [createGRN, { isLoading }] = usePostApiV1WarehouseGrnMutation();
   const [getBatchDetails, { isLoading: isBatchLoading }] =
     usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation();
-  const [loadCodeSettings] =
-    useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  const { data: codeConfig } =
+    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
+      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
+    });
+  const [loadProduct] = useLazyGetApiV1ProductionScheduleQuery();
 
   const {
     register,
@@ -56,7 +56,7 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-    // setValue,
+    setValue,
   } = useForm<GRNRequestDto>({
     resolver: CreateGRNValidator,
     mode: "all",
@@ -93,35 +93,28 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
   };
 
   useEffect(() => {
-    handleLoadCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const loadCodes = async () => {
+      const generatePayload: GenerateCodeOptions = {
+        maxlength: Number(codeConfig?.maximumNameLength),
+        minlength: Number(codeConfig?.minimumNameLength),
+        prefix: codeConfig?.prefix as string,
+        type: codeConfig?.namingType as NamingType,
+      };
+      const productsResponse = await loadProduct({
+        page: 1,
+        pageSize: 1,
+      }).unwrap();
 
-  const handleLoadCode = async () => {
-    const getCodeSettings = await loadCodeSettings({
-      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
-    }).unwrap();
-
-    const prefix = getCodeSettings?.prefix;
-
-    const codePrefix = prefix;
-
-    const payload = {
-      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
-      prefix: codePrefix,
-    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
-    const res = await loadCodeMyModel(payload).unwrap();
-    const generatePayload: GenerateCodeOptions = {
-      maxlength: Number(getCodeSettings?.maximumNameLength),
-      minlength: Number(getCodeSettings?.minimumNameLength),
-      prefix: codePrefix as string,
-      type: getCodeSettings?.namingType as NamingType,
-      seriesCounter: res + 1,
+      const products = productsResponse?.totalRecordCount ?? 0;
+      generatePayload.seriesCounter = products + 1;
+      const code = await generateCode(generatePayload);
+      setValue("grnNumber", code);
     };
-    const code = await generateCode(generatePayload);
-    // setValue("grnNumber", code);
-    console.log("CODE:::", code);
-  };
+
+    loadCodes();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [codeConfig]);
 
   return (
     <Dialog open={isGRNOpen} onOpenChange={onGRNClose}>

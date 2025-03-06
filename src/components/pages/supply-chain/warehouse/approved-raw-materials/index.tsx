@@ -4,9 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { Button, Icon } from "@/components/ui";
-import { routes } from "@/lib/constants";
-import { useLazyGetApiV1ProductionScheduleQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1MaterialApprovedRawMaterialsQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -15,7 +13,7 @@ import { columns } from "./columns";
 const Page = () => {
   const router = useRouter();
   const [loadData, { data: result, isFetching, isLoading }] =
-    useLazyGetApiV1ProductionScheduleQuery();
+    useLazyGetApiV1MaterialApprovedRawMaterialsQuery();
 
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -23,6 +21,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
+      warehouseId: "51d2bb5a-3321-40f7-b16c-701968a2377c",
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -32,20 +31,13 @@ const Page = () => {
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Approved Raw Materials" />
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="default"
-            size={"sm"}
-            onClick={() => router.push(routes.newSchedule())}
-          >
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
-        </div>
       </div>
 
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(`/warehouse/approved-raw-materials/${row.id}/details`);
+          router.push(
+            `/warehouse/approved-raw-materials/${row?.material?.id}/details`,
+          );
         }}
         data={data}
         columns={columns}
