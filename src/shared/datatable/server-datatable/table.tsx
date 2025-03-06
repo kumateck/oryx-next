@@ -40,9 +40,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   pagination?: paginationParams;
   tableParams?: TPaginationResponse;
-
   tablePrefixComponent?: React.FC;
-  selectedRows?: string[];
   onRowClick?: (row: TData) => void;
   rowSelection?: RowSelectionState;
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;

@@ -295,7 +295,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
             return (
               <FormAsyncSelect
                 value={value || formInput.defaultValue}
-                defaultValue={formInput.defaultValue}
+                defaultValue={formInput.defaultValue || value}
                 label={formInput.label}
                 required={formInput.required}
                 onChange={onChange}
@@ -323,7 +323,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
             return (
               <FormSpecialSelect
                 value={value || formInput.defaultValue}
-                defaultValue={formInput.defaultValue}
+                defaultValue={formInput.defaultValue || value}
                 label={formInput.label}
                 required={formInput.required}
                 onChange={onChange}

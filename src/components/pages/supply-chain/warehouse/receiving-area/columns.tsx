@@ -4,9 +4,16 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
-import { DistributedMaterialStatus, routes } from "@/lib";
+import {
+  DistributedMaterialStatus,
+  Option,
+  Units,
+  convertToLargestUnit,
+  routes,
+} from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
+import MultiSelectListViewer from "@/shared/multi-select-lists";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -69,9 +76,16 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
     header: "Manufacturer Name",
     cell: ({ row }) => (
       <div className="">
-        {row.original.material?.code}
-        {/* {row.original.material?.manufacturer?.name} */}
-        check
+        <MultiSelectListViewer
+          className="max-w-60"
+          lists={
+            row.original.materialItemDistributions?.map((item) => {
+              return {
+                label: item.shipmentInvoiceItem?.manufacturer?.name as string,
+              };
+            }) as Option[]
+          }
+        />
       </div>
     ),
   },
@@ -83,7 +97,17 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
   {
     accessorKey: "orderQuantity",
     header: "Order Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantity as number,
+        row.original.uom?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",

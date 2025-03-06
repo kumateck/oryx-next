@@ -14,7 +14,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { InputTypes, Option, Units } from "@/lib";
 
 import AddBatchDialog from "./add-batch";
 import TableForData from "./table";
@@ -48,12 +48,13 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   defaultUom?: Option;
   defaultPackingUom?: Option;
   defaultIntactnessOption?: Option;
+  remainingQty: number;
+  qtyUnit: Units;
 }
 const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  uomOptions,
   packingUomOptions,
   checklistBooleanOptions,
   checklistContainersOptions,
@@ -62,6 +63,8 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   fields,
   append,
   remove,
+  remainingQty,
+  qtyUnit,
 }: Props<TFieldValues, TContext>) => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   return (
@@ -83,11 +86,10 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
-                register: register("supplierStatus" as Path<TFieldValues>, {
-                  valueAsNumber: true,
-                }),
+                register: register("supplierStatus" as Path<TFieldValues>),
                 label: "Supplier Status",
-                type: InputTypes.NUMBER,
+                type: InputTypes.TEXT,
+                readOnly: true,
                 required: true,
                 placeholder: "Enter Supplier Status",
                 errors,
@@ -183,6 +185,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
 
       <div className="flex justify-between px-2 py-5">
         <span className="font-medium">Batch Information</span>
+
         <Button
           type="button"
           variant={"ghost"}
@@ -195,12 +198,14 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
       </div>
 
       <AddBatchDialog
+        remainingQty={remainingQty}
+        qtyUnit={qtyUnit}
         isOpen={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSave={(data) => {
           append(data as any);
         }}
-        uomOptions={uomOptions}
+        // uomOptions={uomOptions}
         packingUomOptions={packingUomOptions}
       />
 
@@ -211,7 +216,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
             numberOfContainers: (field as any).numberOfContainers,
             numberOfContainersUom: (field as any).numberOfContainersUom,
             quantityPerContainer: (field as any).quantityPerContainer,
-            uom: (field as any).uom,
+            // uom: (field as any).uom,
             expiryDate: (field as any).expiryDate,
             manufacturingDate: (field as any).manufacturingDate,
             retestDate: (field as any).retestDate,

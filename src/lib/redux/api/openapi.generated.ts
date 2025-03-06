@@ -2509,13 +2509,14 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/warehouse/${queryArg.warehouseId}/arrival-location`,
       }),
     }),
-    getApiV1WarehouseByWarehouseIdDistributedRequisitionMaterials: build.query<
-      GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiResponse,
-      GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiArg
+    getApiV1WarehouseDistributedRequisitionMaterials: build.query<
+      GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse,
+      GetApiV1WarehouseDistributedRequisitionMaterialsApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}/distributed-requisition-materials`,
+        url: `/api/v1/warehouse/distributed-requisition-materials`,
         params: {
+          kind: queryArg.kind,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -4160,7 +4161,7 @@ export type PostApiV1UserSignUpApiResponse = unknown;
 export type PostApiV1UserSignUpApiArg = {
   createClientRequest: CreateClientRequest;
 };
-export type GetApiV1UserAuthenticatedApiResponse = unknown;
+export type GetApiV1UserAuthenticatedApiResponse = /** status 200 OK */ UserDto;
 export type GetApiV1UserAuthenticatedApiArg = void;
 export type PutApiV1UserByIdApiResponse = unknown;
 export type PutApiV1UserByIdApiArg = {
@@ -4324,15 +4325,14 @@ export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse =
 export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg = {
   warehouseId: string;
 };
-export type GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiResponse =
+export type GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse =
   /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateable;
-export type GetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsApiArg =
-  {
-    warehouseId: string;
-    page?: number;
-    pageSize?: number;
-    searchQuery?: string;
-  };
+export type GetApiV1WarehouseDistributedRequisitionMaterialsApiArg = {
+  kind?: MaterialKind;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
 export type GetApiV1WarehouseDistributedMaterialByIdApiResponse =
   /** status 200 OK */ DistributedRequisitionMaterialDto;
 export type GetApiV1WarehouseDistributedMaterialByIdApiArg = {
@@ -6419,7 +6419,6 @@ export type ShipmentInvoice = {
   code?: string | null;
   supplierId?: string | null;
   supplier?: Supplier;
-  shipmentArrived?: string | null;
   items?: ShipmentInvoiceItem[] | null;
 };
 export type ShipmentInvoiceRead = {
@@ -6436,7 +6435,6 @@ export type ShipmentInvoiceRead = {
   code?: string | null;
   supplierId?: string | null;
   supplier?: SupplierRead;
-  shipmentArrived?: string | null;
   items?: ShipmentInvoiceItem[] | null;
 };
 export type ProcurementSource = 0 | 1;
@@ -7712,6 +7710,8 @@ export type SupplierDto = {
 };
 export type ShipmentInvoiceItemDto = {
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   material?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
   manufacturer?: CollectionItemDto;
@@ -7727,7 +7727,6 @@ export type ShipmentInvoiceDto = {
   createdAt?: string;
   code?: string | null;
   supplier?: SupplierDto;
-  shipmentArrivedAt?: string | null;
   items?: ShipmentInvoiceItemDto[] | null;
   isAttached?: boolean;
 };
@@ -7828,6 +7827,7 @@ export type CreateMaterialBatchRequest = {
   totalQuantity?: number;
   batchNumber?: string | null;
   manufacturingDate?: string | null;
+  checklistId?: string | null;
   uoMId?: string | null;
   initialLocationId?: string;
   dateReceived?: string;
@@ -9105,7 +9105,7 @@ export type CreateSourceRequisitionRequest = {
 export type SourceRequisitionItemDto = {
   id?: string;
   sourceRequisition?: CollectionItemDto;
-  material?: CollectionItemDto;
+  material?: MaterialDto;
   uoM?: UnitOfMeasureDto;
   quantity?: number;
   source?: ProcurementSource;
@@ -9860,8 +9860,8 @@ export const {
   useLazyGetApiV1WarehouseByWarehouseIdShelvesQuery,
   useGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
   useLazyGetApiV1WarehouseByWarehouseIdArrivalLocationQuery,
-  useGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,
-  useLazyGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,
+  useGetApiV1WarehouseDistributedRequisitionMaterialsQuery,
+  useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery,
   useGetApiV1WarehouseDistributedMaterialByIdQuery,
   useLazyGetApiV1WarehouseDistributedMaterialByIdQuery,
   usePostApiV1WarehouseArrivalLocationMutation,
