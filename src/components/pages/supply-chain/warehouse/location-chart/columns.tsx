@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
+import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
@@ -13,11 +14,13 @@ interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-export function DataTableRowActions<TData extends BatchColumns>({
+export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [selectedBatch, setSelectedBatch] = useState<BatchColumns | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<MaterialBatchDto | null>(
+    null,
+  );
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
 
   return (
@@ -64,33 +67,38 @@ export interface BatchColumns {
   consumedQuantity?: number;
   remainingQuantity?: number;
   expiryDate?: string;
+  materialCode: string;
 }
 
-export const getColumns = (): ColumnDef<BatchColumns>[] => [
+export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
-    accessorKey: "code",
-    header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batchNumber ?? "N/A"}</div>,
+    accessorKey: "materialCode",
+    header: "Material Code",
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.material?.code ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original.materialName ?? "N/A"}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.material?.name ?? "-"}</div>
+    ),
   },
   {
-    accessorKey: "manufacturerName",
-    header: "Manufacturer Name",
-    cell: ({ row }) => <div>{row.original.manufacturerName ?? "N/A"}</div>,
+    accessorKey: "code",
+    header: "Batch Number",
+    cell: ({ row }) => <div>{row.original.batchNumber ?? "-"}</div>,
   },
   {
-    accessorKey: "invoiceNumber",
-    header: "Invoice Number",
-    cell: ({ row }) => <div>{row.original.invoiceNumber ?? "N/A"}</div>,
+    accessorKey: "arNumber",
+    header: "AR Number",
+    cell: ({ row }) => <div>{row.original.batchNumber ?? "-"}</div>,
   },
   {
-    accessorKey: "totalQuantity",
-    header: "Quantity",
-    cell: ({ row }) => <div>{row.original.totalQuantity}</div>,
+    accessorKey: "manufacturingDate",
+    header: "Manufacturing Date",
+    cell: ({ row }) => <div>{row.original.manufacturingDate}</div>,
   },
   {
     accessorKey: "expiryDate",
@@ -98,19 +106,14 @@ export const getColumns = (): ColumnDef<BatchColumns>[] => [
     cell: ({ row }) => <div>{row.original.expiryDate}</div>,
   },
   {
-    accessorKey: "manufacturingDate",
-    header: "Expiry Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    accessorKey: "status",
+    header: "Quantity",
+    cell: ({ row }) => <div>{row.original.status}</div>,
   },
   {
     accessorKey: "retestDate",
     header: "Retest Date",
     cell: ({ row }) => <div>{row.original.expiryDate}</div>,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => <div>{row.original.status}</div>,
   },
   {
     id: "actions",
