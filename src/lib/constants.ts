@@ -366,3 +366,9 @@ export enum DepartmentType {
   Production = 0,
   NonProduction = 1,
 }
+
+export enum SupplierStatus {
+  New = 0,
+  Approved = 1,
+  UnApproved = 2,
+}

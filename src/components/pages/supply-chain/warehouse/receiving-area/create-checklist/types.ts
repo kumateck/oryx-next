@@ -34,15 +34,15 @@ export const checklistBatchRequestSchema = z.object({
   quantityPerContainer: z
     .string()
     .min(1, { message: "Quantity per container is required" }),
-  uom: z.object(
-    {
-      value: z.string().min(1, { message: "Unit of Measurement is required" }),
-      label: z.string(),
-    },
-    {
-      message: "Unit of Measurement is required",
-    },
-  ),
+  // uom: z.object(
+  //   {
+  //     value: z.string().min(1, { message: "Unit of Measurement is required" }),
+  //     label: z.string(),
+  //   },
+  //   {
+  //     message: "Unit of Measurement is required",
+  //   },
+  // ),
   expiryDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -80,11 +80,18 @@ export const CreateChecklistSchema = z.object({
     .min(1, {
       message: "Material name is required",
     }),
-  supplierStatus: z
-    .number({ required_error: "Supplier Status is required" })
-    .min(1, {
-      message: "Supplier Status is required",
-    }),
+  // supplierStatus:  z
+  //   .number({ required_error: "Supplier Status is required" })
+  //   .min(1, {
+  //     message: "Supplier Status is required",
+  //   }),
+  materialId: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  supplierStatusId: z.number().optional(),
+  materialKind: z.number().optional(),
+  shipmentInvoiceId: z.string().optional(),
+  supplierId: z.string().optional(),
+  supplierStatus: z.string().optional(),
   date: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({

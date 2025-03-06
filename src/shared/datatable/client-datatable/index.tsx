@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  RowSelectionState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -13,7 +14,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
-import { useEffect } from "react";
 
 import {
   Table,
@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib";
 
 import TableRowSkeleton from "../table-skeleton";
 import { DataTablePagination } from "./pagination";
@@ -30,23 +31,20 @@ import { DataTablePagination } from "./pagination";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onChangeSelectedRows?: (selectedRows: (TData & { rowId: string })[]) => void;
   tablePrefixComponent?: React.FC;
-  selectedRows?: string[];
   onRowClick?: (row: TData) => void;
-  resetSelection?: boolean;
   toolbar?: { title: string; actions: React.ReactNode; backBtn?: boolean };
   isLoading?: boolean;
+  rowSelection?: RowSelectionState;
+  setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
 }
 
 export function ClientDatatable<TData, TValue>({
   columns,
   data,
   isLoading,
-  // onRowClick,
-  onChangeSelectedRows,
-  // toolbar,
-  ...props
+  rowSelection,
+  setRowSelection,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -54,35 +52,7 @@ export function ClientDatatable<TData, TValue>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
 
-  const selectedRows = React.useMemo(
-    () =>
-      Object.keys(rowSelection).map((rowId) => ({
-        ...data[Number(rowId)],
-        rowId: rowId,
-      })),
-    [rowSelection, data],
-  );
-  useEffect(() => {
-    if (!props.selectedRows) return;
-
-    setRowSelection(
-      props.selectedRows.reduce(
-        (acc, rowId) => {
-          acc[rowId] = true;
-          return acc;
-        },
-        {} as { [key: string]: boolean },
-      ),
-    );
-  }, [props.selectedRows]);
-
-  React.useEffect(() => {
-    onChangeSelectedRows?.(selectedRows);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedRows]);
   const table = useReactTable({
     data,
     columns,
@@ -94,6 +64,7 @@ export function ClientDatatable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
 
     state: {
       sorting,
@@ -108,17 +79,17 @@ export function ClientDatatable<TData, TValue>({
   });
 
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
+    <div className="h-full w-full">
+      <div className="w-full">
         <Table>
-          <TableHeader>
+          <TableHeader className="w-full rounded-t-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className="bg-primary-500 text-white first:rounded-tl-md last:rounded-tr-md"
+                      className="z-10 bg-primary-default text-white"
                     >
                       {header.isPlaceholder
                         ? null
@@ -142,9 +113,16 @@ export function ClientDatatable<TData, TValue>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    className="even:bg-primary-50 hover:bg-primary-100 odd:bg-white"
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={
+                      rowSelection
+                        ? row?.getIsSelected() && "selected"
+                        : undefined
+                    }
+                    className={cn({
+                      "bg-primary-selected":
+                        rowSelection && row?.getIsSelected(),
+                    })}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

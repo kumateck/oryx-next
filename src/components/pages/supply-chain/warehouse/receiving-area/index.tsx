@@ -5,7 +5,8 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Checkbox, Icon } from "@/components/ui";
-import { useLazyGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery } from "@/lib/redux/api/openapi.generated";
+import { EMaterialKind } from "@/lib";
+import { useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery } from "@/lib/redux/api/openapi.generated";
 import { getMatchingIds } from "@/lib/utils";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -16,7 +17,7 @@ import CreateGRN from "./create-grn";
 const ReceivingArea = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [loadData, { data: result, isFetching, isLoading }] =
-    useLazyGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery();
+    useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery();
 
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -24,9 +25,9 @@ const ReceivingArea = () => {
 
   useEffect(() => {
     loadData({
-      warehouseId: "d959476f-7a2e-459a-b13b-9a41708c7299",
       page,
       pageSize,
+      kind: EMaterialKind.Raw,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -10,7 +10,10 @@ import { Button, Icon } from "@/components/ui";
 import {
   ChecklistBoolean,
   ErrorResponse,
-  Option, // generateCode,
+  Option,
+  SupplierStatus,
+  Units,
+  convertToLargestUnit, // generateCode,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -21,9 +24,11 @@ import {
   ConsignmentCarrier, // ConsignmentCarrier,
   CreateChecklistRequest,
   Intactness,
+  MaterialKind,
   useGetApiV1CollectionUomQuery,
   useGetApiV1ProductQuery,
-  useGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery,
+  useGetApiV1UserAuthenticatedQuery,
+  useLazyGetApiV1WarehouseDistributedMaterialByIdQuery,
   usePostApiV1WarehouseChecklistMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -32,6 +37,8 @@ import ChecklistForm, { OptionsUpdate } from "./form";
 import { ChecklistRequestDto, CreateProductValidator } from "./types";
 
 const CreateChecklist = () => {
+  const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
+  // console.log(authUser, "authUser");
   const { id } = useParams();
   const distributedMaterialId = id as string;
   const {
@@ -48,46 +55,105 @@ const CreateChecklist = () => {
   });
   const router = useRouter();
 
-  const { data } =
-    useGetApiV1WarehouseByWarehouseIdDistributedRequisitionMaterialsQuery({
-      warehouseId: "d959476f-7a2e-459a-b13b-9a41708c7299",
-      page: 1,
-      pageSize: 30,
-    });
+  const [loadDetails] = useLazyGetApiV1WarehouseDistributedMaterialByIdQuery();
 
-  const distributedMaterial = data?.data?.find(
-    (item) => item.id === distributedMaterialId,
-  );
+  // console.log(data, "data");
+  // const distributedMaterial = data?.data?.find(
+  //   (item) => item.id === distributedMaterialId,
+  // );
 
   const [checklistMutation, { isLoading }] =
     usePostApiV1WarehouseChecklistMutation();
 
+  // useEffect(() => {
+  //   if (data?.data) {
+  //     const distributedMaterial = data.data.find(
+  //       (item) => item.id === distributedMaterialId,
+  //     );
+  //     if (distributedMaterial) {
+  //       // reset({
+  //       //   materialName: distributedMaterial.material?.name || "N/A",
+  //       //   supplierStatus: distributedMaterial.supplier?.status || 0,
+  //       //   invoiceNumber: distributedMaterial.shipmentInvoice?.code || "N/A",
+  //       //   supplierName: distributedMaterial.supplier?.name || "N/A",
+  //       //   manufacturerName: distributedMaterial.manufacturer?.name || "N/A",
+  //       // });
+  //     }
+  //   }
+  // }, [data, distributedMaterialId, reset]);
+
   useEffect(() => {
-    if (data?.data) {
-      const distributedMaterial = data.data.find(
-        (item) => item.id === distributedMaterialId,
-      );
-      if (distributedMaterial) {
-        // reset({
-        //   materialName: distributedMaterial.material?.name || "N/A",
-        //   supplierStatus: distributedMaterial.supplier?.status || 0,
-        //   invoiceNumber: distributedMaterial.shipmentInvoice?.code || "N/A",
-        //   supplierName: distributedMaterial.supplier?.name || "N/A",
-        //   manufacturerName: distributedMaterial.manufacturer?.name || "N/A",
-        // });
+    handleLoadDetails(distributedMaterialId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [distributedMaterialId]);
+
+  const handleLoadDetails = async (id: string) => {
+    try {
+      const response = await loadDetails({ id }).unwrap();
+
+      if (response) {
+        const qty = response.quantity as number;
+        const convertQty = convertToLargestUnit(
+          qty,
+          response?.uom?.symbol as Units,
+        );
+        const qtyPya = {
+          quantity: convertQty.value,
+          uom: convertQty.unit,
+          uomId: response?.uom?.id as string,
+        };
+        setMaterialQty(qtyPya);
+        reset({
+          materialName: response.material?.name as string,
+          materialId: response.material?.id as string,
+          shipmentInvoiceId: response.shipmentInvoice?.id as string,
+          supplierName: response.shipmentInvoice?.supplier?.name as string,
+          supplierId: response.shipmentInvoice?.supplier?.id as string,
+          materialKind: response.material?.kind as MaterialKind,
+          supplierStatus:
+            SupplierStatus[
+              response.shipmentInvoice?.supplier?.status as SupplierStatus
+            ],
+          supplierStatusId: response.shipmentInvoice?.supplier?.status,
+          invoiceNumber: response.shipmentInvoice?.code as string,
+          manufacturerName: response.materialItemDistributions?.[0]
+            ?.shipmentInvoiceItem?.manufacturer?.name as string,
+          manufacturerId: response.materialItemDistributions?.[0]
+            ?.shipmentInvoiceItem?.manufacturer?.id as string,
+        });
       }
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
-  }, [data, distributedMaterialId, reset]);
+  };
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "batches",
   });
 
+  console.log(fields, `fields`);
   const { data: response } = useGetApiV1ProductQuery({
     page: 1,
     pageSize: 1000,
   });
+  const [materialQty, setMaterialQty] = useState<{
+    quantity: number;
+    uom: string;
+    uomId: string;
+  }>();
+  console.log(materialQty, `materialQty`);
+  // useEffect(() => {
+  //   const total = fields.reduce((acc, curr) => {
+  //     return (
+  //       acc +
+  //       Number(curr.quantityPerContainer) * Number(curr.numberOfContainers)
+  //     );
+  //   }, 0);
+  //   const diff = materialQty - total;
+  //   setMaterialQty(diff);
+  // }, [fields.length]);
 
   const { data: uomResponse } = useGetApiV1CollectionUomQuery();
 
@@ -132,23 +198,35 @@ const CreateChecklist = () => {
   })) as OptionsUpdate[];
 
   const onSubmit = async (data: ChecklistRequestDto) => {
-    if (!distributedMaterial) {
-      toast.error("Distributed material not found");
-      return;
-    }
+    // if (!distributedMaterial) {
+    //   toast.error("Distributed material not found");
+    //   return;
+    // }
 
     if (data.batches.length === 0) {
       toast.error("Please add at least one batch");
       return;
     }
 
+    const warehouses = authUser?.department?.warehouses || [];
+    const materialWarehouse = warehouses?.find(
+      (item) => item.materialKind === data.materialKind,
+    );
+
+    const initialLocationId = materialWarehouse?.id as string;
+
+    if (!initialLocationId) {
+      toast.error("Warehouse not found");
+      return;
+    }
+
     const payload: CreateChecklistRequest = {
       distributedRequisitionMaterialId: distributedMaterialId,
-      materialId: distributedMaterial.material?.id,
+      materialId: data.materialId,
       checkedAt: data.date.toISOString(),
-      shipmentInvoiceId: distributedMaterial.shipmentInvoice?.id,
-      // supplierId: distributedMaterial.supplier?.id,
-      // manufacturerId: distributedMaterial.manufacturer?.id,
+      shipmentInvoiceId: data.shipmentInvoiceId,
+      supplierId: data.supplierId,
+      manufacturerId: data.manufacturerId,
       certificateOfAnalysisDelivered:
         data.certificateOfAnalysisDelivered.value ===
         ChecklistBoolean.Yes.toString(),
@@ -166,12 +244,12 @@ const CreateChecklist = () => {
 
       materialBatches: data.batches.map((batch) => ({
         batchNumber: batch.batchNumber,
-        materialId: distributedMaterial.material?.id,
+        materialId: data.materialId,
         totalQuantity:
           Number(batch.numberOfContainers) * Number(batch.quantityPerContainer),
-        initialLocationId: "d959476f-7a2e-459a-b13b-9a41708c7299", // Replace with actual location ID
+        initialLocationId, // Replace with actual location ID
         dateReceived: batch.manufacturingDate.toISOString(),
-        uoMId: batch.uom.value,
+        uoMId: materialQty?.uomId,
         manufacturingDate: batch.manufacturingDate.toISOString(),
         expiryDate: batch.expiryDate.toISOString(),
         sampleWeights: batch?.weights
@@ -186,7 +264,7 @@ const CreateChecklist = () => {
     try {
       await checklistMutation({ createChecklistRequest: payload }).unwrap();
       toast.success("Checklist created successfully");
-      router.push("/warehouse/receving-area");
+      router.push("/warehouse/receiving-area");
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -231,6 +309,17 @@ const CreateChecklist = () => {
             defaultIntactnessOption={defaultIntactnessOption}
             consignmentCarrierOptions={consignmentCarrierOptions}
             fields={fields}
+            qtyUnit={materialQty?.uom as Units}
+            remainingQty={
+              (materialQty?.quantity ?? 0) -
+              fields.reduce((acc, curr) => {
+                return (
+                  acc +
+                  Number(curr.quantityPerContainer) *
+                    Number(curr.numberOfContainers)
+                );
+              }, 0)
+            }
           />
         </form>
       </PageWrapper>

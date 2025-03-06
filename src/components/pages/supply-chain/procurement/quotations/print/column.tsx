@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Units, convertToLargestUnit } from "@/lib";
-import { SourceRequisitionItemDto } from "@/lib/redux/api/openapi.generated";
+import { SupplierQuotationItemDto } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<SourceRequisitionItemDto>[] = [
+export const columns: ColumnDef<SupplierQuotationItemDto>[] = [
   {
     accessorKey: "material",
     header: "Material",

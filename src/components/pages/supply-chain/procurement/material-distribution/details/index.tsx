@@ -1,58 +1,75 @@
 "use client";
 
+import { format } from "date-fns";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
+import { Card, CardContent } from "@/components/ui";
 import {
   // MaterialDistributionDto,
-  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
+  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery,
+  useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch, useSelector } from "@/lib/redux/store";
+import { ClientDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
-// import PageTitle from "@/shared/title";
-import Products from "./products";
+import { columns } from "./columns";
 
 const ScheduleDetail = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const shipmentDocumentId = id as string;
-  const { data: result } =
-    useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery(
-      {
-        shipmentDocumentId,
-      },
-    );
+  const [loadShipment, { data: result, isLoading, isFetching }] =
+    useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery();
 
+  useEffect(() => {
+    loadShipment({
+      shipmentDocumentId,
+    });
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipmentDocumentId, triggerReload]);
+
+  const { data: shipmentDocInfo } =
+    useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery({
+      shipmentDocumentId,
+    });
   const data = result?.sections ?? [];
-  // const resultData = removeDuplicateShipmentItems(
-  //   result as MaterialDistributionDto,
-  // );
 
-  // console.log(resultData, "result");
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
-        {/* <p className="text-sm text-neutral-500">
-          {data.map((section) => section.shipmentInvoice?.supplier?.name)}
-        </p>
-        <PageTitle
-          title={data
-            .map((section) => section.shipmentInvoice?.code)
-            .filter(Boolean)
-            .join(", ")}
-        /> */}
-
-        {data.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="space-y-4">
-            {/* <h2 className="text-xl font-bold">{section.}</h2> */}
-            {(section?.items?.length ?? 0) > 0 && (
-              <Products
-                shipmentDocumentId={shipmentDocumentId}
-                totalQty={section?.totalQuantity ?? 0}
-                products={section.items ?? []}
-              />
-            )}
-          </div>
-        ))}
+        <PageTitle title={`Distribution for ${shipmentDocInfo?.code}`} />
+        <Card>
+          <CardContent>
+            <ul>
+              <li>Invoice #: {shipmentDocInfo?.shipmentInvoice?.code}</li>
+              <li>
+                Supplier Name:{" "}
+                {shipmentDocInfo?.shipmentInvoice?.supplier?.name}
+              </li>{" "}
+              <li>
+                Arrived:{" "}
+                {shipmentDocInfo?.arrivedAt
+                  ? format(shipmentDocInfo?.arrivedAt, "MMM d, yyyy h:mm a")
+                  : "N/A"}
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+        <ClientDatatable
+          data={data}
+          columns={columns}
+          isLoading={isLoading || isFetching}
+        />
       </div>
     </ScrollablePageWrapper>
   );

@@ -22,16 +22,20 @@ interface AddBatchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
-  uomOptions: Option[];
+  // uomOptions: Option[];
   packingUomOptions: Option[];
+  remainingQty: number;
+  qtyUnit: string;
 }
 
 const AddBatchDialog = ({
   isOpen,
   onClose,
   onSave,
-  uomOptions,
+  // uomOptions,
   packingUomOptions,
+  remainingQty,
+  qtyUnit,
 }: AddBatchDialogProps) => {
   const {
     register,
@@ -43,6 +47,8 @@ const AddBatchDialog = ({
     resolver: zodResolver(checklistBatchRequestSchema),
     mode: "all",
   });
+
+  console.log(errors, "errors");
 
   const onSubmit = (data: any) => {
     try {
@@ -76,6 +82,12 @@ const AddBatchDialog = ({
         <DialogHeader>
           <DialogTitle>Add Batch Information</DialogTitle>
         </DialogHeader>
+        <div>
+          <p>
+            Material Quantity: {remainingQty}
+            {qtyUnit}
+          </p>
+        </div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -124,13 +136,16 @@ const AddBatchDialog = ({
                 required: true,
               },
               {
-                name: "uom",
-                label: "Unit of Measure",
-                type: InputTypes.SELECT,
-                control: control as Control,
-                required: true,
-                options: uomOptions,
-                errors,
+                // name: "uom",
+                // label: "Unit of Measure",
+                // type: InputTypes.SELECT,
+                // control: control as Control,
+                // required: true,
+                // options: uomOptions,
+                // errors,
+                type: InputTypes.LABEL,
+                label: ".",
+                title: qtyUnit,
               },
             ]}
           />
@@ -138,6 +153,18 @@ const AddBatchDialog = ({
             className="w-full gap-x-2 space-y-2"
             fieldWrapperClassName="flex-grow"
             config={[
+              {
+                label: "Manufacturing Date",
+                control: control as Control,
+                type: InputTypes.DATE,
+                name: "manufacturingDate",
+                required: true,
+                disabled: {
+                  before: new Date(2023, 0, 1),
+                  after: new Date(2027, 0, 1),
+                },
+                errors,
+              },
               {
                 label: "Expiry Date",
                 control: control as Control,
@@ -150,18 +177,7 @@ const AddBatchDialog = ({
                 },
                 errors,
               },
-              {
-                label: "Manufacturing Date",
-                control: control as Control,
-                type: InputTypes.DATE,
-                name: "manufacturingDate",
-                required: true,
-                disabled: {
-                  before: new Date(),
-                  after: new Date(2027, 0, 1),
-                },
-                errors,
-              },
+
               {
                 label: "Restest Date",
                 control: control as Control,
