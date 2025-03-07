@@ -683,3 +683,7 @@ export const objectSchema = (msg: string) =>
       message: msg,
     }),
   });
+
+export type OptionMap = {
+  [key: string]: Option[];
+};

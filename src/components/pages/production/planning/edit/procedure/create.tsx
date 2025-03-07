@@ -146,7 +146,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
             </Button>
             <Button variant={"default"} className="flex items-center gap-2">
               <Icon name="Plus" className="h-4 w-4" />
-              <span>Add Route</span>{" "}
+              <span>Add Procedure</span>{" "}
             </Button>
           </DialogFooter>
         </form>
