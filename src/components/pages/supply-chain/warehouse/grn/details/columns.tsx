@@ -58,6 +58,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
         onOpenChange={setIsAssignLocationOpen}
         onSuccess={() => dispatch(commonActions.setTriggerReload())}
         selectedBatch={selectedBatch}
+        kind={row.original.checklist?.material?.kind}
       />
     </section>
   );
