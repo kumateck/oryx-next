@@ -11,7 +11,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { InputTypes, Option, Units, convertToLargestUnit } from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 
 interface FormProps<TFieldValues extends FieldValues> {
@@ -61,7 +61,15 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
           <div>
             <span className="block text-gray-500">Remaining Quantity</span>
             <span className="block font-bold">
-              {selectedBatch?.quantityUnassigned || "N/A"}
+              {convertToLargestUnit(
+                selectedBatch?.quantityUnassigned as number,
+                selectedBatch?.uoM?.symbol as Units,
+              ).value +
+                "" +
+                convertToLargestUnit(
+                  selectedBatch?.quantityUnassigned as number,
+                  selectedBatch?.uoM?.symbol as Units,
+                ).unit || "N/A"}
             </span>
           </div>
         </div>

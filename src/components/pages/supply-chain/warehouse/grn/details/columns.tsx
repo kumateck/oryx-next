@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
-import { BatchStatus as BatchStatusEnum } from "@/lib";
+import {
+  BatchStatus as BatchStatusEnum,
+  Units,
+  convertToLargestUnit,
+} from "@/lib";
 import {
   BatchStatus,
   MaterialBatchDto,
@@ -98,7 +102,19 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "totalQuantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.totalQuantity ?? "-"}</div>,
+    cell: ({ row }) => {
+      const totqty = row.original.totalQuantity ?? 0;
+      const qty = convertToLargestUnit(
+        totqty,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value}
+          {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "expiryDate",
