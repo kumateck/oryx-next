@@ -22,9 +22,12 @@ import {
   IconProps,
 } from "@/components/ui";
 import SearchWithAnimation from "@/components/ui/search";
-import { ORYX_ERP_COOKIE_ID, routes } from "@/lib";
+import { ORYX_ERP_COOKIE_ID, fullname, getInitials, routes } from "@/lib";
+import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
 
 const HeaderEnd = () => {
+  const { data: user } = useGetApiV1UserAuthenticatedQuery();
+
   const [passwordOpen, setPasswordOpen] = useState(false);
   const cookies = useCookies();
   const router = useRouter();
@@ -39,8 +42,15 @@ const HeaderEnd = () => {
         <DropdownMenuTrigger className="outline-none ring-0 active:outline-none active:ring-0">
           <div className="flex size-10 items-center justify-center rounded-full hover:bg-white">
             <Avatar className="size-8">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage
+                src={user?.avatar as string}
+                alt={user?.email as string}
+              />
+              <AvatarFallback className="rounded-lg">
+                {getInitials(
+                  fullname(user?.firstName as string, user?.lastName as string),
+                )}
+              </AvatarFallback>
             </Avatar>
           </div>
         </DropdownMenuTrigger>
@@ -52,10 +62,10 @@ const HeaderEnd = () => {
           <DropdownMenuLabel>
             <div className="space-y-0.5">
               <span className="block text-nowrap text-sm font-normal text-black">
-                Desmond Kofi Adusei
+                {fullname(user?.firstName as string, user?.lastName as string)}
               </span>
               <span className="text-center font-bold uppercase text-[xs] text-neutral-600">
-                CEO
+                {user?.department?.name}
               </span>
             </div>
           </DropdownMenuLabel>
