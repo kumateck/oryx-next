@@ -103,7 +103,7 @@ const AddBatchDialog = ({
                 label: "Batch Number",
                 type: InputTypes.TEXT,
                 errors,
-                required: true,
+                // required: true,
                 className: "col-span-2",
               },
             ]}
