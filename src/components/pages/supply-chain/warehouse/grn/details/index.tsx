@@ -6,28 +6,43 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
-  MaterialBatchDto,
-  useGetApiV1WarehouseGrnByIdQuery,
+  GrnDto,
+  useLazyGetApiV1WarehouseGrnByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch, useSelector } from "@/lib/redux/store";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
 
 const GRNDetail = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const grnId = id as string;
-  const { data: grnResponse } = useGetApiV1WarehouseGrnByIdQuery({
-    id: grnId,
-  });
+  const [loadGrn, { isLoading }] = useLazyGetApiV1WarehouseGrnByIdQuery();
 
-  const [packageLists, setPackageLists] = useState<MaterialBatchDto[]>([]);
+  const [grnDetails, setGrnDetails] = useState<GrnDto>();
 
   useEffect(() => {
-    if (grnResponse?.materialBatches) {
-      // Directly set the materialBatches array to state
-      setPackageLists(grnResponse.materialBatches);
+    handleLoadGrn(grnId);
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
     }
-  }, [grnResponse]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grnId, triggerReload]);
+
+  const handleLoadGrn = async (id: string) => {
+    try {
+      const response = await loadGrn({
+        id,
+      }).unwrap();
+      setGrnDetails(response);
+    } catch (error) {
+      console.error("Error loading GRN", error);
+    }
+  };
   // console.log("Package List:::", packageLists);
   return (
     <ScrollablePageWrapper>
@@ -37,7 +52,7 @@ const GRNDetail = () => {
             <div className="flex justify-start gap-4">
               <div className="w-full space-y-2">
                 <span className="font-Medium block text-xl text-primary-default">
-                  {grnResponse?.grnNumber}
+                  {grnDetails?.grnNumber}
                 </span>
                 <div className="grid w-full grid-cols-3 gap-2">
                   <div className="space-y-1">
@@ -45,7 +60,7 @@ const GRNDetail = () => {
                       Carrier Name:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">
-                      {grnResponse?.carrierName}
+                      {grnDetails?.carrierName}
                     </span>
                   </div>
                   <div className="space-y-1">
@@ -53,7 +68,7 @@ const GRNDetail = () => {
                       Vehicle Number:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">
-                      {grnResponse?.vehicleNumber}
+                      {grnDetails?.vehicleNumber}
                     </span>
                   </div>
                   <div className="space-y-1">
@@ -62,7 +77,7 @@ const GRNDetail = () => {
                     </span>
                     <span className="inline text-sm font-normal text-neutral-dark">
                       <TheAduseiEditorViewer
-                        content={grnResponse?.remarks ?? ""}
+                        content={grnDetails?.remarks ?? ""}
                       />
                     </span>
                   </div>
@@ -74,7 +89,10 @@ const GRNDetail = () => {
 
         <Card className="space-y-4 p-5">
           <CardTitle>GRN/GRA Items</CardTitle>
-          <TableForData lists={packageLists} />
+          <TableForData
+            lists={grnDetails?.materialBatches ?? []}
+            isLoading={isLoading}
+          />
         </Card>
       </div>
     </ScrollablePageWrapper>
