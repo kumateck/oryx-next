@@ -101,9 +101,30 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   },
   {
     accessorKey: "totalQuantity",
-    header: "Quantity",
+    header: "Quantity Received",
     cell: ({ row }) => {
       const totqty = row.original.totalQuantity ?? 0;
+      const qty = convertToLargestUnit(
+        totqty,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value}
+          {qty.unit}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "allocatedQuantity",
+    header: "Allocated Quantity",
+    cell: ({ row }) => {
+      const totqty =
+        row.original.events?.reduce(
+          (accumulator, event) => accumulator + (event?.quantity ?? 0),
+          0,
+        ) ?? 0;
       const qty = convertToLargestUnit(
         totqty,
         row.original.uoM?.symbol as Units,

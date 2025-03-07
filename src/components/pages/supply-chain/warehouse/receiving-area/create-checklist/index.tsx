@@ -166,7 +166,7 @@ const CreateChecklist = () => {
   //   })) as Option[];
 
   const packingUomOptions = uomResponse
-    ?.filter((item) => !item.isRawMaterial)
+    // ?.filter((item) => !item.isRawMaterial)
     ?.map((uom) => ({
       label: uom.symbol,
       value: uom.id,
