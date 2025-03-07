@@ -11,7 +11,13 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
-import { InputTypes, Option, Units, convertToLargestUnit } from "@/lib";
+import {
+  InputTypes,
+  Option,
+  OptionMap,
+  Units,
+  convertToLargestUnit,
+} from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 
 interface FormProps<TFieldValues extends FieldValues> {
@@ -19,8 +25,10 @@ interface FormProps<TFieldValues extends FieldValues> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   rackOptions: Option[];
-  shelfOptions: Option[];
+  // shelfOptions: Option[];
   selectedBatch: MaterialBatchDto | null;
+  shelfOptionsMap: OptionMap;
+  typeValues: Option[];
 }
 
 const defaultLocation = {
@@ -34,8 +42,10 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
   register,
   errors,
   rackOptions,
-  shelfOptions,
+  // shelfOptions,
   selectedBatch,
+  shelfOptionsMap,
+  typeValues,
 }: FormProps<TFieldValues>) => {
   // Initialize field array
   const { fields, append, remove } = useFieldArray({
@@ -87,73 +97,77 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
       </div>
 
       <div className="mt-4 space-y-4">
-        {fields.map((field, index) => (
-          <div key={field.id} className="relative rounded-lg border p-4">
-            <Icon
-              name="CircleMinus"
-              className="text-danger-500 absolute right-2 top-2 h-5 w-5 cursor-pointer"
-              onClick={() => remove(index)}
-            />
+        {fields.map((field, index) => {
+          const type = typeValues[index];
+          const currentShelfOptions = shelfOptionsMap[type?.value] || [];
+          return (
+            <div key={field.id} className="relative rounded-lg border p-4">
+              <Icon
+                name="CircleMinus"
+                className="text-danger-500 absolute right-2 top-2 h-5 w-5 cursor-pointer"
+                onClick={() => remove(index)}
+              />
 
-            <FormWizard
-              className="grid w-full grid-cols-3 gap-4 space-y-0"
-              fieldWrapperClassName="flex-grow"
-              config={[
-                {
-                  register: register(
-                    `locations.${index}.quantity` as Path<TFieldValues>,
-                    {
-                      valueAsNumber: true,
-                    },
-                  ),
-                  label: "Quantity to Assign",
-                  type: InputTypes.NUMBER,
-                  required: true,
-                  placeholder: "500",
-                  errors,
-                },
-                {
-                  label: "Rack",
-                  control: control as Control,
-                  type: InputTypes.SELECT,
-                  name: `locations.${index}.rackId` as Path<TFieldValues>,
-                  required: true,
-                  placeholder: "G32",
-                  options: rackOptions,
-                  errors,
-                },
-                {
-                  label: "Shelf",
-                  control: control as Control,
-                  type: InputTypes.SELECT,
-                  name: `locations.${index}.shelfId` as Path<TFieldValues>,
-                  required: true,
-                  placeholder: "A",
-                  options: shelfOptions,
-                  errors,
-                },
-              ]}
-            />
+              <FormWizard
+                className="grid w-full grid-cols-3 gap-4 space-y-0"
+                fieldWrapperClassName="flex-grow"
+                config={[
+                  {
+                    register: register(
+                      `locations.${index}.quantity` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
+                    ),
+                    label: "Quantity to Assign",
+                    type: InputTypes.NUMBER,
+                    required: true,
+                    placeholder: "500",
+                    errors,
+                  },
+                  {
+                    label: "Rack",
+                    control: control as Control,
+                    type: InputTypes.SELECT,
+                    name: `locations.${index}.rackId` as Path<TFieldValues>,
+                    required: true,
+                    placeholder: "Select Rack",
+                    options: rackOptions,
+                    errors,
+                  },
+                  {
+                    label: "Shelf",
+                    control: control as Control,
+                    type: InputTypes.SELECT,
+                    name: `locations.${index}.shelfId` as Path<TFieldValues>,
+                    required: true,
+                    placeholder: "Select Shelf",
+                    options: currentShelfOptions,
+                    errors,
+                  },
+                ]}
+              />
 
-            <FormWizard
-              className="mt-4 w-full gap-4 space-y-0"
-              fieldWrapperClassName="flex-grow"
-              config={[
-                {
-                  label: "Note",
-                  control: control as Control,
-                  type: InputTypes.RICHTEXT,
-                  name: `locations.${index}.note` as Path<TFieldValues>,
-                  required: true,
-                  autoFocus: false,
-                  placeholder: "Enter Remarks",
-                  suggestions: [],
-                  errors,
-                },
-              ]}
-            />
-          </div>
-        ))}
+              <FormWizard
+                className="mt-4 w-full gap-4 space-y-0"
+                fieldWrapperClassName="flex-grow"
+                config={[
+                  {
+                    label: "Note",
+                    control: control as Control,
+                    type: InputTypes.RICHTEXT,
+                    name: `locations.${index}.note` as Path<TFieldValues>,
+                    required: true,
+                    autoFocus: false,
+                    placeholder: "Enter Remarks",
+                    suggestions: [],
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -2411,6 +2411,17 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1WarehouseRackByDepartment: build.query<
+      GetApiV1WarehouseRackByDepartmentApiResponse,
+      GetApiV1WarehouseRackByDepartmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/rack/by-department`,
+        params: {
+          kind: queryArg.kind,
+        },
+      }),
+    }),
     postApiV1WarehouseByRackIdShelf: build.mutation<
       PostApiV1WarehouseByRackIdShelfApiResponse,
       PostApiV1WarehouseByRackIdShelfApiArg
@@ -2458,6 +2469,17 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1WarehouseShelfByDepartment: build.query<
+      GetApiV1WarehouseShelfByDepartmentApiResponse,
+      GetApiV1WarehouseShelfByDepartmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/warehouse/shelf/by-department`,
+        params: {
+          kind: queryArg.kind,
         },
       }),
     }),
@@ -4262,6 +4284,11 @@ export type GetApiV1WarehouseRackApiArg = {
   pageSize?: number;
   searchQuery?: string;
 };
+export type GetApiV1WarehouseRackByDepartmentApiResponse =
+  /** status 200 OK */ WarehouseLocationRackDto[];
+export type GetApiV1WarehouseRackByDepartmentApiArg = {
+  kind?: MaterialKind;
+};
 export type PostApiV1WarehouseByRackIdShelfApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1WarehouseByRackIdShelfApiArg = {
@@ -4288,6 +4315,11 @@ export type GetApiV1WarehouseShelfApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+};
+export type GetApiV1WarehouseShelfByDepartmentApiResponse =
+  /** status 200 OK */ WarehouseLocationShelfDto[];
+export type GetApiV1WarehouseShelfByDepartmentApiArg = {
+  kind?: MaterialKind;
 };
 export type GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiResponse =
   /** status 200 OK */ WarehouseLocationShelfDtoIEnumerablePaginateable;
@@ -8775,9 +8807,9 @@ export type ProductionScheduleDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type UpdateProductionScheduleRequest = object;
-export type MaterialRequisitionStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type MaterialRequisitionStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type BatchLocation = {
-  consumptionLocation?: WareHouseLocationDto;
+  consumptionLocation?: WarehouseDto;
   batch?: MaterialBatchDto;
 };
 export type ProductionScheduleProcurementDto = {
@@ -9865,6 +9897,8 @@ export const {
   useDeleteApiV1WarehouseRackByRackIdMutation,
   useGetApiV1WarehouseRackQuery,
   useLazyGetApiV1WarehouseRackQuery,
+  useGetApiV1WarehouseRackByDepartmentQuery,
+  useLazyGetApiV1WarehouseRackByDepartmentQuery,
   usePostApiV1WarehouseByRackIdShelfMutation,
   useGetApiV1WarehouseShelfByShelfIdQuery,
   useLazyGetApiV1WarehouseShelfByShelfIdQuery,
@@ -9872,6 +9906,8 @@ export const {
   useDeleteApiV1WarehouseShelfByShelfIdMutation,
   useGetApiV1WarehouseShelfQuery,
   useLazyGetApiV1WarehouseShelfQuery,
+  useGetApiV1WarehouseShelfByDepartmentQuery,
+  useLazyGetApiV1WarehouseShelfByDepartmentQuery,
   useGetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdQuery,
   useLazyGetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdQuery,
   useGetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdQuery,

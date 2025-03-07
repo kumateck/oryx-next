@@ -167,6 +167,7 @@ export enum MaterialStatus {
   ForeignProcurement = 4,
   StockRequisition = 5,
   IssuedRequisition = 6,
+  InHouse = 7,
 }
 export enum QuestionTypes {
   ShortAnswer = 0,
