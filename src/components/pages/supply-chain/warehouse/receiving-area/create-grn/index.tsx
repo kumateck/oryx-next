@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -22,6 +23,7 @@ import {
   usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation,
   usePostApiV1WarehouseGrnMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import {
   ErrorResponse,
   GenerateCodeOptions,
@@ -41,6 +43,7 @@ interface Props {
 }
 
 const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
+  const dispatch = useDispatch();
   const [createGRN, { isLoading }] = usePostApiV1WarehouseGrnMutation();
   const [getBatchDetails, { isLoading: isBatchLoading }] =
     usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation();
@@ -87,6 +90,7 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
       });
 
       toast.success("GRN created successfully");
+      dispatch(commonActions.setTriggerReload());
       reset();
       onGRNClose();
     } catch (error) {

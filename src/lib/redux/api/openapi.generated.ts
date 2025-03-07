@@ -6902,7 +6902,7 @@ export type GrnRead = {
   grnNumber?: string | null;
   materialBatches?: MaterialBatch[] | null;
 };
-export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Sr = {
   id?: string;
   createdAt?: string;
@@ -7092,10 +7092,10 @@ export type MaterialBatchRead = {
   containerUoM?: UnitOfMeasureRead;
   quantityPerContainer?: number;
   quantityAssigned?: number;
-  quantityUnassigned?: number;
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  quantityUnassigned?: number;
   uoMId?: string | null;
   uoM?: UnitOfMeasureRead;
   status?: BatchStatus;

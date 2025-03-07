@@ -173,23 +173,19 @@ const CreateChecklist = () => {
     })) as Option[];
 
   const checklistBooleanOptions: Option[] = [
-    { label: "No", value: ChecklistBoolean.No.toString() },
     { label: "Yes", value: ChecklistBoolean.Yes.toString() },
+    { label: "No", value: ChecklistBoolean.No.toString() },
   ];
 
   const checklistContainersOptions: Option[] = [
-    { label: "No", value: IntactnessEnum.No.toString() },
     { label: "Yes", value: IntactnessEnum.Yes.toString() },
+    { label: "No", value: IntactnessEnum.No.toString() },
   ];
 
   const consignmentCarrierOptions: Option[] = [
-    { label: "Bad", value: ConsignmentCarrierEnum.Bad.toString() },
     { label: "Good", value: ConsignmentCarrierEnum.Good.toString() },
+    { label: "Bad", value: ConsignmentCarrierEnum.Bad.toString() },
   ];
-
-  const defaultIntactnessOption = checklistContainersOptions.find(
-    (option) => option.value === IntactnessEnum.Yes.toString(), // Change to No if you want No as the default
-  );
 
   const products = response?.data || [];
   const productOptions = products.map((product) => ({
@@ -317,7 +313,7 @@ const CreateChecklist = () => {
             productOptions={productOptions}
             checklistBooleanOptions={checklistBooleanOptions}
             checklistContainersOptions={checklistContainersOptions}
-            defaultIntactnessOption={defaultIntactnessOption}
+            // defaultIntactnessOption={defaultIntactnessOption}
             consignmentCarrierOptions={consignmentCarrierOptions}
             fields={fields}
             qtyUnit={materialQty?.uom as Units}
