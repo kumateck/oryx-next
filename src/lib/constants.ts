@@ -201,6 +201,7 @@ export enum BatchStatus {
   Retest = 5,
   Frozen = 6,
   Consumed = 7,
+  Approved = 8,
 }
 
 export enum DistributedMaterialStatus {

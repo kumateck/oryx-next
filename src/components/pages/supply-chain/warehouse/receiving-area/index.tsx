@@ -2,11 +2,14 @@
 
 import { RowSelectionState } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Checkbox, Icon } from "@/components/ui";
 import { EMaterialKind } from "@/lib";
 import { useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import { getMatchingIds } from "@/lib/utils";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -15,6 +18,8 @@ import { columns } from "./columns";
 import CreateGRN from "./create-grn";
 
 const ReceivingArea = () => {
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery();
@@ -29,8 +34,12 @@ const ReceivingArea = () => {
       pageSize,
       kind: EMaterialKind.Raw,
     });
+    if (triggerReload) {
+      setRowSelection({});
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   const data = (result?.data || []).map((item) => ({
     ...item,
@@ -47,33 +56,35 @@ const ReceivingArea = () => {
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Received Materials" />
-        <div className="flex items-center justify-end gap-4">
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={Object.keys(rowSelection).length > 0}
-              onChange={() => setRowSelection({})}
-            />
-            <div>{Object.keys(rowSelection).length} Items</div>
+        {Object.keys(rowSelection).length > 0 && (
+          <div className="flex items-center justify-end gap-4">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={Object.keys(rowSelection).length > 0}
+                onChange={() => setRowSelection({})}
+              />
+              <div>{Object.keys(rowSelection).length} Items</div>
+            </div>
+            <Button
+              type="button"
+              variant={"ghost"}
+              className="bg-neutral-dark text-white"
+              size={"sm"}
+              onClick={() => setIsGRNOpen(true)}
+              disabled={isCreateGRNDisabled}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
+            </Button>
           </div>
-          <Button
-            type="button"
-            variant={"ghost"}
-            className="bg-neutral-dark text-white"
-            size={"sm"}
-            onClick={() => setIsGRNOpen(true)}
-            disabled={isCreateGRNDisabled}
-          >
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
-          </Button>
-          {isGRNOpen && (
-            <CreateGRN
-              onGRNClose={() => setIsGRNOpen(false)}
-              isGRNOpen={isGRNOpen}
-              selectedIds={selectedIds}
-              data={data}
-            />
-          )}
-        </div>
+        )}
+        {isGRNOpen && (
+          <CreateGRN
+            onGRNClose={() => setIsGRNOpen(false)}
+            isGRNOpen={isGRNOpen}
+            selectedIds={selectedIds}
+            data={data}
+          />
+        )}
       </div>
 
       <ServerDatatable

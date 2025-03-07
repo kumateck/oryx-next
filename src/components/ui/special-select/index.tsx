@@ -74,6 +74,9 @@ export function SpecialSelect(props: SearchableDropdownProps) {
             className={cn(
               "overflow-hidden truncate whitespace-nowrap text-left",
               "inline-block w-[calc(100%-2rem)]", // Adjust width to account for the icon
+              {
+                "text-gray-500": !selectedOptions?.label && props.placeholder,
+              },
             )}
             title={selectedOptions?.label || props.placeholder} // Tooltip for truncated text
           >
