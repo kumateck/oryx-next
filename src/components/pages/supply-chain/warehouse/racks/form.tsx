@@ -54,13 +54,16 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
 
             errors,
           },
-
+        ]}
+      />
+      <FormWizard
+        className="w-full"
+        config={[
           {
             label: "Description",
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
-            required: true,
             autoFocus: true,
             placeholder: "Enter Remarks",
             suggestions: [],

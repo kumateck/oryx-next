@@ -54,6 +54,12 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
 
             errors,
           },
+        ]}
+      />
+      <FormWizard
+        className="grid w-full gap-x-10 space-y-0"
+        fieldWrapperClassName="flex-grow"
+        config={[
           {
             register: register("floorName" as Path<TFieldValues>),
             label: "Floor Name",
@@ -62,13 +68,16 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             errors,
           },
-
+        ]}
+      />
+      <FormWizard
+        className="w-full"
+        config={[
           {
             label: "Description",
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
-            required: true,
             autoFocus: true,
             placeholder: "Enter Remarks",
             suggestions: [],
