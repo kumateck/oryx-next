@@ -20,7 +20,7 @@ export const batchWeightsRequestSchema = z
   );
 
 export const checklistBatchRequestSchema = z.object({
-  batchNumber: z.string().min(1, { message: "Batch Number is required" }),
+  batchNumber: z.string().optional(), //.min(1, { message: "Batch Number is required" }),
   numberOfContainers: z.string(),
   numberOfContainersUom: z.object(
     {

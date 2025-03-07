@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { SupplierType } from "@/lib";
+import { ProcurementType, SupplierType } from "@/lib";
 import { useLazyGetApiV1RequisitionSourceSupplierQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -65,7 +65,20 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Quotation Request" />
         <div className="flex items-center justify-end gap-2">
-          <AccessTabs handleTabClick={handleTabClick} type={type} />
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={type}
+            tabs={[
+              {
+                label: ProcurementType.Foreign,
+                value: SupplierType.Foreign.toString(),
+              },
+              {
+                label: ProcurementType.Local,
+                value: SupplierType.Local.toString(),
+              },
+            ]}
+          />
         </div>
       </div>
 

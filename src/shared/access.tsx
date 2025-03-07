@@ -1,12 +1,13 @@
 import React from "react";
 
-import { ProcurementType, SupplierType, cn } from "@/lib";
+import { Option, cn } from "@/lib";
 
 interface AccessTabsProps {
-  type: SupplierType;
-  handleTabClick: (tabType: SupplierType) => void;
+  type: number;
+  handleTabClick: (tabType: number) => void;
+  tabs: Option[];
 }
-const AccessTabs = ({ type, handleTabClick }: AccessTabsProps) => {
+const AccessTabs = ({ type, handleTabClick, tabs }: AccessTabsProps) => {
   return (
     <div>
       {
@@ -15,18 +16,20 @@ const AccessTabs = ({ type, handleTabClick }: AccessTabsProps) => {
             "flex h-10 w-48 items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
           )}
         >
-          <button
-            onClick={() => handleTabClick(SupplierType.Foreign)}
-            className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 ${
-              Number(type) === SupplierType.Foreign
-                ? "h-full bg-primary-default text-white shadow-md"
-                : "text-neutral-default"
-            }`}
-          >
-            {ProcurementType.Foreign}
-          </button>
-
-          <button
+          {tabs?.map((tab, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleTabClick(Number(tab.value))}
+              className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 ${
+                Number(type) === Number(tab.value)
+                  ? "h-full bg-primary-default text-white shadow-md"
+                  : "text-neutral-default"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+          {/* <button
             onClick={() => handleTabClick(SupplierType.Local)}
             className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 ${
               Number(type) === SupplierType.Local
@@ -35,7 +38,7 @@ const AccessTabs = ({ type, handleTabClick }: AccessTabsProps) => {
             }`}
           >
             {ProcurementType.Local}
-          </button>
+          </button> */}
         </div>
       }
     </div>
