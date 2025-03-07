@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DistributedMaterialStatus } from "@/lib";
+import { DistributedMaterialStatus, Units, convertToLargestUnit } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 
 const batchStatusColors: Record<DistributedMaterialStatus, string> = {
@@ -32,7 +32,18 @@ export const getColumns =
     {
       accessorKey: "orderQuantity",
       header: "Order Quantity",
-      cell: ({ row }) => <div>{row.original.quantity}</div>,
+      cell: ({ row }) => {
+        const qty = convertToLargestUnit(
+          row.original.quantity as number,
+          row.original.uom?.symbol as Units,
+        );
+        return (
+          <div>
+            {qty.value}
+            {qty.unit}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "status",

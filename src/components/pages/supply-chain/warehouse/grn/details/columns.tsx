@@ -1,9 +1,9 @@
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { Icon } from "@/components/ui";
+import { DropdownMenuItem, Icon } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
   Units,
@@ -33,23 +33,25 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => {
-              setSelectedBatch(row.original);
-              setIsAssignLocationOpen(true);
-            }}
-          >
-            <Icon
-              name="MapPin"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Assign Location</span>
-          </div>
-        </DropdownMenuItem>
-      </TableMenuAction>
+      {row.original.status === BatchStatusEnum.Approved && (
+        <TableMenuAction>
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-center gap-2"
+              onClick={() => {
+                setSelectedBatch(row.original);
+                setIsAssignLocationOpen(true);
+              }}
+            >
+              <Icon
+                name="MapPin"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Assign Location</span>
+            </div>
+          </DropdownMenuItem>
+        </TableMenuAction>
+      )}
 
       <AssignLocationDialog
         open={isAssignLocationOpen}
@@ -70,6 +72,7 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
 };
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
@@ -141,21 +144,33 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     accessorKey: "expiryDate",
     header: "Expiry Date",
     cell: ({ row }) => (
-      <div>{row.original.expiryDate?.split("T")[0] ?? "-"}</div>
+      <div>
+        {row.original.expiryDate
+          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
     cell: ({ row }) => (
-      <div>{row.original.manufacturingDate?.split("T")[0] ?? "-"}</div>
+      <div>
+        {row.original.manufacturingDate
+          ? format(row.original?.manufacturingDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "retestDate",
     header: "Retest Date",
     cell: ({ row }) => (
-      <div>{row.original?.retestDate?.split("T")[0] ?? "-"}</div>
+      <div>
+        {row.original.retestDate
+          ? format(row.original?.retestDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {

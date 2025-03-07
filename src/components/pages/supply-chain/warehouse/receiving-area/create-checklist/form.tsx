@@ -46,8 +46,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   defaultValues?: TFieldValues;
   defaultCategory?: Option;
   defaultUom?: Option;
-  defaultPackingUom?: Option;
-  defaultIntactnessOption?: Option;
+  // defaultPackingUom?: Option;
+  // defaultIntactnessOption?: Option;
   remainingQty: number;
   qtyUnit: Units;
 }
@@ -59,7 +59,7 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
   checklistBooleanOptions,
   checklistContainersOptions,
   consignmentCarrierOptions,
-  defaultIntactnessOption,
+  // defaultIntactnessOption,
   fields,
   append,
   remove,
@@ -113,8 +113,8 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 name: "certificateOfAnalysisDelivered",
                 required: true,
                 onModal: true,
-                defaultValue: checklistBooleanOptions?.[1] || null,
-                placeholder: "Yes",
+                // defaultValue: checklistBooleanOptions?.[1] || null,
+                placeholder: "Select Option",
                 options: checklistBooleanOptions,
                 errors,
               },
@@ -133,8 +133,8 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 name: "conditionOfConsignmentCarrier",
                 required: true,
                 onModal: true,
-                defaultValue: consignmentCarrierOptions?.[0],
-                placeholder: "Dirty",
+                // defaultValue: consignmentCarrierOptions?.[0],
+                placeholder: "Select Condition",
                 options: consignmentCarrierOptions,
                 errors,
               },
@@ -153,8 +153,8 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 name: "visibleLabelingOfContainers",
                 required: true,
                 onModal: true,
-                defaultValue: checklistBooleanOptions?.[1] || null,
-                placeholder: "Yes",
+                // defaultValue: checklistBooleanOptions?.[1] || null,
+                placeholder: "Select Visibility",
                 options: checklistBooleanOptions,
                 errors,
               },
@@ -173,8 +173,8 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 name: "intactnessOfContainers",
                 required: true,
                 onModal: true,
-                defaultValue: defaultIntactnessOption,
-                placeholder: "Good",
+                // defaultValue: defaultIntactnessOption,
+                placeholder: "Select Intactness",
                 options: checklistContainersOptions,
                 errors,
               },

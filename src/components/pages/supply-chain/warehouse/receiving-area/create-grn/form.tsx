@@ -78,7 +78,7 @@ const GRNForm = <TFieldValues extends FieldValues, TContext>({
               control: control as Control,
               type: InputTypes.RICHTEXT,
               name: "remarks",
-              required: true,
+              // required: true,
               placeholder: "Enter Remarks",
               errors,
             },

@@ -63,7 +63,15 @@ const batchStatusColors: Record<DistributedMaterialStatus, string> = {
 };
 
 export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
-  TableCheckbox(),
+  TableCheckbox<DistributedRequisitionMaterialDto>({
+    // Here is where you define the logic:
+    // e.g., disable the checkbox if status is 'CLOSED'
+    disableRow: (rowData) => {
+      return rowData.status === DistributedMaterialStatus.Distrubted;
+      // or rowData.status === DistributedMaterialStatus.CLOSED
+      // or whatever your condition is
+    },
+  }),
   {
     accessorKey: "materialName",
     header: "Material Name",
