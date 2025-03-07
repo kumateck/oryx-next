@@ -11,7 +11,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, Option, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  Option,
+  Units,
+  convertToSmallestUnit,
+  isErrorResponse,
+} from "@/lib";
 import {
   MaterialBatchDto,
   SupplyMaterialBatchRequest,
@@ -84,8 +90,11 @@ const AssignLocationDialog = ({
         materialBatchId: selectedBatch.id,
         shelfMaterialBatches: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
-          quantity: location.quantity,
-          uomId: "dd7c90e9-54db-47b6-bbb7-9107a5e9a9e4",
+          quantity: convertToSmallestUnit(
+            location.quantity,
+            selectedBatch?.uoM?.symbol as Units,
+          ).value,
+          uomId: selectedBatch?.uoM?.id as string,
           note: location.note || "",
         })),
       } satisfies SupplyMaterialBatchRequest;

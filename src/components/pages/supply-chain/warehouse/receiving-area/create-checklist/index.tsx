@@ -13,7 +13,8 @@ import {
   Option,
   SupplierStatus,
   Units,
-  convertToLargestUnit, // generateCode,
+  convertToLargestUnit,
+  convertToSmallestUnit, // generateCode,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -133,7 +134,7 @@ const CreateChecklist = () => {
     name: "batches",
   });
 
-  console.log(fields, `fields`);
+  // console.log(fields, `fields`);
   const { data: response } = useGetApiV1ProductQuery({
     page: 1,
     pageSize: 1000,
@@ -143,7 +144,7 @@ const CreateChecklist = () => {
     uom: string;
     uomId: string;
   }>();
-  console.log(materialQty, `materialQty`);
+  // console.log(materialQty, `materialQty`);
   // useEffect(() => {
   //   const total = fields.reduce((acc, curr) => {
   //     return (
@@ -157,12 +158,12 @@ const CreateChecklist = () => {
 
   const { data: uomResponse } = useGetApiV1CollectionUomQuery();
 
-  const uomOptions = uomResponse
-    ?.filter((item) => item.isRawMaterial)
-    ?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
+  // const uomOptions = uomResponse
+  //   ?.filter((item) => item.isRawMaterial)
+  //   ?.map((uom) => ({
+  //     label: uom.symbol,
+  //     value: uom.id,
+  //   })) as Option[];
 
   const packingUomOptions = uomResponse
     ?.filter((item) => !item.isRawMaterial)
@@ -245,8 +246,18 @@ const CreateChecklist = () => {
       materialBatches: data.batches.map((batch) => ({
         batchNumber: batch.batchNumber,
         materialId: data.materialId,
+        numberOfContainers: Number(batch.numberOfContainers),
+        quantityPerContainer: convertToSmallestUnit(
+          Number(batch.quantityPerContainer),
+          materialQty?.uom as Units,
+        ).value,
+        containerUoMId: batch.numberOfContainersUom.value,
         totalQuantity:
-          Number(batch.numberOfContainers) * Number(batch.quantityPerContainer),
+          Number(batch.numberOfContainers) *
+          convertToSmallestUnit(
+            Number(batch.quantityPerContainer),
+            materialQty?.uom as Units,
+          ).value,
         initialLocationId, // Replace with actual location ID
         dateReceived: batch.manufacturingDate.toISOString(),
         uoMId: materialQty?.uomId,
@@ -299,7 +310,7 @@ const CreateChecklist = () => {
             control={control}
             register={register}
             errors={errors}
-            uomOptions={uomOptions}
+            uomOptions={packingUomOptions}
             packingUomOptions={packingUomOptions}
             append={append}
             remove={remove}
