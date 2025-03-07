@@ -35,6 +35,7 @@ interface AssignLocationDialogProps {
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
   selectedBatch: MaterialBatchDto | null;
+  kind?: EMaterialKind;
 }
 
 const AssignLocationDialog = ({
@@ -42,6 +43,7 @@ const AssignLocationDialog = ({
   onOpenChange,
   onSuccess,
   selectedBatch,
+  kind,
 }: AssignLocationDialogProps) => {
   const [supplyShelf, { isLoading }] =
     usePostApiV1MaterialBatchSupplyMutation();
@@ -57,7 +59,7 @@ const AssignLocationDialog = ({
   // });
 
   const { data: racks } = useGetApiV1WarehouseRackByDepartmentQuery({
-    kind: EMaterialKind.Raw,
+    kind: kind ?? EMaterialKind.Raw,
   });
 
   // console.log(racks);
