@@ -508,6 +508,7 @@ export function convertToSmallestUnit(
   value: number,
   baseUnit: Units,
 ): { value: number; unit: string } {
+  console.log(value, baseUnit);
   // 1) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {

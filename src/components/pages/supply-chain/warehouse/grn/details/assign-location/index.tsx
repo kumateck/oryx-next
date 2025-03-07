@@ -15,6 +15,7 @@ import {
   ErrorResponse,
   Option,
   Units,
+  convertToLargestUnit,
   convertToSmallestUnit,
   isErrorResponse,
 } from "@/lib";
@@ -86,19 +87,22 @@ const AssignLocationDialog = ({
         return;
       }
 
+      const SelectedUnit = convertToLargestUnit(
+        selectedBatch?.totalQuantity as number,
+        selectedBatch?.uoM?.symbol as Units,
+      ).unit as Units;
       const payload = {
         materialBatchId: selectedBatch.id,
         shelfMaterialBatches: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
-          quantity: convertToSmallestUnit(
-            location.quantity,
-            selectedBatch?.uoM?.symbol as Units,
-          ).value,
+          quantity: convertToSmallestUnit(location.quantity, SelectedUnit)
+            .value,
           uomId: selectedBatch?.uoM?.id as string,
           note: location.note || "",
         })),
       } satisfies SupplyMaterialBatchRequest;
 
+      console.log(payload);
       await supplyShelf({
         supplyMaterialBatchRequest: payload,
       });
