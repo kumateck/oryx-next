@@ -2605,9 +2605,6 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/warehouse/grn`,
         method: "POST",
         body: queryArg.createGrnRequest,
-        params: {
-          materialBatchIds: queryArg.materialBatchIds,
-        },
       }),
     }),
     getApiV1WarehouseGrnById: build.query<
@@ -4373,7 +4370,6 @@ export type PostApiV1WarehouseDistributedMaterialMaterialBatchApiArg = {
 };
 export type PostApiV1WarehouseGrnApiResponse = unknown;
 export type PostApiV1WarehouseGrnApiArg = {
-  materialBatchIds?: string[];
   createGrnRequest: CreateGrnRequest;
 };
 export type GetApiV1WarehouseGrnByIdApiResponse = /** status 200 OK */ GrnDto;
@@ -5691,6 +5687,8 @@ export type Product = {
   basePackingUoM?: UnitOfMeasure;
   equipmentId?: string | null;
   equipment?: Equipment;
+  departmentId?: string | null;
+  department?: Department;
   finishedProducts?: FinishedProduct[] | null;
   billOfMaterials?: ProductBillOfMaterial[] | null;
   packages?: ProductPackage[] | null;
@@ -5731,6 +5729,8 @@ export type ProductRead = {
   basePackingUoM?: UnitOfMeasureRead;
   equipmentId?: string | null;
   equipment?: EquipmentRead;
+  departmentId?: string | null;
+  department?: Department;
   finishedProducts?: FinishedProductRead[] | null;
   billOfMaterials?: ProductBillOfMaterialRead[] | null;
   packages?: ProductPackageRead[] | null;
@@ -7048,6 +7048,10 @@ export type MaterialBatch = {
   batchNumber?: string | null;
   grnId?: string | null;
   grn?: Grn;
+  numberOfContainers?: number;
+  containerUoMId?: string | null;
+  containerUoM?: UnitOfMeasure;
+  quantityPerContainer?: number;
   quantityAssigned?: number;
   totalQuantity?: number;
   consumedQuantity?: number;
@@ -7083,6 +7087,10 @@ export type MaterialBatchRead = {
   batchNumber?: string | null;
   grnId?: string | null;
   grn?: GrnRead;
+  numberOfContainers?: number;
+  containerUoMId?: string | null;
+  containerUoM?: UnitOfMeasureRead;
+  quantityPerContainer?: number;
   quantityAssigned?: number;
   quantityUnassigned?: number;
   totalQuantity?: number;
@@ -7800,6 +7808,9 @@ export type MaterialBatchDto = {
   batchNumber?: string | null;
   checklist?: BatchChecklistDto;
   uoM?: UnitOfMeasureDto;
+  numberOfContainers?: number;
+  containerUoM?: UnitOfMeasureDto;
+  quantityPerContainer?: number;
   status?: BatchStatus;
   dateReceived?: string;
   dateApproved?: string | null;
@@ -7827,6 +7838,9 @@ export type CreateMaterialBatchRequest = {
   totalQuantity?: number;
   batchNumber?: string | null;
   manufacturingDate?: string | null;
+  numberOfContainers?: number;
+  containerUoMId?: string | null;
+  quantityPerContainer?: number;
   checklistId?: string | null;
   uoMId?: string | null;
   initialLocationId?: string;
@@ -8397,6 +8411,7 @@ export type CreateProductRequest = {
   baseUomId?: string | null;
   basePackingQuantity?: number;
   basePackingUomId?: string | null;
+  departmentId?: string | null;
 };
 export type EquipmentDto = {
   id?: string;
@@ -8433,6 +8448,7 @@ export type ProductListDto = {
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
   equipment?: EquipmentDto;
+  department?: DepartmentDto;
   createdAt?: string;
 };
 export type ProductListDtoIEnumerablePaginateable = {
@@ -8547,6 +8563,7 @@ export type ProductDto = {
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
   equipment?: EquipmentDto;
+  department?: DepartmentDto;
   createdAt?: string;
   finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -8578,6 +8595,7 @@ export type ProductDtoRead = {
   baseUoM?: UnitOfMeasureDto;
   basePackingUoM?: UnitOfMeasureDto;
   equipment?: EquipmentDto;
+  department?: DepartmentDto;
   createdAt?: string;
   finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -8609,6 +8627,7 @@ export type UpdateProductRequest = {
   baseUomId?: string | null;
   basePackingQuantity?: number;
   basePackingUomId?: string | null;
+  departmentId?: string | null;
 };
 export type UpdateProductPackageDescriptionRequest = {
   primaryPackDescription?: string | null;
@@ -9388,6 +9407,7 @@ export type CreateGrnRequest = {
   vehicleNumber?: string | null;
   remarks?: string | null;
   grnNumber?: string | null;
+  materialBatchIds?: string[] | null;
 };
 export type GrnDto = {
   id?: string;

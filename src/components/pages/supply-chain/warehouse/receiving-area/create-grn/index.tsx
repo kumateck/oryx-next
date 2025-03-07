@@ -72,16 +72,18 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
         body: selectedMaterialIds,
       }).unwrap();
 
-      const materialBatchIds = batchDetails.map((detail) => detail.id);
+      const materialBatchIds = batchDetails.map(
+        (detail) => detail.id,
+      ) as string[];
       console.log("Material Batch Ids:::", materialBatchIds);
 
       const payload = {
         ...data,
+        materialBatchIds,
       } satisfies CreateGrnRequest;
 
       await createGRN({
         createGrnRequest: payload,
-        materialBatchIds: materialBatchIds as string[],
       });
 
       toast.success("GRN created successfully");

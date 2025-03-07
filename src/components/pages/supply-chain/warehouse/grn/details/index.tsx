@@ -28,7 +28,7 @@ const GRNDetail = () => {
       setPackageLists(grnResponse.materialBatches);
     }
   }, [grnResponse]);
-  console.log("Package List:::", packageLists);
+  // console.log("Package List:::", packageLists);
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
