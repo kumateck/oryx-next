@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -12,6 +12,7 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  EMaterialKind,
   ErrorResponse,
   Option,
   Units,
@@ -22,8 +23,7 @@ import {
 import {
   MaterialBatchDto,
   SupplyMaterialBatchRequest,
-  useGetApiV1WarehouseRackQuery,
-  useGetApiV1WarehouseShelfQuery,
+  useGetApiV1WarehouseRackByDepartmentQuery,
   usePostApiV1MaterialBatchSupplyMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -46,15 +46,21 @@ const AssignLocationDialog = ({
   const [supplyShelf, { isLoading }] =
     usePostApiV1MaterialBatchSupplyMutation();
 
-  const { data: racks } = useGetApiV1WarehouseRackQuery({
-    page: 1,
-    pageSize: 100,
+  // const { data: racks } = useGetApiV1WarehouseRackQuery({
+  //   page: 1,
+  //   pageSize: 100,
+  // });
+
+  // const { data: shelves } = useGetApiV1WarehouseShelfQuery({
+  //   page: 1,
+  //   pageSize: 100,
+  // });
+
+  const { data: racks } = useGetApiV1WarehouseRackByDepartmentQuery({
+    kind: EMaterialKind.Raw,
   });
 
-  const { data: shelves } = useGetApiV1WarehouseShelfQuery({
-    page: 1,
-    pageSize: 100,
-  });
+  // console.log(racks);
   const {
     control,
     register,
@@ -70,12 +76,48 @@ const AssignLocationDialog = ({
     },
   });
 
-  const shelfOptions = shelves?.data?.map((item) => ({
-    label: `${item?.warehouseLocationRack?.name}-${item.name}`,
-    value: item.id,
-  })) as Option[];
+  const locations = useWatch({
+    control,
+    name: "locations",
+  });
 
-  const rackOptions = racks?.data?.map((item) => ({
+  // Memoize derived values
+  const typeValues = useMemo(() => {
+    return locations?.map((item) => item?.rackId) || [];
+  }, [locations]);
+  // const shelfOptions = shelves?.data?.map((item) => ({
+  //   label: `${item?.warehouseLocationRack?.name}-${item.name}`,
+  //   value: item.id,
+  // })) as Option[];
+  const [shelfOptionsMap, setShelfOptionsMap] = useState<{
+    [key: string]: Option[];
+  }>({});
+  const [fetchedRacks, setFetchedRacks] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    typeValues.forEach((rack) => {
+      const rackId = rack?.value;
+      if (rackId && !fetchedRacks.has(rackId)) {
+        // Mark the material as fetched
+        setFetchedRacks((prev) => new Set(prev).add(rackId));
+        const rackShelves = racks?.find((item) => item.id === rackId);
+        setShelfOptionsMap((prev) => {
+          const shelfs = rackShelves?.shelves?.map((item) => ({
+            label:
+              `${item?.warehouseLocationRack?.name}-${item.name}` as string,
+            value: item.id as string,
+          })) as Option[];
+
+          return {
+            ...prev,
+            [rackId]: shelfs,
+          };
+        });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typeValues, fetchedRacks]);
+
+  const rackOptions = racks?.map((item) => ({
     label: `${item?.warehouseLocation?.name}-${item.name}`,
     value: item.id,
   })) as Option[];
@@ -139,8 +181,9 @@ const AssignLocationDialog = ({
               register={register}
               errors={errors}
               rackOptions={rackOptions}
-              shelfOptions={shelfOptions}
+              shelfOptionsMap={shelfOptionsMap}
               selectedBatch={selectedBatch}
+              typeValues={typeValues}
             />
           </div>
 

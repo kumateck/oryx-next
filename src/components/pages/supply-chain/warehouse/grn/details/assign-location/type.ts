@@ -6,6 +6,13 @@ export const locationSchema = z.object({
     .number()
     .positive({ message: "Quantity must be greater than 0" })
     .min(0.1, { message: "Minimum quantity is 0.1" }),
+  rackId: z.object(
+    {
+      value: z.string().min(1, { message: "Rack is required" }),
+      label: z.string(),
+    },
+    { message: "Rack is required" },
+  ),
   shelfId: z.object(
     {
       value: z.string().min(1, { message: "Shelf is required" }),

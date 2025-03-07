@@ -21,7 +21,6 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      warehouseId: "51d2bb5a-3321-40f7-b16c-701968a2377c",
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

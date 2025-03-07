@@ -138,6 +138,17 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            label: "Department",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "department",
+            required: true,
+            // defaultValue: defaultEquipment,
+            placeholder: "Select Department",
+            options: equipmentOptions,
+            errors,
+          },
+          {
             register: register("storageCondition" as Path<TFieldValues>),
             label: "Storage Condition",
             placeholder: "Enter condition",
