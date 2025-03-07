@@ -1,7 +1,8 @@
 "use client";
 
 import { RowSelectionState } from "@tanstack/react-table";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
@@ -11,6 +12,7 @@ import { useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery } from "@/
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
 import { getMatchingIds } from "@/lib/utils";
+import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -18,6 +20,10 @@ import { columns } from "./columns";
 import CreateGRN from "./create-grn";
 
 const ReceivingArea = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
+
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -32,14 +38,14 @@ const ReceivingArea = () => {
     loadData({
       page,
       pageSize,
-      kind: EMaterialKind.Raw,
+      kind: kind ?? EMaterialKind.Raw,
     });
     if (triggerReload) {
       setRowSelection({});
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [kind, page, pageSize, triggerReload]);
 
   const data = (result?.data || []).map((item) => ({
     ...item,
@@ -52,10 +58,42 @@ const ReceivingArea = () => {
   const isCreateGRNDisabled =
     selectedData.length === 0 || selectedData.some((row) => row.status === 0);
 
+  const pathname = usePathname();
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const handleTabClick = (tabType: EMaterialKind) => {
+    router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
+  };
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Received Materials" />
+        <AccessTabs
+          handleTabClick={handleTabClick}
+          type={kind}
+          tabs={[
+            {
+              label: EMaterialKind[EMaterialKind.Raw],
+              value: EMaterialKind.Raw.toString(),
+            },
+            {
+              label: EMaterialKind[EMaterialKind.Package],
+              value: EMaterialKind.Package.toString(),
+            },
+          ]}
+        />
         {Object.keys(rowSelection).length > 0 && (
           <div className="flex items-center justify-end gap-4">
             <div className="flex items-center gap-2">
