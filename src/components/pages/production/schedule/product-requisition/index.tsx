@@ -15,6 +15,7 @@ import {
 import {
   useGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery,
   useGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery,
+  useGetApiV1ProductionScheduleByScheduleIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
@@ -48,6 +49,10 @@ const Page = () => {
         productId,
       },
     );
+
+  const { data } = useGetApiV1ProductionScheduleByScheduleIdQuery({
+    scheduleId,
+  });
 
   const loadRawPurchaseData = () => {
     const material =
@@ -92,6 +97,9 @@ const Page = () => {
         id: item.material?.id as string,
       })) ?? [];
     const ids = getMatchingIds(material, pRowSelection);
+    const productFound = data?.products?.find(
+      (item) => item.product?.id === productId,
+    );
     const filteredItems = packageResponse?.filter((item) =>
       ids.includes(item?.material?.id as string),
     );
@@ -105,9 +113,14 @@ const Page = () => {
         material.baseUoM?.symbol as Units,
       ).value;
       const quantity = material.quantityNeeded ?? 0;
-      const packingExcessMargin = material.packingExcessMargin ?? 0;
-      const totalQuantityNeeded =
-        Math.round((quantity + packingExcessMargin) * 100) / 100;
+      const excess =
+        (convertToLargestUnit(
+          productFound?.quantity as number,
+          productFound?.product?.baseUoM?.symbol as Units,
+        ).value === productFound?.product?.fullBatchSize
+          ? material?.packingExcessMargin
+          : (material?.packingExcessMargin ?? 0) / 2) ?? 0;
+      const totalQuantityNeeded = Math.round((quantity + excess) * 100) / 100;
       const qty = convertToLargestUnit(
         Number(totalQuantityNeeded),
         material.baseUoM?.symbol as Units,
@@ -127,6 +140,10 @@ const Page = () => {
     setPurchaseLists(filtered);
     setIsOpenPurchase(true);
   };
+
+  const productFound = data?.products?.find(
+    (item) => item.product?.id === productId,
+  );
 
   return (
     <PageWrapper className="space-y-5">
@@ -171,7 +188,21 @@ const Page = () => {
             rowSelection={pRowSelection}
             setRowSelection={setPRowSelection}
             title="Package Materials"
-            data={packageResponse ?? []}
+            data={
+              packageResponse?.map((item) => {
+                const excess =
+                  (convertToLargestUnit(
+                    productFound?.quantity as number,
+                    productFound?.product?.baseUoM?.symbol as Units,
+                  ).value === productFound?.product?.fullBatchSize
+                    ? item?.packingExcessMargin
+                    : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+                return {
+                  ...item,
+                  packingExcessMargin: excess,
+                };
+              }) ?? []
+            }
             action={
               <div className="flex items-center gap-2 rounded-md bg-neutral-hover p-2 shadow-sm">
                 {Object.keys(pRowSelection).length > 0 && (

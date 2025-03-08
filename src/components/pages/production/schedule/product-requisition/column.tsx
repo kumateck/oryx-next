@@ -150,6 +150,7 @@ export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
         total,
         row.original.baseUoM?.symbol as Units,
       );
+
       return (
         <div className="">
           {qty.value.toFixed(2)} {qty.unit}

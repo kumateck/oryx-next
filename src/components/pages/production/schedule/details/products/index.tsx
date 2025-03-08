@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
+import { BatchSizeType, Units, convertToLargestUnit } from "@/lib";
 import { ProductionScheduleProductDto } from "@/lib/redux/api/openapi.generated";
 
 import Product from "./product";
@@ -36,7 +37,14 @@ const Products = ({ products, scheduleId }: Props) => {
                 scheduleId={scheduleId}
                 tab={tab}
                 productId={tab.product?.id as string}
-                productEquipment={tab.product?.equipment}
+                batchSizeType={
+                  convertToLargestUnit(
+                    tab.quantity as number,
+                    tab.product?.baseUoM?.symbol as Units,
+                  ).value === tab.product?.fullBatchSize
+                    ? BatchSizeType.Full
+                    : BatchSizeType.Half
+                }
               />
             </TabsContent>
           ))}

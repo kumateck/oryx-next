@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import {
+  BatchSizeType,
   ErrorResponse,
   Units,
   convertToLargestUnit,
@@ -14,7 +15,6 @@ import {
   routes,
 } from "@/lib";
 import {
-  EquipmentDto,
   ProductionScheduleProductDto,
   ProductionStatus,
   useGetApiV1ProductByProductIdQuery,
@@ -34,16 +34,16 @@ interface ProductProps {
   productId: string;
   scheduleId: string;
   tab: ProductionScheduleProductDto;
-  productEquipment?: EquipmentDto;
+  batchSizeType: BatchSizeType;
 }
 const Product = ({
   productId,
   scheduleId,
   tab,
-  productEquipment,
+  batchSizeType,
 }: ProductProps) => {
   const router = useRouter();
-  console.log(productEquipment?.capacityQuantity, tab.quantity);
+
   const [startProductionMutation, { isLoading: isProcessingStart }] =
     usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation();
   const { data: activity } =
@@ -74,7 +74,6 @@ const Product = ({
       },
     );
 
-  // console.log(packageStockResponse, "packageStockResponse");
   const [rawLists, setRawLists] = useState<MaterialRequestDto[]>([]);
   const [packageLists, setPackageLists] = useState<MaterialRequestDto[]>([]);
   const [purchaseLists, setPurchaseLists] = useState<MaterialRequestDto[]>([]);
@@ -172,8 +171,11 @@ const Product = ({
         const code = item?.material?.code as string;
 
         const materialName = item?.material?.name as string;
-
-        const qtyNeeded = item?.quantityNeeded as number;
+        const excess =
+          (batchSizeType === BatchSizeType.Full
+            ? item?.packingExcessMargin
+            : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+        const qtyNeeded = (item?.quantityNeeded as number) + excess;
 
         const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(2);
 
@@ -202,14 +204,13 @@ const Product = ({
       }) as MaterialRequestDto[];
       setPackageLists(packOptions);
     }
-  }, [packageStockResponse, data]);
+  }, [batchSizeType, packageStockResponse, data]);
 
   const convertUnit = convertToLargestUnit(
     Number(tab.quantity),
     tab?.product?.baseUoM?.symbol as Units,
   );
 
-  console.log(productEquipment?.capacityQuantity, "productEquipment");
   const handleStartProduction = async () => {
     try {
       await startProductionMutation({
