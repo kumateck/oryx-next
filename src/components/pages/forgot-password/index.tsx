@@ -95,7 +95,7 @@ function ForgotPassword() {
               {isLoading && (
                 <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
               )}
-              <span>Reset Password</span>
+              <span>Send Email</span>
             </Button>
           </div>
           <div className="mt-6 text-center text-sm" />
