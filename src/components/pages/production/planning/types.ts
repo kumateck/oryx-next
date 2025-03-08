@@ -65,6 +65,14 @@ export const CreateProductSchema = z.object({
     .positive({
       message: "Base Quantity must be greater than 0",
     }),
+  fullBatchSize: z
+    .number({
+      required_error: "Full Batch Size is required",
+      invalid_type_error: "Full Batch Size must be a number",
+    })
+    .positive({
+      message: "Full Batch Size must be greater than 0",
+    }),
   basePackingQuantity: z
     .number({
       required_error: "BaseQuantity is required",
@@ -98,6 +106,15 @@ export const CreateProductSchema = z.object({
     },
     {
       message: "Equipment is required",
+    },
+  ),
+  department: z.object(
+    {
+      value: z.string().min(1, { message: "Department is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Department is required",
     },
   ),
   finishedProducts: z.array(CreateFinishedProductSchema).optional(),

@@ -18,10 +18,12 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   uomOptions: Option[];
   packingUomOptions: Option[];
   equipmentOptions: Option[];
+  departmentOptions: Option[];
   defaultCategory?: Option;
   defaultUom?: Option;
   defaultPackingUom?: Option;
   defaultEquipment?: Option;
+  defaultDepartment?: Option;
 }
 const ProductForm = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -35,6 +37,8 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
   packingUomOptions,
   equipmentOptions,
   defaultEquipment,
+  departmentOptions,
+  defaultDepartment,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -138,14 +142,24 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("fullBatchSize" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Full Batch Size",
+            placeholder: "Enter in Largest Unit",
+            type: InputTypes.NUMBER,
+
+            errors,
+          },
+          {
             label: "Department",
             control: control as Control,
             type: InputTypes.SELECT,
             name: "department",
             required: true,
-            // defaultValue: defaultEquipment,
+            defaultValue: defaultDepartment,
             placeholder: "Select Department",
-            options: equipmentOptions,
+            options: departmentOptions,
             errors,
           },
           {
