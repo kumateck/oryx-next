@@ -10,6 +10,7 @@ import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
   COLLECTION_TYPES,
+  DepartmentType,
   ErrorResponse,
   Option,
   isErrorResponse,
@@ -20,6 +21,7 @@ import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,
   useGetApiV1CollectionUomQuery,
+  useGetApiV1DepartmentQuery,
   useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1CollectionMutation,
@@ -50,8 +52,18 @@ const Create = () => {
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
+
   const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery();
   const equipmentOptions = equipmentResponse?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
+  const { data: departmentResponse } = useGetApiV1DepartmentQuery({
+    type: DepartmentType.Production,
+    pageSize: 100,
+  });
+
+  const departmentOptions = departmentResponse?.data?.map((item) => ({
     label: item.name,
     value: item.id,
   })) as Option[];
@@ -93,6 +105,7 @@ const Create = () => {
       categoryId: data.categoryId?.value,
       baseUomId: data.baseUomId?.value,
       equipmentId: data.equipment?.value,
+      departmentId: data.department?.value,
       basePackingUomId: data.basePackingUomId?.value,
     } satisfies CreateProductRequest;
 
@@ -153,6 +166,7 @@ const Create = () => {
                 uomOptions={uomOptions}
                 packingUomOptions={packingUomOptions}
                 equipmentOptions={equipmentOptions}
+                departmentOptions={departmentOptions}
               />
             </CardContent>
           </Card>

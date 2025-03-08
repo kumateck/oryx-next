@@ -100,6 +100,15 @@ export const CreateProductSchema = z.object({
       message: "Equipment is required",
     },
   ),
+  department: z.object(
+    {
+      value: z.string().min(1, { message: "Department is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Department is required",
+    },
+  ),
   finishedProducts: z.array(CreateFinishedProductSchema).optional(),
 });
 

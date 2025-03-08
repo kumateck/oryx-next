@@ -9,12 +9,18 @@ import { toast } from "sonner";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
-import { COLLECTION_TYPES, Option, routes } from "@/lib/constants";
+import {
+  COLLECTION_TYPES,
+  DepartmentType,
+  Option,
+  routes,
+} from "@/lib/constants";
 import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,
   PutApiV1ProductByProductIdApiArg,
   useGetApiV1CollectionUomQuery,
+  useGetApiV1DepartmentQuery,
   useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductByProductIdQuery,
   usePostApiV1CollectionMutation,
@@ -52,6 +58,9 @@ const ProductInfo = () => {
   const [defaultEquipment, setDefaultEquipment] = useState<Option | undefined>(
     undefined,
   );
+  const [defaultDepartment, setDefaultDepartment] = useState<
+    Option | undefined
+  >(undefined);
   const [defaultPackingUom, setDefaultPackingUom] = useState<
     Option | undefined
   >(undefined);
@@ -92,6 +101,10 @@ const ProductInfo = () => {
       label: product?.equipment?.name as string,
       value: product?.equipment?.id as string,
     } as Option;
+    const department = {
+      label: product?.department?.name as string,
+      value: product?.department?.id as string,
+    } as Option;
 
     const uom = {
       label: product?.baseUoM?.symbol as string,
@@ -105,6 +118,7 @@ const ProductInfo = () => {
     setDefaultUom(uom);
     setDefaultPackingUom(puom);
     setDefaultEquipment(equipment);
+    setDefaultDepartment(department);
     const defaultProduct = {
       code: product?.code as string,
       name: product?.name as string,
@@ -126,6 +140,10 @@ const ProductInfo = () => {
         label: product?.equipment?.name as string,
         value: product?.equipment?.id as string,
       },
+      department: {
+        label: product?.department?.name as string,
+        value: product?.department?.id as string,
+      },
     } as ProductRequestDto;
     setValue("code", defaultProduct.code);
     setValue("name", defaultProduct.name);
@@ -134,6 +152,7 @@ const ProductInfo = () => {
     setValue("baseUomId", defaultProduct.baseUomId);
     setValue("basePackingUomId", defaultProduct.basePackingUomId);
     setValue("equipment", defaultProduct.equipment);
+    setValue("department", defaultProduct.department);
     setValue("filledWeight", defaultProduct.filledWeight);
     setValue("shelfLife", defaultProduct.shelfLife);
     setValue("storageCondition", defaultProduct.storageCondition);
@@ -160,7 +179,15 @@ const ProductInfo = () => {
     label: uom.name,
     value: uom.id,
   })) as Option[];
+  const { data: departmentResponse } = useGetApiV1DepartmentQuery({
+    type: DepartmentType.Production,
+    pageSize: 100,
+  });
 
+  const departmentOptions = departmentResponse?.data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
   const onSubmit = async (data: ProductRequestDto) => {
     const payload = {
       ...data,
@@ -168,6 +195,7 @@ const ProductInfo = () => {
       baseUomId: data.baseUomId?.value,
       basePackingUomId: data.basePackingUomId?.value,
       equipmentId: data.equipment?.value,
+      departmentId: data.department?.value,
     } satisfies CreateProductRequest;
 
     try {
@@ -240,9 +268,11 @@ const ProductInfo = () => {
               defaultUom={defaultUom}
               defaultEquipment={defaultEquipment}
               defaultPackingUom={defaultPackingUom}
+              defaultDepartment={defaultDepartment}
               uomOptions={uomOptions}
               packingUomOptions={packingUomOptions}
               equipmentOptions={equipmentOptions}
+              departmentOptions={departmentOptions}
             />
           </CardContent>
         </Card>

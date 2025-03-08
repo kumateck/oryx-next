@@ -47,7 +47,6 @@ const MaterialDetails = ({ materialId }: Props) => {
     loadData({
       page,
       pageSize,
-      warehouseId: "51d2bb5a-3321-40f7-b16c-701968a2377c",
       materialId,
     });
 
