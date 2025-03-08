@@ -114,10 +114,10 @@ export const ROUTES: Route[] = [
             title: "Approved Raw Materials",
             url: "/warehouse/approved-raw-materials",
           },
-          {
-            title: "Available Stock",
-            url: "/stock/available",
-          },
+          // {
+          //   title: "Available Stock",
+          //   url: "/stock/available",
+          // },
           {
             title: "Stock Requisitions",
             url: "/warehouse/stock-requisition",
@@ -130,10 +130,10 @@ export const ROUTES: Route[] = [
             title: "Location Chart Record",
             url: "/warehouse/location-chart",
           },
-          {
-            title: "Packaging Materials Receiving Area",
-            url: "/warehouse/packaging-receiving-area",
-          },
+          // {
+          //   title: "Packaging Materials Receiving Area",
+          //   url: "/warehouse/packaging-receiving-area",
+          // },
         ],
       },
       {

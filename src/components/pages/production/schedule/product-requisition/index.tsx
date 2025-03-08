@@ -184,7 +184,7 @@ const Page = () => {
           <SkeletonLoadingPage />
         ) : (
           <TableCard
-            type={EMaterialKind.Package}
+            type={EMaterialKind.Packing}
             rowSelection={pRowSelection}
             setRowSelection={setPRowSelection}
             title="Package Materials"
