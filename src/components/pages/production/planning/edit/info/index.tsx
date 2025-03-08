@@ -8,11 +8,19 @@ import { toast } from "sonner";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  convertToLargestUnit,
+  convertToSmallestUnit,
+  getLargestUnit,
+  getSmallestUnit,
+  isErrorResponse,
+} from "@/lib";
 import {
   COLLECTION_TYPES,
   DepartmentType,
   Option,
+  Units,
   routes,
 } from "@/lib/constants";
 import {
@@ -93,6 +101,7 @@ const ProductInfo = () => {
     const product = await loadProductInfo({
       productId,
     }).unwrap();
+
     const category = {
       label: product?.category?.name as string,
       value: product?.category?.id as string,
@@ -131,6 +140,10 @@ const ProductInfo = () => {
       genericName: product?.genericName as string,
       description: product?.description as string,
       basePackingQuantity: product?.basePackingQuantity,
+      fullBatchSize: convertToLargestUnit(
+        product?.fullBatchSize as number,
+        getLargestUnit(product?.baseUoM?.symbol as Units),
+      ).value,
       baseQuantity: product?.baseQuantity,
       categoryId: {
         label: product?.category?.name as string,
@@ -147,6 +160,7 @@ const ProductInfo = () => {
     } as ProductRequestDto;
     setValue("code", defaultProduct.code);
     setValue("name", defaultProduct.name);
+    setValue("fullBatchSize", defaultProduct.fullBatchSize);
     setValue("description", defaultProduct.description);
     setValue("categoryId", defaultProduct.categoryId);
     setValue("baseUomId", defaultProduct.baseUomId);
@@ -192,6 +206,10 @@ const ProductInfo = () => {
     const payload = {
       ...data,
       categoryId: data.categoryId?.value,
+      fullBatchSize: convertToSmallestUnit(
+        data.fullBatchSize,
+        getSmallestUnit(defaultUom?.label as Units),
+      ).value,
       baseUomId: data.baseUomId?.value,
       basePackingUomId: data.basePackingUomId?.value,
       equipmentId: data.equipment?.value,

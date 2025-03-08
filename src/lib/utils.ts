@@ -438,6 +438,7 @@ interface UnitFactor {
   name: Units;
   factor: number;
 }
+
 export const volumeUnits: UnitFactor[] = [
   { name: Units.ML, factor: 1 },
   { name: Units.L, factor: 1_000 }, // 1 L = 1000 mL
@@ -542,6 +543,55 @@ export function convertToSmallestUnit(
   );
 
   return { value: finalValue, unit: smallestUnit.name };
+}
+
+interface UnitFactor {
+  name: Units;
+  factor: number;
+}
+
+/**
+ * Utility to determine which array (volumeUnits or massUnits)
+ * contains the given `fromUnit`.
+ */
+function getRelevantArray(fromUnit: Units): UnitFactor[] {
+  // Check if the unit is in volumeUnits
+  if (volumeUnits.some((u) => u.name === fromUnit)) {
+    return volumeUnits;
+  }
+  // Else check if the unit is in massUnits
+  if (massUnits.some((u) => u.name === fromUnit)) {
+    return massUnits;
+  }
+
+  // If neither, throw
+  throw new Error(
+    `Unit "${fromUnit}" was not found in volumeUnits or massUnits.`,
+  );
+}
+
+/**
+ * Returns the unit (by `name`) with the largest factor
+ * for whichever array (volume or mass) contains `fromUnit`.
+ */
+export function getLargestUnit(fromUnit: Units): Units {
+  const relevantArray = getRelevantArray(fromUnit);
+  const largest = relevantArray.reduce((prev, current) =>
+    current.factor > prev.factor ? current : prev,
+  );
+  return largest.name;
+}
+
+/**
+ * Returns the unit (by `name`) with the smallest factor
+ * for whichever array (volume or mass) contains `fromUnit`.
+ */
+export function getSmallestUnit(fromUnit: Units): Units {
+  const relevantArray = getRelevantArray(fromUnit);
+  const smallest = relevantArray.reduce((prev, current) =>
+    current.factor < prev.factor ? current : prev,
+  );
+  return smallest.name;
 }
 
 type ObjectType = {

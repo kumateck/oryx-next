@@ -13,6 +13,9 @@ import {
   DepartmentType,
   ErrorResponse,
   Option,
+  Units,
+  convertToSmallestUnit,
+  getSmallestUnit,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -103,6 +106,10 @@ const Create = () => {
     const payload = {
       ...data,
       categoryId: data.categoryId?.value,
+      fullBatchSize: convertToSmallestUnit(
+        data.fullBatchSize,
+        getSmallestUnit(data.baseUomId?.label as Units),
+      ).value,
       baseUomId: data.baseUomId?.value,
       equipmentId: data.equipment?.value,
       departmentId: data.department?.value,

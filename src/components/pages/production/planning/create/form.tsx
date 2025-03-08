@@ -142,6 +142,16 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("fullBatchSize" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Full Batch Size",
+            placeholder: "Enter in Largest Unit",
+            type: InputTypes.NUMBER,
+
+            errors,
+          },
+          {
             label: "Department",
             control: control as Control,
             type: InputTypes.SELECT,
