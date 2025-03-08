@@ -1,14 +1,32 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { IdSchema } from "@/lib";
+// import { IdSchema } from "@/lib";
 
 // import { ScheduleType } from "@/lib";
 
 export const associateProductRequestSchema = z.object({
-  uom: z.string().optional(),
-  productId: IdSchema("Product"),
-  quantity: z.number().min(0.1, { message: "Quantity is required" }),
+  // uom: z.string().optional(),
+  // productId: IdSchema("Product"),
+  sizeType: z.object(
+    {
+      value: z.string().min(1, { message: "Batch Size Type is required" }),
+      label: z.string(),
+    },
+    {
+      message: `Batch Size Type is required`,
+    },
+  ),
+  productId: z.object(
+    {
+      value: z.string().min(1, { message: "Product is required" }),
+      label: z.string(),
+    },
+    {
+      message: `Product is required`,
+    },
+  ),
+  // quantity: z.number().min(0.1, { message: "Quantity is required" }),
 });
 
 export const itemsRequestSchema = z.array(associateProductRequestSchema);

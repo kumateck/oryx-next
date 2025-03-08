@@ -8,6 +8,7 @@ import { OptionsUpdate } from "@/components/pages/production/schedule/create/for
 // import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
 import {
   APP_NAME,
+  BatchSizeType,
   CODE_SETTINGS,
   MaterialStatus,
   Option,
@@ -737,3 +738,17 @@ export const objectSchema = (msg: string) =>
 export type OptionMap = {
   [key: string]: Option[];
 };
+
+// Each item in the result will look like: { label: "Full", value: "0" }
+export const batchSizeTypeOptions = Object.values(BatchSizeType)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = BatchSizeType[enumValue as BatchSizeType];
+    return {
+      label: enumKey, // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  });
