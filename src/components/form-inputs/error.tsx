@@ -1,21 +1,3 @@
-// import { cn } from "@/lib";
-// import { ErrorProps } from "./types";
-// interface FormErrorProps {
-//   errors?: ErrorProps;
-// }
-// export const FormError = ({ errors }: FormErrorProps) => (
-//   <div>
-//     {errors?.error && (
-//       <p
-//         className={cn(
-//           "text-[0.8rem] font-medium text-red-500 dark:text-red-900",
-//         )}
-//       >
-//         {errors.message}
-//       </p>
-//     )}
-//   </div>
-// );
 import { JSX } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
 
@@ -34,12 +16,14 @@ export const FormError = <TFieldValues extends Record<string, any>>({
   fieldName,
 }: Props<TFieldValues>): JSX.Element | null => {
   // Get the field error based on the field name
-  const fieldError = errors[fieldName];
+  const fieldError =
+    errors[fieldName] ?? inlineGetError(errors, fieldName as string);
 
   // Ensure that message is a string or default to an empty string
   const errorProps: ErrorProps = {
     error: !!fieldError, // Determine if there's an error
-    message: (fieldError?.message as string) || "", // Default to empty string if no message
+    message:
+      (fieldError?.message as string) ?? fieldError?.value?.message ?? "", // Default to empty string if no message
   };
 
   return errorProps.error ? (
@@ -52,3 +36,7 @@ export const FormError = <TFieldValues extends Record<string, any>>({
     </p>
   ) : null;
 };
+
+function inlineGetError(errors: FieldErrors<FieldValues>, path: string) {
+  return path.split(".").reduce((acc: any, key) => acc?.[key], errors);
+}

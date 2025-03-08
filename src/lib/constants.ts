@@ -259,6 +259,7 @@ export const routes = {
   regulations: () => "/compliance/external/regulations",
   newStockRequisition: () => "stock-requisition/create",
   newRequisition: () => "requisition/create",
+  productionSchedules: () => "/production/schedules",
   audits: () => "/audits",
   findings: () => "/findings",
   editEmployee: (params: { id: string }) =>
@@ -362,6 +363,11 @@ export enum Intactness {
 export enum ConsignmentCarrier {
   Bad = 0,
   Good = 1,
+}
+
+export enum BatchSizeType {
+  Full = 0,
+  Half = 1,
 }
 
 export enum DepartmentType {

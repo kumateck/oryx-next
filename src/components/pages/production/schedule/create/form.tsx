@@ -6,14 +6,19 @@ import {
   FieldValues,
   Path,
   UseFieldArrayAppend,
-  UseFieldArrayRemove,
-  // Path,
+  UseFieldArrayRemove, // Path,
   UseFormRegister,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { Button, Card, CardContent, Icon } from "@/components/ui";
-import { InputTypes, Option, Units } from "@/lib";
+import {
+  Button,
+  Card,
+  CardContent,
+  FetchOptionsResult,
+  Icon,
+} from "@/components/ui";
+import { InputTypes, Option, batchSizeTypeOptions } from "@/lib";
 
 import { ProductRequestDto } from "./type";
 
@@ -24,17 +29,21 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  productOptions: OptionsUpdate[];
+  // productOptions: OptionsUpdate[];
   defaultValues?: TFieldValues;
   fields: FieldArrayWithId<TFieldValues>[];
   remove: UseFieldArrayRemove;
   append: UseFieldArrayAppend<TFieldValues>;
   associateProducts: ProductRequestDto[];
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const defaultAssociated: ProductRequestDto = {
   productId: { label: "", value: "" },
-  quantity: 0,
-  uom: "",
+  sizeType: { label: "", value: "" },
+
+  // quantity: 0,
+  // uom: "",
 };
 const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -44,22 +53,11 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   fields,
   append,
   remove,
-  productOptions,
-  associateProducts,
+  // productOptions,
+  // associateProducts,
+  isLoading,
+  fetchOptions,
 }: Props<TFieldValues, TContext>) => {
-  const renderUOM = (productOptions: OptionsUpdate[], index: number) => {
-    const uom =
-      productOptions?.find(
-        (item) => item.value === associateProducts?.[index]?.productId?.value,
-      )?.uom ?? "";
-    let IndexUom = "";
-    if (uom === Units.ML) {
-      IndexUom = Units.L;
-    } else if (uom === Units.MG) {
-      IndexUom = Units.KG;
-    }
-    return IndexUom;
-  };
   return (
     <div className="w-full">
       <Card className="p-5">
@@ -160,39 +158,62 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                       {
                         label: "Product",
                         control: control as Control,
-                        type: InputTypes.SELECT,
+                        type: InputTypes.ASYNC_SELECT,
                         name: `products.${index}.productId`,
                         required: true,
-                        placeholder: "Product",
-                        defaultValue: defaultValues?.products[index]?.productId,
-                        options: productOptions?.filter(
-                          (item2) =>
-                            !associateProducts?.some(
-                              (item1) => item1.productId.value === item2.value,
-                            ),
-                        ),
+                        defaultValue: defaultValues?.department,
+                        placeholder: "Select Product",
+                        fetchOptions: fetchOptions,
+                        isLoading: isLoading,
                         errors,
                       },
+                      // {
+                      //   label: "Product",
+                      //   control: control as Control,
+                      //   type: InputTypes.SELECT,
+                      //   name: `products.${index}.productId`,
+                      //   required: true,
+                      //   placeholder: "Product",
+                      //   defaultValue: defaultValues?.products[index]?.productId,
+                      //   options: productOptions?.filter(
+                      //     (item2) =>
+                      //       !associateProducts?.some(
+                      //         (item1) => item1.productId.value === item2.value,
+                      //       ),
+                      //   ),
+                      //   errors,
+                      // },
                       {
-                        label: "Quantity",
-                        register: register(
-                          `products.${index}.quantity` as Path<TFieldValues>,
-                          {
-                            valueAsNumber: true,
-                          },
-                        ),
-                        type: InputTypes.NUMBER,
+                        label: "Batch Size Type",
+                        control: control as Control,
+                        type: InputTypes.SELECT,
+                        name: `products.${index}.sizeType`,
                         required: true,
-                        placeholder: "Quantity",
+                        placeholder: "Size Type",
+                        defaultValue: defaultValues?.products[index]?.sizeType,
+                        options: batchSizeTypeOptions,
                         errors,
                       },
-                      {
-                        label: "UOM",
-                        type: InputTypes.LABEL,
-                        title: renderUOM(productOptions, index),
-                        className:
-                          "border border-neutral-input rounded-md px-2 py-1 text-sm font-semibold text-neutral-secondary",
-                      },
+                      // {
+                      //   label: "Quantity",
+                      //   register: register(
+                      //     `products.${index}.quantity` as Path<TFieldValues>,
+                      //     {
+                      //       valueAsNumber: true,
+                      //     },
+                      //   ),
+                      //   type: InputTypes.NUMBER,
+                      //   required: true,
+                      //   placeholder: "Quantity",
+                      //   errors,
+                      // },
+                      // {
+                      //   label: "UOM",
+                      //   type: InputTypes.LABEL,
+                      //   title: renderUOM(productOptions, index),
+                      //   className:
+                      //     "border border-neutral-input rounded-md px-2 py-1 text-sm font-semibold text-neutral-secondary",
+                      // },
                     ]}
                   />
                 </CardContent>
