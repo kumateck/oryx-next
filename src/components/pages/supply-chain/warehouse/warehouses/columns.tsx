@@ -94,8 +94,8 @@ export const columns: ColumnDef<WarehouseDto>[] = [
     cell: ({ row }) => <div>{row.original.description}</div>,
   },
 
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];

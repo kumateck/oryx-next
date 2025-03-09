@@ -12,6 +12,7 @@ export interface InputProps
   suffixClass?: string;
   prefixClass?: string;
   prefixText?: string;
+  currency?: string;
   prefix?: LucideIconProps;
   suffix?: LucideIconProps;
   overflowCount?: number;
@@ -28,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onPrefixClick,
       prefixClass,
       prefixText,
+      currency,
       overflowCount,
       ...props
     },
@@ -37,8 +39,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className="relative w-full">
         <div className="absolute inset-y-0 left-0 flex cursor-pointer items-center pl-2">
           {prefixText && (
-            <div className="h-6 w-6">
+            <div className="h-6 max-w-6">
               <span className="text-xs">{prefixText}</span>
+            </div>
+          )}{" "}
+          {currency && (
+            <div className="h-6 max-w-6">
+              <span className="text-xs">{currency}</span>
             </div>
           )}
           {prefix && (
@@ -57,6 +64,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 props.readOnly,
               "pl-8": prefix,
               "pl-10": prefixText,
+              "pl-4": currency?.length === 1,
+              "pl-9": (currency as string)?.length > 1,
               "pr-8": suffix,
             },
             className,
