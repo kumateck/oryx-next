@@ -2,13 +2,14 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   WarehouseLocationRackDto,
   useDeleteApiV1WarehouseRackByRackIdMutation,
   useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 
@@ -28,7 +29,39 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
+      <TableMenuAction>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit</span>
+          </div>
+        </DropdownMenuItem>
+        {/* <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem> */}
+      </TableMenuAction>
+      {/* <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
@@ -43,7 +76,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
           setDetails(row.original);
           setIsDeleteOpen(true);
         }}
-      />
+      /> */}
 
       {details.name && isOpen && (
         <Edit
