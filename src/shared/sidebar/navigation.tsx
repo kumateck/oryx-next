@@ -111,8 +111,8 @@ export const ROUTES: Route[] = [
             url: "/warehouse/raw-materials-requests",
           },
           {
-            title: "Approved Raw Materials",
-            url: "/warehouse/approved-raw-materials",
+            title: "Approved Materials",
+            url: "/warehouse/approved-materials",
           },
           {
             title: "Available Stock",
