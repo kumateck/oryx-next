@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import EmptyIcon from "@/assets/empty-icon.svg";
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  ProcurementType,
   Quotations,
   SupplierType,
   cn,
@@ -26,28 +28,56 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  useGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
   useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
 } from "@/lib/redux/api/openapi.generated";
+import AccessTabs from "@/shared/access";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
 
 const Page = () => {
-  const [saveProcess, { isLoading }] =
-    usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation({});
-  const { data } = useGetApiV1RequisitionSourceMaterialPriceComparisonQuery({
-    supplierType: SupplierType.Foreign,
-  });
+  const router = useRouter();
 
-  const [loadData, { isLoading: isLoadingData, isFetching }] =
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") as unknown as SupplierType; // Extracts 'type' from URL
+
+  const pathname = usePathname();
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const handleTabClick = (tabType: SupplierType) => {
+    router.push(pathname + "?" + createQueryString("type", tabType.toString()));
+  };
+
+  const [saveProcess, { isLoading }] =
+    usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation();
+
+  const [loadPrices, { isLoading: isLoadingData, isFetching }] =
     useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery();
 
   const [state, setState] = useState<Quotations[]>([]);
   useEffect(() => {
-    if (data) {
-      const response = data?.map((item) => {
+    handleLoadPriceComparison(type);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type]);
+
+  const handleLoadPriceComparison = async (type: SupplierType) => {
+    try {
+      const response = await loadPrices({
+        supplierType: type ?? SupplierType.Foreign,
+      }).unwrap();
+      const prices = response?.map((item) => {
         return {
           materialCode: item?.material?.code,
           materialId: item?.material?.id,
@@ -66,9 +96,11 @@ const Page = () => {
           }),
         };
       }) as Quotations[];
-      setState(response);
+      setState(prices);
+    } catch (error) {
+      console.log(error);
     }
-  }, [data]);
+  };
 
   const onChange = (value: string, index: number) => {
     setState((prev) => {
@@ -97,12 +129,11 @@ const Page = () => {
 
   const onSubmit = async () => {
     try {
-      console.log(findSelectedQuotation(state), "state");
       await saveProcess({
         body: findSelectedQuotation(state),
       }).unwrap();
       toast.success("Vendors Selected successfully");
-      await loadData({ supplierType: SupplierType.Foreign }).unwrap();
+      handleLoadPriceComparison(type);
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -112,6 +143,20 @@ const Page = () => {
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex justify-between gap-4 py-5">
         <PageTitle title="Price Comparison" />
+        <AccessTabs
+          handleTabClick={handleTabClick}
+          type={type}
+          tabs={[
+            {
+              label: ProcurementType.Foreign,
+              value: SupplierType.Foreign.toString(),
+            },
+            {
+              label: ProcurementType.Local,
+              value: SupplierType.Local.toString(),
+            },
+          ]}
+        />
         <Button
           onClick={() => onSubmit()}
           disabled={findSelectedQuotation(state).length === 0}

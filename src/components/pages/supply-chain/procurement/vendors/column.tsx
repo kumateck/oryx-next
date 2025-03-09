@@ -4,8 +4,22 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, SupplierType, isErrorResponse, routes } from "@/lib";
+import {
+  ConfirmDeleteDialog,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Icon,
+} from "@/components/ui";
+import {
+  ErrorResponse,
+  SupplierStatus,
+  SupplierType,
+  SupplierTypeOptions,
+  isErrorResponse,
+  routes,
+} from "@/lib";
 import {
   MaterialDto,
   SupplierDto,
@@ -131,7 +145,50 @@ export const columns: ColumnDef<SupplierDto>[] = [
     ),
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div
+              className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusColors[row.original.status as SupplierStatus]}`}
+            >
+              {SupplierStatus[row.original.status as SupplierStatus]}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            side="bottom"
+            className="rounded-2xl"
+          >
+            {SupplierTypeOptions?.map((opt, index) => {
+              return (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => {
+                    console.log(opt);
+                    // triggerUpdateStatus(item?.id);
+                  }}
+                  className="group flex cursor-pointer items-center justify-start gap-2"
+                >
+                  <span>{opt.label}</span>
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
+
+const statusColors: Record<SupplierStatus, string> = {
+  [SupplierStatus.New]: "bg-blue-100 text-blue-800",
+  [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
+  [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
+};

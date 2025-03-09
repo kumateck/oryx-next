@@ -57,6 +57,28 @@ export const CODE_SETTINGS = {
   },
 };
 
+export enum CodeNameTypes {
+  Series = 0,
+  Random = 1,
+  Time = 2,
+}
+export enum CodeModelTypes {
+  Product = "Product",
+  WorkOrder = "WorkOrder",
+  StockRequisition = "StockRequisition",
+  StockTransfer = "StockTransfer",
+  FinishedGoodsTransfer = "FinishedGoodsTransfer",
+  PurchaseRequisition = "PurchaseRequisition",
+  RawMaterial = "RawMaterial",
+  Warehouse = "Warehouse",
+  PackageMaterial = "PackageMaterial",
+  ProductionSchedule = "ProductionSchedule",
+  Department = "Department",
+  PurchaseOrder = "PurchaseOrder",
+  ShipmentDocument = "ShipmentDocument",
+  GRNNumber = "GrnNumber",
+}
+
 export enum ProductionStatus {
   New = 0,
   Checked = 1,
@@ -206,7 +228,7 @@ export enum BatchStatus {
 }
 
 export enum DistributedMaterialStatus {
-  Distrubted = 0,
+  Distributed = 0,
   Arrived = 1,
   Checked = 2,
   GrnGenerated = 3,
@@ -376,7 +398,7 @@ export enum DepartmentType {
 }
 
 export enum SupplierStatus {
-  New = 0,
-  Approved = 1,
-  UnApproved = 2,
+  New,
+  Approved,
+  UnApproved,
 }

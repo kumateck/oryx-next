@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -13,7 +13,8 @@ import {
 } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  useGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery,
+  useLazyGetApiV1ProcurementSupplierBySupplierIdQuery,
+  useLazyGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery,
   usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -25,21 +26,39 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   id: string;
+  supplierId: string;
 }
-const Cost = ({ isOpen, onClose, id }: Props) => {
+const Cost = ({ isOpen, onClose, id, supplierId }: Props) => {
   const dispatch = useDispatch();
+  const [currency, setCurrency] = useState("");
   const [updatePrices, { isLoading }] =
     usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation();
-  const { data } =
-    useGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery({
-      supplierQuotationId: id,
-    });
-  // const items = data?.items || [];
+  const [loadQuotation] =
+    useLazyGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery();
+  const [loadSupplier] = useLazyGetApiV1ProcurementSupplierBySupplierIdQuery();
+
   const [itemLists, setItemLists] = React.useState<MaterialRequestDto[]>([]);
 
-  const processedItems = useMemo(() => {
-    if (data?.items && data.items.length > 0) {
-      return data.items.map((item) => ({
+  useEffect(() => {
+    handleProcessItems(id, supplierId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, supplierId]);
+
+  const handleProcessItems = async (
+    supplierQuotationId: string,
+    supplierId: string,
+  ) => {
+    try {
+      const responseQ = await loadQuotation({
+        supplierQuotationId,
+      }).unwrap();
+
+      const supplierInfo = await loadSupplier({
+        supplierId,
+      }).unwrap();
+      setCurrency(supplierInfo?.currency?.symbol as string);
+      const processedItems = responseQ.items?.map((item) => ({
         id: item.id,
         materialId: item.material?.id,
         quantity: item.quantity,
@@ -47,29 +66,13 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
         price: item.quotedPrice ?? 0,
         materialName: item.material?.name,
         uom: item.uoM?.symbol,
+        currency: supplierInfo?.currency?.symbol,
       })) as MaterialRequestDto[];
+      setItemLists(processedItems);
+    } catch (error) {
+      console.log(error);
     }
-    return [];
-  }, [data?.items]);
-
-  // const processedItems = useMemo(() => {
-  //   if (items && items.length > 0) {
-  //     return items.map((item) => ({
-  //       id: item.id,
-  //       materialId: item.material?.id,
-  //       quantity: item.quantity,
-  //       uomId: item.uoM?.id,
-  //       price: item.quotedPrice ?? 0,
-  //       materialName: item.material?.name,
-  //       uom: item.uoM?.name,
-  //     })) as MaterialRequestDto[];
-  //   }
-  //   return [];
-  // }, [items]);
-
-  useEffect(() => {
-    setItemLists(processedItems);
-  }, [processedItems]);
+  };
 
   const onSubmit = async () => {
     try {
@@ -97,7 +100,11 @@ const Cost = ({ isOpen, onClose, id }: Props) => {
             <DialogTitle>Update Prices </DialogTitle>
           </DialogHeader>
           <div className="w-full">
-            <TableForData lists={itemLists} setItemLists={setItemLists} />
+            <TableForData
+              lists={itemLists}
+              setItemLists={setItemLists}
+              currency={currency}
+            />
           </div>
           <DialogFooter>
             <Button variant={"outline"} onClick={onClose}>

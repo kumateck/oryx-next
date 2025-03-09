@@ -13,6 +13,7 @@ export const createRequisitionItemRequestSchema = z.object({
   quantity: z.number().min(0.1, { message: "Quantity is required" }),
   price: z.number().min(1, { message: "Price is required" }),
   id: z.string().optional(),
+  currency: z.string().optional(),
 });
 
 export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);
