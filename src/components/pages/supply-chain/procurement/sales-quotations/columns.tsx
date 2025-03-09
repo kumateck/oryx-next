@@ -16,18 +16,21 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [supplierId, setSupplierId] = useState("");
+  const [quotationId, setQuotationId] = useState("");
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
         <Cost
-          id={supplierId}
+          id={quotationId}
+          supplierId={supplierId}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
         />
       )}
       <Icon
         onClick={() => {
-          setSupplierId(row.original?.id as string);
+          setQuotationId(row.original?.id as string);
+          setSupplierId(row.original?.supplier?.id as string);
           setIsOpen(true);
         }}
         name="HandCoins"

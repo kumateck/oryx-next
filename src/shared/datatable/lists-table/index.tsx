@@ -40,6 +40,7 @@ export type CustomColumnMeta<TData> = {
     extraEvents?: (rowIndex: number, value: unknown) => void;
     setItemLists: React.Dispatch<React.SetStateAction<TData[]>>;
     options?: Option[];
+    prefixText?: string;
   };
 };
 
@@ -153,7 +154,6 @@ export const ListsTable = <TData, TValue>({
                 className="odd:bg-white even:bg-neutral-secondary hover:bg-neutral-hover"
               >
                 {row.getVisibleCells().map((cell) => {
-                  // console.log(cell, "cells");
                   const editableCell = (
                     cell.column.columnDef as ExtendedColumnDef<TData, TValue>
                   ).meta?.edittableCell; // Extracted the editableCell meta information into a variable
@@ -163,6 +163,7 @@ export const ListsTable = <TData, TValue>({
                       {editableCell?.editable ? (
                         <EditableCell
                           min={editableCell?.min}
+                          prefixText={editableCell?.prefixText}
                           extraEvents={editableCell?.extraEvents}
                           cellContext={cell.getContext()}
                           updateData={(rowIndex, columnId, value) => {

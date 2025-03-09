@@ -46,7 +46,7 @@ const EquipmentForm = <TFieldValues extends FieldValues, TContext>({
           },
           {
             register: register("name" as Path<TFieldValues>),
-            label: "Material Name",
+            label: "Equipment Name",
             placeholder: "Enter Name",
             type: InputTypes.TEXT,
             errors,

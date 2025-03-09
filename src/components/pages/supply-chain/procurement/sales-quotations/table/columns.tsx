@@ -8,6 +8,7 @@ import { MaterialRequestDto } from "./type";
 
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
+  currency?: string,
 ): ColumnDef<MaterialRequestDto>[] => [
   {
     accessorKey: "materialName",
@@ -47,6 +48,7 @@ export const getColumns = (
     meta: {
       edittableCell: {
         type: ColumnType.NUMBER,
+        prefixText: currency,
         editable: true,
         setItemLists,
       },

@@ -27,6 +27,7 @@ import { ColumnType } from ".";
 interface EditableCellProps {
   extraEvents?: (rowIndex: number, value: unknown) => void;
   type?: ColumnType;
+  prefixText?: string;
   min?: boolean;
   cellContext: any; // Type this based on your row data
   updateData: (rowIndex: number, columnId: string, value: unknown) => void;
@@ -40,6 +41,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   type = ColumnType.TEXT,
   options = [],
   min,
+  prefixText,
 }) => {
   const { row, column, value, getValue } = cellContext;
   const columnId = column.id;
@@ -95,6 +97,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         handleBlur={handleBlur}
         options={options}
         setMin={setMin}
+        prefixText={prefixText}
       />
     </div>
   );
@@ -109,6 +112,7 @@ const InputSwitch = ({
   handleBlur,
   options,
   setMin,
+  prefixText,
 }: {
   type: ColumnType;
   editingValue: string;
@@ -118,6 +122,7 @@ const InputSwitch = ({
   handleBlur: () => void;
   options?: { label: string; value: string }[];
   setMin?: number;
+  prefixText?: string;
 }) => {
   switch (type) {
     case ColumnType.NUMBER:
@@ -129,6 +134,7 @@ const InputSwitch = ({
           onBlur={handleBlur}
           min={setMin || 0}
           step="0.01"
+          currency={prefixText}
         />
       );
     case ColumnType.SELECT:
