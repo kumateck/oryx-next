@@ -2,13 +2,14 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   MaterialDto,
   useDeleteApiV1MaterialByMaterialIdMutation,
   useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 
@@ -24,23 +25,39 @@ export function DataTableRowActions<TData extends MaterialDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadMaterials] = useLazyGetApiV1MaterialQuery();
   return (
-    <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+    <div className="flex items-center justify-end gap-2">
+      <TableMenuAction>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
 
       {details.id && isOpen && (
         <Edit
@@ -66,7 +83,7 @@ export function DataTableRowActions<TData extends MaterialDto>({
           }
         }}
       />
-    </section>
+    </div>
   );
 }
 
@@ -109,6 +126,7 @@ export const columns: ColumnDef<MaterialDto>[] = [
 
   {
     id: "actions",
+    meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
