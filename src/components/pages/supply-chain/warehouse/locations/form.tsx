@@ -56,6 +56,12 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
               warehouseType === 1 ? RawLocationOptions : PackLocationOptions,
             errors,
           },
+        ]}
+      />
+      <FormWizard
+        className="grid w-full gap-x-10 space-y-0"
+        fieldWrapperClassName="flex-grow"
+        config={[
           {
             label: "Floor Name",
             control: control as Control,
@@ -67,12 +73,16 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
             options: FloorTypeOptions,
             errors,
           },
+        ]}
+      />
+      <FormWizard
+        className="w-full"
+        config={[
           {
             label: "Description",
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
-            required: true,
             autoFocus: true,
             placeholder: "Enter Remarks",
             suggestions: [],

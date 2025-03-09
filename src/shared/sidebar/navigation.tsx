@@ -130,6 +130,10 @@ export const ROUTES: Route[] = [
             title: "Location Chart Record",
             url: "/warehouse/location-chart",
           },
+          {
+            title: "Packaging Materials Receiving Area",
+            url: "/warehouse/packaging-receiving-area",
+          },
         ],
       },
       {

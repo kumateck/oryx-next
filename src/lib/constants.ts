@@ -268,7 +268,8 @@ export const routes = {
 
   createChecklist: (id: string) =>
     `/warehouse/receiving-area/${id}/create-checklist`,
-  // createChecklist: () => `/warehouse/receiving-area/create-checklist`,
+  createPackagingChecklist: (id: string) =>
+    `/warehouse/packaging-receiving-area/${id}/create-checklist`,
   finishedProducts: () => "finished-products",
   newEmployee: () => "/resource/employees/create",
   newRegulation: () => "/compliance/external/regulations/create",
