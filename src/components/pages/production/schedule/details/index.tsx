@@ -67,7 +67,6 @@ const ScheduleDetail = () => {
             </CardContent>
           </Card>
         )}
-        {/* <DragLists /> */}
         {data?.products && data?.products?.length > 0 ? (
           <Products scheduleId={scheduleId} products={data?.products ?? []} />
         ) : (
