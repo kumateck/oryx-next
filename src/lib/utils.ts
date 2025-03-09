@@ -10,8 +10,11 @@ import {
   APP_NAME,
   BatchSizeType,
   CODE_SETTINGS,
+  FloorType,
   MaterialStatus,
   Option,
+  PackLocationType,
+  RawLocationType,
   SupplierStatus,
   Units,
 } from "./constants";
@@ -181,6 +184,22 @@ export const getStatusColor = (status: MaterialStatus) => {
   }
 };
 
+export function isStockUnAvailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  for (const item of materials) {
+    if (
+      item.quantityOnHand &&
+      item.quantityNeeded &&
+      item.quantityOnHand < item.quantityNeeded
+    ) {
+      console.log("I cannot process, I need to add a stock.");
+      return true; // At least one stock is insufficient
+    }
+  }
+  return false; // All stocks are sufficient
+}
+
 export const quantityAvailable = (
   materials: ProductionScheduleProcurementDto[],
 ) => {
@@ -194,6 +213,13 @@ export const quantityAvailable = (
   const totalQuantityOnHand = materials.reduce(
     (sum, item) => sum + (item?.quantityOnHand || 0),
     0,
+  );
+
+  console.log(
+    totalQuantityOnHand,
+    totalQuantityRequested,
+    totalQuantityOnHand > totalQuantityRequested,
+    materials,
   );
 
   return totalQuantityOnHand > totalQuantityRequested;
@@ -766,3 +792,18 @@ export const SupplierTypeOptions = Object.values(SupplierStatus)
       value: String(enumValue), // e.g., "0"
     };
   }) as Option[];
+
+export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
+  label: key,
+  value: FloorType[key as keyof typeof FloorType],
+})) as Option[];
+
+export const RawLocationOptions = Object.keys(RawLocationType).map((key) => ({
+  label: key,
+  value: RawLocationType[key as keyof typeof RawLocationType],
+})) as Option[];
+
+export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
+  label: key,
+  value: PackLocationType[key as keyof typeof PackLocationType],
+})) as Option[];

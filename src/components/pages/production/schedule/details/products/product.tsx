@@ -11,7 +11,7 @@ import {
   Units,
   convertToLargestUnit,
   isErrorResponse,
-  quantityAvailable,
+  isStockUnAvailable,
   routes,
 } from "@/lib";
 import {
@@ -83,9 +83,10 @@ const Product = ({
 
   useEffect(() => {
     if (materialStockResponse) {
-      setEnablePurchase(!quantityAvailable(materialStockResponse));
+      const isnotAvailable = isStockUnAvailable(materialStockResponse);
+      setEnablePurchase(isnotAvailable);
 
-      if (!quantityAvailable(materialStockResponse)) {
+      if (!isnotAvailable) {
         const filteredMaterials = materialStockResponse
           .filter(
             (item) => Number(item.quantityNeeded) > Number(item.quantityOnHand),
@@ -165,44 +166,52 @@ const Product = ({
   }, [materialStockResponse]);
   useEffect(() => {
     if (packageStockResponse) {
-      setEnablePurchase(!quantityAvailable(packageStockResponse));
+      // setEnablePurchase(!quantityAvailable(packageStockResponse));
+      const isnotAvailable = isStockUnAvailable(packageStockResponse);
+      setEnablePurchase(isnotAvailable);
 
-      const packOptions = packageStockResponse?.map((item) => {
-        const code = item?.material?.code as string;
+      if (!isnotAvailable) {
+        const packOptions = packageStockResponse?.map((item) => {
+          const code = item?.material?.code as string;
 
-        const materialName = item?.material?.name as string;
-        const excess =
-          (batchSizeType === BatchSizeType.Full
-            ? item?.packingExcessMargin
-            : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
-        const qtyNeeded = (item?.quantityNeeded as number) + excess;
+          const materialName = item?.material?.name as string;
+          const excess =
+            (batchSizeType === BatchSizeType.Full
+              ? item?.packingExcessMargin
+              : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+          const qtyNeeded = (item?.quantityNeeded as number) + excess;
 
-        const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(2);
+          const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(
+            2,
+          );
 
-        const qtyOnHand = item?.quantityOnHand as number;
+          const qtyOnHand = item?.quantityOnHand as number;
 
-        const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(2);
+          const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(
+            2,
+          );
 
-        const totalStock = item?.material?.totalStock as number;
+          const totalStock = item?.material?.totalStock as number;
 
-        const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
+          const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
 
-        const materialId = item?.material?.id as string;
-        const materialStatus = item?.status;
-        return {
-          materialStatus,
-          code,
-          materialName,
-          materialId,
-          finalQuantityNeeded: quantityNeededFloat,
-          finalQuantityOnHand: quantityOnHandFloat,
-          finalTotalStock: totalStockFloat,
-          quantity: qtyNeeded,
-          uom: item?.baseUoM?.symbol as Units,
-          uomId: item?.baseUoM?.id,
-        };
-      }) as MaterialRequestDto[];
-      setPackageLists(packOptions);
+          const materialId = item?.material?.id as string;
+          const materialStatus = item?.status;
+          return {
+            materialStatus,
+            code,
+            materialName,
+            materialId,
+            finalQuantityNeeded: quantityNeededFloat,
+            finalQuantityOnHand: quantityOnHandFloat,
+            finalTotalStock: totalStockFloat,
+            quantity: qtyNeeded,
+            uom: item?.baseUoM?.symbol as Units,
+            uomId: item?.baseUoM?.id,
+          };
+        }) as MaterialRequestDto[];
+        setPackageLists(packOptions);
+      }
     }
   }, [batchSizeType, packageStockResponse, data]);
 

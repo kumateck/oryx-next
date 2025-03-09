@@ -403,3 +403,23 @@ export enum SupplierStatus {
   Approved,
   UnApproved,
 }
+
+export enum FloorType {
+  Ground = "Ground",
+  First = "First",
+  Second = "Second",
+  Third = "Third",
+  Fourth = "Fourth",
+  Fifth = "Fifth",
+}
+
+export enum RawLocationType {
+  General = "General",
+  Active = "Active",
+  Excipient = "Excipient",
+}
+export enum PackLocationType {
+  General = "General",
+  Foils = "Foils",
+  PVC = "PVC",
+}

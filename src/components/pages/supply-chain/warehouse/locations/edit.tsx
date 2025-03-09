@@ -1,5 +1,5 @@
-// import { useForm } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -11,21 +11,22 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-// import { COLLECTION_TYPES, InputTypes, Option } from "@/lib";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   WarehouseLocationDto,
-  useGetApiV1CollectionByItemTypeQuery,
   useLazyGetApiV1WarehouseLocationQuery,
+  useLazyGetApiV1WarehouseQuery,
   usePutApiV1WarehouseLocationByLocationIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import LocationForm from "./form";
-import { CreateLocationValidator, LocationRequestDto } from "./types";
-
-// import "./types";
+import {
+  CreateLocationValidator,
+  LocationRequestDto,
+  WAREtYPES,
+} from "./types";
 
 interface Props {
   isOpen: boolean;
@@ -38,22 +39,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const [editLocation, { isLoading }] =
     usePutApiV1WarehouseLocationByLocationIdMutation();
 
-  const { data } = useGetApiV1CollectionByItemTypeQuery({
-    itemType: COLLECTION_TYPES.Warehouse,
-  });
-
-  const warehouseOptions = data?.map((item) => ({
-    label: item.name,
-    value: item.id,
-  })) as Option[];
-
   const defaultWarehouse = {
     label: details?.warehouse?.name as string,
     value: details?.warehouse?.id as string,
   };
 
   const {
-    register,
     control,
     formState: { errors },
     reset,
@@ -65,7 +56,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       warehouseId: defaultWarehouse,
       description: details.description as string,
       name: details.name as string,
-      floorName: details.floorName as string,
+      floorName: {
+        label: details.floorName as string,
+        value: details.floorName as string,
+      },
     },
   });
 
@@ -73,6 +67,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         ...data,
+        floorName: data?.floorName?.value,
       } satisfies CreateWarehouseLocationRequest;
 
       await editLocation({
@@ -90,6 +85,39 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const warehouseId = useWatch<LocationRequestDto>({
+    name: "warehouseId",
+    control,
+  }) as Option;
+  const [
+    loadWarehouse,
+    { isLoading: isLoadingWarehouse, isFetching: isFetchingWarehouse },
+  ] = useLazyGetApiV1WarehouseQuery();
+  const [warehouseTypes, setWarehouseTypes] = useState<WAREtYPES[]>([]);
+
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadWarehouse({
+      searchQuery,
+      page,
+    }).unwrap();
+    const options = res?.data?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    })) as Option[];
+
+    const wareTypes = res?.data?.map((item) => ({
+      id: item.id as string,
+      name: item.name as string,
+      type: item.type as number,
+    })) as WAREtYPES[];
+    setWarehouseTypes(wareTypes);
+    const response = {
+      options,
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -99,66 +127,15 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          {/* <FormWizard
-            config={[
-              {
-                label: "Warehouse Name",
-                control,
-                type: InputTypes.SELECT,
-                name: "warehouseId",
-                onModal: true,
-                required: true,
-                defaultValue: defaultWarehouse,
-                placeholder: "Warehouse",
-                options: warehouseOptions,
-                errors: {
-                  message: errors.warehouseId?.message,
-                  error: !!errors.warehouseId,
-                },
-              },
-              {
-                register: { ...register("name") },
-                label: "Location Name",
-                required: true,
-                placeholder: "Enter New Location Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.name?.message,
-                  error: !!errors.name,
-                },
-              },
-              {
-                register: { ...register("floorName") },
-                label: "Floor Name",
-                required: true,
-                placeholder: "Enter New Floor Name",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.floorName?.message,
-                  error: !!errors.floorName,
-                },
-              },
-              {
-                register: { ...register("description") },
-                label: "Description",
-                required: true,
-                placeholder: "Enter New Description",
-                type: InputTypes.TEXT,
-
-                errors: {
-                  message: errors.description?.message,
-                  error: !!errors.description,
-                },
-              },
-            ]}
-          /> */}
           <LocationForm
-            register={register}
             control={control}
             errors={errors}
-            warehouseOptions={warehouseOptions}
+            fetchOptions={loadDataOrSearch}
+            isLoading={isLoadingWarehouse || isFetchingWarehouse}
+            warehouseType={
+              warehouseTypes?.find((item) => item.id === warehouseId?.value)
+                ?.type
+            }
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
