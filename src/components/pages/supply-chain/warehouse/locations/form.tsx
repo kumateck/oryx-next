@@ -68,11 +68,6 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             errors,
           },
-        ]}
-      />
-      <FormWizard
-        className="w-full"
-        config={[
           {
             label: "Description",
             control: control as Control,
