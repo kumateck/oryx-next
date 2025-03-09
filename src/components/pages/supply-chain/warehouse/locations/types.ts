@@ -11,10 +11,24 @@ export const CreateLocationSchema = z.object({
       message: "Warehouse is required",
     },
   ),
+  floorName: z.object(
+    {
+      value: z.string().min(1, { message: "Floor is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Floor is required",
+    },
+  ),
   name: z.string().min(1, { message: "Location Name is required" }),
-  floorName: z.string().min(1, { message: "Floor is required" }),
+  // floorName: z.string().min(1, { message: "Floor is required" }),
   description: z.string().optional(),
 });
 
 export type LocationRequestDto = z.infer<typeof CreateLocationSchema>;
 export const CreateLocationValidator = zodResolver(CreateLocationSchema);
+export interface WAREtYPES {
+  id: string;
+  name: string;
+  type: number;
+}

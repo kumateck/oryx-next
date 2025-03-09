@@ -1,30 +1,29 @@
 import React from "react";
-import {
-  Control,
-  FieldErrors,
-  FieldValues,
-  Path,
-  UseFormRegister,
-} from "react-hook-form";
+import { Control, FieldErrors, FieldValues } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
+import {
+  FloorTypeOptions,
+  InputTypes,
+  PackLocationOptions,
+  RawLocationOptions,
+} from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
-  register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
-  warehouseOptions: Option[];
-
+  warehouseType?: number;
   defaultValues?: TFieldValues;
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const LocationForm = <TFieldValues extends FieldValues, TContext>({
   control,
-  register,
+  warehouseType,
   errors,
-  warehouseOptions,
-
+  isLoading,
+  fetchOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -36,33 +35,38 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Warehouse Name",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "warehouseId",
+            required: true,
             defaultValue: defaultValues?.warehouseId,
-            required: true,
             placeholder: "Select warehouse",
-            options: warehouseOptions,
+            fetchOptions: fetchOptions,
+            isLoading: isLoading,
             errors,
           },
           {
-            register: register("name" as Path<TFieldValues>),
-            label: "Name",
-            placeholder: "Enter name",
-            type: InputTypes.TEXT,
-
+            label: "Location",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "name",
+            defaultValue: defaultValues?.name,
             required: true,
-
+            placeholder: "Select name",
+            options:
+              warehouseType === 1 ? RawLocationOptions : PackLocationOptions,
             errors,
           },
           {
-            register: register("floorName" as Path<TFieldValues>),
             label: "Floor Name",
-            placeholder: "Enter floor name",
-            type: InputTypes.TEXT,
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "floorName",
+            defaultValue: defaultValues?.floorName,
             required: true,
+            placeholder: "Select floor",
+            options: FloorTypeOptions,
             errors,
           },
-
           {
             label: "Description",
             control: control as Control,
