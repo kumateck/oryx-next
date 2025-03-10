@@ -6,6 +6,9 @@ interface IProps {
   data?: ProductBillOfMaterialDto[];
 }
 export const OutdatedBom = ({ data }: IProps) => {
+  if (data?.length === 0) {
+    return <div>No Data</div>;
+  }
   return (
     <div className="space-y-4">
       {data?.map((item, idx) => (
