@@ -14,11 +14,13 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  loading?: boolean;
 }
 const PurchaseForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  loading,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -31,6 +33,8 @@ const PurchaseForm = <TFieldValues extends FieldValues, TContext>({
             label: "Purchase Requisition Code",
             readOnly: true,
             required: true,
+            suffix: loading ? "LoaderCircle" : "Check",
+            suffixClass: loading ? "animate-spin" : "text-green-500",
             description: (
               <span className="text-sm text-neutral-500">
                 You can’t change the PR code

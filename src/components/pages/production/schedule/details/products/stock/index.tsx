@@ -186,7 +186,7 @@ const Stock = ({
             <TableForData
               lists={lists}
               setItemLists={setPurchaseLists}
-              defaultColumns={getColumns()}
+              defaultColumns={getColumns}
               notEdittable
             />
           </div>

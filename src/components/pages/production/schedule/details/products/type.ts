@@ -71,3 +71,10 @@ export const CreateRequisitionValidator = zodResolver(
 // requisitionType?: RequisitionType;
 // comments?: string | null;
 // items?: CreateRequisitionItemRequest[] | null;
+
+export enum ScheduleProductStatus {
+  None,
+  Start,
+  Purchase,
+  Stock,
+}

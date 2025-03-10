@@ -10,59 +10,52 @@ import TableBadge from "@/shared/datatable/badge";
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
 
-export const getColumns =
-  () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
-  // options?: Option[],
-  : ColumnDef<MaterialRequestDto>[] => [
-    {
-      accessorKey: "code",
-      header: "Material Code",
-    },
-    {
-      accessorKey: "materialName",
-      header: "Material Name",
-    },
-    {
-      accessorKey: "finalQuantityNeeded",
-      header: "Quantity Needed",
-      cell: ({ row }) => <div>{row.original.finalQuantityNeeded}</div>,
-    },
-    {
-      accessorKey: "finalQuantityOnHand",
-      header: "Warehouse Stock",
-      cell: ({ row }) => <div>{row.original.finalQuantityOnHand}</div>,
-    },
+export const getColumns: ColumnDef<MaterialRequestDto>[] = [
+  {
+    accessorKey: "code",
+    header: "Material Code",
+  },
+  {
+    accessorKey: "materialName",
+    header: "Material Name",
+  },
+  {
+    accessorKey: "finalQuantityNeeded",
+    header: "Quantity Needed",
+    cell: ({ row }) => <div>{row.original.finalQuantityNeeded}</div>,
+  },
+  {
+    accessorKey: "finalQuantityOnHand",
+    header: "Warehouse Stock",
+    cell: ({ row }) => <div>{row.original.finalQuantityOnHand}</div>,
+  },
 
-    {
-      accessorKey: "finalTotalStock",
-      header: "All other Source Stock",
-      cell: ({ row }) => (
-        <div>
-          <DataRowAllStock row={row}>
-            {/* <ToolTipEllipsis
-              title={row.original.finalTotalStock as string}
-              className="max-w-[50ch]"
-            /> */}
-            {row.original.finalTotalStock}
-          </DataRowAllStock>
-        </div>
-      ),
-    },
-    {
-      id: "label",
-      header: "Source",
-      cell: ({ row }) => (
-        <div className="flex items-center">
-          {
-            <TableBadge
-              className="rounded-full px-3 py-1 text-sm font-medium capitalize"
-              status={row.original?.materialStatus as unknown as MaterialStatus}
-            />
-          }
-        </div>
-      ),
-    },
-  ];
+  {
+    accessorKey: "finalTotalStock",
+    header: "All other Source Stock",
+    cell: ({ row }) => (
+      <div>
+        <DataRowAllStock row={row}>
+          {row.original.finalTotalStock}
+        </DataRowAllStock>
+      </div>
+    ),
+  },
+  {
+    id: "label",
+    header: "Source",
+    cell: ({ row }) => (
+      <div className="flex items-center">
+        {
+          <TableBadge
+            className="rounded-full px-3 py-1 text-sm font-medium capitalize"
+            status={row.original?.materialStatus as unknown as MaterialStatus}
+          />
+        }
+      </div>
+    ),
+  },
+];
 
 export const getPurchaseColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,

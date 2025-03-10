@@ -36,6 +36,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   append: UseFieldArrayAppend<TFieldValues>;
   associateProducts: ProductRequestDto[];
   isLoading: boolean;
+  loading?: boolean;
   fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const defaultAssociated: ProductRequestDto = {
@@ -53,8 +54,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   fields,
   append,
   remove,
-  // productOptions,
-  // associateProducts,
+  loading,
   isLoading,
   fetchOptions,
 }: Props<TFieldValues, TContext>) => {
@@ -71,6 +71,8 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                     label: "Schedule Code",
                     readOnly: true,
                     required: true,
+                    suffix: loading ? "LoaderCircle" : "Check",
+                    suffixClass: loading ? "animate-spin" : "text-green-500",
                     description: (
                       <span className="text-sm text-neutral-500">
                         You can’t change the schedule code
