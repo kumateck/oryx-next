@@ -670,6 +670,14 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/material/${queryArg.materialId}/stock/across-warehouses`,
       }),
     }),
+    getApiV1MaterialByMaterialIdDepartmentStockAndQuantity: build.query<
+      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse,
+      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/${queryArg.materialId}/department-stock/${queryArg.quantity}`,
+      }),
+    }),
     postApiV1MaterialUpload: build.mutation<
       PostApiV1MaterialUploadApiResponse,
       PostApiV1MaterialUploadApiArg
@@ -3153,6 +3161,14 @@ export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse =
 export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg = {
   /** The id of the material */
   materialId: string;
+};
+export type GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse =
+  /** status 200 OK */ DepartmentDtoRead[];
+export type GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg = {
+  /** The id of the material */
+  materialId: string;
+  /** The minimum quantity of the stock the department should have. */
+  quantity: number;
 };
 export type PostApiV1MaterialUploadApiResponse = unknown;
 export type PostApiV1MaterialUploadApiArg = {
@@ -8200,10 +8216,12 @@ export type MoveShelfMaterialBatchRequest = {
 };
 export type MaterialDetailsDto = {
   material?: MaterialDto;
+  unitOfMeasure?: UnitOfMeasureDto;
   totalAvailableQuantity?: number;
 };
 export type MaterialDetailsDtoRead = {
   material?: MaterialDtoRead;
+  unitOfMeasure?: UnitOfMeasureDtoRead;
   totalAvailableQuantity?: number;
 };
 export type MaterialDetailsDtoIEnumerablePaginateable = {
@@ -9653,11 +9671,11 @@ export type UpdateBatchPackagingRecord = {
 export type StockTransferSourceRequest = {
   fromDepartmentId?: string;
   quantity?: number;
-  uoMId?: string;
 };
 export type CreateStockTransferRequest = {
   code?: string | null;
   materialId?: string;
+  uoMId?: string;
   reason?: string | null;
   requiredQuantity?: number;
   productId?: string | null;
@@ -9672,7 +9690,6 @@ export type StockTransferSourceDto = {
   fromDepartment?: DepartmentDto;
   toDepartment?: DepartmentDto;
   quantity?: number;
-  uoM?: UnitOfMeasureDto;
 };
 export type StockTransferSourceDtoRead = {
   id?: string;
@@ -9681,7 +9698,6 @@ export type StockTransferSourceDtoRead = {
   fromDepartment?: DepartmentDtoRead;
   toDepartment?: DepartmentDtoRead;
   quantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
 };
 export type StockTransferDto = {
   id?: string;
@@ -9689,6 +9705,7 @@ export type StockTransferDto = {
   createdAt?: string;
   code?: string | null;
   material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   reason?: string | null;
@@ -9702,6 +9719,7 @@ export type StockTransferDtoRead = {
   createdAt?: string;
   code?: string | null;
   material?: MaterialDtoRead;
+  uoM?: UnitOfMeasureDtoRead;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   reason?: string | null;
@@ -10264,6 +10282,7 @@ export type CreateGrnRequest = {
 };
 export type GrnDto = {
   id?: string;
+  createdAt?: string;
   carrierName?: string | null;
   vehicleNumber?: string | null;
   remarks?: string | null;
@@ -10272,6 +10291,7 @@ export type GrnDto = {
 };
 export type GrnDtoRead = {
   id?: string;
+  createdAt?: string;
   carrierName?: string | null;
   vehicleNumber?: string | null;
   remarks?: string | null;
@@ -10539,6 +10559,8 @@ export const {
   usePostApiV1MaterialBatchConsumeMutation,
   useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   useLazyGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
+  useGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
+  useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1MaterialUploadMutation,
   usePutApiV1MaterialBatchStatusMutation,
   usePostApiV1MaterialBatchSupplyMutation,
