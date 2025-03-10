@@ -4,7 +4,7 @@ import { BatchStatus, GrnDto } from "@/lib/redux/api/openapi.generated";
 
 export const columns: ColumnDef<GrnDto>[] = [
   {
-    accessorKey: "grnNumber",
+    accessorKey: "requisitionId",
     header: "Requisition ID",
     cell: ({ row }) => <div className="min-w-36">{row.original.grnNumber}</div>,
   },
