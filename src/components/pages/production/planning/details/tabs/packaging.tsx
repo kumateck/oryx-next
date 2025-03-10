@@ -6,7 +6,7 @@ interface IProps {
 }
 
 export const Packaging = ({ data }: IProps) => {
-  if (!data) {
+  if (data?.length === 0) {
     return <div>No Data</div>;
   }
   return (
@@ -19,9 +19,24 @@ export const Packaging = ({ data }: IProps) => {
           //   cell: (info) => info.row.original.packageType?.name,
           // },
           {
-            accessorKey: "material",
-            header: "Material",
+            accessorKey: "materialName",
+            header: "Material Name",
             cell: (info) => info.row.original.material?.name,
+          },
+          // {
+          //   accessorKey: "materialType",
+          //   header: "Material Type",
+          //   cell: (info) => info.row.original.material?.type,
+          // },
+          {
+            accessorKey: "baseQuantity",
+            header: "Base Quantity",
+            cell: (info) => info.row.original.baseQuantity,
+          },
+          {
+            accessorKey: "uom",
+            header: "Unit of Measure",
+            cell: (info) => info.row.original.baseUoM,
           },
           {
             accessorKey: "materialThickness",
