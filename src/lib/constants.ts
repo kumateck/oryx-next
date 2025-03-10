@@ -101,7 +101,7 @@ export enum RequisitionType {
 }
 export enum EMaterialKind {
   Raw = 0,
-  Package = 1,
+  Packing = 1,
 }
 
 export enum WarehouseType {

@@ -102,7 +102,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     }
   };
   useEffect(() => {
-    if (kind === EMaterialKind.Package) {
+    if (kind === EMaterialKind.Packing) {
       setValue("pharmacopoeia", "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

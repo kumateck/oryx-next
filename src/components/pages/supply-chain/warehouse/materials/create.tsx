@@ -83,7 +83,7 @@ const Create = ({ isOpen, onClose, kind }: Props) => {
   useEffect(() => {
     if (
       (kind === EMaterialKind.Raw && name) ||
-      (kind === EMaterialKind.Package && category)
+      (kind === EMaterialKind.Packing && category)
     ) {
       handleLoadCode();
     }
@@ -151,7 +151,7 @@ const Create = ({ isOpen, onClose, kind }: Props) => {
   };
 
   useEffect(() => {
-    if (kind === EMaterialKind.Package) {
+    if (kind === EMaterialKind.Packing) {
       setValue("pharmacopoeia", "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
