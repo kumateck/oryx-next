@@ -32,7 +32,7 @@ export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
     header: "Quantity",
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
-        row.original.materialBatch?.totalQuantity as number,
+        row.original.materialBatch?.checklist?.material?.totalStock as number,
         row.original.uoM?.symbol as Units,
       );
       return (
