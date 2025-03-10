@@ -15,20 +15,24 @@ import {
   routes,
 } from "@/lib";
 import {
+  ProductDtoRead,
+  ProductionActivityDtoRead,
   ProductionScheduleProductDto,
   ProductionStatus,
-  useGetApiV1ProductByProductIdQuery,
-  useGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery,
-  useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
-  useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductByProductIdQuery,
+  useLazyGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { ClientDatatable } from "@/shared/datatable";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
-import Purchase from "./purchase";
+import { getColumns } from "./columns";
+// import Purchase from "./purchase";
 import Stock from "./stock";
-import TableForData from "./table";
-import { MaterialRequestDto } from "./type";
+// import TableForData from "./table";
+import { MaterialRequestDto, ScheduleProductStatus } from "./type";
 
 interface ProductProps {
   productId: string;
@@ -46,80 +50,60 @@ const Product = ({
 
   const [startProductionMutation, { isLoading: isProcessingStart }] =
     usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation();
-  const { data: activity } =
-    useGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery(
-      {
-        productId,
-        productionScheduleId: scheduleId,
-      },
-    );
+  // const { data: activity } =
+  //   useGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery(
+  //     {
+  //       productId,
+  //       productionScheduleId: scheduleId,
+  //     },
+  //   );
 
-  const { data, isLoading: isLoadingProduct } =
-    useGetApiV1ProductByProductIdQuery({
-      productId,
-    });
+  const [loadActivity] =
+    useLazyGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery();
 
-  const { data: materialStockResponse, isLoading: isLoadingRawStock } =
-    useGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery(
-      {
-        productId,
-        productionScheduleId: scheduleId,
-      },
-    );
-  const { data: packageStockResponse, isLoading: isLoadingPackageStock } =
-    useGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery(
-      {
-        productId,
-        productionScheduleId: scheduleId,
-      },
-    );
-
+  const [product, setProduct] = useState<ProductDtoRead>();
+  const [activity, setActivity] = useState<ProductionActivityDtoRead>();
   const [rawLists, setRawLists] = useState<MaterialRequestDto[]>([]);
   const [packageLists, setPackageLists] = useState<MaterialRequestDto[]>([]);
-  const [purchaseLists, setPurchaseLists] = useState<MaterialRequestDto[]>([]);
-  const [enablePurchase, setEnablePurchase] = useState(false);
-  const [isOpenPurchase, setIsOpenPurchase] = useState(false);
+
+  const [enableStatusButton, setEnableStatusButton] =
+    useState<ScheduleProductStatus>(ScheduleProductStatus.None);
+
   const [isOpenStock, setIsOpenStock] = useState(false);
+  const [loadRawStock, { isLoading: isLoadingRawStock }] =
+    useLazyGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery();
+  const [loadPackageStock, { isLoading: isLoadingPackageStock }] =
+    useLazyGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery();
+  const [loadProductInfo, { isLoading: isLoadingProduct }] =
+    useLazyGetApiV1ProductByProductIdQuery();
+  const handleLoadMaterialStock = async (
+    pId: string,
+    psId: string,
+    batchSizeType: BatchSizeType,
+  ) => {
+    try {
+      const rResponse = await loadRawStock({
+        productId: pId,
+        productionScheduleId: psId,
+      }).unwrap();
+      const pResponse = await loadPackageStock({
+        productId: pId,
+        productionScheduleId: psId,
+      }).unwrap();
+      const productResponse = await loadProductInfo({
+        productId: pId,
+      }).unwrap();
 
-  useEffect(() => {
-    if (materialStockResponse) {
-      const isnotAvailable = isStockUnAvailable(materialStockResponse);
-      setEnablePurchase(isnotAvailable);
+      setProduct(productResponse);
+      const isnotAvailable =
+        isStockUnAvailable(rResponse) ?? isStockUnAvailable(pResponse);
+      setEnableStatusButton(
+        isnotAvailable
+          ? ScheduleProductStatus.Purchase
+          : ScheduleProductStatus.None,
+      );
 
-      if (!isnotAvailable) {
-        const filteredMaterials = materialStockResponse
-          .filter(
-            (item) => Number(item.quantityNeeded) > Number(item.quantityOnHand),
-          )
-          ?.map((material) => {
-            const uom = convertToLargestUnit(
-              Number(material.quantityNeeded),
-              material.baseUoM?.symbol as Units,
-            ).unit;
-            const quantityOnHand = convertToLargestUnit(
-              Number(material.quantityOnHand),
-              material.baseUoM?.symbol as Units,
-            ).value;
-            const qty = convertToLargestUnit(
-              Number(material.quantityNeeded),
-              material.baseUoM?.symbol as Units,
-            ).value;
-            return {
-              code: material.material?.code,
-              materialName: material.material?.name,
-              materialId: material.material?.id,
-              uom,
-              quantityOnHand,
-              quantityRequested: qty,
-              quantity: qty,
-              totalStock: material.material?.totalStock,
-              uomId: material.baseUoM?.id,
-            };
-          }) as unknown as MaterialRequestDto[];
-        setPurchaseLists(filteredMaterials);
-      }
-
-      const rawOptions = materialStockResponse?.map((item) => {
+      const rawOptions = rResponse?.map((item) => {
         const code = item?.material?.code as string;
         const materialStatus = item?.status;
         const uomName = item?.baseUoM?.symbol as Units;
@@ -162,58 +146,192 @@ const Product = ({
         };
       }) as MaterialRequestDto[];
       setRawLists(rawOptions);
+      const packOptions = pResponse?.map((item) => {
+        const code = item?.material?.code as string;
+
+        const materialName = item?.material?.name as string;
+        const excess =
+          (batchSizeType === BatchSizeType.Full
+            ? item?.packingExcessMargin
+            : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+        const qtyNeeded = (item?.quantityNeeded as number) + excess;
+
+        const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(2);
+
+        const qtyOnHand = item?.quantityOnHand as number;
+
+        const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(2);
+
+        const totalStock = item?.material?.totalStock as number;
+
+        const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
+
+        const materialId = item?.material?.id as string;
+        const materialStatus = item?.status;
+        return {
+          materialStatus,
+          code,
+          materialName,
+          materialId,
+          finalQuantityNeeded: quantityNeededFloat,
+          finalQuantityOnHand: quantityOnHandFloat,
+          finalTotalStock: totalStockFloat,
+          quantity: qtyNeeded,
+          uom: item?.baseUoM?.symbol as Units,
+          uomId: item?.baseUoM?.id,
+        };
+      }) as MaterialRequestDto[];
+      setPackageLists(packOptions);
+
+      const activityResponse = await loadActivity({
+        productId: pId,
+        productionScheduleId: psId,
+      }).unwrap();
+      setActivity(activityResponse);
+    } catch (error) {
+      console.log(error);
     }
-  }, [materialStockResponse]);
+  };
+
   useEffect(() => {
-    if (packageStockResponse) {
-      // setEnablePurchase(!quantityAvailable(packageStockResponse));
-      const isnotAvailable = isStockUnAvailable(packageStockResponse);
-      setEnablePurchase(isnotAvailable);
+    handleLoadMaterialStock(productId, scheduleId, batchSizeType);
 
-      if (!isnotAvailable) {
-        const packOptions = packageStockResponse?.map((item) => {
-          const code = item?.material?.code as string;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batchSizeType, productId, scheduleId]);
 
-          const materialName = item?.material?.name as string;
-          const excess =
-            (batchSizeType === BatchSizeType.Full
-              ? item?.packingExcessMargin
-              : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
-          const qtyNeeded = (item?.quantityNeeded as number) + excess;
+  // useEffect(() => {
+  //   if (materialStockResponse) {
+  //     const isnotAvailable = isStockUnAvailable(materialStockResponse);
+  //     setEnablePurchase(isnotAvailable);
 
-          const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(
-            2,
-          );
+  //     if (!isnotAvailable) {
+  //       const filteredMaterials = materialStockResponse
+  //         .filter(
+  //           (item) => Number(item.quantityNeeded) > Number(item.quantityOnHand),
+  //         )
+  //         ?.map((material) => {
+  //           const uom = convertToLargestUnit(
+  //             Number(material.quantityNeeded),
+  //             material.baseUoM?.symbol as Units,
+  //           ).unit;
+  //           const quantityOnHand = convertToLargestUnit(
+  //             Number(material.quantityOnHand),
+  //             material.baseUoM?.symbol as Units,
+  //           ).value;
+  //           const qty = convertToLargestUnit(
+  //             Number(material.quantityNeeded),
+  //             material.baseUoM?.symbol as Units,
+  //           ).value;
+  //           return {
+  //             code: material.material?.code,
+  //             materialName: material.material?.name,
+  //             materialId: material.material?.id,
+  //             uom,
+  //             quantityOnHand,
+  //             quantityRequested: qty,
+  //             quantity: qty,
+  //             totalStock: material.material?.totalStock,
+  //             uomId: material.baseUoM?.id,
+  //           };
+  //         }) as unknown as MaterialRequestDto[];
+  //       setPurchaseLists(filteredMaterials);
+  //     }
 
-          const qtyOnHand = item?.quantityOnHand as number;
+  //     const rawOptions = materialStockResponse?.map((item) => {
+  //       const code = item?.material?.code as string;
+  //       const materialStatus = item?.status;
+  //       const uomName = item?.baseUoM?.symbol as Units;
+  //       const materialName = item?.material?.name as string;
+  //       const qtyNeeded = item?.quantityNeeded as number;
+  //       const qtyNeededConvert = convertToLargestUnit(qtyNeeded, uomName);
+  //       const quantityNeeded = qtyNeededConvert.value;
+  //       const quantityNeededUnit = qtyNeededConvert.unit;
+  //       const quantityNeededFloat = `${parseFloat(quantityNeeded.toString()).toFixed(2)}${quantityNeededUnit}`;
 
-          const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(
-            2,
-          );
+  //       const qtyOnHand = item?.quantityOnHand as number;
+  //       const qtyOnHandConvert = convertToLargestUnit(qtyOnHand, uomName);
+  //       const quantityOnHand = qtyOnHandConvert.value;
+  //       const quantityOnHandUnit = qtyOnHandConvert.unit;
+  //       const quantityOnHandFloat = `${parseFloat(
+  //         quantityOnHand.toString(),
+  //       ).toFixed(2)}${quantityOnHandUnit}`;
 
-          const totalStock = item?.material?.totalStock as number;
+  //       const totalStock = item?.material?.totalStock as number;
+  //       const totalStockConvert = convertToLargestUnit(totalStock, uomName);
+  //       const totalStockValue = totalStockConvert.value;
+  //       const totalStockUnit = totalStockConvert.unit;
+  //       const totalStockFloat = `${parseFloat(
+  //         totalStockValue.toString(),
+  //       ).toFixed(2)}${totalStockUnit}`;
 
-          const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
+  //       const materialId = item?.material?.id as string;
 
-          const materialId = item?.material?.id as string;
-          const materialStatus = item?.status;
-          return {
-            materialStatus,
-            code,
-            materialName,
-            materialId,
-            finalQuantityNeeded: quantityNeededFloat,
-            finalQuantityOnHand: quantityOnHandFloat,
-            finalTotalStock: totalStockFloat,
-            quantity: qtyNeeded,
-            uom: item?.baseUoM?.symbol as Units,
-            uomId: item?.baseUoM?.id,
-          };
-        }) as MaterialRequestDto[];
-        setPackageLists(packOptions);
-      }
-    }
-  }, [batchSizeType, packageStockResponse, data]);
+  //       return {
+  //         materialStatus,
+  //         code,
+  //         materialName,
+  //         materialId,
+  //         finalQuantityNeeded: quantityNeededFloat,
+  //         finalQuantityOnHand: quantityOnHandFloat,
+  //         finalTotalStock: totalStockFloat,
+  //         quantity: quantityNeeded,
+  //         uom: quantityNeededUnit,
+  //         uomId: item?.baseUoM?.id,
+  //       };
+  //     }) as MaterialRequestDto[];
+  //     setRawLists(rawOptions);
+  //   }
+  // }, [materialStockResponse]);
+  // useEffect(() => {
+  //   if (packageStockResponse) {
+  //     // setEnablePurchase(!quantityAvailable(packageStockResponse));
+  //     const isnotAvailable = isStockUnAvailable(packageStockResponse);
+  //     setEnablePurchase(isnotAvailable);
+
+  //     if (!isnotAvailable) {
+  //       const packOptions = packageStockResponse?.map((item) => {
+  //         const code = item?.material?.code as string;
+
+  //         const materialName = item?.material?.name as string;
+  //         const excess =
+  //           (batchSizeType === BatchSizeType.Full
+  //             ? item?.packingExcessMargin
+  //             : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+  //         const qtyNeeded = (item?.quantityNeeded as number) + excess;
+
+  //         const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(
+  //           2,
+  //         );
+
+  //         const qtyOnHand = item?.quantityOnHand as number;
+
+  //         const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(
+  //           2,
+  //         );
+
+  //         const totalStock = item?.material?.totalStock as number;
+
+  //         const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
+
+  //         const materialId = item?.material?.id as string;
+  //         const materialStatus = item?.status;
+  //         return {
+  //           materialStatus,
+  //           code,
+  //           materialName,
+  //           materialId,
+  //           finalQuantityNeeded: quantityNeededFloat,
+  //           finalQuantityOnHand: quantityOnHandFloat,
+  //           finalTotalStock: totalStockFloat,
+  //           quantity: qtyNeeded,
+  //           uom: item?.baseUoM?.symbol as Units,
+  //           uomId: item?.baseUoM?.id,
+  //         };
+  //       }) as MaterialRequestDto[];
+  //       setPackageLists(packOptions);
+  //     }
+  //   }
+  // }, [batchSizeType, packageStockResponse, data]);
 
   const convertUnit = convertToLargestUnit(
     Number(tab.quantity),
@@ -257,6 +375,48 @@ const Product = ({
     }
   };
 
+  const ProductStatus = (status: ScheduleProductStatus) => {
+    switch (status) {
+      case ScheduleProductStatus.Start:
+        return (
+          <Button
+            className="flex items-center gap-2"
+            onClick={handleStartProduction}
+          >
+            {isProcessingStart ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              <Icon name="TvMinimalPlay" />
+            )}
+            <span>Start Production</span>
+          </Button>
+        );
+      case ScheduleProductStatus.Purchase:
+        return (
+          <Button
+            className="flex items-center gap-2"
+            onClick={() =>
+              router.push(routes.viewScheduleRequisition(scheduleId, productId))
+            }
+          >
+            <Icon name="CreditCard" />
+            <span>Purchase Requisition</span>
+          </Button>
+        );
+      case ScheduleProductStatus.Stock:
+        return (
+          <Button
+            onClick={() => setIsOpenStock(true)}
+            className="flex items-center gap-2"
+          >
+            <Icon name="Layers" />
+            <span>Stock Requisition</span>
+          </Button>
+        );
+      default:
+        break;
+    }
+  };
   return (
     <div className="flex-1 space-y-2 overflow-auto">
       {isLoadingProduct ? (
@@ -301,7 +461,7 @@ const Product = ({
                   </div>
                 ) : (
                   <div>
-                    {enablePurchase ? (
+                    {/* {enableStatusButton ? (
                       <Button
                         className="flex items-center gap-2"
                         onClick={() =>
@@ -328,7 +488,8 @@ const Product = ({
                         )}
                         <span>Start Production</span>
                       </Button>
-                    )}
+                    )} */}
+                    {ProductStatus(enableStatusButton)}
                   </div>
                 )}
               </div>
@@ -340,7 +501,7 @@ const Product = ({
                   Code
                 </span>
                 <span className="block text-sm font-normal text-neutral-dark">
-                  {data?.code}
+                  {product?.code}
                 </span>
               </div>
               <div className="col-span-2 space-y-1">
@@ -348,7 +509,7 @@ const Product = ({
                   Name
                 </span>
                 <span className="block text-sm font-normal text-neutral-dark">
-                  {data?.name}
+                  {product?.name}
                 </span>
               </div>
               <div className="space-y-1">
@@ -365,7 +526,7 @@ const Product = ({
                   Packing Style
                 </span>
                 <span className="block text-sm font-normal text-neutral-dark">
-                  {data?.packageStyle}
+                  {product?.packageStyle}
                 </span>
               </div>
             </div>
@@ -377,7 +538,7 @@ const Product = ({
       ) : (
         <Card className="space-y-4 p-5 pb-0">
           <CardTitle>Raw Material</CardTitle>
-          <TableForData lists={rawLists} setItemLists={setRawLists} />
+          <ClientDatatable normalTable data={rawLists} columns={getColumns} />
         </Card>
       )}
       {isLoadingPackageStock ? (
@@ -385,10 +546,14 @@ const Product = ({
       ) : (
         <Card className="space-y-4 p-5">
           <CardTitle>Packaging Material</CardTitle>
-          <TableForData lists={packageLists} setItemLists={setPackageLists} />
+          <ClientDatatable
+            normalTable
+            data={packageLists}
+            columns={getColumns}
+          />
         </Card>
       )}
-      {enablePurchase && isOpenPurchase && (
+      {/* {enablePurchase && isOpenPurchase && (
         <Purchase
           lists={purchaseLists}
           onClose={() => setIsOpenPurchase(false)}
@@ -396,7 +561,7 @@ const Product = ({
           productId={productId}
           productionScheduleId={scheduleId}
         />
-      )}
+      )} */}
       {isOpenStock && (
         <Stock
           lists={[...rawLists, ...packageLists]}

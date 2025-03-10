@@ -37,6 +37,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   rowSelection?: RowSelectionState;
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
+  normalTable?: boolean;
 }
 
 export function ClientDatatable<TData, TValue>({
@@ -45,6 +46,7 @@ export function ClientDatatable<TData, TValue>({
   isLoading,
   rowSelection,
   setRowSelection,
+  normalTable,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -81,7 +83,7 @@ export function ClientDatatable<TData, TValue>({
   return (
     <div className="h-full w-full">
       <div className="w-full">
-        <Table>
+        <Table normalTable={normalTable}>
           <TableHeader className="w-full rounded-t-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

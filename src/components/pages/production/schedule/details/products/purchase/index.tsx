@@ -68,6 +68,22 @@ const Purchase = ({
     resolver: CreateRequisitionValidator,
     mode: "all",
   });
+  const fetchCount = async () => {
+    const countResponse = await loadCodeModelCount({
+      type: RequisitionType.Purchase,
+    }).unwrap();
+
+    return { totalRecordCount: countResponse?.totalRecordCount };
+  };
+
+  const setCodeToInput = (code: string) => {
+    setValue("code", code ?? "");
+  };
+  const { regenerateCode, loading } = useCodeGen(
+    CODE_SETTINGS.modelTypes.Requisition,
+    fetchCount,
+    setCodeToInput,
+  );
 
   // useEffect(() => {
   //   const loadCodes = async () => {
@@ -93,6 +109,8 @@ const Purchase = ({
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [codeConfig]);
   const onSubmit = async (data: RequisitionRequestDto) => {
+    const newCode = await regenerateCode();
+    // console.log(ren, "ren");
     const items = purchaseLists?.map((item) => ({
       materialId: item.materialId,
       quantity: convertToSmallestUnit(
@@ -105,7 +123,7 @@ const Purchase = ({
       createRequisitionRequest: {
         requisitionType: RequisitionType.Purchase,
         comments: data.comments,
-        code: data.code,
+        code: newCode ?? data.code,
         expectedDelivery: data.expectedDelivery?.toISOString(),
         items,
         productId,
@@ -135,19 +153,7 @@ const Purchase = ({
       }
     }
   };
-
-  const fetchCount = async () => {
-    const countResponse = await loadCodeModelCount({
-      type: RequisitionType.Purchase,
-    }).unwrap();
-
-    return { totalRecordCount: countResponse?.totalRecordCount };
-  };
-
-  const setCodeToInput = (code: string) => {
-    setValue("code", code ?? "");
-  };
-  useCodeGen(CODE_SETTINGS.modelTypes.Requisition, fetchCount, setCodeToInput);
+  // console.log(generatedCode, "generatedCode");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -173,7 +179,12 @@ const Purchase = ({
               Save
             </Button>
           </div>
-          <PurchaseForm register={register} control={control} errors={errors} />
+          <PurchaseForm
+            loading={loading}
+            register={register}
+            control={control}
+            errors={errors}
+          />
           <div className="py-5">
             <TableForData
               lists={purchaseLists}

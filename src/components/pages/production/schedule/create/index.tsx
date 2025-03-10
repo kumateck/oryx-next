@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -10,21 +10,19 @@ import {
   BatchSizeType,
   CODE_SETTINGS,
   ErrorResponse,
-  GenerateCodeOptions,
   Option,
   Units,
   convertToSmallestUnit,
-  generateCode,
   getLargestUnit,
   isErrorResponse,
   routes,
 } from "@/lib";
+import { useCodeGen } from "@/lib/code-gen";
 import {
-  NamingType,
   PostApiV1ProductionScheduleApiArg,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductQuery,
+  useLazyGetApiV1ProductionScheduleQuery,
   usePostApiV1ProductionScheduleMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -36,17 +34,29 @@ import { CreateScheduleValidator, ScheduleRequestDto } from "./type";
 const Page = () => {
   const router = useRouter();
 
-  const { data: codeConfig } =
-    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-      modelType: CODE_SETTINGS.modelTypes.ProductionSchedule,
-    });
-
   const [
     loadProduct,
     { isLoading: isLoadingProducts, isFetching: isFetchingProducts },
   ] = useLazyGetApiV1ProductQuery();
+
+  const [loadCodeModelCount] = useLazyGetApiV1ProductionScheduleQuery();
+
+  const fetchCount = async () => {
+    const countResponse = await loadCodeModelCount({}).unwrap();
+
+    return { totalRecordCount: countResponse?.totalRecordCount };
+  };
+
+  const setCodeToInput = (code: string) => {
+    setValue("code", code ?? "");
+  };
   const [saveMutation, { isLoading }] =
     usePostApiV1ProductionScheduleMutation();
+  const { regenerateCode, loading } = useCodeGen(
+    CODE_SETTINGS.modelTypes.ProductionSchedule,
+    fetchCount,
+    setCodeToInput,
+  );
 
   const {
     control,
@@ -82,32 +92,11 @@ const Page = () => {
     name: "products",
   });
 
-  useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(codeConfig?.maximumNameLength),
-        minlength: Number(codeConfig?.minimumNameLength),
-        prefix: codeConfig?.prefix as string,
-        type: codeConfig?.namingType as NamingType,
-      };
-      const productsResponse = await loadProduct({
-        page: 1,
-        pageSize: 1,
-      }).unwrap();
-
-      const products = productsResponse?.totalRecordCount ?? 0;
-      generatePayload.seriesCounter = products + 1;
-      const code = await generateCode(generatePayload);
-      setValue("code", code);
-    };
-
-    loadCodes();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [codeConfig]);
   const [loadProductInfo] = useLazyGetApiV1ProductByProductIdQuery();
 
   const onSubmit = async (data: ScheduleRequestDto) => {
+    const newCode = await regenerateCode();
+    // console.log(ren, "code regen");
     const products = await Promise.all(
       data.products?.map(async (item) => {
         const productId = item.productId?.value;
@@ -127,7 +116,7 @@ const Page = () => {
     );
     const payload = {
       createProductionScheduleRequest: {
-        code: data.code,
+        code: newCode ?? data.code,
         products,
         remarks: data.remarks,
         scheduledEndTime: data.scheduledEndTime.toISOString(),
@@ -195,7 +184,7 @@ const Page = () => {
           fields={fields}
           append={append}
           remove={remove}
-          // productOptions={productOptions}
+          loading={loading}
           associateProducts={associateProducts}
           errors={errors}
           fetchOptions={loadDataOrSearch}
