@@ -82,7 +82,9 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batch?.checklist?.supplier?.name}</div>
+    ),
   },
   {
     accessorKey: "waybill",
@@ -167,11 +169,11 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
   {
     accessorKey: "productName",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original.product?.name ?? ""}</div>,
+    cell: ({ row }) => <div>{row.original.product?.name ?? "-"}</div>,
   },
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? ""}</div>,
+    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? "-"}</div>,
   },
 ];

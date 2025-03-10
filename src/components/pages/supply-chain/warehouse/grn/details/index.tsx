@@ -1,9 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { Card, CardContent, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
   GrnDto,
@@ -12,6 +12,7 @@ import {
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch, useSelector } from "@/lib/redux/store";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 import TableForData from "./table";
 
@@ -23,6 +24,8 @@ const GRNDetail = () => {
   const [loadGrn, { isLoading }] = useLazyGetApiV1WarehouseGrnByIdQuery();
 
   const [grnDetails, setGrnDetails] = useState<GrnDto>();
+
+  const router = useRouter();
 
   useEffect(() => {
     handleLoadGrn(grnId);
@@ -46,6 +49,17 @@ const GRNDetail = () => {
   // console.log("Package List:::", packageLists);
   return (
     <ScrollablePageWrapper>
+      <div
+        className="group mb-2 flex items-center gap-1 hover:cursor-pointer"
+        onClick={() => {
+          router.back();
+        }}
+      >
+        <Icon name="ArrowLeft" className="h-5 w-5" />
+        <div className="group-hover:underline">
+          <PageTitle title={"GRN List"} />
+        </div>
+      </div>
       <div className="space-y-3">
         <Card>
           <CardContent className="space-y-4 py-2">
