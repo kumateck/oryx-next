@@ -1,14 +1,15 @@
 "use client";
 
 import { format } from "date-fns";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-import { Card, CardContent, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import { RequisitionStatus, RequisitionType } from "@/lib";
 import { useGetApiV1RequisitionByRequisitionIdQuery } from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 
@@ -20,6 +21,7 @@ const requisitionStatusColors: { [key in RequisitionStatus]: string } = {
 };
 
 const RequisitionDetails = () => {
+  const router = useRouter();
   const { id } = useParams();
   const requisitionId = id as string;
   const { data } = useGetApiV1RequisitionByRequisitionIdQuery({
@@ -30,6 +32,17 @@ const RequisitionDetails = () => {
 
   return (
     <ScrollablePageWrapper>
+      <div
+        className="group mb-2 flex items-center gap-1 hover:cursor-pointer"
+        onClick={() => {
+          router.back();
+        }}
+      >
+        <Icon name="ArrowLeft" className="h-5 w-5" />
+        <div className="group-hover:underline">
+          <PageTitle title={"Requisitions"} />
+        </div>
+      </div>
       <div className="space-y-3">
         <h1>{isPurchase ? "Purchase Requisition" : "Stock Requisition"}</h1>
         <Card>
