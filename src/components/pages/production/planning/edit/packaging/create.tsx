@@ -45,7 +45,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
   const { data: materialResponse } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 10000,
-    kind: EMaterialKind.Package,
+    kind: EMaterialKind.Packing,
   });
 
   const materialOptions = _.isEmpty(itemLists)

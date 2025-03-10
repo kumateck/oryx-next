@@ -87,7 +87,7 @@ const Page = () => {
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                value={EMaterialKind.Package.toString()}
+                value={EMaterialKind.Packing.toString()}
                 id="r2"
               />
               <Label htmlFor="r2">Package Materials</Label>

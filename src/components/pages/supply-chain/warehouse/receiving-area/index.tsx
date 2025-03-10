@@ -89,8 +89,8 @@ const ReceivingArea = () => {
               value: EMaterialKind.Raw.toString(),
             },
             {
-              label: EMaterialKind[EMaterialKind.Package],
-              value: EMaterialKind.Package.toString(),
+              label: EMaterialKind[EMaterialKind.Packing],
+              value: EMaterialKind.Packing.toString(),
             },
           ]}
         />

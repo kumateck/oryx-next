@@ -14,7 +14,8 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import StepWrapper from "@/shared/wrapper";
 
-import { Bom, OutdatedBom, Packaging, Routing } from "./tabs";
+import { Bom, OutdatedBom, Packaging } from "./tabs";
+import { Procedure } from "./tabs/procedure";
 
 const ViewPage: React.FC = () => {
   const { id } = useParams();
@@ -77,13 +78,69 @@ const ViewPage: React.FC = () => {
               </ul>
             </div>
 
-            <div className="w-full space-y-2">
-              <span className="block text-sm font-normal text-neutral-400">
-                Description
-              </span>
-              <span className="block text-sm font-normal text-black">
-                {singleDetailed?.description}
-              </span>
+            <div>
+              <PageTitle title={singleDetailed?.name as string} />
+
+              <div className="grid grid-cols-3 text-sm">
+                <div>
+                  {/* Product Name */}
+                  <div>
+                    <span>Product Name: </span>
+                    <span>{singleDetailed?.name}</span>
+                  </div>
+                  {/* Product Category */}
+                  <div>
+                    <span>Product Category: </span>
+                    <span>{singleDetailed?.category?.name}</span>
+                  </div>
+                  {/* Packing Style */}
+                  <div>
+                    <span>Packing Style: </span>
+                    <span>{singleDetailed?.packageStyle}</span>
+                  </div>
+                  {/* Filled Volume */}
+                  <div>
+                    <span>Filled Volume: </span>
+                    <span>{singleDetailed?.filledWeight}</span>
+                  </div>
+                </div>
+
+                <div>
+                  {/* Storage Condition */}
+                  <div>
+                    <span>Storage Condition: </span>
+                    <span>{singleDetailed?.storageCondition}</span>
+                  </div>
+                  {/* Primary Packaging Style */}
+                  <div>
+                    <span>Primary Packaging Style: </span>
+                    <span>{singleDetailed?.primaryPackDescription}</span>
+                  </div>
+                  {/* Action & Use */}
+                  <div>
+                    <span>Action & Use: </span>
+                    <span>{singleDetailed?.actionUse}</span>
+                  </div>
+                  {/* Shelf Life */}
+                  <div>
+                    <span>Shelf Life: </span>
+                    <span>{singleDetailed?.shelfLife}</span>
+                  </div>
+                </div>
+
+                {/* <div>
+
+                      <div>
+                        <span>Product Description:{' '}</span>
+                        <span>{singleDetailed?.description}</span>
+                      </div>
+
+                      <div>
+                        <span>Label Claims:{' '}</span>
+                        <span>{singleDetailed?.}</span>
+                      </div>
+                    </div> */}
+              </div>
             </div>
           </div>
         </StepWrapper>
@@ -120,18 +177,18 @@ const ViewPage: React.FC = () => {
           {activeTab === "Active BOM" && (
             <Bom
               data={singleDetailed?.currentBillOfMaterial}
-              title="Current Bill of Material"
+              // title="Current Bill of Material"
             />
+          )}
+          {activeTab === "Outdated BOM" && (
+            <OutdatedBom data={singleDetailed?.outdatedBillOfMaterials ?? []} />
           )}
 
           {activeTab === "Packaging" && (
             <Packaging data={singleDetailed?.packages ?? []} />
           )}
-          {activeTab === "Routing" && (
-            <Routing data={singleDetailed?.routes ?? []} />
-          )}
-          {activeTab === "Outdated BOM" && (
-            <OutdatedBom data={singleDetailed?.outdatedBillOfMaterials ?? []} />
+          {activeTab === "Procedure" && (
+            <Procedure data={singleDetailed?.routes ?? []} />
           )}
         </div>
       </ScrollablePageWrapper>
@@ -142,8 +199,8 @@ const ViewPage: React.FC = () => {
 const tablists = [
   // "Finished Goods",
   "Active BOM",
-  "Packaging",
-  "Routing",
   "Outdated BOM",
+  "Packaging",
+  "Procedure",
 ];
 export default ViewPage;

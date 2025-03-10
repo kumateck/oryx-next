@@ -22,7 +22,7 @@ export const CreateMaterialSchema = z.object({
       return numValue;
     })
     .refine(
-      (value) => value === EMaterialKind.Raw || value === EMaterialKind.Package,
+      (value) => value === EMaterialKind.Raw || value === EMaterialKind.Packing,
       {
         message: "Type must be either 'Raw' (0) or 'Package' (1)",
       },

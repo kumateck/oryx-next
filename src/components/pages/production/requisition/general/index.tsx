@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
@@ -15,6 +16,7 @@ import { columns } from "./columns";
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const router = useRouter();
 
   const { data: result, isLoading } = useGetApiV1RequisitionQuery({
     page,
@@ -49,6 +51,9 @@ const Page = () => {
       </div>
 
       <ServerDatatable
+        onRowClick={(row) => {
+          router.push(`/production/requisition/${row.id}/details`);
+        }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
