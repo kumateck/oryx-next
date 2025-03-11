@@ -99,8 +99,9 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
   const onSubmit = (data: RoutingRequestDto) => {
     setItemLists((prevState) => {
       // Check if the item already exists in the list
-      const itemIndex = prevState.findIndex((item) => item.id === details.id);
-
+      const itemIndex = prevState.findIndex(
+        (item) => item.idIndex === details.idIndex,
+      );
       if (itemIndex !== -1) {
         // Update the existing item if found
         const updatedList = [...prevState];
