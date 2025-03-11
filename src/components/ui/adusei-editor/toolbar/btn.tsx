@@ -21,7 +21,7 @@ const ToolbarButton = ({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex h-7 min-w-7 items-center justify-center rounded-sm text-sm hover:bg-neutral-200/80",
+        "flex h-7 min-w-7 items-center justify-center rounded-2xl text-sm hover:bg-neutral-200/80",
         {
           "bg-neutral-200/80": isActive,
         },

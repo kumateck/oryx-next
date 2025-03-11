@@ -21,7 +21,7 @@ const QuestionCard = ({
 
   return (
     <div className="mt-2 w-full">
-      <div className="rounded-md border border-neutral-200 bg-background px-8 py-4">
+      <div className="rounded-2xl border border-neutral-200 bg-background px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="text-left">
             <div className="text-primary-500 flex flex-1 gap-1 text-sm">

@@ -90,7 +90,7 @@ function Codes() {
       <CreateCode isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <ScrollablePageWrapper className="pb-60">
         <div className="mt-6">
-          <div className="flex w-full items-center justify-between rounded-md bg-primary-default px-4 py-2 font-bold text-white">
+          <div className="flex w-full items-center justify-between rounded-2xl bg-primary-default px-4 py-2 font-bold text-white">
             <div>Model Type</div>
             <div>Naming Type</div>
             <div>Prefix</div>

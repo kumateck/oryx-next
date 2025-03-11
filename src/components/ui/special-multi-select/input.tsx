@@ -77,7 +77,7 @@ export const SpecialInput = ({
       />
       <div
         className={cn(
-          "relative flex h-8 w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-md border border-neutral-input bg-white p-0",
+          "relative flex h-8 w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-2xl border border-neutral-input bg-white p-0",
           classNames,
         )}
         style={{ width: inputWidth }}

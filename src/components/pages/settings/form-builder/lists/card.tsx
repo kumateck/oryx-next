@@ -123,7 +123,7 @@ export const Card: FC<CardProps> = ({
   return (
     <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
       <div
-        className={cn("relative w-full rounded-md border bg-white p-8", {
+        className={cn("relative w-full rounded-2xl border bg-white p-8", {
           "border-secondary-500 shadow-secondary-500 shadow-sm":
             highlightedQuestion?.id === question.id,
         })}
@@ -142,13 +142,13 @@ export const Card: FC<CardProps> = ({
 
             {(QuestionTypes.ShortAnswer === question.type ||
               QuestionTypes.LongAnswer === question.type) && (
-              <div className="rounded-md border px-3 py-2.5">
+              <div className="rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Short Answer</span>
               </div>
             )}
 
             {QuestionTypes.Paragraph === question.type && (
-              <div className="h-28 rounded-md border px-3 py-2.5">
+              <div className="h-28 rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Paragraph</span>
               </div>
             )}
@@ -161,7 +161,7 @@ export const Card: FC<CardProps> = ({
                       className={cn("h-6 w-6 border border-neutral-400", {
                         "rounded-full":
                           question.type === QuestionTypes.SingleChoice,
-                        "rounded-md": question.type === QuestionTypes.Checkbox,
+                        "rounded-2xl": question.type === QuestionTypes.Checkbox,
                       })}
                     />
                     <span className="text-sm text-black">{option.name}</span>
@@ -171,26 +171,26 @@ export const Card: FC<CardProps> = ({
             )}
 
             {QuestionTypes.Dropdown === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Select One</span>
                 <Icon name="ChevronDown" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
             {QuestionTypes.Datepicker === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">DD/MM/YY</span>
                 <Icon name="Calendar" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
             {/* {QuestionTypes.Time === question.type && (
-              <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+              <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">12:00</span>
                 <Icon name="Clock" className="h-5 w-5 text-neutral-500" />
               </div>
             )} */}
 
             {QuestionTypes.FileUpload === question.type && (
-              <div className="flex w-full flex-col items-center rounded-md border border-dashed border-neutral-400 p-4">
+              <div className="flex w-full flex-col items-center rounded-2xl border border-dashed border-neutral-400 p-4">
                 <div className="w-full max-w-md text-center">
                   <input
                     type="file"
@@ -201,7 +201,7 @@ export const Card: FC<CardProps> = ({
                   />
                   <label
                     htmlFor="fileUpload"
-                    className="inline-flex cursor-pointer flex-col items-center justify-center rounded-md px-4 py-2"
+                    className="inline-flex cursor-pointer flex-col items-center justify-center rounded-2xl px-4 py-2"
                   >
                     <Images size={30} className="text-neutral-900" />
                     <span className="text-base">

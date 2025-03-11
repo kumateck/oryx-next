@@ -40,7 +40,7 @@ const ListButton = ({ editor }: Props) => {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-7 min-w-7 shrink-0 flex-col items-center justify-center overflow-hidden rounded-sm px-1.5 text-sm hover:bg-neutral-200/80"
+          className="flex h-7 min-w-7 shrink-0 flex-col items-center justify-center overflow-hidden rounded-2xl px-1.5 text-sm hover:bg-neutral-200/80"
         >
           <Icon name="List" className="size-4" />
         </button>
@@ -52,7 +52,7 @@ const ListButton = ({ editor }: Props) => {
             key={list.label}
             onClick={list.onClick}
             className={cn(
-              "flex items-center gap-x-2 rounded-sm px-2 py-1 hover:bg-neutral-200/80",
+              "flex items-center gap-x-2 rounded-2xl px-2 py-1 hover:bg-neutral-200/80",
               {
                 "bg-neutral-200/80": list.isActive(),
               },

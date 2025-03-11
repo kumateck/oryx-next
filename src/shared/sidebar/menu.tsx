@@ -59,7 +59,7 @@ export function NavMain({ group }: NavMainProps) {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       tooltip={item.title}
-                      className="w-full rounded-md py-5"
+                      className="w-full rounded-2xl py-5"
                     >
                       <Icon
                         name={item.icon}
@@ -119,7 +119,7 @@ export function NavMain({ group }: NavMainProps) {
                           return (
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
-                                className={cn(`rounded-md`, {
+                                className={cn(`rounded-2xl`, {
                                   "hover:bg-white hover:text-black":
                                     isSubtActive,
                                 })}
@@ -164,7 +164,7 @@ export function NavMain({ group }: NavMainProps) {
                   asChild
                   isActive={isActive}
                   className={cn(
-                    `w-full rounded-md ${isActive ? "hover:bg-white hover:text-black" : null}`,
+                    `w-full rounded-2xl ${isActive ? "hover:bg-white hover:text-black" : null}`,
                   )}
                 >
                   <Link href={item.url as string} className="py-5">

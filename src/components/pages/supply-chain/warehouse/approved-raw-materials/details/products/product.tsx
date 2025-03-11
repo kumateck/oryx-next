@@ -243,11 +243,11 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
                   <span className="text-sm font-semibold text-neutral-secondary">
                     Production Current Step
                   </span>
-                  <div className="rounded-md border px-1.5 py-0.5 text-sm">
+                  <div className="rounded-2xl border px-1.5 py-0.5 text-sm">
                     {activity?.currentStep?.operation?.name}
                   </div>
                   <Link
-                    className="rounded-md border px-1.5 py-0.5 text-sm"
+                    className="rounded-2xl border px-1.5 py-0.5 text-sm"
                     href={`/production/product/${productId}/board`}
                   >
                     Flow

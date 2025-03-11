@@ -183,7 +183,7 @@ const Page = () => {
                 <AccordionItem
                   key={idx}
                   value={`group-${idx}`}
-                  className="shadow-shadow2a rounded-md bg-white"
+                  className="shadow-shadow2a rounded-2xl bg-white"
                 >
                   <AccordionTrigger className="w-full gap-4 px-5">
                     <div>

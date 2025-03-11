@@ -61,7 +61,7 @@ const FontSizeButton = ({ editor }: Props) => {
       <button
         type="button"
         onClick={decrement}
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-sm hover:bg-neutral-200/80"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-2xl text-sm hover:bg-neutral-200/80"
       >
         <Icon name="Minus" className="text-primary-600 size-4" />
       </button>
@@ -71,7 +71,7 @@ const FontSizeButton = ({ editor }: Props) => {
           onKeyDown={handleInputKeyDown}
           onBlur={handleInputBlur}
           onChange={handleInputChange}
-          className="flex h-7 w-10 rounded-sm border border-neutral-400 bg-transparent text-center text-sm"
+          className="flex h-7 w-10 rounded-2xl border border-neutral-400 bg-transparent text-center text-sm"
         />
       ) : (
         <button
@@ -80,7 +80,7 @@ const FontSizeButton = ({ editor }: Props) => {
             setIsEditing(true);
             setFontSize(currentFontSize);
           }}
-          className="h-7 w-10 cursor-text rounded-sm border border-neutral-400 bg-transparent text-center text-sm"
+          className="h-7 w-10 cursor-text rounded-2xl border border-neutral-400 bg-transparent text-center text-sm"
         >
           <span className="text-xs">{currentFontSize}</span>
         </button>
@@ -88,7 +88,7 @@ const FontSizeButton = ({ editor }: Props) => {
       <button
         type="button"
         onClick={increment}
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-sm hover:bg-neutral-200/80"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-2xl text-sm hover:bg-neutral-200/80"
       >
         <Icon name="Plus" className="text-primary-600 size-4" />
       </button>

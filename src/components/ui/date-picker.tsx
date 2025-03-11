@@ -20,7 +20,7 @@ export function DatePicker(props: Props) {
         <Button
           onClick={() => props.onToggle()}
           className={cn(
-            "h-8 w-full justify-between rounded-md border-neutral-input bg-white px-3 py-2.5 text-left font-normal hover:border-b-2 hover:border-b-primary-default hover:bg-white",
+            "h-8 w-full justify-between rounded-2xl border-neutral-input bg-white px-3 py-2.5 text-left font-normal hover:border-b-2 hover:border-b-primary-default hover:bg-white",
             !props.value && "text-neutral-default",
             props.className,
           )}

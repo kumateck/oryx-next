@@ -17,9 +17,9 @@ export default function SkeletonLoadingPage() {
         <Skeleton className="h-40 w-full rounded-lg bg-neutral-quaternary" />
 
         <div className="flex justify-around">
-          <Skeleton className="h-8 w-20 rounded-md bg-neutral-quaternary" />
-          <Skeleton className="h-8 w-20 rounded-md bg-neutral-quaternary" />
-          <Skeleton className="h-8 w-20 rounded-md bg-neutral-quaternary" />
+          <Skeleton className="h-8 w-20 rounded-2xl bg-neutral-quaternary" />
+          <Skeleton className="h-8 w-20 rounded-2xl bg-neutral-quaternary" />
+          <Skeleton className="h-8 w-20 rounded-2xl bg-neutral-quaternary" />
         </div>
       </div>
     </div>

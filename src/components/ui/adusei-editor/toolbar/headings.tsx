@@ -39,7 +39,7 @@ const HeadingLevelButton = ({ editor }: Props) => {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-7 min-w-7 shrink-0 items-center justify-center overflow-hidden rounded-sm px-1.5 text-sm hover:bg-neutral-200/80"
+          className="flex h-7 min-w-7 shrink-0 items-center justify-center overflow-hidden rounded-2xl px-1.5 text-sm hover:bg-neutral-200/80"
         >
           <span className="truncate">{getCurrentHeading()}</span>
           <Icon name="ChevronDown" className="ml-2 size-4 shrink-0" />
@@ -63,7 +63,7 @@ const HeadingLevelButton = ({ editor }: Props) => {
               }
             }}
             className={cn(
-              "flex w-full items-center gap-x-2 rounded-sm px-2 py-1 hover:bg-neutral-200/80",
+              "flex w-full items-center gap-x-2 rounded-2xl px-2 py-1 hover:bg-neutral-200/80",
               {
                 "bg-neutral-200/80":
                   (heading.value === 0 && !editor?.isActive("heading")) ||

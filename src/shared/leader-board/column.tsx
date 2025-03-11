@@ -29,7 +29,7 @@ export const Column: React.FC<ColumnProps> = ({
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
       className={cn(
-        "min-h-svh w-72 shrink-0 overflow-y-auto rounded-md p-4",
+        "min-h-svh w-72 shrink-0 overflow-y-auto rounded-2xl p-4",
         backgroundColor,
       )}
     >

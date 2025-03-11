@@ -184,7 +184,7 @@ const Page = () => {
             title="Raw Materials"
             data={materialResponse ?? []}
             action={
-              <div className="flex items-center gap-2 rounded-md bg-neutral-hover p-2 shadow-sm">
+              <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
                 {Object.keys(rRowSelection).length > 0 && (
                   <div className="flex items-center gap-2">
                     <Icon
@@ -229,7 +229,7 @@ const Page = () => {
               }) ?? []
             }
             action={
-              <div className="flex items-center gap-2 rounded-md bg-neutral-hover p-2 shadow-sm">
+              <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
                 {Object.keys(pRowSelection).length > 0 && (
                   <div className="flex items-center gap-2">
                     <Icon

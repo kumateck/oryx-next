@@ -73,7 +73,7 @@ export function AsyncSelect(props: SearchableDropdownProps) {
           type="button"
           size={"sm"}
           className={cn(
-            "relative w-full justify-start rounded-md border-neutral-input bg-white px-3 text-sm text-neutral-dark shadow-none hover:border-b-2 hover:border-b-primary-default hover:bg-white",
+            "relative w-full justify-start rounded-2xl border-neutral-input bg-white px-3 text-sm text-neutral-dark shadow-none hover:border-b-2 hover:border-b-primary-default hover:bg-white",
             props.className,
           )}
         >
@@ -161,7 +161,7 @@ export function AsyncSelect(props: SearchableDropdownProps) {
               ) : (
                 <div
                   className={cn(
-                    "font-Medium flex h-fit w-full gap-1.5 rounded-sm px-3 py-2 text-sm",
+                    "font-Medium flex h-fit w-full gap-1.5 rounded-2xl px-3 py-2 text-sm",
                     op.value === selectedOptions?.value &&
                       "bg-neutral-lightAlt font-medium",
                   )}

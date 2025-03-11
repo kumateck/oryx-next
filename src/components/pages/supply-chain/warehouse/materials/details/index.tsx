@@ -36,7 +36,7 @@ const ViewPage: React.FC = () => {
             </div>
           </div>
           {/* <Link href={routes.editPlanning(singleDetailed?.id as string)}>
-            <div className="flex items-center gap-1 rounded-md border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
+            <div className="flex items-center gap-1 rounded-2xl border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
               <Icon name="Pencil" className="size-4" />
               <span className="text-sm">Edit</span>
             </div>

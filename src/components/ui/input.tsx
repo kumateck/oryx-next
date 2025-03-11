@@ -58,7 +58,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
         <input
           className={cn(
-            "flex h-8 w-full rounded-md border border-neutral-input bg-white px-3 py-2 text-sm text-black ring-offset-neutral-secondary transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-secondary focus-within:border-b-2 focus-within:border-b-primary-default focus-visible:outline-none focus-visible:ring-neutral-secondary disabled:cursor-not-allowed disabled:opacity-50",
+            "flex h-8 w-full rounded-2xl border border-neutral-input bg-white px-3 py-2 text-sm text-black ring-offset-neutral-secondary transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-secondary focus-within:border-b-2 focus-within:border-b-primary-default focus-visible:outline-none focus-visible:ring-neutral-secondary disabled:cursor-not-allowed disabled:opacity-50",
             {
               "cursor-not-allowed bg-neutral-hover text-neutral-tertiary":
                 props.readOnly,

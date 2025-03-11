@@ -150,7 +150,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             defaultValues?.associatedManufacturers[index]?.material;
 
           return (
-            <div key={field.id} className="relative rounded-md border p-2">
+            <div key={field.id} className="relative rounded-2xl border p-2">
               <div className="absolute right-2 top-2">
                 <Icon
                   onClick={() => remove(index)}

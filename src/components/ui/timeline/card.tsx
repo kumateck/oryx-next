@@ -14,14 +14,14 @@ const TimelineCard = ({ item, className }: Props) => {
   return (
     <div
       className={cn(
-        "max-w-4xl rounded-md bg-white p-4 shadow transition-opacity",
+        "max-w-4xl rounded-2xl bg-white p-4 shadow transition-opacity",
         className,
       )}
     >
       <h3 className="mb-1 flex items-center justify-between text-lg font-semibold text-neutral-dark">
         {item.title}
 
-        <span className="me-2 ms-3 rounded-sm bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800">
+        <span className="me-2 ms-3 rounded-2xl bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800">
           {ActivityStepStatus[item.status as ActivityStepStatus]}
         </span>
       </h3>

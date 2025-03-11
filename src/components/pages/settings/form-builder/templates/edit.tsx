@@ -191,7 +191,7 @@ const EditTemplate = () => {
 
           <StepWrapper className="w-full">
             <div
-              className="flex w-full rounded-md bg-neutral-100 px-4 py-3 hover:cursor-pointer"
+              className="flex w-full rounded-2xl bg-neutral-100 px-4 py-3 hover:cursor-pointer"
               onClick={() => setIsAddQuestionsOpen(true)}
             >
               <Icon name="Plus" className="text-primary-500 h-5 w-5" />
@@ -228,7 +228,7 @@ const EditTemplate = () => {
                           >
                             <div
                               className={cn(
-                                "relative w-full rounded-md border bg-white p-8",
+                                "relative w-full rounded-2xl border bg-white p-8",
                                 {
                                   "border-secondary-500 shadow-sm shadow-secondary-500":
                                     highlightedQuestion?.questionId ===
@@ -254,7 +254,7 @@ const EditTemplate = () => {
 
                                   {QUESTION_TYPES.SHORT_ANSWER ===
                                     question.type && (
-                                    <div className="rounded-md border px-3 py-2.5">
+                                    <div className="rounded-2xl border px-3 py-2.5">
                                       <span className="text-sm text-neutral-400">
                                         Short Answer
                                       </span>
@@ -263,7 +263,7 @@ const EditTemplate = () => {
 
                                   {QUESTION_TYPES.PARAGRAPH ===
                                     question.type && (
-                                    <div className="h-28 rounded-md border px-3 py-2.5">
+                                    <div className="h-28 rounded-2xl border px-3 py-2.5">
                                       <span className="text-sm text-neutral-400">
                                         Paragraph
                                       </span>
@@ -286,7 +286,7 @@ const EditTemplate = () => {
                                                 "rounded-full":
                                                   question.type ===
                                                   QUESTION_TYPES.MULTIPLE_CHOICE,
-                                                "rounded-md":
+                                                "rounded-2xl":
                                                   question.type ===
                                                   QUESTION_TYPES.CHECKBOXES,
                                               },
@@ -302,7 +302,7 @@ const EditTemplate = () => {
 
                                   {QUESTION_TYPES.DROPDOWN ===
                                     question.type && (
-                                    <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+                                    <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                                       <span className="text-sm text-neutral-400">
                                         Select One
                                       </span>
@@ -313,7 +313,7 @@ const EditTemplate = () => {
                                     </div>
                                   )}
                                   {QUESTION_TYPES.DATE === question.type && (
-                                    <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+                                    <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                                       <span className="text-sm text-neutral-400">
                                         DD/MM/YY
                                       </span>
@@ -324,7 +324,7 @@ const EditTemplate = () => {
                                     </div>
                                   )}
                                   {QUESTION_TYPES.TIME === question.type && (
-                                    <div className="flex w-full max-w-md items-center justify-between rounded-md border px-3 py-2.5">
+                                    <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                                       <span className="text-sm text-neutral-400">
                                         12:00
                                       </span>
@@ -337,7 +337,7 @@ const EditTemplate = () => {
 
                                   {QUESTION_TYPES.FILE_UPLOAD ===
                                     question.type && (
-                                    <div className="flex w-full flex-col items-center rounded-md border border-dashed border-neutral-400 p-4">
+                                    <div className="flex w-full flex-col items-center rounded-2xl border border-dashed border-neutral-400 p-4">
                                       <div className="w-full max-w-md text-center">
                                         <input
                                           type="file"
@@ -348,7 +348,7 @@ const EditTemplate = () => {
                                         />
                                         <label
                                           htmlFor="fileUpload"
-                                          className="inline-flex cursor-pointer flex-col items-center justify-center rounded-md px-4 py-2"
+                                          className="inline-flex cursor-pointer flex-col items-center justify-center rounded-2xl px-4 py-2"
                                         >
                                           <IoImageOutline
                                             size={30}

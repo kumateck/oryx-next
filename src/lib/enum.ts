@@ -51,6 +51,7 @@ export enum StockTransfer {
   New = 0,
   Approved = 1,
   Issued = 2,
+  Rejected = 3,
 }
 export enum ProductionStatus {
   New = 0,

@@ -148,7 +148,7 @@
 //                       className={cn("h-6 w-6 border border-neutral-400", {
 //                         "rounded-full":
 //                           selectFilter.name === QUESTION_TYPES.MULTIPLE_CHOICE,
-//                         "rounded-md":
+//                         "rounded-2xl":
 //                           selectFilter.name === QUESTION_TYPES.CHECKBOXES ||
 //                           selectFilter.name === QUESTION_TYPES.DROPDOWN,
 //                       })}
@@ -194,7 +194,7 @@
 //                   <div
 //                     className={cn("h-6 w-6 border border-neutral-400", {
 //                       "rounded-full": selectFilter.name === "Multiple Choice",
-//                       "rounded-md": selectFilter.name === "Checkboxes",
+//                       "rounded-2xl": selectFilter.name === "Checkboxes",
 //                     })}
 //                   />
 //                   <Icon name="Plus" className="h-5 w-5 text-neutral-500" />

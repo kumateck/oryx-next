@@ -1,38 +1,50 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
-import { StockTransfer } from "@/lib";
-import { StockTransferDtoRead } from "@/lib/redux/api/openapi.generated";
+import { StockTransfer, Units, convertToLargestUnit } from "@/lib";
+import { DepartmentStockTransferDtoRead } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<StockTransferDtoRead>[] = [
+export const getColumns = (): ColumnDef<DepartmentStockTransferDtoRead>[] => [
+  // {
+  //   accessorKey: "code",
+  //   header: "Transfer Code",
+  //   cell: ({ row }) => <div className="min-w-36">{row.original.}</div>,
+  // },
   {
-    accessorKey: "code",
-    header: "Transfer Code",
-    cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
+    accessorKey: "date",
+    header: "Requested Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original.createdAt
+          ? format(row.original.createdAt, "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
-    accessorKey: "requestDepartment",
-    header: "Request Department",
+    accessorKey: "material",
+    header: "Material",
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
   {
-    accessorKey: "schedule",
-    header: "Schedule",
-    cell: ({ row }) => <div>{row.original.productionSchedule?.code}</div>,
+    accessorKey: "department",
+    header: "Request Department",
+    cell: ({ row }) => <div>{row.original.toDepartment?.name}</div>,
   },
   {
-    accessorKey: "product",
-    header: "Product",
-    cell: ({ row }) => <div>{row.original.product?.name}</div>,
-  },
-  {
-    accessorKey: "dd",
-    header: "Product",
+    accessorKey: "qty",
+    header: "Quantity",
     cell: ({ row }) => {
-      // const qty = convertToLargestUnit(
-      //   row.original?.sources[0].quantity as number,
-      //   row.original.uoM?.symbol as Units,
-      // );
-      return <div>{row.original.product?.name}</div>;
+      const qty = convertToLargestUnit(
+        row.original?.quantity as number,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value}
+          {qty.unit}
+        </div>
+      );
     },
   },
   {
@@ -48,4 +60,67 @@ export const columns: ColumnDef<StockTransferDtoRead>[] = [
       </div>
     ),
   },
+  // ...(Number(type) === TransferType.Inbound
+  //   ? [
+  //       {
+  //         id: "actions",
+  //         cell: ({ row }: { row: Row<DepartmentStockTransferDtoRead> }) => (
+  //           <DataTableRowActions row={row} />
+  //         ),
+  //       },
+  //     ]
+  //   : []),
 ];
+
+// export function DataTableRowActions<
+//   TData extends DepartmentStockTransferDtoRead,
+// >({ row }: { row: Row<TData> }) {
+//   const dispatch = useDispatch();
+//   console.log(row.original);
+//   const [approveMutation, { isLoading: isLoadingApprove }] =
+//     usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation();
+
+//   const [isApprovalOpen, setIsApprovalOpen] = useState(false);
+
+//   const handleApproval = async () => {
+//     try {
+//       await approveMutation({
+//        stockTransferId: row.original.id as string,
+//        body
+//       }).unwrap();
+//       toast.success("Transfer approved successfully");
+//       dispatch(commonActions.setTriggerReload());
+//     } catch (error) {
+//       toast.error(isErrorResponse(error as ErrorResponse)?.description);
+//     }
+//   };
+
+//   return (
+//     <section className="flex items-center justify-end gap-2">
+//       <div className="flex items-center justify-end gap-2">
+//         <Button
+//           variant="success"
+//           size="sm"
+//           className="rounded-2xl"
+//           onClick={() => setIsApprovalOpen(true)}
+//         >
+//           {isLoadingApprove ? (
+//             <Icon name="LoaderCircle" className="size-4 animate-spin" />
+//           ) : (
+//             <Icon name="Check" className="size-4" />
+//           )}
+//           <span>Issue</span>
+//         </Button>
+//       </div>
+
+//       <ConfirmDialog
+//         confirmText="Issue"
+//         description="Are you sure you want to issue this transfer?"
+//         open={isApprovalOpen}
+//         onClose={() => setIsApprovalOpen(false)}
+//         onConfirm={handleApproval}
+//         icon="Check"
+//       />
+//     </section>
+//   );
+// }
