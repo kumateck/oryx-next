@@ -27,11 +27,11 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   countryOptions: Option[];
   currencyOptions: Option[];
   materialOptions: Option[];
-  manufacturerOptionsMap: ManufacturerMap;
   defaultValues?: TFieldValues;
   fields: FieldArrayWithId<TFieldValues>[];
   remove: UseFieldArrayRemove;
   append: UseFieldArrayAppend<TFieldValues>;
+  manufacturerOptionsMap: ManufacturerMap;
   typeValues: Option[];
 }
 const VendorForm = <TFieldValues extends FieldValues, TContext>({

@@ -70,9 +70,15 @@ const Product = ({
     useState<ScheduleProductStatus>(ScheduleProductStatus.None);
 
   const [isOpenStock, setIsOpenStock] = useState(false);
-  const [loadRawStock, { isLoading: isLoadingRawStock }] =
+  const [
+    loadRawStock,
+    { isLoading: isLoadingRawStock, isFetching: isFetchingRaw },
+  ] =
     useLazyGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery();
-  const [loadPackageStock, { isLoading: isLoadingPackageStock }] =
+  const [
+    loadPackageStock,
+    { isLoading: isLoadingPackageStock, isFetching: isFetchingPackage },
+  ] =
     useLazyGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery();
   const [loadProductInfo, { isLoading: isLoadingProduct }] =
     useLazyGetApiV1ProductByProductIdQuery();
@@ -82,6 +88,9 @@ const Product = ({
     batchSizeType: BatchSizeType,
   ) => {
     try {
+      const productResponse = await loadProductInfo({
+        productId: pId,
+      }).unwrap();
       const rResponse = await loadRawStock({
         productId: pId,
         productionScheduleId: psId,
@@ -89,9 +98,6 @@ const Product = ({
       const pResponse = await loadPackageStock({
         productId: pId,
         productionScheduleId: psId,
-      }).unwrap();
-      const productResponse = await loadProductInfo({
-        productId: pId,
       }).unwrap();
 
       setProduct(productResponse);
@@ -102,6 +108,9 @@ const Product = ({
           ? ScheduleProductStatus.Purchase
           : ScheduleProductStatus.None,
       );
+      if (!isStockUnAvailable) {
+        setEnableStatusButton(ScheduleProductStatus.Start);
+      }
 
       const rawOptions = rResponse?.map((item) => {
         const code = item?.material?.code as string;
@@ -123,9 +132,12 @@ const Product = ({
         ).toFixed(2)}${quantityOnHandUnit}`;
 
         const totalStock = item?.material?.totalStock as number;
-        const totalStockConvert = convertToLargestUnit(totalStock, uomName);
+        const leftStock = totalStock - qtyOnHand;
+        const leftOverStock = leftStock > 0 ? leftStock : 0;
+        const totalStockConvert = convertToLargestUnit(leftOverStock, uomName);
         const totalStockValue = totalStockConvert.value;
         const totalStockUnit = totalStockConvert.unit;
+
         const totalStockFloat = `${parseFloat(
           totalStockValue.toString(),
         ).toFixed(2)}${totalStockUnit}`;
@@ -163,8 +175,9 @@ const Product = ({
         const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(2);
 
         const totalStock = item?.material?.totalStock as number;
-
-        const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
+        const leftStock = totalStock - qtyOnHand;
+        const leftOverStock = leftStock > 0 ? leftStock : 0;
+        const totalStockFloat = parseFloat(leftOverStock.toString()).toFixed(2);
 
         const materialId = item?.material?.id as string;
         const materialStatus = item?.status;
@@ -533,26 +546,32 @@ const Product = ({
           </CardContent>
         </Card>
       )}
-      {isLoadingRawStock ? (
+      {/* {isLoadingRawStock ? (
         <SkeletonLoadingPage />
-      ) : (
-        <Card className="space-y-4 p-5 pb-0">
-          <CardTitle>Raw Material</CardTitle>
-          <ClientDatatable normalTable data={rawLists} columns={getColumns} />
-        </Card>
-      )}
+      ) : ( */}
+      <Card className="space-y-4 p-5 pb-0">
+        <CardTitle>Raw Material</CardTitle>
+        <ClientDatatable
+          normalTable
+          data={rawLists}
+          columns={getColumns}
+          isLoading={isLoadingRawStock ?? isFetchingRaw}
+        />
+      </Card>
+      {/* )}
       {isLoadingPackageStock ? (
         <SkeletonLoadingPage />
-      ) : (
-        <Card className="space-y-4 p-5">
-          <CardTitle>Packaging Material</CardTitle>
-          <ClientDatatable
-            normalTable
-            data={packageLists}
-            columns={getColumns}
-          />
-        </Card>
-      )}
+      ) : ( */}
+      <Card className="space-y-4 p-5">
+        <CardTitle>Packaging Material</CardTitle>
+        <ClientDatatable
+          normalTable
+          data={packageLists}
+          columns={getColumns}
+          isLoading={isLoadingPackageStock ?? isFetchingPackage}
+        />
+      </Card>
+      {/* )} */}
       {/* {enablePurchase && isOpenPurchase && (
         <Purchase
           lists={purchaseLists}

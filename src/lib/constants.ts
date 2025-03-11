@@ -203,6 +203,10 @@ export enum QuestionTypes {
   Signature = 8,
   Reference = 9,
 }
+export interface NumberOption {
+  id: string;
+  quantity: number;
+}
 export interface Option {
   label: string;
   value: string;
@@ -298,6 +302,13 @@ export const formatClock = (hours: number, minutes: number, light: boolean) => {
 
 export type OptionsMap = {
   [key: string]: Option[];
+};
+
+export type stringsMap = {
+  [key: string]: Option[];
+};
+export type quantityMap = {
+  [key: string]: NumberOption[];
 };
 
 export const IdSchema = (msg: string) =>
