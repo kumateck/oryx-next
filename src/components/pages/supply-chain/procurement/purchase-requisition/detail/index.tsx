@@ -88,7 +88,7 @@ const Page = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  console.log(requisition, "requisition");
+  // console.log(requisition, "requisition");
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">

@@ -670,6 +670,14 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/material/${queryArg.materialId}/stock/across-warehouses`,
       }),
     }),
+    getApiV1MaterialByMaterialIdDepartmentStockAndQuantity: build.query<
+      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse,
+      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/${queryArg.materialId}/department-stock/${queryArg.quantity}`,
+      }),
+    }),
     postApiV1MaterialUpload: build.mutation<
       PostApiV1MaterialUploadApiResponse,
       PostApiV1MaterialUploadApiArg
@@ -1842,12 +1850,12 @@ const injectedRtkApi = api.injectEndpoints({
         method: "PUT",
       }),
     }),
-    postApiV1ProductionScheduleStockerTransfer: build.mutation<
-      PostApiV1ProductionScheduleStockerTransferApiResponse,
-      PostApiV1ProductionScheduleStockerTransferApiArg
+    postApiV1ProductionScheduleStockTransfer: build.mutation<
+      PostApiV1ProductionScheduleStockTransferApiResponse,
+      PostApiV1ProductionScheduleStockTransferApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stocker-transfer`,
+        url: `/api/v1/production-schedule/stock-transfer`,
         method: "POST",
         body: queryArg.createStockTransferRequest,
       }),
@@ -1865,12 +1873,35 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    putApiV1ProductionScheduleStockerTransferIssue: build.mutation<
-      PutApiV1ProductionScheduleStockerTransferIssueApiResponse,
-      PutApiV1ProductionScheduleStockerTransferIssueApiArg
+    getApiV1ProductionScheduleStockTransferInBound: build.query<
+      GetApiV1ProductionScheduleStockTransferInBoundApiResponse,
+      GetApiV1ProductionScheduleStockTransferInBoundApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stocker-transfer/issue`,
+        url: `/api/v1/production-schedule/stock-transfer/in-bound`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    putApiV1ProductionScheduleStockTransferApproveByStockTransferId:
+      build.mutation<
+        PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse,
+        PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/approve/${queryArg.stockTransferId}`,
+          method: "PUT",
+        }),
+      }),
+    putApiV1ProductionScheduleStockTransferIssue: build.mutation<
+      PutApiV1ProductionScheduleStockTransferIssueApiResponse,
+      PutApiV1ProductionScheduleStockTransferIssueApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/stock-transfer/issue`,
         method: "PUT",
         body: queryArg.issueStockTransferRequest,
       }),
@@ -2600,6 +2631,15 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklist:
+      build.query<
+        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiResponse,
+        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/checklist`,
+        }),
+      }),
     postApiV1WarehouseGrn: build.mutation<
       PostApiV1WarehouseGrnApiResponse,
       PostApiV1WarehouseGrnApiArg
@@ -3153,6 +3193,14 @@ export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse =
 export type GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg = {
   /** The id of the material */
   materialId: string;
+};
+export type GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse =
+  /** status 200 OK */ DepartmentDtoRead[];
+export type GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg = {
+  /** The id of the material */
+  materialId: string;
+  /** The minimum quantity of the stock the department should have. */
+  quantity: number;
 };
 export type PostApiV1MaterialUploadApiResponse = unknown;
 export type PostApiV1MaterialUploadApiArg = {
@@ -3922,9 +3970,9 @@ export type PutApiV1ProductionSchedulePackagingIssueByIdApiResponse = unknown;
 export type PutApiV1ProductionSchedulePackagingIssueByIdApiArg = {
   id: string;
 };
-export type PostApiV1ProductionScheduleStockerTransferApiResponse =
+export type PostApiV1ProductionScheduleStockTransferApiResponse =
   /** status 201 Created */ string;
-export type PostApiV1ProductionScheduleStockerTransferApiArg = {
+export type PostApiV1ProductionScheduleStockTransferApiArg = {
   createStockTransferRequest: CreateStockTransferRequest;
 };
 export type GetApiV1ProductionScheduleStockTransferApiResponse =
@@ -3934,8 +3982,21 @@ export type GetApiV1ProductionScheduleStockTransferApiArg = {
   toDepartmentId?: string;
   materialId?: string;
 };
-export type PutApiV1ProductionScheduleStockerTransferIssueApiResponse = unknown;
-export type PutApiV1ProductionScheduleStockerTransferIssueApiArg = {
+export type GetApiV1ProductionScheduleStockTransferInBoundApiResponse =
+  /** status 200 OK */ StockTransferDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleStockTransferInBoundApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiArg =
+  {
+    stockTransferId: string;
+  };
+export type PutApiV1ProductionScheduleStockTransferIssueApiResponse = unknown;
+export type PutApiV1ProductionScheduleStockTransferIssueApiArg = {
   issueStockTransferRequest: IssueStockTransferRequest;
 };
 export type PostApiV1RequisitionApiResponse = /** status 200 OK */ string;
@@ -4369,6 +4430,12 @@ export type PostApiV1WarehouseDistributedMaterialMaterialBatchApiResponse =
 export type PostApiV1WarehouseDistributedMaterialMaterialBatchApiArg = {
   body: string[];
 };
+export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiResponse =
+  /** status 200 OK */ ChecklistDtoRead;
+export type GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiArg =
+  {
+    distributedMaterialId: string;
+  };
 export type PostApiV1WarehouseGrnApiResponse = unknown;
 export type PostApiV1WarehouseGrnApiArg = {
   createGrnRequest: CreateGrnRequest;
@@ -8200,10 +8267,12 @@ export type MoveShelfMaterialBatchRequest = {
 };
 export type MaterialDetailsDto = {
   material?: MaterialDto;
+  unitOfMeasure?: UnitOfMeasureDto;
   totalAvailableQuantity?: number;
 };
 export type MaterialDetailsDtoRead = {
   material?: MaterialDtoRead;
+  unitOfMeasure?: UnitOfMeasureDtoRead;
   totalAvailableQuantity?: number;
 };
 export type MaterialDetailsDtoIEnumerablePaginateable = {
@@ -9653,11 +9722,11 @@ export type UpdateBatchPackagingRecord = {
 export type StockTransferSourceRequest = {
   fromDepartmentId?: string;
   quantity?: number;
-  uoMId?: string;
 };
 export type CreateStockTransferRequest = {
   code?: string | null;
   materialId?: string;
+  uoMId?: string;
   reason?: string | null;
   requiredQuantity?: number;
   productId?: string | null;
@@ -9665,6 +9734,7 @@ export type CreateStockTransferRequest = {
   productionActivityStepId?: string | null;
   sources?: StockTransferSourceRequest[] | null;
 };
+export type StockTransferStatus = 0 | 1 | 2;
 export type StockTransferSourceDto = {
   id?: string;
   createdBy?: UserDto;
@@ -9672,7 +9742,6 @@ export type StockTransferSourceDto = {
   fromDepartment?: DepartmentDto;
   toDepartment?: DepartmentDto;
   quantity?: number;
-  uoM?: UnitOfMeasureDto;
 };
 export type StockTransferSourceDtoRead = {
   id?: string;
@@ -9681,7 +9750,6 @@ export type StockTransferSourceDtoRead = {
   fromDepartment?: DepartmentDtoRead;
   toDepartment?: DepartmentDtoRead;
   quantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
 };
 export type StockTransferDto = {
   id?: string;
@@ -9689,10 +9757,12 @@ export type StockTransferDto = {
   createdAt?: string;
   code?: string | null;
   material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   reason?: string | null;
   requiredQuantity?: number;
+  status?: StockTransferStatus;
   sources?: StockTransferSourceDto[] | null;
   approvedAt?: string | null;
 };
@@ -9702,12 +9772,32 @@ export type StockTransferDtoRead = {
   createdAt?: string;
   code?: string | null;
   material?: MaterialDtoRead;
+  uoM?: UnitOfMeasureDtoRead;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   reason?: string | null;
   requiredQuantity?: number;
+  status?: StockTransferStatus;
   sources?: StockTransferSourceDtoRead[] | null;
   approvedAt?: string | null;
+};
+export type StockTransferDtoIEnumerablePaginateable = {
+  data?: StockTransferDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type StockTransferDtoIEnumerablePaginateableRead = {
+  data?: StockTransferDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type BatchTransferRequest = {
   batchId?: string;
@@ -10264,6 +10354,7 @@ export type CreateGrnRequest = {
 };
 export type GrnDto = {
   id?: string;
+  createdAt?: string;
   carrierName?: string | null;
   vehicleNumber?: string | null;
   remarks?: string | null;
@@ -10272,6 +10363,7 @@ export type GrnDto = {
 };
 export type GrnDtoRead = {
   id?: string;
+  createdAt?: string;
   carrierName?: string | null;
   vehicleNumber?: string | null;
   remarks?: string | null;
@@ -10299,7 +10391,7 @@ export type GrnDtoIEnumerablePaginateableRead = {
 export type BinCardInformationDto = {
   id?: string;
   createdAt?: string;
-  batch?: MaterialBatchDto;
+  materialBatch?: MaterialBatchDto;
   description?: string | null;
   wayBill?: string | null;
   arNumber?: string | null;
@@ -10312,7 +10404,7 @@ export type BinCardInformationDto = {
 export type BinCardInformationDtoRead = {
   id?: string;
   createdAt?: string;
-  batch?: MaterialBatchDtoRead;
+  materialBatch?: MaterialBatchDtoRead;
   description?: string | null;
   wayBill?: string | null;
   arNumber?: string | null;
@@ -10539,6 +10631,8 @@ export const {
   usePostApiV1MaterialBatchConsumeMutation,
   useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   useLazyGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
+  useGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
+  useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1MaterialUploadMutation,
   usePutApiV1MaterialBatchStatusMutation,
   usePostApiV1MaterialBatchSupplyMutation,
@@ -10717,10 +10811,13 @@ export const {
   useLazyGetApiV1ProductionSchedulePackagingByIdQuery,
   usePutApiV1ProductionSchedulePackagingByIdMutation,
   usePutApiV1ProductionSchedulePackagingIssueByIdMutation,
-  usePostApiV1ProductionScheduleStockerTransferMutation,
+  usePostApiV1ProductionScheduleStockTransferMutation,
   useGetApiV1ProductionScheduleStockTransferQuery,
   useLazyGetApiV1ProductionScheduleStockTransferQuery,
-  usePutApiV1ProductionScheduleStockerTransferIssueMutation,
+  useGetApiV1ProductionScheduleStockTransferInBoundQuery,
+  useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
+  usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation,
+  usePutApiV1ProductionScheduleStockTransferIssueMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
@@ -10829,6 +10926,8 @@ export const {
   useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
   useLazyGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchQuery,
   usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation,
+  useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery,
+  useLazyGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery,
   usePostApiV1WarehouseGrnMutation,
   useGetApiV1WarehouseGrnByIdQuery,
   useLazyGetApiV1WarehouseGrnByIdQuery,
