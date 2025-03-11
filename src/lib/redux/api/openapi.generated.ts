@@ -206,7 +206,12 @@ const injectedRtkApi = api.injectEndpoints({
       GetApiV1CollectionUomApiResponse,
       GetApiV1CollectionUomApiArg
     >({
-      query: () => ({ url: `/api/v1/collection/uom` }),
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom`,
+        params: {
+          isRawMaterial: queryArg.isRawMaterial,
+        },
+      }),
     }),
     getApiV1CollectionPackageStyles: build.query<
       GetApiV1CollectionPackageStylesApiResponse,
@@ -1923,6 +1928,14 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
+    getApiV1ProductionScheduleStockTransferBatchByStockTransferId: build.query<
+      GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiResponse,
+      GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/stock-transfer/batch/${queryArg.stockTransferId}`,
+      }),
+    }),
     putApiV1ProductionScheduleStockTransferIssueByStockTransferId:
       build.mutation<
         PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse,
@@ -2900,7 +2913,9 @@ export type DeleteApiV1CollectionByItemTypeAndItemIdApiArg = {
 };
 export type GetApiV1CollectionUomApiResponse =
   /** status 200 OK */ UnitOfMeasureDtoRead[];
-export type GetApiV1CollectionUomApiArg = void;
+export type GetApiV1CollectionUomApiArg = {
+  isRawMaterial?: boolean;
+};
 export type GetApiV1CollectionPackageStylesApiResponse =
   /** status 200 OK */ PackageStyleDtoRead[];
 export type GetApiV1CollectionPackageStylesApiArg = void;
@@ -4037,6 +4052,12 @@ export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiAr
 export type PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiResponse =
   unknown;
 export type PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg =
+  {
+    stockTransferId: string;
+  };
+export type GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiResponse =
+  /** status 200 OK */ BatchToSupplyRead[];
+export type GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiArg =
   {
     stockTransferId: string;
   };
@@ -9874,6 +9895,14 @@ export type DepartmentStockTransferDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type BatchToSupply = {
+  batch?: MaterialBatchDto;
+  quantityToTake?: number;
+};
+export type BatchToSupplyRead = {
+  batch?: MaterialBatchDtoRead;
+  quantityToTake?: number;
+};
 export type BatchTransferRequest = {
   batchId?: string;
   quantity?: number;
@@ -10895,6 +10924,8 @@ export const {
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
   usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation,
   usePutApiV1ProductionScheduleStockTransferRejectByStockTransferIdMutation,
+  useGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery,
+  useLazyGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery,
   usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,

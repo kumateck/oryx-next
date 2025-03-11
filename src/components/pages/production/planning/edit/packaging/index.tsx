@@ -64,7 +64,11 @@ const Packaging = () => {
       await savePackaging({
         productId,
         body: itemLists?.map((item) => ({
-          ...item,
+          baseQuantity: item.baseQuantity,
+          materialThickness: item.materialThickness,
+          otherStandards: item.otherStandards,
+          unitCapacity: item.unitCapacity,
+          packingExcessMargin: item.packingExcessMargin,
           materialId: item.material.value,
           directLinkMaterialId: item.directLinkMaterial?.value,
         })),

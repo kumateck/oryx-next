@@ -67,12 +67,16 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
         label: uom.name,
         value: uom.id,
       })) as Option[]);
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
+    isRawMaterial: true,
+  });
 
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const uomOptions = uomResponse
+    ?.filter((item) => item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
 
   useEffect(() => {
     loadCollection({
@@ -93,7 +97,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     setItemLists((prevState) => {
       const payload = {
         ...data,
-        id: (prevState.length + 1).toString(),
+        // id: (prevState.length + 1).toString(),
         idIndex: (prevState.length + 1).toString(),
       };
       return [...prevState, payload]; // Add new item to the array

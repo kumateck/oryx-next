@@ -32,6 +32,7 @@ export const COLLECTION_TYPES = {
   User: "User",
   Country: "Country",
   Currency: "Currency",
+  PackageStyle: "PackageStyle",
 };
 
 export const CODE_SETTINGS = {

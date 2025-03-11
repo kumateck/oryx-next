@@ -28,11 +28,6 @@ import { commonActions } from "@/lib/redux/slices/common";
 export const getColumns = (
   type: TransferType,
 ): ColumnDef<DepartmentStockTransferDtoRead>[] => [
-  // {
-  //   accessorKey: "code",
-  //   header: "Transfer Code",
-  //   cell: ({ row }) => <div className="min-w-36">{row.original.}</div>,
-  // },
   {
     accessorKey: "date",
     header: "Requested Date",
@@ -53,8 +48,8 @@ export const getColumns = (
     accessorKey: "department",
     header:
       Number(type) === TransferType.Inbound
-        ? "Supplier Department"
-        : "Request Department",
+        ? "Request Department"
+        : "Supplier Department",
     cell: ({ row }) => <div>{row.original.toDepartment?.name}</div>,
   },
   {

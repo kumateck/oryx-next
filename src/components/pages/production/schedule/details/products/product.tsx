@@ -101,6 +101,8 @@ const Product = ({
       }).unwrap();
 
       setProduct(productResponse);
+      console.log(isStockUnAvailable(rResponse), "isStockUnAvailable raw");
+      console.log(isStockUnAvailable(pResponse), "isStockUnAvailable pack");
       const isnotAvailable =
         isStockUnAvailable(rResponse) ?? isStockUnAvailable(pResponse);
       setEnableStatusButton(
@@ -108,7 +110,7 @@ const Product = ({
           ? ScheduleProductStatus.Purchase
           : ScheduleProductStatus.None,
       );
-      if (!isStockUnAvailable) {
+      if (!isnotAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Start);
       }
 
@@ -212,140 +214,6 @@ const Product = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [batchSizeType, productId, scheduleId]);
 
-  // useEffect(() => {
-  //   if (materialStockResponse) {
-  //     const isnotAvailable = isStockUnAvailable(materialStockResponse);
-  //     setEnablePurchase(isnotAvailable);
-
-  //     if (!isnotAvailable) {
-  //       const filteredMaterials = materialStockResponse
-  //         .filter(
-  //           (item) => Number(item.quantityNeeded) > Number(item.quantityOnHand),
-  //         )
-  //         ?.map((material) => {
-  //           const uom = convertToLargestUnit(
-  //             Number(material.quantityNeeded),
-  //             material.baseUoM?.symbol as Units,
-  //           ).unit;
-  //           const quantityOnHand = convertToLargestUnit(
-  //             Number(material.quantityOnHand),
-  //             material.baseUoM?.symbol as Units,
-  //           ).value;
-  //           const qty = convertToLargestUnit(
-  //             Number(material.quantityNeeded),
-  //             material.baseUoM?.symbol as Units,
-  //           ).value;
-  //           return {
-  //             code: material.material?.code,
-  //             materialName: material.material?.name,
-  //             materialId: material.material?.id,
-  //             uom,
-  //             quantityOnHand,
-  //             quantityRequested: qty,
-  //             quantity: qty,
-  //             totalStock: material.material?.totalStock,
-  //             uomId: material.baseUoM?.id,
-  //           };
-  //         }) as unknown as MaterialRequestDto[];
-  //       setPurchaseLists(filteredMaterials);
-  //     }
-
-  //     const rawOptions = materialStockResponse?.map((item) => {
-  //       const code = item?.material?.code as string;
-  //       const materialStatus = item?.status;
-  //       const uomName = item?.baseUoM?.symbol as Units;
-  //       const materialName = item?.material?.name as string;
-  //       const qtyNeeded = item?.quantityNeeded as number;
-  //       const qtyNeededConvert = convertToLargestUnit(qtyNeeded, uomName);
-  //       const quantityNeeded = qtyNeededConvert.value;
-  //       const quantityNeededUnit = qtyNeededConvert.unit;
-  //       const quantityNeededFloat = `${parseFloat(quantityNeeded.toString()).toFixed(2)}${quantityNeededUnit}`;
-
-  //       const qtyOnHand = item?.quantityOnHand as number;
-  //       const qtyOnHandConvert = convertToLargestUnit(qtyOnHand, uomName);
-  //       const quantityOnHand = qtyOnHandConvert.value;
-  //       const quantityOnHandUnit = qtyOnHandConvert.unit;
-  //       const quantityOnHandFloat = `${parseFloat(
-  //         quantityOnHand.toString(),
-  //       ).toFixed(2)}${quantityOnHandUnit}`;
-
-  //       const totalStock = item?.material?.totalStock as number;
-  //       const totalStockConvert = convertToLargestUnit(totalStock, uomName);
-  //       const totalStockValue = totalStockConvert.value;
-  //       const totalStockUnit = totalStockConvert.unit;
-  //       const totalStockFloat = `${parseFloat(
-  //         totalStockValue.toString(),
-  //       ).toFixed(2)}${totalStockUnit}`;
-
-  //       const materialId = item?.material?.id as string;
-
-  //       return {
-  //         materialStatus,
-  //         code,
-  //         materialName,
-  //         materialId,
-  //         finalQuantityNeeded: quantityNeededFloat,
-  //         finalQuantityOnHand: quantityOnHandFloat,
-  //         finalTotalStock: totalStockFloat,
-  //         quantity: quantityNeeded,
-  //         uom: quantityNeededUnit,
-  //         uomId: item?.baseUoM?.id,
-  //       };
-  //     }) as MaterialRequestDto[];
-  //     setRawLists(rawOptions);
-  //   }
-  // }, [materialStockResponse]);
-  // useEffect(() => {
-  //   if (packageStockResponse) {
-  //     // setEnablePurchase(!quantityAvailable(packageStockResponse));
-  //     const isnotAvailable = isStockUnAvailable(packageStockResponse);
-  //     setEnablePurchase(isnotAvailable);
-
-  //     if (!isnotAvailable) {
-  //       const packOptions = packageStockResponse?.map((item) => {
-  //         const code = item?.material?.code as string;
-
-  //         const materialName = item?.material?.name as string;
-  //         const excess =
-  //           (batchSizeType === BatchSizeType.Full
-  //             ? item?.packingExcessMargin
-  //             : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
-  //         const qtyNeeded = (item?.quantityNeeded as number) + excess;
-
-  //         const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(
-  //           2,
-  //         );
-
-  //         const qtyOnHand = item?.quantityOnHand as number;
-
-  //         const quantityOnHandFloat = parseFloat(qtyOnHand.toString()).toFixed(
-  //           2,
-  //         );
-
-  //         const totalStock = item?.material?.totalStock as number;
-
-  //         const totalStockFloat = parseFloat(totalStock.toString()).toFixed(2);
-
-  //         const materialId = item?.material?.id as string;
-  //         const materialStatus = item?.status;
-  //         return {
-  //           materialStatus,
-  //           code,
-  //           materialName,
-  //           materialId,
-  //           finalQuantityNeeded: quantityNeededFloat,
-  //           finalQuantityOnHand: quantityOnHandFloat,
-  //           finalTotalStock: totalStockFloat,
-  //           quantity: qtyNeeded,
-  //           uom: item?.baseUoM?.symbol as Units,
-  //           uomId: item?.baseUoM?.id,
-  //         };
-  //       }) as MaterialRequestDto[];
-  //       setPackageLists(packOptions);
-  //     }
-  //   }
-  // }, [batchSizeType, packageStockResponse, data]);
-
   const convertUnit = convertToLargestUnit(
     Number(tab.quantity),
     tab?.product?.baseUoM?.symbol as Units,
@@ -360,6 +228,7 @@ const Product = ({
       toast.success("Production started successfully");
       // router.push(`/production/schedules`);
     } catch (error) {
+      console.log(error, "error");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
@@ -430,6 +299,12 @@ const Product = ({
         break;
     }
   };
+
+  console.log(
+    enableStatusButton,
+    "enableStatusButton",
+    ScheduleProductStatus[enableStatusButton],
+  );
   return (
     <div className="flex-1 space-y-2 overflow-auto">
       {isLoadingProduct ? (

@@ -1,12 +1,12 @@
 import { icons } from "lucide-react";
 import { useCallback, useEffect } from "react";
 
+import { FormOption, splitWords } from "@/lib";
 import {
   GetApiV1CollectionByItemTypeApiArg,
   MaterialKind,
   useLazyGetApiV1CollectionByItemTypeQuery,
 } from "@/lib/redux/api/openapi.generated";
-import { FormOption, splitWords } from "@/lib/utils";
 
 import { FormOptionContainer } from "./container";
 

@@ -67,10 +67,14 @@ const BOM = () => {
         createBillOfMaterialRequest: {
           productId,
           items: itemLists?.map((item) => ({
-            ...item,
             materialId: item.materialId.value,
             materialTypeId: item.materialTypeId.value,
             baseUoMId: item.baseUoMId.value,
+            baseQuantity: item.baseQuantity,
+            casNumber: item.casNumber,
+            function: item.function,
+            grade: item.grade,
+            isSubstitutable: item.isSubstitutable,
             order: item.order,
           })),
         },

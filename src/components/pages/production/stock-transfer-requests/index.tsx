@@ -55,7 +55,7 @@ const Page = () => {
       loadOutboundRequests({
         page,
         pageSize,
-        status: StockTransfer.Approved,
+        // status: StockTransfer.Approved,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
