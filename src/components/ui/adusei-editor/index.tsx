@@ -1,5 +1,5 @@
 // import { useEffect, useState } from "react";
-// import { DEFAULT_API_PAYLOAD } from "@/lib/constants";
+// import { DEFAULT_API_PAYLOAD } from "@/lib";
 // import { handleError } from "@/lib/error";
 import { useState } from "react";
 

@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { EMaterialKind, Option } from "@/lib/constants";
+import { EMaterialKind, Option } from "@/lib";
 import {
   MaterialDto,
   useGetApiV1MaterialQuery,

@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui";
-import { PurchaseOrderStatusList } from "@/lib/constants";
+import { PurchaseOrderStatusList } from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,

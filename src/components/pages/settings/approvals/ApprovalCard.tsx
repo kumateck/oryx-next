@@ -2,7 +2,7 @@
 // import { useForm } from "react-hook-form";
 // import { FormWizard } from "@/components/form-inputs";
 // import { Button, Icon } from "@/components/ui";
-// import { DEFAULT_API_PAYLOAD, InputTypes } from "@/lib/constants";
+// import { DEFAULT_API_PAYLOAD, InputTypes } from "@/lib";
 // import { ApprovalDto } from "@/redux/api/openapi.generated";
 // import { restApi } from "@/redux/restApi";
 

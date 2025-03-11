@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
 // import { DropdownMenuItem, Icon } from "@/components/ui";
-import { routes } from "@/lib/constants";
+import { routes } from "@/lib";
 import { ProductDto } from "@/lib/redux/api/openapi.generated";
 
 // import { TableMenuAction } from "@/shared/table-menu";

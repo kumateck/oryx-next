@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { InputTypes } from "@/lib/constants";
+import { InputTypes } from "@/lib";
 
 import { CreateFinishedValidator, FinishedRequestDto } from "./types";
 

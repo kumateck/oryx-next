@@ -1,4 +1,4 @@
-// import { ModelType } from "@/lib/constants";
+// import { ModelType } from "@/lib";
 import { SuggestionItem, SuggestionProps } from "./suggestion";
 
 export interface CollectionLinkItem {

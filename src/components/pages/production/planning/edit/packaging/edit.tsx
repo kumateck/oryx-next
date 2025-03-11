@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib/constants";
+import { Option } from "@/lib";
 import {
   MaterialDto,
   useGetApiV1MaterialQuery,
