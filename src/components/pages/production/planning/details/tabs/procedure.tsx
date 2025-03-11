@@ -22,7 +22,7 @@ export const Procedure = ({ data }: IProps) => {
           {
             accessorKey: "operation",
             header: "Operation",
-            cell: (info) => info.row.original.operation,
+            cell: (info) => info.row.original.operation?.name,
           },
           {
             accessorKey: "workCenter",

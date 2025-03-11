@@ -291,6 +291,8 @@ export const routes = {
   findings: () => "/findings",
   editEmployee: (params: { id: string }) =>
     `/resource/employees/edit/${params.id}`,
+  viewChecklist: (id: string) =>
+    `/warehouse/receiving-area/${id}/view-checklist`,
 };
 
 export const formatClock = (hours: number, minutes: number, light: boolean) => {

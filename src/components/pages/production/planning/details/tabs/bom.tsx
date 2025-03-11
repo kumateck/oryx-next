@@ -54,7 +54,7 @@ export const Bom = ({ data }: IProps) => {
           {
             accessorKey: "uom",
             header: "Unit of Measure",
-            cell: (info) => info.row.original.baseUoM,
+            cell: (info) => info.row.original.baseUoM?.name,
           },
           {
             accessorKey: "casNumber",

@@ -142,23 +142,23 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     },
   },
   {
-    accessorKey: "expiryDate",
-    header: "Expiry Date",
-    cell: ({ row }) => (
-      <div>
-        {row.original.expiryDate
-          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
-          : "-"}
-      </div>
-    ),
-  },
-  {
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
         {row.original.manufacturingDate
           ? format(row.original?.manufacturingDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "expiryDate",
+    header: "Expiry Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original.expiryDate
+          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
           : "-"}
       </div>
     ),

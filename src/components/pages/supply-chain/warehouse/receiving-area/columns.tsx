@@ -45,7 +45,7 @@ export function DataTableRowActions<
           <Button
             variant="default"
             size="sm"
-            onClick={() => router.push(routes.createChecklist(id as string))}
+            onClick={() => router.push(routes.viewChecklist(id as string))}
           >
             <Icon name="Eye" className="h-4 w-4" /> <span>View Checklist</span>
           </Button>

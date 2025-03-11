@@ -1,16 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
+import { Units, convertToLargestUnit } from "@/lib";
 import {
   BinCardInformationDto,
   ShelfMaterialBatchDto,
 } from "@/lib/redux/api/openapi.generated";
 
 export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
-  {
-    accessorKey: "materialName",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original.materialBatch?.batchNumber}</div>,
-  },
   {
     accessorKey: "warehouseLocation",
     header: "Warehouse Location",
@@ -33,7 +30,17 @@ export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.materialBatch?.totalQuantity}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.materialBatch?.checklist?.material?.totalStock as number,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div className="">
+          {qty.value !== 0 ? qty.value.toFixed(2) + qty.unit : ""}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "manufacturingDate",
@@ -65,13 +72,19 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => (
-      <div>{row.original.batch?.dateReceived?.split("T")[0]}</div>
+      <div>
+        {row.original.createdAt
+          ? format(row.original?.createdAt, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batch?.checklist?.supplier?.name}</div>
+    ),
   },
   {
     accessorKey: "waybill",
@@ -87,24 +100,38 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
     cell: ({ row }) => (
-      <div>{row.original.batch?.manufacturingDate?.split("T")[0]}</div>
+      <div>
+        {row.original?.batch?.manufacturingDate
+          ? format(
+              row.original?.batch?.manufacturingDate as string,
+              "MMMM dd, yyyy",
+            )
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
     cell: ({ row }) => (
-      <div>{row.original.batch?.expiryDate?.split("T")[0]}</div>
+      <div>
+        {row.original?.batch?.expiryDate
+          ? format(row.original?.batch?.expiryDate as string, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "quantityReceived",
     header: "Quantity Received",
     cell: ({ row }) => {
-      const qty = row.original.quantityReceived ?? 0;
+      const qty = convertToLargestUnit(
+        row.original.quantityReceived as number,
+        row.original.uoM?.symbol as Units,
+      );
       return (
-        <div className={qty > 0 ? "bg-green-600" : ""}>
-          {qty !== 0 ? qty : ""}
+        <div className="">
+          {qty.value !== 0 ? qty.value.toFixed(2) + qty.unit : ""}
         </div>
       );
     },
@@ -113,10 +140,13 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     accessorKey: "quantityIssued",
     header: "Quantity Issued",
     cell: ({ row }) => {
-      const qty = row.original.quantityIssued ?? 0;
+      const qty = convertToLargestUnit(
+        row.original.quantityIssued as number,
+        row.original.uoM?.symbol as Units,
+      );
       return (
-        <div className={qty > 0 ? "bg-red-400" : ""}>
-          {qty !== 0 ? qty : ""}
+        <div className="">
+          {qty.value !== 0 ? qty.value.toFixed(2) + qty.unit : ""}
         </div>
       );
     },
@@ -124,16 +154,26 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
   {
     accessorKey: "balanceQuantity",
     header: "Balance Quantity",
-    cell: ({ row }) => <div>{row.original.balanceQuantity ?? ""}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.balanceQuantity as number,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div className="">
+          {qty.value.toFixed(2)} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "productName",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original.product?.name ?? ""}</div>,
+    cell: ({ row }) => <div>{row.original.product?.name ?? "-"}</div>,
   },
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? ""}</div>,
+    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? "-"}</div>,
   },
 ];

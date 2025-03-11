@@ -20,14 +20,8 @@ export const columns: ColumnDef<GrnDto>[] = [
     cell: ({ row }) => (
       // <div>{row.original.materialBatches?.map((batch)=>(batch.dateReceived))}</div>
       <div>
-        {row.original.materialBatches?.map((batch) => batch.dateReceived)
-          ? row.original.materialBatches
-              ?.map((batch) =>
-                batch.dateReceived
-                  ? format(new Date(batch.dateReceived), "MMM dd, yyyy")
-                  : "-",
-              )
-              .join(", ")
+        {row.original.createdAt
+          ? format(new Date(row.original.createdAt), "MMM dd, yyyy")
           : "-"}
       </div>
     ),

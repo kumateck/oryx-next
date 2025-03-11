@@ -1,9 +1,11 @@
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
+import { Units, convertToLargestUnit } from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
@@ -98,22 +100,50 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
-    cell: ({ row }) => <div>{row.original.manufacturingDate}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.manufacturingDate
+          ? format(row.original?.manufacturingDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.expiryDate
+          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.status}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantityAssigned as number,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "retestDate",
     header: "Retest Date",
-    cell: ({ row }) => <div>{row.original.expiryDate}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.retestDate
+          ? format(row.original?.retestDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     id: "actions",
