@@ -202,10 +202,8 @@ export function isStockUnAvailable(
 ): boolean {
   for (const item of materials) {
     if (
-      item.quantityOnHand &&
-      item.quantityNeeded &&
-      item.quantityOnHand < item.quantityNeeded &&
-      Number(item.status) === MaterialStatus.NoSource
+      Number(item.status) === MaterialStatus.NoSource &&
+      Number(item.quantityOnHand) < Number(item.quantityNeeded)
     ) {
       console.log("I cannot process, I need to add a stock.");
       return true; // At least one stock is insufficient
