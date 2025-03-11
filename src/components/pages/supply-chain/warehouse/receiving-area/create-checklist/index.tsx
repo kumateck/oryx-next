@@ -33,6 +33,7 @@ import {
   usePostApiV1WarehouseChecklistMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
 
 import ChecklistForm, { OptionsUpdate } from "./form";
 import { ChecklistRequestDto, CreateProductValidator } from "./types";
@@ -117,6 +118,16 @@ const CreateChecklist = () => {
               response.shipmentInvoice?.supplier?.status as SupplierStatus
             ],
           supplierStatusId: response.shipmentInvoice?.supplier?.status,
+          certificateOfAnalysisDeliveredId:
+            response.shipmentInvoice?.supplier?.status ===
+            SupplierStatus.Approved
+              ? ChecklistBoolean.Yes
+              : ChecklistBoolean.No,
+          certificateOfAnalysisDelivered:
+            response.shipmentInvoice?.supplier?.status ===
+            SupplierStatus.Approved
+              ? ChecklistBoolean[ChecklistBoolean.Yes]
+              : ChecklistBoolean[ChecklistBoolean.No],
           invoiceNumber: response.shipmentInvoice?.code as string,
           manufacturerName: response.materialItemDistributions?.[0]
             ?.shipmentInvoiceItem?.manufacturer?.name as string,
@@ -225,8 +236,7 @@ const CreateChecklist = () => {
       supplierId: data.supplierId,
       manufacturerId: data.manufacturerId,
       certificateOfAnalysisDelivered:
-        data.certificateOfAnalysisDelivered.value ===
-        ChecklistBoolean.Yes.toString(),
+        data.certificateOfAnalysisDeliveredId === ChecklistBoolean.Yes,
       visibleLabelling:
         data.visibleLabelingOfContainers.value ===
         ChecklistBoolean.Yes.toString(),
@@ -285,9 +295,15 @@ const CreateChecklist = () => {
       <PageWrapper>
         <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex w-full items-center justify-between space-y-4">
-            <span className="text-xl font-semibold text-black">
-              Create Checklist
-            </span>
+            <div className="flex items-center gap-2">
+              <Icon
+                name="ArrowLeft"
+                onClick={onBack}
+                className="cursor-pointer"
+              />
+
+              <PageTitle title="Create Checklist" />
+            </div>
             <div className="flex justify-end gap-4 px-12">
               <Button type="button" onClick={onBack} variant="outline">
                 Cancel

@@ -1,10 +1,10 @@
 "use client";
 
 import { format } from "date-fns";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-import { Card, CardContent } from "@/components/ui";
+import { Card, CardContent, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import { useGetApiV1ProductionScheduleByScheduleIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -14,16 +14,24 @@ import PageTitle from "@/shared/title";
 import Products from "./products";
 
 const ScheduleDetail = () => {
+  const router = useRouter();
   const { id } = useParams();
   const scheduleId = id as string;
   const { data, isLoading } = useGetApiV1ProductionScheduleByScheduleIdQuery({
     scheduleId,
   });
 
+  const onBack = () => {
+    router.back();
+  };
+
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
-        <PageTitle title="Production Schedule" />
+        <div className="flex items-center gap-2">
+          <Icon name="ArrowLeft" onClick={onBack} className="cursor-pointer" />
+          <PageTitle title="Production Schedule" />
+        </div>
         {isLoading ? (
           <SkeletonLoadingPage />
         ) : (

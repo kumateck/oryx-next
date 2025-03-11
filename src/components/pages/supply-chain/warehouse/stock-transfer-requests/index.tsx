@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
+import { useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -11,14 +12,16 @@ import { columns } from "./columns";
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  // useEffect(() => {
-  //   loadData({
-  //     page,
-  //     pageSize,
-  //   });
-  console.log(page);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [page, pageSize]);
+  const [loadRequests, { isLoading, data: response }] =
+    useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery();
+  useEffect(() => {
+    loadRequests({
+      page,
+      pageSize,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize]);
   // const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
@@ -27,29 +30,20 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        data={[]}
+        data={response?.data || []}
         columns={columns}
-        isLoading={false || false}
+        isLoading={isLoading}
         setPage={setPage}
         setPageSize={setPageSize}
         meta={{
-          pageIndex: 0,
-          pageCount: 0,
-          totalRecordCount: 0,
-          numberOfPagesToShow: 0,
-          startPageIndex: 0,
-          stopPageIndex: 0,
+          pageIndex: response?.pageIndex as number,
+          pageCount: response?.pageCount as number,
+          totalRecordCount: response?.totalRecordCount as number,
+          numberOfPagesToShow: response?.numberOfPagesToShow as number,
+          startPageIndex: response?.startPageIndex as number,
+          stopPageIndex: response?.stopPageIndex as number,
           pageSize,
         }}
-        // meta={{
-        //   pageIndex: result?.pageIndex as number,
-        //   pageCount: result?.pageCount as number,
-        //   totalRecordCount: result?.totalRecordCount as number,
-        //   numberOfPagesToShow: result?.numberOfPagesToShow as number,
-        //   startPageIndex: result?.startPageIndex as number,
-        //   stopPageIndex: result?.stopPageIndex as number,
-        //   pageSize,
-        // }}
       />
     </PageWrapper>
   );

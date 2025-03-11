@@ -99,17 +99,8 @@ export const CreateChecklistSchema = z.object({
       invalid_type_error: "Date must be a valid date",
     }),
   ),
-  certificateOfAnalysisDelivered: z.object(
-    {
-      value: z
-        .string()
-        .min(1, { message: "Certificate Delivery Status is required" }),
-      label: z.string(),
-    },
-    {
-      message: "Certificate Delivery Status is required",
-    },
-  ),
+  certificateOfAnalysisDelivered: z.string().optional(),
+  certificateOfAnalysisDeliveredId: z.number().optional(),
   invoiceNumber: z
     .string({ required_error: "Invoice number is required" })
     .min(1, {
