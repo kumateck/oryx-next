@@ -63,6 +63,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       const payload = {
         ...data,
         floorName: data?.floorName?.value,
+        name: data?.name?.value,
       } satisfies CreateWarehouseLocationRequest;
       await createWarehouseLocation({
         createWarehouseLocationRequest: payload,
