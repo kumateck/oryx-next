@@ -20,7 +20,15 @@ export const CreateLocationSchema = z.object({
       message: "Floor is required",
     },
   ),
-  name: z.string().min(1, { message: "Location Name is required" }),
+  name: z.object(
+    {
+      value: z.string().min(1, { message: "Location is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Location is required",
+    },
+  ), //z.string().min(1, { message: "Location Name is required" }),
   // floorName: z.string().min(1, { message: "Floor is required" }),
   description: z.string().optional(),
 });

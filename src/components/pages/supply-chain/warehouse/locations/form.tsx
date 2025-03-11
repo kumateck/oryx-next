@@ -27,9 +27,9 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="w-full">
+    <div className="w-full space-y-5">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
+        className="grid w-full grid-cols-2 gap-10 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
           {
@@ -59,8 +59,6 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
         ]}
       />
       <FormWizard
-        className="grid w-full gap-x-10 space-y-0"
-        fieldWrapperClassName="flex-grow"
         config={[
           {
             label: "Floor Name",
