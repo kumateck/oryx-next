@@ -8,14 +8,16 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
+import { InputTypes } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
 
-  locationOptions: Option[];
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 
   defaultValues?: TFieldValues;
 }
@@ -23,7 +25,8 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  locationOptions,
+  isLoading,
+  fetchOptions,
 
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
@@ -33,15 +36,27 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
         className="grid w-full grid-cols-2 gap-x-10 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
+          // {
+          //   label: "Location Name",
+          //   control: control as Control,
+          //   type: InputTypes.SELECT,
+          //   name: "locationId",
+          //   defaultValue: defaultValues?.locationId,
+          //   required: true,
+          //   placeholder: "Select location",
+          //   options: locationOptions,
+          //   errors,
+          // },
           {
             label: "Location Name",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "locationId",
-            defaultValue: defaultValues?.locationId,
             required: true,
+            defaultValue: defaultValues?.locationId,
             placeholder: "Select location",
-            options: locationOptions,
+            fetchOptions: fetchOptions,
+            isLoading: isLoading,
             errors,
           },
           {

@@ -11,11 +11,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   WarehouseLocationRackDto,
-  useGetApiV1CollectionByItemTypeQuery,
+  useLazyGetApiV1WarehouseLocationQuery,
   useLazyGetApiV1WarehouseRackQuery,
   usePutApiV1WarehouseRackByRackIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -35,15 +35,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
 
   const [editRack, { isLoading }] = usePutApiV1WarehouseRackByRackIdMutation();
-
-  const { data } = useGetApiV1CollectionByItemTypeQuery({
-    itemType: COLLECTION_TYPES.WarehouseLocation,
-  });
-
-  const locationOptions = data?.map((item) => ({
-    label: item.name,
-    value: item.id,
-  })) as Option[];
 
   const defaultLocation = {
     label: details?.warehouseLocation?.name as string,
@@ -87,6 +78,27 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     }
   };
 
+  const [
+    loadLocations,
+    { isFetching: isFetchingLocation, isLoading: isLoadingLocation },
+  ] = useLazyGetApiV1WarehouseLocationQuery();
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadLocations({
+      searchQuery,
+      page,
+    }).unwrap();
+    const options = res?.data?.map((item) => ({
+      label: item.name + `(${item.warehouse?.name})`,
+      value: item.id,
+    })) as Option[];
+
+    const response = {
+      options,
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -99,7 +111,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             register={register}
             control={control}
             errors={errors}
-            locationOptions={locationOptions}
+            fetchOptions={loadDataOrSearch}
+            isLoading={isLoadingLocation || isFetchingLocation}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

@@ -55,7 +55,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       warehouseId: defaultWarehouse,
       description: details.description as string,
-      name: details.name as string,
+      name: { label: details.name as string, value: details.name as string },
       floorName: {
         label: details.floorName as string,
         value: details.floorName as string,
@@ -68,6 +68,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       const payload = {
         ...data,
         floorName: data?.floorName?.value,
+        name: data?.name?.value,
       } satisfies CreateWarehouseLocationRequest;
 
       await editLocation({
