@@ -1,64 +1,71 @@
 "use client";
 
+import { format } from "date-fns";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import {
-  GrnDto,
-  MaterialBatchDto,
-  useGetApiV1WarehouseGrnByIdQuery,
+  useGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery,
+  useGetApiV1ProductionScheduleStockTransferByStockTransferIdQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { ClientDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
-import TableForData from "./table";
+import { getColumns } from "./columns";
 
 const GRNDetail = () => {
   const { id } = useParams();
-  const grnId = id as string;
-  const { data: grnResponse } = useGetApiV1WarehouseGrnByIdQuery({
-    id: grnId,
-  });
+  const stockTransferId = id as string;
+  const { data: transferResponse } =
+    useGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery({
+      stockTransferId,
+    });
 
-  const [packageLists, setPackageLists] = useState<MaterialBatchDto[]>([]);
+  const { data: stockTransferResponse } =
+    useGetApiV1ProductionScheduleStockTransferByStockTransferIdQuery({
+      stockTransferId,
+    });
 
-  useEffect(() => {
-    if (grnResponse) {
-      const batchOptions = grnResponse.materialBatches?.map((item) => {
-        const batchNumber = item?.batchNumber as string;
+  console.log(transferResponse, "transferResponse");
 
-        const materialName = item?.checklist?.material?.name as string;
+  // useEffect(() => {
+  //   if (grnResponse) {
+  //     const batchOptions = grnResponse.materialBatches?.map((item) => {
+  //       const batchNumber = item?.batchNumber as string;
 
-        const manufacturerName = item?.checklist?.manufacturer?.name as string;
+  //       const materialName = item?.checklist?.material?.name as string;
 
-        // const invoiceNumber = parseFloat(qtyNeeded.toString()).toFixed(2);
-        const invoiceNumber = item?.checklist?.shipmentInvoice?.code as string;
+  //       const manufacturerName = item?.checklist?.manufacturer?.name as string;
 
-        const totalQuantity = item?.totalQuantity as number;
+  //       // const invoiceNumber = parseFloat(qtyNeeded.toString()).toFixed(2);
+  //       const invoiceNumber = item?.checklist?.shipmentInvoice?.code as string;
 
-        const expiryDate = item.expiryDate;
+  //       const totalQuantity = item?.totalQuantity as number;
 
-        const manufacturingDate = item.dateReceived;
+  //       const expiryDate = item.expiryDate;
 
-        const retestDate = item.dateReceived;
+  //       const manufacturingDate = item.dateReceived;
 
-        const status = item.status;
+  //       const retestDate = item.dateReceived;
 
-        return {
-          batchNumber,
-          materialName,
-          manufacturerName,
-          invoiceNumber,
-          totalQuantity,
-          expiryDate,
-          manufacturingDate,
-          retestDate,
-          status,
-        };
-      }) as GrnDto[];
-      setPackageLists(batchOptions);
-    }
-  }, [grnResponse]);
+  //       const status = item.status;
+
+  //       return {
+  //         batchNumber,
+  //         materialName,
+  //         manufacturerName,
+  //         invoiceNumber,
+  //         totalQuantity,
+  //         expiryDate,
+  //         manufacturingDate,
+  //         retestDate,
+  //         status,
+  //       };
+  //     }) as GrnDto[];
+  //     setPackageLists(batchOptions);
+  //   }
+  // }, [grnResponse]);
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
@@ -85,7 +92,7 @@ const GRNDetail = () => {
                       Request Department:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">
-                      Tablet Department
+                      {stockTransferResponse?.fromDepartment?.name}
                     </span>
                   </div>
                   <div className="space-y-1">
@@ -93,7 +100,25 @@ const GRNDetail = () => {
                       Requisition Date:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">
-                      12th December, 2025
+                      {stockTransferResponse?.createdAt
+                        ? format(
+                            stockTransferResponse?.createdAt,
+                            "yyyy d MMM, h:mm:ss a",
+                          )
+                        : "-"}
+                    </span>
+                  </div>{" "}
+                  <div className="space-y-1">
+                    <span className="text-sm font-normal text-neutral-secondary">
+                      Approved Date:{" "}
+                    </span>
+                    <span className="text-sm font-normal text-neutral-dark">
+                      {stockTransferResponse?.approvedAt
+                        ? format(
+                            stockTransferResponse?.approvedAt,
+                            "yyyy d MMM, h:mm:ss a",
+                          )
+                        : "-"}
                     </span>
                   </div>
                   <div className="space-y-1">
@@ -101,7 +126,7 @@ const GRNDetail = () => {
                       Justification:{" "}
                     </span>
                     <span className="inline text-sm font-normal text-neutral-dark">
-                      Production of Paracetamol 500mg
+                      {/* {stockTransferResponse?.} */}
                     </span>
                   </div>
                 </div>
@@ -110,8 +135,11 @@ const GRNDetail = () => {
           </CardContent>
         </Card>
         <Card className="space-y-4 p-5">
-          <CardTitle>Request Breakdown</CardTitle>
-          <TableForData lists={packageLists} setItemLists={setPackageLists} />
+          <CardTitle>Issue Breakdown</CardTitle>
+          <ClientDatatable
+            columns={getColumns()}
+            data={transferResponse ?? []}
+          />
         </Card>
       </div>
     </ScrollablePageWrapper>

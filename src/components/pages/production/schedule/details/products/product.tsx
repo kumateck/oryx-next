@@ -300,11 +300,6 @@ const Product = ({
     }
   };
 
-  console.log(
-    enableStatusButton,
-    "enableStatusButton",
-    ScheduleProductStatus[enableStatusButton],
-  );
   return (
     <div className="flex-1 space-y-2 overflow-auto">
       {isLoadingProduct ? (
@@ -348,37 +343,7 @@ const Product = ({
                     )}
                   </div>
                 ) : (
-                  <div>
-                    {/* {enableStatusButton ? (
-                      <Button
-                        className="flex items-center gap-2"
-                        onClick={() =>
-                          router.push(
-                            routes.viewScheduleRequisition(
-                              scheduleId,
-                              productId,
-                            ),
-                          )
-                        }
-                      >
-                        <Icon name="CreditCard" />
-                        <span>Purchase Requisition</span>
-                      </Button>
-                    ) : (
-                      <Button
-                        className="flex items-center gap-2"
-                        onClick={handleStartProduction}
-                      >
-                        {isProcessingStart ? (
-                          <Icon name="LoaderCircle" className="animate-spin" />
-                        ) : (
-                          <Icon name="TvMinimalPlay" />
-                        )}
-                        <span>Start Production</span>
-                      </Button>
-                    )} */}
-                    {ProductStatus(enableStatusButton)}
-                  </div>
+                  <div>{ProductStatus(enableStatusButton)}</div>
                 )}
               </div>
             </div>
