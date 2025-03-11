@@ -62,14 +62,6 @@ const RequisitionDetails = () => {
                 <div className="grid w-full grid-cols-3 gap-2">
                   <div className="space-y-1">
                     <span className="text-sm font-normal text-neutral-secondary">
-                      Product Name:{" "}
-                    </span>
-                    <span className="text-sm font-normal text-neutral-dark">
-                      {data?.product?.name}
-                    </span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-sm font-normal text-neutral-secondary">
                       Requisition Date:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">

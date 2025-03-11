@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Units, convertToLargestUnit } from "@/lib";
 import { MaterialDetailsDto } from "@/lib/redux/api/openapi.generated";
 
 export const columns: ColumnDef<MaterialDetailsDto>[] = [
@@ -16,6 +17,17 @@ export const columns: ColumnDef<MaterialDetailsDto>[] = [
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original?.material?.totalStock}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.material?.totalStock as number,
+        row.original.unitOfMeasure?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value}
+          {qty.unit}
+        </div>
+      );
+    },
   },
 ];
