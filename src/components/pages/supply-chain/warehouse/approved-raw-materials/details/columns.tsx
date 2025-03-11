@@ -9,6 +9,11 @@ import {
 
 export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
   {
+    accessorKey: "batchNumber",
+    header: "Batch Number",
+    cell: ({ row }) => <div>{row.original.materialBatch?.batchNumber}</div>,
+  },
+  {
     accessorKey: "warehouseLocation",
     header: "Warehouse Location",
     cell: ({ row }) => <div>{row.original.warehouseLocationShelf?.code}</div>,
