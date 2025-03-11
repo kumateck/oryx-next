@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { Option, WarehouseType } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   WarehouseLocationRackDto,
@@ -19,7 +19,7 @@ import {
   useLazyGetApiV1WarehouseRackQuery,
   usePutApiV1WarehouseRackByRackIdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
@@ -88,7 +88,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       page,
     }).unwrap();
     const options = res?.data?.map((item) => ({
-      label: item.name + `(${item.warehouse?.name})`,
+      label:
+        item.name +
+        `(${splitWords(WarehouseType[item.warehouse?.type as number])})`,
       value: item.id,
     })) as Option[];
 
@@ -126,7 +128,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Update Rack</span>{" "}
+              <span>Save Change</span>{" "}
             </Button>
           </DialogFooter>
         </form>

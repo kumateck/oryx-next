@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 import { Icon } from "@/components/ui";
-import { RequisitionStatus, routes } from "@/lib/constants";
+import { RequisitionStatus, routes } from "@/lib";
 import {
   ProductDto,
   RequestStatus,

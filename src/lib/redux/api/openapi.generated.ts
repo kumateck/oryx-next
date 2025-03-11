@@ -1883,6 +1883,23 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          status: queryArg.status,
+          toDepartmentId: queryArg.toDepartmentId,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleStockTransferOutBound: build.query<
+      GetApiV1ProductionScheduleStockTransferOutBoundApiResponse,
+      GetApiV1ProductionScheduleStockTransferOutBoundApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/stock-transfer/out-bound`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          status: queryArg.status,
+          fromDepartmentId: queryArg.fromDepartmentId,
         },
       }),
     }),
@@ -1896,16 +1913,17 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
-    putApiV1ProductionScheduleStockTransferIssue: build.mutation<
-      PutApiV1ProductionScheduleStockTransferIssueApiResponse,
-      PutApiV1ProductionScheduleStockTransferIssueApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer/issue`,
-        method: "PUT",
-        body: queryArg.issueStockTransferRequest,
+    putApiV1ProductionScheduleStockTransferIssueByStockTransferId:
+      build.mutation<
+        PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse,
+        PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/issue/${queryArg.stockTransferId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
       }),
-    }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -3983,11 +4001,22 @@ export type GetApiV1ProductionScheduleStockTransferApiArg = {
   materialId?: string;
 };
 export type GetApiV1ProductionScheduleStockTransferInBoundApiResponse =
-  /** status 200 OK */ StockTransferDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ DepartmentStockTransferDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleStockTransferInBoundApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  status?: StockTransferStatus;
+  toDepartmentId?: string;
+};
+export type GetApiV1ProductionScheduleStockTransferOutBoundApiResponse =
+  /** status 200 OK */ DepartmentStockTransferDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleStockTransferOutBoundApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  status?: StockTransferStatus;
+  fromDepartmentId?: string;
 };
 export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse =
   unknown;
@@ -3995,10 +4024,13 @@ export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiAr
   {
     stockTransferId: string;
   };
-export type PutApiV1ProductionScheduleStockTransferIssueApiResponse = unknown;
-export type PutApiV1ProductionScheduleStockTransferIssueApiArg = {
-  issueStockTransferRequest: IssueStockTransferRequest;
-};
+export type PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiArg =
+  {
+    stockTransferId: string;
+    body: BatchTransferRequest[];
+  };
 export type PostApiV1RequisitionApiResponse = /** status 200 OK */ string;
 export type PostApiV1RequisitionApiArg = {
   /** The CreateRequisitionRequest object. */
@@ -4617,7 +4649,6 @@ export type WarehouseDto = {
   name?: string | null;
   description?: string | null;
   type?: WarehouseType;
-  materialKind?: MaterialKind;
   locations?: CollectionItemDto[] | null;
 };
 export type DepartmentDto = {
@@ -9742,6 +9773,9 @@ export type StockTransferSourceDto = {
   fromDepartment?: DepartmentDto;
   toDepartment?: DepartmentDto;
   quantity?: number;
+  status?: StockTransferStatus;
+  approvedAt?: string | null;
+  issuedAt?: string | null;
 };
 export type StockTransferSourceDtoRead = {
   id?: string;
@@ -9750,6 +9784,9 @@ export type StockTransferSourceDtoRead = {
   fromDepartment?: DepartmentDtoRead;
   toDepartment?: DepartmentDtoRead;
   quantity?: number;
+  status?: StockTransferStatus;
+  approvedAt?: string | null;
+  issuedAt?: string | null;
 };
 export type StockTransferDto = {
   id?: string;
@@ -9764,7 +9801,6 @@ export type StockTransferDto = {
   requiredQuantity?: number;
   status?: StockTransferStatus;
   sources?: StockTransferSourceDto[] | null;
-  approvedAt?: string | null;
 };
 export type StockTransferDtoRead = {
   id?: string;
@@ -9779,10 +9815,31 @@ export type StockTransferDtoRead = {
   requiredQuantity?: number;
   status?: StockTransferStatus;
   sources?: StockTransferSourceDtoRead[] | null;
-  approvedAt?: string | null;
 };
-export type StockTransferDtoIEnumerablePaginateable = {
-  data?: StockTransferDto[] | null;
+export type DepartmentStockTransferDto = {
+  id?: string;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
+  status?: StockTransferStatus;
+  fromDepartment?: DepartmentDto;
+  toDepartment?: DepartmentDto;
+  quantity?: number;
+  approvedAt?: string | null;
+  issuedAt?: string | null;
+};
+export type DepartmentStockTransferDtoRead = {
+  id?: string;
+  material?: MaterialDtoRead;
+  uoM?: UnitOfMeasureDtoRead;
+  status?: StockTransferStatus;
+  fromDepartment?: DepartmentDtoRead;
+  toDepartment?: DepartmentDtoRead;
+  quantity?: number;
+  approvedAt?: string | null;
+  issuedAt?: string | null;
+};
+export type DepartmentStockTransferDtoIEnumerablePaginateable = {
+  data?: DepartmentStockTransferDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -9790,8 +9847,8 @@ export type StockTransferDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type StockTransferDtoIEnumerablePaginateableRead = {
-  data?: StockTransferDtoRead[] | null;
+export type DepartmentStockTransferDtoIEnumerablePaginateableRead = {
+  data?: DepartmentStockTransferDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -9801,13 +9858,7 @@ export type StockTransferDtoIEnumerablePaginateableRead = {
 };
 export type BatchTransferRequest = {
   batchId?: string;
-  fromWarehouseId?: string;
-  toWarehouseId?: string;
   quantity?: number;
-};
-export type IssueStockTransferRequest = {
-  stockTransferId?: string;
-  batches?: BatchTransferRequest[] | null;
 };
 export type CreateRequisitionItemRequest = {
   materialId?: string;
@@ -10158,6 +10209,12 @@ export type WarehouseDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type WarehouseWithoutLocationDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+};
 export type WarehouseLocationShelfDto = {
   id?: string;
   warehouseLocationRack?: WareHouseLocationRackDto;
@@ -10193,7 +10250,7 @@ export type WarehouseLocationDto = {
   name?: string | null;
   floorName?: string | null;
   description?: string | null;
-  warehouse?: CollectionItemDto;
+  warehouse?: WarehouseWithoutLocationDto;
   racks?: WarehouseLocationRackDto[] | null;
 };
 export type WarehouseLocationDtoRead = {
@@ -10201,7 +10258,7 @@ export type WarehouseLocationDtoRead = {
   name?: string | null;
   floorName?: string | null;
   description?: string | null;
-  warehouse?: CollectionItemDto;
+  warehouse?: WarehouseWithoutLocationDto;
   racks?: WarehouseLocationRackDtoRead[] | null;
 };
 export type WarehouseLocationDtoIEnumerablePaginateable = {
@@ -10816,8 +10873,10 @@ export const {
   useLazyGetApiV1ProductionScheduleStockTransferQuery,
   useGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
+  useGetApiV1ProductionScheduleStockTransferOutBoundQuery,
+  useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
   usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation,
-  usePutApiV1ProductionScheduleStockTransferIssueMutation,
+  usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,

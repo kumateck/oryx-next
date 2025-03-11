@@ -33,20 +33,8 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="w-full">
       <FormWizard
-        className="grid w-full grid-cols-2 gap-x-10 space-y-0"
-        fieldWrapperClassName="flex-grow"
+        className="w-full space-y-5"
         config={[
-          // {
-          //   label: "Location Name",
-          //   control: control as Control,
-          //   type: InputTypes.SELECT,
-          //   name: "locationId",
-          //   defaultValue: defaultValues?.locationId,
-          //   required: true,
-          //   placeholder: "Select location",
-          //   options: locationOptions,
-          //   errors,
-          // },
           {
             label: "Location Name",
             control: control as Control,

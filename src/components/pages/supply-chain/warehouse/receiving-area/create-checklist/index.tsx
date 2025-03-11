@@ -218,7 +218,7 @@ const CreateChecklist = () => {
 
     const warehouses = authUser?.department?.warehouses || [];
     const materialWarehouse = warehouses?.find(
-      (item) => item.materialKind === data.materialKind,
+      (item) => item.type === data.materialKind,
     );
 
     const initialLocationId = materialWarehouse?.id as string;

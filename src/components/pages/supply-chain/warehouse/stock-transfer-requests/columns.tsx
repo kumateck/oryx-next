@@ -25,7 +25,7 @@ export const columns: ColumnDef<StockTransferDtoRead>[] = [
     cell: ({ row }) => <div>{row.original.product?.name}</div>,
   },
   {
-    accessorKey: "product",
+    accessorKey: "dd",
     header: "Product",
     cell: ({ row }) => {
       // const qty = convertToLargestUnit(

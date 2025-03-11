@@ -19,7 +19,7 @@ import {
   Checkbox,
   Icon,
 } from "@/components/ui";
-import { APP_CONTEXT, InputTypes, routes } from "@/lib/constants";
+import { APP_CONTEXT, InputTypes, routes } from "@/lib";
 import {
   PostApiV1AuthLoginApiArg,
   usePostApiV1AuthLoginMutation,

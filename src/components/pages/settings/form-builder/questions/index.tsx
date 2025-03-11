@@ -2,7 +2,7 @@
 // import InfiniteScroll from "react-infinite-scroll-component";
 // import { toast } from "sonner";
 // import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-// import { DEFAULT_API_PAYLOAD } from "@/lib/constants";
+// import { DEFAULT_API_PAYLOAD } from "@/lib";
 // import { handleError } from "@/lib/error";
 // import { restApi } from "@/redux/restApi";
 // import { commonActions } from "@/redux/slice/common";

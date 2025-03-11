@@ -1,4 +1,4 @@
-import { Option } from "@/lib/constants";
+import { Option } from "@/lib";
 
 import ApprovalCard from "./card";
 import { Approvals } from "./types";

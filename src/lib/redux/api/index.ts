@@ -6,7 +6,7 @@ import type {
 // import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // import { Mutex } from "async-mutex";
 // import { getCookie } from "cookies-next";
-// import { BASE_URL } from "@/lib/constants";
+// import { BASE_URL } from "@/lib";
 // import { AuthState } from "../slices/auth";
 // import { reduxStore } from "../store";
 // import {
@@ -117,7 +117,7 @@ import { Mutex } from "async-mutex";
 import { getCookie } from "cookies-next";
 
 // Import the getCookie function
-import { BASE_URL, ORYX_ERP_COOKIE_ID } from "@/lib/constants";
+import { BASE_URL, ORYX_ERP_COOKIE_ID } from "@/lib";
 
 // Mutex instance to handle potential concurrent requests
 export const mutex = new Mutex();

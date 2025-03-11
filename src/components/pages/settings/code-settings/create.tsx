@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, Option } from "@/lib/constants";
+import { CODE_SETTINGS, Option } from "@/lib";
 import {
   CreateConfigurationRequest,
   NamingType,

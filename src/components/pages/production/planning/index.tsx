@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import { routes } from "@/lib/constants";
+import { routes } from "@/lib";
 import { useLazyGetApiV1ProductQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";

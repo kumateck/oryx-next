@@ -6,14 +6,21 @@ interface AccessTabsProps {
   type: number;
   handleTabClick: (tabType: number) => void;
   tabs: Option[];
+  containerClassName?: string;
 }
-const AccessTabs = ({ type, handleTabClick, tabs }: AccessTabsProps) => {
+const AccessTabs = ({
+  type,
+  handleTabClick,
+  tabs,
+  containerClassName,
+}: AccessTabsProps) => {
   return (
     <div>
       {
         <div
           className={cn(
             "flex h-10 w-48 items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
+            containerClassName,
           )}
         >
           {tabs?.map((tab, idx) => (

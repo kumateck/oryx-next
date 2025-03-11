@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
-import { InputTypes } from "@/lib/constants";
+import { InputTypes } from "@/lib";
 import {
   PostApiV1FormApiArg,
   QuestionDto,

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { Icon } from "@/components/ui";
-import { PurchaseOrderStatusList } from "@/lib/constants";
+import { PurchaseOrderStatusList } from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
