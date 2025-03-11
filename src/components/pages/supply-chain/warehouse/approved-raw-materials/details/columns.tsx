@@ -79,13 +79,13 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => (
-      <div>{row.original.batch?.checklist?.supplier?.name}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "description",
+  //   header: "Description",
+  //   cell: ({ row }) => (
+  //     <div>{row.original.batch?.checklist?.supplier?.name}</div>
+  //   ),
+  // },
   {
     accessorKey: "waybill",
     header: "Waybill",
@@ -101,12 +101,13 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
-        {row.original?.batch?.manufacturingDate
+        {/* {row.original?.batch?.manufacturingDate
           ? format(
               row.original?.batch?.manufacturingDate as string,
               "MMMM dd, yyyy",
             )
-          : "-"}
+          : "-"} */}
+        {row.original.arNumber}
       </div>
     ),
   },
@@ -115,9 +116,10 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {row.original?.batch?.expiryDate
+        {/* {row.original?.batch?.expiryDate
           ? format(row.original?.batch?.expiryDate as string, "MMMM dd, yyyy")
-          : "-"}
+          : "-"} */}
+        {row.original.arNumber}
       </div>
     ),
   },
@@ -174,6 +176,6 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? "-"}</div>,
+    cell: ({ row }) => <div>{row.original.arNumber ?? "-"}</div>,
   },
 ];

@@ -1,7 +1,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { MaterialStatus } from "@/lib";
+import { MaterialStatus, Units } from "@/lib";
 import AllStockByMaterial from "@/shared/all-stock";
 import { ColumnType } from "@/shared/datatable";
 import TableBadge from "@/shared/datatable/badge";
@@ -122,6 +122,8 @@ export function DataRowAllStock<TData extends MaterialRequestDto>({
             onClose={() => setIsOpen(false)}
             materialId={row.original.materialId}
             materialName={row.original.materialName as string}
+            qtyNeeded={row.original.finalQuantityNeeded}
+            uomName={row.original.uom as Units}
           />
         )}
       </div>
