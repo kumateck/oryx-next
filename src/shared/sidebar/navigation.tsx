@@ -70,6 +70,10 @@ export const ROUTES: Route[] = [
             title: "Billing Sheets",
             url: "/logistics/billing-sheets",
           },
+          {
+            title: "Waybill",
+            url: "/logistics/waybill",
+          },
         ],
       },
       {
