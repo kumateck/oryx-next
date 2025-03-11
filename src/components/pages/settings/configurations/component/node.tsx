@@ -146,7 +146,7 @@ interface Props {
 //   return (
 //     <div
 //       className={cn(
-//         "shadow-xsmall flex items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2",
+//         "shadow-xsmall flex items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-3 py-2",
 //         !isInputError &&
 //           (editMode || createMode) &&
 //           "border-2 border-secondary-500",
@@ -297,7 +297,7 @@ export const FormOptionNode = ({
   return (
     <div
       className={cn(
-        "group flex items-center justify-center gap-2 rounded-md border border-neutral-input bg-white px-3 py-2",
+        "group flex items-center justify-center gap-2 rounded-2xl border border-neutral-input bg-white px-3 py-2",
         !isInputError &&
           (editMode || createMode) &&
           "focus-within:border-b-primary-defaultt border border-neutral-input focus-within:border-b",

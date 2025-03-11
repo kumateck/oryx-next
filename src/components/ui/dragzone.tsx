@@ -89,8 +89,8 @@ export function DropZone({ onChange, defaultValue, name }: Props) {
     <div className="w-full">
       <div {...getRootProps()}>
         <input id={name} key={files.length} {...getInputProps()} />
-        <div className="flex w-full flex-col items-center rounded-md border border-dashed border-neutral-400 p-4">
-          <div className="inline-flex cursor-pointer flex-col items-center justify-center rounded-md px-4 py-2">
+        <div className="flex w-full flex-col items-center rounded-2xl border border-dashed border-neutral-400 p-4">
+          <div className="inline-flex cursor-pointer flex-col items-center justify-center rounded-2xl px-4 py-2">
             <Icon name="Image" className="text-neutral-900" />
             {isDragActive ? (
               <span className="text-base">Drop the files here ...</span>
@@ -109,7 +109,7 @@ export function DropZone({ onChange, defaultValue, name }: Props) {
         {files.map((file) => (
           <div
             key={file.name}
-            className="flex w-full items-center gap-3 rounded-md border bg-neutral-50 px-4 py-4"
+            className="flex w-full items-center gap-3 rounded-2xl border bg-neutral-50 px-4 py-4"
           >
             <div className="bg-secondary-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
               <Icon name="FileText" className="text-primary-500" />

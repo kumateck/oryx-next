@@ -199,7 +199,7 @@ const AddApproval = ({ isOpen, onClose }: Props) => {
                 return (
                   <div
                     key={field.id}
-                    className="relative rounded-md border p-2"
+                    className="relative rounded-2xl border p-2"
                   >
                     <div className="absolute right-2 top-2">
                       <Icon

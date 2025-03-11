@@ -63,7 +63,7 @@ const TheAduseiEditor = ({
   return (
     <div className="w-full">
       {isLoading ? (
-        <Skeleton className="min-h-64 w-full rounded-md border-neutral-input bg-white" />
+        <Skeleton className="min-h-64 w-full rounded-2xl border-neutral-input bg-white" />
       ) : (
         <div className="w-full">
           {!isOpen && (

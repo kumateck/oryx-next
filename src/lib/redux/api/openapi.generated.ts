@@ -1913,6 +1913,16 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
+    putApiV1ProductionScheduleStockTransferRejectByStockTransferId:
+      build.mutation<
+        PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiResponse,
+        PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/reject/${queryArg.stockTransferId}`,
+          method: "PUT",
+        }),
+      }),
     putApiV1ProductionScheduleStockTransferIssueByStockTransferId:
       build.mutation<
         PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse,
@@ -4021,6 +4031,12 @@ export type GetApiV1ProductionScheduleStockTransferOutBoundApiArg = {
 export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse =
   unknown;
 export type PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiArg =
+  {
+    stockTransferId: string;
+  };
+export type PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg =
   {
     stockTransferId: string;
   };
@@ -7463,7 +7479,6 @@ export type Warehouse = {
   locations?: WarehouseLocation[] | null;
   arrivalLocation?: WarehouseArrivalLocation;
   type?: WarehouseType;
-  materialKind?: MaterialKind;
 };
 export type WarehouseRead = {
   id?: string;
@@ -7483,7 +7498,6 @@ export type WarehouseRead = {
   locations?: WarehouseLocationRead[] | null;
   arrivalLocation?: WarehouseArrivalLocationRead;
   type?: WarehouseType;
-  materialKind?: MaterialKind;
 };
 export type Department = {
   id?: string;
@@ -9765,7 +9779,7 @@ export type CreateStockTransferRequest = {
   productionActivityStepId?: string | null;
   sources?: StockTransferSourceRequest[] | null;
 };
-export type StockTransferStatus = 0 | 1 | 2;
+export type StockTransferStatus = 0 | 1 | 2 | 3;
 export type StockTransferSourceDto = {
   id?: string;
   createdBy?: UserDto;
@@ -9818,6 +9832,8 @@ export type StockTransferDtoRead = {
 };
 export type DepartmentStockTransferDto = {
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   material?: MaterialDto;
   uoM?: UnitOfMeasureDto;
   status?: StockTransferStatus;
@@ -9829,6 +9845,8 @@ export type DepartmentStockTransferDto = {
 };
 export type DepartmentStockTransferDtoRead = {
   id?: string;
+  createdBy?: UserDtoRead;
+  createdAt?: string;
   material?: MaterialDtoRead;
   uoM?: UnitOfMeasureDtoRead;
   status?: StockTransferStatus;
@@ -10876,6 +10894,7 @@ export const {
   useGetApiV1ProductionScheduleStockTransferOutBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
   usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation,
+  usePutApiV1ProductionScheduleStockTransferRejectByStockTransferIdMutation,
   usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,

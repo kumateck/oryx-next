@@ -146,7 +146,7 @@
 //                       className={cn("h-6 w-6 border border-neutral-400", {
 //                         "rounded-full":
 //                           selectFilter?.name === QUESTION_TYPES.MULTIPLE_CHOICE,
-//                         "rounded-md":
+//                         "rounded-2xl":
 //                           selectFilter?.name === QUESTION_TYPES.CHECKBOXES ||
 //                           selectFilter.name === QUESTION_TYPES.DROPDOWN,
 //                       })}
@@ -193,7 +193,7 @@
 //                     className={cn("h-6 w-6 border border-neutral-400", {
 //                       "rounded-full":
 //                         selectFilter?.name === QUESTION_TYPES.MULTIPLE_CHOICE,
-//                       "rounded-md":
+//                       "rounded-2xl":
 //                         selectFilter?.name === QUESTION_TYPES.CHECKBOXES ||
 //                         selectFilter.name === QUESTION_TYPES.DROPDOWN,
 //                     })}

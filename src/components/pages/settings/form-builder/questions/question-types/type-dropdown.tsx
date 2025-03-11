@@ -40,7 +40,7 @@ const TypesDropdown = ({
             <DropdownMenuItem
               key={idx}
               className={cn("flex items-center gap-1.5 px-4 py-2 text-black", {
-                "rounded-md bg-neutral-200 text-black":
+                "rounded-2xl bg-neutral-200 text-black":
                   active?.name === child.name,
               })}
               onClick={() => {

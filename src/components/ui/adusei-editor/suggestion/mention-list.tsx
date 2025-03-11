@@ -30,7 +30,7 @@ const MentionList: React.FC<{
   };
   return (
     <div
-      className="suggestions z-50 !rounded-md bg-white"
+      className="suggestions z-50 !rounded-2xl bg-white"
       style={{
         zIndex: 99,
       }}
@@ -40,7 +40,7 @@ const MentionList: React.FC<{
       }}
     >
       {/* <ScrollArea className="h-[480px]"> */}
-      <Command className="rounded-md" onClick={(e) => e.stopPropagation()}>
+      <Command className="rounded-2xl" onClick={(e) => e.stopPropagation()}>
         {!isExpanded ? (
           <CommandList className="max-h-[480px] p-4">
             <CommandEmpty>No results found.</CommandEmpty>
@@ -149,7 +149,7 @@ const ItemComponent: React.FC<{
   return (
     <CommandItem
       key={index}
-      className="cursor-pointer rounded-md hover:bg-neutral-200"
+      className="cursor-pointer rounded-2xl hover:bg-neutral-200"
     >
       <button
         type="button"
@@ -194,7 +194,7 @@ const UserComponent: React.FC<{
   return (
     <CommandItem
       key={index}
-      className="cursor-pointer rounded-md hover:bg-neutral-200"
+      className="cursor-pointer rounded-2xl hover:bg-neutral-200"
     >
       <button
         key={index}

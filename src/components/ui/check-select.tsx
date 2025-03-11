@@ -36,7 +36,7 @@ export const CheckMultiSelect = forwardRef<
       closeMenuOnSelect={false}
       hideSelectedOptions={false}
       className={cn(
-        "focus:border-primary focus:ring-primary border-primary-300 focus-within:ring-secondary-500 focus:ring-secondary-500 appearance-none rounded-md border bg-white outline-none focus-within:ring-4 focus:outline-none focus:ring-1",
+        "focus:border-primary focus:ring-primary border-primary-300 focus-within:ring-secondary-500 focus:ring-secondary-500 appearance-none rounded-2xl border bg-white outline-none focus-within:ring-4 focus:outline-none focus:ring-1",
         props.className,
       )}
       classNamePrefix="react-select"

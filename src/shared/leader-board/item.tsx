@@ -19,13 +19,13 @@ export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
   return (
     <div
       ref={drag as unknown as React.Ref<HTMLDivElement>}
-      className="mb-2 cursor-move space-y-1 rounded-md bg-white p-2 shadow-md"
+      className="mb-2 cursor-move space-y-1 rounded-2xl bg-white p-2 shadow-md"
       style={{ opacity: isDragging ? 0.5 : 1 }}
       onClick={() =>
         router.push(`/production/activities/${step.activityId}/board`)
       }
     >
-      <div className="inline-flex rounded-md bg-primary-default px-1.5 text-white">
+      <div className="inline-flex rounded-2xl bg-primary-default px-1.5 text-white">
         <span className="text-xs">{step.scheduleCode}</span>
       </div>
       <div className="space-y-5">

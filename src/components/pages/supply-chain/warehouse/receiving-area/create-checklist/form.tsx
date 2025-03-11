@@ -277,10 +277,10 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                                 key={i}
                                 className="col-span-1 grid grid-cols-2 gap-2"
                               >
-                                <span className="rounded border bg-white px-2 py-1 text-sm">
+                                <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
                                   {weight.srNumber || "-"}
                                 </span>
-                                <span className="rounded border bg-white px-2 py-1 text-sm">
+                                <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
                                   {weight.grossWeight || "-"}
                                 </span>
                               </div>

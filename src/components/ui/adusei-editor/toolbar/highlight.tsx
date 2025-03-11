@@ -22,7 +22,7 @@ const HighlightColorButton = ({ editor }: Props) => {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-7 min-w-7 shrink-0 flex-col items-center justify-center overflow-hidden rounded-sm px-1.5 text-sm hover:bg-neutral-200/80"
+          className="flex h-7 min-w-7 shrink-0 flex-col items-center justify-center overflow-hidden rounded-2xl px-1.5 text-sm hover:bg-neutral-200/80"
         >
           <Icon name="Highlighter" className="size-4" />
         </button>

@@ -214,7 +214,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                       //   type: InputTypes.LABEL,
                       //   title: renderUOM(productOptions, index),
                       //   className:
-                      //     "border border-neutral-input rounded-md px-2 py-1 text-sm font-semibold text-neutral-secondary",
+                      //     "border border-neutral-input rounded-2xl px-2 py-1 text-sm font-semibold text-neutral-secondary",
                       // },
                     ]}
                   />

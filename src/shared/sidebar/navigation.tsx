@@ -123,7 +123,7 @@ export const ROUTES: Route[] = [
             url: "/warehouse/stock-requisition",
           },
           {
-            title: "Stock Transfer Requests",
+            title: "Stock Transfer issues",
             url: "/warehouse/stock-transfer-requests",
           },
           {
@@ -232,6 +232,11 @@ export const ROUTES: Route[] = [
         url: "/production/plannings",
         icon: "FolderKanban",
         //    isActive: false,
+      },
+      {
+        title: "Stock Transfer Requests",
+        url: "/production/stock-transfer-requests",
+        icon: "ALargeSmall",
       },
       // {
       //   title: "Work Order",

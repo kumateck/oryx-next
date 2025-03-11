@@ -67,7 +67,7 @@ export function TeamSwitcher({
                 onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
+                <div className="flex size-6 items-center justify-center rounded-2xl border">
                   <team.logo className="size-4 shrink-0" />
                 </div>
                 {team.name}
@@ -76,7 +76,7 @@ export function TeamSwitcher({
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+              <div className="flex size-6 items-center justify-center rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
                 <Plus className="size-4" />
               </div>
               <div className="font-medium text-neutral-500 dark:text-neutral-400">

@@ -169,7 +169,7 @@ const AduseiEditor = ({
   return (
     <div
       className={cn(
-        "size-full overflow-x-auto rounded-md border border-neutral-input bg-white print:overflow-visible",
+        "size-full overflow-x-auto rounded-2xl border border-neutral-input bg-white print:overflow-visible",
         className,
       )}
     >
