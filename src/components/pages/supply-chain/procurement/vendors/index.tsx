@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
@@ -10,13 +11,16 @@ import {
   useGetApiV1ProcurementSupplierQuery,
   useLazyGetApiV1ProcurementSupplierQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 
 const Page = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
@@ -32,8 +36,12 @@ const Page = () => {
       pageSize,
     } as GetApiV1ProcurementSupplierApiArg);
 
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   const data = result?.data || [];
   // const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +50,7 @@ const Page = () => {
     <div>
       <PageWrapper className="w-full space-y-2 py-1">
         <div className="flex items-center justify-between py-2">
-          <PageTitle title="Approved Vendors" />
+          <PageTitle title="Vendor Lists" />
           <div className="flex items-center justify-end gap-2">
             <Link href={"/procurement/vendors/create"}>
               <Button

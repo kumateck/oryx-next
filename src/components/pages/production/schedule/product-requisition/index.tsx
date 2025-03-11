@@ -1,7 +1,7 @@
 "use client";
 
 import { RowSelectionState } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -29,6 +29,7 @@ import { MaterialRequestDto } from "../details/products/type";
 import TableCard from "./table";
 
 const Page = () => {
+  const router = useRouter();
   const { id, pid } = useParams();
   const scheduleId = id as string;
   const productId = pid as string;
@@ -162,9 +163,16 @@ const Page = () => {
     (item) => item.product?.id === productId,
   );
 
+  const onBack = () => {
+    router.back();
+  };
+
   return (
     <PageWrapper className="space-y-5">
-      <PageTitle title="Materials Purchase Requisition" />
+      <div className="flex items-center gap-2">
+        <Icon name="ArrowLeft" onClick={onBack} className="cursor-pointer" />
+        <PageTitle title="Materials Purchase Requisition" />
+      </div>
       <ScrollableWrapper className="space-y-5">
         {isRawLoading ? (
           <SkeletonLoadingPage />

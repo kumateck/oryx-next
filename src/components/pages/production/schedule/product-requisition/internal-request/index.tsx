@@ -23,6 +23,7 @@ import {
   Units,
   convertToSmallestUnit,
   getLargestUnit,
+  getSmallestUnit,
   isErrorResponse,
 } from "@/lib";
 import { useCodeGen } from "@/lib/code-gen";
@@ -106,7 +107,10 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
           sources: data.sources?.map((item) => {
             return {
               fromDepartmentId: item.department?.value as string,
-              quantity: item.quantity,
+              quantity: convertToSmallestUnit(
+                item.quantity,
+                getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+              ).value,
             };
           }),
         },

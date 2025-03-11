@@ -107,15 +107,14 @@ const ChecklistForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
+                register: register(
+                  "certificateOfAnalysisDelivered" as Path<TFieldValues>,
+                ),
                 label: "Certificate of Analysis Delivered?",
-                control: control as Control,
-                type: InputTypes.SELECT,
-                name: "certificateOfAnalysisDelivered",
+                type: InputTypes.TEXT,
+                readOnly: true,
                 required: true,
-                onModal: true,
-                // defaultValue: checklistBooleanOptions?.[1] || null,
-                placeholder: "Select Option",
-                options: checklistBooleanOptions,
+                placeholder: "Enter Supplier Status",
                 errors,
               },
               {
