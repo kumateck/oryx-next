@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -19,6 +20,7 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
+  const router = useRouter();
 
   const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1ProcurementShipmentDocumentQuery();
@@ -49,6 +51,9 @@ const Page = () => {
       </div>
 
       <ServerDatatable
+        onRowClick={(row) => {
+          router.push(`/logistics/shipment-documents/${row.id}/details`);
+        }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
