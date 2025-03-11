@@ -74,7 +74,14 @@ const AssignLocationDialog = ({
     resolver: LocationValidator,
     mode: "onSubmit",
     defaultValues: {
-      locations: [],
+      locations: [
+        {
+          rackId: { label: "", value: "" },
+          shelfId: { label: "", value: "" },
+          quantity: 0,
+          note: "",
+        },
+      ],
     },
   });
 
