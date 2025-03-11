@@ -89,13 +89,13 @@ const AllStockByMaterial = ({
                       )}
                     </th>
                     <td className="px-6 py-4">
-                      {item.warehouse?.type === WarehouseType.RawMaterialStorage
+                      {item.warehouse?.type === WarehouseType.RawMaterial
                         ? convertToLargestUnit(
                             item.stockQuantity as number,
                             getSmallestUnit(uomName as Units),
                           ).value
                         : item.stockQuantity}
-                      {item.warehouse?.type === WarehouseType.RawMaterialStorage
+                      {item.warehouse?.type === WarehouseType.PackagedMaterial
                         ? convertToLargestUnit(
                             item.stockQuantity as number,
                             getSmallestUnit(uomName as Units),

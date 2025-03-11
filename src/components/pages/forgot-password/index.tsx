@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
-import { InputTypes, routes } from "@/lib/constants";
+import { InputTypes, routes } from "@/lib";
 import {
   PostApiV1AuthForgotPasswordApiArg,
   usePostApiV1AuthForgotPasswordMutation,

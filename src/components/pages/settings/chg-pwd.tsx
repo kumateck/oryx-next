@@ -2,7 +2,7 @@
 // import { useForm } from "react-hook-form";
 // import { toast } from "sonner";
 // import { Button, Icon } from "@/components/ui";
-// import { InputTypes } from "@/lib/constants";
+// import { InputTypes } from "@/lib";
 // import {
 //   PostApiV1AuthChangePasswordApiArg,
 //   ResetPasswordRequest,

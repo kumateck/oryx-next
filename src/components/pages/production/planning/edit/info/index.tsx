@@ -16,13 +16,7 @@ import {
   getSmallestUnit,
   isErrorResponse,
 } from "@/lib";
-import {
-  COLLECTION_TYPES,
-  DepartmentType,
-  Option,
-  Units,
-  routes,
-} from "@/lib/constants";
+import { COLLECTION_TYPES, DepartmentType, Option, Units, routes } from "@/lib";
 import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,

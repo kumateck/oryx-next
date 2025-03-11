@@ -17,7 +17,7 @@ import {
   RawLocationType,
   SupplierStatus,
   Units,
-} from "./constants";
+} from ".";
 import {
   NamingType,
   ProductionScheduleProcurementDto,

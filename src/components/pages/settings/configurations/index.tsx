@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { COLLECTION_TYPES, EMaterialKind } from "@/lib/constants";
+import { COLLECTION_TYPES, EMaterialKind } from "@/lib";
 import { splitWords } from "@/lib/utils";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";

@@ -10,14 +10,14 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { Option, WarehouseType } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   useLazyGetApiV1WarehouseLocationQuery,
   useLazyGetApiV1WarehouseRackQuery,
   usePostApiV1WarehouseByLocationIdRackMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
@@ -75,7 +75,9 @@ const Create = ({ isOpen, onClose }: Props) => {
       page,
     }).unwrap();
     const options = res?.data?.map((item) => ({
-      label: item.name + `(${item.warehouse?.name})`,
+      label:
+        item.name +
+        `(${splitWords(WarehouseType[item.warehouse?.type as number])})`,
       value: item.id,
     })) as Option[];
 
@@ -114,7 +116,7 @@ const Create = ({ isOpen, onClose }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Add Rack</span>{" "}
+              <span>Save</span>{" "}
             </Button>
           </DialogFooter>
         </form>

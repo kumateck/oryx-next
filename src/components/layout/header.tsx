@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 import { cn } from "@/lib";
 
-// import { HEADER_HEIGHT_CLASS } from "@/lib/constants";
+// import { HEADER_HEIGHT_CLASS } from "@/lib";
 
 interface HeaderProps {
   headerStart?: ReactNode;

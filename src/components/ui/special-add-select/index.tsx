@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Option } from "@/lib/constants";
+import { Option } from "@/lib";
 import { cn } from "@/lib/utils";
 
 import { Button } from "../button";

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon } from "@/components/ui";
-import { InputTypes } from "@/lib/constants";
+import { InputTypes } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import StepWrapper from "@/shared/wrapper";

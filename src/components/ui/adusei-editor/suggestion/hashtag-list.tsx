@@ -2,7 +2,7 @@ import _ from "lodash";
 import Image from "next/image";
 import { Fragment, useState } from "react";
 
-// import { ModelType } from "@/lib/constants";
+// import { ModelType } from "@/lib";
 // import { getModelActionsUrl } from "@/lib/utils";
 import { SuggestionItem, SuggestionProps } from ".";
 import {

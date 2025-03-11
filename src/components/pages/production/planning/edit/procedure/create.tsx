@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib/constants";
+import { COLLECTION_TYPES, Option } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
   usePostApiV1CollectionMutation,

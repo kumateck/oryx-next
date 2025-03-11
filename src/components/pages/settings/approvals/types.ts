@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Option, RequisitionType } from "@/lib/constants";
+import { Option, RequisitionType } from "@/lib";
 
 const IdSchema = z.object({
   value: z.string(),
