@@ -2,7 +2,8 @@
 
 import { RowSelectionState } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon, Separator } from "@/components/ui";
@@ -13,10 +14,12 @@ import {
   getMatchingIds,
 } from "@/lib";
 import {
-  useGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery,
-  useGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery,
   useGetApiV1ProductionScheduleByScheduleIdQuery,
+  useLazyGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
@@ -29,26 +32,40 @@ const Page = () => {
   const { id, pid } = useParams();
   const scheduleId = id as string;
   const productId = pid as string;
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [rRowSelection, setRRowSelection] = useState<RowSelectionState>({});
   const [pRowSelection, setPRowSelection] = useState<RowSelectionState>({});
   const [purchaseLists, setPurchaseLists] = useState<MaterialRequestDto[]>([]);
 
   const [isOpenPurchase, setIsOpenPurchase] = useState(false);
 
-  const { data: materialResponse, isLoading: isRawLoading } =
-    useGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery(
-      {
-        productionScheduleId: scheduleId,
-        productId,
-      },
-    );
-  const { data: packageResponse, isLoading: isPackageLoading } =
-    useGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery(
-      {
-        productionScheduleId: scheduleId,
-        productId,
-      },
-    );
+  const [
+    loadRawMaterials,
+    { data: materialResponse, isLoading: isRawLoading },
+  ] =
+    useLazyGetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdQuery();
+  const [
+    loadPackMaterials,
+    { data: packageResponse, isLoading: isPackageLoading },
+  ] =
+    useLazyGetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdQuery();
+
+  useEffect(() => {
+    loadRawMaterials({
+      productionScheduleId: scheduleId,
+      productId,
+    });
+    loadPackMaterials({
+      productionScheduleId: scheduleId,
+      productId,
+    });
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadRawMaterials, loadPackMaterials, triggerReload]);
 
   const { data } = useGetApiV1ProductionScheduleByScheduleIdQuery({
     scheduleId,
