@@ -79,6 +79,11 @@ export enum CodeModelTypes {
   GRNNumber = "GrnNumber",
 }
 
+export enum StockTransfer {
+  New = 0,
+  Approved = 1,
+  Issued = 2,
+}
 export enum ProductionStatus {
   New = 0,
   Checked = 1,
