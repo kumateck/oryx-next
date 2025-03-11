@@ -1,10 +1,10 @@
 "use client";
 
 import { format } from "date-fns";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
-import { Card, CardContent } from "@/components/ui";
+import { Card, CardContent, Icon } from "@/components/ui";
 import {
   // MaterialDistributionDto,
   useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery,
@@ -25,7 +25,7 @@ const ScheduleDetail = () => {
   const shipmentDocumentId = id as string;
   const [loadShipment, { data: result, isLoading, isFetching }] =
     useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery();
-
+  const router = useRouter();
   useEffect(() => {
     loadShipment({
       shipmentDocumentId,
@@ -46,6 +46,18 @@ const ScheduleDetail = () => {
 
   return (
     <ScrollablePageWrapper>
+      <div className="mb-2 flex items-center gap-2">
+        <Icon
+          name="ArrowLeft"
+          className="h-5 w-5 text-black hover:cursor-pointer"
+          onClick={() => {
+            router.back();
+          }}
+        />
+        <span className="font-Medium text-primary-500 text-base">
+          Distribution List
+        </span>
+      </div>
       <div className="space-y-3">
         <PageTitle title={`Distribution for ${shipmentDocInfo?.code}`} />
         <Card>
