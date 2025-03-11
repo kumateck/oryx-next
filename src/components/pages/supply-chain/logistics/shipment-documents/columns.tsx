@@ -151,6 +151,7 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
 
   {
     id: "actions",
+    meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
