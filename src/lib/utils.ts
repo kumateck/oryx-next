@@ -8,6 +8,7 @@ import { OptionsUpdate } from "@/components/pages/production/schedule/create/for
 import { APP_NAME, CODE_SETTINGS, Option } from "./constants";
 import {
   BatchSizeType,
+  BatchStatus,
   FloorType,
   MaterialStatus,
   PackLocationType,
@@ -799,6 +800,19 @@ export const SupplierTypeOptions = Object.values(SupplierStatus)
   .map((enumValue) => {
     // Convert the numeric value back to the string enum key
     const enumKey = SupplierStatus[enumValue as SupplierStatus];
+    return {
+      label: enumKey, // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
+export const BatchStatusOptions = Object.values(BatchStatus)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = SupplierStatus[enumValue as BatchStatus];
     return {
       label: enumKey, // e.g., "Full"
       value: String(enumValue), // e.g., "0"
