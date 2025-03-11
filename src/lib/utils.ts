@@ -5,19 +5,29 @@ import { z } from "zod";
 
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
-// import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
+import { APP_NAME, CODE_SETTINGS, Option } from "./constants";
 import {
-  APP_NAME,
   BatchSizeType,
-  CODE_SETTINGS,
   FloorType,
   MaterialStatus,
-  Option,
   PackLocationType,
   RawLocationType,
   SupplierStatus,
   Units,
-} from ".";
+} from "./enum";
+// import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
+// import {
+//   APP_NAME,
+//   BatchSizeType,
+//   CODE_SETTINGS,
+//   FloorType,
+//   MaterialStatus,
+//   Option,
+//   PackLocationType,
+//   RawLocationType,
+//   SupplierStatus,
+//   Units,
+// } from "./";
 import {
   NamingType,
   ProductionScheduleProcurementDto,
@@ -101,10 +111,13 @@ export interface ErrorResponse {
   type: string;
   title: string;
   status: number;
+  data?: {
+    errors: ErrorDetail[];
+  };
   errors: ErrorDetail[];
 }
 export const isErrorResponse = (error: ErrorResponse) => {
-  const err = error.errors;
+  const err = error.errors ?? error?.data?.errors;
   const errorResponse = err[0];
   console.log("Error message", errorResponse.description);
   return errorResponse;
@@ -191,7 +204,8 @@ export function isStockUnAvailable(
     if (
       item.quantityOnHand &&
       item.quantityNeeded &&
-      item.quantityOnHand < item.quantityNeeded
+      item.quantityOnHand < item.quantityNeeded &&
+      Number(item.status) === MaterialStatus.NoSource
     ) {
       console.log("I cannot process, I need to add a stock.");
       return true; // At least one stock is insufficient

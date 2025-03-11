@@ -73,7 +73,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },
   ] = useLazyGetApiV1DepartmentQuery();
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
+    isRawMaterial: true,
+  });
 
   const uomOptions = uomResponse?.map((uom) => ({
     label: uom.symbol,

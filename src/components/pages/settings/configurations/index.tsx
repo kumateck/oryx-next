@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
 import { COLLECTION_TYPES, EMaterialKind } from "@/lib";
-import { splitWords } from "@/lib/utils";
+import { splitWords } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
@@ -111,6 +111,16 @@ const FormOptionTabs: TabProps[] = [
         icon: "Tag",
         modelType: COLLECTION_TYPES.Country,
         title: "Country",
+      },
+    ],
+  },
+  {
+    title: "Container",
+    views: [
+      {
+        icon: "Tag",
+        modelType: COLLECTION_TYPES.PackageStyle,
+        title: "Pack Style",
       },
     ],
   },

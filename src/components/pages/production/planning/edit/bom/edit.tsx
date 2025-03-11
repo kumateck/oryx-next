@@ -84,17 +84,23 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
     value: uom.id,
   })) as Option[];
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
+    isRawMaterial: true,
+  });
 
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const uomOptions = uomResponse
+    // ?.filter((item) => item.isRawMaterial)
+    ?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
 
   const onSubmit = (data: BomRequestDto) => {
     setItemLists((prevState) => {
       // Check if the item already exists in the list
-      const itemIndex = prevState.findIndex((item) => item.id === details.id);
+      const itemIndex = prevState.findIndex(
+        (item) => item.idIndex === details.idIndex,
+      );
 
       if (itemIndex !== -1) {
         // Update the existing item if found

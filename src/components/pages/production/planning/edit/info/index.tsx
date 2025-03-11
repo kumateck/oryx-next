@@ -223,20 +223,22 @@ const ProductInfo = () => {
     }
   };
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
+    isRawMaterial: true,
+  });
+  const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
+    isRawMaterial: false,
+  });
 
-  const uomOptions = uomResponse
-    ?.filter((item) => item.isRawMaterial)
-    ?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
-  const packingUomOptions = uomResponse
-    ?.filter((item) => !item.isRawMaterial)
-    ?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
+  const uomOptions = uomResponse?.map((uom) => ({
+    label: uom.symbol,
+    value: uom.id,
+  })) as Option[];
+
+  const packingUomOptions = packingUomResponse?.map((uom) => ({
+    label: uom.symbol,
+    value: uom.id,
+  })) as Option[];
 
   return (
     <PageWrapper className="relative w-full">

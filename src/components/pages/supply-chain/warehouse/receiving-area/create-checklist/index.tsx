@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
+  COLLECTION_TYPES,
   ChecklistBoolean,
   ErrorResponse,
   Option,
@@ -26,10 +27,11 @@ import {
   CreateChecklistRequest,
   Intactness,
   MaterialKind,
-  useGetApiV1CollectionUomQuery,
+  PostApiV1CollectionApiArg,
   useGetApiV1ProductQuery,
   useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1WarehouseDistributedMaterialByIdQuery,
+  usePostApiV1CollectionMutation,
   usePostApiV1WarehouseChecklistMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -59,34 +61,11 @@ const CreateChecklist = () => {
 
   const [loadDetails] = useLazyGetApiV1WarehouseDistributedMaterialByIdQuery();
 
-  // console.log(data, "data");
-  // const distributedMaterial = data?.data?.find(
-  //   (item) => item.id === distributedMaterialId,
-  // );
-
   const [checklistMutation, { isLoading }] =
     usePostApiV1WarehouseChecklistMutation();
 
-  // useEffect(() => {
-  //   if (data?.data) {
-  //     const distributedMaterial = data.data.find(
-  //       (item) => item.id === distributedMaterialId,
-  //     );
-  //     if (distributedMaterial) {
-  //       // reset({
-  //       //   materialName: distributedMaterial.material?.name || "N/A",
-  //       //   supplierStatus: distributedMaterial.supplier?.status || 0,
-  //       //   invoiceNumber: distributedMaterial.shipmentInvoice?.code || "N/A",
-  //       //   supplierName: distributedMaterial.supplier?.name || "N/A",
-  //       //   manufacturerName: distributedMaterial.manufacturer?.name || "N/A",
-  //       // });
-  //     }
-  //   }
-  // }, [data, distributedMaterialId, reset]);
-
   useEffect(() => {
     handleLoadDetails(distributedMaterialId);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [distributedMaterialId]);
 
@@ -155,33 +134,24 @@ const CreateChecklist = () => {
     uom: string;
     uomId: string;
   }>();
-  // console.log(materialQty, `materialQty`);
-  // useEffect(() => {
-  //   const total = fields.reduce((acc, curr) => {
-  //     return (
-  //       acc +
-  //       Number(curr.quantityPerContainer) * Number(curr.numberOfContainers)
-  //     );
-  //   }, 0);
-  //   const diff = materialQty - total;
-  //   setMaterialQty(diff);
-  // }, [fields.length]);
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery();
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
 
-  // const uomOptions = uomResponse
-  //   ?.filter((item) => item.isRawMaterial)
-  //   ?.map((uom) => ({
-  //     label: uom.symbol,
-  //     value: uom.id,
-  //   })) as Option[];
+  useEffect(() => {
+    loadCollection({
+      body: [COLLECTION_TYPES.PackageStyle],
+    } as PostApiV1CollectionApiArg).unwrap();
 
-  const packingUomOptions = uomResponse
-    // ?.filter((item) => !item.isRawMaterial)
-    ?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const packingUomOptions = collectionResponse?.[
+    COLLECTION_TYPES.PackageStyle
+  ]?.map((uom) => ({
+    label: uom.symbol,
+    value: uom.id,
+  })) as Option[];
 
   const checklistBooleanOptions: Option[] = [
     { label: "Yes", value: ChecklistBoolean.Yes.toString() },

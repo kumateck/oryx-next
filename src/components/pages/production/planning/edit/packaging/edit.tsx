@@ -81,7 +81,9 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
   const onSubmit = (data: PackagingRequestDto) => {
     setItemLists((prevState) => {
       // Check if the item already exists in the list
-      const itemIndex = prevState.findIndex((item) => item === details);
+      const itemIndex = prevState.findIndex(
+        (item) => item.idIndex === details.idIndex,
+      );
 
       if (itemIndex !== -1) {
         // Update the existing item if found
