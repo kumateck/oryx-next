@@ -9,6 +9,11 @@ import {
 
 export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
   {
+    accessorKey: "batchNumber",
+    header: "Batch Number",
+    cell: ({ row }) => <div>{row.original.materialBatch?.batchNumber}</div>,
+  },
+  {
     accessorKey: "warehouseLocation",
     header: "Warehouse Location",
     cell: ({ row }) => <div>{row.original.warehouseLocationShelf?.code}</div>,
@@ -101,13 +106,13 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
-        {/* {row.original?.batch?.manufacturingDate
+        {row.original?.materialBatch?.manufacturingDate
           ? format(
-              row.original?.batch?.manufacturingDate as string,
+              row.original?.materialBatch?.manufacturingDate as string,
               "MMMM dd, yyyy",
             )
-          : "-"} */}
-        {row.original.arNumber}
+          : "-"}
+        {/* {row.original.arNumber} */}
       </div>
     ),
   },
@@ -116,10 +121,13 @@ export const bincardColumns: ColumnDef<BinCardInformationDto>[] = [
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {/* {row.original?.batch?.expiryDate
-          ? format(row.original?.batch?.expiryDate as string, "MMMM dd, yyyy")
-          : "-"} */}
-        {row.original.arNumber}
+        {row.original?.materialBatch?.expiryDate
+          ? format(
+              row.original?.materialBatch?.expiryDate as string,
+              "MMMM dd, yyyy",
+            )
+          : "-"}
+        {/* {row.original.arNumber} */}
       </div>
     ),
   },
