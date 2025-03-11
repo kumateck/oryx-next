@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { StockTransfer } from "@/lib";
 import {
+  DepartmentStockTransferDtoRead,
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery, // useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
 } from "@/lib/redux/api/openapi.generated";
 // import AccessTabs from "@/shared/access";
@@ -14,7 +16,7 @@ import { getColumns } from "./columns";
 import TransferTable from "./table";
 
 const Page = () => {
-  // const router = useRouter();
+  const router = useRouter();
 
   // const searchParams = useSearchParams();
   // const type = searchParams.get("type") as unknown as TransferType; // Extracts 'type' from URL
@@ -75,6 +77,10 @@ const Page = () => {
   //   router.push(pathname + "?" + createQueryString("type", tabType.toString()));
   // };
 
+  const onRowClick = (row: DepartmentStockTransferDtoRead) => {
+    console.log(row);
+    router.push(`/warehouse/stock-transfer-requests/${row.id}/details`);
+  };
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -103,6 +109,7 @@ const Page = () => {
         pageSize={pageSize}
         setPageSize={setPageSize}
         setPage={setPage}
+        onRowClick={onRowClick}
       />
     </PageWrapper>
   );

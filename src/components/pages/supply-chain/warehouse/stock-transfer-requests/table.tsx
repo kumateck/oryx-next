@@ -14,6 +14,7 @@ interface Props {
   setPageSize: React.Dispatch<React.SetStateAction<number>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   columns: ColumnDef<DepartmentStockTransferDtoRead>[];
+  onRowClick?: (row: DepartmentStockTransferDtoRead) => void;
 }
 const TransferTable = ({
   response,
@@ -22,6 +23,7 @@ const TransferTable = ({
   pageSize,
   setPageSize,
   setPage,
+  onRowClick,
 }: Props) => {
   return (
     <ServerDatatable
@@ -30,6 +32,12 @@ const TransferTable = ({
       isLoading={isLoading}
       setPage={setPage}
       setPageSize={setPageSize}
+      onRowClick={(row) => {
+        console.log(row);
+        if (onRowClick) {
+          onRowClick(row);
+        }
+      }}
       meta={{
         pageIndex: response?.pageIndex as number,
         pageCount: response?.pageCount as number,

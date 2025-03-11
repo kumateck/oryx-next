@@ -1,4 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+
+import {
+  BatchStatus,
+  Units,
+  convertToLargestUnit,
+  getSmallestUnit,
+} from "@/lib";
+import { BatchToSupplyRead } from "@/lib/redux/api/openapi.generated";
 
 export interface BatchColumns {
   id?: string;
@@ -16,25 +25,56 @@ export interface BatchColumns {
   expiryDate?: string;
 }
 
-export const getColumns = (): ColumnDef<BatchColumns>[] => [
+export const getColumns = (): ColumnDef<BatchToSupplyRead>[] => [
   {
     accessorKey: "code",
     header: "Material Code",
-    cell: ({ row }) => <div>{row.original.batchNumber ?? "N/A"}</div>,
+    cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? "N/A"}</div>,
   },
   {
-    accessorKey: "materialName",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original.materialName ?? "N/A"}</div>,
+    accessorKey: "totalqty",
+    header: "Available Qty",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original?.batch?.remainingQuantity as number,
+        getSmallestUnit(row.original?.batch?.uoM?.symbol as Units),
+      );
+      return <div>{`${qty.value} ${qty.unit}`}</div>;
+    },
   },
   {
-    accessorKey: "requestedQuantity",
-    header: "Requested Quantity",
-    cell: ({ row }) => <div>{row.original.manufacturerName ?? "N/A"}</div>,
+    accessorKey: "requestedQty",
+    header: "Requested Qty",
+    // cell: ({ row }) => {
+    //   return <div>{row.original?.quantityToTake ?? "N/A"}</div>;
+    // },
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original?.quantityToTake as number,
+        getSmallestUnit(row.original?.batch?.uoM?.symbol as Units),
+      );
+      return <div>{`${qty.value} ${qty.unit}`}</div>;
+    },
   },
   {
-    accessorKey: "warehouseStock",
-    header: "Warehouse Stock",
-    cell: ({ row }) => <div>{row.original.status}</div>,
+    accessorKey: "expiryDate",
+    header: "Expiry Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original?.batch?.expiryDate
+          ? format(
+              new Date(row?.original?.batch?.expiryDate ?? ""),
+              "MMM d, yyyy",
+            )
+          : "N/A"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div>{BatchStatus[row.original.batch?.status as number]}</div>
+    ),
   },
 ];
