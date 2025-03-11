@@ -101,11 +101,11 @@ const Product = ({
       }).unwrap();
 
       setProduct(productResponse);
-      console.log(isStockUnAvailable(rResponse), "isStockUnAvailable raw");
-      console.log(isStockUnAvailable(pResponse), "isStockUnAvailable pack");
+      // console.log(isStockUnAvailable(rResponse), "isStockUnAvailable raw");
+      // console.log(isStockUnAvailable(pResponse), "isStockUnAvailable pack");
       const isnotAvailable =
         isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
-      console.log(isnotAvailable, "isnotAvailable");
+      // console.log(isnotAvailable, "isnotAvailable");
       if (isnotAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Purchase);
       }
