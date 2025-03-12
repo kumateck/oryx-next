@@ -50,6 +50,7 @@ export const CODE_SETTINGS = {
     PurchaseOrder: "PurchaseOrder",
     ShipmentDocument: "ShipmentDocument",
     GRNNumber: "GrnNumber",
+    StockTransfer: "StockTransfer",
   },
   nameTypes: {
     Time: 2,
