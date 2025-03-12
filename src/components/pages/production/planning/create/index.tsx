@@ -15,7 +15,7 @@ import {
   Option,
   Units,
   convertToSmallestUnit,
-  getSmallestUnit,
+  getLargestUnit,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -109,7 +109,7 @@ const Create = () => {
       categoryId: data.categoryId?.value,
       fullBatchSize: convertToSmallestUnit(
         data.fullBatchSize,
-        getSmallestUnit(data.baseUomId?.label as Units),
+        getLargestUnit(data.baseUomId?.label as Units),
       ).value,
       baseUomId: data.baseUomId?.value,
       equipmentId: data.equipment?.value,

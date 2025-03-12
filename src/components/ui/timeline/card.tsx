@@ -1,16 +1,47 @@
+// import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
-import { ActivityStepStatus, cn, getInitials } from "@/lib";
+import {
+  ActivityStepStatus,
+  ErrorResponse,
+  cn,
+  getInitials,
+  isErrorResponse,
+} from "@/lib";
+import { usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 
 import { AvatarStack } from "../avatar-stack";
+import { Button } from "../button";
+import { Icon } from "../icon";
 import { Label } from "../label";
 import { TimelineItemProps } from "./type";
 
 interface Props {
   item: TimelineItemProps;
   className?: string;
+  isComplete?: boolean;
+  inProgress?: boolean;
 }
-const TimelineCard = ({ item, className }: Props) => {
+const TimelineCard = ({ item, className, isComplete }: Props) => {
+  const dispatch = useDispatch();
+  const [updateActivity, { isLoading }] =
+    usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation();
+
+  const onComplete = async () => {
+    try {
+      await updateActivity({
+        productionStepId: item.id as string,
+        status: ActivityStepStatus.Completed,
+      }).unwrap();
+      toast.success("Activity completed successfully");
+      dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
   return (
     <div
       className={cn(
@@ -46,6 +77,15 @@ const TimelineCard = ({ item, className }: Props) => {
           )}
         </div>
         {item.extra}
+        {isComplete && (
+          <Button onClick={onComplete}>
+            {isLoading ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              ActivityStepStatus[ActivityStepStatus.Completed]
+            )}
+          </Button>
+        )}
       </div>
     </div>
   );

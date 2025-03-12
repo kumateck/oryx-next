@@ -1,23 +1,37 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
+// import { Icon } from "@/components/ui";
 import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
 import { ActivityStepStatus, fullname } from "@/lib";
-import { useGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import BgWrapper from "@/shared/bg-wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
 const Board = () => {
   const { id } = useParams();
   const activityId = id as string;
-  const { data } =
-    useGetApiV1ProductionScheduleActivityByProductionActivityIdQuery({
-      productionActivityId: activityId,
-    });
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const [loadActivity, { data, isLoading, isFetching }] =
+    useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery();
 
+  useEffect(() => {
+    if (activityId) {
+      loadActivity({ productionActivityId: activityId }).unwrap();
+    }
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activityId, triggerReload]);
   const steps = data?.steps;
 
   const activities = steps?.map((step) => ({
@@ -36,6 +50,8 @@ const Board = () => {
   })) as TimelineItemProps[];
   return (
     <BgWrapper>
+      {isLoading || (isFetching && <SkeletonLoadingPage />)}
+
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
           {data?.product?.name}

@@ -136,7 +136,7 @@ const ProductInfo = () => {
       basePackingQuantity: product?.basePackingQuantity,
       fullBatchSize: convertToLargestUnit(
         product?.fullBatchSize as number,
-        getLargestUnit(product?.baseUoM?.symbol as Units),
+        getSmallestUnit(product?.baseUoM?.symbol as Units),
       ).value,
       baseQuantity: product?.baseQuantity,
       categoryId: {
@@ -202,7 +202,7 @@ const ProductInfo = () => {
       categoryId: data.categoryId?.value,
       fullBatchSize: convertToSmallestUnit(
         data.fullBatchSize,
-        getSmallestUnit(defaultUom?.label as Units),
+        getLargestUnit(defaultUom?.label as Units),
       ).value,
       baseUomId: data.baseUomId?.value,
       basePackingUomId: data.basePackingUomId?.value,
