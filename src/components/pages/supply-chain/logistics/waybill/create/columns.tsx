@@ -1,50 +1,66 @@
-// Change the type in this line in the table file
-// defaultColumns?: ColumnDef<any>[];
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Units, convertToLargestUnit } from "@/lib";
-import { ShipmentInvoiceItemDtoRead } from "@/lib/redux/api/openapi.generated";
 
-export const getColumns = (): ColumnDef<ShipmentInvoiceItemDtoRead>[] => [
+import { MaterialRequestDto } from "./types";
+
+export const columns: ColumnDef<MaterialRequestDto>[] = [
   {
-    accessorKey: "materialCode",
+    accessorKey: "purchaseOrderCode",
+    header: "PO Code",
+  },
+  {
+    accessorKey: "code",
     header: "Material Code",
-    cell: ({ row }) => <div>{row.original?.material?.code}</div>,
   },
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
   },
   {
-    accessorKey: "manufacturerName",
-    header: "Manufacturer Name",
-    cell: ({ row }) => <div>{row.original?.manufacturer?.name}</div>,
+    accessorKey: "uomName",
+    header: "Unit of Measurement",
   },
   {
-    accessorKey: "orderQuantity",
-    header: "Order Quantity",
+    accessorKey: "costPrice",
+    header: "Price per Unit",
+  },
+  {
+    accessorKey: "expectedQuantity",
+    header: "Expected Quantity",
     cell: ({ row }) => {
-      const converted = convertToLargestUnit(
-        row.original.receivedQuantity as number,
-        row.original?.uoM?.symbol as Units,
+      const qty = convertToLargestUnit(
+        row.original.expectedQuantity as number,
+        row.original.uomName as Units,
       );
       return (
-        <div>
-          {converted?.value}
-          {converted?.unit}
+        <div className="">
+          {qty.value} {qty.unit}
         </div>
       );
     },
   },
   {
-    accessorKey: "pricePerUnit",
-    header: "Price Per Unit",
-    cell: ({ row }) => <div>{row.original?.price}</div>,
+    accessorKey: "receivedQuantity",
+    header: "Received Quantity",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.receivedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "totalCost",
-    header: "Total Cost",
-    cell: ({}) => <div>{""}</div>,
+    accessorKey: "manufacturer",
+    header: "Manufacturers",
+  },
+  {
+    accessorKey: "reason",
+    header: "Reason",
   },
 ];

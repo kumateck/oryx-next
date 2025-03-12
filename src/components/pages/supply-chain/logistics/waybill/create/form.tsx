@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Control,
   FieldErrors,
@@ -8,21 +8,28 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardTitle } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+
+import TableForData from "./table";
+import { MaterialRequestDto } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   invoiceOptions: Option[];
+  materialLists: MaterialRequestDto[];
+  setMaterialLists: Dispatch<SetStateAction<MaterialRequestDto[]>>;
 }
 const WaybillForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   invoiceOptions,
+  materialLists,
+  setMaterialLists,
 }: Props<TFieldValues, TContext>) => {
   return (
     <ScrollablePageWrapper className="w-full">
@@ -49,13 +56,31 @@ const WaybillForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Attachments</CardTitle>
-        </CardHeader>
-        <CardContent></CardContent>
+      <Card className="my-5 space-y-4 p-5">
+        <CardTitle>Invoice Item</CardTitle>
+        <CardContent>
+          <TableForData
+            lists={materialLists}
+            // Remove setItemLists if not used for editing
+            setItemLists={setMaterialLists}
+          />
+        </CardContent>
       </Card>
+
+      <div>
+        <FormWizard
+          config={[
+            {
+              type: InputTypes.DRAGNDROP,
+              label: "Attach Documents",
+              name: `attachments`,
+              defaultValue: null,
+              control: control as Control,
+              errors,
+            },
+          ]}
+        />
+      </div>
     </ScrollablePageWrapper>
   );
 };
