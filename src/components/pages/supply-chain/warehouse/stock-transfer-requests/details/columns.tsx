@@ -28,7 +28,7 @@ export interface BatchColumns {
 export const getColumns = (): ColumnDef<BatchToSupplyRead>[] => [
   {
     accessorKey: "code",
-    header: "Material Code",
+    header: "Material Batch #",
     cell: ({ row }) => <div>{row.original.batch?.batchNumber ?? "N/A"}</div>,
   },
   {

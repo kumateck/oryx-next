@@ -84,49 +84,57 @@ const GRNDetail = () => {
             <div className="flex justify-start gap-4">
               <div className="w-full space-y-2">
                 <span className="font-Medium block text-lg">
-                  Stock Transfer Details
+                  {stockTransferResponse?.material?.code}
                 </span>
-                <div className="grid w-full grid-cols-3 gap-2">
-                  <div className="space-y-1">
-                    <span className="text-sm font-normal text-neutral-secondary">
-                      Request Department:{" "}
+                <div className="grid w-full grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <span className="block text-sm font-normal text-neutral-400">
+                      Material
                     </span>
-                    <span className="text-sm font-normal text-neutral-dark">
-                      {stockTransferResponse?.fromDepartment?.name}
+                    <span className="text-primary-500 block text-sm font-normal">
+                      {stockTransferResponse?.material?.name}
                     </span>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-sm font-normal text-neutral-secondary">
-                      Requisition Date:{" "}
+                  <div className="space-y-2">
+                    <span className="block text-sm font-normal text-neutral-400">
+                      Request Department
                     </span>
-                    <span className="text-sm font-normal text-neutral-dark">
+                    <span className="text-primary-500 block text-sm font-normal">
+                      {stockTransferResponse?.toDepartment?.name}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="block text-sm font-normal text-neutral-400">
+                      Request Date
+                    </span>
+                    <span className="text-primary-500 block text-sm font-normal">
                       {stockTransferResponse?.createdAt
                         ? format(
                             stockTransferResponse?.createdAt,
-                            "yyyy d MMM, h:mm:ss a",
+                            "MMM d, yyyy. h:mma",
                           )
-                        : "-"}
+                        : ""}
                     </span>
                   </div>{" "}
-                  <div className="space-y-1">
-                    <span className="text-sm font-normal text-neutral-secondary">
-                      Approved Date:{" "}
+                  <div className="space-y-2">
+                    <span className="block text-sm font-normal text-neutral-400">
+                      Approval Date
                     </span>
-                    <span className="text-sm font-normal text-neutral-dark">
+                    <span className="text-primary-500 block text-sm font-normal">
                       {stockTransferResponse?.approvedAt
                         ? format(
                             stockTransferResponse?.approvedAt,
-                            "yyyy d MMM, h:mm:ss a",
+                            "MMM d, yyyy. h:mma",
                           )
-                        : "-"}
+                        : ""}
                     </span>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-sm font-normal text-neutral-secondary">
-                      Justification:{" "}
+                  <div className="space-y-2">
+                    <span className="block text-sm font-normal text-neutral-400">
+                      Justification
                     </span>
-                    <span className="inline text-sm font-normal text-neutral-dark">
-                      {/* {stockTransferResponse?.} */}
+                    <span className="text-primary-500 block text-sm font-normal">
+                      {/* {stockTransferResponse?.a} */}
                     </span>
                   </div>
                 </div>
@@ -139,6 +147,7 @@ const GRNDetail = () => {
           <ClientDatatable
             columns={getColumns()}
             data={transferResponse ?? []}
+            normalTable
           />
         </Card>
       </div>
