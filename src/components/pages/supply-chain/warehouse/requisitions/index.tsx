@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { RequisitionType } from "@/lib";
-import { useLazyGetApiV1RequisitionQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1RequisitionDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -17,7 +17,7 @@ const Page = () => {
   const [page, setPage] = useState(1);
 
   const [loadData, { isFetching, data: result, isLoading }] =
-    useLazyGetApiV1RequisitionQuery();
+    useLazyGetApiV1RequisitionDepartmentQuery();
 
   useEffect(() => {
     loadData({
