@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import PageWrapper from "@/components/layout/wrapper";
 import { StockTransfer, TransferType } from "@/lib";
 import {
+  useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -20,6 +21,7 @@ import TransferTable from "./table";
 
 const Page = () => {
   const router = useRouter();
+  const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchParams = useSearchParams();
@@ -111,7 +113,7 @@ const Page = () => {
         <TransferTable
           response={responseInbound}
           isLoading={isLoadingInbound || isFetchingInbound}
-          columns={getColumns(type)}
+          columns={getColumns(type, authUser?.department?.id as string)}
           pageSize={pageSize}
           setPageSize={setPageSize}
           setPage={setPage}
@@ -120,7 +122,7 @@ const Page = () => {
         <TransferTable
           response={responseOutbound}
           isLoading={isLoadingOutbound || isFetchingOutbound}
-          columns={getColumns(type)}
+          columns={getColumns(type, authUser?.department?.id as string)}
           pageSize={pageSize}
           setPageSize={setPageSize}
           setPage={setPage}

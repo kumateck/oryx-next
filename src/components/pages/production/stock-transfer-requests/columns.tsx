@@ -27,6 +27,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 
 export const getColumns = (
   type: TransferType,
+  currentDepartment: string,
 ): ColumnDef<DepartmentStockTransferDtoRead>[] => [
   {
     accessorKey: "date",
@@ -36,6 +37,7 @@ export const getColumns = (
         {row.original.createdAt
           ? format(row.original.createdAt, "MMM d, yyyy")
           : "-"}
+        {currentDepartment}
       </div>
     ),
   },
@@ -50,7 +52,13 @@ export const getColumns = (
       Number(type) === TransferType.Inbound
         ? "Request Department"
         : "Supplier Department",
-    cell: ({ row }) => <div>{row.original.toDepartment?.name}</div>,
+    cell: ({ row }) => (
+      <div>
+        {Number(type) === TransferType.Inbound
+          ? row.original.fromDepartment?.name
+          : row.original.toDepartment?.name}
+      </div>
+    ),
   },
   {
     accessorKey: "qty",
@@ -97,7 +105,7 @@ export function DataTableRowActions<
   TData extends DepartmentStockTransferDtoRead,
 >({ row }: { row: Row<TData> }) {
   const dispatch = useDispatch();
-  console.log(row.original);
+  // console.log(row.original);
   const [approveMutation, { isLoading: isLoadingApprove }] =
     usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation();
   const [rejectMutation, { isLoading: isLoadingReject }] =
