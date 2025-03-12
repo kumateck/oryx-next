@@ -18,6 +18,7 @@ import {
 } from "@/components/ui";
 import {
   CodeModelTypes,
+  EMaterialKind,
   ErrorResponse,
   Option,
   Units,
@@ -93,7 +94,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     setCodeToInput,
   );
   const onSubmit = async (data: TransferRequestDto) => {
-    console.log(data);
+    // console.log(data);
 
     try {
       await saveMutation({
@@ -147,6 +148,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
       sources,
       materialInfo?.material?.id as string,
       materialInfo?.baseUoM?.symbol as Units,
+      materialInfo?.material?.kind as EMaterialKind,
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +157,9 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     sources: TransferRequestDto["sources"],
     materialId: string,
     unit: Units,
+    kind: EMaterialKind,
   ) => {
+    // console.log(sources);
     sources.forEach((source) => {
       if (source.quantity > 0) {
         handleLoadDepartmentEligible(
@@ -163,6 +167,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
           materialId,
           source.quantity,
           unit,
+          kind,
         );
       }
     });
@@ -172,12 +177,16 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     materialId: string,
     quantity: number,
     unit: Units,
+    kind: EMaterialKind,
   ) => {
     try {
-      const qty = convertToSmallestUnit(quantity, getLargestUnit(unit));
+      const qty =
+        Number(kind) === EMaterialKind.Raw
+          ? convertToSmallestUnit(quantity, getLargestUnit(unit))
+          : { value: 0 };
       const response = await loadQuantityByDepartment({
         materialId,
-        quantity: qty.value,
+        quantity: Number(kind) === EMaterialKind.Raw ? qty.value : quantity,
       }).unwrap();
       setManufacturerOptionsMap((prev) => {
         const departments = response
