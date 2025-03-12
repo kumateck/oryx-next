@@ -27,7 +27,6 @@ import { commonActions } from "@/lib/redux/slices/common";
 
 export const getColumns = (
   type: TransferType,
-  currentDepartment: string,
 ): ColumnDef<DepartmentStockTransferDtoRead>[] => [
   {
     accessorKey: "date",
@@ -37,7 +36,6 @@ export const getColumns = (
         {row.original.createdAt
           ? format(row.original.createdAt, "MMM d, yyyy")
           : "-"}
-        {currentDepartment}
       </div>
     ),
   },
@@ -55,8 +53,8 @@ export const getColumns = (
     cell: ({ row }) => (
       <div>
         {Number(type) === TransferType.Inbound
-          ? row.original.fromDepartment?.name
-          : row.original.toDepartment?.name}
+          ? row.original.toDepartment?.name
+          : row.original.fromDepartment?.name}
       </div>
     ),
   },
