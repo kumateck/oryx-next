@@ -1,22 +1,16 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { ConfirmDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
-// import { Option } from "@/lib";
 import {
   ShipmentDocumentDto,
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
-
-// import MultiSelectListViewer from "@/shared/multi-select-lists";
-
-// import Edit from "./edit";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -77,15 +71,15 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
   );
 }
 
-export const columns: ColumnDef<ShipmentDocumentDto>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "code",
-    header: "Shipment Document Code",
+    header: "Waybill Code",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
   },
   {
-    accessorKey: "supplier",
-    header: "Supplier",
+    accessorKey: "supplierName",
+    header: "Supplier Name",
     cell: ({ row }) => (
       <div className="min-w-36">
         {row.original.shipmentInvoice?.supplier?.name}
@@ -99,46 +93,7 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
       <div className="min-w-36">{row.original.shipmentInvoice?.code}</div>
     ),
   },
-  // {
-  //   accessorKey: "purchaseOrders",
-  //   header: "Purchase Orders",
-  //   cell: ({ row }) => {
-  //     const uniquePurchaseOrders = Array.from(
-  //       new Map(
-  //         row.original.shipmentInvoice?.items?.map((item) => [
-  //           item?.purchaseOrder?.id,
-  //           item.purchaseOrder,
-  //         ]),
-  //       ).values(),
-  //     );
-  //     return (
-  //       <div className="min-w-36">
-  //         <MultiSelectListViewer
-  //           className="max-w-[120ch]"
-  //           lists={
-  //             uniquePurchaseOrders?.map((item) => {
-  //               return {
-  //                 label: item?.code,
-  //               };
-  //             }) as Option[]
-  //           }
-  //         />
-  //       </div>
-  //     );
-  //   },
-  // },
 
-  {
-    accessorKey: "createdAt",
-    header: "Shipment Arrival Date",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {row.original.arrivedAt
-          ? format(row.original.arrivedAt, "MMM d, yyyy")
-          : "-"}
-      </div>
-    ),
-  },
   {
     accessorKey: "status",
     header: "Status",
@@ -151,7 +106,6 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
 
   {
     id: "actions",
-    meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

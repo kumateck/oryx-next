@@ -18,17 +18,18 @@ import {
 } from "@/components/ui";
 import {
   CodeModelTypes,
+  EMaterialKind,
   ErrorResponse,
   Option,
   Units,
   convertToSmallestUnit,
   getLargestUnit,
-  getSmallestUnit,
   isErrorResponse,
 } from "@/lib";
 import { useCodeGen } from "@/lib/code-gen";
 import {
   ProductionScheduleProcurementDto,
+  ProductionScheduleProcurementPackageDto,
   useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1ProductionScheduleStockTransferMutation,
@@ -41,7 +42,9 @@ import { CreateTransferValidator, TransferRequestDto } from "./type";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  materialInfo: ProductionScheduleProcurementDto;
+  materialInfo:
+    | ProductionScheduleProcurementDto
+    | ProductionScheduleProcurementPackageDto;
 }
 
 const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
@@ -93,7 +96,38 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     setCodeToInput,
   );
   const onSubmit = async (data: TransferRequestDto) => {
-    console.log(data);
+    // console.log(data);
+
+    const qtyexcess =
+      "packingExcessMargin" in materialInfo
+        ? materialInfo.packingExcessMargin
+        : 0;
+    const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
+    const totalQtyNeeded = Number(qtyNeeded) + Number(qtyexcess);
+
+    const sources = data.sources?.map((item) => {
+      // console.log(
+      //   getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+      //   materialInfo.baseUoM?.symbol,
+      // );
+      return {
+        quantity: convertToSmallestUnit(
+          item.quantity,
+          getLargestUnit(materialInfo.baseUoM?.symbol as Units),
+        ).value,
+      };
+    });
+    // console.log(sources);
+    const sourceTotalQty = sources?.reduce((accumulator, item) => {
+      return accumulator + (item.quantity || 0);
+    }, 0);
+
+    if (
+      Number(sourceTotalQty.toFixed(2)) !== Number(totalQtyNeeded?.toFixed(2))
+    ) {
+      toast.warning("U cannot source partial");
+      return;
+    }
 
     try {
       await saveMutation({
@@ -109,7 +143,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
               fromDepartmentId: item.department?.value as string,
               quantity: convertToSmallestUnit(
                 item.quantity,
-                getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+                getLargestUnit(materialInfo.baseUoM?.symbol as Units),
               ).value,
             };
           }),
@@ -147,6 +181,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
       sources,
       materialInfo?.material?.id as string,
       materialInfo?.baseUoM?.symbol as Units,
+      materialInfo?.material?.kind as EMaterialKind,
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +190,9 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     sources: TransferRequestDto["sources"],
     materialId: string,
     unit: Units,
+    kind: EMaterialKind,
   ) => {
+    // console.log(sources);
     sources.forEach((source) => {
       if (source.quantity > 0) {
         handleLoadDepartmentEligible(
@@ -163,6 +200,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
           materialId,
           source.quantity,
           unit,
+          kind,
         );
       }
     });
@@ -172,12 +210,16 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     materialId: string,
     quantity: number,
     unit: Units,
+    kind: EMaterialKind,
   ) => {
     try {
-      const qty = convertToSmallestUnit(quantity, getLargestUnit(unit));
+      const qty =
+        Number(kind) === EMaterialKind.Raw
+          ? convertToSmallestUnit(quantity, getLargestUnit(unit))
+          : { value: 0 };
       const response = await loadQuantityByDepartment({
         materialId,
-        quantity: qty.value,
+        quantity: Number(kind) === EMaterialKind.Raw ? qty.value : quantity,
       }).unwrap();
       setManufacturerOptionsMap((prev) => {
         const departments = response
@@ -203,20 +245,6 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
         <DialogHeader>
           <DialogTitle>Stock Transfer Request</DialogTitle>
         </DialogHeader>
-        <div
-          onClick={() =>
-            append({
-              quantity: 0,
-              department: {
-                value: "",
-                label: "",
-              },
-              id: new Date().toISOString(),
-            })
-          }
-        >
-          Add NEW
-        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TransferForm
             register={register}

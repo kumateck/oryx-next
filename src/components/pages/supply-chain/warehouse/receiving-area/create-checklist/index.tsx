@@ -149,7 +149,7 @@ const CreateChecklist = () => {
   const packingUomOptions = collectionResponse?.[
     COLLECTION_TYPES.PackageStyle
   ]?.map((uom) => ({
-    label: uom.symbol,
+    label: uom.name,
     value: uom.id,
   })) as Option[];
 

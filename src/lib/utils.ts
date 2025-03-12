@@ -8,6 +8,7 @@ import { OptionsUpdate } from "@/components/pages/production/schedule/create/for
 import { APP_NAME, CODE_SETTINGS, Option } from "./constants";
 import {
   BatchSizeType,
+  BatchStatus,
   FloorType,
   MaterialStatus,
   PackLocationType,
@@ -202,10 +203,8 @@ export function isStockUnAvailable(
 ): boolean {
   for (const item of materials) {
     if (
-      item.quantityOnHand &&
-      item.quantityNeeded &&
-      item.quantityOnHand < item.quantityNeeded &&
-      Number(item.status) === MaterialStatus.NoSource
+      Number(item.status) === MaterialStatus.NoSource &&
+      Number(item.quantityOnHand) < Number(item.quantityNeeded)
     ) {
       console.log("I cannot process, I need to add a stock.");
       return true; // At least one stock is insufficient
@@ -229,12 +228,12 @@ export const quantityAvailable = (
     0,
   );
 
-  console.log(
-    totalQuantityOnHand,
-    totalQuantityRequested,
-    totalQuantityOnHand > totalQuantityRequested,
-    materials,
-  );
+  // console.log(
+  //   totalQuantityOnHand,
+  //   totalQuantityRequested,
+  //   totalQuantityOnHand > totalQuantityRequested,
+  //   materials,
+  // );
 
   return totalQuantityOnHand > totalQuantityRequested;
 };
@@ -496,7 +495,15 @@ export const massUnits: UnitFactor[] = [
 export function convertToLargestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: Units } {
+): { value: number; unit: Units | string } {
+  const relevantArray = getRelevantArray(baseUnit);
+  if (relevantArray.length === 0) {
+    return {
+      value: Math.round(value * 100) / 100,
+      unit: "",
+    };
+  }
+
   // 2a) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {
@@ -513,7 +520,7 @@ export function convertToLargestUnit(
   const base = chain.find((u) => u.name === baseUnit);
   if (!base) {
     // Not found in chain — fallback
-    return { value, unit: baseUnit };
+    return { value: Math.round(value * 100) / 100, unit: baseUnit };
   }
 
   // 2c) Convert 'value' into the smallest “baseline” in the chain.
@@ -550,8 +557,15 @@ export function convertToLargestUnit(
 export function convertToSmallestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: string } {
-  console.log(value, baseUnit);
+): { value: number; unit: Units | string } {
+  const relevantArray = getRelevantArray(baseUnit);
+  if (relevantArray.length > 0) {
+    return {
+      value,
+      unit: "",
+    };
+  }
+  // console.log(value, baseUnit);
   // 1) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {
@@ -606,10 +620,8 @@ function getRelevantArray(fromUnit: Units): UnitFactor[] {
     return massUnits;
   }
 
-  // If neither, throw
-  throw new Error(
-    `Unit "${fromUnit}" was not found in volumeUnits or massUnits.`,
-  );
+  // return empty if the unit is invalid
+  return [];
 }
 
 /**
@@ -618,6 +630,9 @@ function getRelevantArray(fromUnit: Units): UnitFactor[] {
  */
 export function getLargestUnit(fromUnit: Units): Units {
   const relevantArray = getRelevantArray(fromUnit);
+  if (relevantArray.length === 0) {
+    return fromUnit;
+  }
   const largest = relevantArray.reduce((prev, current) =>
     current.factor > prev.factor ? current : prev,
   );
@@ -630,6 +645,10 @@ export function getLargestUnit(fromUnit: Units): Units {
  */
 export function getSmallestUnit(fromUnit: Units): Units {
   const relevantArray = getRelevantArray(fromUnit);
+  if (relevantArray.length === 0) {
+    return fromUnit;
+  }
+
   const smallest = relevantArray.reduce((prev, current) =>
     current.factor < prev.factor ? current : prev,
   );
@@ -801,6 +820,19 @@ export const SupplierTypeOptions = Object.values(SupplierStatus)
   .map((enumValue) => {
     // Convert the numeric value back to the string enum key
     const enumKey = SupplierStatus[enumValue as SupplierStatus];
+    return {
+      label: enumKey, // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
+export const BatchStatusOptions = Object.values(BatchStatus)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = SupplierStatus[enumValue as BatchStatus];
     return {
       label: enumKey, // e.g., "Full"
       value: String(enumValue), // e.g., "0"

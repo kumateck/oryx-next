@@ -56,6 +56,26 @@ const TransferForm = <TFieldValues extends FieldValues, TContext>({
         </Button>
       </div>
       <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
+        <FormWizard
+          config={[
+            {
+              register: register("code" as Path<TFieldValues>),
+              label: "Stock Transfer Code",
+              // readOnly: true,
+              required: true,
+              suffix: loading ? "LoaderCircle" : "Check",
+              suffixClass: loading ? "animate-spin" : "text-green-500",
+              description: (
+                <span className="text-sm text-neutral-500">
+                  You can’t change the ST code
+                </span>
+              ),
+              placeholder: "Code will be generated",
+              type: InputTypes.TEXT,
+              errors,
+            },
+          ]}
+        />
         {fields.map((field, index) => {
           const listId = typeValues[index];
           const currentDepartmentOptions = departmentOptionsMap[listId] || []; // Get the options for the selected material
@@ -75,22 +95,6 @@ const TransferForm = <TFieldValues extends FieldValues, TContext>({
                   className="grid w-full grid-cols-2 gap-4 space-y-0"
                   fieldWrapperClassName="flex-grow"
                   config={[
-                    {
-                      register: register("code" as Path<TFieldValues>),
-                      label: "Stock Transfer Code",
-                      // readOnly: true,
-                      required: true,
-                      suffix: loading ? "LoaderCircle" : "Check",
-                      suffixClass: loading ? "animate-spin" : "text-green-500",
-                      description: (
-                        <span className="text-sm text-neutral-500">
-                          You can’t change the ST code
-                        </span>
-                      ),
-                      placeholder: "Code will be generated",
-                      type: InputTypes.TEXT,
-                      errors,
-                    },
                     {
                       register: register(
                         `sources.${index}.quantity` as Path<TFieldValues>,

@@ -2,13 +2,16 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { StockTransfer, TransferType } from "@/lib";
+import { TransferType } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import AccessTabs from "@/shared/access";
 import PageTitle from "@/shared/title";
 
@@ -18,6 +21,8 @@ import TransferTable from "./table";
 const Page = () => {
   const router = useRouter();
 
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as unknown as TransferType; // Extracts 'type' from URL
 
@@ -47,7 +52,7 @@ const Page = () => {
       loadInboundRequests({
         page,
         pageSize,
-        status: StockTransfer.New,
+        // status: StockTransfer.New,
       });
     }
 
@@ -58,8 +63,11 @@ const Page = () => {
         // status: StockTransfer.Approved,
       });
     }
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, type]);
+  }, [page, pageSize, type, triggerReload]);
 
   const pathname = usePathname();
 

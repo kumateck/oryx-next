@@ -70,6 +70,10 @@ export const ROUTES: Route[] = [
             title: "Billing Sheets",
             url: "/logistics/billing-sheets",
           },
+          {
+            title: "Waybill",
+            url: "/logistics/waybill",
+          },
         ],
       },
       {
@@ -202,7 +206,11 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
-            title: "General",
+            title: "Raw Material Requisitions",
+            url: "/production/requisition/general",
+          },
+          {
+            title: "Package Material Requisitions",
             url: "/production/requisition/general",
           },
           {

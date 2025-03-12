@@ -50,7 +50,13 @@ export const getColumns = (
       Number(type) === TransferType.Inbound
         ? "Request Department"
         : "Supplier Department",
-    cell: ({ row }) => <div>{row.original.toDepartment?.name}</div>,
+    cell: ({ row }) => (
+      <div>
+        {Number(type) === TransferType.Inbound
+          ? row.original.toDepartment?.name
+          : row.original.fromDepartment?.name}
+      </div>
+    ),
   },
   {
     accessorKey: "qty",
@@ -97,7 +103,7 @@ export function DataTableRowActions<
   TData extends DepartmentStockTransferDtoRead,
 >({ row }: { row: Row<TData> }) {
   const dispatch = useDispatch();
-  console.log(row.original);
+  // console.log(row.original);
   const [approveMutation, { isLoading: isLoadingApprove }] =
     usePutApiV1ProductionScheduleStockTransferApproveByStockTransferIdMutation();
   const [rejectMutation, { isLoading: isLoadingReject }] =
