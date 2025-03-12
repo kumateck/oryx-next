@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { StockTransfer, TransferType } from "@/lib";
+import { TransferType } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -20,6 +20,7 @@ import TransferTable from "./table";
 
 const Page = () => {
   const router = useRouter();
+
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchParams = useSearchParams();
@@ -51,7 +52,7 @@ const Page = () => {
       loadInboundRequests({
         page,
         pageSize,
-        status: StockTransfer.New,
+        // status: StockTransfer.New,
       });
     }
 

@@ -1,13 +1,17 @@
 "use client";
 
 import { format } from "date-fns";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
+import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
+  BatchTransferRequest,
   useGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery,
   useGetApiV1ProductionScheduleStockTransferByStockTransferIdQuery,
+  usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -15,6 +19,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { getColumns } from "./columns";
 
 const GRNDetail = () => {
+  const router = useRouter();
   const { id } = useParams();
   const stockTransferId = id as string;
   const { data: transferResponse } =
@@ -27,7 +32,27 @@ const GRNDetail = () => {
       stockTransferId,
     });
 
-  console.log(transferResponse, "transferResponse");
+  const [issueMutation, { isLoading }] =
+    usePutApiV1ProductionScheduleStockTransferIssueByStockTransferIdMutation();
+
+  const onIssue = async () => {
+    try {
+      await issueMutation({
+        stockTransferId,
+        body: transferResponse?.map((item) => ({
+          batchId: item.batch?.id as string,
+          quantity: item.quantityToTake as number,
+        })) as BatchTransferRequest[],
+      }).unwrap();
+
+      toast.success("Batch issued successfully");
+      router.push(`/warehouse/stock-transfer-requests`);
+      // dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      console.error("Error loading GRN", error);
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
 
   // useEffect(() => {
   //   if (grnResponse) {
@@ -72,10 +97,15 @@ const GRNDetail = () => {
         <div className="flex items-center justify-between">
           <h1>Stock Transfer Details</h1>
           <Button
+            onClick={onIssue}
             variant={"default"}
             className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
           >
-            <Icon name="CircleCheck" className="h-4 w-4" />
+            {isLoading ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              <Icon name="CircleCheck" className="size-4" />
+            )}
             <span>Issue</span>{" "}
           </Button>
         </div>
