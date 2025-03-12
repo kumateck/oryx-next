@@ -58,8 +58,10 @@ const Product = ({
   //     },
   //   );
 
-  const [loadActivity] =
+  const [loadActivity, { isLoading: isLoadingActivity }] =
     useLazyGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery();
+
+  // console.log(isLoadingActivity, "isLoadingActivity");
 
   const [product, setProduct] = useState<ProductDtoRead>();
   const [activity, setActivity] = useState<ProductionActivityDtoRead>();
@@ -88,17 +90,27 @@ const Product = ({
     batchSizeType: BatchSizeType,
   ) => {
     try {
-      const productResponse = await loadProductInfo({
-        productId: pId,
-      }).unwrap();
-      const rResponse = await loadRawStock({
-        productId: pId,
-        productionScheduleId: psId,
-      }).unwrap();
-      const pResponse = await loadPackageStock({
-        productId: pId,
-        productionScheduleId: psId,
-      }).unwrap();
+      // const productResponse = await loadProductInfo({
+      //   productId: pId,
+      // }).unwrap();
+      // const rResponse = await loadRawStock({
+      //   productId: pId,
+      //   productionScheduleId: psId,
+      // }).unwrap();
+      // const pResponse = await loadPackageStock({
+      //   productId: pId,
+      //   productionScheduleId: psId,
+      // }).unwrap();
+      const [productResponse, rResponse, pResponse, activityResponse] =
+        await Promise.all([
+          loadProductInfo({ productId: pId }).unwrap(),
+          loadRawStock({ productId: pId, productionScheduleId: psId }).unwrap(),
+          loadPackageStock({
+            productId: pId,
+            productionScheduleId: psId,
+          }).unwrap(),
+          loadActivity({ productId: pId, productionScheduleId: psId }).unwrap(),
+        ]);
 
       setProduct(productResponse);
       // console.log(isStockUnAvailable(rResponse), "isStockUnAvailable raw");
@@ -197,10 +209,6 @@ const Product = ({
       }) as MaterialRequestDto[];
       setPackageLists(packOptions);
 
-      const activityResponse = await loadActivity({
-        productId: pId,
-        productionScheduleId: psId,
-      }).unwrap();
       setActivity(activityResponse);
     } catch (error) {
       console.log(error);
@@ -301,7 +309,7 @@ const Product = ({
 
   return (
     <div className="flex-1 space-y-2 overflow-auto">
-      {isLoadingProduct ? (
+      {isLoadingProduct || isLoadingActivity ? (
         <SkeletonLoadingPage />
       ) : (
         <Card className="space-y-1 p-5 pb-0">
@@ -385,41 +393,27 @@ const Product = ({
           </CardContent>
         </Card>
       )}
-      {/* {isLoadingRawStock ? (
-        <SkeletonLoadingPage />
-      ) : ( */}
+
       <Card className="space-y-4 p-5 pb-0">
         <CardTitle>Raw Material</CardTitle>
         <ClientDatatable
           normalTable
           data={rawLists}
           columns={getColumns}
-          isLoading={isLoadingRawStock ?? isFetchingRaw}
+          isLoading={isLoadingRawStock || isFetchingRaw}
         />
       </Card>
-      {/* )}
-      {isLoadingPackageStock ? (
-        <SkeletonLoadingPage />
-      ) : ( */}
+
       <Card className="space-y-4 p-5">
         <CardTitle>Packaging Material</CardTitle>
         <ClientDatatable
           normalTable
           data={packageLists}
           columns={getColumns}
-          isLoading={isLoadingPackageStock ?? isFetchingPackage}
+          isLoading={isLoadingPackageStock || isFetchingPackage}
         />
       </Card>
-      {/* )} */}
-      {/* {enablePurchase && isOpenPurchase && (
-        <Purchase
-          lists={purchaseLists}
-          onClose={() => setIsOpenPurchase(false)}
-          isOpen={isOpenPurchase}
-          productId={productId}
-          productionScheduleId={scheduleId}
-        />
-      )} */}
+
       {isOpenStock && (
         <Stock
           lists={[...rawLists, ...packageLists]}

@@ -54,8 +54,11 @@ export enum StockTransfer {
   Rejected = 3,
 }
 export enum ProductionStatus {
-  New = 0,
-  Checked = 1,
+  New,
+  InProgress,
+  Completed,
+  Delayed,
+  Cancelled,
 }
 export enum PurchaseOrderStatusList {
   Pending = 0,
