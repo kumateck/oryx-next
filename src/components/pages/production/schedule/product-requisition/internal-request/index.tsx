@@ -94,7 +94,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     setCodeToInput,
   );
   const onSubmit = async (data: TransferRequestDto) => {
-    console.log(data);
+    // console.log(data);
 
     try {
       await saveMutation({
@@ -159,7 +159,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     unit: Units,
     kind: EMaterialKind,
   ) => {
-    console.log(sources);
+    // console.log(sources);
     sources.forEach((source) => {
       if (source.quantity > 0) {
         handleLoadDepartmentEligible(
