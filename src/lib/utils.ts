@@ -228,12 +228,12 @@ export const quantityAvailable = (
     0,
   );
 
-  console.log(
-    totalQuantityOnHand,
-    totalQuantityRequested,
-    totalQuantityOnHand > totalQuantityRequested,
-    materials,
-  );
+  // console.log(
+  //   totalQuantityOnHand,
+  //   totalQuantityRequested,
+  //   totalQuantityOnHand > totalQuantityRequested,
+  //   materials,
+  // );
 
   return totalQuantityOnHand > totalQuantityRequested;
 };
@@ -495,7 +495,15 @@ export const massUnits: UnitFactor[] = [
 export function convertToLargestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: Units } {
+): { value: number; unit: Units | string } {
+  const relevantArray = getRelevantArray(baseUnit);
+  if (relevantArray.length === 0) {
+    return {
+      value: Math.round(value * 100) / 100,
+      unit: "",
+    };
+  }
+
   // 2a) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {
@@ -512,7 +520,7 @@ export function convertToLargestUnit(
   const base = chain.find((u) => u.name === baseUnit);
   if (!base) {
     // Not found in chain — fallback
-    return { value, unit: baseUnit };
+    return { value: Math.round(value * 100) / 100, unit: baseUnit };
   }
 
   // 2c) Convert 'value' into the smallest “baseline” in the chain.
@@ -549,8 +557,15 @@ export function convertToLargestUnit(
 export function convertToSmallestUnit(
   value: number,
   baseUnit: Units,
-): { value: number; unit: string } {
-  console.log(value, baseUnit);
+): { value: number; unit: Units | string } {
+  const relevantArray = getRelevantArray(baseUnit);
+  if (relevantArray.length > 0) {
+    return {
+      value,
+      unit: "",
+    };
+  }
+  // console.log(value, baseUnit);
   // 1) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
   if (volumeUnits.some((u) => u.name === baseUnit)) {
@@ -605,10 +620,8 @@ function getRelevantArray(fromUnit: Units): UnitFactor[] {
     return massUnits;
   }
 
-  // If neither, throw
-  throw new Error(
-    `Unit "${fromUnit}" was not found in volumeUnits or massUnits.`,
-  );
+  // return empty if the unit is invalid
+  return [];
 }
 
 /**
@@ -617,6 +630,9 @@ function getRelevantArray(fromUnit: Units): UnitFactor[] {
  */
 export function getLargestUnit(fromUnit: Units): Units {
   const relevantArray = getRelevantArray(fromUnit);
+  if (relevantArray.length === 0) {
+    return fromUnit;
+  }
   const largest = relevantArray.reduce((prev, current) =>
     current.factor > prev.factor ? current : prev,
   );
@@ -629,6 +645,10 @@ export function getLargestUnit(fromUnit: Units): Units {
  */
 export function getSmallestUnit(fromUnit: Units): Units {
   const relevantArray = getRelevantArray(fromUnit);
+  if (relevantArray.length === 0) {
+    return fromUnit;
+  }
+
   const smallest = relevantArray.reduce((prev, current) =>
     current.factor < prev.factor ? current : prev,
   );

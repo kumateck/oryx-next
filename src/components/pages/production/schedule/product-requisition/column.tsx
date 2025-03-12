@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
 import { DropdownMenuItem } from "@/components/ui";
-import { Units, convertToLargestUnit } from "@/lib";
+import { Units, convertToLargestUnit, getSmallestUnit } from "@/lib";
 import {
   ProductionScheduleProcurementDto,
   ProductionScheduleProcurementPackageDto,
@@ -77,11 +77,14 @@ export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
         row.original.quantityNeeded as number,
-        row.original.baseUoM?.symbol as Units,
+        getSmallestUnit(row.original.baseUoM?.symbol as Units),
       );
+
       return (
         <div className="">
-          {qty.value.toFixed(2)} {qty.unit}
+          <div>
+            {qty.value} {qty.unit}
+          </div>
         </div>
       );
     },
@@ -92,11 +95,12 @@ export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
         row.original.quantityOnHand as number,
-        row.original.baseUoM?.symbol as Units,
+        getSmallestUnit(row.original.baseUoM?.symbol as Units),
       );
+
       return (
         <div className="">
-          {qty.value} {qty.unit}
+          {qty.value.toFixed(2)} {qty.unit}
         </div>
       );
     },
@@ -107,11 +111,12 @@ export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
         row.original.material?.totalStock as number,
-        row.original.baseUoM?.symbol as Units,
+        getSmallestUnit(row.original.baseUoM?.symbol as Units),
       );
+
       return (
         <div className="">
-          {qty.value} {qty.unit}
+          {qty.value.toFixed(2)} {qty.unit}
         </div>
       );
     },
@@ -146,9 +151,10 @@ export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
       const quantity = row.original.quantityNeeded ?? 0;
       const packingExcessMargin = row.original.packingExcessMargin ?? 0;
       const total = quantity + packingExcessMargin;
+
       const qty = convertToLargestUnit(
         total,
-        row.original.baseUoM?.symbol as Units,
+        getSmallestUnit(row.original.baseUoM?.symbol as Units),
       );
 
       return (
@@ -168,7 +174,7 @@ export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
       );
       return (
         <div className="">
-          {qty.value} {qty.unit}
+          {qty.value.toFixed(2)} {qty.unit}
         </div>
       );
     },
@@ -183,7 +189,7 @@ export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
       );
       return (
         <div className="">
-          {qty.value} {qty.unit}
+          {qty.value.toFixed(2)} {qty.unit}
         </div>
       );
     },

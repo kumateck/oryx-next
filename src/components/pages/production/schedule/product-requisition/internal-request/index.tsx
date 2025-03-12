@@ -24,12 +24,12 @@ import {
   Units,
   convertToSmallestUnit,
   getLargestUnit,
-  getSmallestUnit,
   isErrorResponse,
 } from "@/lib";
 import { useCodeGen } from "@/lib/code-gen";
 import {
   ProductionScheduleProcurementDto,
+  ProductionScheduleProcurementPackageDto,
   useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1ProductionScheduleStockTransferMutation,
@@ -42,7 +42,9 @@ import { CreateTransferValidator, TransferRequestDto } from "./type";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  materialInfo: ProductionScheduleProcurementDto;
+  materialInfo:
+    | ProductionScheduleProcurementDto
+    | ProductionScheduleProcurementPackageDto;
 }
 
 const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
@@ -96,6 +98,37 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
   const onSubmit = async (data: TransferRequestDto) => {
     // console.log(data);
 
+    const qtyexcess =
+      "packingExcessMargin" in materialInfo
+        ? materialInfo.packingExcessMargin
+        : 0;
+    const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
+    const totalQtyNeeded = Number(qtyNeeded) + Number(qtyexcess);
+
+    const sources = data.sources?.map((item) => {
+      // console.log(
+      //   getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+      //   materialInfo.baseUoM?.symbol,
+      // );
+      return {
+        quantity: convertToSmallestUnit(
+          item.quantity,
+          getLargestUnit(materialInfo.baseUoM?.symbol as Units),
+        ).value,
+      };
+    });
+    // console.log(sources);
+    const sourceTotalQty = sources?.reduce((accumulator, item) => {
+      return accumulator + (item.quantity || 0);
+    }, 0);
+
+    if (
+      Number(sourceTotalQty.toFixed(2)) !== Number(totalQtyNeeded?.toFixed(2))
+    ) {
+      toast.warning("U cannot source partial");
+      return;
+    }
+
     try {
       await saveMutation({
         createStockTransferRequest: {
@@ -110,7 +143,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
               fromDepartmentId: item.department?.value as string,
               quantity: convertToSmallestUnit(
                 item.quantity,
-                getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+                getLargestUnit(materialInfo.baseUoM?.symbol as Units),
               ).value,
             };
           }),
@@ -212,20 +245,6 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
         <DialogHeader>
           <DialogTitle>Stock Transfer Request</DialogTitle>
         </DialogHeader>
-        <div
-          onClick={() =>
-            append({
-              quantity: 0,
-              department: {
-                value: "",
-                label: "",
-              },
-              id: new Date().toISOString(),
-            })
-          }
-        >
-          Add NEW
-        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TransferForm
             register={register}
