@@ -559,12 +559,13 @@ export function convertToSmallestUnit(
   baseUnit: Units,
 ): { value: number; unit: Units | string } {
   const relevantArray = getRelevantArray(baseUnit);
-  if (relevantArray.length > 0) {
+  if (relevantArray.length === 0) {
     return {
       value,
       unit: "",
     };
   }
+
   // console.log(value, baseUnit);
   // 1) Identify which chain to use (volume or mass), based on the baseUnit
   let chain: UnitFactor[];
@@ -598,6 +599,7 @@ export function convertToSmallestUnit(
     (valueInBaseline / smallestUnit.factor).toFixed(2),
   );
 
+  console.log(finalValue, smallestUnit.name);
   return { value: finalValue, unit: smallestUnit.name };
 }
 
