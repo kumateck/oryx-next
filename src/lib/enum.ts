@@ -94,7 +94,7 @@ export enum SupplierType {
 }
 export enum ActivityStepStatus {
   New = 0,
-  Progress = 1,
+  InProgress = 1,
   Completed = 2,
   Delayed = 3,
   Cancelled = 4,
