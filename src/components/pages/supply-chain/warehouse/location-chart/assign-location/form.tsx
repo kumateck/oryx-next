@@ -72,12 +72,12 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
             <span className="block text-gray-500">Remaining Quantity</span>
             <span className="block font-bold">
               {convertToLargestUnit(
-                selectedBatch?.quantityUnassigned as number,
+                selectedBatch?.totalQuantity as number,
                 selectedBatch?.uoM?.symbol as Units,
               ).value +
                 "" +
                 convertToLargestUnit(
-                  selectedBatch?.quantityUnassigned as number,
+                  selectedBatch?.totalQuantity as number,
                   selectedBatch?.uoM?.symbol as Units,
                 ).unit || "N/A"}
             </span>

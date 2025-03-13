@@ -21,12 +21,12 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  MaterialBatchDto,
-  SupplyMaterialBatchRequest,
+  MoveShelfMaterialBatchRequest,
   useGetApiV1WarehouseRackByDepartmentQuery,
-  usePostApiV1MaterialBatchSupplyMutation,
+  usePostApiV1MaterialBatchMoveV2Mutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import { MaterialBatchWithShelfId } from "../columns";
 import AssignLocationForm from "./form";
 import { LocationRequestDto, LocationValidator } from "./type";
 
@@ -34,7 +34,7 @@ interface AssignLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
-  selectedBatch: MaterialBatchDto | null;
+  selectedBatch: MaterialBatchWithShelfId | null;
   kind?: EMaterialKind;
 }
 
@@ -45,8 +45,7 @@ const AssignLocationDialog = ({
   selectedBatch,
   kind,
 }: AssignLocationDialogProps) => {
-  const [supplyShelf, { isLoading }] =
-    usePostApiV1MaterialBatchSupplyMutation();
+  const [moveShelf, { isLoading }] = usePostApiV1MaterialBatchMoveV2Mutation();
 
   const { data: racks } = useGetApiV1WarehouseRackByDepartmentQuery({
     kind: kind ?? EMaterialKind.Raw,
@@ -133,24 +132,30 @@ const AssignLocationDialog = ({
         selectedBatch?.uoM?.symbol as Units,
       ).unit as Units;
       const payload = {
-        materialBatchId: selectedBatch.id,
-        shelfMaterialBatches: data.locations.map((location) => ({
+        shelfMaterialBatchId: selectedBatch.shelfMaterialBatchId,
+        movedShelfBatchMaterials: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
           quantity: convertToSmallestUnit(location.quantity, SelectedUnit)
             .value,
           uomId: selectedBatch?.uoM?.id as string,
           note: location.note || "",
         })),
-      } satisfies SupplyMaterialBatchRequest;
+      } satisfies MoveShelfMaterialBatchRequest;
 
       console.log(payload);
-      await supplyShelf({
-        supplyMaterialBatchRequest: payload,
+      const response = await moveShelf({
+        moveShelfMaterialBatchRequest: payload,
       });
 
-      toast.success("Location assigned successfully");
-      onSuccess();
-      handleClose();
+      if ("error" in response) {
+        toast.error(
+          isErrorResponse(response.error as ErrorResponse)?.description,
+        );
+      } else {
+        toast.success("Material moved successfully");
+        onSuccess();
+        handleClose();
+      }
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

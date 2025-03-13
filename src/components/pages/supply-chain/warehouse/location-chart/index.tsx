@@ -7,7 +7,7 @@ import { AsyncSelect, Card, CardTitle } from "@/components/ui";
 import { EMaterialKind, Option } from "@/lib";
 import {
   MaterialBatchDto,
-  WarehouseLocationRackDtoRead,
+  WarehouseLocationRackDto,
   useLazyGetApiV1WarehouseRackByRackIdQuery,
   useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -33,7 +33,7 @@ const LocationChart = () => {
 
   const [selectedRack, setSelectedRack] = useState<Option>();
   const [selectedRackShelves, setSelectedRackShelves] =
-    useState<WarehouseLocationRackDtoRead>();
+    useState<WarehouseLocationRackDto>();
   const [reloadTrigger, setReloadTrigger] = useState(false);
   const handleFalseReload = (reload: boolean) => {
     setReloadTrigger(reload);
@@ -113,6 +113,7 @@ const LocationChart = () => {
             isLoading={isLoadingRacks}
             reloadTrigger={reloadTrigger}
             setReloadTrigger={handleFalseReload}
+            placeholder="Select Rack"
           />
         </div>
         {!selectedRack?.value && (
@@ -132,10 +133,17 @@ const LocationChart = () => {
                 normalTable
                 data={
                   (shelf.materialBatches
-                    ?.map((smb) => smb.materialBatch)
-                    .filter(
-                      (batch) => batch !== undefined,
-                    ) as MaterialBatchDto[]) ?? []
+                    ?.map((smb) => ({
+                      ...smb.materialBatch,
+                      shelfMaterialBatchId: smb.id,
+                      quantity: smb.quantity,
+                    }))
+                    .filter((batch) => batch !== undefined) as Array<
+                    MaterialBatchDto & {
+                      shelfMaterialBatchId: string;
+                      quantity: number;
+                    }
+                  >) ?? []
                 }
                 isLoading={isLoadingRackShelves}
                 columns={getColumns()}

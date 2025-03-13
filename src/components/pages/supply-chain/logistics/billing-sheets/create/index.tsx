@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
@@ -15,6 +16,7 @@ import {
   useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery,
   usePostApiV1ProcurementBillingSheetMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
@@ -47,7 +49,7 @@ const CreateBillingSheet = () => {
       pageSize: 100,
     },
   );
-
+  const dispatch = useDispatch();
   const [createBillingSheet, { isLoading }] =
     usePostApiV1ProcurementBillingSheetMutation();
 
@@ -120,25 +122,18 @@ const CreateBillingSheet = () => {
       billOfLading: data.billOfLading,
       expectedArrivalDate: data.expectedArrivalDate.toISOString(),
       freeTimeDuration: data.freeTimeDuration,
-      // containerSize: data.containerSize,
       numberOfPackages: data.numberOfPackages,
       freeTimeExpiryDate: data.freeTimeExpiryDate.toISOString(),
       demurrageStartDate: data.demurrageStartDate.toISOString(),
       invoiceId: data.invoiceId.value,
       supplierId: data.supplierId.value,
-      // uom: data.uom.value,
-      // charges: data.charges.map(charge => ({
-      //   description: charge.description,
-      //   cost: Number(charge.cost),
-      // })),
     } satisfies CreateBillingSheetRequest;
+
     try {
-      await createBillingSheet({
-        createBillingSheetRequest: payload,
-      });
-      toast.success("Billing Sheet created successfully");
+      await createBillingSheet({ createBillingSheetRequest: payload }).unwrap();
+      toast.success("Billing Sheet Created");
       reset();
-      // router.push("/logistics/billing-sheets");
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
