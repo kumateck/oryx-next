@@ -169,12 +169,17 @@ const Page = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex w-full items-center justify-between space-y-4">
           <PageTitle title="Create Shipment Document" />
-          <Button>
-            {(isLoading || isUploadingAttachment) && (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            )}
-            <span>Save Changes</span>
-          </Button>
+          <div>
+            <Button type="button" variant="secondary" onClick={router.back}>
+              Cancel
+            </Button>
+            <Button>
+              {(isLoading || isUploadingAttachment) && (
+                <Icon name="LoaderCircle" className="animate-spin" />
+              )}
+              <span>Save Changes</span>
+            </Button>
+          </div>
         </div>
         <Card>
           <CardContent className="p-5">

@@ -23,13 +23,9 @@ export const createBillingSheetRequestSchema = z.object({
   numberOfPackages: z
     .string()
     .min(1, { message: "Container size is required" }),
-  freeTimeDuration: z.preprocess(
-    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-    z.date({
-      required_error: "Free Time Expiry Date is required",
-      invalid_type_error: "Free Time Expiry Date must be a valid date",
-    }),
-  ),
+  freeTimeDuration: z
+    .string()
+    .min(1, { message: "Free Time Duration is required" }),
   freeTimeExpiryDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -80,3 +76,29 @@ export type BillingSheetRequestDto = z.infer<
 export const CreateBillingSheetValidator = zodResolver(
   createBillingSheetRequestSchema,
 );
+
+export const createRequisitionItemRequestSchema = z.object({
+  code: z.string().optional(),
+  materialName: z.string().optional(),
+  materialId: z.string().min(1, { message: "Material is required" }),
+  uomId: z
+    .string({ required_error: "UOM is required" })
+    .min(1, { message: "UOM is required" }),
+  expectedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
+  receivedQuantity: z
+    .number()
+    .min(0.1, { message: "Received Quantity is required" }),
+  reason: z.string().optional(),
+  uomName: z.string().optional(),
+  costPrice: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  purchaseOrderId: z.string().optional(),
+  purchaseOrderCode: z.string().optional(),
+  options: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .optional(),
+});
+
+export type MaterialRequestDto = z.infer<
+  typeof createRequisitionItemRequestSchema
+>;
