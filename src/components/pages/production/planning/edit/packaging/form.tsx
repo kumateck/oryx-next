@@ -60,7 +60,7 @@ const PackageForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.SELECT,
             name: "directLinkMaterial",
             defaultValue: defaultValues?.directLinkMaterial,
-            onModal: true,
+            // onModal: true,
             placeholder: "Select Material",
             options: directLinkMaterialOptions,
             errors,
@@ -72,7 +72,7 @@ const PackageForm = <TFieldValues extends FieldValues, TContext>({
             label: "Unit Capacity",
             placeholder: "Enter capacity",
             type: InputTypes.NUMBER,
-            required: true,
+            // required: true,
             errors,
           },
           {
