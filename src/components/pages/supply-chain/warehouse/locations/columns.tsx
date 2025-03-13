@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, WarehouseType, isErrorResponse } from "@/lib";
 import {
   WarehouseLocationDto,
   useDeleteApiV1WarehouseLocationByLocationIdMutation,
@@ -110,7 +110,12 @@ export const columns: ColumnDef<WarehouseLocationDto>[] = [
   {
     accessorKey: "locations",
     header: "Location",
-    cell: ({ row }) => <div>{row.original.name}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.name} (
+        {WarehouseType[Number(row.original.warehouse?.type)]})
+      </div>
+    ),
   },
   {
     accessorKey: "floor",

@@ -48,8 +48,6 @@ const AddBatchDialog = ({
     mode: "all",
   });
 
-  console.log(errors, "errors");
-
   const onSubmit = (data: any) => {
     try {
       const filteredWeights = data.weights.filter(
