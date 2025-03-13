@@ -1,6 +1,8 @@
 import React from "react";
 import { FaRegCircleDot } from "react-icons/fa6";
 
+import { ActivityStepStatus } from "@/lib";
+
 import TimelineCard from "./card";
 import { TimelineItemProps } from "./type";
 
@@ -14,7 +16,10 @@ const Active = ({ item }: Props) => {
         <FaRegCircleDot className="size-9 text-green-500" />
       </span>
       <TimelineCard
-        isComplete
+        inProgress={item.order === 5 && item.status === ActivityStepStatus.New}
+        isComplete={
+          item.order === 5 && item.status === ActivityStepStatus.Progress
+        }
         item={item}
         className="border border-primary-inverted"
       />

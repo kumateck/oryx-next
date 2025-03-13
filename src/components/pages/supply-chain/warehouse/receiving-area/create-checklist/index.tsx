@@ -55,7 +55,9 @@ const CreateChecklist = () => {
   } = useForm<ChecklistRequestDto>({
     resolver: CreateProductValidator,
     mode: "all",
-    defaultValues: {},
+    defaultValues: {
+      date: new Date(),
+    },
   });
   const router = useRouter();
 

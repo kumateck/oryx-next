@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 // import { Icon } from "@/components/ui";
 import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
-import { ActivityStepStatus, fullname } from "@/lib";
+import { fullname } from "@/lib";
 import { useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -37,10 +37,9 @@ const Board = () => {
   const activities = steps?.map((step) => ({
     id: step.id as string,
     title: step.operation?.name as string,
-    status:
-      step.id === data?.currentStep?.id
-        ? ActivityStepStatus.Active
-        : step.status,
+    isActive: step.id === data?.currentStep?.id,
+    status: step.status,
+    order: step.order,
     description: step.operation?.description as string,
     imagesLabel: "Responsible Parties",
     images: step?.responsibleUsers?.map((x) => ({
@@ -50,7 +49,7 @@ const Board = () => {
   })) as TimelineItemProps[];
   return (
     <BgWrapper>
-      {isLoading || (isFetching && <SkeletonLoadingPage />)}
+      {(isLoading || isFetching) && <SkeletonLoadingPage />}
 
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
