@@ -31,23 +31,30 @@ const Products = ({ products, scheduleId }: Props) => {
         </TabsList>
 
         <div className="">
-          {products.map((tab, idx) => (
-            <TabsContent key={idx} value={tab.product?.id as string}>
-              <Product
-                scheduleId={scheduleId}
-                tab={tab}
-                productId={tab.product?.id as string}
-                batchSizeType={
-                  convertToLargestUnit(
-                    tab.quantity as number,
-                    tab.product?.baseUoM?.symbol as Units,
-                  ).value === tab.product?.fullBatchSize
-                    ? BatchSizeType.Full
-                    : BatchSizeType.Half
-                }
-              />
-            </TabsContent>
-          ))}
+          {products.map((tab, idx) => {
+            console.log(
+              convertToLargestUnit(
+                tab.quantity as number,
+                tab.product?.baseUoM?.symbol as Units,
+              ).value,
+              tab.product?.fullBatchSize,
+              "checking full base size",
+            );
+            return (
+              <TabsContent key={idx} value={tab.product?.id as string}>
+                <Product
+                  scheduleId={scheduleId}
+                  tab={tab}
+                  productId={tab.product?.id as string}
+                  batchSizeType={
+                    Number(tab.quantity) === Number(tab.product?.fullBatchSize)
+                      ? BatchSizeType.Full
+                      : BatchSizeType.Half
+                  }
+                />
+              </TabsContent>
+            );
+          })}
         </div>
       </Tabs>
     </div>
