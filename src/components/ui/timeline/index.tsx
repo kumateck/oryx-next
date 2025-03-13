@@ -9,16 +9,21 @@ import { TimelineItemProps } from "./type";
 
 interface Props {
   steps: TimelineItemProps[];
+  activityId: string;
 }
 
-export const TimelineLayout = ({ steps }: Props) => {
+export const TimelineLayout = ({ steps, activityId }: Props) => {
   return (
     <div className="mx-auto w-full pl-0 pr-0 sm:pl-2 md:pl-4 lg:pl-6 xl:pl-12 2xl:pl-24">
       <ol className="relative border-s border-gray-200">
         {steps?.map((item, index) => {
           return (
             <Fragment key={index}>
-              {item.isActive ? <Active item={item} /> : timeSwitch(item)}
+              {item.isActive ? (
+                <Active activityId={activityId} item={item} />
+              ) : (
+                timeSwitch(item)
+              )}
             </Fragment>
           );
         })}
