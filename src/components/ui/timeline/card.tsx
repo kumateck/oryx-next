@@ -10,7 +10,10 @@ import {
   getInitials,
   isErrorResponse,
 } from "@/lib";
-import { usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation } from "@/lib/redux/api/openapi.generated";
+import {
+  ProductionStatus,
+  usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation,
+} from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 
 import { AvatarStack } from "../avatar-stack";
@@ -25,16 +28,16 @@ interface Props {
   isComplete?: boolean;
   inProgress?: boolean;
 }
-const TimelineCard = ({ item, className, isComplete }: Props) => {
+const TimelineCard = ({ item, className, isComplete, inProgress }: Props) => {
   const dispatch = useDispatch();
   const [updateActivity, { isLoading }] =
     usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation();
 
-  const onComplete = async () => {
+  const onComplete = async (status: ProductionStatus) => {
     try {
       await updateActivity({
         productionStepId: item.id as string,
-        status: ActivityStepStatus.Completed,
+        status,
       }).unwrap();
       toast.success("Activity completed successfully");
       dispatch(commonActions.setTriggerReload());
@@ -77,8 +80,17 @@ const TimelineCard = ({ item, className, isComplete }: Props) => {
           )}
         </div>
         {item.extra}
+        {inProgress && (
+          <Button onClick={() => onComplete(ActivityStepStatus.Progress)}>
+            {isLoading ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              ActivityStepStatus[ActivityStepStatus.Progress]
+            )}
+          </Button>
+        )}
         {isComplete && (
-          <Button onClick={onComplete}>
+          <Button onClick={() => onComplete(ActivityStepStatus.Completed)}>
             {isLoading ? (
               <Icon name="LoaderCircle" className="animate-spin" />
             ) : (

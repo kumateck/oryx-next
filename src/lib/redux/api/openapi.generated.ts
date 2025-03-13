@@ -2809,6 +2809,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          kind: queryArg.kind,
         },
       }),
     }),
@@ -4715,6 +4716,7 @@ export type GetApiV1WarehouseGrnsApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  kind?: MaterialKind;
 };
 export type GetApiV1WarehouseBincardinformationByMaterialIdApiResponse =
   /** status 200 OK */ BinCardInformationDtoIEnumerablePaginateableRead;

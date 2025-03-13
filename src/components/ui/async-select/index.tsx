@@ -32,6 +32,8 @@ export type SearchableDropdownProps = {
   }>;
   prefix?: React.ReactNode;
   value?: Option;
+  reloadTrigger?: boolean; // Optional prop to trigger reload
+  setReloadTrigger?: (value: boolean) => void; // Callback to reset reloadTrigger
 };
 
 export function AsyncSelect(props: SearchableDropdownProps) {
@@ -57,6 +59,14 @@ export function AsyncSelect(props: SearchableDropdownProps) {
     loadOptions(debouncedSearchTerm, page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, debouncedSearchTerm]);
+
+  useEffect(() => {
+    if (props.reloadTrigger) {
+      loadOptions(debouncedSearchTerm, 1); // Reset to page 1 and reload
+      props.setReloadTrigger?.(false); // Reset reloadTrigger after fetching
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.reloadTrigger]);
 
   const loadOptions = async (search: string, page = 1) => {
     const result = await props.fetchOptions(search, page);

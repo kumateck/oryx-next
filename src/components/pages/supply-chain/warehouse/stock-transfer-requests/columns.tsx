@@ -60,7 +60,7 @@ export const getColumns = (): ColumnDef<DepartmentStockTransferDtoRead>[] => [
       </div>
     ),
   },
-  // ...(Number(type) === TransferType.Inbound
+  // ...(Number(type) === TransferType.Incoming
   //   ? [
   //       {
   //         id: "actions",

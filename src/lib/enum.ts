@@ -248,6 +248,6 @@ export enum PackLocationType {
 }
 
 export enum TransferType {
-  Inbound,
-  Outbound,
+  Incoming,
+  Outgoing,
 }
