@@ -1,11 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import EmptyIcon from "@/assets/empty-icon.svg";
 import PageWrapper from "@/components/layout/wrapper";
 import {
   Accordion,
@@ -32,6 +30,7 @@ import {
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
 } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
+import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
@@ -242,20 +241,5 @@ const Page = () => {
     </PageWrapper>
   );
 };
-const EmptyState = () => {
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
-      <div className="mb-6 text-neutral-400">
-        <Image src={EmptyIcon} alt="empty-icon" />
-      </div>
-      <h3 className="mb-2 text-lg font-bold text-neutral-800">OOOPS!</h3>
-      <p className="font-semibold text-neutral-800">
-        You currently have no items or actions to view.
-      </p>
-      <p className="text-neutral-500">
-        Please enter Foreign Sales Quotation Responses
-      </p>
-    </div>
-  );
-};
+
 export default Page;
