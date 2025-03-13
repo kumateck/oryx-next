@@ -1,28 +1,49 @@
 import React from "react";
 import {
   Control,
+  FieldArrayWithId,
   FieldErrors,
   FieldValues,
   Path,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
   UseFormRegister,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { InputTypes } from "@/lib";
+import { InputTypes, Option } from "@/lib";
 
 import TableForData from "./table";
+import { ChargesRequestDto } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  remove: UseFieldArrayRemove;
+  fields: FieldArrayWithId<TFieldValues>[];
+  append: UseFieldArrayAppend<TFieldValues>;
+  invoiceOptions: Option[];
+  packingUomOptions: Option[];
+  supplierOptions: Option[];
 }
+
+const defaultCharges: ChargesRequestDto = {
+  description: "",
+  cost: "",
+};
 
 const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  remove,
+  fields,
+  append,
+  invoiceOptions,
+  packingUomOptions,
+  supplierOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -40,27 +61,23 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               errors,
             },
             {
-              register: register("supplierName" as Path<TFieldValues>),
-              label: "Supplier Name",
-              placeholder: "Enter Supplier Name",
-              type: InputTypes.TEXT,
+              label: "Supplier",
+              control: control as Control,
+              type: InputTypes.SELECT,
+              name: "supplierId",
               required: true,
+              placeholder: "Select Supplier",
+              options: supplierOptions,
               errors,
             },
             {
-              register: register("invoiceNumber" as Path<TFieldValues>),
               label: "Invoice Number",
-              placeholder: "Enter Invoice Number",
-              type: InputTypes.TEXT,
+              control: control as Control,
+              type: InputTypes.SELECT,
+              name: "invoiceId",
               required: true,
-              errors,
-            },
-            {
-              register: register("invoiceAmount" as Path<TFieldValues>),
-              label: "Invoice Amount",
-              placeholder: "Enter Invoice Amount",
-              type: InputTypes.TEXT,
-              required: true,
+              placeholder: "Select Invoice Number",
+              options: invoiceOptions,
               errors,
             },
             {
@@ -73,10 +90,11 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               errors,
             },
             {
-              register: register("freeTimeDuration" as Path<TFieldValues>),
+              name: "freeTimeDuration",
               label: "Free Time Duration",
+              control: control as Control,
               placeholder: "Enter Free Time Duration",
-              type: InputTypes.TEXT,
+              type: InputTypes.DATE,
               required: true,
               errors,
             },
@@ -126,11 +144,13 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
-                register: register("uom" as Path<TFieldValues>),
                 label: "Unit of Measure",
-                placeholder: "Enter Unit of Measure",
-                type: InputTypes.TEXT,
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "uom",
                 required: true,
+                placeholder: "Select Unit of Measure",
+                options: packingUomOptions,
                 errors,
               },
             ]}
@@ -145,7 +165,7 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
         </CardContent>
       </Card>
 
-      <Card className="mt-6">
+      <Card className="my-6">
         <CardTitle className="p-4">
           <div className="flex items-center justify-between">
             Charges
@@ -153,7 +173,7 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               type="button"
               variant={"ghost"}
               className="bg-neutral-dark text-white"
-              // onClick={() => append(defaultLocation as any)}
+              onClick={() => append(defaultCharges as any)}
             >
               <Icon name="Plus" />
               <span> Add</span>
@@ -163,9 +183,64 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
         <CardContent>
           <div className="mt-4">
             <div className="mt-4">
-              <TableForData lists={[]} setItemLists={() => {}} />
+              {fields.map((field, index) => {
+                return (
+                  <div key={field.id} className="relative">
+                    <div className="absolute right-2 top-0">
+                      <Icon
+                        onClick={() => remove(index)}
+                        name="CircleMinus"
+                        className="text-danger-500 h-5 w-5 hover:cursor-pointer"
+                      />
+                    </div>
+                    <FormWizard
+                      className="grid w-full grid-cols-2 gap-x-10 space-y-0 pt-4"
+                      fieldWrapperClassName="flex-grow"
+                      config={[
+                        {
+                          register: register(
+                            `charges.${index}.description` as Path<TFieldValues>,
+                          ),
+                          label: "Description",
+                          type: InputTypes.TEXT,
+                          required: true,
+                          placeholder: "Enter description",
+                          errors,
+                        },
+                        {
+                          register: register(
+                            `charges.${index}.cost` as Path<TFieldValues>,
+                          ),
+                          label: "Cost",
+                          placeholder: "Enter Cost",
+                          type: InputTypes.TEXT,
+                          required: true,
+                          errors,
+                        },
+                      ]}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="my-5 py-4">
+          <FormWizard
+            config={[
+              {
+                type: InputTypes.DRAGNDROP,
+                label: "Attach Documents",
+                name: `attachments`,
+                defaultValue: null,
+                control: control as Control,
+                errors,
+              },
+            ]}
+          />
         </CardContent>
       </Card>
     </div>
