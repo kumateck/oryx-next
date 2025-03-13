@@ -4,13 +4,11 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  Icon,
+  DialogTitle, // Icon,
 } from "@/components/ui";
 import { Units, convertToLargestUnit, getSmallestUnit } from "@/lib";
 import {
-  useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
-  useGetApiV1UserAuthenticatedQuery,
+  useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery, // useGetApiV1UserAuthenticatedQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import SkeletonLoadingPage from "../skeleton-page-loader";
@@ -36,7 +34,7 @@ const AllStockByMaterial = ({
       materialId,
     });
 
-  const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
+  // const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -76,13 +74,13 @@ const AllStockByMaterial = ({
                       className="flex gap-4 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                     >
                       {item.warehouse?.name}{" "}
-                      {authUser?.department?.warehouses?.find(
+                      {/* {authUser?.department?.warehouses?.find(
                         (d) => d?.id === item?.warehouse?.id,
                       ) ? (
                         <Icon name="House" />
                       ) : (
                         ""
-                      )}
+                      )} */}
                     </th>
                     <td className="px-6 py-4">
                       {
