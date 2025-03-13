@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaRegCircleDot } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
@@ -25,6 +26,7 @@ import {
   useLazyGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ClientDatatable } from "@/shared/datatable";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
@@ -47,6 +49,7 @@ const Product = ({
   batchSizeType,
 }: ProductProps) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [startProductionMutation, { isLoading: isProcessingStart }] =
     usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation();
@@ -233,7 +236,7 @@ const Product = ({
         productionScheduleId: scheduleId,
       }).unwrap();
       toast.success("Production started successfully");
-      // router.push(`/production/schedules`);
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       console.log(error, "error");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

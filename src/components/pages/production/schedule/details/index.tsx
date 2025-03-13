@@ -2,11 +2,14 @@
 
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import { Card, CardContent, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { useGetApiV1ProductionScheduleByScheduleIdQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProductionScheduleByScheduleIdQuery } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
@@ -14,12 +17,24 @@ import PageTitle from "@/shared/title";
 import Products from "./products";
 
 const ScheduleDetail = () => {
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const router = useRouter();
   const { id } = useParams();
   const scheduleId = id as string;
-  const { data, isLoading } = useGetApiV1ProductionScheduleByScheduleIdQuery({
-    scheduleId,
-  });
+  const [loadSchedule, { data, isLoading }] =
+    useLazyGetApiV1ProductionScheduleByScheduleIdQuery();
+
+  useEffect(() => {
+    loadSchedule({
+      scheduleId,
+    });
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scheduleId, triggerReload]);
 
   const onBack = () => {
     router.back();
