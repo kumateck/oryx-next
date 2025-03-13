@@ -82,7 +82,7 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
   [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Reserved]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
 };
