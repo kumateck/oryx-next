@@ -39,6 +39,7 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     mode: "all",
     defaultValues: {
       packingExcessMargin: 0,
+      unitCapacity: 0,
     },
   });
 

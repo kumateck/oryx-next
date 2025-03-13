@@ -32,7 +32,7 @@ export const CreatePackagingSchema = z
       .number({
         invalid_type_error: "Unit Capacity must be a number",
       })
-      .positive("Unit Capacity must be greater than 0")
+      .min(0, { message: "Unit Capacity must be zero or greater" }) // Allow zero
       .optional(),
     baseQuantity: z
       .number({
@@ -46,13 +46,13 @@ export const CreatePackagingSchema = z
   .refine(
     (data) => {
       if (data.directLinkMaterial) {
-        return data.unitCapacity !== undefined;
+        return data.unitCapacity !== undefined && data.unitCapacity > 0;
       }
       return true;
     },
     {
       message:
-        "Unit Capacity is required when Direct Link Material is provided",
+        "Unit Capacity must be greater than 0 when Direct Link Material is provided",
       path: ["unitCapacity"],
     },
   );
