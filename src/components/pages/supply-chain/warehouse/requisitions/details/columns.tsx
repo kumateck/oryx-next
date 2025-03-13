@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Units, convertToLargestUnit, getSmallestUnit } from "@/lib";
 import {
   BatchToSupplyRead,
-  RequisitionItemDtoRead,
+  RequisitionItemDto,
 } from "@/lib/redux/api/openapi.generated";
 
 export interface BatchColumns {
@@ -23,7 +23,7 @@ export interface BatchColumns {
   expiryDate?: string;
 }
 
-export const getColumns = (): ColumnDef<RequisitionItemDtoRead>[] => [
+export const getColumns = (): ColumnDef<RequisitionItemDto>[] => [
   {
     accessorKey: "code",
     header: "Material Code",

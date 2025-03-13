@@ -85,7 +85,7 @@ const HeaderEnd = () => {
             <span>Change Password</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 hover:cursor-pointer"
             onClick={handleLogout}
           >
             <Icon name={"LogOut"} />
