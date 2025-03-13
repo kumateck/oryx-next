@@ -1,105 +1,140 @@
 "use client";
 
-import { Control, useForm } from "react-hook-form";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
 
-import { FormWizard } from "@/components/form-inputs";
-import { Card, CardTitle } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { AsyncSelect, Card, CardTitle } from "@/components/ui";
+import { EMaterialKind, Option } from "@/lib";
 import {
   MaterialBatchDto,
-  useGetApiV1WarehouseRackByRackIdQuery,
-  useGetApiV1WarehouseRackQuery,
+  WarehouseLocationRackDtoRead,
+  useLazyGetApiV1WarehouseRackByRackIdQuery,
+  useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
+import AccessTabs from "@/shared/access";
+import { ClientDatatable } from "@/shared/datatable";
+import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
 
-import TableForData from "./table";
-import { LocationChartDto } from "./types";
+import { getColumns } from "./columns";
 
 const LocationChart = () => {
-  const {
-    control,
-    watch,
-    formState: { errors },
-  } = useForm<LocationChartDto>({
-    mode: "all",
-    defaultValues: {
-      rackId: undefined,
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
+
+  const [loadRacks, { isLoading: isLoadingRacks }] =
+    useLazyGetApiV1WarehouseRackQuery();
+
+  const [loadRackShelves, { isLoading: isLoadingRackShelves }] =
+    useLazyGetApiV1WarehouseRackByRackIdQuery();
+
+  const [selectedRack, setSelectedRack] = useState<Option>();
+  const [selectedRackShelves, setSelectedRackShelves] =
+    useState<WarehouseLocationRackDtoRead>();
+
+  const fetchOptions = async (searchQuery: string, page: number) => {
+    const res = await loadRacks({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.warehouseLocation?.name + "-" + item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
+  const handleOnSeletRack = async (rack: Option) => {
+    setSelectedRack(rack);
+    const response = await loadRackShelves({
+      rackId: rack.value,
+    }).unwrap();
+
+    const shelves = response;
+    setSelectedRackShelves(shelves);
+  };
+
+  const pathname = usePathname();
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
     },
-  });
-
-  const selectedRackId = watch("rackId");
-  console.log("Selected Rack ID:", selectedRackId);
-
-  const { data: selectedRack } = useGetApiV1WarehouseRackByRackIdQuery(
-    { rackId: selectedRackId?.value },
-    { skip: !selectedRackId },
+    [searchParams],
   );
 
-  const { data: racks } = useGetApiV1WarehouseRackQuery({
-    page: 1,
-    pageSize: 100,
-  });
-
-  const rackOptions = racks?.data?.map((rack) => ({
-    label: `${rack?.warehouseLocation?.name}-${rack.name}`,
-    value: String(rack.id),
-  })) as Option[];
+  const handleTabClick = (tabType: EMaterialKind) => {
+    router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
+  };
 
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
-        <PageTitle title="Location Chart Record" />
-
-        <div className="flex items-center justify-between">
-          <div className="w-1/2">
-            <FormWizard
-              className="w-full gap-x-10 gap-y-5 space-y-0"
-              fieldWrapperClassName="flex-grow"
-              config={[
-                {
-                  label: "Rack Number",
-                  type: InputTypes.SELECT,
-                  control: control as unknown as Control,
-                  name: "rackId",
-                  required: true,
-                  onModal: true,
-                  placeholder: "Select Rack Number",
-                  options: rackOptions,
-                  errors,
-                },
-              ]}
-            />
-          </div>
-          {/* <div>
-            <Button
-              variant={"default"}
-              className="flex items-center gap-2 bg-neutral-dark"
-            >
-              <Icon name="Printer" className="h-4 w-4" />
-              <span>Print Chart</span>
-            </Button>
-          </div> */}
+        <div className="flex items-center justify-between py-2">
+          <PageTitle title="Location Chart Records" />
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={kind}
+            tabs={[
+              {
+                label: EMaterialKind[EMaterialKind.Raw],
+                value: EMaterialKind.Raw.toString(),
+              },
+              {
+                label: EMaterialKind[EMaterialKind.Packing],
+                value: EMaterialKind.Packing.toString(),
+              },
+            ]}
+          />
         </div>
 
-        {/* Render shelves with their material batches */}
-        {selectedRack?.shelves?.map((shelf) => (
-          <Card key={shelf.id} className="space-y-4 p-5">
-            <CardTitle>
-              {`Shelf ${shelf.code || shelf.name} - Rack: ${selectedRack.warehouseLocation?.name}-${selectedRack.name}`}
-            </CardTitle>
-            <TableForData
-              lists={
-                shelf.materialBatches
-                  ?.map((smb) => smb.materialBatch)
-                  .filter((batch) => batch !== undefined) as MaterialBatchDto[]
-              }
-              // Remove setItemLists if not used for editing
-              setItemLists={() => {}}
-            />
-          </Card>
-          // <h3 key={shelf.id}>I should appear</h3>
-        ))}
+        <div className="max-w-md">
+          <AsyncSelect
+            value={selectedRack}
+            onChange={handleOnSeletRack}
+            fetchOptions={fetchOptions}
+            isLoading={isLoadingRacks}
+          />
+        </div>
+        {!selectedRack?.value && (
+          <EmptyState
+            title="No rack selected"
+            description="Please select a rack"
+          />
+        )}
+        {isLoadingRackShelves && <SkeletonLoadingPage />}
+        <div className="space-y-3">
+          {selectedRackShelves?.shelves?.map((shelf) => (
+            <Card key={shelf.id} className="space-y-4 p-5">
+              <CardTitle>
+                {`Shelf ${shelf.code || shelf.name} - Rack: ${selectedRackShelves?.name}`}
+              </CardTitle>
+              <ClientDatatable
+                normalTable
+                data={
+                  (shelf.materialBatches
+                    ?.map((smb) => smb.materialBatch)
+                    .filter(
+                      (batch) => batch !== undefined,
+                    ) as MaterialBatchDto[]) ?? []
+                }
+                isLoading={isLoadingRackShelves}
+                columns={getColumns()}
+              />
+            </Card>
+          ))}
+        </div>
       </div>
     </ScrollablePageWrapper>
   );
