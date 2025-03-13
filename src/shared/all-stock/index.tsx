@@ -7,12 +7,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import {
-  Units,
-  WarehouseType,
-  convertToLargestUnit,
-  getSmallestUnit,
-} from "@/lib";
+import { Units, convertToLargestUnit, getSmallestUnit } from "@/lib";
 import {
   useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery,
   useGetApiV1UserAuthenticatedQuery,
@@ -40,6 +35,7 @@ const AllStockByMaterial = ({
     useGetApiV1MaterialByMaterialIdStockAcrossWarehousesQuery({
       materialId,
     });
+
   const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
 
   return (
@@ -47,7 +43,7 @@ const AllStockByMaterial = ({
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>
-            Stock accross all warehouses for {materialName}
+            Stock across all warehouses for {materialName}
           </DialogTitle>
         </DialogHeader>
 
@@ -89,18 +85,18 @@ const AllStockByMaterial = ({
                       )}
                     </th>
                     <td className="px-6 py-4">
-                      {item.warehouse?.type === WarehouseType.RawMaterial
-                        ? convertToLargestUnit(
-                            item.stockQuantity as number,
-                            getSmallestUnit(uomName as Units),
-                          ).value
-                        : item.stockQuantity}
-                      {item.warehouse?.type === WarehouseType.PackagedMaterial
-                        ? convertToLargestUnit(
-                            item.stockQuantity as number,
-                            getSmallestUnit(uomName as Units),
-                          ).unit
-                        : ""}
+                      {
+                        convertToLargestUnit(
+                          item.stockQuantity as number,
+                          getSmallestUnit(uomName as Units),
+                        ).value
+                      }
+                      {
+                        convertToLargestUnit(
+                          item.stockQuantity as number,
+                          getSmallestUnit(uomName as Units),
+                        ).unit
+                      }
                     </td>
                   </tr>
                 ))}
