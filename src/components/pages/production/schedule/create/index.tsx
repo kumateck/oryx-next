@@ -108,6 +108,7 @@ const Page = () => {
           getSmallestUnit(product?.baseUoM?.symbol as Units),
         );
         const fullBatchSize = fullQty.value;
+        console.log(fullBatchSize, "fullBatchSize");
         const uom = product?.baseUoM?.symbol as Units;
         const sizeType = Number(item.sizeType?.value);
         const convertUom = getLargestUnit(uom);
@@ -120,6 +121,7 @@ const Page = () => {
         };
       }),
     );
+    console.log(products, "products");
     const payload = {
       createProductionScheduleRequest: {
         code: newCode ?? data.code,
