@@ -78,7 +78,6 @@ const Page = () => {
   // };
 
   const onRowClick = (row: DepartmentStockTransferDtoRead) => {
-    console.log(row);
     router.push(`/warehouse/stock-transfer-requests/${row.id}/details`);
   };
   return (

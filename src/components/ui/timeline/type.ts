@@ -4,6 +4,9 @@ export interface TimelineItemProps {
   id?: string;
   title: string;
   status?: ActivityStepStatus;
+
+  order?: number;
+  isActive?: boolean;
   time?: string;
   description?: string;
   imagesLabel?: string;

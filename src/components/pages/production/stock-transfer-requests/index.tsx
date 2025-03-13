@@ -48,7 +48,7 @@ const Page = () => {
   useEffect(() => {
     const transferType = Number(type);
 
-    if (transferType === TransferType.Inbound) {
+    if (transferType === TransferType.Incoming) {
       loadInboundRequests({
         page,
         pageSize,
@@ -56,7 +56,7 @@ const Page = () => {
       });
     }
 
-    if (transferType === TransferType.Outbound) {
+    if (transferType === TransferType.Outgoing) {
       loadOutboundRequests({
         page,
         pageSize,
@@ -97,18 +97,18 @@ const Page = () => {
           type={type}
           tabs={[
             {
-              label: TransferType[TransferType.Inbound],
-              value: TransferType.Inbound.toString(),
+              label: TransferType[TransferType.Incoming],
+              value: TransferType.Incoming.toString(),
             },
             {
-              label: TransferType[TransferType.Outbound],
-              value: TransferType.Outbound.toString(),
+              label: TransferType[TransferType.Outgoing],
+              value: TransferType.Outgoing.toString(),
             },
           ]}
         />
       </div>
 
-      {Number(type) === TransferType.Inbound ? (
+      {Number(type) === TransferType.Incoming ? (
         <TransferTable
           response={responseInbound}
           isLoading={isLoadingInbound || isFetchingInbound}

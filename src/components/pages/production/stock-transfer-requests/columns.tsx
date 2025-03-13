@@ -47,12 +47,12 @@ export const getColumns = (
   {
     accessorKey: "department",
     header:
-      Number(type) === TransferType.Inbound
+      Number(type) === TransferType.Incoming
         ? "Request Department"
         : "Supplier Department",
     cell: ({ row }) => (
       <div>
-        {Number(type) === TransferType.Inbound
+        {Number(type) === TransferType.Incoming
           ? row.original.toDepartment?.name
           : row.original.fromDepartment?.name}
       </div>
@@ -87,7 +87,7 @@ export const getColumns = (
       </div>
     ),
   },
-  ...(Number(type) === TransferType.Inbound
+  ...(Number(type) === TransferType.Incoming
     ? [
         {
           id: "actions",

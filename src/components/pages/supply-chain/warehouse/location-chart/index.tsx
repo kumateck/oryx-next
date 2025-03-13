@@ -34,11 +34,16 @@ const LocationChart = () => {
   const [selectedRack, setSelectedRack] = useState<Option>();
   const [selectedRackShelves, setSelectedRackShelves] =
     useState<WarehouseLocationRackDtoRead>();
+  const [reloadTrigger, setReloadTrigger] = useState(false);
+  const handleFalseReload = (reload: boolean) => {
+    setReloadTrigger(reload);
+  };
 
   const fetchOptions = async (searchQuery: string, page: number) => {
     const res = await loadRacks({
       searchQuery,
       page,
+      kind: kind || EMaterialKind.Raw,
     }).unwrap();
     const response = {
       options: res?.data?.map((item) => ({
@@ -76,6 +81,7 @@ const LocationChart = () => {
 
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
+    setReloadTrigger(true);
   };
 
   return (
@@ -105,6 +111,8 @@ const LocationChart = () => {
             onChange={handleOnSeletRack}
             fetchOptions={fetchOptions}
             isLoading={isLoadingRacks}
+            reloadTrigger={reloadTrigger}
+            setReloadTrigger={handleFalseReload}
           />
         </div>
         {!selectedRack?.value && (
