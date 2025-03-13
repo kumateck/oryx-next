@@ -12,8 +12,10 @@ import {
   ErrorResponse,
   Option,
   Units,
+  convertToLargestUnit,
   convertToSmallestUnit,
   getLargestUnit,
+  getSmallestUnit,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -101,7 +103,11 @@ const Page = () => {
       data.products?.map(async (item) => {
         const productId = item.productId?.value;
         const product = await loadProductInfo({ productId }).unwrap();
-        const fullBatchSize = product?.fullBatchSize as number;
+        const fullQty = convertToLargestUnit(
+          product?.fullBatchSize as number,
+          getSmallestUnit(product?.baseUoM?.symbol as Units),
+        );
+        const fullBatchSize = fullQty.value;
         const uom = product?.baseUoM?.symbol as Units;
         const sizeType = Number(item.sizeType?.value);
         const convertUom = getLargestUnit(uom);
