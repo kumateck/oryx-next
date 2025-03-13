@@ -16,7 +16,7 @@ import {
 } from "@/lib";
 import {
   ProductDtoRead,
-  ProductionActivityRead,
+  ProductionActivityDto,
   ProductionScheduleProductDto,
   ProductionStatus,
   useLazyGetApiV1ProductByProductIdQuery,
@@ -64,7 +64,7 @@ const Product = ({
   // console.log(isLoadingActivity, "isLoadingActivity");
 
   const [product, setProduct] = useState<ProductDtoRead>();
-  const [activity, setActivity] = useState<ProductionActivityRead>();
+  const [activity, setActivity] = useState<ProductionActivityDto>();
   const [rawLists, setRawLists] = useState<MaterialRequestDto[]>([]);
   const [packageLists, setPackageLists] = useState<MaterialRequestDto[]>([]);
 
