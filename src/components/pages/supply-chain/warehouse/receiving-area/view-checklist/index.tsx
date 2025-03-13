@@ -5,16 +5,27 @@ import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 import { Card, CardContent, Icon } from "@/components/ui";
-import { Units, convertToLargestUnit } from "@/lib";
-import { useGetApiV1WarehouseChecklistByIdQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  ChecklistBoolean,
+  SupplierStatus,
+  Units,
+  convertToLargestUnit,
+} from "@/lib";
+import {
+  SrDto,
+  useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery,
+} from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 function ViewChecklist() {
   const { id } = useParams();
-  const checklistId = id as string;
+  const materialId = id as string;
   const router = useRouter();
-  const { data } = useGetApiV1WarehouseChecklistByIdQuery({ id: checklistId });
+  const { data } =
+    useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery(
+      { distributedMaterialId: materialId },
+    );
   return (
     <ScrollablePageWrapper>
       <div
@@ -33,7 +44,7 @@ function ViewChecklist() {
         <CardContent className="py-4">
           <PageTitle title={data?.material?.name as string} />
 
-          <div className="grid grid-cols-3 text-sm">
+          <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
               <div>
                 <span>Invoice Number: </span>
@@ -51,7 +62,14 @@ function ViewChecklist() {
             <div>
               <div>
                 <span>Supplier Status: </span>
-                <span className="font-bold">{data?.supplier?.status}</span>
+                <span className="font-bold">
+                  {
+                    SupplierStatus[
+                      data?.supplier
+                        ?.status as unknown as keyof typeof SupplierStatus
+                    ]
+                  }
+                </span>
               </div>
               <div>
                 <span>Certificate of Analysis: </span>
@@ -60,20 +78,32 @@ function ViewChecklist() {
               <div>
                 <span>Condition of Consignment Carrier: </span>
                 <span className="font-bold">
-                  {data?.consignmentCarrierStatus}
+                  {
+                    ChecklistBoolean[
+                      data?.consignmentCarrierStatus as unknown as keyof typeof ChecklistBoolean
+                    ]
+                  }
                 </span>
               </div>
             </div>
             <div>
               <div>
                 <span>Intactness of containers/bags/shippers: </span>
-                <span className="font-bold">{data?.intactnessStatus}</span>
+                <span className="font-bold">
+                  {
+                    ChecklistBoolean[
+                      data?.intactnessStatus as unknown as keyof typeof ChecklistBoolean
+                    ]
+                  }
+                </span>
               </div>
               <div>
                 <span>
                   Visible proper labelling of containers/bags/shippers:{" "}
                 </span>
-                <span className="font-bold">{data?.visibleLabelling}</span>
+                <span className="font-bold">
+                  {data?.visibleLabelling ? "True" : "False"}
+                </span>
               </div>
             </div>
           </div>
@@ -83,7 +113,7 @@ function ViewChecklist() {
       <div>
         {data?.materialBatches?.map((batch) => (
           <Card className="my-5" key={batch.id}>
-            <CardContent>
+            <CardContent className="py-4">
               <div className="grid grid-cols-3 text-sm">
                 <div>
                   <div>
@@ -132,12 +162,6 @@ function ViewChecklist() {
                       }
                     </span>
                   </div>
-                  <div>
-                    <span>Condition of Consignment Carrier: </span>
-                    <span className="font-bold">
-                      {data?.consignmentCarrierStatus}
-                    </span>
-                  </div>
                 </div>
                 <div>
                   <div>
@@ -168,6 +192,23 @@ function ViewChecklist() {
                     </span>
                   </div>
                 </div>
+              </div>
+              <div className="grid grid-cols-3 gap-x-12 gap-y-2">
+                {batch.sampleWeights?.map((weight: SrDto, i) => {
+                  if (!weight) return null;
+                  if (!weight.srNumber && !weight.grossWeight) return null;
+
+                  return (
+                    <div key={i} className="col-span-1 grid grid-cols-2 gap-2">
+                      <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
+                        {weight.srNumber ?? "-"}
+                      </span>
+                      <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
+                        {weight.grossWeight ?? "-"}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

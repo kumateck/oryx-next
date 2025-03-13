@@ -16,13 +16,17 @@ interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-export function DataTableRowActions<TData extends MaterialBatchDto>({
+export type MaterialBatchWithShelfId = MaterialBatchDto & {
+  shelfMaterialBatchId: string;
+  quantity: number;
+};
+
+export function DataTableRowActions<TData extends MaterialBatchWithShelfId>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [selectedBatch, setSelectedBatch] = useState<MaterialBatchDto | null>(
-    null,
-  );
+  const [selectedBatch, setSelectedBatch] =
+    useState<MaterialBatchWithShelfId | null>(null);
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
 
   return (
@@ -72,7 +76,7 @@ export interface BatchColumns {
   materialCode: string;
 }
 
-export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
+export const getColumns = (): ColumnDef<MaterialBatchWithShelfId>[] => [
   {
     accessorKey: "materialCode",
     header: "Material Code",
@@ -124,7 +128,7 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     header: "Quantity",
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
-        row.original.quantityAssigned as number,
+        row.original.quantity as number,
         row.original.uoM?.symbol as Units,
       );
       return (

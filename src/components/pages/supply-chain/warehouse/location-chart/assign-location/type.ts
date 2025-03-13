@@ -1,8 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { IdSchema } from "@/lib";
-
 export const locationSchema = z.object({
   quantity: z
     .number()
@@ -13,23 +11,16 @@ export const locationSchema = z.object({
       value: z.string().min(1, { message: "Rack is required" }),
       label: z.string(),
     },
-    {
-      message: "Rack is required",
-    },
+    { message: "Rack is required" },
   ),
   shelfId: z.object(
     {
       value: z.string().min(1, { message: "Shelf is required" }),
       label: z.string(),
     },
-    {
-      message: "Shelf is required",
-    },
+    { message: "Shelf is required" },
   ),
   note: z.string().optional(),
-  // Include these if they're part of your form data
-  productId: IdSchema("Product"),
-  uom: z.string().optional(),
 });
 
 export const associateLocationRequestSchema = z.object({

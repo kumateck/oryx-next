@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Control,
   FieldArrayWithId,
@@ -15,7 +15,7 @@ import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 
 import TableForData from "./table";
-import { ChargesRequestDto } from "./types";
+import { ChargesRequestDto, MaterialRequestDto } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -27,6 +27,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   invoiceOptions: Option[];
   packingUomOptions: Option[];
   supplierOptions: Option[];
+  materialLists: MaterialRequestDto[];
+  setMaterialLists: Dispatch<SetStateAction<MaterialRequestDto[]>>;
 }
 
 const defaultCharges: ChargesRequestDto = {
@@ -44,6 +46,8 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
   invoiceOptions,
   packingUomOptions,
   supplierOptions,
+  materialLists,
+  setMaterialLists,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -90,12 +94,11 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               errors,
             },
             {
-              name: "freeTimeDuration",
+              register: register("freeTimeDuration" as Path<TFieldValues>),
               label: "Free Time Duration",
-              control: control as Control,
-              placeholder: "Enter Free Time Duration",
-              type: InputTypes.DATE,
+              type: InputTypes.TEXT,
               required: true,
+              placeholder: "Enter Free Time Duration",
               errors,
             },
             {
@@ -159,7 +162,11 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
           <div className="mt-4">
             <h3 className="text-lg">Shipment Items</h3>
             <div className="mt-4">
-              <TableForData lists={[]} setItemLists={() => {}} />
+              <TableForData
+                lists={materialLists}
+                // Remove setItemLists if not used for editing
+                setItemLists={setMaterialLists}
+              />
             </div>
           </div>
         </CardContent>
