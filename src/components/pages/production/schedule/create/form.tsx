@@ -58,6 +58,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   isLoading,
   fetchOptions,
 }: Props<TFieldValues, TContext>) => {
+  console.log(batchSizeTypeOptions, "batchSizeTypeOptions");
   return (
     <div className="w-full">
       <Card className="p-5">

@@ -98,7 +98,7 @@ const Page = () => {
 
   const onSubmit = async (data: ScheduleRequestDto) => {
     const newCode = await regenerateCode();
-    // console.log(ren, "code regen");
+
     const products = await Promise.all(
       data.products?.map(async (item) => {
         const productId = item.productId?.value;
@@ -108,7 +108,7 @@ const Page = () => {
           getSmallestUnit(product?.baseUoM?.symbol as Units),
         );
         const fullBatchSize = fullQty.value;
-        console.log(fullBatchSize, "fullBatchSize");
+
         const uom = product?.baseUoM?.symbol as Units;
         const sizeType = Number(item.sizeType?.value);
         const convertUom = getLargestUnit(uom);
@@ -121,7 +121,7 @@ const Page = () => {
         };
       }),
     );
-    console.log(products, "products");
+
     const payload = {
       createProductionScheduleRequest: {
         code: newCode ?? data.code,
@@ -131,9 +131,9 @@ const Page = () => {
         scheduledStartTime: data.scheduledStartTime.toISOString(),
       },
     } as PostApiV1ProductionScheduleApiArg;
+
     try {
       await saveMutation(payload).unwrap();
-
       toast.success("Schedule created successfully");
       router.push(routes.productionSchedules());
     } catch (error) {

@@ -113,11 +113,10 @@ const Product = ({
         ]);
 
       setProduct(productResponse);
-      // console.log(isStockUnAvailable(rResponse), "isStockUnAvailable raw");
-      // console.log(isStockUnAvailable(pResponse), "isStockUnAvailable pack");
+
       const isnotAvailable =
         isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
-      // console.log(isnotAvailable, "isnotAvailable");
+
       if (isnotAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Purchase);
       }
@@ -175,10 +174,11 @@ const Product = ({
         const code = item?.material?.code as string;
 
         const materialName = item?.material?.name as string;
+
         const excess =
-          (batchSizeType === BatchSizeType.Full
+          (Number(batchSizeType) === BatchSizeType.Full
             ? item?.packingExcessMargin
-            : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+            : (item?.packingExcessMargin || 0) / 2) || 0;
         const qtyNeeded = (item?.quantityNeeded as number) + excess;
 
         const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(2);
