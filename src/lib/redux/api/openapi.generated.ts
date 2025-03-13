@@ -3028,12 +3028,12 @@ export type DeleteApiV1CollectionByItemTypeAndItemIdApiArg = {
   itemType: string;
 };
 export type GetApiV1CollectionUomApiResponse =
-  /** status 200 OK */ UnitOfMeasureDtoRead[];
+  /** status 200 OK */ UnitOfMeasureDto[];
 export type GetApiV1CollectionUomApiArg = {
   isRawMaterial?: boolean;
 };
 export type GetApiV1CollectionPackageStylesApiResponse =
-  /** status 200 OK */ PackageStyleDtoRead[];
+  /** status 200 OK */ PackageStyleDto[];
 export type GetApiV1CollectionPackageStylesApiArg = void;
 export type PostApiV1ConfigurationApiResponse =
   /** status 201 Created */ string;
@@ -3247,7 +3247,7 @@ export type PostApiV1MaterialApiArg = {
   createMaterialRequest: CreateMaterialRequest;
 };
 export type GetApiV1MaterialApiResponse =
-  /** status 200 OK */ MaterialDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ MaterialDtoIEnumerablePaginateable;
 export type GetApiV1MaterialApiArg = {
   /** The kind of material being requested */
   kind?: MaterialKind;
@@ -3259,7 +3259,7 @@ export type GetApiV1MaterialApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1MaterialByMaterialIdApiResponse =
-  /** status 200 OK */ MaterialDtoRead;
+  /** status 200 OK */ MaterialDto;
 export type GetApiV1MaterialByMaterialIdApiArg = {
   /** The ID of the material. */
   materialId: string;
@@ -3277,13 +3277,12 @@ export type DeleteApiV1MaterialByMaterialIdApiArg = {
   materialId: string;
 };
 export type GetApiV1MaterialCategoryApiResponse =
-  /** status 200 OK */ MaterialCategoryDtoRead[];
+  /** status 200 OK */ MaterialCategoryDto[];
 export type GetApiV1MaterialCategoryApiArg = {
   /** The kind of material being requested */
   materialKind?: MaterialKind;
 };
-export type GetApiV1MaterialAllApiResponse =
-  /** status 200 OK */ MaterialDtoRead[];
+export type GetApiV1MaterialAllApiResponse = /** status 200 OK */ MaterialDto[];
 export type GetApiV1MaterialAllApiArg = void;
 export type GetApiV1MaterialByMaterialIdStockLevelApiResponse =
   /** status 200 OK */ number;
@@ -3385,7 +3384,7 @@ export type PostApiV1MaterialBatchMoveV2ApiArg = {
   moveShelfMaterialBatchRequest: MoveShelfMaterialBatchRequest;
 };
 export type GetApiV1MaterialApprovedMaterialsApiResponse =
-  /** status 200 OK */ MaterialDetailsDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ MaterialDetailsDtoIEnumerablePaginateable;
 export type GetApiV1MaterialApprovedMaterialsApiArg = {
   /** The kind of material needed. */
   kind?: MaterialKind;
@@ -3427,7 +3426,7 @@ export type PostApiV1ProcurementManufacturerApiArg = {
   createManufacturerRequest: CreateManufacturerRequest;
 };
 export type GetApiV1ProcurementManufacturerApiResponse =
-  /** status 200 OK */ ManufacturerDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ManufacturerDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementManufacturerApiArg = {
   /** The current page number. */
   page?: number;
@@ -3437,7 +3436,7 @@ export type GetApiV1ProcurementManufacturerApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProcurementManufacturerByManufacturerIdApiResponse =
-  /** status 200 OK */ ManufacturerDtoRead;
+  /** status 200 OK */ ManufacturerDto;
 export type GetApiV1ProcurementManufacturerByManufacturerIdApiArg = {
   /** The ID of the manufacturer. */
   manufacturerId: string;
@@ -3457,7 +3456,7 @@ export type DeleteApiV1ProcurementManufacturerByManufacturerIdApiArg = {
   manufacturerId: string;
 };
 export type GetApiV1ProcurementManufacturerMaterialByMaterialIdApiResponse =
-  /** status 200 OK */ ManufacturerDtoRead[];
+  /** status 200 OK */ ManufacturerDto[];
 export type GetApiV1ProcurementManufacturerMaterialByMaterialIdApiArg = {
   /** The ID of the material. */
   materialId: string;
@@ -3469,7 +3468,7 @@ export type PostApiV1ProcurementSupplierApiArg = {
   createSupplierRequest: CreateSupplierRequest;
 };
 export type GetApiV1ProcurementSupplierApiResponse =
-  /** status 200 OK */ SupplierDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SupplierDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementSupplierApiArg = {
   /** The current page number. */
   page?: number;
@@ -3479,7 +3478,7 @@ export type GetApiV1ProcurementSupplierApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProcurementSupplierBySupplierIdApiResponse =
-  /** status 200 OK */ SupplierDtoRead;
+  /** status 200 OK */ SupplierDto;
 export type GetApiV1ProcurementSupplierBySupplierIdApiArg = {
   /** The ID of the supplier. */
   supplierId: string;
@@ -3504,13 +3503,13 @@ export type PutApiV1ProcurementSupplierBySupplierIdStatusApiArg = {
   updateSupplierStatusRequest: UpdateSupplierStatusRequest;
 };
 export type GetApiV1ProcurementSupplierMaterialByMaterialIdApiResponse =
-  /** status 200 OK */ SupplierDtoRead[];
+  /** status 200 OK */ SupplierDto[];
 export type GetApiV1ProcurementSupplierMaterialByMaterialIdApiArg = {
   /** The ID of the material. */
   materialId: string;
 };
 export type GetApiV1ProcurementSupplierByMaterialIdAndTypeApiResponse =
-  /** status 200 OK */ SupplierDtoRead[];
+  /** status 200 OK */ SupplierDto[];
 export type GetApiV1ProcurementSupplierByMaterialIdAndTypeApiArg = {
   /** The ID of the material. */
   materialId: string;
@@ -3579,7 +3578,7 @@ export type PostApiV1ProcurementPurchaseOrderInvoiceApiArg = {
   createPurchaseOrderInvoiceRequest: CreatePurchaseOrderInvoiceRequest;
 };
 export type GetApiV1ProcurementPurchaseOrderInvoiceApiResponse =
-  /** status 200 OK */ PurchaseOrderInvoiceDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ PurchaseOrderInvoiceDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementPurchaseOrderInvoiceApiArg = {
   /** The current page number. */
   page?: number;
@@ -3591,7 +3590,7 @@ export type GetApiV1ProcurementPurchaseOrderInvoiceApiArg = {
   type?: SupplierType;
 };
 export type GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse =
-  /** status 200 OK */ PurchaseOrderInvoiceDtoRead;
+  /** status 200 OK */ PurchaseOrderInvoiceDto;
 export type GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg = {
   /** The ID of the invoice. */
   invoiceId: string;
@@ -3617,7 +3616,7 @@ export type PostApiV1ProcurementBillingSheetApiArg = {
   createBillingSheetRequest: CreateBillingSheetRequest;
 };
 export type GetApiV1ProcurementBillingSheetApiResponse =
-  /** status 200 OK */ BillingSheetDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ BillingSheetDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementBillingSheetApiArg = {
   /** The current page number. */
   page?: number;
@@ -3627,7 +3626,7 @@ export type GetApiV1ProcurementBillingSheetApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProcurementBillingSheetByBillingSheetIdApiResponse =
-  /** status 200 OK */ BillingSheetDtoRead;
+  /** status 200 OK */ BillingSheetDto;
 export type GetApiV1ProcurementBillingSheetByBillingSheetIdApiArg = {
   /** The ID of the billing sheet. */
   billingSheetId: string;
@@ -3653,7 +3652,7 @@ export type PostApiV1ProcurementShipmentDocumentApiArg = {
   createShipmentDocumentRequest: CreateShipmentDocumentRequest;
 };
 export type GetApiV1ProcurementShipmentDocumentApiResponse =
-  /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementShipmentDocumentApiArg = {
   /** The current page number. */
   page?: number;
@@ -3663,7 +3662,7 @@ export type GetApiV1ProcurementShipmentDocumentApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse =
-  /** status 200 OK */ ShipmentDocumentDtoRead;
+  /** status 200 OK */ ShipmentDocumentDto;
 export type GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg = {
   /** The ID of the shipment document. */
   shipmentDocumentId: string;
@@ -3690,7 +3689,7 @@ export type PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
     shipmentDocumentId: string;
   };
 export type GetApiV1ProcurementShipmentDocumentArrivedApiResponse =
-  /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementShipmentDocumentArrivedApiArg = {
   page?: number;
   pageSize?: number;
@@ -3702,7 +3701,7 @@ export type PostApiV1ProcurementShipmentInvoiceApiArg = {
   createShipmentInvoice: CreateShipmentInvoice;
 };
 export type GetApiV1ProcurementShipmentInvoiceApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ShipmentInvoiceDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementShipmentInvoiceApiArg = {
   /** The current page number. */
   page?: number;
@@ -3712,15 +3711,15 @@ export type GetApiV1ProcurementShipmentInvoiceApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProcurementShipmentInvoiceByIdApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDtoRead;
+  /** status 200 OK */ ShipmentInvoiceDto;
 export type GetApiV1ProcurementShipmentInvoiceByIdApiArg = {
   id: string;
 };
 export type GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDtoRead[];
+  /** status 200 OK */ ShipmentInvoiceDto[];
 export type GetApiV1ProcurementShipmentInvoiceUnattachedApiArg = void;
 export type GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse =
-  /** status 200 OK */ ShipmentInvoiceDtoRead;
+  /** status 200 OK */ ShipmentInvoiceDto;
 export type GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiArg =
   {
     shipmentDocumentId: string;
@@ -3742,7 +3741,7 @@ export type PostApiV1ProcurementShipmentDiscrepancyApiArg = {
   createShipmentDiscrepancy: CreateShipmentDiscrepancy;
 };
 export type GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse =
-  /** status 200 OK */ ShipmentDiscrepancyDtoRead;
+  /** status 200 OK */ ShipmentDiscrepancyDto;
 export type GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg =
   {
     shipmentDiscrepancyId: string;
@@ -3761,7 +3760,7 @@ export type DeleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiA
     shipmentDiscrepancyId: string;
   };
 export type GetApiV1ProcurementPurchaseOrderNotLinkedApiResponse =
-  /** status 200 OK */ SupplierDtoRead[];
+  /** status 200 OK */ SupplierDto[];
 export type GetApiV1ProcurementPurchaseOrderNotLinkedApiArg = void;
 export type GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiResponse =
   /** status 200 OK */ PurchaseOrderDtoRead[];
@@ -3771,7 +3770,7 @@ export type GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiArg 
     supplierId: string;
   };
 export type PostApiV1ProcurementMaterialsByPurchaseOrdersApiResponse =
-  /** status 200 OK */ MaterialDtoRead[];
+  /** status 200 OK */ MaterialDto[];
 export type PostApiV1ProcurementMaterialsByPurchaseOrdersApiArg = {
   /** A list of purchase order IDs. */
   body: string[];
@@ -3829,7 +3828,7 @@ export type PutApiV1ProductPackageDescriptionByProductIdApiArg = {
   updateProductPackageDescriptionRequest: UpdateProductPackageDescriptionRequest;
 };
 export type GetApiV1ProductByProductIdBomApiResponse =
-  /** status 200 OK */ ProductBillOfMaterialDtoRead;
+  /** status 200 OK */ ProductBillOfMaterialDto;
 export type GetApiV1ProductByProductIdBomApiArg = {
   productId: string;
 };
@@ -3868,7 +3867,7 @@ export type GetApiV1ProductByProductIdPackagesApiArg = {
   productId: string;
 };
 export type GetApiV1ProductPackagesByProductPackageIdApiResponse =
-  /** status 200 OK */ ProductPackageDtoRead;
+  /** status 200 OK */ ProductPackageDto;
 export type GetApiV1ProductPackagesByProductPackageIdApiArg = {
   productPackageId: string;
 };
@@ -3898,14 +3897,14 @@ export type PostApiV1ProductEquipmentApiArg = {
   createEquipmentRequest: CreateEquipmentRequest;
 };
 export type GetApiV1ProductEquipmentApiResponse =
-  /** status 200 OK */ EquipmentDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ EquipmentDtoIEnumerablePaginateable;
 export type GetApiV1ProductEquipmentApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
 export type GetApiV1ProductEquipmentByEquipmentIdApiResponse =
-  /** status 200 OK */ EquipmentDtoRead;
+  /** status 200 OK */ EquipmentDto;
 export type GetApiV1ProductEquipmentByEquipmentIdApiArg = {
   equipmentId: string;
 };
@@ -3919,7 +3918,7 @@ export type DeleteApiV1ProductEquipmentByEquipmentIdApiArg = {
   equipmentId: string;
 };
 export type GetApiV1ProductEquipmentAllApiResponse =
-  /** status 200 OK */ EquipmentDtoRead[];
+  /** status 200 OK */ EquipmentDto[];
 export type GetApiV1ProductEquipmentAllApiArg = void;
 export type PostApiV1ProductionScheduleApiResponse =
   /** status 201 Created */ string;
@@ -3959,13 +3958,13 @@ export type GetApiV1ProductionScheduleProductionStatusApiResponse =
   /** status 200 Returns the list of production status */ TypeResponse[];
 export type GetApiV1ProductionScheduleProductionStatusApiArg = void;
 export type GetApiV1ProductionScheduleByScheduleIdDetailsApiResponse =
-  /** status 200 OK */ ProductionScheduleProcurementDtoRead[];
+  /** status 200 OK */ ProductionScheduleProcurementDto[];
 export type GetApiV1ProductionScheduleByScheduleIdDetailsApiArg = {
   /** The ID of the Production Schedule. */
   scheduleId: string;
 };
 export type GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ ProductionScheduleProcurementDtoRead[];
+  /** status 200 OK */ ProductionScheduleProcurementDto[];
 export type GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiArg =
   {
     productionScheduleId: string;
@@ -3973,7 +3972,7 @@ export type GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProd
     status?: MaterialRequisitionStatus;
   };
 export type GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ ProductionScheduleProcurementPackageDtoRead[];
+  /** status 200 OK */ ProductionScheduleProcurementPackageDto[];
 export type GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiArg =
   {
     productionScheduleId: string;
@@ -3981,7 +3980,7 @@ export type GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleId
     status?: MaterialRequisitionStatus;
   };
 export type GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiResponse =
-  /** status 200 OK */ ProductionScheduleProcurementDtoRead[];
+  /** status 200 OK */ ProductionScheduleProcurementDto[];
 export type GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiArg =
   {
     /** The ID of the Production Schedule. */
@@ -3990,7 +3989,7 @@ export type GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsuffi
     productId: string;
   };
 export type GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiResponse =
-  /** status 200 OK */ ProductionScheduleProcurementPackageDtoRead[];
+  /** status 200 OK */ ProductionScheduleProcurementPackageDto[];
 export type GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiArg =
   {
     /** The ID of the Production Schedule. */
@@ -4008,7 +4007,7 @@ export type PostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndPro
     productId: string;
   };
 export type GetApiV1ProductionScheduleActivityApiResponse =
-  /** status 200 OK */ ProductionActivityDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ProductionActivityDtoIEnumerablePaginateable;
 export type GetApiV1ProductionScheduleActivityApiArg = {
   userIds?: string[];
   status?: ProductionStatus;
@@ -4018,13 +4017,13 @@ export type GetApiV1ProductionScheduleActivityApiArg = {
   sortDirection?: SortDirection;
 };
 export type GetApiV1ProductionScheduleActivityByProductionActivityIdApiResponse =
-  /** status 200 OK */ ProductionActivityDtoRead;
+  /** status 200 OK */ ProductionActivityDto;
 export type GetApiV1ProductionScheduleActivityByProductionActivityIdApiArg = {
   /** The ID of the Production Activity. */
   productionActivityId: string;
 };
 export type GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ ProductionActivityDtoRead;
+  /** status 200 OK */ ProductionActivityDto;
 export type GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiArg =
   {
     /** The Production Schedule ID. */
@@ -4034,11 +4033,11 @@ export type GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductId
   };
 export type GetApiV1ProductionScheduleActivityStatusGroupedApiResponse =
   /** status 200 OK */ {
-    [key: string]: ProductionActivityDtoRead[];
+    [key: string]: ProductionActivityDto[];
   };
 export type GetApiV1ProductionScheduleActivityStatusGroupedApiArg = void;
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiResponse =
-  /** status 200 OK */ ProductionActivityGroupResultDtoRead[];
+  /** status 200 OK */ ProductionActivityGroupResultDto[];
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiArg = void;
 export type PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiResponse =
   unknown;
@@ -4050,7 +4049,7 @@ export type PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiArg
     status?: ProductionStatus;
   };
 export type GetApiV1ProductionScheduleActivityStepApiResponse =
-  /** status 200 OK */ ProductionActivityStepDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ProductionActivityStepDtoIEnumerablePaginateable;
 export type GetApiV1ProductionScheduleActivityStepApiArg = {
   userIds?: string[];
   status?: ProductionStatus;
@@ -4060,7 +4059,7 @@ export type GetApiV1ProductionScheduleActivityStepApiArg = {
   sortDirection?: SortDirection;
 };
 export type GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiResponse =
-  /** status 200 OK */ ProductionActivityStepDtoRead;
+  /** status 200 OK */ ProductionActivityStepDto;
 export type GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiArg =
   {
     /** The ID of the Production Activity Step. */
@@ -4068,12 +4067,12 @@ export type GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiA
   };
 export type GetApiV1ProductionScheduleActivityStepStatusGroupedApiResponse =
   /** status 200 OK */ {
-    [key: string]: ProductionActivityStepDtoRead[];
+    [key: string]: ProductionActivityStepDto[];
   };
 export type GetApiV1ProductionScheduleActivityStepStatusGroupedApiArg = void;
 export type GetApiV1ProductionScheduleActivityStepOperationGroupedApiResponse =
   /** status 200 OK */ {
-    [key: string]: ProductionActivityStepDtoRead[];
+    [key: string]: ProductionActivityStepDto[];
   };
 export type GetApiV1ProductionScheduleActivityStepOperationGroupedApiArg = void;
 export type PostApiV1ProductionScheduleManufacturingApiResponse =
@@ -4121,14 +4120,14 @@ export type PostApiV1ProductionSchedulePackagingApiArg = {
   createBatchPackagingRecord: CreateBatchPackagingRecord;
 };
 export type GetApiV1ProductionSchedulePackagingApiResponse =
-  /** status 200 OK */ BatchPackagingRecordDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ BatchPackagingRecordDtoIEnumerablePaginateable;
 export type GetApiV1ProductionSchedulePackagingApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
 export type GetApiV1ProductionSchedulePackagingByIdApiResponse =
-  /** status 200 OK */ BatchPackagingRecordDtoRead;
+  /** status 200 OK */ BatchPackagingRecordDto;
 export type GetApiV1ProductionSchedulePackagingByIdApiArg = {
   id: string;
 };
@@ -4208,7 +4207,7 @@ export type PostApiV1ProductionScheduleFinalPackingApiArg = {
   createFinalPacking: CreateFinalPacking;
 };
 export type GetApiV1ProductionScheduleFinalPackingApiResponse =
-  /** status 200 OK */ FinalPackingDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ FinalPackingDtoIEnumerablePaginateable;
 export type GetApiV1ProductionScheduleFinalPackingApiArg = {
   /** The current page number. */
   page?: number;
@@ -4218,7 +4217,7 @@ export type GetApiV1ProductionScheduleFinalPackingApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse =
-  /** status 200 OK */ FinalPackingDtoRead;
+  /** status 200 OK */ FinalPackingDto;
 export type GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg = {
   /** The ID of the Final Packing. */
   finalPackingId: string;
@@ -4238,7 +4237,7 @@ export type DeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg = {
   finalPackingId: string;
 };
 export type GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ FinalPackingDtoRead;
+  /** status 200 OK */ FinalPackingDto;
 export type GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiArg =
   {
     /** The Production Schedule ID. */
@@ -4313,7 +4312,7 @@ export type PostApiV1RequisitionSourceApiArg = {
   createSourceRequisitionRequest: CreateSourceRequisitionRequest;
 };
 export type GetApiV1RequisitionSourceApiResponse =
-  /** status 200 OK */ SourceRequisitionDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SourceRequisitionDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceApiArg = {
   /** The current page number. */
   page?: number;
@@ -4323,7 +4322,7 @@ export type GetApiV1RequisitionSourceApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1RequisitionSourceBySourceRequisitionIdApiResponse =
-  /** status 200 OK */ SourceRequisitionDtoRead;
+  /** status 200 OK */ SourceRequisitionDto;
 export type GetApiV1RequisitionSourceBySourceRequisitionIdApiArg = {
   /** The ID of the Source Requisition. */
   sourceRequisitionId: string;
@@ -4342,7 +4341,7 @@ export type DeleteApiV1RequisitionSourceBySourceRequisitionIdApiArg = {
   sourceRequisitionId: string;
 };
 export type GetApiV1RequisitionSourceItemsApiResponse =
-  /** status 200 OK */ SourceRequisitionItemDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SourceRequisitionItemDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceItemsApiArg = {
   /** The procurement source of the material(e.g., Local, Foreign, Internal). */
   source?: ProcurementSource;
@@ -4352,7 +4351,7 @@ export type GetApiV1RequisitionSourceItemsApiArg = {
   pageSize?: number;
 };
 export type GetApiV1RequisitionSourceSupplierApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceSupplierApiArg = {
   /** The source of the requisition. (example Local, Foreign) */
   source?: SupplierType;
@@ -4364,7 +4363,7 @@ export type GetApiV1RequisitionSourceSupplierApiArg = {
   sent?: boolean;
 };
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoRead;
+  /** status 200 OK */ SupplierQuotationDto;
 export type GetApiV1RequisitionSourceSupplierBySupplierIdApiArg = {
   /** The id of the supplier with associated requisition items. */
   supplierId: string;
@@ -4377,7 +4376,7 @@ export type PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg =
     supplierId: string;
   };
 export type GetApiV1RequisitionSourceSupplierQuotationApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ SupplierQuotationDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionSourceSupplierQuotationApiArg = {
   /** The type of the supplier (example Foreign, Local). */
   supplierType?: SupplierType;
@@ -4389,7 +4388,7 @@ export type GetApiV1RequisitionSourceSupplierQuotationApiArg = {
   received?: boolean;
 };
 export type GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiResponse =
-  /** status 200 OK */ SupplierQuotationDtoRead;
+  /** status 200 OK */ SupplierQuotationDto;
 export type GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiArg =
   {
     /** The ID of the supplier quotation. */
@@ -4405,7 +4404,7 @@ export type PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationRece
     body: SupplierQuotationResponseDto[];
   };
 export type GetApiV1RequisitionSourceMaterialPriceComparisonApiResponse =
-  /** status 200 OK */ SupplierPriceComparisonRead[];
+  /** status 200 OK */ SupplierPriceComparison[];
 export type GetApiV1RequisitionSourceMaterialPriceComparisonApiArg = {
   /** The type of the supplier (example Local, Foreign). */
   supplierType?: SupplierType;
@@ -4452,7 +4451,7 @@ export type PostApiV1UserApiArg = {
   createUserRequest: CreateUserRequest;
 };
 export type GetApiV1UserApiResponse =
-  /** status 200 OK */ UserDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ UserDtoIEnumerablePaginateable;
 export type GetApiV1UserApiArg = {
   page?: number;
   pageSize?: number;
@@ -4464,8 +4463,7 @@ export type PostApiV1UserSignUpApiResponse = unknown;
 export type PostApiV1UserSignUpApiArg = {
   createClientRequest: CreateClientRequest;
 };
-export type GetApiV1UserAuthenticatedApiResponse =
-  /** status 200 OK */ UserDtoRead;
+export type GetApiV1UserAuthenticatedApiResponse = /** status 200 OK */ UserDto;
 export type GetApiV1UserAuthenticatedApiArg = void;
 export type PutApiV1UserByIdApiResponse = unknown;
 export type PutApiV1UserByIdApiArg = {
@@ -4645,12 +4643,12 @@ export type GetApiV1WarehouseByWarehouseIdShelvesApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse =
-  /** status 200 OK */ WarehouseArrivalLocationDtoRead;
+  /** status 200 OK */ WarehouseArrivalLocationDto;
 export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg = {
   warehouseId: string;
 };
 export type GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse =
-  /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateable;
 export type GetApiV1WarehouseDistributedRequisitionMaterialsApiArg = {
   kind?: MaterialKind;
   page?: number;
@@ -4658,7 +4656,7 @@ export type GetApiV1WarehouseDistributedRequisitionMaterialsApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1WarehouseDistributedMaterialByIdApiResponse =
-  /** status 200 OK */ DistributedRequisitionMaterialDtoRead;
+  /** status 200 OK */ DistributedRequisitionMaterialDto;
 export type GetApiV1WarehouseDistributedMaterialByIdApiArg = {
   id: string;
 };
@@ -4751,7 +4749,7 @@ export type GetApiV1WorkOrderApiArg = {
   searchQuery?: string;
 };
 export type GetApiV1WorkOrderByWorkOrderIdApiResponse =
-  /** status 200 OK */ WorkOrderDtoRead;
+  /** status 200 OK */ WorkOrderDto;
 export type GetApiV1WorkOrderByWorkOrderIdApiArg = {
   /** The ID of the work order. */
   workOrderId: string;
@@ -4884,51 +4882,13 @@ export type CreateItemRequest = {
   isAvailable?: boolean;
   materialKind?: MaterialKind;
 };
-export type DepartmentType = 0 | 1;
-export type WarehouseType = 0 | 1 | 2 | 3;
-export type WarehouseDto = {
-  id?: string;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: CollectionItemDto[] | null;
-};
-export type DepartmentDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-};
-export type DepartmentDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-  isBeta?: boolean;
-};
 export type UserDto = {
   id?: string;
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
   avatar?: string | null;
-  department?: DepartmentDto;
-};
-export type UserDtoRead = {
-  id?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  email?: string | null;
-  avatar?: string | null;
-  department?: DepartmentDtoRead;
+  department?: CollectionItemDto;
 };
 export type UnitOfMeasureDto = {
   id?: string;
@@ -4940,26 +4900,9 @@ export type UnitOfMeasureDto = {
   isScalable?: boolean;
   isRawMaterial?: boolean;
 };
-export type UnitOfMeasureDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-  isScalable?: boolean;
-  isRawMaterial?: boolean;
-};
 export type PackageStyleDto = {
   id?: string;
   createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-};
-export type PackageStyleDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
   createdAt?: string;
   name?: string | null;
   description?: string | null;
@@ -4993,6 +4936,8 @@ export type TypeResponse = {
   value?: number;
   name?: string | null;
 };
+export type DepartmentType = 0 | 1;
+export type WarehouseType = 0 | 1 | 2 | 3;
 export type CreateWarehouseLocationShelfRequest = {
   code?: string | null;
   name?: string | null;
@@ -5022,6 +4967,34 @@ export type CreateDepartmentRequest = {
   description?: string | null;
   type?: DepartmentType;
   warehouses?: CreateWarehouseRequest[] | null;
+};
+export type WarehouseDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: CollectionItemDto[] | null;
+};
+export type DepartmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+};
+export type DepartmentDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+  isBeta?: boolean;
 };
 export type DepartmentDtoIEnumerablePaginateable = {
   data?: DepartmentDto[] | null;
@@ -6143,6 +6116,7 @@ export type ProductionScheduleProduct = {
   product?: Product;
   scheduledStartTime?: string;
   scheduledEndTime?: string;
+  batchNumber?: string | null;
   quantity?: number;
 };
 export type ProductionSchedule = {
@@ -7461,6 +7435,48 @@ export type MassMaterialBatchMovementRead = {
   movedBy?: User;
   movementType?: MovementType;
 };
+export type MaterialBatchReservedQuantity = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatch;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  quantity?: number;
+};
+export type MaterialBatchReservedQuantityRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatch;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionScheduleRead;
+  productId?: string;
+  product?: ProductRead;
+  quantity?: number;
+};
 export type MaterialBatch = {
   id?: string;
   createdAt?: string;
@@ -7499,6 +7515,7 @@ export type MaterialBatch = {
   sampleWeights?: Sr[] | null;
   events?: MaterialBatchEvent[] | null;
   massMovements?: MassMaterialBatchMovement[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantity[] | null;
 };
 export type MaterialBatchRead = {
   id?: string;
@@ -7540,6 +7557,8 @@ export type MaterialBatchRead = {
   sampleWeights?: SrRead[] | null;
   events?: MaterialBatchEventRead[] | null;
   massMovements?: MassMaterialBatchMovementRead[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityRead[] | null;
+  reservedQuantity?: number;
 };
 export type ShelfMaterialBatch = {
   id?: string;
@@ -7856,7 +7875,7 @@ export type QuestionDto = {
 };
 export type QuestionDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   label?: string | null;
   type?: QuestionType;
@@ -7879,7 +7898,7 @@ export type FormFieldDto = {
 };
 export type FormFieldDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   formSection?: CollectionItemDto;
   question?: QuestionDtoRead;
@@ -7900,7 +7919,7 @@ export type FormSectionDto = {
 };
 export type FormSectionDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   form?: CollectionItemDto;
   name?: string | null;
@@ -7923,7 +7942,7 @@ export type FormResponseDto = {
 };
 export type FormResponseDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   formField?: FormFieldDtoRead;
@@ -7936,23 +7955,9 @@ export type FormAssigneeDto = {
   form?: CollectionItemDto;
   user?: CollectionItemDto;
 };
-export type FormAssigneeDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  user?: CollectionItemDto;
-};
 export type FormReviewerDto = {
   id?: string;
   createdBy?: UserDto;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  user?: CollectionItemDto;
-};
-export type FormReviewerDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
   createdAt?: string;
   form?: CollectionItemDto;
   user?: CollectionItemDto;
@@ -7969,13 +7974,13 @@ export type FormDto = {
 };
 export type FormDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   name?: string | null;
   sections?: FormSectionDtoRead[] | null;
   responses?: FormResponseDtoRead[] | null;
-  assignees?: FormAssigneeDtoRead[] | null;
-  reviewers?: FormReviewerDtoRead[] | null;
+  assignees?: FormAssigneeDto[] | null;
+  reviewers?: FormReviewerDto[] | null;
 };
 export type FormDtoIEnumerablePaginateable = {
   data?: FormDto[] | null;
@@ -8050,14 +8055,6 @@ export type MaterialCategoryDto = {
   description?: string | null;
   materialKind?: MaterialKind;
 };
-export type MaterialCategoryDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  materialKind?: MaterialKind;
-};
 export type MaterialDto = {
   id?: string;
   code?: string | null;
@@ -8069,28 +8066,8 @@ export type MaterialDto = {
   materialCategory?: MaterialCategoryDto;
   totalStock?: number;
 };
-export type MaterialDtoRead = {
-  id?: string;
-  code?: string | null;
-  pharmacopoeia?: string | null;
-  name?: string | null;
-  description?: string | null;
-  alphabet?: string | null;
-  kind?: MaterialKind;
-  materialCategory?: MaterialCategoryDtoRead;
-  totalStock?: number;
-};
 export type MaterialDtoIEnumerablePaginateable = {
   data?: MaterialDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type MaterialDtoIEnumerablePaginateableRead = {
-  data?: MaterialDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8113,13 +8090,6 @@ export type RequisitionItemDto = {
   quantity?: number;
   batches?: BatchToSupply[] | null;
 };
-export type RequisitionItemDtoRead = {
-  id?: string;
-  material?: MaterialDtoRead;
-  uoM?: UnitOfMeasureDtoRead;
-  quantity?: number;
-  batches?: BatchToSupplyRead[] | null;
-};
 export type CountryDto = {
   id?: string;
   name?: string | null;
@@ -8129,14 +8099,6 @@ export type CountryDto = {
 export type CurrencyDto = {
   id?: string;
   createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-};
-export type CurrencyDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
   createdAt?: string;
   name?: string | null;
   symbol?: string | null;
@@ -8157,32 +8119,12 @@ export type ManufacturerDto = {
   country?: CountryDto;
   materials?: ManufacturerMaterialDto[] | null;
 };
-export type ManufacturerDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  name?: string | null;
-  address?: string | null;
-  email?: string | null;
-  approvedAt?: string | null;
-  validityDate?: string | null;
-  country?: CountryDto;
-  materials?: ManufacturerMaterialDto[] | null;
-};
 export type SupplierManufacturerDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   manufacturer?: ManufacturerDto;
   material?: MaterialDto;
-  quantityPerPack?: number;
-};
-export type SupplierManufacturerDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  manufacturer?: ManufacturerDtoRead;
-  material?: MaterialDtoRead;
   quantityPerPack?: number;
 };
 export type SupplierDto = {
@@ -8200,40 +8142,12 @@ export type SupplierDto = {
   status?: SupplierStatus;
   associatedManufacturers?: SupplierManufacturerDto[] | null;
 };
-export type SupplierDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  name?: string | null;
-  email?: string | null;
-  address?: string | null;
-  contactPerson?: string | null;
-  contactNumber?: string | null;
-  country?: CountryDto;
-  currency?: CurrencyDtoRead;
-  type?: SupplierType;
-  status?: SupplierStatus;
-  associatedManufacturers?: SupplierManufacturerDtoRead[] | null;
-};
 export type ShipmentInvoiceItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   material?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
-  manufacturer?: CollectionItemDto;
-  purchaseOrder?: CollectionItemDto;
-  expectedQuantity?: number;
-  receivedQuantity?: number;
-  price?: number;
-  reason?: string | null;
-};
-export type ShipmentInvoiceItemDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  material?: CollectionItemDto;
-  uoM?: UnitOfMeasureDtoRead;
   manufacturer?: CollectionItemDto;
   purchaseOrder?: CollectionItemDto;
   expectedQuantity?: number;
@@ -8250,21 +8164,8 @@ export type ShipmentInvoiceDto = {
   items?: ShipmentInvoiceItemDto[] | null;
   isAttached?: boolean;
 };
-export type ShipmentInvoiceDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  code?: string | null;
-  supplier?: SupplierDtoRead;
-  items?: ShipmentInvoiceItemDtoRead[] | null;
-  isAttached?: boolean;
-};
 export type MaterialItemDistributionDto = {
   shipmentInvoiceItem?: ShipmentInvoiceItemDto;
-  quantity?: number;
-};
-export type MaterialItemDistributionDtoRead = {
-  shipmentInvoiceItem?: ShipmentInvoiceItemDtoRead;
   quantity?: number;
 };
 export type DistributedRequisitionMaterialDto = {
@@ -8281,20 +8182,6 @@ export type DistributedRequisitionMaterialDto = {
   materialItemDistributions?: MaterialItemDistributionDto[] | null;
   status?: DistributedRequisitionMaterialStatus;
 };
-export type DistributedRequisitionMaterialDtoRead = {
-  id?: string;
-  requisitionItem?: RequisitionItemDtoRead;
-  material?: MaterialDtoRead;
-  uom?: UnitOfMeasureDtoRead;
-  shipmentInvoice?: ShipmentInvoiceDtoRead;
-  quantity?: number;
-  arrivedAt?: string | null;
-  checkedAt?: string | null;
-  distributedAt?: string | null;
-  grnGeneratedAt?: string | null;
-  materialItemDistributions?: MaterialItemDistributionDtoRead[] | null;
-  status?: DistributedRequisitionMaterialStatus;
-};
 export type BatchChecklistDto = {
   distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
   material?: MaterialDto;
@@ -8302,18 +8189,6 @@ export type BatchChecklistDto = {
   shipmentInvoice?: ShipmentInvoiceDto;
   supplier?: SupplierDto;
   manufacturer?: ManufacturerDto;
-  certificateOfAnalysisDelivered?: boolean;
-  visibleLabelling?: boolean;
-  intactnessStatus?: Intactness;
-  consignmentCarrierStatus?: ConsignmentCarrier;
-};
-export type BatchChecklistDtoRead = {
-  distributedRequisitionMaterial?: DistributedRequisitionMaterialDtoRead;
-  material?: MaterialDtoRead;
-  checkedAt?: string | null;
-  shipmentInvoice?: ShipmentInvoiceDtoRead;
-  supplier?: SupplierDtoRead;
-  manufacturer?: ManufacturerDtoRead;
   certificateOfAnalysisDelivered?: boolean;
   visibleLabelling?: boolean;
   intactnessStatus?: Intactness;
@@ -8337,27 +8212,10 @@ export type MaterialBatchMovementDto = {
   movedBy?: CollectionItemDto;
   movementType?: MovementType;
 };
-export type MaterialBatchMovementDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  batch?: CollectionItemDto;
-  fromLocation?: CollectionItemDto;
-  toLocation?: CollectionItemDto;
-  quantity?: number;
-  movedAt?: string;
-  movedBy?: CollectionItemDto;
-  movementType?: MovementType;
-};
 export type SrDto = {
   srNumber?: string | null;
   grossWeight?: number;
   uoM?: UnitOfMeasureDto;
-};
-export type SrDtoRead = {
-  srNumber?: string | null;
-  grossWeight?: number;
-  uoM?: UnitOfMeasureDtoRead;
 };
 export type MassMaterialBatchMovementDto = {
   id?: string;
@@ -8371,21 +8229,29 @@ export type MassMaterialBatchMovementDto = {
   movedBy?: CollectionItemDto;
   movementType?: MovementType;
 };
-export type MassMaterialBatchMovementDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  batch?: CollectionItemDto;
-  fromWarehouse?: CollectionItemDto;
-  toWarehouse?: CollectionItemDto;
-  quantity?: number;
-  movedAt?: string;
-  movedBy?: CollectionItemDto;
-  movementType?: MovementType;
-};
 export type CurrentLocationDto = {
   location?: CollectionItemDto;
   quantityAtLocation?: number;
+};
+export type MaterialBatchReservedQuantityDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatch;
+  warehouseId?: string;
+  warehouse?: Warehouse;
+  quantity?: number;
+};
+export type MaterialBatchReservedQuantityDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatchRead;
+  warehouseId?: string;
+  warehouse?: WarehouseRead;
+  quantity?: number;
 };
 export type MaterialBatchDto = {
   id?: string;
@@ -8413,16 +8279,18 @@ export type MaterialBatchDto = {
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
+  reservedQuantity?: number;
 };
 export type MaterialBatchDtoRead = {
   id?: string;
   material?: CollectionItemDto;
   code?: string | null;
   batchNumber?: string | null;
-  checklist?: BatchChecklistDtoRead;
-  uoM?: UnitOfMeasureDtoRead;
+  checklist?: BatchChecklistDto;
+  uoM?: UnitOfMeasureDto;
   numberOfContainers?: number;
-  containerPackageStyle?: PackageStyleDtoRead;
+  containerPackageStyle?: PackageStyleDto;
   quantityPerContainer?: number;
   status?: BatchStatus;
   dateReceived?: string;
@@ -8436,10 +8304,12 @@ export type MaterialBatchDtoRead = {
   manufacturingDate?: string | null;
   retestDate?: string | null;
   events?: MaterialBatchEventDto[] | null;
-  movements?: MaterialBatchMovementDtoRead[] | null;
-  sampleWeights?: SrDtoRead[] | null;
-  massMovements?: MassMaterialBatchMovementDtoRead[] | null;
+  movements?: MaterialBatchMovementDto[] | null;
+  sampleWeights?: SrDto[] | null;
+  massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDtoRead[] | null;
+  reservedQuantity?: number;
 };
 export type CreateSrRequest = {
   srNumber?: string | null;
@@ -8519,22 +8389,8 @@ export type MaterialDetailsDto = {
   unitOfMeasure?: UnitOfMeasureDto;
   totalAvailableQuantity?: number;
 };
-export type MaterialDetailsDtoRead = {
-  material?: MaterialDtoRead;
-  unitOfMeasure?: UnitOfMeasureDtoRead;
-  totalAvailableQuantity?: number;
-};
 export type MaterialDetailsDtoIEnumerablePaginateable = {
   data?: MaterialDetailsDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type MaterialDetailsDtoIEnumerablePaginateableRead = {
-  data?: MaterialDetailsDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8575,7 +8431,7 @@ export type ShelfMaterialBatchDtoRead = {
   warehouseLocationShelf?: MaterialWarehouseLocationShelfDto;
   materialBatch?: MaterialBatchDtoRead;
   quantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
+  uoM?: UnitOfMeasureDto;
   note?: string | null;
 };
 export type ShelfMaterialBatchDtoIEnumerablePaginateable = {
@@ -8624,15 +8480,6 @@ export type ManufacturerDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type ManufacturerDtoIEnumerablePaginateableRead = {
-  data?: ManufacturerDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
 export type CreateSupplierManufacturerRequest = {
   manufacturerId?: string;
   materialId?: string | null;
@@ -8651,15 +8498,6 @@ export type CreateSupplierRequest = {
 };
 export type SupplierDtoIEnumerablePaginateable = {
   data?: SupplierDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type SupplierDtoIEnumerablePaginateableRead = {
-  data?: SupplierDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8697,11 +8535,11 @@ export type PurchaseOrderItemDto = {
 export type PurchaseOrderItemDtoRead = {
   purchaseOrder?: CollectionItemDto;
   material?: CollectionItemDto;
-  uom?: UnitOfMeasureDtoRead;
+  uom?: UnitOfMeasureDto;
   quantity?: number;
   price?: number;
   currency?: CollectionItemDto;
-  manufacturers?: ManufacturerDtoRead[] | null;
+  manufacturers?: ManufacturerDto[] | null;
   cost?: number;
 };
 export type RevisedPurchaseOrderDto = {
@@ -8717,7 +8555,7 @@ export type RevisedPurchaseOrderDto = {
 };
 export type RevisedPurchaseOrderDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   code?: string | null;
   supplier?: CollectionItemDto;
@@ -8743,11 +8581,11 @@ export type PurchaseOrderDto = {
 };
 export type PurchaseOrderDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   code?: string | null;
-  supplier?: SupplierDtoRead;
+  supplier?: SupplierDto;
   requestDate?: string;
   expectedDeliveryDate?: string | null;
   items?: PurchaseOrderItemDtoRead[] | null;
@@ -8804,12 +8642,6 @@ export type ChargeDto = {
   currency?: CollectionItemDto;
   amount?: number;
 };
-export type ChargeDtoRead = {
-  purchaseOrderInvoice?: PurchaseOrderInvoiceDto;
-  description?: string | null;
-  currency?: CollectionItemDto;
-  amount?: number;
-};
 export type PurchaseOrderInvoiceDto = {
   id?: string;
   createdBy?: UserDto;
@@ -8819,26 +8651,8 @@ export type PurchaseOrderInvoiceDto = {
   batchItems?: BatchItemDto[] | null;
   charges?: ChargeDto[] | null;
 };
-export type PurchaseOrderInvoiceDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  code?: string | null;
-  purchaseOrder?: CollectionItemDto;
-  batchItems?: BatchItemDto[] | null;
-  charges?: ChargeDtoRead[] | null;
-};
 export type PurchaseOrderInvoiceDtoIEnumerablePaginateable = {
   data?: PurchaseOrderInvoiceDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type PurchaseOrderInvoiceDtoIEnumerablePaginateableRead = {
-  data?: PurchaseOrderInvoiceDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8876,34 +8690,8 @@ export type BillingSheetDto = {
   numberOfPackages?: string | null;
   packageDescription?: string | null;
 };
-export type BillingSheetDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  code?: string | null;
-  billOfLading?: string | null;
-  supplier?: CollectionItemDto;
-  invoice?: CollectionItemDto;
-  expectedArrivalDate?: string;
-  freeTimeExpiryDate?: string;
-  freeTimeDuration?: string;
-  demurrageStartDate?: string;
-  containerNumber?: string | null;
-  numberOfPackages?: string | null;
-  packageDescription?: string | null;
-};
 export type BillingSheetDtoIEnumerablePaginateable = {
   data?: BillingSheetDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type BillingSheetDtoIEnumerablePaginateableRead = {
-  data?: BillingSheetDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8923,21 +8711,9 @@ export type ShipmentDiscrepancyItemDto = {
   reason?: string | null;
   resolved?: boolean;
 };
-export type ShipmentDiscrepancyItemDtoRead = {
-  material?: CollectionItemDto;
-  uoM?: UnitOfMeasureDtoRead;
-  receivedQuantity?: number;
-  type?: CollectionItemDto;
-  reason?: string | null;
-  resolved?: boolean;
-};
 export type ShipmentDiscrepancyDto = {
   shipmentDocument?: ShipmentDocumentDto;
   items?: ShipmentDiscrepancyItemDto[] | null;
-};
-export type ShipmentDiscrepancyDtoRead = {
-  shipmentDocument?: ShipmentDocumentDto;
-  items?: ShipmentDiscrepancyItemDtoRead[] | null;
 };
 export type ShipmentDocumentDto = {
   id?: string;
@@ -8949,27 +8725,8 @@ export type ShipmentDocumentDto = {
   discrepancies?: ShipmentDiscrepancyDto[] | null;
   arrivedAt?: string | null;
 };
-export type ShipmentDocumentDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  code?: string | null;
-  shipmentInvoice?: ShipmentInvoiceDtoRead;
-  discrepancies?: ShipmentDiscrepancyDtoRead[] | null;
-  arrivedAt?: string | null;
-};
 export type ShipmentDocumentDtoIEnumerablePaginateable = {
   data?: ShipmentDocumentDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ShipmentDocumentDtoIEnumerablePaginateableRead = {
-  data?: ShipmentDocumentDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -8994,15 +8751,6 @@ export type CreateShipmentInvoice = {
 };
 export type ShipmentInvoiceDtoIEnumerablePaginateable = {
   data?: ShipmentInvoiceDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ShipmentInvoiceDtoIEnumerablePaginateableRead = {
-  data?: ShipmentInvoiceDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -9168,11 +8916,11 @@ export type DistributionRequisitionItem = {
 };
 export type DistributionRequisitionItemRead = {
   department?: DepartmentDtoRead;
-  requisitionItem?: RequisitionItemDtoRead;
+  requisitionItem?: RequisitionItemDto;
   quantityRequested?: number;
   quantityAllocated?: number;
   quantityRemaining?: number;
-  distributions?: MaterialItemDistributionDtoRead[] | null;
+  distributions?: MaterialItemDistributionDto[] | null;
 };
 export type MaterialDistributionSection = {
   material?: MaterialDto;
@@ -9181,9 +8929,9 @@ export type MaterialDistributionSection = {
   items?: DistributionRequisitionItem[] | null;
 };
 export type MaterialDistributionSectionRead = {
-  material?: MaterialDtoRead;
+  material?: MaterialDto;
   totalQuantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
+  uoM?: UnitOfMeasureDto;
   items?: DistributionRequisitionItemRead[] | null;
 };
 export type MaterialDistributionDto = {
@@ -9238,19 +8986,6 @@ export type EquipmentDto = {
   department?: CollectionItemDto;
   storageLocation?: string | null;
 };
-export type EquipmentDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  name?: string | null;
-  machineId?: string | null;
-  isStorage?: boolean;
-  capacityQuantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
-  relevanceCheck?: boolean;
-  department?: CollectionItemDto;
-  storageLocation?: string | null;
-};
 export type ProductListDto = {
   id?: string;
   code?: string | null;
@@ -9297,9 +9032,9 @@ export type ProductListDtoRead = {
   baseQuantity?: number;
   basePackingQuantity?: number;
   fullBatchSize?: number;
-  baseUoM?: UnitOfMeasureDtoRead;
-  basePackingUoM?: UnitOfMeasureDtoRead;
-  equipment?: EquipmentDtoRead;
+  baseUoM?: UnitOfMeasureDto;
+  basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
   department?: DepartmentDtoRead;
   createdAt?: string;
 };
@@ -9330,15 +9065,6 @@ export type FinishedProductDto = {
   dosageForm?: string | null;
   strength?: string | null;
 };
-export type FinishedProductDtoRead = {
-  name?: string | null;
-  product?: CollectionItemDto;
-  uoM?: UnitOfMeasureDtoRead;
-  standardCost?: number;
-  sellingPrice?: number;
-  dosageForm?: string | null;
-  strength?: string | null;
-};
 export type BillOfMaterialItemDto = {
   id?: string;
   material?: CollectionItemDto;
@@ -9351,40 +9077,15 @@ export type BillOfMaterialItemDto = {
   baseUoM?: UnitOfMeasureDto;
   order?: number;
 };
-export type BillOfMaterialItemDtoRead = {
-  id?: string;
-  material?: CollectionItemDto;
-  materialType?: CollectionItemDto;
-  isSubstitutable?: boolean;
-  grade?: string | null;
-  casNumber?: string | null;
-  function?: string | null;
-  baseQuantity?: number;
-  baseUoM?: UnitOfMeasureDtoRead;
-  order?: number;
-};
 export type BillOfMaterialDto = {
   product?: CollectionItemDto;
   version?: number;
   isActive?: boolean;
   items?: BillOfMaterialItemDto[] | null;
 };
-export type BillOfMaterialDtoRead = {
-  product?: CollectionItemDto;
-  version?: number;
-  isActive?: boolean;
-  items?: BillOfMaterialItemDtoRead[] | null;
-};
 export type ProductBillOfMaterialDto = {
   productId?: string;
   billOfMaterial?: BillOfMaterialDto;
-  version?: number;
-  effectiveDate?: string;
-  isActive?: boolean;
-};
-export type ProductBillOfMaterialDtoRead = {
-  productId?: string;
-  billOfMaterial?: BillOfMaterialDtoRead;
   version?: number;
   effectiveDate?: string;
   isActive?: boolean;
@@ -9397,18 +9098,6 @@ export type ProductPackageDto = {
   otherStandards?: string | null;
   baseQuantity?: number;
   baseUoM?: UnitOfMeasureDto;
-  unitCapacity?: number;
-  directLinkMaterial?: CollectionItemDto;
-  packingExcessMargin?: number;
-};
-export type ProductPackageDtoRead = {
-  id?: string;
-  product?: CollectionItemDto;
-  material?: CollectionItemDto;
-  materialThickness?: string | null;
-  otherStandards?: string | null;
-  baseQuantity?: number;
-  baseUoM?: UnitOfMeasureDtoRead;
   unitCapacity?: number;
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
@@ -9438,7 +9127,7 @@ export type RouteResourceDto = {
 };
 export type RouteDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   operation?: CollectionItemDto;
   estimatedTime?: string | null;
@@ -9501,16 +9190,16 @@ export type ProductDtoRead = {
   baseQuantity?: number;
   basePackingQuantity?: number;
   fullBatchSize?: number;
-  baseUoM?: UnitOfMeasureDtoRead;
-  basePackingUoM?: UnitOfMeasureDtoRead;
-  equipment?: EquipmentDtoRead;
+  baseUoM?: UnitOfMeasureDto;
+  basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
   department?: DepartmentDtoRead;
   createdAt?: string;
-  finishedProducts?: FinishedProductDtoRead[] | null;
-  billOfMaterials?: ProductBillOfMaterialDtoRead[] | null;
-  currentBillOfMaterial?: ProductBillOfMaterialDtoRead;
-  outdatedBillOfMaterials?: ProductBillOfMaterialDtoRead[] | null;
-  packages?: ProductPackageDtoRead[] | null;
+  finishedProducts?: FinishedProductDto[] | null;
+  billOfMaterials?: ProductBillOfMaterialDto[] | null;
+  currentBillOfMaterial?: ProductBillOfMaterialDto;
+  outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
+  packages?: ProductPackageDto[] | null;
   routes?: RouteDtoRead[] | null;
   createdBy?: CollectionItemDto;
 };
@@ -9594,15 +9283,6 @@ export type EquipmentDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type EquipmentDtoIEnumerablePaginateableRead = {
-  data?: EquipmentDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
 export type CreateProductionScheduleProduct = {
   productId?: string;
   quantity?: number;
@@ -9617,10 +9297,12 @@ export type CreateProductionScheduleRequest = {
 export type ProductionScheduleProductDto = {
   product?: ProductListDto;
   quantity?: number;
+  batchNumber?: string | null;
 };
 export type ProductionScheduleProductDtoRead = {
   product?: ProductListDtoRead;
   quantity?: number;
+  batchNumber?: string | null;
 };
 export type ProductionScheduleDto = {
   id?: string;
@@ -9635,7 +9317,7 @@ export type ProductionScheduleDto = {
 };
 export type ProductionScheduleDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   code?: string | null;
   scheduledStartTime?: string;
@@ -9664,16 +9346,6 @@ export type ProductionScheduleDtoIEnumerablePaginateableRead = {
 };
 export type UpdateProductionScheduleRequest = object;
 export type MaterialRequisitionStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type BatchLocation = {
-  consumptionLocation?: WarehouseDto;
-  batch?: MaterialBatchDto;
-  quantityToUse?: number;
-};
-export type BatchLocationRead = {
-  consumptionLocation?: WarehouseDto;
-  batch?: MaterialBatchDtoRead;
-  quantityToUse?: number;
-};
 export type ProductionScheduleProcurementDto = {
   material?: MaterialDto;
   baseUoM?: UnitOfMeasureDto;
@@ -9681,16 +9353,8 @@ export type ProductionScheduleProcurementDto = {
   quantityNeeded?: number;
   quantityOnHand?: number;
   status?: MaterialRequisitionStatus;
-  batches?: BatchLocation[] | null;
-};
-export type ProductionScheduleProcurementDtoRead = {
-  material?: MaterialDtoRead;
-  baseUoM?: UnitOfMeasureDtoRead;
-  baseQuantity?: number;
-  quantityNeeded?: number;
-  quantityOnHand?: number;
-  status?: MaterialRequisitionStatus;
-  batches?: BatchLocationRead[] | null;
+  storageWarehouseId?: string;
+  productionWarehouseId?: string;
 };
 export type ProductionScheduleProcurementPackageDto = {
   material?: MaterialDto;
@@ -9702,19 +9366,8 @@ export type ProductionScheduleProcurementPackageDto = {
   unitCapacity?: number;
   status?: MaterialRequisitionStatus;
   packingExcessMargin?: number;
-  batches?: BatchLocation[] | null;
-};
-export type ProductionScheduleProcurementPackageDtoRead = {
-  material?: MaterialDtoRead;
-  directLinkMaterial?: MaterialDtoRead;
-  baseUoM?: UnitOfMeasureDtoRead;
-  baseQuantity?: number;
-  quantityNeeded?: number;
-  quantityOnHand?: number;
-  unitCapacity?: number;
-  status?: MaterialRequisitionStatus;
-  packingExcessMargin?: number;
-  batches?: BatchLocationRead[] | null;
+  storageWarehouseId?: string;
+  productionWarehouseId?: string;
 };
 export type ResourceDto = {
   id?: string | null;
@@ -9728,21 +9381,9 @@ export type ProductionActivityStepResourceDto = {
   createdAt?: string;
   resource?: ResourceDto;
 };
-export type ProductionActivityStepResourceDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  resource?: ResourceDto;
-};
 export type ProductionActivityStepWorkCenterDto = {
   id?: string;
   createdBy?: UserDto;
-  createdAt?: string;
-  workCenter?: CollectionItemDto;
-};
-export type ProductionActivityStepWorkCenterDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
   createdAt?: string;
   workCenter?: CollectionItemDto;
 };
@@ -9751,12 +9392,6 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
-};
-export type ProductionActivityStepUserDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  user?: UserDtoRead;
 };
 export type ProductionActivityStepDto = {
   id?: string;
@@ -9773,35 +9408,12 @@ export type ProductionActivityStepDto = {
   completedAt?: string | null;
   order?: number;
 };
-export type ProductionActivityStepDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  productionActivity?: CollectionItemDto;
-  operation?: CollectionItemDto;
-  workFlow?: CollectionItemDto;
-  resources?: ProductionActivityStepResourceDtoRead[] | null;
-  workCenters?: ProductionActivityStepWorkCenterDtoRead[] | null;
-  responsibleUsers?: ProductionActivityStepUserDtoRead[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
-  order?: number;
-};
 export type ProductionActivityLogDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   message?: string | null;
   user?: UserDto;
-  timestamp?: string;
-};
-export type ProductionActivityLogDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  message?: string | null;
-  user?: UserDtoRead;
   timestamp?: string;
 };
 export type ProductionActivityDto = {
@@ -9817,30 +9429,8 @@ export type ProductionActivityDto = {
   currentStep?: ProductionActivityStepDto;
   activityLogs?: ProductionActivityLogDto[] | null;
 };
-export type ProductionActivityDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
-  steps?: ProductionActivityStepDtoRead[] | null;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  currentStep?: ProductionActivityStepDtoRead;
-  activityLogs?: ProductionActivityLogDtoRead[] | null;
-};
 export type ProductionActivityDtoIEnumerablePaginateable = {
   data?: ProductionActivityDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ProductionActivityDtoIEnumerablePaginateableRead = {
-  data?: ProductionActivityDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -9858,37 +9448,14 @@ export type ProductionActivityGroupDto = {
   startedAt?: string;
   completedAt?: string | null;
   currentStep?: ProductionActivityStepDto;
-};
-export type ProductionActivityGroupDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  currentStep?: ProductionActivityStepDtoRead;
+  batchNumber?: string | null;
 };
 export type ProductionActivityGroupResultDto = {
   operation?: CollectionItemDto;
   activities?: ProductionActivityGroupDto[] | null;
 };
-export type ProductionActivityGroupResultDtoRead = {
-  operation?: CollectionItemDto;
-  activities?: ProductionActivityGroupDtoRead[] | null;
-};
 export type ProductionActivityStepDtoIEnumerablePaginateable = {
   data?: ProductionActivityStepDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ProductionActivityStepDtoIEnumerablePaginateableRead = {
-  data?: ProductionActivityStepDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -9918,7 +9485,7 @@ export type BatchManufacturingRecordDto = {
 };
 export type BatchManufacturingRecordDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   productionSchedule?: CollectionItemDto;
   product?: ProductDtoRead;
@@ -9982,28 +9549,8 @@ export type BatchPackagingRecordDto = {
   expiryDate?: string | null;
   batchQuantity?: number;
 };
-export type BatchPackagingRecordDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-};
 export type BatchPackagingRecordDtoIEnumerablePaginateable = {
   data?: BatchPackagingRecordDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type BatchPackagingRecordDtoIEnumerablePaginateableRead = {
-  data?: BatchPackagingRecordDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10046,7 +9593,7 @@ export type StockTransferSourceDto = {
 };
 export type StockTransferSourceDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   fromDepartment?: DepartmentDtoRead;
   toDepartment?: DepartmentDtoRead;
@@ -10071,11 +9618,11 @@ export type StockTransferDto = {
 };
 export type StockTransferDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
   code?: string | null;
-  material?: MaterialDtoRead;
-  uoM?: UnitOfMeasureDtoRead;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   reason?: string | null;
@@ -10099,10 +9646,10 @@ export type DepartmentStockTransferDto = {
 };
 export type DepartmentStockTransferDtoRead = {
   id?: string;
-  createdBy?: UserDtoRead;
+  createdBy?: UserDto;
   createdAt?: string;
-  material?: MaterialDtoRead;
-  uoM?: UnitOfMeasureDtoRead;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
   status?: StockTransferStatus;
   fromDepartment?: DepartmentDtoRead;
   toDepartment?: DepartmentDtoRead;
@@ -10179,21 +9726,6 @@ export type FinalPackingMaterialDto = {
   totalAccountedForQuantity?: number;
   percentageLoss?: number;
 };
-export type FinalPackingMaterialDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  material?: MaterialDtoRead;
-  receivedQuantity?: number;
-  subsequentDeliveredQuantity?: number;
-  totalReceivedQuantity?: number;
-  packedQuantity?: number;
-  returnedQuantity?: number;
-  rejectedQuantity?: number;
-  sampledQuantity?: number;
-  totalAccountedForQuantity?: number;
-  percentageLoss?: number;
-};
 export type FinalPackingDto = {
   id?: string;
   createdBy?: UserDto;
@@ -10215,38 +9747,8 @@ export type FinalPackingDto = {
   totalNumberOfBottles?: number;
   totalGainOrLoss?: number;
 };
-export type FinalPackingDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
-  materials?: FinalPackingMaterialDtoRead[] | null;
-  numberOfBottlesPerShipper?: number;
-  nUmberOfFullShipperPacked?: number;
-  leftOver?: number;
-  batchSize?: number;
-  averageVolumeFilledPerBottle?: number;
-  packSize?: number;
-  expectedYield?: number;
-  totalQuantityPacked?: number;
-  qualityControlAnalyticalSample?: number;
-  retainedSamples?: number;
-  stabilitySamples?: number;
-  totalNumberOfBottles?: number;
-  totalGainOrLoss?: number;
-};
 export type FinalPackingDtoIEnumerablePaginateable = {
   data?: FinalPackingDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type FinalPackingDtoIEnumerablePaginateableRead = {
-  data?: FinalPackingDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10287,9 +9789,9 @@ export type RequisitionDtoRead = {
   id?: string;
   code?: string | null;
   requisitionType?: RequisitionType;
-  requestedBy?: UserDtoRead;
+  requestedBy?: UserDto;
   department?: DepartmentDtoRead;
-  items?: RequisitionItemDtoRead[] | null;
+  items?: RequisitionItemDto[] | null;
   approved?: boolean;
   approvals?: RequisitionApprovalDto[] | null;
   expectedDelivery?: string | null;
@@ -10359,15 +9861,6 @@ export type SourceRequisitionItemDto = {
   source?: ProcurementSource;
   createdAt?: string;
 };
-export type SourceRequisitionItemDtoRead = {
-  id?: string;
-  sourceRequisition?: CollectionItemDto;
-  material?: MaterialDtoRead;
-  uoM?: UnitOfMeasureDtoRead;
-  quantity?: number;
-  source?: ProcurementSource;
-  createdAt?: string;
-};
 export type SourceRequisitionDto = {
   id?: string;
   createdBy?: UserDto;
@@ -10377,26 +9870,8 @@ export type SourceRequisitionDto = {
   supplier?: CollectionItemDto;
   items?: SourceRequisitionItemDto[] | null;
 };
-export type SourceRequisitionDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  code?: string | null;
-  supplier?: CollectionItemDto;
-  items?: SourceRequisitionItemDtoRead[] | null;
-};
 export type SourceRequisitionDtoIEnumerablePaginateable = {
   data?: SourceRequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type SourceRequisitionDtoIEnumerablePaginateableRead = {
-  data?: SourceRequisitionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10413,26 +9888,10 @@ export type SourceRequisitionItemDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type SourceRequisitionItemDtoIEnumerablePaginateableRead = {
-  data?: SourceRequisitionItemDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
 export type SupplierQuotationItemDto = {
   id?: string;
   material?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  quotedPrice?: number | null;
-};
-export type SupplierQuotationItemDtoRead = {
-  id?: string;
-  material?: CollectionItemDto;
-  uoM?: UnitOfMeasureDtoRead;
   quantity?: number;
   quotedPrice?: number | null;
 };
@@ -10442,23 +9901,8 @@ export type SupplierQuotationDto = {
   items?: SupplierQuotationItemDto[] | null;
   receivedQuotation?: boolean;
 };
-export type SupplierQuotationDtoRead = {
-  id?: string;
-  supplier?: SupplierDtoRead;
-  items?: SupplierQuotationItemDtoRead[] | null;
-  receivedQuotation?: boolean;
-};
 export type SupplierQuotationDtoIEnumerablePaginateable = {
   data?: SupplierQuotationDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type SupplierQuotationDtoIEnumerablePaginateableRead = {
-  data?: SupplierQuotationDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10478,12 +9922,6 @@ export type SupplierPrice = {
 export type SupplierPriceComparison = {
   material?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  supplierQuotation?: SupplierPrice[] | null;
-};
-export type SupplierPriceComparisonRead = {
-  material?: CollectionItemDto;
-  uoM?: UnitOfMeasureDtoRead;
   quantity?: number;
   supplierQuotation?: SupplierPrice[] | null;
 };
@@ -10546,15 +9984,6 @@ export type CreateUserRequestRead = {
 };
 export type UserDtoIEnumerablePaginateable = {
   data?: UserDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type UserDtoIEnumerablePaginateableRead = {
-  data?: UserDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10713,27 +10142,8 @@ export type WarehouseArrivalLocationDto = {
   description?: string | null;
   distributedRequisitionMaterials?: DistributedRequisitionMaterialDto[] | null;
 };
-export type WarehouseArrivalLocationDtoRead = {
-  id?: string;
-  warehouse?: WarehouseDto;
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
-  distributedRequisitionMaterials?:
-    | DistributedRequisitionMaterialDtoRead[]
-    | null;
-};
 export type DistributedRequisitionMaterialDtoIEnumerablePaginateable = {
   data?: DistributedRequisitionMaterialDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type DistributedRequisitionMaterialDtoIEnumerablePaginateableRead = {
-  data?: DistributedRequisitionMaterialDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -10780,12 +10190,12 @@ export type ChecklistDto = {
   materialBatches?: MaterialBatchDto[] | null;
 };
 export type ChecklistDtoRead = {
-  distributedRequisitionMaterial?: DistributedRequisitionMaterialDtoRead;
-  material?: MaterialDtoRead;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
+  material?: MaterialDto;
   checkedAt?: string | null;
-  shipmentInvoice?: ShipmentInvoiceDtoRead;
-  supplier?: SupplierDtoRead;
-  manufacturer?: ManufacturerDtoRead;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
   certificateOfAnalysisDelivered?: boolean;
   visibleLabelling?: boolean;
   intactnessStatus?: Intactness;
@@ -10858,7 +10268,7 @@ export type BinCardInformationDtoRead = {
   quantityReceived?: number;
   quantityIssued?: number;
   balanceQuantity?: number;
-  uoM?: UnitOfMeasureDtoRead;
+  uoM?: UnitOfMeasureDto;
   product?: ProductDtoRead;
 };
 export type BinCardInformationDtoIEnumerablePaginateable = {
@@ -10907,25 +10317,7 @@ export type MasterProductionScheduleDto = {
   status?: ProductionStatus;
   workOrders?: WorkOrderDto[] | null;
 };
-export type MasterProductionScheduleDtoRead = {
-  product?: CollectionItemDto;
-  plannedStartDate?: string;
-  plannedEndDate?: string;
-  plannedQuantity?: number;
-  status?: ProductionStatus;
-  workOrders?: WorkOrderDto[] | null;
-};
 export type ProductionStepDto = {
-  workOrder?: WorkOrderDto;
-  description?: string | null;
-  resource?: ResourceDto;
-  duration?: string;
-  startDate?: string | null;
-  endDate?: string | null;
-  status?: ProductionStatus;
-  sequence?: number;
-};
-export type ProductionStepDtoRead = {
   workOrder?: WorkOrderDto;
   description?: string | null;
   resource?: ResourceDto;
@@ -10948,20 +10340,6 @@ export type WorkOrderDto = {
   status?: ProductionStatus;
   batchNumber?: string | null;
   steps?: ProductionStepDto[] | null;
-};
-export type WorkOrderDtoRead = {
-  id?: string;
-  createdBy?: UserDtoRead;
-  createdAt?: string;
-  code?: string | null;
-  product?: CollectionItemDto;
-  masterProductionSchedule?: MasterProductionScheduleDtoRead;
-  quantity?: number;
-  startDate?: string;
-  endDate?: string;
-  status?: ProductionStatus;
-  batchNumber?: string | null;
-  steps?: ProductionStepDtoRead[] | null;
 };
 export type UpdateWorkOrderRequest = {
   code?: string | null;

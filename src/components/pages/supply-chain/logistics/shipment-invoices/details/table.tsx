@@ -1,16 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ShipmentInvoiceItemDtoRead } from "@/lib/redux/api/openapi.generated";
+import { ShipmentInvoiceItemDto } from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
 
 interface Props {
-  lists: ShipmentInvoiceItemDtoRead[];
-  setItemLists?: React.Dispatch<
-    React.SetStateAction<ShipmentInvoiceItemDtoRead[]>
-  >;
-  defaultColumns?: ColumnDef<ShipmentInvoiceItemDtoRead>[];
+  lists: ShipmentInvoiceItemDto[];
+  setItemLists?: React.Dispatch<React.SetStateAction<ShipmentInvoiceItemDto[]>>;
+  defaultColumns?: ColumnDef<ShipmentInvoiceItemDto>[];
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   const columns = getColumns();

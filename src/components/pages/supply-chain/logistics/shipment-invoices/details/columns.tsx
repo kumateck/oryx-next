@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Units, convertToLargestUnit } from "@/lib";
-import { ShipmentInvoiceItemDtoRead } from "@/lib/redux/api/openapi.generated";
+import { ShipmentInvoiceItemDto } from "@/lib/redux/api/openapi.generated";
 
-export const getColumns = (): ColumnDef<ShipmentInvoiceItemDtoRead>[] => [
+export const getColumns = (): ColumnDef<ShipmentInvoiceItemDto>[] => [
   {
     accessorKey: "materialCode",
     header: "Material Code",

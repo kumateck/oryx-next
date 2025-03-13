@@ -29,7 +29,6 @@ import {
   MaterialKind,
   PostApiV1CollectionApiArg,
   useGetApiV1ProductQuery,
-  useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1WarehouseDistributedMaterialByIdQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1WarehouseChecklistMutation,
@@ -41,8 +40,6 @@ import ChecklistForm, { OptionsUpdate } from "./form";
 import { ChecklistRequestDto, CreateProductValidator } from "./types";
 
 const CreateChecklist = () => {
-  const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
-  // console.log(authUser, "authUser");
   const { id } = useParams();
   const distributedMaterialId = id as string;
   const {
@@ -188,18 +185,6 @@ const CreateChecklist = () => {
       return;
     }
 
-    const warehouses = authUser?.department?.warehouses || [];
-    const materialWarehouse = warehouses?.find(
-      (item) => item.type === data.materialKind,
-    );
-
-    const initialLocationId = materialWarehouse?.id as string;
-
-    if (!initialLocationId) {
-      toast.error("Warehouse not found");
-      return;
-    }
-
     const payload: CreateChecklistRequest = {
       distributedRequisitionMaterialId: distributedMaterialId,
       materialId: data.materialId,
@@ -236,7 +221,6 @@ const CreateChecklist = () => {
             Number(batch.quantityPerContainer),
             materialQty?.uom as Units,
           ).value,
-        initialLocationId, // Replace with actual location ID
         dateReceived: batch.manufacturingDate.toISOString(),
         uoMId: materialQty?.uomId,
         manufacturingDate: batch.manufacturingDate.toISOString(),
