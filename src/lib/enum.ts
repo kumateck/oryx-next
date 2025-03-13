@@ -13,7 +13,7 @@ export enum BatchStatus {
   Available = 3,
   Rejected = 4,
   Retest = 5,
-  Frozen = 6,
+  Reserved = 6,
   Consumed = 7,
   Approved = 8,
 }
