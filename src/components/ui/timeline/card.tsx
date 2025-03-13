@@ -1,4 +1,5 @@
 // import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -9,6 +10,7 @@ import {
   cn,
   getInitials,
   isErrorResponse,
+  routes,
 } from "@/lib";
 import {
   ProductionStatus,
@@ -27,8 +29,18 @@ interface Props {
   className?: string;
   isComplete?: boolean;
   inProgress?: boolean;
+  showFinalPacking?: boolean;
+  activityId?: string;
 }
-const TimelineCard = ({ item, className, isComplete, inProgress }: Props) => {
+const TimelineCard = ({
+  item,
+  className,
+  isComplete,
+  inProgress,
+  showFinalPacking,
+  activityId,
+}: Props) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [updateActivity, { isLoading }] =
     usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation();
@@ -44,6 +56,10 @@ const TimelineCard = ({ item, className, isComplete, inProgress }: Props) => {
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
+  };
+
+  const onFinalPacking = (id: string) => {
+    router.push(routes.viewFinalPacking(id));
   };
   return (
     <div
@@ -81,11 +97,11 @@ const TimelineCard = ({ item, className, isComplete, inProgress }: Props) => {
         </div>
         {item.extra}
         {inProgress && (
-          <Button onClick={() => onComplete(ActivityStepStatus.Progress)}>
+          <Button onClick={() => onComplete(ActivityStepStatus.InProgress)}>
             {isLoading ? (
               <Icon name="LoaderCircle" className="animate-spin" />
             ) : (
-              ActivityStepStatus[ActivityStepStatus.Progress]
+              ActivityStepStatus[ActivityStepStatus.InProgress]
             )}
           </Button>
         )}
@@ -96,6 +112,12 @@ const TimelineCard = ({ item, className, isComplete, inProgress }: Props) => {
             ) : (
               ActivityStepStatus[ActivityStepStatus.Completed]
             )}
+          </Button>
+        )}
+        {showFinalPacking && (
+          <Button onClick={() => onFinalPacking(activityId as string)}>
+            <Icon name="Navigation" />
+            <span>Final Packing</span>
           </Button>
         )}
       </div>

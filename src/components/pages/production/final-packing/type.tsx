@@ -122,3 +122,28 @@ export const CreateProductSchema = z.object({
 
 export type PackingRequestDto = z.infer<typeof CreateProductSchema>;
 export const CreatePackingValidator = zodResolver(CreateProductSchema);
+
+export interface MaterialMatrix {
+  materialId: string;
+  materialName: string;
+  receivedQuantity: number;
+}
+
+export const getMaterialSchema = (totalReceivedQuantity: number) =>
+  z.object({
+    receivedQuantity: z.number().nonnegative(), // Read-only
+    subsequentDeliveredQuantity: z.number().nonnegative(),
+    totalReceivedQuantity: z.number().nonnegative(), // Auto-calculated
+    packedQuantity: z
+      .number()
+      .min(1, "Packed quantity must be greater than 0")
+      .max(
+        totalReceivedQuantity,
+        "Packed quantity cannot exceed total received quantity",
+      ),
+    returnedQuantity: z.number().nonnegative(),
+    rejectedQuantity: z.number().nonnegative(), // Auto-calculated
+    sampledQuantity: z.number().nonnegative(),
+    totalAccountedForQuantity: z.number().nonnegative(), // Auto-calculated
+    percentageLoss: z.number().nonnegative(), // Auto-calculated
+  });
