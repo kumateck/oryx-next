@@ -2549,6 +2549,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          kind: queryArg.kind,
         },
       }),
     }),
@@ -4567,6 +4568,7 @@ export type GetApiV1WarehouseRackApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  kind?: MaterialKind;
 };
 export type GetApiV1WarehouseRackByDepartmentApiResponse =
   /** status 200 OK */ WarehouseLocationRackDtoRead[];
