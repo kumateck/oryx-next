@@ -51,6 +51,7 @@ export const CODE_SETTINGS = {
     ShipmentDocument: "ShipmentDocument",
     GRNNumber: "GrnNumber",
     StockTransfer: "StockTransfer",
+    Waybill: "Waybill",
   },
   nameTypes: {
     Time: 2,

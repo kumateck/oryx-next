@@ -1,23 +1,16 @@
-import { ColumnDef } from "@tanstack/react-table";
-
-import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 
-import { getColumns } from "./columns";
+import { columns } from "./columns";
+import { MaterialRequestDto } from "./types";
 
 interface Props {
-  lists: any;
-  setItemLists?: React.Dispatch<
-    React.SetStateAction<DistributedRequisitionMaterialDto[]>
-  >;
-  defaultColumns?: ColumnDef<any>[];
+  lists: MaterialRequestDto[];
+  setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
 }
-const TableForData = ({ lists, defaultColumns }: Props) => {
-  const columns = getColumns();
-
+const TableForData = ({ lists }: Props) => {
   return (
     <div className="w-full">
-      <ListsTable data={lists} columns={defaultColumns || columns} />
+      <ListsTable data={lists} columns={columns} />
     </div>
   );
 };

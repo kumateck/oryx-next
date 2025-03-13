@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 // import { useEffect } from "react";
 import { ListsTable } from "@/shared/datatable";
 
@@ -9,12 +8,14 @@ import { ListsTable } from "@/shared/datatable";
 //   PostApiV1CollectionApiArg,
 //   usePostApiV1CollectionMutation,
 // } from "@/lib/redux/api/openapi.generated";
-import { getColumns } from "./columns";
+import { MaterialBatchWithShelfId, getColumns } from "./columns";
 
 interface Props {
-  lists: MaterialBatchDto[];
-  setItemLists?: React.Dispatch<React.SetStateAction<MaterialBatchDto[]>>;
-  defaultColumns?: ColumnDef<MaterialBatchDto>[];
+  lists: MaterialBatchWithShelfId[];
+  setItemLists?: React.Dispatch<
+    React.SetStateAction<MaterialBatchWithShelfId[]>
+  >;
+  defaultColumns?: ColumnDef<MaterialBatchWithShelfId>[];
 }
 const TableForData = ({ lists, defaultColumns }: Props) => {
   const columns = getColumns();

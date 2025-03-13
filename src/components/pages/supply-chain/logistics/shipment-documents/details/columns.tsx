@@ -39,7 +39,7 @@ export const getColumns = (): ColumnDef<ShipmentInvoiceItemDto>[] => [
     cell: ({ row }) => (
       <div>
         {row.original.price !== undefined
-          ? row.original.price * row.original.price
+          ? (row.original.receivedQuantity as number) * row.original.price
           : "-"}
       </div>
     ),

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -11,13 +11,22 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, Option, isErrorResponse } from "@/lib";
 import {
-  MaterialBatchDto,
-  useGetApiV1WarehouseRackQuery,
-  useGetApiV1WarehouseShelfQuery,
+  EMaterialKind,
+  ErrorResponse,
+  Option,
+  Units,
+  convertToLargestUnit,
+  convertToSmallestUnit,
+  isErrorResponse,
+} from "@/lib";
+import {
+  MoveShelfMaterialBatchRequest,
+  useGetApiV1WarehouseRackByDepartmentQuery,
+  usePostApiV1MaterialBatchMoveV2Mutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import { MaterialBatchWithShelfId } from "../columns";
 import AssignLocationForm from "./form";
 import { LocationRequestDto, LocationValidator } from "./type";
 
@@ -25,7 +34,8 @@ interface AssignLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
-  selectedBatch: MaterialBatchDto | null;
+  selectedBatch: MaterialBatchWithShelfId | null;
+  kind?: EMaterialKind;
 }
 
 const AssignLocationDialog = ({
@@ -33,7 +43,15 @@ const AssignLocationDialog = ({
   onOpenChange,
   onSuccess,
   selectedBatch,
+  kind,
 }: AssignLocationDialogProps) => {
+  const [moveShelf, { isLoading }] = usePostApiV1MaterialBatchMoveV2Mutation();
+
+  const { data: racks } = useGetApiV1WarehouseRackByDepartmentQuery({
+    kind: kind ?? EMaterialKind.Raw,
+  });
+
+  // console.log(racks);
   const {
     control,
     register,
@@ -45,26 +63,59 @@ const AssignLocationDialog = ({
     resolver: LocationValidator,
     mode: "onSubmit",
     defaultValues: {
-      locations: [], // Start with empty array for dynamic fields
+      locations: [
+        {
+          rackId: { label: "", value: "" },
+          shelfId: { label: "", value: "" },
+          quantity: 0,
+          note: "",
+        },
+      ],
     },
   });
 
-  const { data: racks } = useGetApiV1WarehouseRackQuery({
-    page: 1,
-    pageSize: 100,
+  const locations = useWatch({
+    control,
+    name: "locations",
   });
 
-  const { data: shelves } = useGetApiV1WarehouseShelfQuery({
-    page: 1,
-    pageSize: 100,
-  });
+  // Memoize derived values
+  const typeValues = useMemo(() => {
+    return locations?.map((item) => item?.rackId) || [];
+  }, [locations]);
+  // const shelfOptions = shelves?.data?.map((item) => ({
+  //   label: `${item?.warehouseLocationRack?.name}-${item.name}`,
+  //   value: item.id,
+  // })) as Option[];
+  const [shelfOptionsMap, setShelfOptionsMap] = useState<{
+    [key: string]: Option[];
+  }>({});
+  const [fetchedRacks, setFetchedRacks] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    typeValues.forEach((rack) => {
+      const rackId = rack?.value;
+      if (rackId && !fetchedRacks.has(rackId)) {
+        // Mark the material as fetched
+        setFetchedRacks((prev) => new Set(prev).add(rackId));
+        const rackShelves = racks?.find((item) => item.id === rackId);
+        setShelfOptionsMap((prev) => {
+          const shelfs = rackShelves?.shelves?.map((item) => ({
+            label:
+              `${item?.warehouseLocationRack?.name}-${item.name}` as string,
+            value: item.id as string,
+          })) as Option[];
 
-  const shelfOptions = shelves?.data?.map((item) => ({
-    label: `${item?.warehouseLocationRack?.name}-${item.name}`,
-    value: item.id,
-  })) as Option[];
+          return {
+            ...prev,
+            [rackId]: shelfs,
+          };
+        });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typeValues, fetchedRacks]);
 
-  const rackOptions = racks?.data?.map((item) => ({
+  const rackOptions = racks?.map((item) => ({
     label: `${item?.warehouseLocation?.name}-${item.name}`,
     value: item.id,
   })) as Option[];
@@ -76,22 +127,35 @@ const AssignLocationDialog = ({
         return;
       }
 
-      // Prepare payload
+      const SelectedUnit = convertToLargestUnit(
+        selectedBatch?.totalQuantity as number,
+        selectedBatch?.uoM?.symbol as Units,
+      ).unit as Units;
       const payload = {
-        materialBatchId: selectedBatch.id,
-        shelfMaterialBatches: data.locations.map((location) => ({
+        shelfMaterialBatchId: selectedBatch.shelfMaterialBatchId,
+        movedShelfBatchMaterials: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
-          materialBatchId: selectedBatch.id,
-          quantity: location.quantity,
-          uomId: "", // Generate random UUID
-          note: location.note,
+          quantity: convertToSmallestUnit(location.quantity, SelectedUnit)
+            .value,
+          uomId: selectedBatch?.uoM?.id as string,
+          note: location.note || "",
         })),
-      };
+      } satisfies MoveShelfMaterialBatchRequest;
 
-      console.log("Payload:", payload);
-      toast.success("Location assigned successfully");
-      onSuccess();
-      handleClose();
+      console.log(payload);
+      const response = await moveShelf({
+        moveShelfMaterialBatchRequest: payload,
+      });
+
+      if ("error" in response) {
+        toast.error(
+          isErrorResponse(response.error as ErrorResponse)?.description,
+        );
+      } else {
+        toast.success("Material moved successfully");
+        onSuccess();
+        handleClose();
+      }
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -121,8 +185,9 @@ const AssignLocationDialog = ({
               register={register}
               errors={errors}
               rackOptions={rackOptions}
-              shelfOptions={shelfOptions}
+              shelfOptionsMap={shelfOptionsMap}
               selectedBatch={selectedBatch}
+              typeValues={typeValues}
             />
           </div>
 
@@ -134,7 +199,7 @@ const AssignLocationDialog = ({
               </Button>
               <Button type="submit" className="flex items-center gap-2">
                 <Icon name="Plus" className="h-4 w-4" />
-                <span>Assign</span>
+                <span>{isLoading ? "Assigning..." : "Assign"}</span>
               </Button>
             </div>
           </div>
