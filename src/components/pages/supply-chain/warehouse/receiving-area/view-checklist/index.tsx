@@ -11,12 +11,12 @@ import {
   Units,
   convertToLargestUnit,
 } from "@/lib";
-import {
-  SrDto,
-  useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useGetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistQuery } from "@/lib/redux/api/openapi.generated";
+import { ListsTable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
+
+import { sampleWeightColumns } from "./columns";
 
 function ViewChecklist() {
   const { id } = useParams();
@@ -193,23 +193,27 @@ function ViewChecklist() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-x-12 gap-y-2">
-                {batch.sampleWeights?.map((weight: SrDto, i) => {
-                  if (!weight) return null;
-                  if (!weight.srNumber && !weight.grossWeight) return null;
-
-                  return (
-                    <div key={i} className="col-span-1 grid grid-cols-2 gap-2">
-                      <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
-                        {weight.srNumber ?? "-"}
-                      </span>
-                      <span className="rounded-2xl border bg-white px-2 py-1 text-sm">
-                        {weight.grossWeight ?? "-"}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+              <h3 className="mb-3 mt-4 text-lg font-semibold">
+                Sample Weights
+              </h3>
+              {(batch.sampleWeights?.length ?? 0) > 0 &&
+              batch.sampleWeights?.some(
+                (weight) => weight && (weight.srNumber || weight.grossWeight),
+              ) ? (
+                <div className="w-full">
+                  <ListsTable
+                    data={batch.sampleWeights.filter(
+                      (weight) =>
+                        weight && (weight.srNumber || weight.grossWeight),
+                    )}
+                    columns={sampleWeightColumns}
+                  />
+                </div>
+              ) : (
+                <p className="text-sm italic text-gray-500">
+                  No sample weights available
+                </p>
+              )}
             </CardContent>
           </Card>
         ))}

@@ -1,6 +1,6 @@
 import { ListsTable } from "@/shared/datatable";
 
-import { MaterialRequestDto } from "../create/type";
+import { MaterialRequestDto } from "../create/types";
 import { columns } from "./columns";
 
 interface Props {
