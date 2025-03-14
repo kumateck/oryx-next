@@ -34,7 +34,7 @@ const mutex = new Mutex();
 const Signin = () => {
   const searchParams = useSearchParams();
   const cookies = useCookies();
-  const navigate = useRouter();
+  const router = useRouter();
   const dispatch = useDispatch();
   const [loginMutation, { isLoading }] = usePostApiV1AuthLoginMutation();
   const {
@@ -82,13 +82,15 @@ const Signin = () => {
           }),
         );
 
+        // await waitForTimeout(100);
         // Only proceed with navigation after dispatching the tokens
         const redirectTo = searchParams.get("redirectTo") ?? routes.home();
-        console.log(redirectTo, "redirectTo");
+        // console.log(redirectTo, "redirectTo");
         if (userId) {
-          navigate.replace(redirectTo);
+          router.replace(redirectTo);
+          window.location.reload();
         } else {
-          navigate.push(routes.signin());
+          router.push(routes.signin());
         }
       });
     } catch (error) {
