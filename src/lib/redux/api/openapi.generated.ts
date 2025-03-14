@@ -2138,6 +2138,7 @@ const injectedRtkApi = api.injectEndpoints({
           searchQuery: queryArg.searchQuery,
           status: queryArg.status,
           type: queryArg["type"],
+          kind: queryArg.kind,
         },
       }),
     }),
@@ -4388,6 +4389,7 @@ export type GetApiV1RequisitionDepartmentApiArg = {
   status?: RequestStatus;
   /** Filter between stock and purchase requisitions. (Stock = 0, Purchase =  1) */
   type?: RequisitionType;
+  kind?: MaterialKind;
 };
 export type GetApiV1RequisitionByRequisitionIdApiResponse =
   /** status 200 OK */ RequisitionDtoRead;
