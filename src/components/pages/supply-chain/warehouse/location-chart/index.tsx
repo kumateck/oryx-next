@@ -7,7 +7,7 @@ import { AsyncSelect, Card, CardTitle } from "@/components/ui";
 import { EMaterialKind, Option } from "@/lib";
 import {
   MaterialBatchDto,
-  WarehouseLocationRackDtoRead,
+  WarehouseLocationRackDto,
   useLazyGetApiV1WarehouseRackByRackIdQuery,
   useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -33,7 +33,7 @@ const LocationChart = () => {
 
   const [selectedRack, setSelectedRack] = useState<Option>();
   const [selectedRackShelves, setSelectedRackShelves] =
-    useState<WarehouseLocationRackDtoRead>();
+    useState<WarehouseLocationRackDto>();
   const [reloadTrigger, setReloadTrigger] = useState(false);
   const handleFalseReload = (reload: boolean) => {
     setReloadTrigger(reload);
