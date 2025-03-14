@@ -4,6 +4,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
+import FinishedGoodsTransfer from "@/components/pages/production/activities/finished-goods-note";
 import {
   ActivityStepStatus,
   ErrorResponse,
@@ -32,6 +33,8 @@ interface Props {
   showFinalPacking?: boolean;
   showFinishedGoods?: boolean;
   activityId?: string;
+  productId?: string;
+  scheduleId?: string;
 }
 const TimelineCard = ({
   item,
@@ -41,6 +44,8 @@ const TimelineCard = ({
   showFinishedGoods,
   showFinalPacking,
   activityId,
+  scheduleId,
+  productId,
 }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -63,9 +68,9 @@ const TimelineCard = ({
   const onFinalPacking = (id: string) => {
     router.push(routes.viewFinalPacking(id));
   };
-  const onFinishedGoods = (id: string) => {
-    router.push(routes.viewFinalPacking(id));
-  };
+  // const onFinishedGoods = (id: string) => {
+  //   router.push(routes.viewFinalPacking(id));
+  // };
   return (
     <div
       className={cn(
@@ -124,12 +129,13 @@ const TimelineCard = ({
             <Icon name="Navigation" />
             <span>Final Packing</span>
           </Button>
-        )}{" "}
+        )}
         {showFinishedGoods && (
-          <Button onClick={() => onFinishedGoods(activityId as string)}>
-            <Icon name="Navigation" />
-            <span>Finished Goods Transfer Notes</span>
-          </Button>
+          <FinishedGoodsTransfer
+            scheduleId={scheduleId as string}
+            productId={productId as string}
+            productionActivityStepId={item?.id as string}
+          />
         )}
       </div>
     </div>

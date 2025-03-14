@@ -9570,8 +9570,7 @@ export type BatchManufacturingRecordDtoIEnumerablePaginateableRead = {
 };
 export type CreateFinishedGoodsTransferNoteRequest = {
   batchManufacturingRecordId?: string;
-  fromWarehouseId?: string | null;
-  toWarehouseId?: string | null;
+  productionActivityStepId?: string | null;
   quantityPerPack?: number;
   packageStyleId?: string | null;
   totalQuantity?: number;
