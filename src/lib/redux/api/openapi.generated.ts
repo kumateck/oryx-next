@@ -6231,17 +6231,6 @@ export type ProductionScheduleProductRead = {
   batchSize?: BatchSize;
   quantity?: number;
 };
-export type ProductionScheduleProductRead = {
-  id?: string;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: ProductRead;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
-  batchNumber?: string | null;
-  quantity?: number;
-};
 export type ProductionSchedule = {
   id?: string;
   createdAt?: string;
@@ -9581,8 +9570,7 @@ export type BatchManufacturingRecordDtoIEnumerablePaginateableRead = {
 };
 export type CreateFinishedGoodsTransferNoteRequest = {
   batchManufacturingRecordId?: string;
-  fromWarehouseId?: string | null;
-  toWarehouseId?: string | null;
+  productionActivityStepId?: string | null;
   quantityPerPack?: number;
   packageStyleId?: string | null;
   totalQuantity?: number;
