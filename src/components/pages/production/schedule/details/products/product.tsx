@@ -41,14 +41,9 @@ interface ProductProps {
   productId: string;
   scheduleId: string;
   tab: ProductionScheduleProductDto;
-  batchSizeType: BatchSizeType;
+  batchSizeType?: BatchSizeType;
 }
-const Product = ({
-  productId,
-  scheduleId,
-  tab,
-  batchSizeType,
-}: ProductProps) => {
+const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -88,11 +83,7 @@ const Product = ({
     useLazyGetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdQuery();
   const [loadProductInfo, { isLoading: isLoadingProduct }] =
     useLazyGetApiV1ProductByProductIdQuery();
-  const handleLoadMaterialStock = async (
-    pId: string,
-    psId: string,
-    batchSizeType: BatchSizeType,
-  ) => {
+  const handleLoadMaterialStock = async (pId: string, psId: string) => {
     try {
       // const productResponse = await loadProductInfo({
       //   productId: pId,
@@ -179,11 +170,7 @@ const Product = ({
 
         const materialName = item?.material?.name as string;
 
-        const excess =
-          (Number(batchSizeType) === BatchSizeType.Full
-            ? item?.packingExcessMargin
-            : (item?.packingExcessMargin || 0) / 2) || 0;
-        const qtyNeeded = (item?.quantityNeeded as number) + excess;
+        const qtyNeeded = item?.quantityNeeded as number;
 
         const quantityNeededFloat = parseFloat(qtyNeeded.toString()).toFixed(2);
 
@@ -220,10 +207,10 @@ const Product = ({
   };
 
   useEffect(() => {
-    handleLoadMaterialStock(productId, scheduleId, batchSizeType);
+    handleLoadMaterialStock(productId, scheduleId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [batchSizeType, productId, scheduleId]);
+  }, [productId, scheduleId]);
 
   const convertUnit = convertToLargestUnit(
     Number(tab.quantity),

@@ -145,8 +145,6 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   }, [materialStockResponse]);
   useEffect(() => {
     if (packageStockResponse) {
-      // const packingExcessMargin = data?.packingExcessMargin as number;
-
       setEnablePurchase(!quantityAvailable(packageStockResponse));
 
       const packOptions = packageStockResponse?.map((item) => {

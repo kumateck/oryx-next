@@ -115,9 +115,9 @@ const Page = () => {
         id: item.material?.id as string,
       })) ?? [];
     const ids = getMatchingIds(material, pRowSelection);
-    const productFound = data?.products?.find(
-      (item) => item.product?.id === productId,
-    );
+    // const productFound = data?.products?.find(
+    //   (item) => item.product?.id === productId,
+    // );
     const filteredItems = packageResponse?.filter((item) =>
       ids.includes(item?.material?.id as string),
     );
@@ -131,14 +131,8 @@ const Page = () => {
         material.baseUoM?.symbol as Units,
       ).value;
       const quantity = material.quantityNeeded ?? 0;
-      const excess =
-        (convertToLargestUnit(
-          productFound?.quantity as number,
-          productFound?.product?.baseUoM?.symbol as Units,
-        ).value === productFound?.product?.fullBatchSize
-          ? material?.packingExcessMargin
-          : (material?.packingExcessMargin ?? 0) / 2) ?? 0;
-      const totalQuantityNeeded = Math.round((quantity + excess) * 100) / 100;
+
+      const totalQuantityNeeded = Math.round(quantity * 100) / 100;
       const qty = convertToLargestUnit(
         Number(totalQuantityNeeded),
         material.baseUoM?.symbol as Units,
