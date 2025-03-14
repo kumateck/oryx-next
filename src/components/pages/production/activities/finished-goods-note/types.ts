@@ -2,39 +2,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const createFinishedGoodsRequestSchema = z.object({
-  productName: z.string().min(1, { message: "Product Name is required" }),
-  toWarehouseId: z
-    .string()
-    .min(1, { message: "Destination Warehouse is required" }),
+  productName: z.string().optional(),
+  manufacturingDateName: z.string().optional(),
+  expiryDateName: z.string().optional(),
   batchNumber: z.string().min(1, { message: "Batch Number is required" }),
-  manufacturingDate: z.preprocess(
-    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-    z.date({
-      required_error: "Manufacturing date is required",
-      invalid_type_error: "Manufacturing date must be a valid date",
-    }),
-  ),
-  expiryDate: z.preprocess(
-    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-    z.date({
-      required_error: "Expiry date is required",
-      invalid_type_error: "Expiry date must be a valid date",
-    }),
-  ),
+  manufacturingDate: z
+    .string()
+    .min(1, { message: "Manufacturing Date is required" }),
+  expiryDate: z.string().min(1, { message: "Expiry Date is required" }),
   quantityPerPack: z
-    .number()
+    .string()
     .min(1, { message: "Quantity per pack is required" }),
-  qarNumber: z.number().min(1, { message: "QAR number is required" }),
-  packageStyleId: z.object(
+  totalQuantityTransfer: z
+    .string()
+    .min(1, { message: "Total quantity is required" }),
+  qarNumber: z.string().min(1, { message: "QAR number is required" }),
+  packageStyle: z.object(
     {
-      value: z.string().min(1, { message: "Unit of Measurement is required" }),
+      value: z.string().min(1, { message: "Pack Style is required" }),
       label: z.string(),
     },
     {
-      message: "Unit of Measurement is required",
+      message: "Pack Style is required",
     },
   ),
-  uomId: z.object(
+  uom: z.object(
     {
       value: z.string().min(1, { message: "Unit of Measurement is required" }),
       label: z.string(),

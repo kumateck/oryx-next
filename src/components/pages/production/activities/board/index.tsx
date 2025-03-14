@@ -74,7 +74,12 @@ const Board = () => {
         </span>
       </div>
       <ScrollablePageWrapper className="px-10 py-5">
-        <TimelineLayout steps={activities} activityId={activityId} />
+        <TimelineLayout
+          steps={activities}
+          activityId={activityId}
+          productId={data?.product?.id as string}
+          scheduleId={data?.productionSchedule?.id as string}
+        />
       </ScrollablePageWrapper>
     </BgWrapper>
   );

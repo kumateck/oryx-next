@@ -9,6 +9,7 @@ import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import {
   BatchSizeType,
   ErrorResponse,
+  ProductionStatus,
   Units,
   convertToLargestUnit,
   isErrorResponse,
@@ -19,7 +20,6 @@ import {
   ProductDtoRead,
   ProductionActivityDto,
   ProductionScheduleProductDto,
-  ProductionStatus,
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
@@ -30,6 +30,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { ClientDatatable } from "@/shared/datatable";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 
+import FinishedGoodsTransfer from "../../../activities/finished-goods-note";
 import { getColumns } from "./columns";
 // import Purchase from "./purchase";
 import Stock from "./stock";
@@ -250,7 +251,7 @@ const Product = ({
       case 2:
         return (
           <div>
-            {status === 0 && (
+            {status === ProductionStatus.New && (
               <Button
                 onClick={() => setIsOpenStock(true)}
                 className="flex items-center gap-2"
@@ -261,7 +262,18 @@ const Product = ({
             )}
           </div>
         );
-
+      case 16:
+        return (
+          <div>
+            {status === ProductionStatus.New && (
+              <FinishedGoodsTransfer
+                scheduleId={scheduleId}
+                productId={productId}
+                productionActivityStepId={activity?.currentStep?.id as string}
+              />
+            )}
+          </div>
+        );
       default:
         break;
     }
