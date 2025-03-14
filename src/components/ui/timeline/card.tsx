@@ -131,10 +131,6 @@ const TimelineCard = ({
           </Button>
         )}
         {showFinishedGoods && (
-          // <Button onClick={() => onFinishedGoods(activityId as string)}>
-          //   <Icon name="Navigation" />
-          //   <span>Finished Goods Transfer Notes</span>
-          // </Button>
           <FinishedGoodsTransfer
             scheduleId={scheduleId as string}
             productId={productId as string}
