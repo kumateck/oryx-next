@@ -855,3 +855,7 @@ export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
   label: key,
   value: PackLocationType[key as keyof typeof PackLocationType],
 })) as Option[];
+
+export function waitForTimeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

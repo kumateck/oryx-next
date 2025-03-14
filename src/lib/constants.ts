@@ -124,6 +124,7 @@ export const routes = {
     `/warehouse/receiving-area/${id}/view-checklist`,
   viewFinalPacking: (id: string) =>
     `/production/activities/${id}/final-packing`,
+  viewBoard: (id: string) => `/production/activities/${id}/board`,
 };
 
 export const formatClock = (hours: number, minutes: number, light: boolean) => {
