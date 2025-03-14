@@ -98,12 +98,8 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
   const onSubmit = async (data: TransferRequestDto) => {
     // console.log(data);
 
-    const qtyexcess =
-      "packingExcessMargin" in materialInfo
-        ? materialInfo.packingExcessMargin
-        : 0;
     const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
-    const totalQtyNeeded = Number(qtyNeeded) + Number(qtyexcess);
+    const totalQtyNeeded = Number(qtyNeeded);
 
     const sources = data.sources?.map((item) => {
       // console.log(

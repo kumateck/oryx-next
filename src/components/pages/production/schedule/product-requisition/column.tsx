@@ -149,8 +149,7 @@ export const pColumns: ColumnDef<ProductionScheduleProcurementPackageDto>[] = [
     header: "Quantity Needed",
     cell: ({ row }) => {
       const quantity = row.original.quantityNeeded ?? 0;
-      const packingExcessMargin = row.original.packingExcessMargin ?? 0;
-      const total = quantity + packingExcessMargin;
+      const total = quantity;
 
       const qty = convertToLargestUnit(
         total,
