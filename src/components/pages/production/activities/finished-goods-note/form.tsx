@@ -17,6 +17,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
 
   packingUomOptions: Option[];
+  packingStyleOptions: Option[];
   defaultValues?: TFieldValues;
 }
 const Form = <TFieldValues extends FieldValues, TContext>({
@@ -24,6 +25,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   packingUomOptions,
+  packingStyleOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -36,65 +38,77 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Product Name",
             placeholder: "Enter Product Name",
             type: InputTypes.TEXT,
-            errors,
-          },
-          {
-            register: register("transferTo" as Path<TFieldValues>),
-            label: "Transfer To",
-            placeholder: "Enter Destination",
-            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {
             register: register("batchNumber" as Path<TFieldValues>),
-            label: "Transfer To",
-            placeholder: "Enter Destination",
+            label: "Batch Number",
+            placeholder: "",
             type: InputTypes.TEXT,
+
+            readOnly: true,
             errors,
           },
           {
-            register: register("qarNumber" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
-            label: "QAR Number",
-            placeholder: "Enter QAR number",
-            type: InputTypes.NUMBER,
+            register: register("manufacturingDateName" as Path<TFieldValues>),
+            label: "Manufacturing Date",
+            placeholder: "Enter Product Name",
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {
-            register: register("quantityPerPack" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
+            register: register("expiryDateName" as Path<TFieldValues>),
+            label: "Expiry Date",
+            placeholder: "Enter Product Name",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            errors,
+          },
+
+          {
+            register: register("quantityPerPack" as Path<TFieldValues>),
             label: "Quantity per pack",
             placeholder: "Enter quantity per pack",
-            type: InputTypes.NUMBER,
-
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {
-            label: "Unit of Measure",
+            label: "Packing Style",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "packageStyleId",
+            name: "packageStyle",
             required: true,
             placeholder: "Select Unit of Measure",
-            options: packingUomOptions,
+            options: packingStyleOptions,
             errors,
           },
           {
-            register: register("qarNumber" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
+            register: register("qarNumber" as Path<TFieldValues>),
             label: "QAR Number",
             placeholder: "Enter QAR number",
-            type: InputTypes.NUMBER,
+            type: InputTypes.TEXT,
+            autoFocus: true,
+            errors,
+          },
+          {
+            type: InputTypes.SPACE,
+          },
+          {
+            register: register("totalQuantityTransfer" as Path<TFieldValues>),
+            label: "Total Transfer Quantity",
+            placeholder: "Enter quantity per pack",
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {
             label: "Unit of Measure",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "uomId",
+            name: "uom",
             required: true,
             placeholder: "Select Unit of Measure",
             options: packingUomOptions,
