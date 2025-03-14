@@ -1636,6 +1636,15 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getApiV1ProductionScheduleByProductionScheduleIdProductAndProductId:
+      build.query<
+        GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiResponse,
+        GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/product/${queryArg.productId}`,
+        }),
+      }),
     getApiV1ProductionScheduleProductionStatus: build.query<
       GetApiV1ProductionScheduleProductionStatusApiResponse,
       GetApiV1ProductionScheduleProductionStatusApiArg
@@ -4038,6 +4047,15 @@ export type DeleteApiV1ProductionScheduleByScheduleIdApiArg = {
   /** The ID of the Production Schedule to be deleted. */
   scheduleId: string;
 };
+export type GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiResponse =
+  /** status 200 OK */ ProductionScheduleProductDtoRead;
+export type GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiArg =
+  {
+    /** The ID of the Production Schedule. */
+    productionScheduleId: string;
+    /** The ID of the Product. */
+    productId: string;
+  };
 export type GetApiV1ProductionScheduleProductionStatusApiResponse =
   /** status 200 Returns the list of production status */ TypeResponse[];
 export type GetApiV1ProductionScheduleProductionStatusApiArg = void;
@@ -6192,15 +6210,25 @@ export type ProductRead = {
   routes?: RouteRead[] | null;
 };
 export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
+export type BatchSize = 0 | 1;
 export type ProductionScheduleProduct = {
   id?: string;
   productionScheduleId?: string;
   productionSchedule?: ProductionSchedule;
   productId?: string;
   product?: Product;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
   batchNumber?: string | null;
+  batchSize?: BatchSize;
+  quantity?: number;
+};
+export type ProductionScheduleProductRead = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: ProductRead;
+  batchNumber?: string | null;
+  batchSize?: BatchSize;
   quantity?: number;
 };
 export type ProductionScheduleProductRead = {
@@ -9321,6 +9349,7 @@ export type EquipmentDtoIEnumerablePaginateable = {
 export type CreateProductionScheduleProduct = {
   productId?: string;
   quantity?: number;
+  batchSize?: BatchSize;
 };
 export type CreateProductionScheduleRequest = {
   code?: string | null;
@@ -9333,11 +9362,13 @@ export type ProductionScheduleProductDto = {
   product?: ProductListDto;
   quantity?: number;
   batchNumber?: string | null;
+  batchSize?: BatchSize;
 };
 export type ProductionScheduleProductDtoRead = {
   product?: ProductListDtoRead;
   quantity?: number;
   batchNumber?: string | null;
+  batchSize?: BatchSize;
 };
 export type ProductionScheduleDto = {
   id?: string;
@@ -9744,6 +9775,7 @@ export type CreateFinalPacking = {
   retainedSamples?: number;
   stabilitySamples?: number;
   totalNumberOfBottles?: number;
+  yieldTotalQuantityPacked?: number;
   totalGainOrLoss?: number;
 };
 export type FinalPackingMaterialDto = {
@@ -9780,6 +9812,7 @@ export type FinalPackingDto = {
   retainedSamples?: number;
   stabilitySamples?: number;
   totalNumberOfBottles?: number;
+  yieldTotalQuantityPacked?: number;
   totalGainOrLoss?: number;
 };
 export type FinalPackingDtoIEnumerablePaginateable = {
@@ -10551,6 +10584,8 @@ export const {
   useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
   usePutApiV1ProductionScheduleByScheduleIdMutation,
   useDeleteApiV1ProductionScheduleByScheduleIdMutation,
+  useGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery,
   useGetApiV1ProductionScheduleProductionStatusQuery,
   useLazyGetApiV1ProductionScheduleProductionStatusQuery,
   useGetApiV1ProductionScheduleByScheduleIdDetailsQuery,

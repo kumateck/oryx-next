@@ -30,6 +30,7 @@ interface Props {
   isComplete?: boolean;
   inProgress?: boolean;
   showFinalPacking?: boolean;
+  showFinishedGoods?: boolean;
   activityId?: string;
 }
 const TimelineCard = ({
@@ -37,6 +38,7 @@ const TimelineCard = ({
   className,
   isComplete,
   inProgress,
+  showFinishedGoods,
   showFinalPacking,
   activityId,
 }: Props) => {
@@ -59,6 +61,9 @@ const TimelineCard = ({
   };
 
   const onFinalPacking = (id: string) => {
+    router.push(routes.viewFinalPacking(id));
+  };
+  const onFinishedGoods = (id: string) => {
     router.push(routes.viewFinalPacking(id));
   };
   return (
@@ -118,6 +123,12 @@ const TimelineCard = ({
           <Button onClick={() => onFinalPacking(activityId as string)}>
             <Icon name="Navigation" />
             <span>Final Packing</span>
+          </Button>
+        )}{" "}
+        {showFinishedGoods && (
+          <Button onClick={() => onFinishedGoods(activityId as string)}>
+            <Icon name="Navigation" />
+            <span>Finished Goods Transfer Notes</span>
           </Button>
         )}
       </div>

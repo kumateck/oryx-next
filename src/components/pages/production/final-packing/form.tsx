@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { Input } from "@/components/ui";
 import { splitWords } from "@/lib";
@@ -35,31 +35,9 @@ interface MaterialFormProps {
       [key: string]: { [key: string]: number };
     }>
   >;
+  isLoading?: boolean;
 }
 const MaterialForm: React.FC<MaterialFormProps> = (props) => {
-  //
-
-  // 🔹 Fetch Materials & Initialize State
-  useEffect(() => {
-    // Initialize state
-    const initialFormData: { [key: string]: { [key: string]: number } } = {};
-    props.materialMatrix.forEach((material) => {
-      initialFormData[material.materialId] = {
-        receivedQuantity: material.receivedQuantity, // Read-only
-        subsequentDeliveredQuantity: 0,
-        totalReceivedQuantity: material.receivedQuantity, // Initially same as receivedQuantity
-        packedQuantity: 1, // Default to 1 since it must be > 0
-        returnedQuantity: 0,
-        rejectedQuantity: 0,
-        sampledQuantity: 0,
-        totalAccountedForQuantity: material.receivedQuantity, // Same as totalReceivedQuantity
-        percentageLoss: 0,
-      };
-    });
-    props.setFormData(initialFormData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.materialMatrix]);
-
   // 🔹 Handle Input Change
   const handleInputChange = (
     materialId: string,
@@ -117,30 +95,30 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
 
   // 🔹 Submit Handler
 
-  if (props.materialMatrix.length === 0) {
+  if (props.isLoading) {
     return <SkeletonLoadingPage />;
   }
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse border border-gray-300">
+      <table className="w-full">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-3 text-left">Field</th>
+          <tr className="bg-primary-default">
+            <th className="p-3 text-left"></th>
             {props.materialMatrix.map((material) => (
-              <th key={material.materialId} className="border p-3 text-left">
+              <th
+                key={material.materialId}
+                className="p-3 text-left text-white"
+              >
                 <div>{material.materialName}</div>
-                <div className="text-xs text-gray-500">
-                  ID: {material.materialId}
-                </div>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {fieldNames.map((field) => (
-            <tr key={field} className="border">
-              <td className="border p-3 font-medium capitalize">
+            <tr key={field} className="">
+              <td className="bg-white p-3 text-sm font-medium capitalize text-primary-default">
                 {splitWords(field)}
               </td>
               {props.materialMatrix.map((material) => {
@@ -153,7 +131,7 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
                 ].includes(field);
 
                 return (
-                  <td key={material.materialId} className="border p-3">
+                  <td key={material.materialId} className="p-3">
                     <div className="flex flex-col">
                       <Input
                         type="number"
