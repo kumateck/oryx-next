@@ -41,14 +41,9 @@ interface ProductProps {
   productId: string;
   scheduleId: string;
   tab: ProductionScheduleProductDto;
-  batchSizeType: BatchSizeType;
+  batchSizeType?: BatchSizeType;
 }
-const Product = ({
-  productId,
-  scheduleId,
-  tab,
-  batchSizeType,
-}: ProductProps) => {
+const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -212,10 +207,10 @@ const Product = ({
   };
 
   useEffect(() => {
-    handleLoadMaterialStock(productId, scheduleId, batchSizeType);
+    handleLoadMaterialStock(productId, scheduleId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [batchSizeType, productId, scheduleId]);
+  }, [productId, scheduleId]);
 
   const convertUnit = convertToLargestUnit(
     Number(tab.quantity),
