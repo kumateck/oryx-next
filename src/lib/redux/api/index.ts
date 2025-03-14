@@ -133,6 +133,7 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set("Authorization", `Bearer ${token}`); // Set Authorization header
     }
+
     return headers;
   },
 });
@@ -145,7 +146,7 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   // Wait for the mutex to unlock
   await mutex.waitForUnlock();
-
+  // await waitForTimeout(100);
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     if (!mutex.isLocked()) {

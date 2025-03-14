@@ -11,9 +11,10 @@ interface Props {
   activityId: string;
 }
 
-const showProgress = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-const showComplete = [3, 4, 5, 6, 7, 8, 9, 10, 11];
+const showProgress = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const showComplete = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15];
 const showFinalPacking = [12];
+const showFinishedGoods = [16];
 const Active = ({ item, activityId }: Props) => {
   return (
     <li className="mb-10 ms-6">
@@ -33,6 +34,10 @@ const Active = ({ item, activityId }: Props) => {
         showFinalPacking={
           showFinalPacking.includes(Number(item.order)) &&
           item.status === ActivityStepStatus.InProgress
+        }
+        showFinishedGoods={
+          showFinishedGoods.includes(Number(item.order)) &&
+          item.status === ActivityStepStatus.New
         }
         item={item}
         className="border border-primary-inverted"

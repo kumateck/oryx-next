@@ -7,7 +7,7 @@ import {
   convertToLargestUnit,
   getSmallestUnit,
 } from "@/lib";
-import { BatchToSupplyRead } from "@/lib/redux/api/openapi.generated";
+import { BatchToSupply } from "@/lib/redux/api/openapi.generated";
 
 export interface BatchColumns {
   id?: string;
@@ -25,7 +25,7 @@ export interface BatchColumns {
   expiryDate?: string;
 }
 
-export const getColumns = (): ColumnDef<BatchToSupplyRead>[] => [
+export const getColumns = (): ColumnDef<BatchToSupply>[] => [
   {
     accessorKey: "code",
     header: "Material Batch #",
