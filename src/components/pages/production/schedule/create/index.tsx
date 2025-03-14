@@ -118,6 +118,7 @@ const Page = () => {
         return {
           productId: item.productId?.value,
           quantity,
+          batchSize: sizeType,
         };
       }),
     );
