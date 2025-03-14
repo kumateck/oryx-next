@@ -3,7 +3,7 @@ import { format } from "date-fns";
 
 import { Units, convertToLargestUnit, getSmallestUnit } from "@/lib";
 import {
-  BatchToSupplyRead,
+  BatchToSupply,
   RequisitionItemDto,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -64,37 +64,35 @@ export const getColumns = (): ColumnDef<RequisitionItemDto>[] => [
     cell: ({ row }) => (
       <div>
         <ul className="flex flex-wrap gap-2">
-          {row.original.batches?.map(
-            (batch: BatchToSupplyRead, idx: number) => {
-              const qty = convertToLargestUnit(
-                batch?.quantityToTake as number,
-                getSmallestUnit(row.original?.uoM?.symbol as Units),
-              );
-              return (
-                <li
-                  className="inline-block rounded-2xl border px-2 py-1 text-sm"
-                  key={idx}
-                >
-                  <div className="flex gap-2">
-                    <div className="text-primary-default">
-                      {batch.batch?.batchNumber}
-                    </div>
-                    <div className="font-semibold">
-                      ({`${qty.value} ${qty.unit}`})
-                    </div>
+          {row.original.batches?.map((batch: BatchToSupply, idx: number) => {
+            const qty = convertToLargestUnit(
+              batch?.quantityToTake as number,
+              getSmallestUnit(row.original?.uoM?.symbol as Units),
+            );
+            return (
+              <li
+                className="inline-block rounded-2xl border px-2 py-1 text-sm"
+                key={idx}
+              >
+                <div className="flex gap-2">
+                  <div className="text-primary-default">
+                    {batch.batch?.batchNumber}
                   </div>
-                  <div className="text-xs text-danger-default">
-                    {batch.batch?.expiryDate
-                      ? format(
-                          new Date(batch?.batch?.expiryDate ?? ""),
-                          "MMM d, yyyy",
-                        )
-                      : "N/A"}
+                  <div className="font-semibold">
+                    ({`${qty.value} ${qty.unit}`})
                   </div>
-                </li>
-              );
-            },
-          )}
+                </div>
+                <div className="text-xs text-danger-default">
+                  {batch.batch?.expiryDate
+                    ? format(
+                        new Date(batch?.batch?.expiryDate ?? ""),
+                        "MMM d, yyyy",
+                      )
+                    : "N/A"}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     ),
