@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
 import { BillingSheetDto } from "@/lib/redux/api/openapi.generated";
 
@@ -15,19 +16,15 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
       <div className="min-w-36">{row.original.supplier?.name}</div>
     ),
   },
-  {
-    accessorKey: "invoiceAmount",
-    header: "Invoice Amount",
-    cell: (
-      {
-        // row
-      },
-    ) => (
-      <div className="min-w-36">
-        {"invoice amount"} {/*replace with amount */}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "invoiceAmount",
+  //   header: "Invoice Amount",
+  //   cell: ({ row }) => (
+  //     <div className="min-w-36">
+  //       {row.original.invoice?.name} {/*replace with amount */}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",
@@ -35,42 +32,46 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
       <div className="min-w-36">{row.original.invoice?.code}</div>
     ),
   },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"billing sheet amount"}</div>,
-  },
+  // {
+  //   accessorKey: "amount",
+  //   header: "Amount",
+  //   cell: (
+  //     {
+  //       row
+  //     },
+  //   ) => <div className="min-w-36">{row.original.}</div>,
+  // },
   {
     accessorKey: "orderDate",
     header: "Order Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"order date"}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.createdAt
+          ? format(row.original?.createdAt, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "expectedDeliveryDate",
     header: "Expected delivery Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"Expected delivery date"}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.expectedArrivalDate
+          ? format(row.original?.expectedArrivalDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
-  {
-    accessorKey: "status",
-    header: "Expected delivery Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"status"}</div>,
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: "Status",
+  //   cell: (
+  //     {
+  //       row
+  //     },
+  //   ) => <div className="min-w-36">{row.original.sta}</div>,
+  // },
   // {
   //   id: "actions",
   //   cell: ({ row }) => <DataTableRowActions row={row} />,

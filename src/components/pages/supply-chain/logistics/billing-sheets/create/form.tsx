@@ -57,6 +57,20 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
           fieldWrapperClassName="flex-grow"
           config={[
             {
+              register: register("code" as Path<TFieldValues>),
+              label: "Billing Sheet Code",
+              placeholder: "Code will be generated",
+              type: InputTypes.TEXT,
+              readOnly: true,
+              required: true,
+              description: (
+                <span className="text-neutral-seondary text-sm">
+                  You can’t change the waybill code
+                </span>
+              ),
+              errors,
+            },
+            {
               register: register("billOfLading" as Path<TFieldValues>),
               label: "Bill of Lading",
               type: InputTypes.TEXT,

@@ -1,6 +1,58 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+const allowedMimeTypes = [
+  "image/png",
+  "image/jpeg", // covers both JPG and JPEG
+  "image/webp",
+  "application/pdf",
+  "application/msword", // DOC
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+];
+
+const imageValidationSchema = z.any().refine(
+  (image: Blob[] | FileList) => {
+    // If it's an array of blobs, validate each blob
+    if (Array.isArray(image)) {
+      return image.every(
+        (blob) =>
+          z
+            .instanceof(Blob)
+            .refine((blob) => allowedMimeTypes.includes(blob.type), {
+              message:
+                "All attachments must be valid files (PNG, JPG, JPEG, WEBP, PDF, DOC, DOCX, XLSX)",
+            })
+            .safeParse(blob).success,
+      );
+    }
+
+    // If it's a FileList, validate each file
+    if (image instanceof FileList) {
+      return Array.from(image).every(
+        (file) =>
+          z
+            .instanceof(File)
+            .refine((file) => allowedMimeTypes.includes(file.type), {
+              message:
+                "All attachments must be valid files (PNG, JPG, JPEG, WEBP, PDF, DOC, DOCX, XLSX)",
+            })
+            .safeParse(file).success,
+      );
+    }
+
+    return false; // If none of the above conditions are satisfied
+  },
+  {
+    message:
+      "Invalid file. Please upload a valid file (PNG, JPG, JPEG, WEBP, PDF, DOC, DOCX, XLSX)",
+  },
+);
+
+export const AttachInvoiceSchema = z.object({
+  attachments: imageValidationSchema,
+});
+
 export const billingSheetChargesRequestSchema = z.object({
   description: z.string().min(1, { message: "Description is required" }),
   cost: z.string().min(1, { message: "Description is required" }),
@@ -69,6 +121,7 @@ export const createBillingSheetRequestSchema = z.object({
     },
   ),
   charges: z.array(billingSheetChargesRequestSchema),
+  attachments: imageValidationSchema,
 });
 
 export type BillingSheetRequestDto = z.infer<
@@ -77,29 +130,3 @@ export type BillingSheetRequestDto = z.infer<
 export const CreateBillingSheetValidator = zodResolver(
   createBillingSheetRequestSchema,
 );
-
-export const createRequisitionItemRequestSchema = z.object({
-  code: z.string().optional(),
-  materialName: z.string().optional(),
-  materialId: z.string().min(1, { message: "Material is required" }),
-  uomId: z
-    .string({ required_error: "UOM is required" })
-    .min(1, { message: "UOM is required" }),
-  expectedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
-  receivedQuantity: z
-    .number()
-    .min(0.1, { message: "Received Quantity is required" }),
-  reason: z.string().optional(),
-  uomName: z.string().optional(),
-  costPrice: z.string().optional(),
-  manufacturerId: z.string().optional(),
-  purchaseOrderId: z.string().optional(),
-  purchaseOrderCode: z.string().optional(),
-  options: z
-    .array(z.object({ value: z.string(), label: z.string() }))
-    .optional(),
-});
-
-export type MaterialRequestDto = z.infer<
-  typeof createRequisitionItemRequestSchema
->;

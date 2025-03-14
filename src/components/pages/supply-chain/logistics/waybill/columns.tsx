@@ -41,10 +41,12 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
         <Icon name="LoaderCircle" className="size-5 animate-spin" />
       )}
       <TableMenuAction>
-        <DropdownMenuItem className="group">
+        <DropdownMenuItem asChild>
           <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => {
+            className="flex cursor-pointer items-center gap-2 group-[.dropdown-menu-item]:hover:bg-neutral-100"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               setId(row.original.id as string);
               setIsArrivedOpen(true);
             }}
@@ -71,7 +73,7 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
   );
 }
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   {
     accessorKey: "code",
     header: "Waybill Code",

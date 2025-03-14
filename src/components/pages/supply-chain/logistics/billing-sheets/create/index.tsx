@@ -7,12 +7,23 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { ErrorResponse, Option, cn, isErrorResponse } from "@/lib";
+import {
+  CODE_SETTINGS,
+  ErrorResponse,
+  GenerateCodeOptions,
+  Option,
+  cn,
+  generateCode,
+  isErrorResponse,
+} from "@/lib";
 import {
   CreateBillingSheetRequest,
+  NamingType,
   useGetApiV1CollectionUomQuery,
+  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useGetApiV1ProcurementShipmentInvoiceQuery,
   useGetApiV1ProcurementSupplierQuery,
+  useLazyGetApiV1ProcurementBillingSheetQuery,
   useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery,
   usePostApiV1ProcurementBillingSheetMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -20,12 +31,9 @@ import { commonActions } from "@/lib/redux/slices/common";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
+import { BillingSheetRequestDto, CreateBillingSheetValidator } from "../types";
 import BillingSheetForm from "./form";
-import {
-  BillingSheetRequestDto,
-  CreateBillingSheetValidator,
-  MaterialRequestDto,
-} from "./types";
+import { MaterialRequestDto } from "./types";
 
 const CreateBillingSheet = () => {
   const router = useRouter();
@@ -36,6 +44,7 @@ const CreateBillingSheet = () => {
     handleSubmit,
     reset,
     watch,
+    setValue,
   } = useForm<BillingSheetRequestDto>({
     resolver: CreateBillingSheetValidator,
     mode: "all",
@@ -61,6 +70,37 @@ const CreateBillingSheet = () => {
   const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: false,
   });
+
+  const [loadDataforCodes] = useLazyGetApiV1ProcurementBillingSheetQuery();
+
+  const { data: codeConfig } =
+    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
+      modelType: CODE_SETTINGS.modelTypes.BillingSheet,
+    });
+
+  useEffect(() => {
+    loadCodes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [codeConfig]);
+  const loadCodes = async () => {
+    //loadDataforCodes
+    const generatePayload: GenerateCodeOptions = {
+      maxlength: Number(codeConfig?.maximumNameLength),
+      minlength: Number(codeConfig?.minimumNameLength),
+      prefix: codeConfig?.prefix as string,
+      type: codeConfig?.namingType as NamingType,
+    };
+    const productsResponse = await loadDataforCodes({
+      page: 1,
+      pageSize: 1,
+    }).unwrap();
+
+    const products = productsResponse?.totalRecordCount ?? 0;
+
+    generatePayload.seriesCounter = products + 1;
+    const code = await generateCode(generatePayload);
+    setValue("code", code);
+  };
   const packingUomOptions = packingUomResponse?.map((uom) => ({
     label: uom.symbol,
     value: uom.id,
@@ -133,6 +173,7 @@ const CreateBillingSheet = () => {
       await createBillingSheet({ createBillingSheetRequest: payload }).unwrap();
       toast.success("Billing Sheet Created");
       reset();
+      router.push("/logistics/billing-sheets");
       dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -142,8 +183,8 @@ const CreateBillingSheet = () => {
   return (
     <ScrollablePageWrapper>
       <PageTitle title="Create Billing Sheet" />
-      <form className="mt-5 w-full" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex justify-end gap-4 py-6">
+      <form className="mt-2 w-full" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-3 flex justify-end gap-4">
           <Button type="button" variant="secondary" onClick={router.back}>
             Cancel
           </Button>
