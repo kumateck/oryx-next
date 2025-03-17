@@ -1,15 +1,14 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import {
-  ShipmentInvoiceItemDto,
-  useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
+import { MaterialRequestDto } from "../create/type";
 import TableForData from "./table";
 
 const ShipmentDocumentDetails = () => {
@@ -20,6 +19,27 @@ const ShipmentDocumentDetails = () => {
     useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery({
       shipmentDocumentId,
     });
+  const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
+
+  useEffect(() => {
+    if (data?.shipmentInvoice?.items) {
+      const payload = data.shipmentInvoice.items.map((item) => ({
+        materialId: item.material?.id as string,
+        uomId: item.uoM?.id as string,
+        expectedQuantity: item.expectedQuantity as number,
+        materialName: item.material?.name as string,
+        uomName: item.uoM?.symbol as string,
+        receivedQuantity: item.receivedQuantity as number,
+        reason: item.reason as string,
+        code: item.material?.code as string,
+        costPrice: item.price?.toString(),
+        manufacturer: item.manufacturer?.name as string,
+        purchaseOrderCode: item?.purchaseOrder?.code as string,
+        purchaseOrderId: item?.purchaseOrder?.id as string,
+      })) as MaterialRequestDto[];
+      setMaterialLists(payload);
+    }
+  }, [data]);
 
   return (
     <ScrollablePageWrapper>
@@ -77,21 +97,12 @@ const ShipmentDocumentDetails = () => {
         </Card>
       </div>
       <div className="space-y-3">
-        {/* Render shelves with their material batches */}
-        {data?.shipmentInvoice?.items?.map((item) => (
-          <Card key={item.id} className="space-y-4 p-5">
-            <CardTitle>
-              <span className="text-sm text-gray-500">Invoice Items</span>
-              {/* <span>{item.}</span> */}
-            </CardTitle>
-            <TableForData
-              lists={item as ShipmentInvoiceItemDto[]}
-              // Remove setItemLists if not used for editing
-              setItemLists={() => {}}
-            />
-          </Card>
-          // <h3 key={shelf.id}>I should appear</h3>
-        ))}
+        <Card className="space-y-4 p-5">
+          <CardTitle>
+            <span className="text-sm text-gray-500">Invoice Items</span>
+          </CardTitle>
+          <TableForData lists={materialLists} setItemLists={setMaterialLists} />
+        </Card>
       </div>
     </ScrollablePageWrapper>
   );
