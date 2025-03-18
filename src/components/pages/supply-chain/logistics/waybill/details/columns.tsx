@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Units, convertToLargestUnit } from "@/lib";
 
-import { MaterialRequestDto } from "../create/type";
+import { MaterialRequestDto } from "../create/types";
 
 export const columns: ColumnDef<MaterialRequestDto>[] = [
   // {
@@ -59,8 +59,8 @@ export const columns: ColumnDef<MaterialRequestDto>[] = [
     accessorKey: "manufacturer",
     header: "Manufacturers",
   },
-  {
-    accessorKey: "reason",
-    header: "Reason",
-  },
+  // {
+  //   accessorKey: "reason",
+  //   header: "Reason",
+  // },
 ];

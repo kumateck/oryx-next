@@ -4,21 +4,20 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery } from "@/lib/redux/api/openapi.generated";
+import { useGetApiV1ProcurementWaybillByWaybillIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
-import { MaterialRequestDto } from "../create/type";
+import { MaterialRequestDto } from "../create/types";
 import TableForData from "./table";
 
-const ShipmentDocumentDetails = () => {
+const WaybillDetails = () => {
   const { id } = useParams();
-  const shipmentDocumentId = id as string;
+  const waybillId = id as string;
   const router = useRouter();
-  const { data } =
-    useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery({
-      shipmentDocumentId,
-    });
+  const { data } = useGetApiV1ProcurementWaybillByWaybillIdQuery({
+    waybillId,
+  });
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const ShipmentDocumentDetails = () => {
       >
         <Icon name="ArrowLeft" className="h-5 w-5" />
         <div className="group-hover:underline">
-          <PageTitle title={"Shipment Document List"} />
+          <PageTitle title={"Waybill List"} />
         </div>
       </div>
 
@@ -66,12 +65,12 @@ const ShipmentDocumentDetails = () => {
             <div className="flex justify-start gap-4">
               <div className="w-full space-y-2">
                 <span className="font-Medium block text-lg">
-                  Shipment Document Information
+                  Waybill Information
                 </span>
                 <div className="grid w-full grid-cols-3 gap-2">
                   <div className="space-y-1">
                     <span className="text-sm font-normal text-neutral-secondary">
-                      Shipment Document Code:{" "}
+                      Waybill Code:{" "}
                     </span>
                     <span className="text-sm font-normal text-neutral-dark">
                       {data?.code}
@@ -113,4 +112,4 @@ const ShipmentDocumentDetails = () => {
   );
 };
 
-export default ShipmentDocumentDetails;
+export default WaybillDetails;
