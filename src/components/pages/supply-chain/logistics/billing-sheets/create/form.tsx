@@ -25,15 +25,17 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   fields: FieldArrayWithId<TFieldValues>[];
   append: UseFieldArrayAppend<TFieldValues>;
   invoiceOptions: Option[];
-  packingUomOptions: Option[];
-  supplierOptions: Option[];
+  packingStyleOptions: Option[];
+  chargesOptions: Option[];
   materialLists: MaterialRequestDto[];
   setMaterialLists: Dispatch<SetStateAction<MaterialRequestDto[]>>;
+  currency: string;
+  // createCharge: (input: string) => void;
 }
 
 const defaultCharges: ChargesRequestDto = {
-  description: "",
-  cost: "",
+  description: { value: "", label: "" },
+  cost: 0,
 };
 
 const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
@@ -44,10 +46,12 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
   fields,
   append,
   invoiceOptions,
-  packingUomOptions,
-  supplierOptions,
+  packingStyleOptions,
+  chargesOptions,
   materialLists,
   setMaterialLists,
+  currency,
+  // createCharge,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -57,21 +61,25 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
           fieldWrapperClassName="flex-grow"
           config={[
             {
+              register: register("code" as Path<TFieldValues>),
+              label: "Waybill Code",
+              placeholder: "Code will be generated",
+              type: InputTypes.TEXT,
+              readOnly: true,
+              required: true,
+              description: (
+                <span className="text-neutral-seondary text-sm">
+                  You can’t change the waybill code
+                </span>
+              ),
+              errors,
+            },
+            {
               register: register("billOfLading" as Path<TFieldValues>),
               label: "Bill of Lading",
               type: InputTypes.TEXT,
               required: true,
               placeholder: "Enter Bill of Lading",
-              errors,
-            },
-            {
-              label: "Supplier",
-              control: control as Control,
-              type: InputTypes.SELECT,
-              name: "supplierId",
-              required: true,
-              placeholder: "Select Supplier",
-              options: supplierOptions,
               errors,
             },
             {
@@ -131,7 +139,7 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
             fieldWrapperClassName="flex-grow"
             config={[
               {
-                register: register("containerSize" as Path<TFieldValues>),
+                register: register("containerNumber" as Path<TFieldValues>),
                 label: "Container Number/Size",
                 type: InputTypes.TEXT,
                 required: true,
@@ -153,14 +161,14 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
                 name: "uom",
                 required: true,
                 placeholder: "Select Unit of Measure",
-                options: packingUomOptions,
+                options: packingStyleOptions,
                 errors,
               },
             ]}
           />
 
           <div className="mt-4">
-            <h3 className="text-lg">Shipment Items</h3>
+            <h3 className="text-lg">Shipment Invoice Items</h3>
             <div className="mt-4">
               <TableForData
                 lists={materialLists}
@@ -201,28 +209,37 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
                       />
                     </div>
                     <FormWizard
-                      className="grid w-full grid-cols-2 gap-x-10 space-y-0 pt-4"
+                      className="grid w-full grid-cols-3 gap-x-10 space-y-0 pt-4"
                       fieldWrapperClassName="flex-grow"
                       config={[
                         {
-                          register: register(
-                            `charges.${index}.description` as Path<TFieldValues>,
-                          ),
                           label: "Description",
-                          type: InputTypes.TEXT,
+                          control: control as Control,
+                          type: InputTypes.SPECIAL_SELECT,
+                          name: `charges.${index}.description`,
                           required: true,
-                          placeholder: "Enter description",
+                          placeholder: "Select Charge Description",
+                          options: chargesOptions,
+                          // handleCreateNew: createCharge,
                           errors,
                         },
                         {
                           register: register(
                             `charges.${index}.cost` as Path<TFieldValues>,
+                            {
+                              valueAsNumber: true,
+                            },
                           ),
                           label: "Cost",
                           placeholder: "Enter Cost",
-                          type: InputTypes.TEXT,
+                          type: InputTypes.NUMBER,
                           required: true,
                           errors,
+                        },
+                        {
+                          type: InputTypes.LABEL,
+                          label: "Currency",
+                          title: currency,
                         },
                       ]}
                     />

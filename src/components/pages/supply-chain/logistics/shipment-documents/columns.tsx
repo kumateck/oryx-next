@@ -1,5 +1,6 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -29,7 +30,7 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
   const [isArrivedOpen, setIsArrivedOpen] = useState(false);
   const [arrivedMutation, { isLoading }] =
     usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation();
-
+  const router = useRouter();
   const handleArrived = async () => {
     try {
       await arrivedMutation({
@@ -60,6 +61,27 @@ export function DataTableRowActions<TData extends ShipmentDocumentDto>({
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
             <span>Mark as Arrived</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-center gap-2"
+            onClick={() => {
+              const invoiceId = row.original.shipmentInvoice?.id;
+              if (invoiceId) {
+                router.push(
+                  `/logistics/billing-sheets/create?invoiceId=${invoiceId}`,
+                );
+              } else {
+                toast.error("Shipment invoice not found");
+              }
+            }}
+          >
+            <Icon
+              name="Banknote"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Billing Sheet</span>
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
@@ -99,35 +121,6 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
       <div className="min-w-36">{row.original.shipmentInvoice?.code}</div>
     ),
   },
-  // {
-  //   accessorKey: "purchaseOrders",
-  //   header: "Purchase Orders",
-  //   cell: ({ row }) => {
-  //     const uniquePurchaseOrders = Array.from(
-  //       new Map(
-  //         row.original.shipmentInvoice?.items?.map((item) => [
-  //           item?.purchaseOrder?.id,
-  //           item.purchaseOrder,
-  //         ]),
-  //       ).values(),
-  //     );
-  //     return (
-  //       <div className="min-w-36">
-  //         <MultiSelectListViewer
-  //           className="max-w-[120ch]"
-  //           lists={
-  //             uniquePurchaseOrders?.map((item) => {
-  //               return {
-  //                 label: item?.code,
-  //               };
-  //             }) as Option[]
-  //           }
-  //         />
-  //       </div>
-  //     );
-  //   },
-  // },
-
   {
     accessorKey: "createdAt",
     header: "Shipment Arrival Date",

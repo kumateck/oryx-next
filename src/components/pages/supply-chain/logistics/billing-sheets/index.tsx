@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import PageWrapper from "@/components/layout/wrapper";
 import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import { useLazyGetApiV1ProcurementBillingSheetQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
@@ -33,7 +33,7 @@ const Page = () => {
 
   const data = result?.data || [];
   return (
-    <PageWrapper className="w-full space-y-2 py-1">
+    <ScrollablePageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Billing Sheets" />
         <div className="flex items-center justify-end gap-2">
@@ -72,7 +72,7 @@ const Page = () => {
         //   pageSize,
         // }}
       />
-    </PageWrapper>
+    </ScrollablePageWrapper>
   );
 };
 

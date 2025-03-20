@@ -859,3 +859,7 @@ export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
 export function waitForTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+export const isImageFile = (filename: string) => {
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+  return imageExtensions.some((ext) => filename.toLowerCase().endsWith(ext));
+};
