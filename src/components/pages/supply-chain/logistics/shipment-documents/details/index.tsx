@@ -1,15 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
+import { isImageFile } from "@/lib";
 import { useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { MaterialRequestDto } from "../create/type";
 import TableForData from "./table";
+
+/* eslint-disable @next/next/no-img-element */
 
 const ShipmentDocumentDetails = () => {
   const { id } = useParams();
@@ -107,6 +111,69 @@ const ShipmentDocumentDetails = () => {
             <span className="text-sm text-gray-500">Invoice Items</span>
           </CardTitle>
           <TableForData lists={materialLists} setItemLists={setMaterialLists} />
+        </Card>
+      </div>
+
+      <div className="my-5 space-y-3">
+        <Card>
+          <CardContent className="space-y-4 py-2">
+            <CardTitle>
+              <span className="text-sm text-gray-500">Attachments</span>
+            </CardTitle>
+            <div className="space-y-2">
+              {data?.attachments?.length ? (
+                data.attachments.map((attachment) => (
+                  <div
+                    key={attachment.id}
+                    className="group flex items-center justify-between rounded p-2 hover:bg-gray-50"
+                  >
+                    <div className="flex flex-1 items-center gap-2">
+                      {isImageFile(attachment.name as string) ? (
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={attachment.link as string}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative"
+                          >
+                            <img
+                              src={attachment.link as string}
+                              alt={attachment.name as string}
+                              className="h-12 w-12 cursor-pointer rounded border object-cover transition-shadow hover:shadow-md"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 rounded bg-black bg-opacity-0 transition-opacity group-hover:bg-opacity-20" />
+                          </Link>
+                          <span className="text-sm text-gray-600">
+                            {attachment.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          <Icon
+                            name="Paperclip"
+                            className="h-4 w-4 text-gray-400"
+                          />
+                          <Link
+                            href={attachment.link as string}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-600 hover:underline"
+                          >
+                            {attachment.name}
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-2 text-sm text-gray-500">
+                  No attachments found
+                </div>
+              )}
+            </div>
+          </CardContent>
         </Card>
       </div>
     </ScrollablePageWrapper>

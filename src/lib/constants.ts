@@ -33,6 +33,7 @@ export const COLLECTION_TYPES = {
   Country: "Country",
   Currency: "Currency",
   PackageStyle: "PackageStyle",
+  Charge: "Charge",
 };
 
 export const CODE_SETTINGS = {
@@ -52,6 +53,7 @@ export const CODE_SETTINGS = {
     GRNNumber: "GrnNumber",
     StockTransfer: "StockTransfer",
     Waybill: "Waybill",
+    BillingSheet: "BillingSheet",
   },
   nameTypes: {
     Time: 2,
