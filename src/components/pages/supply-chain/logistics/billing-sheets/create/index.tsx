@@ -266,6 +266,7 @@ const CreateBillingSheet = () => {
       toast.success("Billing Sheet Created");
       reset();
       dispatch(commonActions.setTriggerReload());
+      router.back();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

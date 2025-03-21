@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import { useLazyGetApiV1ProcurementBillingSheetQuery } from "@/lib/redux/api/openapi.generated";
@@ -36,11 +34,6 @@ const Page = () => {
     <ScrollablePageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Billing Sheets" />
-        <div className="flex items-center justify-end gap-2">
-          <Link href={"/logistics/billing-sheets/create"}>
-            <Button>Create</Button>
-          </Link>
-        </div>
       </div>
 
       <ServerDatatable

@@ -13,6 +13,7 @@ import {
   MaterialStatus,
   PackLocationType,
   RawLocationType,
+  ShipmentStatus,
   SupplierStatus,
   Units,
 } from "./enum";
@@ -863,3 +864,13 @@ export const isImageFile = (filename: string) => {
   const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
   return imageExtensions.some((ext) => filename.toLowerCase().endsWith(ext));
 };
+
+export const ShipmentStatusOptions = Object.values(ShipmentStatus)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = ShipmentStatus[enumValue as ShipmentStatus];
+    return {
+      label: enumKey, // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];

@@ -75,11 +75,7 @@ export const chargesColumns: ColumnDef<ChargeDto>[] = [
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.name ?? "-"} {row.original?.amount || ""}
-        </div>
-      );
+      return <div>{row.original?.amount || ""}</div>;
     },
   },
 ];

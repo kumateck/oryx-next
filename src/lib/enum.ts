@@ -251,3 +251,10 @@ export enum TransferType {
   Incoming,
   Outgoing,
 }
+
+export enum ShipmentStatus {
+  New,
+  InTransit,
+  Cleared,
+  Arrived,
+}
