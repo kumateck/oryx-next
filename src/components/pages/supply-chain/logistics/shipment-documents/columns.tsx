@@ -1,78 +1,114 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
-// import { Option } from "@/lib";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Icon,
+} from "@/components/ui";
+import {
+  ErrorResponse,
+  ShipmentStatus,
+  ShipmentStatusOptions,
+  isErrorResponse,
+} from "@/lib";
 import {
   ShipmentDocumentDto,
-  usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
+  usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
-// import MultiSelectListViewer from "@/shared/multi-select-lists";
-
-// import Edit from "./edit";
-
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends ShipmentDocumentDto>({
+
+export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [id, setId] = useState<string>("");
-  const [isArrivedOpen, setIsArrivedOpen] = useState(false);
-  const [arrivedMutation, { isLoading }] =
-    usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation();
+  const [updateMutation] =
+    usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation();
 
-  const handleArrived = async () => {
+  const handleStatusUpdate = async (status: ShipmentStatus) => {
+    console.log("Status", status);
     try {
-      await arrivedMutation({
-        shipmentDocumentId: id,
+      await updateMutation({
+        shipmentId: row.original.id as string,
+        shipmentStatus: status,
       }).unwrap();
-      toast.success("Shipment Arrived successfully");
+      toast.success("Status updated successfully");
       dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  return (
+    <div className="flex items-center justify-start gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div
+            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
+              statusColors[row.original.status as ShipmentStatus]
+            }`}
+          >
+            {ShipmentStatus[row.original.status as ShipmentStatus]}
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+          {ShipmentStatusOptions?.map((opt) => (
+            <DropdownMenuItem
+              key={opt.value}
+              onClick={() =>
+                handleStatusUpdate(Number(opt.value) as ShipmentStatus)
+              }
+              className="group flex cursor-pointer items-center justify-start gap-2"
+            >
+              <span>{opt.label}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
+export function DataTableRowActions<TData extends ShipmentDocumentDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const router = useRouter();
+
   return (
     <section className="flex items-center justify-end gap-2">
-      {isLoading && (
-        <Icon name="LoaderCircle" className="size-5 animate-spin" />
-      )}
       <TableMenuAction>
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-center gap-2"
             onClick={() => {
-              setId(row.original.id as string);
-              setIsArrivedOpen(true);
+              const invoiceId = row.original.shipmentInvoice?.id;
+              if (invoiceId) {
+                router.push(
+                  `/logistics/billing-sheets/create?invoiceId=${invoiceId}`,
+                );
+              } else {
+                toast.error("Shipment invoice not found");
+              }
             }}
           >
             <Icon
-              name="CircleCheck"
+              name="Banknote"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
-            <span>Mark as Arrived</span>
+            <span>Billing Sheet</span>
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
-
-      <ConfirmDialog
-        open={isArrivedOpen}
-        onClose={() => setIsArrivedOpen(false)}
-        onConfirm={handleArrived}
-        title="Mark as Arrived"
-        description="Are you sure you want to mark this shipment as arrived?"
-        icon="CircleCheck"
-        confirmText="Confirm"
-      />
     </section>
   );
 }
@@ -99,35 +135,6 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
       <div className="min-w-36">{row.original.shipmentInvoice?.code}</div>
     ),
   },
-  // {
-  //   accessorKey: "purchaseOrders",
-  //   header: "Purchase Orders",
-  //   cell: ({ row }) => {
-  //     const uniquePurchaseOrders = Array.from(
-  //       new Map(
-  //         row.original.shipmentInvoice?.items?.map((item) => [
-  //           item?.purchaseOrder?.id,
-  //           item.purchaseOrder,
-  //         ]),
-  //       ).values(),
-  //     );
-  //     return (
-  //       <div className="min-w-36">
-  //         <MultiSelectListViewer
-  //           className="max-w-[120ch]"
-  //           lists={
-  //             uniquePurchaseOrders?.map((item) => {
-  //               return {
-  //                 label: item?.code,
-  //               };
-  //             }) as Option[]
-  //           }
-  //         />
-  //       </div>
-  //     );
-  //   },
-  // },
-
   {
     accessorKey: "createdAt",
     header: "Shipment Arrival Date",
@@ -142,16 +149,18 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {row.original.arrivedAt ? "Arrived" : "Pending"}
-      </div>
-    ),
+    cell: ({ row }) => <DataTableRowStatus row={row} />,
   },
-
   {
     id: "actions",
     meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
+
+const statusColors: Record<ShipmentStatus, string> = {
+  [ShipmentStatus.New]: "bg-blue-100 text-blue-800",
+  [ShipmentStatus.InTransit]: "bg-yellow-100 text-yellow-800",
+  [ShipmentStatus.Cleared]: "bg-green-100 text-green-800",
+  [ShipmentStatus.Arrived]: "bg-purple-100 text-purple-800",
+};

@@ -1186,6 +1186,16 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
+    putApiV1ProcurementShipmentsByShipmentIdStatus: build.mutation<
+      PutApiV1ProcurementShipmentsByShipmentIdStatusApiResponse,
+      PutApiV1ProcurementShipmentsByShipmentIdStatusApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/shipments/${queryArg.shipmentId}/status`,
+        method: "PUT",
+        body: queryArg.shipmentStatus,
+      }),
+    }),
     getApiV1ProcurementShipmentDocumentArrived: build.query<
       GetApiV1ProcurementShipmentDocumentArrivedApiResponse,
       GetApiV1ProcurementShipmentDocumentArrivedApiArg
@@ -3790,6 +3800,12 @@ export type PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
     /** The ID of the shipment document. */
     shipmentDocumentId: string;
   };
+export type PutApiV1ProcurementShipmentsByShipmentIdStatusApiResponse = unknown;
+export type PutApiV1ProcurementShipmentsByShipmentIdStatusApiArg = {
+  /** The ID of the shipment document. */
+  shipmentId: string;
+  shipmentStatus: ShipmentStatus;
+};
 export type GetApiV1ProcurementShipmentDocumentArrivedApiResponse =
   /** status 200 OK */ ShipmentDocumentDtoIEnumerablePaginateable;
 export type GetApiV1ProcurementShipmentDocumentArrivedApiArg = {
@@ -8900,18 +8916,33 @@ export type PurchaseOrderInvoiceDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type AssignChargeRequest = {
+  id?: string | null;
+  description?: string | null;
+  currencyId?: string | null;
+  amount?: number;
+};
 export type CreateBillingSheetRequest = {
   code?: string | null;
   billOfLading?: string | null;
-  supplierId?: string;
+  supplierId?: string | null;
   invoiceId?: string;
   expectedArrivalDate?: string;
   freeTimeExpiryDate?: string;
   freeTimeDuration?: string | null;
   demurrageStartDate?: string;
+  charges?: AssignChargeRequest[] | null;
   containerNumber?: string | null;
   numberOfPackages?: string | null;
   packageDescription?: string | null;
+  containerPackageStyleId?: string | null;
+};
+export type BillingSheetStatus = 0 | 1;
+export type ChargeDto = {
+  name?: string | null;
+  description?: string | null;
+  currency?: CurrencyDto;
+  amount?: number;
 };
 export type BillingSheetStatus = 0 | 1;
 export type BillingSheetDto = {
@@ -8928,9 +8959,11 @@ export type BillingSheetDto = {
   freeTimeExpiryDate?: string;
   freeTimeDuration?: string | null;
   demurrageStartDate?: string;
+  charges?: ChargeDto[] | null;
   containerNumber?: string | null;
   numberOfPackages?: string | null;
   packageDescription?: string | null;
+  containerPackageStyle?: PackageStyleDto;
 };
 export type BillingSheetDtoIEnumerablePaginateable = {
   data?: BillingSheetDto[] | null;
@@ -8958,6 +8991,7 @@ export type ShipmentDiscrepancyDto = {
   items?: ShipmentDiscrepancyItemDto[] | null;
 };
 export type DocType = 0 | 1;
+export type ShipmentStatus = 0 | 1 | 2 | 3;
 export type ShipmentDocumentDto = {
   id?: string;
   createdBy?: UserDto;
@@ -8967,7 +9001,10 @@ export type ShipmentDocumentDto = {
   shipmentInvoice?: ShipmentInvoiceDto;
   discrepancies?: ShipmentDiscrepancyDto[] | null;
   arrivedAt?: string | null;
+  clearedAt?: string | null;
+  transitStartedAt?: string | null;
   type?: DocType;
+  status?: ShipmentStatus;
 };
 export type ShipmentDocumentDtoIEnumerablePaginateable = {
   data?: ShipmentDocumentDto[] | null;
@@ -9020,8 +9057,11 @@ export type ShipmentDocument = {
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoice;
   arrivedAt?: string | null;
+  clearedAt?: string | null;
+  transitStartedAt?: string | null;
   type?: DocType;
   completedDistributionAt?: string | null;
+  status?: ShipmentStatus;
 };
 export type ShipmentDocumentRead = {
   id?: string;
@@ -9039,8 +9079,11 @@ export type ShipmentDocumentRead = {
   shipmentInvoiceId?: string | null;
   shipmentInvoice?: ShipmentInvoiceRead;
   arrivedAt?: string | null;
+  clearedAt?: string | null;
+  transitStartedAt?: string | null;
   type?: DocType;
   completedDistributionAt?: string | null;
+  status?: ShipmentStatus;
 };
 export type ShipmentDiscrepancy = {
   id?: string;
@@ -10758,6 +10801,7 @@ export const {
   usePutApiV1ProcurementWaybillByWaybillIdMutation,
   useDeleteApiV1ProcurementWaybillByWaybillIdMutation,
   usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
+  usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
   useGetApiV1ProcurementShipmentDocumentArrivedQuery,
   useLazyGetApiV1ProcurementShipmentDocumentArrivedQuery,
   usePostApiV1ProcurementShipmentInvoiceMutation,
