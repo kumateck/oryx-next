@@ -15,7 +15,7 @@ const Page = () => {
     <BgWrapper>
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
-          Welcome
+          Welcome{" "}
           {isLoading ? (
             <Icon name="LoaderCircle" className="animate-spin" />
           ) : (

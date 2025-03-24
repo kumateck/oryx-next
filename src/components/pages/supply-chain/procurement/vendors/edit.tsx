@@ -21,7 +21,11 @@ import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 import PageTitle from "@/shared/title";
 
 import VendorForm from "./form";
-import { CreateVendorValidator, VendorRequestDto } from "./types";
+import {
+  CreateVendorValidator,
+  VendorRequestDto,
+  mapAssociatedManufacturers,
+} from "./types";
 
 const Edit = () => {
   const router = useRouter();
@@ -182,13 +186,23 @@ const Edit = () => {
   const typeValues = useMemo(() => {
     return associatedManufacturers?.map((item) => item?.material) || [];
   }, [associatedManufacturers]);
+
+  // Memoize derived values
+  const deManValues = useMemo(() => {
+    return (
+      associatedManufacturers?.map((item) => item?.defaultManufacturer) || []
+    );
+  }, [associatedManufacturers]);
   const onSubmit = async (data: VendorRequestDto) => {
-    const associatedManufacturers = data.associatedManufacturers.flatMap(
-      (item) =>
-        item.manufacturer.map((manufacturer) => ({
-          materialId: item.material.value,
-          manufacturerId: manufacturer.value,
-        })),
+    // const associatedManufacturers = data.associatedManufacturers.flatMap(
+    //   (item) =>
+    //     item.manufacturer.map((manufacturer) => ({
+    //       materialId: item.material.value,
+    //       manufacturerId: manufacturer.value,
+    //     })),
+    // );
+    const associatedManufacturers = mapAssociatedManufacturers(
+      data.associatedManufacturers,
     );
     try {
       const payload = {
@@ -292,6 +306,7 @@ const Edit = () => {
           materialOptions={materialOptions}
           manufacturerOptionsMap={manufacturerOptionsMap}
           typeValues={typeValues}
+          deManValues={deManValues}
           append={append}
         />
       </form>

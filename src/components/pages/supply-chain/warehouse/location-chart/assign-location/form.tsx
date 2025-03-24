@@ -18,7 +18,9 @@ import {
   Units,
   convertToLargestUnit,
 } from "@/lib";
-import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
+
+// import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialBatchWithShelfId } from "../columns";
 
 interface FormProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -26,7 +28,7 @@ interface FormProps<TFieldValues extends FieldValues> {
   errors: FieldErrors<TFieldValues>;
   rackOptions: Option[];
   // shelfOptions: Option[];
-  selectedBatch: MaterialBatchDto | null;
+  selectedBatch: MaterialBatchWithShelfId | null;
   shelfOptionsMap: OptionMap;
   typeValues: Option[];
 }
@@ -52,6 +54,7 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
     control,
     name: "locations" as ArrayPath<TFieldValues>,
   });
+
   return (
     <div>
       <div className="mb-5 flex items-center justify-between p-2">
@@ -71,15 +74,18 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
           <div>
             <span className="block text-gray-500">Remaining Quantity</span>
             <span className="block font-bold">
-              {convertToLargestUnit(
-                selectedBatch?.totalQuantity as number,
-                selectedBatch?.uoM?.symbol as Units,
-              ).value +
-                "" +
+              {
                 convertToLargestUnit(
-                  selectedBatch?.totalQuantity as number,
+                  selectedBatch?.quantity as number,
                   selectedBatch?.uoM?.symbol as Units,
-                ).unit || "N/A"}
+                ).value
+              }
+              {
+                convertToLargestUnit(
+                  selectedBatch?.quantity as number,
+                  selectedBatch?.uoM?.symbol as Units,
+                ).unit
+              }
             </span>
           </div>
         </div>

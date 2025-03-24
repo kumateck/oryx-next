@@ -7508,6 +7508,7 @@ export type DistributedRequisitionMaterial = {
   checkedAt?: string | null;
   grnGeneratedAt?: string | null;
   status?: DistributedRequisitionMaterialStatus;
+  checkLists?: Checklist[] | null;
 };
 export type DistributedRequisitionMaterialRead = {
   id?: string;
@@ -7537,6 +7538,7 @@ export type DistributedRequisitionMaterialRead = {
   checkedAt?: string | null;
   grnGeneratedAt?: string | null;
   status?: DistributedRequisitionMaterialStatus;
+  checkLists?: Checklist[] | null;
 };
 export type Intactness = 0 | 1;
 export type ConsignmentCarrier = 0 | 1 | 2 | 3 | 4 | 5;
@@ -8491,32 +8493,6 @@ export type MaterialItemDistributionDto = {
   shipmentInvoiceItem?: ShipmentInvoiceItemDto;
   quantity?: number;
 };
-export type DistributedRequisitionMaterialDto = {
-  id?: string;
-  requisitionItem?: RequisitionItemDto;
-  material?: MaterialDto;
-  uom?: UnitOfMeasureDto;
-  shipmentInvoice?: ShipmentInvoiceDto;
-  quantity?: number;
-  arrivedAt?: string | null;
-  checkedAt?: string | null;
-  distributedAt?: string | null;
-  grnGeneratedAt?: string | null;
-  materialItemDistributions?: MaterialItemDistributionDto[] | null;
-  status?: DistributedRequisitionMaterialStatus;
-};
-export type BatchChecklistDto = {
-  distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
-  material?: MaterialDto;
-  checkedAt?: string | null;
-  shipmentInvoice?: ShipmentInvoiceDto;
-  supplier?: SupplierDto;
-  manufacturer?: ManufacturerDto;
-  certificateOfAnalysisDelivered?: boolean;
-  visibleLabelling?: boolean;
-  intactnessStatus?: Intactness;
-  consignmentCarrierStatus?: ConsignmentCarrier;
-};
 export type MaterialBatchEventDto = {
   type?: EventType;
   quantity?: number;
@@ -8563,6 +8539,64 @@ export type MaterialBatchReservedQuantityDto = {
   materialBatch?: CollectionItemDto;
   warehouse?: CollectionItemDto;
   quantity?: number;
+};
+export type DistributedMaterialBatchDto = {
+  id?: string;
+  material?: CollectionItemDto;
+  code?: string | null;
+  batchNumber?: string | null;
+  uoM?: UnitOfMeasureDto;
+  numberOfContainers?: number;
+  containerPackageStyle?: PackageStyleDto;
+  quantityPerContainer?: number;
+  status?: BatchStatus;
+  dateReceived?: string;
+  dateApproved?: string | null;
+  quantityAssigned?: number;
+  quantityUnassigned?: number;
+  totalQuantity?: number;
+  consumedQuantity?: number;
+  remainingQuantity?: number;
+  expiryDate?: string | null;
+  manufacturingDate?: string | null;
+  retestDate?: string | null;
+  events?: MaterialBatchEventDto[] | null;
+  movements?: MaterialBatchMovementDto[] | null;
+  sampleWeights?: SrDto[] | null;
+  massMovements?: MassMaterialBatchMovementDto[] | null;
+  locations?: CurrentLocationDto[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
+  reservedQuantity?: number;
+};
+export type DistributedChecklistDto = {
+  materialBatches?: DistributedMaterialBatchDto[] | null;
+};
+export type DistributedRequisitionMaterialDto = {
+  id?: string;
+  requisitionItem?: RequisitionItemDto;
+  material?: MaterialDto;
+  uom?: UnitOfMeasureDto;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  quantity?: number;
+  arrivedAt?: string | null;
+  checkedAt?: string | null;
+  distributedAt?: string | null;
+  grnGeneratedAt?: string | null;
+  materialItemDistributions?: MaterialItemDistributionDto[] | null;
+  status?: DistributedRequisitionMaterialStatus;
+  checklists?: DistributedChecklistDto[] | null;
+};
+export type BatchChecklistDto = {
+  distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
+  material?: MaterialDto;
+  checkedAt?: string | null;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
 };
 export type MaterialBatchDto = {
   id?: string;
@@ -8944,7 +8978,6 @@ export type ChargeDto = {
   currency?: CurrencyDto;
   amount?: number;
 };
-export type BillingSheetStatus = 0 | 1;
 export type BillingSheetDto = {
   id?: string;
   createdBy?: UserDto;

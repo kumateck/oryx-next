@@ -20,7 +20,11 @@ import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 import PageTitle from "@/shared/title";
 
 import VendorForm from "./form";
-import { CreateVendorValidator, VendorRequestDto } from "./types";
+import {
+  CreateVendorValidator,
+  VendorRequestDto,
+  mapAssociatedManufacturers,
+} from "./types";
 
 export type ManufacturerMap = {
   [key: string]: Option[];
@@ -111,15 +115,26 @@ const Create = () => {
     return associatedManufacturers?.map((item) => item?.material) || [];
   }, [associatedManufacturers]);
 
+  // Memoize derived values
+  const deManValues = useMemo(() => {
+    return (
+      associatedManufacturers?.map((item) => item?.defaultManufacturer) || []
+    );
+  }, [associatedManufacturers]);
+
   // console.log(typeValues, "typeValues", materialOptions);
+
   const onSubmit = async (data: VendorRequestDto) => {
     try {
-      const associatedManufacturers = data.associatedManufacturers.flatMap(
-        (item) =>
-          item.manufacturer.map((manufacturer) => ({
-            materialId: item.material.value,
-            manufacturerId: manufacturer.value,
-          })),
+      // const associatedManufacturers = data.associatedManufacturers.flatMap(
+      //   (item) =>
+      //     item?.manufacturer?.map((manufacturer) => ({
+      //       materialId: item.material.value,
+      //       manufacturerId: manufacturer.value,
+      //     })),
+      // );
+      const associatedManufacturers = mapAssociatedManufacturers(
+        data.associatedManufacturers,
       );
       const { country, currency, ...rest } = data;
       const payload = {
@@ -221,6 +236,7 @@ const Create = () => {
           materialOptions={materialOptions}
           manufacturerOptionsMap={manufacturerOptionsMap}
           typeValues={typeValues}
+          deManValues={deManValues}
           append={append}
         />
       </form>
