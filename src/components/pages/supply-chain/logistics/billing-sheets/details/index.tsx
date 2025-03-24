@@ -215,9 +215,6 @@ const BillingSheetDetails = () => {
                             />
                             <div className="absolute inset-0 rounded bg-black bg-opacity-0 transition-opacity group-hover:bg-opacity-20" />
                           </Link>
-                          <span className="text-sm text-gray-600">
-                            {attachment.name}
-                          </span>
                         </div>
                       ) : (
                         <>

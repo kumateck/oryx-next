@@ -253,8 +253,13 @@ export enum TransferType {
 }
 
 export enum ShipmentStatus {
-  New,
-  InTransit,
-  Cleared,
-  Arrived,
+  New = 0,
+  InTransit = 1,
+  Cleared = 2,
+  Arrived = 3,
+}
+export enum WaybillStatus {
+  New = 0,
+  Cleared = 1,
+  Arrived = 3,
 }

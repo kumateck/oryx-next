@@ -16,6 +16,7 @@ import {
   ShipmentStatus,
   SupplierStatus,
   Units,
+  WaybillStatus,
 } from "./enum";
 // import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
 // import {
@@ -869,6 +870,16 @@ export const ShipmentStatusOptions = Object.values(ShipmentStatus)
   .filter((enumValue) => typeof enumValue === "number")
   .map((enumValue) => {
     const enumKey = ShipmentStatus[enumValue as ShipmentStatus];
+    return {
+      label: enumKey, // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
+
+export const WaybillStatusOptions = Object.values(WaybillStatus)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = WaybillStatus[enumValue as WaybillStatus];
     return {
       label: enumKey, // e.g., "New", "InTransit"
       value: String(enumValue), // e.g., "0", "1"

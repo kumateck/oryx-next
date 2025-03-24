@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { isImageFile } from "@/lib";
+import { WaybillStatus, isImageFile } from "@/lib";
 import { useGetApiV1ProcurementWaybillByWaybillIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -14,6 +14,12 @@ import { MaterialRequestDto } from "../create/types";
 import TableForData from "./table";
 
 /* eslint-disable @next/next/no-img-element */
+
+const statusColors: Record<WaybillStatus, string> = {
+  [WaybillStatus.New]: "bg-blue-100 text-blue-800",
+  [WaybillStatus.Cleared]: "bg-purple-100 text-purple-800",
+  [WaybillStatus.Arrived]: "bg-green-100 text-green-800",
+};
 
 const WaybillDetails = () => {
   const { id } = useParams();
@@ -62,9 +68,15 @@ const WaybillDetails = () => {
         <Card>
           <CardContent className="space-y-4 py-2">
             <div
-              className={`inline-block rounded-full px-2 py-1 text-xs font-medium text-white ${data?.arrivedAt ? "bg-green-500" : "bg-gray-500"}`}
+              className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
+                data?.status !== undefined && data?.status !== null
+                  ? statusColors[data.status as WaybillStatus]
+                  : "bg-gray-500 text-white"
+              }`}
             >
-              {data?.arrivedAt ? "Arrived" : "Pending"}
+              {data?.status !== undefined && data?.status !== null
+                ? WaybillStatus[data.status as WaybillStatus]
+                : "Pending"}
             </div>
             <div className="flex justify-start gap-4">
               <div className="w-full space-y-2">
@@ -124,7 +136,7 @@ const WaybillDetails = () => {
                 data.attachments.map((attachment) => (
                   <div
                     key={attachment.id}
-                    className="group flex items-center justify-between rounded p-2 hover:bg-gray-50"
+                    className="group flex items-center justify-between rounded p-2"
                   >
                     <div className="flex flex-1 items-center gap-2">
                       {isImageFile(attachment.name as string) ? (
@@ -143,9 +155,6 @@ const WaybillDetails = () => {
                             />
                             <div className="absolute inset-0 rounded bg-black bg-opacity-0 transition-opacity group-hover:bg-opacity-20" />
                           </Link>
-                          <span className="text-sm text-gray-600">
-                            {attachment.name}
-                          </span>
                         </div>
                       ) : (
                         <>
