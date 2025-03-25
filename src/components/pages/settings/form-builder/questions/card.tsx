@@ -1,11 +1,11 @@
 import { Button, Icon } from "@/components/ui";
-
-import { Question } from "../types";
+import { QuestionType, capitalizeFirstWord, splitWords } from "@/lib";
+import { QuestionDtoRead } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
-  question: Question;
+  question: QuestionDtoRead;
   number: number;
-  onEdit: (details: Question) => void;
+  onEdit: (details: QuestionDtoRead) => void;
   onDelete: (id: string) => void;
   isDeleting?: boolean;
 }
@@ -16,21 +16,18 @@ const QuestionCard = ({
   onDelete,
   isDeleting,
 }: Props) => {
-  const capitalizeFirstWord = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
   return (
     <div className="mt-2 w-full">
-      <div className="rounded-2xl border border-neutral-200 bg-background px-8 py-4">
+      <div className="rounded-2xl border border-neutral-200 bg-white px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="text-left">
             <div className="text-primary-500 flex flex-1 gap-1 text-sm">
               <span>{number}.</span>
-              <span>{capitalizeFirstWord(question?.label)}</span>
+              <span>{capitalizeFirstWord(question?.label as string)}</span>
             </div>
             <div>
               <span className="text-sm text-neutral-400">
-                {question?.type?.title}
+                {splitWords(QuestionType[Number(question?.type)])}
               </span>
             </div>
           </div>
@@ -46,9 +43,8 @@ const QuestionCard = ({
             </Button>
 
             <Button
-              onClick={() => onDelete(question.id)}
-              variant={"outline"}
-              className="border-danger-500 text-destructive-500 flex items-center gap-1.5"
+              onClick={() => onDelete(question.id as string)}
+              variant={"destructive"}
             >
               {isDeleting ? (
                 <Icon name="LoaderCircle" size={14} className="animate-spin" />

@@ -206,7 +206,7 @@ export const FormOptionNode = ({
   kind,
 }: FormOption & Props) => {
   const [isInputError, setIsInputError] = useState(false);
-  const [editedName, setEditedName] = useState(name);
+  const [editedName, setEditedName] = useState(name ?? "");
 
   const [deleteMutation, { isLoading: isBeingDeleted }] =
     useDeleteApiV1CollectionByItemTypeAndItemIdMutation();

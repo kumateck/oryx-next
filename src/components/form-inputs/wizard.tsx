@@ -61,6 +61,7 @@ interface TextInputProps<TFieldValues extends FieldValues>
   suffixClass?: string;
   prefixText?: string;
   description?: React.ReactNode;
+  onSuffixClick?: () => void;
 }
 
 interface FileInputProps extends BaseInputProps<FieldValues> {
