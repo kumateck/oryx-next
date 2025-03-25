@@ -12,6 +12,7 @@ import {
   FloorType,
   MaterialStatus,
   PackLocationType,
+  QuestionType,
   RawLocationType,
   ShipmentStatus,
   SupplierStatus,
@@ -842,6 +843,19 @@ export const BatchStatusOptions = Object.values(BatchStatus)
     };
   }) as Option[];
 
+export const QuestionTypeOptions = Object.values(QuestionType)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = QuestionType[enumValue as QuestionType];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
 export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
   label: key,
   value: FloorType[key as keyof typeof FloorType],
@@ -874,3 +888,6 @@ export const ShipmentStatusOptions = Object.values(ShipmentStatus)
       value: String(enumValue), // e.g., "0", "1"
     };
   }) as Option[];
+
+export const capitalizeFirstWord = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

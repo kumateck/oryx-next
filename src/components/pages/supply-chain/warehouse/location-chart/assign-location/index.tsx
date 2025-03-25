@@ -173,7 +173,7 @@ const AssignLocationDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[80vh] min-h-[400px] max-w-2xl flex-col">
-        <DialogTitle>Assign Location</DialogTitle>
+        <DialogTitle>Assign Location nEW TEST</DialogTitle>
 
         <form
           onSubmit={handleSubmit(handleAssignLocation)}

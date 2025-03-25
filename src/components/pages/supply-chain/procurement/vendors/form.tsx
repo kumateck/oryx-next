@@ -33,6 +33,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   append: UseFieldArrayAppend<TFieldValues>;
   manufacturerOptionsMap: ManufacturerMap;
   typeValues: Option[];
+  deManValues: Option[];
 }
 const VendorForm = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -47,6 +48,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
   materialOptions,
   manufacturerOptionsMap,
   typeValues,
+  deManValues,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -148,7 +150,11 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             manufacturerOptionsMap[type?.value] || []; // Get the options for the selected material
           const defaultMaterial =
             defaultValues?.associatedManufacturers[index]?.material;
-
+          const otherManufacturers =
+            manufacturerOptionsMap[type?.value]?.filter(
+              (item2) =>
+                !deManValues?.some((item1) => item1?.value === item2?.value),
+            ) || [];
           return (
             <div key={field.id} className="relative rounded-2xl border p-2">
               <div className="absolute right-2 top-2">
@@ -161,7 +167,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
 
               <div className="flex w-full gap-2">
                 <FormWizard
-                  className="grid w-full grid-cols-2 gap-4 space-y-0"
+                  className="grid w-full grid-cols-3 gap-4 space-y-0"
                   fieldWrapperClassName="flex-grow"
                   config={[
                     {
@@ -181,13 +187,22 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
                       errors,
                     },
                     {
-                      label: "Manufacturer",
+                      label: "Default Manufacturer",
                       control: control as Control,
-                      type: InputTypes.MULTI,
-                      name: `associatedManufacturers.${index}.manufacturer`,
+                      type: InputTypes.SELECT,
+                      name: `associatedManufacturers.${index}.defaultManufacturer`,
                       required: true,
                       placeholder: "Manufacturer",
                       options: currentManufacturerOptions, // Dynamically loaded options
+                      errors,
+                    },
+                    {
+                      label: "Other Manufacturers",
+                      control: control as Control,
+                      type: InputTypes.MULTI,
+                      name: `associatedManufacturers.${index}.manufacturer`,
+                      placeholder: "Manufacturer",
+                      options: otherManufacturers, // Dynamically loaded options
                       errors,
                     },
                   ]}
