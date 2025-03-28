@@ -3,7 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog } from "@/components/ui";
+import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, QuestionType, isErrorResponse } from "@/lib";
 import {
   QuestionDtoRead,
@@ -26,8 +26,8 @@ const QuestionCards = () => {
     useLazyGetApiV1FormQuestionQuery();
   const [deleteMutation, { isLoading: isDeleting }] =
     useDeleteApiV1FormQuestionByQuestionIdMutation();
-  const [questions, setQuestions] = useState<QuestionDtoRead[]>([]);
   const [page, setPage] = useState(1);
+  const [questions, setQuestions] = useState<QuestionDtoRead[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -110,7 +110,11 @@ const QuestionCards = () => {
         dataLength={questions.length}
         next={fetchQuestions}
         hasMore={hasMore}
-        loader={isLoading || (isFetching && "Loading...")}
+        loader={
+          isLoading || isFetching ? (
+            <Icon name="LoaderCircle" className="h-5 w-5 animate-spin" />
+          ) : null
+        }
         endMessage={<p></p>}
       >
         {questions.map((question, index) => (

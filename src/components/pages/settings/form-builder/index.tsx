@@ -56,7 +56,7 @@ const FormBuilder = () => {
           </TabsList>
           <div>
             {activeTab === FORM_BUILDER_CONFIG.TEMPLATES ? (
-              <Link href={"create-template"}>
+              <Link href={"template/create"}>
                 <Button
                   type="button"
                   variant="default"

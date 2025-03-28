@@ -4,6 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 
+import { templateQuestions } from "../templates/type";
 import { Container } from "./container";
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
   setHighlightedQuestion: React.Dispatch<
     React.SetStateAction<QuestionDto | undefined>
   >;
+  setQuestions: React.Dispatch<React.SetStateAction<templateQuestions[]>>;
+
   onDeleteQuestion: (questionId: string) => void;
 }
 const DragLists = ({
@@ -19,16 +22,20 @@ const DragLists = ({
   highlightedQuestion,
   setHighlightedQuestion,
   onDeleteQuestion,
+  setQuestions,
 }: Props) => {
   return (
-    <div>
+    <div className="w-full">
       <DndProvider backend={HTML5Backend}>
-        <Container
-          highlightedQuestion={highlightedQuestion}
-          onDeleteQuestion={onDeleteQuestion}
-          questions={questions}
-          setHighlightedQuestion={setHighlightedQuestion}
-        />
+        {questions?.length > 0 && (
+          <Container
+            highlightedQuestion={highlightedQuestion}
+            onDeleteQuestion={onDeleteQuestion}
+            questions={questions}
+            setHighlightedQuestion={setHighlightedQuestion}
+            setQuestions={setQuestions}
+          />
+        )}
       </DndProvider>
     </div>
   );

@@ -180,18 +180,7 @@ export enum MaterialStatus {
   IssuedRequisition = 6,
   InHouse = 7,
 }
-export enum QuestionTypes {
-  ShortAnswer = 0,
-  LongAnswer = 1,
-  Paragraph = 2,
-  Datepicker = 3,
-  SingleChoice = 4,
-  Dropdown = 5,
-  Checkbox = 6,
-  FileUpload = 7,
-  Signature = 8,
-  Reference = 9,
-}
+
 export enum Units {
   ML = "ml",
   MG = "mg",
