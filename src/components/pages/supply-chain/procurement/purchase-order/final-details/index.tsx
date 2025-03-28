@@ -88,10 +88,10 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
           amountInFigures: data.amountInFigures,
           estimatedDeliveryDate: data.estimatedDeliveryDate.toISOString(),
         },
-      });
+      }).unwrap();
+      onSuccess();
       dispatch(commonActions.setTriggerReload());
       reset();
-      onSuccess();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -117,13 +117,17 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
               Cancel
             </Button>
 
-            <Button variant={"default"} className="flex items-center gap-2">
+            <Button
+              type="submit"
+              variant="default"
+              className="flex items-center gap-2"
+            >
               {isLoading ? (
                 <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
               ) : (
                 <Icon name="Plus" className="h-4 w-4" />
               )}
-              <span>Save</span>{" "}
+              <span>Save</span>
             </Button>
           </DialogFooter>
         </form>

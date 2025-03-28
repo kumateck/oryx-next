@@ -37,6 +37,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Pro-forma Invoice Number",
             placeholder: "Enter Invoice Number",
             type: InputTypes.TEXT,
+            required: true,
             errors,
           },
           {
@@ -46,6 +47,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Total FOB Value ($)",
             placeholder: "Enter total FOB Value",
             type: InputTypes.NUMBER,
+            required: true,
             errors,
           },
           {
@@ -55,6 +57,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Insurance ($)",
             placeholder: "Enter Insurance Amount",
             type: InputTypes.NUMBER,
+            required: true,
             errors,
           },
           {
@@ -64,6 +67,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Freight",
             placeholder: "Enter Freight Amount",
             type: InputTypes.NUMBER,
+            required: true,
             errors,
           },
           {
@@ -73,6 +77,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Total CIF Value ($)",
             placeholder: "Enter total CIF value",
             type: InputTypes.NUMBER,
+            required: true,
             errors,
           },
           {
@@ -80,6 +85,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Amount in Figures",
             placeholder: "Enter amount in figures",
             type: InputTypes.TEXT,
+            required: true,
             errors,
           },
           {
