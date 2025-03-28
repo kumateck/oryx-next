@@ -30,7 +30,7 @@ interface Props {
   id: string;
   date?: Date;
 }
-const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
+const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const dispatch = useDispatch();
   const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
@@ -49,7 +49,7 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
       await emailQuotation({
         purchaseOrderId: id,
         sendPurchaseOrderRequest: {
-          expectedDeliveryDate: date,
+          expectedDeliveryDate: data?.estimatedDeliveryDate,
         },
       } as PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg).unwrap();
     } catch (error) {

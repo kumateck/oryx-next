@@ -34,6 +34,8 @@ export const COLLECTION_TYPES = {
   Currency: "Currency",
   PackageStyle: "PackageStyle",
   Charge: "Charge",
+  TermsOfPayment: "TermsOfPayment",
+  DeliveryMode: "DeliveryMode",
 };
 
 export const CODE_SETTINGS = {

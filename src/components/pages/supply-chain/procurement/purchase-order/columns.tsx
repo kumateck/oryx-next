@@ -2,21 +2,15 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
 
-import {
-  Button,
-  Calendar,
-  Icon,
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { PurchaseOrderStatusList } from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
 
+// import PrintPreview from "./print/preview";
+import Create from "./final-details";
 import PrintPreview from "./print/preview";
 
 // import Edit from "./edit";
@@ -27,54 +21,30 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [purchaseOrderId, setPurchaseOrderId] = useState("");
-
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {isOpen && (
-        <PrintPreview
-          id={purchaseOrderId}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          date={date}
-        />
-      )}
-      <Popover>
-        <PopoverTrigger>
-          <Icon
-            name="Printer"
-            className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-          />
-        </PopoverTrigger>
-        <PopoverContent align="end" side="bottom">
-          <div className="w-full">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className=""
-              fromYear={1900}
-              initialFocus
-            />
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              onClick={() => {
-                setPurchaseOrderId(row.original.id as string);
-                setIsOpen(true);
-              }}
-            >
-              Print
-            </Button>
-            <PopoverClose>
-              <Button variant="outline">Cancel</Button>
-            </PopoverClose>
-          </div>
-        </PopoverContent>
-      </Popover>
+      <PrintPreview
+        id={row.original.id as string}
+        isOpen={isPrintOpen}
+        onClose={() => setIsPrintOpen(false)}
+      />
+      <Icon
+        name="Printer"
+        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+        onClick={() => setIsCreateOpen(true)}
+      />
+      <Create
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onSuccess={() => {
+          setIsCreateOpen(false);
+          setIsPrintOpen(true);
+        }}
+        purchaseOrderId={row.original.id as string}
+      />
     </section>
   );
 }
@@ -99,29 +69,6 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       </div>
     ),
   },
-
-  // {
-  //   accessorKey: "total",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "totalprice",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.price || 0) * (item?.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "status",
     header: "Status",

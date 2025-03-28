@@ -56,6 +56,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     pharmacopoeia: details.pharmacopoeia as string,
     kind: details?.kind?.toString() as unknown as MaterialKind,
     code: details.code as string,
+    reorderLevel: details.reOrderLevel as number,
   };
   const {
     register,

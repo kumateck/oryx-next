@@ -263,3 +263,7 @@ export enum WaybillStatus {
   Cleared = 1,
   Arrived = 3,
 }
+export enum BillingSheetStatus {
+  Pending,
+  Paid,
+}
