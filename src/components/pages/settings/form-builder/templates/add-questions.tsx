@@ -16,7 +16,6 @@ import {
 import { QuestionType } from "@/lib";
 import {
   QuestionDto,
-  QuestionDtoRead,
   useLazyGetApiV1FormQuestionQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { cn, splitWords } from "@/lib/utils";
@@ -32,7 +31,7 @@ interface Props {
 const PAGE_SIZE = 10; // or whatever your API page size is
 
 const AddQuestions = ({ questions, setQuestions, isOpen, onClose }: Props) => {
-  const [state, setState] = useState<QuestionDtoRead[]>([]); // Set initial state to null
+  const [state, setState] = useState<QuestionDto[]>([]); // Set initial state to null
   const [loadQuestions, { isLoading, isFetching }] =
     useLazyGetApiV1FormQuestionQuery();
   const [page, setPage] = useState(1);

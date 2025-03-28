@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, QuestionType, isErrorResponse } from "@/lib";
 import {
-  QuestionDtoRead,
+  QuestionDto,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
   useLazyGetApiV1FormQuestionQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -27,7 +27,7 @@ const QuestionCards = () => {
   const [deleteMutation, { isLoading: isDeleting }] =
     useDeleteApiV1FormQuestionByQuestionIdMutation();
   const [page, setPage] = useState(1);
-  const [questions, setQuestions] = useState<QuestionDtoRead[]>([]);
+  const [questions, setQuestions] = useState<QuestionDto[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -78,7 +78,7 @@ const QuestionCards = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerReload]);
 
-  const onEdit = (details: QuestionDtoRead) => {
+  const onEdit = (details: QuestionDto) => {
     const payload = {
       id: details.id,
       label: details.label as string,

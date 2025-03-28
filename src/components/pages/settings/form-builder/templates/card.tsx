@@ -1,10 +1,10 @@
 import { useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
-import { FormDtoRead } from "@/lib/redux/api/openapi.generated";
+import { FormDto } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
-  template: FormDtoRead;
+  template: FormDto;
   number: number;
   onDelete: (id: string) => void;
   isDeleting: boolean;

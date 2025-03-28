@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  FormDtoRead,
+  FormDto,
   useDeleteApiV1FormByFormIdMutation,
   useLazyGetApiV1FormQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -21,7 +21,7 @@ const TemplateCards = () => {
   const [hasMore, setHasMore] = useState(true);
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
-  const [workflowForms, setWorkflowForms] = useState<FormDtoRead[]>([]);
+  const [workflowForms, setWorkflowForms] = useState<FormDto[]>([]);
   // const [state, setState] = useState<TResult<FormTemplate> | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();

@@ -1,11 +1,11 @@
 import { Button, Icon } from "@/components/ui";
 import { QuestionType, capitalizeFirstWord, splitWords } from "@/lib";
-import { QuestionDtoRead } from "@/lib/redux/api/openapi.generated";
+import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
-  question: QuestionDtoRead;
+  question: QuestionDto;
   number: number;
-  onEdit: (details: QuestionDtoRead) => void;
+  onEdit: (details: QuestionDto) => void;
   onDelete: (id: string) => void;
   isDeleting?: boolean;
 }

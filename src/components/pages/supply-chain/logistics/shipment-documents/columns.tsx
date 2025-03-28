@@ -40,7 +40,9 @@ export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
     try {
       await updateMutation({
         shipmentId: row.original.id as string,
-        shipmentStatus: status,
+        updateShipmentStatusRequest: {
+          status,
+        },
       }).unwrap();
       toast.success("Status updated successfully");
       dispatch(commonActions.setTriggerReload());
