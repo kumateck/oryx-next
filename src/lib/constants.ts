@@ -34,6 +34,8 @@ export const COLLECTION_TYPES = {
   Currency: "Currency",
   PackageStyle: "PackageStyle",
   Charge: "Charge",
+  TermsOfPayment: "TermsOfPayment",
+  DeliveryMode: "DeliveryMode",
 };
 
 export const CODE_SETTINGS = {
@@ -205,3 +207,41 @@ export const avatarFallbackColors = [
   "border border-stone-300 bg-stone-100 text-stone-800",
   "border border-zinc-300 bg-zinc-100 text-zinc-800",
 ];
+
+export const ones = [
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
+];
+
+export const tens = [
+  "",
+  "",
+  "Twenty",
+  "Thirty",
+  "Forty",
+  "Fifty",
+  "Sixty",
+  "Seventy",
+  "Eighty",
+  "Ninety",
+];
+
+export const scales = ["", "Thousand", "Million", "Billion"];

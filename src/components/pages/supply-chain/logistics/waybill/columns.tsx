@@ -1,82 +1,82 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ConfirmDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui";
+import {
+  ErrorResponse,
+  WaybillStatus,
+  WaybillStatusOptions,
+  isErrorResponse,
+} from "@/lib";
 import {
   ShipmentDocumentDto,
-  usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation,
+  usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { TableMenuAction } from "@/shared/table-menu";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends ShipmentDocumentDto>({
+
+function DataTableRowStatus<TData extends ShipmentDocumentDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const [updateMutation] =
+    usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation();
   const dispatch = useDispatch();
-  const [id, setId] = useState<string>("");
-  const [isArrivedOpen, setIsArrivedOpen] = useState(false);
-  const [arrivedMutation, { isLoading }] =
-    usePutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedMutation();
-
-  const handleArrived = async () => {
+  const handleStatusUpdate = async (status: WaybillStatus) => {
     try {
-      await arrivedMutation({
-        shipmentDocumentId: id,
+      await updateMutation({
+        shipmentId: row.original.id as string,
+        updateShipmentStatusRequest: { status },
       }).unwrap();
-      toast.success("Shipment Arrived successfully");
       dispatch(commonActions.setTriggerReload());
+      toast.success("Status updated successfully");
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  return (
-    <section className="flex items-center justify-end gap-2">
-      {isLoading && (
-        <Icon name="LoaderCircle" className="size-5 animate-spin" />
-      )}
-      <TableMenuAction>
-        <DropdownMenuItem asChild>
-          <div
-            className="flex cursor-pointer items-center gap-2 group-[.dropdown-menu-item]:hover:bg-neutral-100"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setId(row.original.id as string);
-              setIsArrivedOpen(true);
-            }}
-          >
-            <Icon
-              name="CircleCheck"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Mark as Arrived</span>
-          </div>
-        </DropdownMenuItem>
-      </TableMenuAction>
 
-      <ConfirmDialog
-        open={isArrivedOpen}
-        onClose={() => setIsArrivedOpen(false)}
-        onConfirm={handleArrived}
-        title="Mark as Arrived"
-        description="Are you sure you want to mark this shipment as arrived?"
-        icon="CircleCheck"
-        confirmText="Confirm"
-      />
-    </section>
+  return (
+    <div className="flex items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div
+            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
+              statusColors[row.original.status as WaybillStatus] ?? ""
+            }`}
+          >
+            {WaybillStatus[row.original.status as WaybillStatus] ?? "Unknown"}
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+          {WaybillStatusOptions.map((opt) => (
+            <DropdownMenuItem
+              key={opt.value}
+              onClick={() =>
+                handleStatusUpdate(Number(opt.value) as WaybillStatus)
+              }
+              className="group flex cursor-pointer items-center gap-2"
+            >
+              {opt.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
 
 export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   {
     accessorKey: "code",
-    header: "Waybill Code",
+    header: "Shipment Document Code",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
   },
   {
@@ -84,7 +84,7 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     header: "Supplier Name",
     cell: ({ row }) => (
       <div className="min-w-36">
-        {row.original.shipmentInvoice?.supplier?.name}
+        {row.original.shipmentInvoice?.supplier?.name || "-"}
       </div>
     ),
   },
@@ -92,22 +92,20 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     accessorKey: "invoice",
     header: "Invoice No",
     cell: ({ row }) => (
-      <div className="min-w-36">{row.original.shipmentInvoice?.code}</div>
-    ),
-  },
-
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
       <div className="min-w-36">
-        {row.original.arrivedAt ? "Arrived" : "Pending"}
+        {row.original.shipmentInvoice?.code || "-"}
       </div>
     ),
   },
-
   {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <DataTableRowStatus row={row} />,
   },
 ];
+
+const statusColors: Record<WaybillStatus, string> = {
+  [WaybillStatus.New]: "bg-blue-100 text-blue-800",
+  [WaybillStatus.Cleared]: "bg-purple-100 text-purple-800",
+  [WaybillStatus.Arrived]: "bg-green-100 text-green-800",
+};

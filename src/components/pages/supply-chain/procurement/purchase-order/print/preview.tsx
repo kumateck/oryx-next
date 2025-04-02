@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   SupplierDto,
-  useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -30,14 +30,18 @@ interface Props {
   id: string;
   date?: Date;
 }
-const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
+const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const dispatch = useDispatch();
   const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
-  const { data, isLoading } =
-    useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
-      purchaseOrderId: id,
-    });
+  const [loadData, { data, isLoading }] =
+    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
+
+  useEffect(() => {
+    if (isOpen && id) {
+      loadData({ purchaseOrderId: id });
+    }
+  }, [isOpen, id, loadData]);
 
   // console.log(date, "date");
   const items = data?.items ?? [];
@@ -49,7 +53,7 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
       await emailQuotation({
         purchaseOrderId: id,
         sendPurchaseOrderRequest: {
-          expectedDeliveryDate: date,
+          expectedDeliveryDate: data?.estimatedDeliveryDate,
         },
       } as PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg).unwrap();
     } catch (error) {
@@ -107,6 +111,51 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
             <span className="text-2xl font-semibold">Purchase Order</span>
           </div>
           <ListsTable columns={columns} data={items} isLoading={isLoading} />
+
+          <div className="mt-16 flex items-center justify-between text-sm">
+            <div>
+              <div>
+                <span>Amount in words: </span>
+                <span className="font-bold">{data?.amountInFigures}</span>
+              </div>
+
+              <div>
+                <span>Terms of payment: </span>
+                <span className="font-bold">{data?.termsOfPayment?.name}</span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-primary-default/30 px-8 py-4">
+              <div>
+                <span>Total FOB Value in USD: </span>
+                <span className="font-bold">
+                  {data?.supplier?.currency?.symbol}
+                  {data?.totalFobValue}
+                </span>
+              </div>
+              <div>
+                <span>Insurance in USD: </span>
+                <span className="font-bold">
+                  {data?.supplier?.currency?.symbol}
+                  {data?.insurance}
+                </span>
+              </div>
+              <div>
+                <span>Freight in USD: </span>
+                <span className="font-bold">
+                  {data?.supplier?.currency?.symbol}
+                  {data?.seaFreight}
+                </span>
+              </div>
+              <div>
+                <span>Total CIF Value in USD: </span>
+                <span className="font-bold">
+                  {data?.supplier?.currency?.symbol}
+                  {data?.totalCifValue}
+                </span>
+              </div>
+            </div>
+          </div>
         </article>
       </DialogContent>
     </Dialog>
