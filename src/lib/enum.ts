@@ -269,3 +269,30 @@ export enum BillingSheetStatus {
   Pending,
   Paid,
 }
+
+export enum MaritalStatus {
+  Single = "Single",
+  Married = "Married",
+}
+
+export enum Gender {
+  Male = "Male",
+  Female = "Female",
+}
+
+export enum LifeStatus {
+  Alive = "Alive",
+  Deceased = "Deceased",
+}
+
+export enum Religions {
+  Christianity = "Christianity",
+  Islam = "Islam",
+  Hinduism = "Hinduism",
+  Buddhism = "Buddhism",
+  Judaism = "Judaism",
+  TARs = "Traditional African Religions",
+  Sikhism = "Sikhism",
+  Baháí = "Bahá'í",
+  Other = "Other",
+}
