@@ -46,21 +46,25 @@ export function mapAssociatedManufacturers(
 
     // Map the defaultManufacturer (if exists) with default: true
     if (item.defaultManufacturer) {
-      mappedResults.push({
-        materialId,
-        manufacturerId: item.defaultManufacturer.value,
-        default: true,
-      });
+      if (item.defaultManufacturer.value && materialId) {
+        mappedResults.push({
+          materialId,
+          manufacturerId: item.defaultManufacturer.value,
+          default: true,
+        });
+      }
     }
 
     // Map each selected manufacturer with default: false
     if (item.manufacturer && item.manufacturer.length > 0) {
       item.manufacturer.forEach((manu) => {
-        mappedResults.push({
-          materialId,
-          manufacturerId: manu.value,
-          default: false,
-        });
+        if (manu.value && materialId) {
+          mappedResults.push({
+            materialId,
+            manufacturerId: manu.value,
+            default: false,
+          });
+        }
       });
     }
   });

@@ -144,9 +144,13 @@ const Create = () => {
         countryId: country.value,
         currencyId: currency.value,
       } satisfies CreateSupplierRequest;
+
+      console.log(payload, "payload");
+      // Call the mutation to create the supplier
       await createMutation({
         createSupplierRequest: payload,
-      } as PostApiV1ProcurementSupplierApiArg);
+      } as PostApiV1ProcurementSupplierApiArg).unwrap();
+      // Handle success (e.g., show a success message, redirect, etc.)
       toast.success("Vendor created successfully");
       router.push(routes.vendors());
       // reset(); // Reset the form after submission

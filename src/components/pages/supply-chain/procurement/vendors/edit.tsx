@@ -81,6 +81,7 @@ const Edit = () => {
 
   const handleLoadSupplier = async (supplierId: string) => {
     const res = await loadSupplierInfo({ supplierId }).unwrap();
+
     const associatedManufacturers = res?.associatedManufacturers || [];
 
     const groupedManufacturers = associatedManufacturers.reduce((acc, item) => {
@@ -92,20 +93,33 @@ const Edit = () => {
         value: item.material.id as string,
       };
 
-      const manufacturerEntry = item.manufacturer
-        ? {
-            label: item.manufacturer.name as string,
-            value: item.manufacturer.id as string,
-          }
-        : { label: "", value: "" };
+      const manufacturerEntry =
+        !item.default && item.manufacturer
+          ? {
+              label: item.manufacturer.name as string,
+              value: item.manufacturer.id as string,
+            }
+          : { label: "", value: "" };
+
+      const defaultManufacturerEntry =
+        item.default && item.manufacturer
+          ? {
+              label: item.manufacturer.name as string,
+              value: item.manufacturer.id as string,
+            }
+          : { label: "", value: "" };
 
       if (!acc.has(materialKey)) {
-        acc.set(materialKey, { material: materialEntry, manufacturer: [] });
+        acc.set(materialKey, {
+          material: materialEntry,
+          manufacturer: [],
+          defaultManufacturer: { label: "", value: "" },
+        });
       }
-
+      acc.get(materialKey)!.defaultManufacturer = defaultManufacturerEntry;
       acc.get(materialKey)?.manufacturer.push(manufacturerEntry);
       return acc;
-    }, new Map<string, { material: { label: string; value: string }; manufacturer: { label: string; value: string }[] }>());
+    }, new Map<string, { material: { label: string; value: string }; defaultManufacturer: { label: string; value: string }; manufacturer: { label: string; value: string }[] }>());
 
     const defaultSupplier = {
       address: res.address as string,

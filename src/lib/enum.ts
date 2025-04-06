@@ -75,6 +75,17 @@ export enum RequisitionStatus {
 export enum RequisitionType {
   StockVoucher,
   Purchase,
+  StockTransfer,
+  StockRequisition,
+  Planning,
+  Production,
+  PurchaseRequisition,
+  Sourcing,
+  PriceComparison,
+  PurchaseOrder,
+  ProfomaInvoice,
+  GRN,
+  Checklist,
 }
 export enum EMaterialKind {
   Raw = 0,
