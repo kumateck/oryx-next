@@ -948,3 +948,119 @@ export const numberToWords = (num: number): string => {
 
   return result.replace(/\s+/g, " ").trim() + " Dollars";
 };
+
+export function amountToWords(num: number, currency?: string): string {
+  const belowTwenty = [
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
+
+  const thousands = ["", "Thousand", "Million", "Billion"];
+
+  function helper(n: number): string {
+    if (n === 0) return "";
+    else if (n < 20) return belowTwenty[n] + " ";
+    else if (n < 100) return tens[Math.floor(n / 10)] + " " + helper(n % 10);
+    else
+      return belowTwenty[Math.floor(n / 100)] + " Hundred " + helper(n % 100);
+  }
+
+  function convertInteger(n: number): string {
+    if (n === 0) return "Zero";
+    let res = "";
+    let i = 0;
+    while (n > 0) {
+      if (n % 1000 !== 0) {
+        res = helper(n % 1000) + thousands[i] + " " + res;
+      }
+      n = Math.floor(n / 1000);
+      i++;
+    }
+    return res.trim();
+  }
+
+  const [whole, decimal] = num.toFixed(2).split(".");
+  const dollars = parseInt(whole);
+  const cents = parseInt(decimal);
+
+  let result =
+    convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
+  if (cents > 0) {
+    result +=
+      " and " + convertInteger(cents) + " Cent" + (cents !== 1 ? "s" : "");
+  }
+
+  return result; //.replace(/\s+/g, " ").trim() + " "+ currency;
+}
+
+export function formatAmount(
+  value: number,
+  options?: {
+    currencySymbol?: string;
+    decimalPlaces?: number;
+    thousandSeparator?: string;
+    decimalSeparator?: string;
+    prefix?: string;
+    suffix?: string;
+  },
+): string {
+  const {
+    currencySymbol = "",
+    decimalPlaces = 2,
+    thousandSeparator = ",",
+    decimalSeparator = ".",
+    prefix = "",
+    suffix = "",
+  } = options || {};
+
+  const negative = value < 0;
+  const absValue = Math.abs(value).toFixed(decimalPlaces);
+
+  const [integerPart, decimalPart] = absValue.split(".");
+
+  const withThousands = integerPart.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    thousandSeparator,
+  );
+
+  let result = `${currencySymbol}${withThousands}`;
+  if (decimalPlaces > 0) {
+    result += `${decimalSeparator}${decimalPart}`;
+  }
+
+  if (prefix) result = prefix + result;
+  if (suffix) result += suffix;
+
+  return negative ? `-${result}` : result;
+}

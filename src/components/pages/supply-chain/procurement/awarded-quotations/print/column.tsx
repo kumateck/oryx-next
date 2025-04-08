@@ -3,7 +3,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Units, convertToLargestUnit } from "@/lib";
 import { PurchaseOrderItemDtoRead } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<PurchaseOrderItemDtoRead>[] = [
+export const getColums = (
+  currency: string,
+): ColumnDef<PurchaseOrderItemDtoRead>[] => [
   {
     accessorKey: "material",
     header: "Material",
@@ -40,13 +42,19 @@ export const columns: ColumnDef<PurchaseOrderItemDtoRead>[] = [
   {
     accessorKey: "price",
     header: "Price",
-    cell: ({ row }) => <div>{row.original.price}</div>,
+    cell: ({ row }) => (
+      <div>
+        {" "}
+        {currency} {row.original.price}
+      </div>
+    ),
   },
   {
     accessorKey: "total",
     header: "Total",
     cell: ({ row }) => (
       <div>
+        {currency}{" "}
         {(
           (row.original.price || 0) *
           (convertToLargestUnit(

@@ -18,6 +18,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   deliveryMode: Option[];
   termsOfPayment: Option[];
   defaultValues?: TFieldValues;
+  currency: string;
 }
 const Form = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -25,11 +26,12 @@ const Form = <TFieldValues extends FieldValues, TContext>({
   errors,
   termsOfPayment,
   deliveryMode,
+  currency,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
       <FormWizard
-        className="w-full gap-6 space-y-0"
+        className="w-full gap-6 space-y-3"
         fieldWrapperClassName="flex-grow"
         config={[
           {
@@ -44,7 +46,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             register: register("totalFobValue" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Total FOB Value ($)",
+            label: `Total FOB Value (${currency})`,
             placeholder: "Enter total FOB Value",
             type: InputTypes.NUMBER,
             required: true,
@@ -54,7 +56,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             register: register("insuranceAmount" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Insurance ($)",
+            label: `Insurance (${currency})`,
             placeholder: "Enter Insurance Amount",
             type: InputTypes.NUMBER,
             required: true,
@@ -74,7 +76,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             register: register("cifValue" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Total CIF Value ($)",
+            label: `Total CIF Value (${currency})`,
             placeholder: "Enter total CIF value",
             type: InputTypes.NUMBER,
             required: true,

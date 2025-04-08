@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, formatAmount, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   SupplierDto,
@@ -87,7 +87,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
-      <DialogContent className="max-w-3xl rounded-none" noClose>
+      <DialogContent className="max-w-4xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
           <Button variant="outline" onClick={() => handlePrint()}>
             {isSending ? (
@@ -115,8 +115,8 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
           <div className="mt-16 flex items-center justify-between text-sm">
             <div>
               <div>
-                <span>Amount in words: </span>
-                <span className="font-bold">{data?.amountInFigures}</span>
+                <span className="block">Amount in words: </span>
+                <p className="font-bold">{data?.amountInFigures}</p>
               </div>
 
               <div>
@@ -126,32 +126,36 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             </div>
 
             <div className="rounded-2xl bg-primary-default/30 px-8 py-4">
-              <div>
+              <div className="grid grid-cols-2 gap-4">
                 <span>Total FOB Value in USD: </span>
                 <span className="font-bold">
                   {data?.supplier?.currency?.symbol}
                   {data?.totalFobValue}
                 </span>
               </div>
-              <div>
-                <span>Insurance in USD: </span>
+              <div className="grid grid-cols-2 gap-4">
+                <span className="">Insurance in USD: </span>
                 <span className="font-bold">
                   {data?.supplier?.currency?.symbol}
                   {data?.insurance}
                 </span>
               </div>
-              <div>
+              <div className="grid grid-cols-2 gap-4">
                 <span>Freight in USD: </span>
                 <span className="font-bold">
                   {data?.supplier?.currency?.symbol}
                   {data?.seaFreight}
                 </span>
               </div>
-              <div>
+              <div className="grid grid-cols-2 gap-4">
                 <span>Total CIF Value in USD: </span>
                 <span className="font-bold">
-                  {data?.supplier?.currency?.symbol}
-                  {data?.totalCifValue}
+                  {formatAmount(Number(data?.totalCifValue), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
+                  {/* {data?.supplier?.currency?.symbol}
+                  {data?.totalCifValue} */}
                 </span>
               </div>
             </div>

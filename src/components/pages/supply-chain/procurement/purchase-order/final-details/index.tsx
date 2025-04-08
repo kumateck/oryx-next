@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+// import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import {
@@ -15,8 +16,8 @@ import {
   COLLECTION_TYPES,
   ErrorResponse,
   Option,
-  isErrorResponse,
-  numberToWords,
+  amountToWords,
+  isErrorResponse, // numberToWords,
 } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
@@ -24,6 +25,7 @@ import {
   usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+// import { commonActions } from "@/lib/redux/slices/common";
 import Form from "./form";
 import { CreateFinalDetailsValidator, FinalDetailsRequestDto } from "./types";
 
@@ -32,8 +34,21 @@ interface Props {
   onClose: () => void;
   purchaseOrderId: string;
   onSuccess: () => void;
+  currency: {
+    symbol: string;
+    name: string;
+  };
+  defaultValues: FinalDetailsRequestDto;
 }
-const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
+const Create = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  purchaseOrderId,
+  currency,
+  defaultValues,
+}: Props) => {
+  // const dispatch = useDispatch();
   const [saveMutation, { isLoading }] =
     usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
   const {
@@ -47,6 +62,7 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
   } = useForm<FinalDetailsRequestDto>({
     resolver: CreateFinalDetailsValidator,
     mode: "all",
+    defaultValues,
   });
 
   // const cifValue = watch("cifValue") || 0;
@@ -70,7 +86,7 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
     setValue("cifValue", calculatedCif);
 
     // Convert to words and set amountInFigures
-    const amountInWords = numberToWords(calculatedCif);
+    const amountInWords = amountToWords(calculatedCif, currency.name);
     setValue("amountInWords", amountInWords);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -109,6 +125,7 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
   ) as Option[];
 
   const onSubmit = async (data: FinalDetailsRequestDto) => {
+    console.log("data", data);
     try {
       await saveMutation({
         purchaseOrderId: purchaseOrderId,
@@ -121,8 +138,10 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
           amountInFigures: data.amountInWords,
           insurance: data.insuranceAmount,
           estimatedDeliveryDate: data.estimatedDeliveryDate.toISOString(),
+          proFormaInvoiceNumber: data.invoiceNumber,
         },
       }).unwrap();
+      // dispatch(commonActions.setTriggerReload());
       onSuccess();
       reset();
     } catch (error) {
@@ -144,6 +163,7 @@ const Create = ({ isOpen, onClose, onSuccess, purchaseOrderId }: Props) => {
             control={control}
             termsOfPayment={termsOfPayment}
             deliveryMode={deliveryMode}
+            currency={currency.symbol}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

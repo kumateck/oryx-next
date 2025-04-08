@@ -27,6 +27,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   const [isPrintOpen, setIsPrintOpen] = useState(false);
   const dispatch = useDispatch();
 
+  const details = row.original;
   return (
     <section className="flex items-center justify-end gap-2">
       <PrintPreview
@@ -50,6 +51,29 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
           setIsPrintOpen(true);
         }}
         purchaseOrderId={row.original.id as string}
+        currency={{
+          symbol: row.original.supplier?.currency?.symbol as string,
+          name: row.original.supplier?.currency?.name as string,
+        }}
+        defaultValues={{
+          amountInWords: details.amountInFigures as string,
+          cifValue: details.totalCifValue as number,
+          estimatedDeliveryDate: details.estimatedDeliveryDate
+            ? new Date(details.estimatedDeliveryDate)
+            : new Date(),
+          freight: details.seaFreight as number,
+          insuranceAmount: details.insurance as number,
+          totalFobValue: details.totalFobValue as number,
+          deliveryMode: {
+            label: details.deliveryMode?.name as string,
+            value: details.deliveryMode?.id as string,
+          },
+          termsOfPayment: {
+            label: details.termsOfPayment?.name as string,
+            value: details.termsOfPayment?.id as string,
+          },
+          invoiceNumber: details.proFormaInvoiceNumber as string,
+        }}
       />
     </section>
   );
