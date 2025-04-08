@@ -14,6 +14,7 @@ import FamilyInfo1Step from "./steps/FamilyInfo1";
 import FamilyInfo2Step from "./steps/FamilyInfo2";
 import PaymentInformationStep from "./steps/PaymentInformation";
 import PersonalInfoStep from "./steps/PersonalInfo";
+import ReviewSubmitStep from "./steps/ReviewSubmit";
 import {
   OnboardingFormValues,
   fullOnboardingSchema,
@@ -51,6 +52,11 @@ const steps = [
     schema: stepSchemas.paymentInformation,
     title: "Payment Information",
   },
+  {
+    component: ReviewSubmitStep,
+    schema: null,
+    title: "Review & Submit",
+  },
 ];
 
 export default function OnboardingForm() {
@@ -73,6 +79,9 @@ export default function OnboardingForm() {
       gender: { value: "", label: "" },
       dob: undefined,
       dateEmployed: undefined,
+      accountNumber: "",
+      ssnitNumber: "",
+      ghanaCardNumber: "",
       father: {
         fullName: "",
         contactNumber: "",
@@ -80,12 +89,6 @@ export default function OnboardingForm() {
         occupation: "",
       },
       mother: {
-        fullName: "",
-        contactNumber: "",
-        lifeStatus: { value: "", label: "" },
-        occupation: "",
-      },
-      spouse: {
         fullName: "",
         contactNumber: "",
         lifeStatus: { value: "", label: "" },
@@ -122,87 +125,89 @@ export default function OnboardingForm() {
     fields: childFields,
     append: appendChild,
     remove: removeChild,
-  } = useFieldArray({
-    control,
-    name: "children",
-  });
+  } = useFieldArray({ control, name: "children" });
 
   const {
     fields: educationFields,
     append: appendEducation,
     remove: removeEducation,
-  } = useFieldArray({
-    control,
-    name: "education",
-  });
+  } = useFieldArray({ control, name: "education" });
 
   const {
     fields: employmentFields,
     append: appendEmployment,
     remove: removeEmployment,
-  } = useFieldArray({
-    control,
-    name: "employment",
-  });
+  } = useFieldArray({ control, name: "employment" });
 
   const handleNext = async () => {
-    const currentSchema = steps[currentStep].schema;
-    const isValid = await trigger(
-      Object.keys(currentSchema.shape) as Array<keyof OnboardingFormValues>,
-    );
-    if (isValid) setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    // For review step (final step) we don’t need to trigger validation
+    if (steps[currentStep].schema) {
+      const currentSchema = steps[currentStep].schema;
+      const isValid = await trigger(
+        Object.keys(currentSchema.shape) as Array<keyof OnboardingFormValues>,
+      );
+      if (!isValid) return;
+    }
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const handlePrev = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const onSubmit = (data: OnboardingFormValues) => {
     console.log("Form data:", data);
+    // Submit your data here
   };
 
-  const StepComponent = steps[currentStep].component;
+  // Render the current step as a JSX component.
+  // For the review step, pass the onEdit handler.
+  const StepComponent = steps[currentStep]
+    .component as React.ComponentType<any>;
 
   return (
-    <div className="w-full p-6">
-      <h1 className="-mt-10 mb-20 text-center text-3xl font-bold">
-        ENTRANCE PHARMACEUTICALS EMPLOYEE REGISTRATION FORM
-      </h1>
+    <div className="mx-auto max-h-screen w-full space-y-6 overflow-y-auto p-6">
       <PageTitle title={steps[currentStep].title} />
       <ProgressIndicator steps={steps.length} currentStep={currentStep} />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-        <StepComponent
-          register={register}
-          control={control}
-          errors={errors}
-          // Pass field array props based on the step index:
-          fields={
-            currentStep === 2
-              ? childFields
-              : currentStep === 3
-                ? educationFields
-                : currentStep === 4
-                  ? employmentFields
-                  : []
-          }
-          append={
-            currentStep === 2
-              ? appendChild
-              : currentStep === 3
-                ? appendEducation
-                : currentStep === 4
-                  ? appendEmployment
-                  : ((() => {}) as any)
-          }
-          remove={
-            currentStep === 2
-              ? removeChild
-              : currentStep === 3
-                ? removeEducation
-                : currentStep === 4
-                  ? removeEmployment
-                  : ((() => {}) as any)
-          }
-        />
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6 p-4">
+        {currentStep === steps.length - 1 ? (
+          <StepComponent
+            control={control}
+            onEdit={(stepIndex: number) => setCurrentStep(stepIndex)}
+          />
+        ) : (
+          <StepComponent
+            register={register}
+            control={control}
+            errors={errors}
+            fields={
+              currentStep === 2
+                ? childFields
+                : currentStep === 3
+                  ? educationFields
+                  : currentStep === 4
+                    ? employmentFields
+                    : []
+            }
+            append={
+              currentStep === 2
+                ? appendChild
+                : currentStep === 3
+                  ? appendEducation
+                  : currentStep === 4
+                    ? appendEmployment
+                    : ((() => {}) as any)
+            }
+            remove={
+              currentStep === 2
+                ? removeChild
+                : currentStep === 3
+                  ? removeEducation
+                  : currentStep === 4
+                    ? removeEmployment
+                    : ((() => {}) as any)
+            }
+          />
+        )}
 
         <div className="flex justify-between">
           <Button

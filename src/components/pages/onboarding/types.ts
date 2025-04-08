@@ -60,7 +60,7 @@ const personalInfoSchema = z.object({
 
 const familyMemberSchema = z.object({
   fullName: z.string().min(5, "Full name is required"),
-  contactNumber: z.string().min(9, "Phone number is required"),
+  contactNumber: z.string().min(10, "Phone number is required"),
   lifeStatus: z.object(
     {
       value: z.string().min(1, { message: "Life Status is required" }),
@@ -73,6 +73,23 @@ const familyMemberSchema = z.object({
   occupation: z.string().min(1, "Occupation is required"),
 });
 
+const spouseSchema = z.object({
+  fullName: z.string().min(5, "Full name is required").optional(),
+  contactNumber: z.string().min(10, "Phone number is required").optional(),
+  lifeStatus: z
+    .object(
+      {
+        value: z.string().min(1, { message: "Life Status is required" }),
+        label: z.string(),
+      },
+      {
+        message: "Life Status is required",
+      },
+    )
+    .optional(),
+  occupation: z.string().min(1, "Occupation is required").optional(),
+});
+
 const emergencyContactSchema = z.object({
   fullName: z.string().min(5, "Full name is required"),
   contactNumber: z.string().min(9, "Phone number is required"),
@@ -83,7 +100,7 @@ const emergencyContactSchema = z.object({
 const familyInfo1Schema = z.object({
   father: familyMemberSchema,
   mother: familyMemberSchema,
-  spouse: familyMemberSchema.optional(),
+  spouse: spouseSchema.optional(),
 });
 
 const childrenSchema = z.object({
@@ -97,7 +114,15 @@ const childrenSchema = z.object({
       }),
     )
     .optional(),
-  sex: z.string().min(1, "Child's sex is required").optional(),
+  sex: z.object(
+    {
+      value: z.string().min(1, { message: "Gender is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Gender is required",
+    },
+  ),
 });
 
 const educationItemSchema = z.object({

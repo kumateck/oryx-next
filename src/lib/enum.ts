@@ -307,3 +307,8 @@ export enum Religions {
   Baháí = "Bahá'í",
   Other = "Other",
 }
+
+export enum EmployeeType {
+  Permanent = 0,
+  Casual = 1,
+}

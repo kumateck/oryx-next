@@ -29,7 +29,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 const defaultAssociated: ChildRequestDto = {
   fullName: "",
   dob: new Date(),
-  sex: "",
+  sex: { label: "", value: "" },
 };
 const FamilyInfo2Step = <TFieldValues extends FieldValues, TContext>({
   register,
@@ -92,7 +92,7 @@ const FamilyInfo2Step = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <h2 className="mt-10 text-lg font-medium text-black">Mother</h2>
+      <h2 className="mt-10 text-lg font-medium text-black">Next of Kin</h2>
       <FormWizard
         className="mt-3 grid w-full grid-cols-2 gap-x-10 gap-y-2 space-y-0"
         config={[
