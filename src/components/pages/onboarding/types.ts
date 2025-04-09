@@ -168,7 +168,7 @@ const familyInfo2Schema = z.object({
 
 const paymentInformationSchema = z.object({
   accountNumber: z.string().min(1, "Account Number is required"),
-  ssnitNumber: z.string().min(9, "SSNIT Number is required"),
+  ssnitNumber: z.string().min(1, "SSNIT Number is required"),
   ghanaCardNumber: z.string().min(1, "Ghana Card Number is required"),
 });
 

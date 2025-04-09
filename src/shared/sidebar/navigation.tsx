@@ -284,8 +284,8 @@ export const ROUTES: Route[] = [
             url: "/hr/employee-management",
           },
           {
-            title: "Others",
-            url: "/production/stock-requisition/others",
+            title: "Designation Management",
+            url: "/hr/designation-management",
           },
           // {
           //   title: "Shipment Discrepancy",

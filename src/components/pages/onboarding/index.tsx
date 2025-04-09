@@ -165,6 +165,11 @@ export default function OnboardingForm() {
 
   return (
     <div className="mx-auto max-h-screen w-full space-y-6 overflow-y-auto p-6">
+      {currentStep !== steps.length - 1 && (
+        <h1 className="mb-8 text-center text-3xl font-bold">
+          ENTRANCE PHARMACEUTICALS EMPLOYEE REGISTRATION FORM
+        </h1>
+      )}
       <PageTitle title={steps[currentStep].title} />
       <ProgressIndicator steps={steps.length} currentStep={currentStep} />
 
