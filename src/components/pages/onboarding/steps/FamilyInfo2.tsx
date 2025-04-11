@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   Control,
   FieldArrayWithId,
@@ -50,8 +50,7 @@ const FamilyInfo2Step = <TFieldValues extends FieldValues, TContext>({
   appendSibling,
 }: Props<TFieldValues, TContext>) => {
   const { type } = useParams();
-  const searchParams = useSearchParams();
-  const etype = (searchParams.get("etype") || type) as unknown as EmployeeType;
+  const etype = type as unknown as EmployeeType;
   const genderOptions = Object.entries(Gender)
     .filter(([key]) => isNaN(Number(key)))
     .map(([key, value]) => ({

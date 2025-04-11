@@ -1,9 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { Button, Icon } from "@/components/ui";
 import { useLazyGetApiV1EmployeeQuery } from "@/lib/redux/api/openapi.generated";
+import DropdownBtns from "@/shared/btns/drop-btn";
 import { ServerDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -27,7 +28,7 @@ const EmployeeManagement = () => {
   }, [page, pageSize]);
 
   const data = result?.data || [];
-
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -36,10 +37,28 @@ const EmployeeManagement = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Employee Management" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
+          {/* <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
             <Icon name="Plus" className="h-4 w-4" />{" "}
             <span>Register Employee</span>
-          </Button>
+          </Button> */}
+          <DropdownBtns
+            title="Register Employee"
+            icon="Plus"
+            menus={[
+              {
+                name: "Casual Onboarding Form",
+                onClick: () => router.push("/hr/employee-management/create/0"),
+              },
+              {
+                name: "Permanent Onboarding Form",
+                onClick: () => router.push("/hr/employee-management/create/1"),
+              },
+              {
+                name: "Send Form by Email",
+                onClick: () => setIsOpen(true),
+              },
+            ]}
+          />
         </div>
       </div>
 
