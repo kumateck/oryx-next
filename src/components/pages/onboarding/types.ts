@@ -27,7 +27,7 @@ const personalInfoSchema = z.object({
     }),
   ),
   email: z.string().email({ message: "Invalid email address" }),
-  contactNumber: z.string().min(9, "Phone number is required"),
+  contactNumber: z.string().min(10, "Phone number is required"),
   nationality: z.object(
     {
       value: z.string().min(1, { message: "Nationality is required" }),
@@ -92,7 +92,10 @@ const spouseSchema = z.object({
 
 const emergencyContactSchema = z.object({
   fullName: z.string().min(5, "Full name is required"),
-  contactNumber: z.string().min(9, "Phone number is required"),
+  contactNumber: z
+    .string()
+    .min(10, "Phone number is required")
+    .max(10, "Phone number must be 10 digits"),
   address: z.string().min(1, "Residential address is required"),
   relation: z.string().min(1, "Relationship is required"),
 });
@@ -121,6 +124,20 @@ const childrenSchema = z.object({
     },
     {
       message: "Gender is required",
+    },
+  ),
+});
+
+const siblingSchema = z.object({
+  fullName: z.string().min(1, "Sibling's date of birth is required").optional(),
+  contactNumber: z.string().min(10, "Sibling's phone number is required"),
+  sex: z.object(
+    {
+      value: z.string().min(1, { message: "Sibling's gender is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Sibling's gender is required",
     },
   ),
 });
@@ -162,6 +179,7 @@ const employmentSchema = z.object({
 
 const familyInfo2Schema = z.object({
   children: z.array(childrenSchema).optional(),
+  siblings: z.array(siblingSchema).optional(), // New siblings field
   emergencyContact: emergencyContactSchema,
   nextOfKin: emergencyContactSchema,
 });
@@ -169,7 +187,7 @@ const familyInfo2Schema = z.object({
 const paymentInformationSchema = z.object({
   accountNumber: z.string().min(1, "Account Number is required"),
   ssnitNumber: z.string().min(1, "SSNIT Number is required"),
-  ghanaCardNumber: z.string().min(1, "Ghana Card Number is required"),
+  ghanaCardNumber: z.string().min(11, "Ghana Card Number is required"),
 });
 
 export const fullOnboardingSchema = personalInfoSchema

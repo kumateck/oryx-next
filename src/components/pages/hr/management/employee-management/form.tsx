@@ -37,7 +37,7 @@ const defaultAssociated: EmployeeItemDto = {
   email: "",
 };
 
-const RackForm = <TFieldValues extends FieldValues, TContext>({
+const EmployeeForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
@@ -80,7 +80,7 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
                   label: "Employee Type",
                   control: control as Control,
                   type: InputTypes.SELECT,
-                  name: `products.${index}.sizeType`,
+                  name: `employees.${index}.employeeType`,
                   required: true,
                   placeholder: "Select Employee Type",
                   defaultValue: defaultValues?.products[index]?.sizeType,
@@ -106,4 +106,4 @@ const RackForm = <TFieldValues extends FieldValues, TContext>({
   );
 };
 
-export default RackForm;
+export default EmployeeForm;

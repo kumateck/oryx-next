@@ -3,11 +3,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  WarehouseLocationRackDto,
-  useDeleteApiV1WarehouseRackByRackIdMutation,
-  useLazyGetApiV1WarehouseRackQuery,
+  DesignationDto,
+  useDeleteApiV1DesignationByIdMutation,
+  useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import { TableMenuAction } from "@/shared/table-menu";
@@ -16,16 +17,14 @@ import Edit from "./edit";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
+export function DataTableRowActions<TData extends DesignationDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseRackByRackIdMutation();
+  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<WarehouseLocationRackDto>(
-    {} as WarehouseLocationRackDto,
-  );
+  const [details, setDetails] = useState<DesignationDto>({} as DesignationDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -91,12 +90,10 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              rackId: details.id as string,
+              id: details.id as string,
             }).unwrap();
-            toast.success("Rack deleted successfully");
-            loadWarehouseLocationRacks({
-              pageSize: 30,
-            });
+            toast.success("Designation deleted successfully");
+            loadDesignations({ page: 1, pageSize: 10 });
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
@@ -106,7 +103,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
 }
 
-export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
+export const columns: ColumnDef<DesignationDto>[] = [
   {
     accessorKey: "name",
     header: "Designation Name",
@@ -115,12 +112,19 @@ export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
   {
     accessorKey: "associatedDepartment",
     header: "Associated Department",
-    cell: ({ row }) => <div>{row.original.warehouseLocation?.name}</div>,
+    cell: ({ row }) => (
+      // <div>{row.original.departments?.map((d) => d.name)}</div>
+      <div>{row.original.departments?.map((d) => d.name).join(", ")}</div>
+    ),
   },
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>
+        <TheAduseiEditorViewer content={row.original.description as string} />
+      </div>
+    ),
   },
 
   {

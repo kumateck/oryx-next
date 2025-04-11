@@ -358,6 +358,64 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    postApiV1Designation: build.mutation<
+      PostApiV1DesignationApiResponse,
+      PostApiV1DesignationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/designation`,
+        method: "POST",
+        body: queryArg.createDesignationRequest,
+      }),
+    }),
+    getApiV1Designation: build.query<
+      GetApiV1DesignationApiResponse,
+      GetApiV1DesignationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/designation`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1DesignationById: build.query<
+      GetApiV1DesignationByIdApiResponse,
+      GetApiV1DesignationByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/designation/${queryArg.id}` }),
+    }),
+    putApiV1DesignationById: build.mutation<
+      PutApiV1DesignationByIdApiResponse,
+      PutApiV1DesignationByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/designation/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createDesignationRequest,
+      }),
+    }),
+    deleteApiV1DesignationById: build.mutation<
+      DeleteApiV1DesignationByIdApiResponse,
+      DeleteApiV1DesignationByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/designation/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
+    postApiV1EmployeeRegister: build.mutation<
+      PostApiV1EmployeeRegisterApiResponse,
+      PostApiV1EmployeeRegisterApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/register`,
+        method: "POST",
+        body: queryArg.onboardEmployeeDto,
+      }),
+    }),
     postApiV1Employee: build.mutation<
       PostApiV1EmployeeApiResponse,
       PostApiV1EmployeeApiArg
@@ -366,6 +424,19 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/employee`,
         method: "POST",
         body: queryArg.createEmployeeRequest,
+      }),
+    }),
+    getApiV1Employee: build.query<
+      GetApiV1EmployeeApiResponse,
+      GetApiV1EmployeeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
       }),
     }),
     getApiV1EmployeeById: build.query<
@@ -382,6 +453,15 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/employee/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createEmployeeRequest,
+      }),
+    }),
+    deleteApiV1EmployeeById: build.mutation<
+      DeleteApiV1EmployeeByIdApiResponse,
+      DeleteApiV1EmployeeByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/${queryArg.id}`,
+        method: "DELETE",
       }),
     }),
     postApiV1FileByModelTypeAndModelIdReference: build.mutation<
@@ -3292,9 +3372,46 @@ export type DeleteApiV1DepartmentByDepartmentIdApiArg = {
   /** The ID of the department to delete. */
   departmentId: string;
 };
+export type PostApiV1DesignationApiResponse = /** status 200 OK */ string;
+export type PostApiV1DesignationApiArg = {
+  createDesignationRequest: CreateDesignationRequest;
+};
+export type GetApiV1DesignationApiResponse =
+  /** status 200 OK */ DesignationDtoIEnumerablePaginateableRead;
+export type GetApiV1DesignationApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type GetApiV1DesignationByIdApiResponse =
+  /** status 200 OK */ DesignationDtoRead;
+export type GetApiV1DesignationByIdApiArg = {
+  id: string;
+};
+export type PutApiV1DesignationByIdApiResponse =
+  /** status 204 No Content */ DesignationDtoRead;
+export type PutApiV1DesignationByIdApiArg = {
+  id: string;
+  createDesignationRequest: CreateDesignationRequest;
+};
+export type DeleteApiV1DesignationByIdApiResponse = unknown;
+export type DeleteApiV1DesignationByIdApiArg = {
+  id: string;
+};
+export type PostApiV1EmployeeRegisterApiResponse = unknown;
+export type PostApiV1EmployeeRegisterApiArg = {
+  onboardEmployeeDto: OnboardEmployeeDto;
+};
 export type PostApiV1EmployeeApiResponse = /** status 200 OK */ string;
 export type PostApiV1EmployeeApiArg = {
   createEmployeeRequest: CreateEmployeeRequest;
+};
+export type GetApiV1EmployeeApiResponse =
+  /** status 200 OK */ EmployeeDtoIEnumerablePaginateable;
+export type GetApiV1EmployeeApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
 };
 export type GetApiV1EmployeeByIdApiResponse = /** status 200 OK */ EmployeeDto;
 export type GetApiV1EmployeeByIdApiArg = {
@@ -3304,6 +3421,10 @@ export type PutApiV1EmployeeByIdApiResponse = unknown;
 export type PutApiV1EmployeeByIdApiArg = {
   id: string;
   createEmployeeRequest: CreateEmployeeRequest;
+};
+export type DeleteApiV1EmployeeByIdApiResponse = unknown;
+export type DeleteApiV1EmployeeByIdApiArg = {
+  id: string;
 };
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiResponse = unknown;
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiArg = {
@@ -5303,20 +5424,150 @@ export type DepartmentDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type CreateDesignationRequest = {
+  name: string;
+  description?: string | null;
+  departmentIds: string[];
+};
+export type DesignationDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  departments?: DepartmentDto[] | null;
+};
+export type DesignationDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  departments?: DepartmentDtoRead[] | null;
+};
+export type DesignationDtoIEnumerablePaginateable = {
+  data?: DesignationDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type DesignationDtoIEnumerablePaginateableRead = {
+  data?: DesignationDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type EmployeeType = 0 | 1;
-export type CreateEmployeeRequest = {
-  staffNumber: string;
-  email: string;
+export type EmployeeInviteDto = {
+  email?: string | null;
+  employeeType?: EmployeeType;
+};
+export type OnboardEmployeeDto = {
+  emailList: EmployeeInviteDto[];
+};
+export type Gender = 0 | 1;
+export type MaritalStatus = 0 | 1;
+export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type LifeStatus = 0 | 1;
+export type PersonDto = {
+  fullName: string;
   phoneNumber: string;
-  type?: EmployeeType;
+  occupation: string;
+  lifeStatus: LifeStatus;
+};
+export type EmergencyContactDto = {
+  fullName: string;
+  contactNumber: string;
+  relationship: string;
+  residentialAddress: string;
+};
+export type ChildDto = {
+  fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+};
+export type SiblingDto = {
+  fullName?: string | null;
+  contact: string;
+  gender: Gender;
+};
+export type EducationDto = {
+  schoolName: string;
+  startDate: string;
+  endDate: string;
+  major: string;
+  qualificationEarned: string;
+};
+export type EmploymentHistoryDto = {
+  companyName?: string | null;
+  startDate?: string;
+  endDate?: string;
+  position?: string | null;
+};
+export type CreateEmployeeRequest = {
+  fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+  contact: string;
+  region: string;
+  nationality: string;
+  residentialAddress: string;
+  maritalStatus: MaritalStatus;
+  religion: Religion;
+  dateEmployed: string;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
+  staffNumber?: string | null;
+  email: string;
+  mother: PersonDto;
+  father: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact: EmergencyContactDto;
+  nextOfKin: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground: EducationDto[];
+  employmentHistory: EmploymentHistoryDto[];
 };
 export type EmployeeDto = {
   id?: string;
-  user?: UserDto;
+  fullName?: string | null;
+  dateOfBirth?: string;
+  gender?: Gender;
+  residentialAddress?: string | null;
+  nationality?: string | null;
+  region?: string | null;
+  maritalStatus?: MaritalStatus;
+  religion?: Religion;
   staffNumber?: string | null;
   email?: string | null;
   phoneNumber?: string | null;
   type?: EmployeeType;
+  mother?: PersonDto;
+  father?: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact?: EmergencyContactDto;
+  nextOfKin?: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground?: EducationDto[] | null;
+  employmentHistory?: EmploymentHistoryDto[] | null;
+};
+export type EmployeeDtoIEnumerablePaginateable = {
+  data?: EmployeeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type CreateFormFieldRequest = {
   questionId?: string;
@@ -7734,7 +7985,6 @@ export type Requisition = {
   requisitionType?: RequisitionType;
   status?: RequestStatus;
   comments?: string | null;
-  approved?: boolean;
   expectedDelivery?: string | null;
   productId?: string;
   product?: Product;
@@ -7744,6 +7994,7 @@ export type Requisition = {
   productionActivityStep?: ProductionActivityStep;
   approvals?: RequisitionApproval[] | null;
   items?: RequisitionItem[] | null;
+  approved?: boolean;
 };
 export type RequisitionRead = {
   id?: string;
@@ -7764,7 +8015,6 @@ export type RequisitionRead = {
   requisitionType?: RequisitionType;
   status?: RequestStatus;
   comments?: string | null;
-  approved?: boolean;
   expectedDelivery?: string | null;
   productId?: string;
   product?: ProductRead;
@@ -7774,6 +8024,7 @@ export type RequisitionRead = {
   productionActivityStep?: ProductionActivityStepRead;
   approvals?: RequisitionApprovalRead[] | null;
   items?: RequisitionItem[] | null;
+  approved?: boolean;
 };
 export type RequisitionItem = {
   id?: string;
@@ -9341,6 +9592,36 @@ export type WarehouseRead = {
   arrivalLocation?: WarehouseArrivalLocationRead;
   type?: WarehouseType;
 };
+export type Designation = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name: string;
+  description?: string | null;
+  departments?: Department[] | null;
+};
+export type DesignationRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name: string;
+  description?: string | null;
+  departments?: Department[] | null;
+};
 export type Department = {
   id?: string;
   code?: string | null;
@@ -9354,6 +9635,7 @@ export type Department = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   warehouses?: Warehouse[] | null;
+  designations?: Designation[] | null;
 };
 export type DepartmentRead = {
   id?: string;
@@ -9368,6 +9650,7 @@ export type DepartmentRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   warehouses?: WarehouseRead[] | null;
+  designations?: DesignationRead[] | null;
 };
 export type User = {
   id?: string;
@@ -11167,10 +11450,21 @@ export const {
   useLazyGetApiV1DepartmentByDepartmentIdQuery,
   usePutApiV1DepartmentByDepartmentIdMutation,
   useDeleteApiV1DepartmentByDepartmentIdMutation,
+  usePostApiV1DesignationMutation,
+  useGetApiV1DesignationQuery,
+  useLazyGetApiV1DesignationQuery,
+  useGetApiV1DesignationByIdQuery,
+  useLazyGetApiV1DesignationByIdQuery,
+  usePutApiV1DesignationByIdMutation,
+  useDeleteApiV1DesignationByIdMutation,
+  usePostApiV1EmployeeRegisterMutation,
   usePostApiV1EmployeeMutation,
+  useGetApiV1EmployeeQuery,
+  useLazyGetApiV1EmployeeQuery,
   useGetApiV1EmployeeByIdQuery,
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
+  useDeleteApiV1EmployeeByIdMutation,
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,

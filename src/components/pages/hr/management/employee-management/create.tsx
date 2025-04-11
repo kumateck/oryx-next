@@ -7,15 +7,17 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle, // Icon,
+  DialogTitle,
+  Icon, // Icon,
 } from "@/components/ui";
 import { EmployeeType, Option, WarehouseType } from "@/lib";
 import {
   // CreateWarehouseLocationRackRequest,
   useLazyGetApiV1WarehouseLocationQuery,
-  useLazyGetApiV1WarehouseRackQuery, // usePostApiV1WarehouseByLocationIdRackMutation,
+  useLazyGetApiV1WarehouseRackQuery,
+  usePostApiV1EmployeeRegisterMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateEmployeeValidator, EmployeeRequestDto } from "./types";
@@ -27,9 +29,9 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
-  // const [createWarehouseLocationRack, { isLoading }] =
-  //   usePostApiV1WarehouseByLocationIdRackMutation();
+  const [loadEmployees] = useLazyGetApiV1WarehouseRackQuery();
+  const [createEmployee, { isLoading }] =
+    usePostApiV1EmployeeRegisterMutation();
 
   const {
     register,
@@ -65,19 +67,22 @@ const Create = ({ isOpen, onClose }: Props) => {
       value: String(value),
     }));
 
-  console.log(employmeeTypeOptions);
   const onSubmit = async (data: EmployeeRequestDto) => {
     try {
-      console.log(data);
-      // const payload = {
-      //   ...data,
-      // } satisfies CreateWarehouseLocationRackRequest;
-      // await createWarehouseLocationRack({
-      //   locationId: data?.locationId.value,
-      //   createWarehouseLocationRackRequest: payload,
-      // });
+      const payload = {
+        emailList: data.employees.map((emp) => ({
+          email: emp.email,
+          employeeType: parseInt(
+            emp.employeeType.value,
+          ) as unknown as EmployeeType,
+        })),
+      };
+      console.log("Submitting payload:", payload);
+      await createEmployee({
+        onboardEmployeeDto: payload,
+      });
       toast.success("Employee(s) registered successfully");
-      loadWarehouseLocationRacks({
+      loadEmployees({
         page: 1,
         pageSize: 10,
       });
@@ -136,12 +141,12 @@ const Create = ({ isOpen, onClose }: Props) => {
             </Button>
 
             <Button variant={"default"} className="flex items-center gap-2">
-              {/* <Icon
+              <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
                   "animate-spin": isLoading,
                 })}
-              /> */}
+              />
               <span>Save</span>{" "}
             </Button>
           </DialogFooter>

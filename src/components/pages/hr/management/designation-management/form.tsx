@@ -8,26 +8,21 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { FetchOptionsResult } from "@/components/ui";
-import { InputTypes } from "@/lib";
+import { InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
-  isLoading: boolean;
-  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
-
+  departmentOptions: Option[];
   defaultValues?: TFieldValues;
 }
+
 const DesignationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  isLoading,
-  fetchOptions,
-
+  departmentOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -44,15 +39,14 @@ const DesignationForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Associated Department",
+            label: "Associated Departments",
             control: control as Control,
-            type: InputTypes.ASYNC_SELECT,
-            name: "associatedDepartment",
+            type: InputTypes.MULTI,
+            name: "departmentIds",
             required: true,
-            defaultValue: defaultValues?.locationId,
-            placeholder: "Select associated department",
-            fetchOptions: fetchOptions,
-            isLoading: isLoading,
+            defaultValue: defaultValues?.departmentIds,
+            placeholder: "Select associated departments",
+            options: departmentOptions,
             errors,
           },
           {
@@ -60,7 +54,7 @@ const DesignationForm = <TFieldValues extends FieldValues, TContext>({
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
-            autoFocus: true,
+            autoFocus: false,
             placeholder: "Enter description",
             suggestions: [],
             errors,

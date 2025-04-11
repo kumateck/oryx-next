@@ -282,33 +282,33 @@ export enum BillingSheetStatus {
 }
 
 export enum MaritalStatus {
-  Single = "Single",
-  Married = "Married",
+  Single,
+  Married,
 }
 
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
+  Male,
+  Female,
 }
 
 export enum LifeStatus {
-  Alive = "Alive",
-  Deceased = "Deceased",
+  Alive,
+  Deceased,
 }
 
 export enum Religions {
-  Christianity = "Christianity",
-  Islam = "Islam",
-  Hinduism = "Hinduism",
-  Buddhism = "Buddhism",
-  Judaism = "Judaism",
-  TARs = "Traditional African Religions",
-  Sikhism = "Sikhism",
-  Baháí = "Bahá'í",
-  Other = "Other",
+  Christianity,
+  Islam,
+  Hinduism,
+  Buddhism,
+  Judaism,
+  TARs,
+  Sikhism,
+  Baháí,
+  Other,
 }
 
 export enum EmployeeType {
-  Permanent = 0,
-  Casual = 1,
+  Permanent,
+  Casual,
 }

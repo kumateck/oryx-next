@@ -40,6 +40,7 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
       stepIndex: 0,
       subSections: [
         {
+          // No heading provided; render details in a 3-column grid.
           details: [
             { label: "Full Name", value: data.fullName || "" },
             {
@@ -98,7 +99,7 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
             { label: "Occupation", value: data.mother?.occupation || "" },
           ],
         },
-        // Only render the spouse sub-section if data is present.
+        // Only render spouse if data is present.
         ...(data.spouse && data.spouse.fullName
           ? [
               {
@@ -151,7 +152,7 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
             { label: "Relation", value: data.nextOfKin?.relation || "" },
           ],
         },
-        // Map each child into its own sub-section.
+        // Render each child as its own sub-section
         ...(data.children && data.children.length > 0
           ? data.children.map((child, i) => ({
               heading: `Child ${i + 1}`,
@@ -164,6 +165,20 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
                     : "",
                 },
                 { label: "Gender", value: child.sex?.label || "" },
+              ],
+            }))
+          : []),
+        // Render each sibling (if any) as its own sub-section
+        ...(data.siblings && data.siblings.length > 0
+          ? data.siblings.map((sibling, i) => ({
+              heading: `Sibling ${i + 1}`,
+              details: [
+                { label: "Full Name", value: sibling.fullName || "" },
+                {
+                  label: "Contact Number",
+                  value: sibling.contactNumber || "",
+                },
+                { label: "Gender", value: sibling.sex?.label || "" },
               ],
             }))
           : []),
@@ -227,6 +242,7 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
       stepIndex: 5,
       subSections: [
         {
+          // No heading provided; render details in a 3-column grid.
           details: [
             { label: "Account Number", value: data.accountNumber || "" },
             { label: "SSNIT Number", value: data.ssnitNumber || "" },
@@ -248,10 +264,8 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
                 Edit
               </Button>
             </div>
-
             {section.subSections?.map((sub, idx) => {
               if (!sub.heading) {
-                // For subsections WITHOUT headings - render directly in a 3-column grid
                 return (
                   <div key={idx} className="grid grid-cols-3">
                     {sub.details.map((item, i) => (
@@ -266,13 +280,11 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
                     ))}
                   </div>
                 );
-              } else {
-                // For subsections WITH headings
-                return null; // Return null first, we'll handle these in the next step
               }
+              return null;
             })}
 
-            {/* For subsections WITH headings - render in a 3-column grid layout */}
+            {/* Render subsections with headings */}
             {section.subSections?.some((sub) => sub.heading) && (
               <div className="grid grid-cols-3 gap-4">
                 {section.subSections

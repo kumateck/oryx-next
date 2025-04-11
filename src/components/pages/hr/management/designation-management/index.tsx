@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
-  useGetApiV1WarehouseRackQuery,
+  useGetApiV1DesignationQuery,
   useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
@@ -19,7 +19,7 @@ const Page = () => {
   // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1WarehouseRackQuery({
+  const { data: result, isLoading } = useGetApiV1DesignationQuery({
     page,
     pageSize,
   });

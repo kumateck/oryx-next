@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Icon } from "@/components/ui";
-import { useLazyGetApiV1ProcurementBillingSheetQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1EmployeeQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -16,7 +16,7 @@ const EmployeeManagement = () => {
   const [page, setPage] = useState(1);
 
   const [loadData, { isFetching, data: result, isLoading }] =
-    useLazyGetApiV1ProcurementBillingSheetQuery();
+    useLazyGetApiV1EmployeeQuery();
 
   useEffect(() => {
     loadData({
@@ -36,7 +36,7 @@ const EmployeeManagement = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Employee Management" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" onClick={() => setIsOpen(true)}>
+          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
             <Icon name="Plus" className="h-4 w-4" />{" "}
             <span>Register Employee</span>
           </Button>
