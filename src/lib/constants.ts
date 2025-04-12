@@ -77,6 +77,7 @@ export const routes = {
   signin: () => "/signin",
   signout: () => "/signout",
   profile: () => "/profile",
+  onboarding: () => "/onboarding",
   resetPassword: () => "/reset-password",
   forgotPassword: () => "/forgot-password",
   setPassword: () => "/set-password",

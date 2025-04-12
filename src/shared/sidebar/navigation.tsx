@@ -273,16 +273,26 @@ export const ROUTES: Route[] = [
   {
     title: "Human Resource",
     menu: [
-      // {
-      //   title: "string",
-      //   url: "string",
-      //   icon: "BookUser",
-      //   isActive: false,
-      //   // items: [{
-      //   //   title: "string",
-      //   //   url: "string"
-      //   // }]
-      // },
+      {
+        title: "Management",
+        // url: "",
+        icon: "Folder",
+        //    isActive: false,
+        items: [
+          {
+            title: "Employee Management",
+            url: "/hr/employee-management",
+          },
+          {
+            title: "Designation Management",
+            url: "/hr/designation-management",
+          },
+          // {
+          //   title: "Shipment Discrepancy",
+          //   url: "/logistics/shipment-discrepancy",
+          // },
+        ],
+      },
     ],
   },
   {

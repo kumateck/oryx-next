@@ -3,49 +3,71 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-// import { Button, Icon } from "@/components/ui";
-// import { routes } from "@/lib";
-import { useLazyGetApiV1ProcurementBillingSheetQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1EmployeeQuery } from "@/lib/redux/api/openapi.generated";
+import DropdownBtns from "@/shared/btns/drop-btn";
 import { ServerDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import Create from "./create";
 
-const Page = () => {
+const EmployeeManagement = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const router = useRouter();
 
   const [loadData, { isFetching, data: result, isLoading }] =
-    useLazyGetApiV1ProcurementBillingSheetQuery();
+    useLazyGetApiV1EmployeeQuery();
 
   useEffect(() => {
     loadData({
       page,
       pageSize,
     });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
 
   const data = result?.data || [];
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <ScrollablePageWrapper className="w-full space-y-2 py-1">
+      {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Billing Sheets" />
+        <PageTitle title="Employee Management" />
+        <div className="flex items-center justify-end gap-2">
+          {/* <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
+            <Icon name="Plus" className="h-4 w-4" />{" "}
+            <span>Register Employee</span>
+          </Button> */}
+          <DropdownBtns
+            title="Register Employee"
+            icon="Plus"
+            menus={[
+              {
+                name: "Casual Onboarding Form",
+                onClick: () => router.push("/hr/employee-management/create/0"),
+              },
+              {
+                name: "Permanent Onboarding Form",
+                onClick: () => router.push("/hr/employee-management/create/1"),
+              },
+              {
+                name: "Send Form by Email",
+                onClick: () => setIsOpen(true),
+              },
+            ]}
+          />
+        </div>
       </div>
 
       <ServerDatatable
-        onRowClick={(row) => {
-          router.push(`/logistics/billing-sheets/${row.id}`);
-        }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}
         setPageSize={setPageSize}
-        // onRowClick={(row) => router.push(`requisition/${row.id}`)}
         meta={{
           pageIndex: result?.pageIndex as number,
           pageCount: result?.pageCount as number,
@@ -60,4 +82,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default EmployeeManagement;
