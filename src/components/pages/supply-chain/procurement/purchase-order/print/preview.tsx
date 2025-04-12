@@ -129,22 +129,28 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
               <div className="grid grid-cols-2 gap-4">
                 <span>Total FOB Value in USD: </span>
                 <span className="font-bold">
-                  {data?.supplier?.currency?.symbol}
-                  {data?.totalFobValue}
+                  {formatAmount(Number(data?.totalFobValue), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <span className="">Insurance in USD: </span>
                 <span className="font-bold">
-                  {data?.supplier?.currency?.symbol}
-                  {data?.insurance}
+                  {formatAmount(Number(data?.insurance), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <span>Freight in USD: </span>
                 <span className="font-bold">
-                  {data?.supplier?.currency?.symbol}
-                  {data?.seaFreight}
+                  {formatAmount(Number(data?.seaFreight), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -154,8 +160,6 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
                     currencySymbol:
                       data?.supplier?.currency?.symbol?.toString(),
                   })}
-                  {/* {data?.supplier?.currency?.symbol}
-                  {data?.totalCifValue} */}
                 </span>
               </div>
             </div>

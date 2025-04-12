@@ -118,12 +118,12 @@ const Create = () => {
     } satisfies CreateProductRequest;
 
     try {
-      const res = await productMutation({
+      await productMutation({
         createProductRequest: payload,
       }).unwrap();
-      const productId = res as string;
+      // const productId = res as string;
       toast.success("Product Info created successfully");
-      router.push(routes.editPlanning(productId));
+      router.push(routes.planning());
       reset();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

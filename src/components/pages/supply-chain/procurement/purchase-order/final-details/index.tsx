@@ -16,7 +16,7 @@ import {
   COLLECTION_TYPES,
   ErrorResponse,
   Option,
-  amountToWords,
+  amountToWordsBritishStyle,
   isErrorResponse, // numberToWords,
 } from "@/lib";
 import {
@@ -86,7 +86,10 @@ const Create = ({
     setValue("cifValue", calculatedCif);
 
     // Convert to words and set amountInFigures
-    const amountInWords = amountToWords(calculatedCif, currency.name);
+    const amountInWords = amountToWordsBritishStyle(
+      calculatedCif,
+      currency.name,
+    );
     setValue("amountInWords", amountInWords);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -125,7 +128,7 @@ const Create = ({
   ) as Option[];
 
   const onSubmit = async (data: FinalDetailsRequestDto) => {
-    console.log("data", data);
+    // console.log("data", data);
     try {
       await saveMutation({
         purchaseOrderId: purchaseOrderId,

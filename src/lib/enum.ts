@@ -92,6 +92,14 @@ export enum EMaterialKind {
   Packing = 1,
 }
 
+export enum RevisionType {
+  ReassignSupplier = 0,
+  ChangeSource = 1,
+  AddItem = 2,
+  UpdateItem = 3,
+  RemoveItem = 4,
+}
+
 export enum WarehouseType {
   RawMaterial = 0,
   PackagedMaterial = 1,
