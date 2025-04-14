@@ -17,6 +17,7 @@ import {
 } from "@/lib";
 import {
   CreateEmployeeRequest,
+  PostApiV1EmployeeApiArg,
   usePostApiV1EmployeeMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
@@ -181,6 +182,7 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
+    // picture: "",
     fullName: data.fullName,
     dateOfBirth: data.dob.toISOString(),
     // gender: Number(data.gender.value as unknown as Gender),
@@ -263,8 +265,10 @@ export default function OnboardingForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     console.log("Form data:", data);
     try {
-      const payload = transformFormData(data) satisfies CreateEmployeeRequest;
-      await createEmployee({ createEmployeeRequest: payload }).unwrap();
+      const payload = {
+        createEmployeeRequest: transformFormData(data),
+      } satisfies PostApiV1EmployeeApiArg;
+      await createEmployee(payload).unwrap();
       toast.success("Form sent successfully");
       reset();
       setIsSubmitted(true);

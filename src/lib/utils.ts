@@ -949,7 +949,104 @@ export const numberToWords = (num: number): string => {
   return result.replace(/\s+/g, " ").trim() + " Dollars";
 };
 
-export function amountToWords(num: number, currency?: string): string {
+export function amountToWordsBritishStyle(
+  num: number,
+  currency?: string,
+): string {
+  const belowTwenty = [
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
+
+  const thousands = ["", "Thousand", "Million", "Billion"];
+
+  function helper(n: number): string {
+    if (n === 0) return "";
+    if (n < 20) return belowTwenty[n];
+    if (n < 100)
+      return (
+        tens[Math.floor(n / 10)] +
+        (n % 10 !== 0 ? "-" + belowTwenty[n % 10] : "")
+      );
+    if (n < 1000) {
+      const remainder = n % 100;
+      return (
+        belowTwenty[Math.floor(n / 100)] +
+        " Hundred" +
+        (remainder !== 0 ? " and " + helper(remainder) : "")
+      );
+    }
+    return "";
+  }
+
+  function convertInteger(n: number): string {
+    if (n === 0) return "Zero";
+    let res = "";
+    let i = 0;
+    while (n > 0) {
+      const chunk = n % 1000;
+      if (chunk !== 0) {
+        const chunkStr = helper(chunk);
+        res =
+          chunkStr +
+          (thousands[i] ? " " + thousands[i] : "") +
+          (res ? " " + res : "");
+      }
+      n = Math.floor(n / 1000);
+      i++;
+    }
+    return res.trim();
+  }
+
+  const [whole, decimal] = num.toFixed(2).split(".");
+  const dollars = parseInt(whole);
+  const cents = parseInt(decimal);
+
+  let result =
+    convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
+  if (cents > 0) {
+    result +=
+      " and " + convertInteger(cents) + " Pesewa" + (cents !== 1 ? "s" : "");
+  }
+
+  return result;
+}
+
+export function amountToWordsAmericanStyle(
+  num: number,
+  currency?: string,
+): string {
   const belowTwenty = [
     "",
     "One",

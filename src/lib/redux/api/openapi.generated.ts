@@ -65,6 +65,22 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    postApiV1ApprovalApproveByModelTypeAndModelId: build.mutation<
+      PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse,
+      PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/approval/approve/${queryArg.modelType}/${queryArg.modelId}`,
+        method: "POST",
+        body: queryArg.approvalRequestBody,
+      }),
+    }),
+    getApiV1ApprovalMyPending: build.query<
+      GetApiV1ApprovalMyPendingApiResponse,
+      GetApiV1ApprovalMyPendingApiArg
+    >({
+      query: () => ({ url: `/api/v1/approval/my-pending` }),
+    }),
     postApiV1AuthLogin: build.mutation<
       PostApiV1AuthLoginApiResponse,
       PostApiV1AuthLoginApiArg
@@ -436,6 +452,8 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          designation: queryArg.designation,
+          department: queryArg.department,
         },
       }),
     }),
@@ -462,6 +480,16 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee/${queryArg.id}`,
         method: "DELETE",
+      }),
+    }),
+    putApiV1EmployeeByIdAssign: build.mutation<
+      PutApiV1EmployeeByIdAssignApiResponse,
+      PutApiV1EmployeeByIdAssignApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/${queryArg.id}/assign`,
+        method: "PUT",
+        body: queryArg.assignEmployeeDto,
       }),
     }),
     postApiV1FileByModelTypeAndModelIdReference: build.mutation<
@@ -508,6 +536,14 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/file/${queryArg.modelId}/${queryArg.reference}`,
         method: "DELETE",
+      }),
+    }),
+    getApiV1FileByModelTypeAndReference: build.query<
+      GetApiV1FileByModelTypeAndReferenceApiResponse,
+      GetApiV1FileByModelTypeAndReferenceApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/file/${queryArg.modelType}/${queryArg.reference}`,
       }),
     }),
     postApiV1Form: build.mutation<
@@ -2607,6 +2643,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.uploadFileRequest,
       }),
     }),
+    postApiV1UserSignatureById: build.mutation<
+      PostApiV1UserSignatureByIdApiResponse,
+      PostApiV1UserSignatureByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/user/signature/${queryArg.id}`,
+        method: "POST",
+        body: queryArg.uploadFileRequest,
+      }),
+    }),
     getApiV1UserToggleDisableById: build.query<
       GetApiV1UserToggleDisableByIdApiResponse,
       GetApiV1UserToggleDisableByIdApiArg
@@ -3178,6 +3224,15 @@ export type DeleteApiV1ApprovalByApprovalIdApiResponse = unknown;
 export type DeleteApiV1ApprovalByApprovalIdApiArg = {
   approvalId: string;
 };
+export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse = unknown;
+export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg = {
+  modelType: string;
+  modelId: string;
+  approvalRequestBody: ApprovalRequestBody;
+};
+export type GetApiV1ApprovalMyPendingApiResponse =
+  /** status 200 OK */ ApprovalEntity[];
+export type GetApiV1ApprovalMyPendingApiArg = void;
 export type PostApiV1AuthLoginApiResponse = /** status 200 OK */ LoginResponse;
 export type PostApiV1AuthLoginApiArg = {
   loginRequest: LoginRequest;
@@ -3412,6 +3467,8 @@ export type GetApiV1EmployeeApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  designation?: string;
+  department?: string;
 };
 export type GetApiV1EmployeeByIdApiResponse = /** status 200 OK */ EmployeeDto;
 export type GetApiV1EmployeeByIdApiArg = {
@@ -3425,6 +3482,11 @@ export type PutApiV1EmployeeByIdApiArg = {
 export type DeleteApiV1EmployeeByIdApiResponse = unknown;
 export type DeleteApiV1EmployeeByIdApiArg = {
   id: string;
+};
+export type PutApiV1EmployeeByIdAssignApiResponse = unknown;
+export type PutApiV1EmployeeByIdAssignApiArg = {
+  id: string;
+  assignEmployeeDto: AssignEmployeeDto;
 };
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiResponse = unknown;
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiArg = {
@@ -3468,6 +3530,14 @@ export type DeleteApiV1FileByModelIdAndReferenceApiArg = {
   /** The ID of the attachment. */
   modelId: string;
   /** The reference of the attachment to delete. */
+  reference: string;
+};
+export type GetApiV1FileByModelTypeAndReferenceApiResponse =
+  /** status 200 OK */ Blob;
+export type GetApiV1FileByModelTypeAndReferenceApiArg = {
+  /** The type of the model (e.g., "Product", "User", etc.) where the file is associated. */
+  modelType: string;
+  /** A reference name for the specific file (e.g., file name, document ID, etc.). */
   reference: string;
 };
 export type PostApiV1FormApiResponse = /** status 200 OK */ string;
@@ -4856,6 +4926,11 @@ export type PostApiV1UserAvatarByIdApiArg = {
   id: string;
   uploadFileRequest: UploadFileRequest;
 };
+export type PostApiV1UserSignatureByIdApiResponse = unknown;
+export type PostApiV1UserSignatureByIdApiArg = {
+  id: string;
+  uploadFileRequest: UploadFileRequest;
+};
 export type GetApiV1UserToggleDisableByIdApiResponse = unknown;
 export type GetApiV1UserToggleDisableByIdApiArg = {
   id: string;
@@ -5170,6 +5245,7 @@ export type UserDto = {
   lastName?: string | null;
   email?: string | null;
   avatar?: string | null;
+  signature?: string | null;
   department?: CollectionItemDto;
 };
 export type ActionType = 0 | 1 | 2 | 3;
@@ -5203,7 +5279,6 @@ export type ProblemDetails = {
   instance?: string | null;
   [key: string]: any;
 };
-export type RequisitionType = 0 | 1;
 export type CreateApprovalStageRequest = {
   userId?: string | null;
   roleId?: string | null;
@@ -5211,9 +5286,10 @@ export type CreateApprovalStageRequest = {
   order?: number;
 };
 export type CreateApprovalRequest = {
-  requisitionType?: RequisitionType;
+  itemType?: string | null;
   approvalStages?: CreateApprovalStageRequest[] | null;
 };
+export type RequisitionType = 0 | 1;
 export type ApprovalStageDto = {
   user?: CollectionItemDto;
   role?: CollectionItemDto;
@@ -5235,6 +5311,15 @@ export type ApprovalDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type ApprovalRequestBody = {
+  comments?: string | null;
+};
+export type ApprovalEntity = {
+  id?: string;
+  code?: string | null;
+  modelType?: string | null;
+  createdAt?: string;
 };
 export type LoginResponse = {
   userId?: string | null;
@@ -5467,6 +5552,7 @@ export type EmployeeType = 0 | 1;
 export type EmployeeInviteDto = {
   email?: string | null;
   employeeType?: EmployeeType;
+  staffNumber?: string | null;
 };
 export type OnboardEmployeeDto = {
   emailList: EmployeeInviteDto[];
@@ -5511,6 +5597,7 @@ export type EmploymentHistoryDto = {
   position?: string | null;
 };
 export type CreateEmployeeRequest = {
+  avatar?: string | null;
   fullName: string;
   dateOfBirth: string;
   gender: Gender;
@@ -5521,9 +5608,9 @@ export type CreateEmployeeRequest = {
   maritalStatus: MaritalStatus;
   religion: Religion;
   dateEmployed: string;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
   staffNumber?: string | null;
   email: string;
   mother: PersonDto;
@@ -5539,6 +5626,7 @@ export type CreateEmployeeRequest = {
 export type EmployeeDto = {
   id?: string;
   fullName?: string | null;
+  avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
   residentialAddress?: string | null;
@@ -5550,6 +5638,7 @@ export type EmployeeDto = {
   email?: string | null;
   phoneNumber?: string | null;
   type?: EmployeeType;
+  designationName?: string | null;
   mother?: PersonDto;
   father?: PersonDto;
   spouse?: PersonDto;
@@ -5568,6 +5657,11 @@ export type EmployeeDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type AssignEmployeeDto = {
+  designationId: string;
+  departmentId: string;
+  reportingManagerId: string;
 };
 export type CreateFormFieldRequest = {
   questionId?: string;
@@ -6284,6 +6378,7 @@ export type CreatePurchaseOrderRequest = {
   estimatedDeliveryDate?: string | null;
 };
 export type PurchaseOrderItemDto = {
+  id?: string;
   purchaseOrder?: CollectionItemDto;
   material?: CollectionItemDto;
   uom?: UnitOfMeasureDto;
@@ -6294,6 +6389,7 @@ export type PurchaseOrderItemDto = {
   canReassignSupplier?: boolean;
 };
 export type PurchaseOrderItemDtoRead = {
+  id?: string;
   purchaseOrder?: CollectionItemDto;
   material?: CollectionItemDto;
   uom?: UnitOfMeasureDto;
@@ -7921,50 +8017,32 @@ export type ProductionActivityStepRead = {
   completedAt?: string | null;
 };
 export type RequisitionApproval = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  requisitionId?: string;
-  requisition?: Requisition;
   userId?: string | null;
   user?: User;
   roleId?: string | null;
   role?: Role;
   required?: boolean;
+  order?: number;
   approved?: boolean;
   approvalTime?: string | null;
   comments?: string | null;
-  order?: number;
+  id?: string;
+  requisitionId?: string;
+  requisition?: Requisition;
 };
 export type RequisitionApprovalRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  requisitionId?: string;
-  requisition?: Requisition;
   userId?: string | null;
   user?: User;
   roleId?: string | null;
   role?: Role;
   required?: boolean;
+  order?: number;
   approved?: boolean;
   approvalTime?: string | null;
   comments?: string | null;
-  order?: number;
+  id?: string;
+  requisitionId?: string;
+  requisition?: Requisition;
 };
 export type Requisition = {
   id?: string;
@@ -8756,6 +8834,34 @@ export type TermsOfPaymentRead = {
   name?: string | null;
   description?: string | null;
 };
+export type PurchaseOrderApproval = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  order?: number;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  id?: string;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+};
+export type PurchaseOrderApprovalRead = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  order?: number;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  id?: string;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+};
 export type PurchaseOrder = {
   id?: string;
   createdAt?: string;
@@ -8790,6 +8896,8 @@ export type PurchaseOrder = {
   insurance?: number;
   amountInFigures?: string | null;
   estimatedDeliveryDate?: string | null;
+  approvals?: PurchaseOrderApproval[] | null;
+  approved?: boolean;
 };
 export type PurchaseOrderRead = {
   id?: string;
@@ -8826,6 +8934,8 @@ export type PurchaseOrderRead = {
   insurance?: number;
   amountInFigures?: string | null;
   estimatedDeliveryDate?: string | null;
+  approvals?: PurchaseOrderApprovalRead[] | null;
+  approved?: boolean;
 };
 export type ShipmentInvoiceItem = {
   id?: string;
@@ -9682,6 +9792,7 @@ export type User = {
   isDisabled?: boolean;
   departmentId?: string | null;
   department?: Department;
+  signature?: string | null;
 };
 export type UserRead = {
   id?: string;
@@ -9713,6 +9824,7 @@ export type UserRead = {
   isDisabled?: boolean;
   departmentId?: string | null;
   department?: DepartmentRead;
+  signature?: string | null;
 };
 export type ShipmentDocument = {
   id?: string;
@@ -11406,6 +11518,9 @@ export const {
   useLazyGetApiV1ApprovalByApprovalIdQuery,
   usePutApiV1ApprovalByApprovalIdMutation,
   useDeleteApiV1ApprovalByApprovalIdMutation,
+  usePostApiV1ApprovalApproveByModelTypeAndModelIdMutation,
+  useGetApiV1ApprovalMyPendingQuery,
+  useLazyGetApiV1ApprovalMyPendingQuery,
   usePostApiV1AuthLoginMutation,
   usePostApiV1AuthLoginWithRefreshTokenMutation,
   usePostApiV1AuthSetPasswordMutation,
@@ -11465,12 +11580,15 @@ export const {
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
   useDeleteApiV1EmployeeByIdMutation,
+  usePutApiV1EmployeeByIdAssignMutation,
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   useDeleteApiV1FileByModelIdMutation,
   useDeleteApiV1FileByModelIdAndReferenceMutation,
+  useGetApiV1FileByModelTypeAndReferenceQuery,
+  useLazyGetApiV1FileByModelTypeAndReferenceQuery,
   usePostApiV1FormMutation,
   useGetApiV1FormQuery,
   useLazyGetApiV1FormQuery,
@@ -11789,6 +11907,7 @@ export const {
   useDeleteApiV1UserByIdMutation,
   usePutApiV1UserRoleByIdMutation,
   usePostApiV1UserAvatarByIdMutation,
+  usePostApiV1UserSignatureByIdMutation,
   useGetApiV1UserToggleDisableByIdQuery,
   useLazyGetApiV1UserToggleDisableByIdQuery,
   usePostApiV1WarehouseMutation,

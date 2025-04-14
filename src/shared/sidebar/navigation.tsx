@@ -185,8 +185,12 @@ export const ROUTES: Route[] = [
             url: "/procurement/profoma-responses",
           },
           {
-            title: "Purchase Orders",
+            title: "Create Purchase Orders",
             url: "/procurement/purchase-orders",
+          },
+          {
+            title: "Purchase Order Lists",
+            url: "/procurement/purchase-order-lists",
           },
           {
             title: "Material Distribution",

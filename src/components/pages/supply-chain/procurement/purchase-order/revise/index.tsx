@@ -1,0 +1,184 @@
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
+import PageWrapper from "@/components/layout/wrapper";
+import { Button, Card, CardContent, Icon } from "@/components/ui";
+import {
+  EMaterialKind,
+  ErrorResponse,
+  isErrorResponse,
+  RevisionType,
+} from "@/lib";
+import {
+  PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseMutation,
+} from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
+import PageTitle from "@/shared/title";
+
+import TableForData from "./table";
+import { RevisionRequestDto } from "./type";
+import Create from "./create";
+import DropdownBtns from "@/shared/btns/drop-btn";
+import { toast } from "sonner";
+
+const RevisePurchaseOrder = () => {
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const [itemLists, setItemLists] = useState<RevisionRequestDto[]>([]);
+
+  const router = useRouter();
+  const { id } = useParams();
+  const POId = id as string;
+  const [loadPO] =
+    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
+
+  useEffect(() => {
+    handleLoadPO(POId);
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [POId, triggerReload]);
+  const [currency, setCurrency] = useState({
+    label: "",
+    value: "",
+  });
+
+  const handleLoadPO = async (pId: string) => {
+    const res = await loadPO({
+      purchaseOrderId: pId,
+    }).unwrap();
+
+    const supplierCurrency = {
+      label: res?.supplier?.currency?.symbol ?? "",
+      value: res?.supplier?.currency?.id ?? "",
+    };
+    setCurrency(supplierCurrency);
+    const response = res?.items?.map((item, idx) => ({
+      idIndex: (idx + 1).toString(),
+      purchaseOrderItemId: item.id ?? "",
+      material: {
+        label: item.material?.name ?? "",
+        value: item.material?.id ?? "",
+      },
+      uoM: {
+        label: item.uom?.name ?? "",
+        value: item.uom?.id ?? "",
+      },
+      quantity: item.quantity ?? 0,
+      price: item.price ?? 0,
+      currency: supplierCurrency,
+      type: RevisionType.UpdateItem,
+      currencyId: item.currency?.id ?? "",
+    })) as RevisionRequestDto[];
+
+    setItemLists(response);
+  };
+
+  const onBack = () => {
+    router.back();
+  };
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMaterialType, setIsMaterialType] = useState<EMaterialKind>(
+    EMaterialKind.Raw,
+  );
+
+  const [saveMutation, { isLoading: isSaving }] =
+    usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseMutation();
+
+  const handleSave = async () => {
+    try {
+      await saveMutation({
+        purchaseOrderId: POId,
+        body: itemLists?.map((item) => ({
+          // ...item,
+          uoMId: item.uoM?.value,
+          materialId: item.material?.value,
+          currencyId: item.currency?.value,
+          type: Number(item.type) as RevisionType,
+          quantity: item.quantity,
+          price: item.price,
+          purchaseOrderItemId: item.purchaseOrderItemId,
+        })),
+      } satisfies PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg).unwrap();
+      toast.success("Purchase Order revised successfully");
+      router.back();
+    } catch (error) {
+      console.error("Error saving purchase order:", error);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "An error occurred",
+      );
+    }
+  };
+  return (
+    <ScrollablePageWrapper>
+      <PageWrapper>
+        <div className="flex justify-between gap-4 py-2">
+          <div className="flex items-center gap-2">
+            <Icon name="ArrowLeft" onClick={onBack} />
+            <PageTitle title="Revise Purchase Order" />
+          </div>
+          <div className="flex items-center gap-2">
+            <DropdownBtns
+              title="Add New"
+              icon="Plus"
+              variant="outline"
+              menus={[
+                {
+                  name: "Raw Material",
+                  onClick: () => {
+                    setIsOpen(true);
+                    setIsMaterialType(EMaterialKind.Raw);
+                  },
+                },
+                {
+                  name: "Packing Material",
+                  onClick: () => {
+                    setIsOpen(true);
+                    setIsMaterialType(EMaterialKind.Packing);
+                  },
+                },
+              ]}
+            />
+            <Button onClick={handleSave}>
+              {isSaving ? (
+                <Icon name="LoaderCircle" className="mr-2 animate-spin" />
+              ) : (
+                <Icon name="Save" className="mr-2" />
+              )}
+              Save Changes
+            </Button>
+          </div>
+        </div>
+        {isOpen && (
+          <Create
+            setItemLists={setItemLists}
+            itemLists={itemLists}
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            currency={currency}
+            isMaterialType={isMaterialType}
+          />
+        )}
+        <Card>
+          <CardContent className="space-y-4 p-4">
+            <div className="w-full py-6">
+              <TableForData lists={itemLists} setItemLists={setItemLists} />
+            </div>
+          </CardContent>
+        </Card>
+      </PageWrapper>
+    </ScrollablePageWrapper>
+  );
+};
+
+export default RevisePurchaseOrder;
