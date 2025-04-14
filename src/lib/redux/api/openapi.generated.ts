@@ -456,6 +456,7 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/employee`,
         method: "POST",
         body: queryArg.createEmployeeRequest,
+        body: queryArg.createEmployeeRequest,
       }),
     }),
     getApiV1Employee: build.query<
@@ -5593,7 +5594,13 @@ export type EmploymentHistoryDto = {
   position?: string | null;
 };
 export type CreateEmployeeRequest = {
+  avatar?: string | null;
   fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+  contact: string;
+  region: string;
+  nationality: string;
   dateOfBirth: string;
   gender: Gender;
   contact: string;
@@ -5603,9 +5610,9 @@ export type CreateEmployeeRequest = {
   maritalStatus: MaritalStatus;
   religion: Religion;
   dateEmployed: string;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
   staffNumber?: string | null;
   email: string;
   mother: PersonDto;
@@ -5650,6 +5657,11 @@ export type EmployeeDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type AssignEmployeeDto = {
+  designationId: string;
+  departmentId: string;
+  reportingManagerId: string;
 };
 export type CreateFormFieldRequest = {
   questionId?: string;
