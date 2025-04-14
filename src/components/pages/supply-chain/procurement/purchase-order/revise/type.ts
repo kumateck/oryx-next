@@ -19,7 +19,7 @@ const typeValidator = z
   });
 export const CreateRevisionSchema = z.object({
   purchaseOrderItemId: z.string().optional(),
-  currencyId: z.string().optional(),
+  //   currencyId: z.string().optional(),
   idIndex: z.string().optional(),
   material: z.object(
     {

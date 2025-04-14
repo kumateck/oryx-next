@@ -439,7 +439,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee`,
         method: "POST",
-        body: queryArg.createEmployeeRequest,
+        body: queryArg.body,
       }),
     }),
     getApiV1Employee: build.query<
@@ -452,6 +452,8 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          designation: queryArg.designation,
+          department: queryArg.department,
         },
       }),
     }),
@@ -478,6 +480,16 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee/${queryArg.id}`,
         method: "DELETE",
+      }),
+    }),
+    putApiV1EmployeeByIdAssign: build.mutation<
+      PutApiV1EmployeeByIdAssignApiResponse,
+      PutApiV1EmployeeByIdAssignApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/${queryArg.id}/assign`,
+        method: "PUT",
+        body: queryArg.assignEmployeeDto,
       }),
     }),
     postApiV1FileByModelTypeAndModelIdReference: build.mutation<
@@ -3447,7 +3459,48 @@ export type PostApiV1EmployeeRegisterApiArg = {
 };
 export type PostApiV1EmployeeApiResponse = /** status 200 OK */ string;
 export type PostApiV1EmployeeApiArg = {
-  createEmployeeRequest: CreateEmployeeRequest;
+  body: {
+    avatar?: string;
+    fullName: string;
+    dateOfBirth: string;
+    gender: Gender;
+    contact: string;
+    region: string;
+    nationality: string;
+    residentialAddress: string;
+    maritalStatus: MaritalStatus;
+    religion: Religion;
+    dateEmployed: string;
+    bankAccountNumber: string;
+    ssnitNumber: string;
+    ghanaCardNumber: string;
+    staffNumber?: string;
+    email: string;
+    "mother.fullName": string;
+    "mother.phoneNumber": string;
+    "mother.occupation": string;
+    "mother.lifeStatus": LifeStatus;
+    "father.fullName": string;
+    "father.phoneNumber": string;
+    "father.occupation": string;
+    "father.lifeStatus": LifeStatus;
+    "spouse.fullName": string;
+    "spouse.phoneNumber": string;
+    "spouse.occupation": string;
+    "spouse.lifeStatus": LifeStatus;
+    "emergencyContact.fullName": string;
+    "emergencyContact.contactNumber": string;
+    "emergencyContact.relationship": string;
+    "emergencyContact.residentialAddress": string;
+    "nextOfKin.fullName": string;
+    "nextOfKin.contactNumber": string;
+    "nextOfKin.relationship": string;
+    "nextOfKin.residentialAddress": string;
+    children?: ChildDto[];
+    siblings?: SiblingDto[];
+    educationBackground: EducationDto[];
+    employmentHistory: EmploymentHistoryDto[];
+  };
 };
 export type GetApiV1EmployeeApiResponse =
   /** status 200 OK */ EmployeeDtoIEnumerablePaginateable;
@@ -3455,6 +3508,8 @@ export type GetApiV1EmployeeApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  designation?: string;
+  department?: string;
 };
 export type GetApiV1EmployeeByIdApiResponse = /** status 200 OK */ EmployeeDto;
 export type GetApiV1EmployeeByIdApiArg = {
@@ -3468,6 +3523,11 @@ export type PutApiV1EmployeeByIdApiArg = {
 export type DeleteApiV1EmployeeByIdApiResponse = unknown;
 export type DeleteApiV1EmployeeByIdApiArg = {
   id: string;
+};
+export type PutApiV1EmployeeByIdAssignApiResponse = unknown;
+export type PutApiV1EmployeeByIdAssignApiArg = {
+  id: string;
+  assignEmployeeDto: AssignEmployeeDto;
 };
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiResponse = unknown;
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiArg = {
@@ -5533,6 +5593,7 @@ export type EmployeeType = 0 | 1;
 export type EmployeeInviteDto = {
   email?: string | null;
   employeeType?: EmployeeType;
+  staffNumber?: string | null;
 };
 export type OnboardEmployeeDto = {
   emailList: EmployeeInviteDto[];
@@ -5541,18 +5602,6 @@ export type Gender = 0 | 1;
 export type MaritalStatus = 0 | 1;
 export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type LifeStatus = 0 | 1;
-export type PersonDto = {
-  fullName: string;
-  phoneNumber: string;
-  occupation: string;
-  lifeStatus: LifeStatus;
-};
-export type EmergencyContactDto = {
-  fullName: string;
-  contactNumber: string;
-  relationship: string;
-  residentialAddress: string;
-};
 export type ChildDto = {
   fullName: string;
   dateOfBirth: string;
@@ -5576,35 +5625,22 @@ export type EmploymentHistoryDto = {
   endDate?: string;
   position?: string | null;
 };
-export type CreateEmployeeRequest = {
+export type PersonDto = {
   fullName: string;
-  dateOfBirth: string;
-  gender: Gender;
-  contact: string;
-  region: string;
-  nationality: string;
+  phoneNumber: string;
+  occupation: string;
+  lifeStatus: LifeStatus;
+};
+export type EmergencyContactDto = {
+  fullName: string;
+  contactNumber: string;
+  relationship: string;
   residentialAddress: string;
-  maritalStatus: MaritalStatus;
-  religion: Religion;
-  dateEmployed: string;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
-  staffNumber?: string | null;
-  email: string;
-  mother: PersonDto;
-  father: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact: EmergencyContactDto;
-  nextOfKin: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground: EducationDto[];
-  employmentHistory: EmploymentHistoryDto[];
 };
 export type EmployeeDto = {
   id?: string;
   fullName?: string | null;
+  avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
   residentialAddress?: string | null;
@@ -5616,6 +5652,7 @@ export type EmployeeDto = {
   email?: string | null;
   phoneNumber?: string | null;
   type?: EmployeeType;
+  designationName?: string | null;
   mother?: PersonDto;
   father?: PersonDto;
   spouse?: PersonDto;
@@ -5634,6 +5671,38 @@ export type EmployeeDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type CreateEmployeeRequest = {
+  avatar?: string | null;
+  fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+  contact: string;
+  region: string;
+  nationality: string;
+  residentialAddress: string;
+  maritalStatus: MaritalStatus;
+  religion: Religion;
+  dateEmployed: string;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
+  staffNumber?: string | null;
+  email: string;
+  mother: PersonDto;
+  father: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact: EmergencyContactDto;
+  nextOfKin: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground: EducationDto[];
+  employmentHistory: EmploymentHistoryDto[];
+};
+export type AssignEmployeeDto = {
+  designationId: string;
+  departmentId: string;
+  reportingManagerId: string;
 };
 export type CreateFormFieldRequest = {
   questionId?: string;
@@ -8806,6 +8875,34 @@ export type TermsOfPaymentRead = {
   name?: string | null;
   description?: string | null;
 };
+export type PurchaseOrderApproval = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  order?: number;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  id?: string;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+};
+export type PurchaseOrderApprovalRead = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  order?: number;
+  approved?: boolean;
+  approvalTime?: string | null;
+  comments?: string | null;
+  id?: string;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+};
 export type PurchaseOrder = {
   id?: string;
   createdAt?: string;
@@ -8840,6 +8937,8 @@ export type PurchaseOrder = {
   insurance?: number;
   amountInFigures?: string | null;
   estimatedDeliveryDate?: string | null;
+  approvals?: PurchaseOrderApproval[] | null;
+  approved?: boolean;
 };
 export type PurchaseOrderRead = {
   id?: string;
@@ -8876,6 +8975,8 @@ export type PurchaseOrderRead = {
   insurance?: number;
   amountInFigures?: string | null;
   estimatedDeliveryDate?: string | null;
+  approvals?: PurchaseOrderApprovalRead[] | null;
+  approved?: boolean;
 };
 export type ShipmentInvoiceItem = {
   id?: string;
@@ -11520,6 +11621,7 @@ export const {
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
   useDeleteApiV1EmployeeByIdMutation,
+  usePutApiV1EmployeeByIdAssignMutation,
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,

@@ -50,20 +50,26 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
     }),
   ) as Option[];
 
-  const maritalStatusOptions = Object.values(MaritalStatus).map((status) => ({
-    label: status,
-    value: status,
-  }));
+  const maritalStatusOptions = Object.entries(MaritalStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: key,
+      value: String(value),
+    }));
 
-  const religionptions = Object.values(Religions).map((status) => ({
-    label: status,
-    value: status,
-  }));
+  const religionptions = Object.entries(Religions)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: key,
+      value: String(value),
+    }));
 
-  const genderOptions = Object.values(Gender).map((status) => ({
-    label: status,
-    value: status,
-  }));
+  const genderOptions = Object.entries(Gender)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: key,
+      value: String(value),
+    }));
 
   return (
     <>
@@ -99,6 +105,7 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.SELECT,
             control: control as Control,
             placeholder: "Select your gender",
+            required: true,
             options: genderOptions,
             errors,
           },
@@ -116,6 +123,9 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Select your Date of Employment",
             control: control as Control,
             type: InputTypes.DATE,
+            disabled: {
+              after: new Date(),
+            },
             required: true,
             errors,
           },

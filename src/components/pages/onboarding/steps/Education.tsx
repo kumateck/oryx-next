@@ -84,6 +84,9 @@ const EducationStep = <TFieldValues extends FieldValues, TContext>({
                     type: InputTypes.DATE,
                     placeholder: "Select your start date",
                     control: control as Control,
+                    disabled: {
+                      after: new Date(),
+                    },
                     required: true,
                     errors,
                   },
@@ -93,6 +96,9 @@ const EducationStep = <TFieldValues extends FieldValues, TContext>({
                     type: InputTypes.DATE,
                     placeholder: "Select your end date",
                     control: control as Control,
+                    disabled: {
+                      after: new Date(),
+                    },
                     required: true,
                     errors,
                   },

@@ -89,6 +89,7 @@ const publicRoutes = [
   routes.forgotPassword(),
   routes.resetPassword(),
   routes.setPassword(),
+  routes.onboarding(),
   "/api/public",
   "/_next",
   "/static",

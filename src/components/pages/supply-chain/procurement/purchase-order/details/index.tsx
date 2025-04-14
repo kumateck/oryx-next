@@ -17,6 +17,8 @@ import { useSelector } from "@/lib/redux/store";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
+import { ListsTable } from "@/shared/datatable";
+import { getColumns } from "./columns";
 
 const PODetail = () => {
   const dispatch = useDispatch();
@@ -191,6 +193,10 @@ const PODetail = () => {
             </CardContent>
           </Card>
         )}
+        <ListsTable
+          data={data?.items ?? []}
+          columns={getColumns(data?.supplier?.currency?.symbol ?? "")}
+        />
       </div>
     </ScrollablePageWrapper>
   );

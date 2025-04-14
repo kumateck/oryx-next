@@ -6,6 +6,8 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import Edit from "./edit";
 // import Edit from "./edit";
 import { RevisionRequestDto } from "./type";
+import { Option, RevisionType, splitWords } from "@/lib";
+import { ColumnType } from "@/shared/datatable";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,26 +25,59 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  // const handleDelete = () => {
+  //   if (details) {
+  //     if (details.purchaseOrderItemId) {
+  //       setItemLists((prev) => {
+  //         return [...prev, { type: RevisionType.RemoveItem }];
+  //       });
+  //     } else {
+  //       setItemLists((prev) =>
+  //         prev.filter((item) => {
+  //           return item.idIndex !== details.idIndex;
+  //         }),
+  //       );
+  //     }
+  //     setItemLists((prev) =>
+  //       prev.filter((item) => {
+  //         return item.idIndex !== details.idIndex;
+  //       }),
+  //     );
+  //     setIsDeleteOpen(false);
+  //   }
+  // };
+
   const handleDelete = () => {
-    if (details) {
+    if (!details) return;
+    if (details.purchaseOrderItemId) {
       setItemLists((prev) =>
-        prev.filter((item) => {
-          return item.idIndex !== details.idIndex;
-        }),
+        prev.map((item) =>
+          item.idIndex === details.idIndex
+            ? { ...item, type: RevisionType.RemoveItem }
+            : item,
+        ),
       );
-      setIsDeleteOpen(false);
+    } else {
+      setItemLists((prev) =>
+        prev.filter((item) => item.idIndex !== details.idIndex),
+      );
     }
+    setIsDeleteOpen(false);
   };
+
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
+      {!row.original.purchaseOrderItemId && (
+        <Icon
+          name="Pencil"
+          className="h-5 w-5 cursor-pointer text-neutral-500"
+          onClick={() => {
+            setDetails(row.original);
+            setIsOpen(true);
+          }}
+        />
+      )}
+
       <Icon
         name="Trash2"
         className="text-danger-500 h-5 w-5 cursor-pointer"
@@ -59,6 +94,7 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           itemLists={itemLists}
+          currency={details?.currency as Option}
         />
       )}
       <ConfirmDeleteDialog
@@ -77,37 +113,44 @@ export const getColumns = (
     accessorKey: "idIndex",
     header: "#",
   },
-
   {
     accessorKey: "materialId",
     header: " Material",
     cell: ({ row }) => <div>{row.original.material?.label}</div>,
   },
   {
-    accessorKey: "quantity",
-    header: " Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
-  },
-
-  {
     accessorKey: "uom",
     header: "UOM",
     cell: ({ row }) => <div>{row.original.uoM?.label}</div>,
   },
   {
-    accessorKey: "currency",
-    header: "Currency",
-    cell: ({ row }) => <div>{row.original.currency?.label}</div>,
+    accessorKey: "quantity",
+    header: " Quantity",
+    cell: ({ row }) => <div>{row.original.quantity}</div>,
+    meta: {
+      edittableCell: {
+        type: ColumnType.NUMBER,
+        editable: true,
+        setItemLists,
+      },
+    },
   },
+
   {
     accessorKey: "price",
     header: "Price",
-    cell: ({ row }) => <div>{row.original.price}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.currency?.label} {row.original.price}
+      </div>
+    ),
   },
   {
-    accessorKey: "otherStandards",
-    header: "Other Standards",
-    cell: ({ row }) => <div>{row.getValue("otherStandards")}</div>,
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <div>{splitWords(RevisionType[Number(row.original.type)])}</div>
+    ),
   },
   {
     id: "actions",

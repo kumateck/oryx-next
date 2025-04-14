@@ -4,6 +4,7 @@ import {
   FieldValues,
   Path,
   UseFormRegister,
+  useWatch,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -20,10 +21,17 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
   control,
   errors,
 }: Props<TFieldValues, TContext>) => {
-  const lifeStatusOptions = Object.values(LifeStatus).map((status) => ({
-    label: status,
-    value: status,
-  }));
+  const maritalStatus = useWatch({
+    control,
+    name: "maritalStatus" as Path<TFieldValues>,
+  });
+
+  const lifeStatusOptions = Object.entries(LifeStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: key,
+      value: String(value),
+    }));
 
   return (
     <div className="overflow-auto">
@@ -106,42 +114,52 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <h2 className="mt-10 text-lg font-medium text-black">Spouse</h2>
-      <FormWizard
-        className="mt-3 grid w-full grid-cols-2 gap-x-10 gap-y-2 space-y-0"
-        config={[
-          {
-            register: register("spouse.fullName" as Path<TFieldValues>),
-            label: "Spouse's Full Name",
-            placeholder: "Enter your spouse's full name",
-            type: InputTypes.TEXT,
-            errors,
-          },
-          {
-            register: register("spouse.contactNumber" as Path<TFieldValues>),
-            label: "Spouse's Contact Number",
-            placeholder: "Enter your spouse's phone number",
-            type: InputTypes.TEXT,
-            errors,
-          },
-          {
-            name: "spouse.lifeStatus",
-            label: "Spouse's Life Status",
-            placeholder: "Enter your spouse's life status",
-            type: InputTypes.SELECT,
-            control: control as Control,
-            options: lifeStatusOptions,
-            errors,
-          },
-          {
-            register: register("spouse.occupation" as Path<TFieldValues>),
-            label: "Spouse's Occupation",
-            placeholder: "Enter your spouse's occupation",
-            type: InputTypes.TEXT,
-            errors,
-          },
-        ]}
-      />
+      {maritalStatus?.value === "1" && (
+        <>
+          <h2 className="mt-10 text-lg font-medium text-black">Spouse</h2>
+          <FormWizard
+            className="mt-3 grid w-full grid-cols-2 gap-x-10 gap-y-2 space-y-0"
+            config={[
+              {
+                register: register("spouse.fullName" as Path<TFieldValues>),
+                label: "Spouse's Full Name",
+                placeholder: "Enter your spouse's full name",
+                type: InputTypes.TEXT,
+                required: true,
+                errors,
+              },
+              {
+                register: register(
+                  "spouse.contactNumber" as Path<TFieldValues>,
+                ),
+                label: "Spouse's Contact Number",
+                placeholder: "Enter your spouse's phone number",
+                type: InputTypes.TEXT,
+                required: true,
+                errors,
+              },
+              {
+                name: "spouse.lifeStatus",
+                label: "Spouse's Life Status",
+                placeholder: "Enter your spouse's life status",
+                type: InputTypes.SELECT,
+                required: true,
+                control: control as Control,
+                options: lifeStatusOptions,
+                errors,
+              },
+              {
+                register: register("spouse.occupation" as Path<TFieldValues>),
+                label: "Spouse's Occupation",
+                placeholder: "Enter your spouse's occupation",
+                type: InputTypes.TEXT,
+                required: true,
+                errors,
+              },
+            ]}
+          />
+        </>
+      )}
     </div>
   );
 };

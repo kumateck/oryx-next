@@ -10,7 +10,7 @@ import {
 
 import { CreateRevisionValidator, RevisionRequestDto } from "./type";
 import { useForm } from "react-hook-form";
-import { EMaterialKind, Option } from "@/lib";
+import { EMaterialKind, Option, RevisionType } from "@/lib";
 import RevisionForm from "./form";
 import {
   useGetApiV1CollectionUomQuery,
@@ -20,19 +20,17 @@ import {
 interface Props {
   setItemLists: React.Dispatch<React.SetStateAction<RevisionRequestDto[]>>;
   isOpen: boolean;
-  details: RevisionRequestDto;
   onClose: () => void;
   itemLists: RevisionRequestDto[];
   currency: Option;
   isMaterialType?: EMaterialKind;
 }
-const Edit = ({
+const Create = ({
   currency,
   isOpen,
   onClose,
   setItemLists,
   isMaterialType,
-  details,
 }: Props) => {
   const {
     register,
@@ -44,25 +42,23 @@ const Edit = ({
   } = useForm<RevisionRequestDto>({
     resolver: CreateRevisionValidator,
     mode: "all",
-    defaultValues: details,
+    defaultValues: {
+      type: RevisionType.AddItem.toString() as unknown as RevisionType,
+      currency: currency,
+    },
   });
   const onSubmit = async () => {
     const isValid = await trigger();
     if (isValid) {
       const data = getValues() as RevisionRequestDto;
-      // setItemLists((prevState) => {
-      //   const payload = {
-      //     ...data,
-      //     idIndex: (prevState.length + 1).toString(),
-      //     type: RevisionType.AddItem,
-      //   };
-      //   return [...prevState, payload]; // Add new item to the array
-      // });
-      setItemLists((prev) =>
-        prev.map((item) =>
-          item.idIndex === details.idIndex ? { ...item, ...data } : item,
-        ),
-      );
+      setItemLists((prevState) => {
+        const payload = {
+          ...data,
+          idIndex: (prevState.length + 1).toString(),
+          type: RevisionType.AddItem,
+        };
+        return [...prevState, payload]; // Add new item to the array
+      });
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     }
@@ -114,7 +110,7 @@ const Edit = ({
             Cancel
           </Button>
           <Button onClick={onSubmit}>
-            <span>Save Changes</span>
+            <span>Save</span>
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -122,4 +118,4 @@ const Edit = ({
   );
 };
 
-export default Edit;
+export default Create;
