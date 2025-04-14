@@ -439,7 +439,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee`,
         method: "POST",
-        body: queryArg.body,
+        body: queryArg.createEmployeeRequest,
       }),
     }),
     getApiV1Employee: build.query<
@@ -3459,48 +3459,7 @@ export type PostApiV1EmployeeRegisterApiArg = {
 };
 export type PostApiV1EmployeeApiResponse = /** status 200 OK */ string;
 export type PostApiV1EmployeeApiArg = {
-  body: {
-    avatar?: string;
-    fullName: string;
-    dateOfBirth: string;
-    gender: Gender;
-    contact: string;
-    region: string;
-    nationality: string;
-    residentialAddress: string;
-    maritalStatus: MaritalStatus;
-    religion: Religion;
-    dateEmployed: string;
-    bankAccountNumber: string;
-    ssnitNumber: string;
-    ghanaCardNumber: string;
-    staffNumber?: string;
-    email: string;
-    "mother.fullName": string;
-    "mother.phoneNumber": string;
-    "mother.occupation": string;
-    "mother.lifeStatus": LifeStatus;
-    "father.fullName": string;
-    "father.phoneNumber": string;
-    "father.occupation": string;
-    "father.lifeStatus": LifeStatus;
-    "spouse.fullName": string;
-    "spouse.phoneNumber": string;
-    "spouse.occupation": string;
-    "spouse.lifeStatus": LifeStatus;
-    "emergencyContact.fullName": string;
-    "emergencyContact.contactNumber": string;
-    "emergencyContact.relationship": string;
-    "emergencyContact.residentialAddress": string;
-    "nextOfKin.fullName": string;
-    "nextOfKin.contactNumber": string;
-    "nextOfKin.relationship": string;
-    "nextOfKin.residentialAddress": string;
-    children?: ChildDto[];
-    siblings?: SiblingDto[];
-    educationBackground: EducationDto[];
-    employmentHistory: EmploymentHistoryDto[];
-  };
+  createEmployeeRequest: CreateEmployeeRequest;
 };
 export type GetApiV1EmployeeApiResponse =
   /** status 200 OK */ EmployeeDtoIEnumerablePaginateable;
@@ -5602,6 +5561,18 @@ export type Gender = 0 | 1;
 export type MaritalStatus = 0 | 1;
 export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type LifeStatus = 0 | 1;
+export type PersonDto = {
+  fullName: string;
+  phoneNumber: string;
+  occupation: string;
+  lifeStatus: LifeStatus;
+};
+export type EmergencyContactDto = {
+  fullName: string;
+  contactNumber: string;
+  relationship: string;
+  residentialAddress: string;
+};
 export type ChildDto = {
   fullName: string;
   dateOfBirth: string;
@@ -5625,17 +5596,32 @@ export type EmploymentHistoryDto = {
   endDate?: string;
   position?: string | null;
 };
-export type PersonDto = {
+export type CreateEmployeeRequest = {
+  avatar?: string | null;
   fullName: string;
-  phoneNumber: string;
-  occupation: string;
-  lifeStatus: LifeStatus;
-};
-export type EmergencyContactDto = {
-  fullName: string;
-  contactNumber: string;
-  relationship: string;
+  dateOfBirth: string;
+  gender: Gender;
+  contact: string;
+  region: string;
+  nationality: string;
   residentialAddress: string;
+  maritalStatus: MaritalStatus;
+  religion: Religion;
+  dateEmployed: string;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
+  staffNumber?: string | null;
+  email: string;
+  mother: PersonDto;
+  father: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact: EmergencyContactDto;
+  nextOfKin: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground: EducationDto[];
+  employmentHistory: EmploymentHistoryDto[];
 };
 export type EmployeeDto = {
   id?: string;
@@ -5671,33 +5657,6 @@ export type EmployeeDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type CreateEmployeeRequest = {
-  avatar?: string | null;
-  fullName: string;
-  dateOfBirth: string;
-  gender: Gender;
-  contact: string;
-  region: string;
-  nationality: string;
-  residentialAddress: string;
-  maritalStatus: MaritalStatus;
-  religion: Religion;
-  dateEmployed: string;
-  bankAccountNumber: string;
-  ssnitNumber: string;
-  ghanaCardNumber: string;
-  staffNumber?: string | null;
-  email: string;
-  mother: PersonDto;
-  father: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact: EmergencyContactDto;
-  nextOfKin: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground: EducationDto[];
-  employmentHistory: EmploymentHistoryDto[];
 };
 export type AssignEmployeeDto = {
   designationId: string;
