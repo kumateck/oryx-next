@@ -2,10 +2,21 @@ import {
   Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
+  Icon,
 } from "@/components/ui";
-import { InputTypes, Option, SupplierType } from "@/lib";
+import {
+  convertToSmallestUnit,
+  ErrorResponse,
+  InputTypes,
+  isErrorResponse,
+  Option,
+  SupplierType,
+  Units,
+} from "@/lib";
 import React from "react";
 import {
   CreateSuppliersValidator,
@@ -14,33 +25,82 @@ import {
 } from "./type";
 import { FormWizard } from "@/components/form-inputs";
 import { Control, useForm } from "react-hook-form";
-import { useGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  CreateSourceRequisitionRequest,
+  PostApiV1RequisitionSourceApiArg,
+  ProcurementSource,
+  useGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery,
+  useGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery,
+  usePostApiV1RequisitionSourceMutation,
+} from "@/lib/redux/api/openapi.generated";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useParams } from "next/navigation";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   details: RevisionRequestDto;
-  currency: Option;
   sourceType: SupplierType;
 }
-const ChangeSource = ({
-  isOpen,
-  onClose,
-  details,
-  // currency,
-  sourceType,
-}: Props) => {
+const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
+  const { id } = useParams();
+  const purchaseOrderId = id as string;
+
+  const { data: requisitionId } =
+    useGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery(
+      {
+        purchaseOrderId,
+        materialId: details.material.value,
+      },
+    );
+
+  // console.log(requisitionId, "requisition");
+  const dispatch = useDispatch();
   const {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<SuppliersRequestDto>({
     resolver: CreateSuppliersValidator,
     mode: "all",
-    defaultValues: {},
+    // defaultValues: {},
   });
-  const onSubmit = (data: SuppliersRequestDto) => {
-    console.log(data, "data");
+  const [saveMutation, { isLoading }] = usePostApiV1RequisitionSourceMutation();
+  const onSubmit = async (data: SuppliersRequestDto) => {
+    try {
+      const payload = {
+        requisitionId,
+        items: [
+          {
+            source: Number(sourceType) as ProcurementSource,
+            materialId: details.material.value,
+            quantity: convertToSmallestUnit(
+              details.quantity,
+              details.uoM.label as Units,
+            ).value,
+            suppliers: data.suppliers?.map((item) => {
+              return {
+                supplierId: item?.value,
+              };
+            }),
+            uoMId: details.uoM.value,
+          },
+        ],
+      } satisfies CreateSourceRequisitionRequest;
+      // console.log(payload, "payload");
+      await saveMutation({
+        createSourceRequisitionRequest: payload,
+      } as PostApiV1RequisitionSourceApiArg);
+      toast.success("Sourcing created successfully");
+      dispatch(commonActions.setTriggerReload());
+      reset(); // Reset the form after submission
+      onClose(); // Close the form/modal if applicable
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
   };
 
   const { data } = useGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery({
@@ -55,11 +115,16 @@ const ChangeSource = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
-        <DialogTitle>
-          Change Supplier Source to{" "}
-          {sourceType === SupplierType.Foreign ? "Foreign" : "Local"}
-        </DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogHeader>
+          <DialogTitle>
+            Change Supplier Source to{" "}
+            {sourceType === SupplierType.Foreign ? "Foreign" : "Local"}
+          </DialogTitle>
+          <DialogDescription>
+            Material: {details.material.label}
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <FormWizard
             config={[
               {
@@ -79,6 +144,9 @@ const ChangeSource = ({
               Cancel
             </Button>
             <Button>
+              {isLoading && (
+                <Icon name="LoaderCircle" className="animate-spin" />
+              )}
               <span>Save Changes</span>
             </Button>
           </DialogFooter>

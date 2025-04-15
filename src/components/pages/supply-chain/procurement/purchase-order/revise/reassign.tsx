@@ -2,7 +2,9 @@ import {
   Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
   Icon,
   Label,
@@ -12,6 +14,8 @@ import {
 import { cn, Option } from "@/lib";
 import React from "react";
 import { RevisionRequestDto } from "./type";
+import { useParams } from "next/navigation";
+import { useGetApiV1RequisitionSourceMaterialPriceComparisonByMaterialQuery } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
   isOpen: boolean;
@@ -19,7 +23,17 @@ interface Props {
   details: RevisionRequestDto;
   currency: Option;
 }
-const ReAssign = ({ isOpen, onClose }: Props) => {
+const ReAssign = ({ isOpen, onClose, details }: Props) => {
+  const { id } = useParams();
+  const purchaseOrderId = id as string;
+
+  const { data: pricesComparision } =
+    useGetApiV1RequisitionSourceMaterialPriceComparisonByMaterialQuery({
+      purchaseOrderId,
+      materialId: details.material.value,
+    });
+
+  console.log(pricesComparision, "pricesComparision");
   const onSubmit = () => {};
   const onChange = (value: string) => {
     console.log(value, "value");
@@ -47,7 +61,12 @@ const ReAssign = ({ isOpen, onClose }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
-        <DialogTitle>Re-Assign Supplier</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>Re-Assign Supplier</DialogTitle>
+          <DialogDescription>
+            Material: {details.material.label}
+          </DialogDescription>
+        </DialogHeader>
         <RadioGroup
           className="flex flex-wrap gap-4 "
           onValueChange={(v) => onChange(v)}

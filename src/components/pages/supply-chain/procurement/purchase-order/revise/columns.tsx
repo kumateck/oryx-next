@@ -157,7 +157,6 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
           details={details}
           isOpen={isOpenChange}
           onClose={() => setIsOpenChange(false)}
-          currency={details?.currency as Option}
           sourceType={
             Number(details?.supplierType) === SupplierType.Foreign
               ? SupplierType.Local
@@ -191,10 +190,34 @@ export const getColumns = (
     header: "UOM",
     cell: ({ row }) => <div>{row.original.uoM?.label}</div>,
   },
+  // {
+  //   accessorKey: "uom",
+  //   header: "UOM",
+  //   // cell: ({ row }) => <div>{row.original.uom?.symbol}</div>,
+  //   cell: ({ row }) => {
+  //     const qty = convertToLargestUnit(
+  //       row.original.quantity as number,
+  //       getSmallestUnit(row.original.uoM?.label as Units),
+  //     );
+  //     return <div className="">{qty.unit}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "quantity",
+  //   header: " Quantity",
+  //   // cell: ({ row }) => <div>{row.original.quantity}</div>,
+  //   cell: ({ row }) => {
+  //     const qty = convertToLargestUnit(
+  //       row.original.quantity as number,
+  //       getSmallestUnit(row.original.uoM?.label as Units),
+  //     );
+  //     return <div className="">{qty.value}</div>;
+  //   },
+  // },
+
   {
     accessorKey: "quantity",
     header: " Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
     meta: {
       edittableCell: {
         type: ColumnType.NUMBER,

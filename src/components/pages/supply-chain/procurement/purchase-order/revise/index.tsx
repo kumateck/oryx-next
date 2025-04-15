@@ -7,10 +7,13 @@ import { useDispatch } from "react-redux";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
+  convertToLargestUnit,
   EMaterialKind,
   ErrorResponse,
+  getSmallestUnit,
   isErrorResponse,
   RevisionType,
+  Units,
 } from "@/lib";
 import {
   PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg,
@@ -63,24 +66,30 @@ const RevisePurchaseOrder = () => {
     };
     const supplierType = Number(res.supplier?.type);
     setCurrency(supplierCurrency);
-    const response = res?.items?.map((item, idx) => ({
-      idIndex: (idx + 1).toString(),
-      purchaseOrderItemId: item.id ?? "",
-      material: {
-        label: item.material?.name ?? "",
-        value: item.material?.id ?? "",
-      },
-      uoM: {
-        label: item.uom?.name ?? "",
-        value: item.uom?.id ?? "",
-      },
-      quantity: item.quantity ?? 0,
-      price: item.price ?? 0,
-      currency: supplierCurrency,
-      type: RevisionType.UpdateItem,
-      currencyId: item.currency?.id ?? "",
-      supplierType,
-    })) as RevisionRequestDto[];
+    const response = res?.items?.map((item, idx) => {
+      const qty = convertToLargestUnit(
+        item.quantity as number,
+        getSmallestUnit(item.uom?.symbol as Units),
+      );
+      return {
+        idIndex: (idx + 1).toString(),
+        purchaseOrderItemId: item.id ?? "",
+        material: {
+          label: item.material?.name ?? "",
+          value: item.material?.id ?? "",
+        },
+        uoM: {
+          label: qty.unit ?? "",
+          value: item.uom?.id ?? "",
+        },
+        quantity: qty.value ?? 0,
+        price: item.price ?? 0,
+        currency: supplierCurrency,
+        type: RevisionType.UpdateItem,
+        currencyId: item.currency?.id ?? "",
+        supplierType,
+      };
+    }) as RevisionRequestDto[];
 
     setItemLists(response);
   };

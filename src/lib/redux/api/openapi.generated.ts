@@ -1133,6 +1133,15 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialId:
+      build.query<
+        GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiResponse,
+        GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/requisition/${queryArg.purchaseOrderId}/${queryArg.materialId}`,
+        }),
+      }),
     postApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderId:
       build.mutation<
         PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiResponse,
@@ -2496,6 +2505,19 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/requisition/source/material/price-comparison`,
         params: {
           supplierType: queryArg.supplierType,
+        },
+      }),
+    }),
+    getApiV1RequisitionSourceMaterialPriceComparisonByMaterial: build.query<
+      GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiResponse,
+      GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/requisition/source/material/price-comparison/by-material`,
+        params: {
+          supplierType: queryArg.supplierType,
+          materialId: queryArg.materialId,
+          purchaseOrderId: queryArg.purchaseOrderId,
         },
       }),
     }),
@@ -3944,6 +3966,15 @@ export type DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg = {
   /** The ID of the purchase order to delete. */
   purchaseOrderId: string;
 };
+export type GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiResponse =
+  /** status 200 OK */ string;
+export type GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiArg =
+  {
+    /** The ID of the purchase order. */
+    purchaseOrderId: string;
+    /** The material ID to know the requisition */
+    materialId: string;
+  };
 export type PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiResponse =
   unknown;
 export type PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiArg =
@@ -4851,6 +4882,16 @@ export type GetApiV1RequisitionSourceMaterialPriceComparisonApiArg = {
   /** The type of the supplier (example Local, Foreign). */
   supplierType?: SupplierType;
 };
+export type GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiResponse =
+  /** status 200 OK */ SupplierPriceComparison[];
+export type GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg = {
+  /** The type of the supplier (example Local, Foreign). */
+  supplierType?: SupplierType;
+  /** The materialId of the item */
+  materialId?: string;
+  /** The purchase order associated */
+  purchaseOrderId?: string;
+};
 export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse =
   unknown;
 export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg = {
@@ -5601,7 +5642,7 @@ export type CreateEmployeeRequest = {
   fullName: string;
   dateOfBirth: string;
   gender: Gender;
-  contact: string;
+  phoneNumber: string;
   region: string;
   nationality: string;
   residentialAddress: string;
@@ -6402,6 +6443,14 @@ export type PurchaseOrderItemDtoRead = {
 };
 export type PurchaseOrderStatus = 0 | 1 | 2 | 3;
 export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
+export type PurchaseOrderRevisionDto = {
+  revisionNumber?: number;
+  items?: PurchaseOrderItemDto[] | null;
+};
+export type PurchaseOrderRevisionDtoRead = {
+  revisionNumber?: number;
+  items?: PurchaseOrderItemDtoRead[] | null;
+};
 export type PurchaseOrderDto = {
   id?: string;
   createdBy?: UserDto;
@@ -6423,6 +6472,8 @@ export type PurchaseOrderDto = {
   seaFreight?: number;
   amountInFigures?: string | null;
   insurance?: number;
+  revisionNumber?: number;
+  revisions?: PurchaseOrderRevisionDto[] | null;
   estimatedDeliveryDate?: string | null;
 };
 export type PurchaseOrderDtoRead = {
@@ -6446,6 +6497,8 @@ export type PurchaseOrderDtoRead = {
   seaFreight?: number;
   amountInFigures?: string | null;
   insurance?: number;
+  revisionNumber?: number;
+  revisions?: PurchaseOrderRevisionDtoRead[] | null;
   estimatedDeliveryDate?: string | null;
 };
 export type PurchaseOrderDtoIEnumerablePaginateable = {
@@ -6489,6 +6542,12 @@ export type CreatePurchaseOrderRevision = {
   quantity?: number | null;
   price?: number | null;
   currencyId?: string | null;
+  uoMBeforeId?: string | null;
+  quantityBefore?: number | null;
+  priceBefore?: number | null;
+  currencyBeforeId?: string | null;
+  materialBeforeId?: string | null;
+  revisionNumber?: number;
 };
 export type CreateBatchItemRequest = {
   batchNumber?: string | null;
@@ -8761,6 +8820,14 @@ export type RevisedPurchaseOrder = {
   price?: number | null;
   currencyId?: string | null;
   currency?: Currency;
+  uoMBeforeId?: string | null;
+  uomBefore?: UnitOfMeasure;
+  quantityBefore?: number | null;
+  priceBefore?: number | null;
+  currencyBeforeId?: string | null;
+  currencyBefore?: Currency;
+  materialBeforeId?: string | null;
+  materialBefore?: Material;
   revisionNumber?: number;
 };
 export type RevisedPurchaseOrderRead = {
@@ -8776,6 +8843,14 @@ export type RevisedPurchaseOrderRead = {
   price?: number | null;
   currencyId?: string | null;
   currency?: CurrencyRead;
+  uoMBeforeId?: string | null;
+  uomBefore?: UnitOfMeasureRead;
+  quantityBefore?: number | null;
+  priceBefore?: number | null;
+  currencyBeforeId?: string | null;
+  currencyBefore?: CurrencyRead;
+  materialBeforeId?: string | null;
+  materialBefore?: MaterialRead;
   revisionNumber?: number;
 };
 export type DeliveryMode = {
@@ -8885,6 +8960,7 @@ export type PurchaseOrder = {
   deliveryDate?: string | null;
   sentAt?: string | null;
   status?: PurchaseOrderStatus;
+  revisionNumber?: number;
   revisedPurchaseOrders?: RevisedPurchaseOrder[] | null;
   deliveryMode?: DeliveryMode;
   termsOfPayment?: TermsOfPayment;
@@ -8923,6 +8999,7 @@ export type PurchaseOrderRead = {
   sentAt?: string | null;
   status?: PurchaseOrderStatus;
   isRevised?: boolean;
+  revisionNumber?: number;
   revisedPurchaseOrders?: RevisedPurchaseOrderRead[] | null;
   deliveryMode?: DeliveryModeRead;
   termsOfPayment?: TermsOfPaymentRead;
@@ -11679,6 +11756,8 @@ export const {
   usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
   usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
   useDeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
+  useGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery,
   usePostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdMutation,
   usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseMutation,
   usePostApiV1ProcurementPurchaseOrderInvoiceMutation,
@@ -11885,6 +11964,8 @@ export const {
   usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation,
   useGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
   useLazyGetApiV1RequisitionSourceMaterialPriceComparisonQuery,
+  useGetApiV1RequisitionSourceMaterialPriceComparisonByMaterialQuery,
+  useLazyGetApiV1RequisitionSourceMaterialPriceComparisonByMaterialQuery,
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
   useGetApiV1RoleQuery,
   useLazyGetApiV1RoleQuery,
