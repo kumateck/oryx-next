@@ -111,7 +111,7 @@ export const ROUTES: Route[] = [
             url: "/warehouse/shelves",
           },
           {
-            title: "Raw Materials",
+            title: "Materials",
             url: "/warehouse/materials",
           },
           // {
@@ -137,6 +137,10 @@ export const ROUTES: Route[] = [
           {
             title: "Location Chart Record",
             url: "/warehouse/location-chart",
+          },
+          {
+            title: "Material Returns",
+            url: "/warehouse/material-returns",
           },
           // {
           //   title: "Packaging Materials Receiving Area",
