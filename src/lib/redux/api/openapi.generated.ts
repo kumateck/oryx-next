@@ -17,22 +17,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ActivityLog: build.query<
-      GetApiV1ActivityLogApiResponse,
-      GetApiV1ActivityLogApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/activity-log`,
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
     postApiV1Approval: build.mutation<
       PostApiV1ApprovalApiResponse,
       PostApiV1ApprovalApiArg
@@ -455,7 +439,6 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee`,
         method: "POST",
-        body: queryArg.createEmployeeRequest,
         body: queryArg.createEmployeeRequest,
       }),
     }),
@@ -5596,11 +5579,6 @@ export type EmploymentHistoryDto = {
 export type CreateEmployeeRequest = {
   avatar?: string | null;
   fullName: string;
-  dateOfBirth: string;
-  gender: Gender;
-  contact: string;
-  region: string;
-  nationality: string;
   dateOfBirth: string;
   gender: Gender;
   contact: string;
