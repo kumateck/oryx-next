@@ -17,9 +17,23 @@ const typeValidator = z
   .refine((value) => validEnumValues.includes(value), {
     message: "Value must be a valid RevisionType",
   });
+export const suppliersSchema = z.object({
+  suppliers: z.array(
+    z.object(
+      {
+        value: z.string().min(1, { message: "Supplier is required" }),
+        label: z.string(),
+      },
+      {
+        message: "Supplier is required",
+      },
+    ),
+  ),
+});
+
 export const CreateRevisionSchema = z.object({
   purchaseOrderItemId: z.string().optional(),
-  //   currencyId: z.string().optional(),
+  supplierType: z.number().optional(),
   idIndex: z.string().optional(),
   material: z.object(
     {
@@ -67,3 +81,6 @@ export const CreateRevisionSchema = z.object({
 
 export type RevisionRequestDto = z.infer<typeof CreateRevisionSchema>;
 export const CreateRevisionValidator = zodResolver(CreateRevisionSchema);
+
+export type SuppliersRequestDto = z.infer<typeof suppliersSchema>;
+export const CreateSuppliersValidator = zodResolver(suppliersSchema);

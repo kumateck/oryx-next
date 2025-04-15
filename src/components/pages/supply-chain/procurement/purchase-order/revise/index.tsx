@@ -61,6 +61,7 @@ const RevisePurchaseOrder = () => {
       label: res?.supplier?.currency?.symbol ?? "",
       value: res?.supplier?.currency?.id ?? "",
     };
+    const supplierType = Number(res.supplier?.type);
     setCurrency(supplierCurrency);
     const response = res?.items?.map((item, idx) => ({
       idIndex: (idx + 1).toString(),
@@ -78,6 +79,7 @@ const RevisePurchaseOrder = () => {
       currency: supplierCurrency,
       type: RevisionType.UpdateItem,
       currencyId: item.currency?.id ?? "",
+      supplierType,
     })) as RevisionRequestDto[];
 
     setItemLists(response);
@@ -99,7 +101,6 @@ const RevisePurchaseOrder = () => {
       await saveMutation({
         purchaseOrderId: POId,
         body: itemLists?.map((item) => ({
-          // ...item,
           uoMId: item.uoM?.value,
           materialId: item.material?.value,
           currencyId: item.currency?.value,
