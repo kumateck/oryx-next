@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { PurchaseOrderItemDtoRead } from "@/lib/redux/api/openapi.generated";
+import { convertToLargestUnit, getSmallestUnit, Units } from "@/lib";
 
 export const getColumns = (
   currency: string,
@@ -18,12 +19,26 @@ export const getColumns = (
   {
     accessorKey: "uom",
     header: "UOM",
-    cell: ({ row }) => <div>{row.original.uom?.name}</div>,
+    // cell: ({ row }) => <div>{row.original.uom?.symbol}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantity as number,
+        getSmallestUnit(row.original.uom?.symbol as Units),
+      );
+      return <div className="">{qty.unit}</div>;
+    },
   },
   {
     accessorKey: "quantity",
     header: " Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
+    // cell: ({ row }) => <div>{row.original.quantity}</div>,
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantity as number,
+        getSmallestUnit(row.original.uom?.symbol as Units),
+      );
+      return <div className="">{qty.value}</div>;
+    },
   },
 
   {

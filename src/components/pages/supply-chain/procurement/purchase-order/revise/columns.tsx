@@ -1,13 +1,16 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 
 import Edit from "./edit";
 // import Edit from "./edit";
 import { RevisionRequestDto } from "./type";
-import { Option, RevisionType, splitWords } from "@/lib";
+import { Option, RevisionType, splitWords, SupplierType } from "@/lib";
 import { ColumnType } from "@/shared/datatable";
+import { TableMenuAction } from "@/shared/table-menu";
+import ReAssign from "./reassign";
+import ChangeSource from "./change-source";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -20,6 +23,9 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
   itemLists,
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenReAssign, setIsOpenReAssign] = useState(false);
+  const [isOpenChange, setIsOpenChange] = useState(false);
+
   const [details, setDetails] = useState<RevisionRequestDto>(
     {} as RevisionRequestDto,
   );
@@ -67,25 +73,66 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {!row.original.purchaseOrderItemId && (
-        <Icon
-          name="Pencil"
-          className="h-5 w-5 cursor-pointer text-neutral-500"
-          onClick={() => {
-            setDetails(row.original);
-            setIsOpen(true);
-          }}
-        />
-      )}
-
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+      <TableMenuAction>
+        {!row.original.purchaseOrderItemId && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <span className="text-black">
+                <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
+              </span>
+              <span>Edit</span>
+            </div>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem className="group">
+          <div
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <span className="text-black">
+              <Icon name="Trash2" className="h-5 w-5 text-danger-default" />
+            </span>
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpenReAssign(true);
+            }}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <span className="text-black">
+              <Icon name="Infinity" className="h-5 w-5 text-neutral-default" />
+            </span>
+            <span>Re-Assign Supplier</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpenChange(true);
+            }}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <span className="text-black">
+              <Icon name="Chrome" className="h-5 w-5 text-neutral-default" />
+            </span>
+            <span>Change Supply Source </span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
 
       {details && isOpen && (
         <Edit
@@ -95,6 +142,26 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
           onClose={() => setIsOpen(false)}
           itemLists={itemLists}
           currency={details?.currency as Option}
+        />
+      )}
+      {details && isOpenReAssign && (
+        <ReAssign
+          details={details}
+          isOpen={isOpenReAssign}
+          onClose={() => setIsOpenReAssign(false)}
+          currency={details?.currency as Option}
+        />
+      )}
+      {details && isOpenChange && (
+        <ChangeSource
+          details={details}
+          isOpen={isOpenChange}
+          onClose={() => setIsOpenChange(false)}
+          sourceType={
+            Number(details?.supplierType) === SupplierType.Foreign
+              ? SupplierType.Local
+              : SupplierType.Foreign
+          }
         />
       )}
       <ConfirmDeleteDialog
@@ -123,10 +190,34 @@ export const getColumns = (
     header: "UOM",
     cell: ({ row }) => <div>{row.original.uoM?.label}</div>,
   },
+  // {
+  //   accessorKey: "uom",
+  //   header: "UOM",
+  //   // cell: ({ row }) => <div>{row.original.uom?.symbol}</div>,
+  //   cell: ({ row }) => {
+  //     const qty = convertToLargestUnit(
+  //       row.original.quantity as number,
+  //       getSmallestUnit(row.original.uoM?.label as Units),
+  //     );
+  //     return <div className="">{qty.unit}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "quantity",
+  //   header: " Quantity",
+  //   // cell: ({ row }) => <div>{row.original.quantity}</div>,
+  //   cell: ({ row }) => {
+  //     const qty = convertToLargestUnit(
+  //       row.original.quantity as number,
+  //       getSmallestUnit(row.original.uoM?.label as Units),
+  //     );
+  //     return <div className="">{qty.value}</div>;
+  //   },
+  // },
+
   {
     accessorKey: "quantity",
     header: " Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
     meta: {
       edittableCell: {
         type: ColumnType.NUMBER,
