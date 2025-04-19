@@ -91,6 +91,9 @@ export enum EMaterialKind {
   Raw = 0,
   Packing = 1,
 }
+export enum PermissionType {
+  Access = "Access",
+}
 
 export enum RevisionType {
   ReassignSupplier = 0,

@@ -279,9 +279,7 @@ export const ROUTES: Route[] = [
     menu: [
       {
         title: "Management",
-        // url: "",
         icon: "Folder",
-        //    isActive: false,
         items: [
           {
             title: "Employee Management",
@@ -291,10 +289,35 @@ export const ROUTES: Route[] = [
             title: "Designation Management",
             url: "/hr/designation-management",
           },
-          // {
-          //   title: "Shipment Discrepancy",
-          //   url: "/logistics/shipment-discrepancy",
-          // },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Access Control",
+    menu: [
+      {
+        title: "Access Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Roles",
+            url: "/access-management/roles",
+          },
+          {
+            title: "Manage Permissions",
+            url: "/access-management/permissions",
+          },
+        ],
+      },
+      {
+        title: "User Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Users",
+            url: "/access-management/roles",
+          },
         ],
       },
     ],

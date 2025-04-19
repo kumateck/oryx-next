@@ -50,6 +50,16 @@ const DesignationForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("maximumLeaveDays" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Maximum Leave Days",
+            placeholder: "Enter in days",
+            type: InputTypes.NUMBER,
+
+            errors,
+          },
+          {
             label: "Description",
             control: control as Control,
             type: InputTypes.RICHTEXT,

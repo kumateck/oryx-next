@@ -1,0 +1,894 @@
+[
+  {
+    "section": "General Section",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_actions_on_dashboard",
+        "name": "Can View Actions on Dashboard",
+        "description": "Allows users to view actions on the dashboard.",
+        "module": "Dashboard",
+        "hasOptions": true,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_items_on_dashboard",
+        "name": "Can View Items on Dashboard",
+        "description": "Allows users to view items on the dashboard.",
+        "module": "Dashboard",
+        "hasOptions": true,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "close_items_on_dashboard",
+        "name": "Can Close out Items on Dashboard",
+        "description": "Allows users to close out resolved items on the dashboard.",
+        "module": "Dashboard",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_findings_on_actions",
+        "name": "Can View Findings on Actions",
+        "description": "Allows users to view associated findings from the actions page.",
+        "module": "Dashboard",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_findings_to_actions",
+        "name": "Can Add Findings to Items from Actions",
+        "description": "Allows users to add findings to an item associated with an action. PermissionTypes.FullAccess only as findings cannot be assigned.",
+        "module": "Dashboard",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_dashboards",
+        "name": "Can View Dashboards",
+        "description": "Allows users to view dashboards in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "create_dashboards",
+        "name": "Can Create Dashboards",
+        "description": "Allows users to create dashboards and add widgets in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_dashboards",
+        "name": "Can Update Dashboards",
+        "description": "Allows users to update dashboard details, add or remove widgets in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_dashboards",
+        "name": "Can Delete Dashboards",
+        "description": "Allows users to delete dashboards with associated widgets in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_queries",
+        "name": "Can View Queries",
+        "description": "Allows users to view queries in the reporting section. Queries are predefined or custom search operations.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "create_queries",
+        "name": "Can Create Queries",
+        "description": "Allows users to create new queries in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_queries",
+        "name": "Can Update Queries",
+        "description": "Allows users to edit or update existing queries in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_queries",
+        "name": "Can Delete Queries",
+        "description": "Allows users to delete queries in the reporting section.",
+        "module": "Reports",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  },
+  {
+    "section": "Item Management",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_incidents",
+        "name": "Can View Incidents",
+        "description": "Allows users to view incidents and their details.",
+        "module": "Incidents",
+        "hasOptions": true,
+        "types": []
+      },
+      {
+        "key": "create_incidents",
+        "name": "Can Create Incidents",
+        "description": "Allows users to create new incidents.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "edit_incidents",
+        "name": "Can Edit Incidents",
+        "description": "Allows users to edit details of existing incidents.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "view_findings_on_incidents",
+        "name": "Can View Findings on Incidents",
+        "description": "Allows users to view findings associated with an incident.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Indirect", "Self", "Direct", "Full Access"]
+      },
+      {
+        "key": "add_findings_to_incidents",
+        "name": "Can Add Findings to Incidents",
+        "description": "Allows users to add findings to an incident.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_costs_to_incidents",
+        "name": "Can Add Costs to Incidents",
+        "description": "Allows users to add cost details to an incident.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_costs_on_incidents",
+        "name": "Can View Costs on Incidents",
+        "description": "Allows users to view costs associated with incidents.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Indirect", "Direct", "Self", "Full Access"]
+      },
+      {
+        "key": "add_actions_to_incidents",
+        "name": "Can Add Actions to Incidents",
+        "description": "Allows users to add actions to incidents.",
+        "module": "Incidents",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_observations",
+        "name": "Can View Observations",
+        "description": "Allows users to view observations and their details.",
+        "module": "Observations",
+        "hasOptions": true,
+        "types": ["Self", "Direct", "Indirect", "Full Access"]
+      },
+      {
+        "key": "create_observations",
+        "name": "Can Create Observations",
+        "description": "Allows users to create new observations.",
+        "module": "Observations",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "edit_observations",
+        "name": "Can Edit Observations",
+        "description": "Allows users to edit details of existing observations.",
+        "module": "Observations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_findings_on_observations",
+        "name": "Can View Findings on Observations",
+        "description": "Allows users to view findings associated with an observation.",
+        "module": "Observations",
+        "hasOptions": true,
+        "types": ["Self", "Direct", "Indirect", "Full Access"]
+      },
+      {
+        "key": "add_findings_to_observations",
+        "name": "Can Add Findings to Observations",
+        "description": "Allows users to add findings to an observation.",
+        "module": "Observations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_actions_to_observations",
+        "name": "Can Add Actions to Observations",
+        "description": "Allows users to add actions to observations.",
+        "module": "Observations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_inspections",
+        "name": "Can View Inspections",
+        "description": "Allows users to view inspections.",
+        "module": "Inspections",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "create_inspections",
+        "name": "Can Create Inspections",
+        "description": "Allows users to create new inspections.",
+        "module": "Inspections",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "respond_to_and_submit_inspections",
+        "name": "Can Respond To & Submit Inspections",
+        "description": "Allows users to respond to and submit inspection forms.",
+        "module": "Inspections",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_findings_on_inspections",
+        "name": "Can View Findings on Inspections",
+        "description": "Allows users to view findings associated with an inspection.",
+        "module": "Inspections",
+        "hasOptions": true,
+        "types": ["Indirect", "Self", "Direct", "Full Access"]
+      },
+      {
+        "key": "add_findings_to_inspections",
+        "name": "Can Add Findings to Inspections",
+        "description": "Allows users to add findings to an inspection.",
+        "module": "Inspections",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_actions_to_inspections",
+        "name": "Can Add Actions to Inspections",
+        "description": "Allows users to add actions to inspections.",
+        "module": "Inspections",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_audits",
+        "name": "Can View Audits",
+        "description": "Allows users to view audits.",
+        "module": "Audits",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "create_audits",
+        "name": "Can Create Audits",
+        "description": "Allows users to create new audits.",
+        "module": "Audits",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "respond_to_and_submit_audits",
+        "name": "Can Respond To & Submit Audits",
+        "description": "Allows users to respond to and submit audit forms.",
+        "module": "Audits",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_findings_on_audits",
+        "name": "Can View Findings on Audits",
+        "description": "Allows users to view findings associated with an audit.",
+        "module": "Audits",
+        "hasOptions": true,
+        "types": ["Indirect", "Full Access", "Self", "Direct"]
+      },
+      {
+        "key": "add_findings_to_audits",
+        "name": "Can Add Findings to Audits",
+        "description": "Allows users to add findings to an audit.",
+        "module": "Audits",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_actions_to_audits",
+        "name": "Can Add Actions to Audits",
+        "description": "Allows users to add actions to audits.",
+        "module": "Audits",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  },
+  {
+    "section": "Compliance Management",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_certifications",
+        "name": "Can View Certifications",
+        "description": "Allows users to view certifications and their details.",
+        "module": "Certifications",
+        "hasOptions": true,
+        "types": ["Indirect", "Full Access", "Self", "Direct"]
+      },
+      {
+        "key": "create_certifications",
+        "name": "Can Create Certifications",
+        "description": "Allows users to create new certifications.",
+        "module": "Certifications",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_certifications",
+        "name": "Can Update Certifications",
+        "description": "Allows users to update a certification.",
+        "module": "Certifications",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "update_renewals",
+        "name": "Can Update Renewals",
+        "description": "Allows users to update a renewal.",
+        "module": "Certifications",
+        "hasOptions": false,
+        "types": [
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access"
+        ]
+      },
+      {
+        "key": "view_renewals_on_certifications",
+        "name": "Can View Renewals on Certifications",
+        "description": "Allows users to view certification renewals.",
+        "module": "Certifications",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_renewals_to_certifications",
+        "name": "Can Add Renewals to Certifications",
+        "description": "Allows users to add renewals to certifications.",
+        "module": "Certifications",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_regulations",
+        "name": "Can View Regulations",
+        "description": "Allows users to view regulations and their details.",
+        "module": "Regulations",
+        "hasOptions": true,
+        "types": ["Full Access", "Self", "Direct", "Indirect"]
+      },
+      {
+        "key": "create_regulations",
+        "name": "Can Create Regulations",
+        "description": "Allows users to create new regulations.",
+        "module": "Regulations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_regulations",
+        "name": "Can Update Regulations",
+        "description": "Allows users to update a regulation.",
+        "module": "Regulations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_renewals",
+        "name": "Can Update Permits",
+        "description": "Allows users to update a permit.",
+        "module": "Regulations",
+        "hasOptions": false,
+        "types": [
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access",
+          "Full Access"
+        ]
+      },
+      {
+        "key": "view_permits_on_regulations",
+        "name": "Can View Permits on Regulations",
+        "description": "Allows users to view regulation permits.",
+        "module": "Regulations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_permits_to_regulations",
+        "name": "Can Add Permits to Regulations",
+        "description": "Allows users to add permits to regulations.",
+        "module": "Regulations",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  },
+  {
+    "section": "Record Management",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_environment_records",
+        "name": "Can View Environment Records",
+        "description": "Allows users to view environmental records and their details.",
+        "module": "Environment",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_environment_records",
+        "name": "Can Add Environmental Records",
+        "description": "Allows users to add new environmental records.",
+        "module": "Environment",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_environment_records",
+        "name": "Can Update Environmental Records",
+        "description": "Allows users to update existing environmental records.",
+        "module": "Environment",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_environment_records",
+        "name": "Can Delete Environmental Records",
+        "description": "Allows users to delete environmental records.",
+        "module": "Environment",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_health_records",
+        "name": "Can View Health Records",
+        "description": "Allows users to view health records and their details.",
+        "module": "Health",
+        "hasOptions": true,
+        "types": ["Self", "Indirect", "Full Access", "Direct"]
+      },
+      {
+        "key": "add_health_records",
+        "name": "Can Add Health Records",
+        "description": "Allows users to add new health records.",
+        "module": "Health",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_health_records",
+        "name": "Can Update Health Records",
+        "description": "Allows users to update existing health records.",
+        "module": "Health",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_health_records",
+        "name": "Can Delete Health Records",
+        "description": "Allows users to delete existing health records.",
+        "module": "Health",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_meeting_records",
+        "name": "Can View Meeting Records",
+        "description": "Allows users to view meeting records and their details.",
+        "module": "Meeting",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_meeting_records",
+        "name": "Can Add Meeting Records",
+        "description": "Allows users to add new meeting records.",
+        "module": "Meeting",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_meeting_records",
+        "name": "Can Update Meeting Records",
+        "description": "Allows users to update existing meeting records.",
+        "module": "Meeting",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_meeting_records",
+        "name": "Can Delete Meeting Records",
+        "description": "Allows users to delete meeting records.",
+        "module": "Meeting",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_manhour_records",
+        "name": "Can View Man Hour Records",
+        "description": "Allows users to view man hour records and their details.",
+        "module": "Man Hour",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "add_manhour_records",
+        "name": "Can Add Man Hour Records",
+        "description": "Allows users to add new man hour records.",
+        "module": "Man Hour",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "update_manhour_records",
+        "name": "Can Update Man Hour Records",
+        "description": "Allows users to update existing man hour records.",
+        "module": "Man Hour",
+        "hasOptions": false,
+        "types": []
+      },
+      {
+        "key": "delete_manhour_records",
+        "name": "Can Delete Man Hour Records",
+        "description": "Allows users to delete man hour records.",
+        "module": "Man Hour",
+        "hasOptions": false,
+        "types": []
+      }
+    ]
+  },
+  {
+    "section": "Resource Management",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_employees",
+        "name": "Can View Employees",
+        "description": "Allows users to view employees and their details.",
+        "module": "Employees",
+        "hasOptions": true,
+        "types": ["Indirect", "Self", "Full Access", "Direct"]
+      },
+      {
+        "key": "create_employees",
+        "name": "Can Create Employees",
+        "description": "Allows users to create new employees.",
+        "module": "Employees",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_employees",
+        "name": "Can Update Employees",
+        "description": "Allows users to update employee details.",
+        "module": "Employees",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_employees",
+        "name": "Can Delete Employees",
+        "description": "Allows users to delete employees.",
+        "module": "Employees",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_roles_and_permissions",
+        "name": "Can View Roles & Permissions",
+        "description": "Allows users to view user roles and associated permissions.",
+        "module": "Access Levels",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "create_roles_and_assign_permissions",
+        "name": "Can Create Roles & Assign Permissions",
+        "description": "Allows users to create new roles and assign permissions to roles.",
+        "module": "Access Levels",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "edit_roles_and_update_permissions",
+        "name": "Can Edit Roles & Update Permissions",
+        "description": "Allows users to edit role details and update associated permissions.",
+        "module": "Access Levels",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_roles",
+        "name": "Can Delete Roles",
+        "description": "Allows users to delete existing roles from the system.",
+        "module": "Access Levels",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  },
+  {
+    "section": "Inventory",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_general_inventory_records",
+        "name": "Can View General Inventory Records",
+        "description": "Allows users to view general inventory records.",
+        "module": "General Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_general_inventory_records",
+        "name": "Can Add General Inventory Records",
+        "description": "Allows users to add new general inventory records.",
+        "module": "General Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_general_inventory_records",
+        "name": "Can Update General Inventory Records",
+        "description": "Allows users to update existing general inventory records.",
+        "module": "General Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_general_inventory_records",
+        "name": "Can Delete General Inventory Records",
+        "description": "Allows users to delete general inventory records.",
+        "module": "General Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_health_inventory_records",
+        "name": "Can View Health Inventory Records",
+        "description": "Allows users to view health inventory records.",
+        "module": "Health Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_health_inventory_records",
+        "name": "Can Add Health Inventory Records",
+        "description": "Allows users to add new health inventory records.",
+        "module": "Health Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_health_inventory_records",
+        "name": "Can Update Health Inventory Records",
+        "description": "Allows users to update existing health inventory records.",
+        "module": "Health Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_health_inventory_records",
+        "name": "Can Delete Health Inventory Records",
+        "description": "Allows users to delete health inventory records.",
+        "module": "Health Records",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  },
+  {
+    "section": "Settings",
+    "isActive": true,
+    "children": [
+      {
+        "key": "view_questions",
+        "name": "Can View Questions",
+        "description": "Allows users to view questions.",
+        "module": "Questions",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_questions",
+        "name": "Can Add Questions",
+        "description": "Allows users to add new questions.",
+        "module": "Questions",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_questions",
+        "name": "Can Update Questions",
+        "description": "Allows users to update existing questions.",
+        "module": "Questions",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_questions",
+        "name": "Can Delete Questions",
+        "description": "Allows users to delete existing questions.",
+        "module": "Questions",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_templates",
+        "name": "Can View Templates",
+        "description": "Allows users to view templates.",
+        "module": "Templates",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_templates",
+        "name": "Can Add Templates",
+        "description": "Allows users to add new templates.",
+        "module": "Templates",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_templates",
+        "name": "Can Update Templates",
+        "description": "Allows users to update existing templates.",
+        "module": "Templates",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_templates",
+        "name": "Can Delete Templates",
+        "description": "Allows users to delete existing templates.",
+        "module": "Templates",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_form_options",
+        "name": "Can View Form Options",
+        "description": "Allows users to view form options.",
+        "module": "Form Options",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_form_options",
+        "name": "Can Add Form Options",
+        "description": "Allows users to add new form options.",
+        "module": "Form Options",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_form_options",
+        "name": "Can Update Form Options",
+        "description": "Allows users to update existing form options.",
+        "module": "Form Options",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_form_options",
+        "name": "Can Delete Form Options",
+        "description": "Allows users to delete form options.",
+        "module": "Form Options",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_approvals",
+        "name": "Can View Approvals",
+        "description": "Allows users to view approvals.",
+        "module": "Approvals",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_approvals",
+        "name": "Can Add Approvals",
+        "description": "Allows users to add new approvals.",
+        "module": "Approvals",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_approvals",
+        "name": "Can Update Approvals",
+        "description": "Allows users to update existing approvals.",
+        "module": "Approvals",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_approvals",
+        "name": "Can Delete Approvals",
+        "description": "Allows users to delete existing approvals.",
+        "module": "Approvals",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "view_alerts",
+        "name": "Can View Alerts",
+        "description": "Allows users to view alerts.",
+        "module": "Alerts",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "add_alerts",
+        "name": "Can Add Alerts",
+        "description": "Allows users to add new alerts.",
+        "module": "Alerts",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "update_alerts",
+        "name": "Can Update Alerts",
+        "description": "Allows users to update existing alerts.",
+        "module": "Alerts",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "delete_alerts",
+        "name": "Can Delete Alerts",
+        "description": "Allows users to delete existing alerts.",
+        "module": "Alerts",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      },
+      {
+        "key": "set_default_currency",
+        "name": "Can Set Default Currency",
+        "description": "Allows users to set the default currency to be used across the application.",
+        "module": "Currencies",
+        "hasOptions": false,
+        "types": ["Full Access"]
+      }
+    ]
+  }
+]

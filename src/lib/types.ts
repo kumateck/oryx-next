@@ -15,3 +15,18 @@ export interface Quotations {
   uomName: string;
   supplierQuotations: SupplierQuotation[];
 }
+
+export type RecordItem = {
+  key: string;
+  name: string;
+  description: string;
+  module: string;
+  hasOptions: boolean;
+  types: any[];
+};
+
+export type Section = {
+  section: string;
+  isActive: boolean;
+  children: RecordItem[];
+};
