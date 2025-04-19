@@ -43,7 +43,7 @@ import {
   NamingType,
   ProductionScheduleProcurementDto,
 } from "./redux/api/openapi.generated";
-import { Quotations } from "./types";
+import { Quotations, RecordItem, Section } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -1161,3 +1161,119 @@ export function formatAmount(
 
   return negative ? `-${result}` : result;
 }
+
+export interface PermissionChild {
+  key: string;
+  name: string;
+  description: string;
+  subModule: string;
+  hasOptions: boolean;
+  types: string[];
+}
+
+export interface Permission {
+  module: string;
+  isActive: boolean;
+  children: PermissionChild[];
+}
+const Access = "Access";
+// const Self = "Self";
+// const Direct = "Direct";
+// const Indirect = "Indirect";
+export const permissionOptions = [Access];
+export const hasOptions = [Access];
+export const groupByModule = (children: PermissionChild[]) => {
+  return children.reduce(
+    (acc, child) => {
+      acc[child.subModule] = acc[child.subModule] || [];
+      acc[child.subModule].push(child);
+      return acc;
+    },
+    {} as Record<string, PermissionChild[]>,
+  );
+};
+
+export const removeDuplicateTypes = (data: Permission[]): Permission[] => {
+  return data.map((section) => ({
+    ...section,
+    children: section.children.map((child) => ({
+      ...child,
+      types: [...new Set(child.types)], // Remove duplicate values
+    })),
+  }));
+};
+
+export const findRecordWithFullAccess = (
+  sections: Section[],
+  key: string,
+): RecordItem | null => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child.key === key) {
+        // Check if the types array includes FullAccess
+        if (child.types.includes(Access)) {
+          return child;
+        }
+      }
+    }
+  }
+  return null; // Return null if the key is not found or FullAccess is not in types
+};
+export const findRecordWithSpecifiedAccess = (
+  sections: Section[],
+  key: string,
+  access: string,
+): boolean => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child.key === key) {
+        // Check if the types array includes FullAccess
+        if (child.types.includes(access)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false; // Return null if the key is not found or FullAccess is not in types
+};
+
+export const findRecordWithNotIncludedAccess = (
+  sections: Section[],
+  key: string,
+  access: string,
+): boolean => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child.key === key) {
+        console.log(child.types, access, "access, types");
+        // Check if the types array includes FullAccess
+        if (!child.types.includes(access)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false; // Return null if the key is not found or FullAccess is not in types
+};
+
+// export const isSelfPlusOtherOrNonSelf = (accessList: string[]): boolean => {
+//   return !(accessList.length === 1 && accessList.includes(Self));
+// };
+// export const findRecordWithNotIncludedSelfAccess = (
+//   sections: Section[],
+//   key: string,
+// ): boolean => {
+//   for (const section of sections) {
+//     for (const child of section.children) {
+//       if (child.key === key) {
+//         // console.log(child.types, access, "access, types");
+//         // Check if the types array includes FullAccess
+//         return isSelfPlusOtherOrNonSelf(child.types);
+//         // if (!child.types.includes(access)) {
+//         //   return true;
+//         // }
+//       }
+//     }
+//   }
+//   return false; // Return null if the key is not found or FullAccess is not in types
+// };

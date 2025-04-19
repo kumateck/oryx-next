@@ -33,6 +33,7 @@ export const suppliersSchema = z.object({
 
 export const CreateRevisionSchema = z.object({
   purchaseOrderItemId: z.string().optional(),
+  supplierId: z.string().optional(),
   supplierType: z.number().optional(),
   idIndex: z.string().optional(),
   material: z.object(

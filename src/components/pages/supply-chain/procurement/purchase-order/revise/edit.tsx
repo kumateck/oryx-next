@@ -110,7 +110,7 @@ const Edit = ({
           currency={currency}
         />
         <DialogFooter>
-          <Button variant={"outline"} onClick={onClose}>
+          <Button variant={"outline"} onClick={onClose} type="button">
             Cancel
           </Button>
           <Button onClick={onSubmit}>

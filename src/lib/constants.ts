@@ -132,6 +132,10 @@ export const routes = {
   viewFinalPacking: (id: string) =>
     `/production/activities/${id}/final-packing`,
   viewBoard: (id: string) => `/production/activities/${id}/board`,
+  manageRoles: () => "/access-management/roles",
+  newRole: () => "/access-management/roles/create",
+  editRole: (id: string) => `/access-management/roles/edit/${id}`,
+  access: () => "/access-management/permissions",
 };
 
 export const formatClock = (hours: number, minutes: number, light: boolean) => {
@@ -247,3 +251,388 @@ export const tens = [
 ];
 
 export const scales = ["", "Thousand", "Million", "Billion"];
+
+export const PermissionKeys = {
+  procurement: {
+    manufacturer: {
+      create: "CanCreateManufacturer",
+      view: "CanViewManufacturerDetails",
+      update: "CanUpdateManufacturerDetails",
+      delete: "CanDeleteManufacturer",
+    },
+    vendor: {
+      create: "CanCreateVendor",
+      view: "CanViewVendorDetails",
+      update: "CanUpdateVendorDetails",
+      delete: "CanDeleteVendor",
+    },
+    requisition: {
+      view: "CanViewPurchaseRequisitions",
+      sourceItems: "CanSourceItemsBasedOnRequisition",
+    },
+    quotation: {
+      sendRequest: "CanSendQuotationRequest",
+      inputResponses: "CanInputResponses",
+      selectVendorPricing: "CanSelectVendorPricing",
+      sendAwarded: "CanSendAwardedQuotations",
+    },
+    purchaseOrder: {
+      uploadProformaInvoice: "CanUploadProformaInvoice",
+      create: "CanCreatePurchaseOrder",
+      revise: "CanReviseExistingPurchaseOrder",
+      distributeMaterials: "CanDistributeMaterials",
+    },
+  },
+  logistics: {
+    shipmentInvoice: {
+      create: "CanCreateShipmentInvoice",
+      view: "CanViewShipmentInvoice",
+      edit: "CanEditShipmentInvoice",
+      delete: "CanDeleteShipmentInvoice",
+    },
+    shipmentDocument: {
+      create: "CanCreateShipmentDocument",
+      view: "CanViewShipmentDocument",
+      edit: "CanEditShipmentDocument",
+      delete: "CanDeleteShipmentDocument",
+      changeStatus: "CanChangeShipmentDocumentStatus",
+    },
+    billingSheet: {
+      create: "CanCreateBillingSheet",
+      view: "CanViewBillingSheet",
+      edit: "CanEditBillingSheet",
+      delete: "CanDeleteBillingSheet",
+    },
+    waybill: {
+      create: "CanCreateWaybill",
+      view: "CanViewWaybill",
+      edit: "CanEditWaybill",
+      delete: "CanDeleteWaybill",
+      changeStatus: "CanChangeWaybillStatus",
+    },
+  },
+  hr: {
+    employee: {
+      view: "CanViewEmployee",
+      create: "CanRegisterEmployee",
+      update: "CanUpdateEmployeeDetails",
+      delete: "CanDeleteEmployee",
+    },
+    user: {
+      view: "CanViewUser",
+      create: "CanCreateUser",
+      update: "CanUpdateUserDetails",
+      delete: "CanDeleteUser",
+    },
+    designation: {
+      view: "CanViewDesignation",
+      create: "CanCreateDesignation",
+      edit: "CanEditDesignation",
+      delete: "CanDeleteDesignation",
+    },
+    roles: {
+      view: "CanViewRoles",
+      createWithPermissions: "CanCreateRoleAndAssignPermissions",
+      editWithPermissions: "CanEditRoleWithItsPermissions",
+      delete: "CanDeleteRole",
+    },
+    leaveRequest: {
+      view: "CanViewLeaveRequests",
+      create: "CanCreateLeaveRequest",
+      edit: "CanEditLeaveRequest",
+      deleteOrCancel: "CanDeleteOrCancelLeaveRequest",
+      approveOrReject: "CanApproveOrRejectLeaveRequest",
+    },
+  },
+  warehouse: {
+    stockTransfer: {
+      create: "CanCreateStockTransfer",
+      view: "CanViewStockTransfer",
+      edit: "CanEditStockTransfer",
+      delete: "CanDeleteStockTransfer",
+    },
+  },
+  production: {
+    batch: {
+      create: "CanCreateBatch",
+      view: "CanViewBatch",
+      edit: "CanEditBatch",
+      delete: "CanDeleteBatch",
+    },
+  },
+  settings: {
+    material: {
+      view: "CanViewMaterials",
+      create: "CanCreateMaterial",
+      edit: "CanEditMaterial",
+      delete: "CanDeleteMaterial",
+    },
+    uom: {
+      view: "CanViewUom",
+      create: "CanCreateUom",
+      edit: "CanEditUom",
+      delete: "CanDeleteUom",
+    },
+    country: {
+      view: "CanViewCountries",
+      create: "CanCreateCountry",
+      edit: "CanEditCountry",
+      delete: "CanDeleteCountry",
+    },
+    currency: {
+      view: "CanViewCurrency",
+      create: "CanCreateCurrency",
+      edit: "CanEditCurrency",
+      delete: "CanDeleteCurrency",
+    },
+    vat: {
+      view: "CanViewVat",
+      create: "CanCreateVat",
+      edit: "CanEditVat",
+      delete: "CanDeleteVat",
+    },
+  },
+  categories: {
+    view: "CanViewCategory",
+    create: "CanCreateCategory",
+    edit: "CanEditCategory",
+    delete: "CanDeleteCategory",
+  },
+  procedures: {
+    view: "CanViewProcedure",
+    create: "CanCreateProcedure",
+    edit: "CanEditProcedure",
+    delete: "CanDeleteProcedure",
+  },
+  products: {
+    view: "CanViewProduct",
+    create: "CanCreateProduct",
+    edit: "CanEditProduct",
+    delete: "CanDeleteProduct",
+  },
+  container: {
+    view: "CanViewContainer",
+    create: "CanCreateContainer",
+    edit: "CanEditContainer",
+    delete: "CanDeleteContainer",
+  },
+  billingSheetCharges: {
+    view: "CanViewBillingSheetCharges",
+    create: "CanCreateBillingSheetCharge",
+    edit: "CanEditBillingSheetCharge",
+    delete: "CanDeleteBillingSheetCharge",
+  },
+  termsOfPayment: {
+    view: "CanViewTermsOfPayment",
+    create: "CanCreateTermsOfPayment",
+    edit: "CanEditTermsOfPayment",
+    delete: "CanDeleteTermsOfPayment",
+  },
+  deliveryMode: {
+    view: "CanViewDeliveryMode",
+    create: "CanCreateDeliveryMode",
+    edit: "CanEditDeliveryMode",
+    delete: "CanDeleteDeliveryMode",
+  },
+  codeSettings: {
+    view: "CanViewCodeSetting",
+    create: "CanCreateCodeSetting",
+    edit: "CanEditCodeSetting",
+    delete: "CanDeleteCodeSetting",
+  },
+  approvals: {
+    approve: "CanApproveRequests",
+    reject: "CanRejectRequests",
+    forward: "CanForwardRequests",
+    view: "CanViewApprovals",
+  },
+  alerts: {
+    view: "CanViewAlerts",
+    create: "CanCreateAlert",
+    edit: "CanEditAlert",
+    delete: "CanDeleteAlert",
+  },
+  equipment: {
+    view: "CanViewEquipment",
+    create: "CanCreateEquipment",
+    edit: "CanEditEquipment",
+    delete: "CanDeleteEquipment",
+  },
+  workflowForms: {
+    view: "CanViewWorkflowForm",
+    create: "CanCreateWorkflowForm",
+    edit: "CanEditWorkflowForm",
+    delete: "CanDeleteWorkflowForm",
+  },
+};
+
+// export const PermissionKeys = {
+//   dashboard: {
+//     viewActions: "view_actions_on_dashboard",
+//     viewItems: "view_items_on_dashboard",
+//     closeItems: "close_items_on_dashboard",
+//     viewFindingsOnActions: "view_findings_on_actions",
+//     addFindingsToActions: "add_findings_to_actions",
+//   },
+//   reports: {
+//     viewDashboards: "view_dashboards",
+//     createDashboards: "create_dashboards",
+//     updateDashboards: "update_dashboards",
+//     deleteDashboards: "delete_dashboards",
+//     viewQueries: "view_queries",
+//     createQueries: "create_queries",
+//     updateQueries: "update_queries",
+//     deleteQueries: "delete_queries",
+//   },
+//   itemManagement: {
+//     incidents: {
+//       view: "view_incidents",
+//       create: "create_incidents",
+//       edit: "edit_incidents",
+//       delete: "delete_incidents",
+//       viewFindings: "view_findings_on_incidents",
+//       addFindings: "add_findings_to_incidents",
+//       addCosts: "add_costs_to_incidents",
+//       viewCosts: "view_costs_on_incidents",
+//       editCosts: "edit_costs",
+//       deleteCosts: "delete_costs",
+//       addActions: "add_actions_to_incidents",
+//     },
+//     observations: {
+//       view: "view_observations",
+//       create: "create_observations",
+//       edit: "edit_observations",
+//       delete: "delete_observations",
+//       viewFindings: "view_findings_on_observations",
+//       addFindings: "add_findings_to_observations",
+//       addActions: "add_actions_to_observations",
+//     },
+//     inspections: {
+//       view: "view_inspections",
+//       create: "create_inspections",
+//       delete: "delete_inspections",
+//       respondAndSubmit: "respond_to_and_submit_inspections",
+//       viewFindings: "view_findings_on_inspections",
+//       addFindings: "add_findings_to_inspections",
+//       addActions: "add_actions_to_inspections",
+//     },
+//     audits: {
+//       view: "view_audits",
+//       create: "create_audits",
+//       delete: "delete_audits",
+//       respondAndSubmit: "respond_to_and_submit_audits",
+//       viewFindings: "view_findings_on_audits",
+//       addFindings: "add_findings_to_audits",
+//       addActions: "add_actions_to_audits",
+//     },
+//   },
+//   complianceManagement: {
+//     certifications: {
+//       view: "view_certifications",
+//       create: "create_certifications",
+//       update: "update_certifications",
+//       delete: "delete_certifications",
+//       viewRenewals: "view_renewals_on_certifications",
+//       addRenewals: "add_renewals_to_certifications",
+//       updateRenewals: "update_renewals",
+//     },
+//     regulations: {
+//       view: "view_regulations",
+//       create: "create_regulations",
+//       update: "update_regulations",
+//       delete: "delete_regulations",
+//       viewPermits: "view_permits_on_regulations",
+//       addPermits: "add_permits_to_regulations",
+//       updatePermits: "update_permits",
+//     },
+//   },
+//   resourceManagement: {
+//     employees: {
+//       view: "view_employees",
+//       create: "create_employees",
+//       update: "update_employees",
+//       delete: "delete_employees",
+//     },
+//     rolesAndPermissions: {
+//       view: "view_roles_and_permissions",
+//       createAndAssign: "create_roles_and_assign_permissions",
+//       editAndUpdate: "edit_roles_and_update_permissions",
+//       delete: "delete_roles",
+//     },
+//   },
+//   inventory: {
+//     generalRecords: {
+//       view: "view_general_inventory_records",
+//       add: "add_general_inventory_records",
+//       update: "update_general_inventory_records",
+//       delete: "delete_general_inventory_records",
+//     },
+//     healthRecords: {
+//       view: "view_health_inventory_records",
+//       add: "add_health_inventory_records",
+//       update: "update_health_inventory_records",
+//       delete: "delete_health_inventory_records",
+//     },
+//   },
+//   recordManagement: {
+//     environmentalRecords: {
+//       view: "view_environment_records",
+//       add: "add_environment_records",
+//       update: "update_environment_records",
+//       delete: "delete_environment_records",
+//     },
+//     healthRecords: {
+//       view: "view_health_records",
+//       add: "add_health_records",
+//       update: "update_health_records",
+//       delete: "delete_health_records",
+//     },
+//     meetingRecords: {
+//       view: "view_meeting_records",
+//       add: "add_meeting_records",
+//       update: "update_meeting_records",
+//       delete: "delete_meeting_records",
+//     },
+//     manHourRecords: {
+//       view: "view_manhour_records",
+//       add: "add_manhour_records",
+//       update: "update_manhour_records",
+//       delete: "delete_manhour_records",
+//     },
+//   },
+//   settings: {
+//     questions: {
+//       view: "view_questions",
+//       add: "add_questions",
+//       update: "update_questions",
+//       delete: "delete_questions",
+//     },
+//     templates: {
+//       view: "view_templates",
+//       add: "add_templates",
+//       update: "update_templates",
+//       delete: "delete_templates",
+//     },
+//     formOptions: {
+//       view: "view_form_options",
+//       add: "add_form_options",
+//       update: "update_form_options",
+//       delete: "delete_form_options",
+//     },
+//   },
+//   approvals: {
+//     view: "view_approvals",
+//     add: "add_approvals",
+//     update: "update_approvals",
+//     delete: "delete_approvals",
+//   },
+//   alerts: {
+//     view: "view_alerts",
+//     add: "add_alerts",
+//     update: "update_alerts",
+//     delete: "delete_alerts",
+//   },
+//   currency: {
+//     setDefault: "set_default_currency",
+//   },
+// };
