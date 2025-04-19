@@ -317,6 +317,6 @@ export enum Religions {
 }
 
 export enum EmployeeType {
-  Permanent,
   Casual,
+  Permanent,
 }

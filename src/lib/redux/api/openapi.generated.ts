@@ -457,6 +457,16 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1EmployeeUser: build.mutation<
+      PostApiV1EmployeeUserApiResponse,
+      PostApiV1EmployeeUserApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/user`,
+        method: "POST",
+        body: queryArg.employeeUserDto,
+      }),
+    }),
     getApiV1EmployeeById: build.query<
       GetApiV1EmployeeByIdApiResponse,
       GetApiV1EmployeeByIdApiArg
@@ -935,6 +945,44 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/api/v1/material/${queryArg.materialId}/stock/departments`,
+      }),
+    }),
+    getApiV1PermissionModules: build.query<
+      GetApiV1PermissionModulesApiResponse,
+      GetApiV1PermissionModulesApiArg
+    >({
+      query: () => ({ url: `/api/v1/permission/modules` }),
+    }),
+    getApiV1Permission: build.query<
+      GetApiV1PermissionApiResponse,
+      GetApiV1PermissionApiArg
+    >({
+      query: () => ({ url: `/api/v1/permission` }),
+    }),
+    getApiV1PermissionUserByUserId: build.query<
+      GetApiV1PermissionUserByUserIdApiResponse,
+      GetApiV1PermissionUserByUserIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/permission/user/${queryArg.userId}`,
+      }),
+    }),
+    getApiV1PermissionRoleByRoleId: build.query<
+      GetApiV1PermissionRoleByRoleIdApiResponse,
+      GetApiV1PermissionRoleByRoleIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/permission/role/${queryArg.roleId}`,
+      }),
+    }),
+    putApiV1PermissionRoleByRoleId: build.mutation<
+      PutApiV1PermissionRoleByRoleIdApiResponse,
+      PutApiV1PermissionRoleByRoleIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/permission/role/${queryArg.roleId}`,
+        method: "PUT",
+        body: queryArg.body,
       }),
     }),
     postApiV1ProcurementManufacturer: build.mutation<
@@ -2518,6 +2566,7 @@ const injectedRtkApi = api.injectEndpoints({
           supplierType: queryArg.supplierType,
           materialId: queryArg.materialId,
           purchaseOrderId: queryArg.purchaseOrderId,
+          status: queryArg.status,
         },
       }),
     }),
@@ -2604,9 +2653,7 @@ const injectedRtkApi = api.injectEndpoints({
         params: {
           page: queryArg.page,
           pageSize: queryArg.pageSize,
-          roleNames: queryArg.roleNames,
           searchQuery: queryArg.searchQuery,
-          "with-disabled": queryArg["with-disabled"],
         },
       }),
     }),
@@ -3492,11 +3539,16 @@ export type GetApiV1EmployeeApiArg = {
   designation?: string;
   department?: string;
 };
+export type PostApiV1EmployeeUserApiResponse = /** status 200 OK */ string;
+export type PostApiV1EmployeeUserApiArg = {
+  employeeUserDto: EmployeeUserDto;
+};
 export type GetApiV1EmployeeByIdApiResponse = /** status 200 OK */ EmployeeDto;
 export type GetApiV1EmployeeByIdApiArg = {
   id: string;
 };
-export type PutApiV1EmployeeByIdApiResponse = unknown;
+export type PutApiV1EmployeeByIdApiResponse =
+  /** status 204 No Content */ EmployeeDto;
 export type PutApiV1EmployeeByIdApiArg = {
   id: string;
   createEmployeeRequest: CreateEmployeeRequest;
@@ -3505,7 +3557,8 @@ export type DeleteApiV1EmployeeByIdApiResponse = unknown;
 export type DeleteApiV1EmployeeByIdApiArg = {
   id: string;
 };
-export type PutApiV1EmployeeByIdAssignApiResponse = unknown;
+export type PutApiV1EmployeeByIdAssignApiResponse =
+  /** status 204 No Content */ EmployeeDto;
 export type PutApiV1EmployeeByIdAssignApiArg = {
   id: string;
   assignEmployeeDto: AssignEmployeeDto;
@@ -3820,6 +3873,31 @@ export type GetApiV1MaterialByMaterialIdStockDepartmentsApiResponse =
 export type GetApiV1MaterialByMaterialIdStockDepartmentsApiArg = {
   /** The ID of the material. */
   materialId: string;
+};
+export type GetApiV1PermissionModulesApiResponse =
+  /** status 200 OK */ PermissionModuleDto[];
+export type GetApiV1PermissionModulesApiArg = void;
+export type GetApiV1PermissionApiResponse =
+  /** status 200 OK */ PermissionDto[];
+export type GetApiV1PermissionApiArg = void;
+export type GetApiV1PermissionUserByUserIdApiResponse =
+  /** status 200 OK */ PermissionModuleDto[];
+export type GetApiV1PermissionUserByUserIdApiArg = {
+  /** The user ID. */
+  userId: string;
+};
+export type GetApiV1PermissionRoleByRoleIdApiResponse =
+  /** status 200 OK */ PermissionModuleDto[];
+export type GetApiV1PermissionRoleByRoleIdApiArg = {
+  /** The role ID. */
+  roleId: string;
+};
+export type PutApiV1PermissionRoleByRoleIdApiResponse = unknown;
+export type PutApiV1PermissionRoleByRoleIdApiArg = {
+  /** The role ID. */
+  roleId: string;
+  /** List of permission identifiers. */
+  body: string[];
 };
 export type PostApiV1ProcurementManufacturerApiResponse =
   /** status 200 OK */ string;
@@ -4891,6 +4969,8 @@ export type GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg = {
   materialId?: string;
   /** The purchase order associated */
   purchaseOrderId?: string;
+  /** The status of the price comparison (NotProcessed, Processed, NotUsed) */
+  status?: SupplierQuotationItemStatus;
 };
 export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse =
   unknown;
@@ -4938,9 +5018,7 @@ export type GetApiV1UserApiResponse =
 export type GetApiV1UserApiArg = {
   page?: number;
   pageSize?: number;
-  roleNames?: string;
   searchQuery?: string;
-  "with-disabled"?: boolean;
 };
 export type PostApiV1UserSignUpApiResponse = unknown;
 export type PostApiV1UserSignUpApiArg = {
@@ -5285,7 +5363,10 @@ export type UserDto = {
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
+  isDisabled?: boolean;
+  role?: string | null;
   avatar?: string | null;
+  createdAt?: string;
   signature?: string | null;
   department?: CollectionItemDto;
 };
@@ -5680,6 +5761,7 @@ export type EmployeeDto = {
   phoneNumber?: string | null;
   type?: EmployeeType;
   designationName?: string | null;
+  departmentName?: string | null;
   mother?: PersonDto;
   father?: PersonDto;
   spouse?: PersonDto;
@@ -5699,9 +5781,15 @@ export type EmployeeDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type EmployeeUserDto = {
+  employeeId: string;
+  roleName: string;
+};
 export type AssignEmployeeDto = {
   designationId: string;
   departmentId: string;
+  staffId?: string | null;
+  startDate?: string;
   reportingManagerId: string;
 };
 export type CreateFormFieldRequest = {
@@ -6345,6 +6433,23 @@ export type MaterialStockByDepartmentDto = {
   department?: CollectionItemDto;
   totalQuantity?: number;
 };
+export type PermissionDetailDto = {
+  key?: string | null;
+  name?: string | null;
+  description?: string | null;
+  subModule?: string | null;
+};
+export type PermissionModuleDto = {
+  module?: string | null;
+  children?: PermissionDetailDto[] | null;
+};
+export type PermissionDto = {
+  module?: string | null;
+  subModule?: string | null;
+  key?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
 export type CreateManufacturerMaterialRequest = {
   materialId?: string;
 };
@@ -6542,12 +6647,6 @@ export type CreatePurchaseOrderRevision = {
   quantity?: number | null;
   price?: number | null;
   currencyId?: string | null;
-  uoMBeforeId?: string | null;
-  quantityBefore?: number | null;
-  priceBefore?: number | null;
-  currencyBeforeId?: string | null;
-  materialBeforeId?: string | null;
-  revisionNumber?: number;
 };
 export type CreateBatchItemRequest = {
   batchNumber?: string | null;
@@ -11070,9 +11169,11 @@ export type SupplierQuotationResponseDto = {
   id?: string;
   price?: number;
 };
+export type SupplierQuotationItemStatus = 0 | 1 | 2;
 export type SupplierPrice = {
   supplier?: CollectionItemDto;
   sourceRequisition?: CollectionItemDto;
+  status?: SupplierQuotationItemStatus;
   price?: number | null;
 };
 export type SupplierPriceComparison = {
@@ -11653,6 +11754,7 @@ export const {
   usePostApiV1EmployeeMutation,
   useGetApiV1EmployeeQuery,
   useLazyGetApiV1EmployeeQuery,
+  usePostApiV1EmployeeUserMutation,
   useGetApiV1EmployeeByIdQuery,
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
@@ -11727,6 +11829,15 @@ export const {
   useLazyGetApiV1MaterialByMaterialIdStockWarehousesQuery,
   useGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   useLazyGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
+  useGetApiV1PermissionModulesQuery,
+  useLazyGetApiV1PermissionModulesQuery,
+  useGetApiV1PermissionQuery,
+  useLazyGetApiV1PermissionQuery,
+  useGetApiV1PermissionUserByUserIdQuery,
+  useLazyGetApiV1PermissionUserByUserIdQuery,
+  useGetApiV1PermissionRoleByRoleIdQuery,
+  useLazyGetApiV1PermissionRoleByRoleIdQuery,
+  usePutApiV1PermissionRoleByRoleIdMutation,
   usePostApiV1ProcurementManufacturerMutation,
   useGetApiV1ProcurementManufacturerQuery,
   useLazyGetApiV1ProcurementManufacturerQuery,

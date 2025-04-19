@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
 import {
+  CODE_SETTINGS,
   ErrorResponse,
   Gender,
   LifeStatus,
@@ -18,7 +19,9 @@ import {
 import {
   CreateEmployeeRequest,
   PostApiV1EmployeeApiArg,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   usePostApiV1EmployeeMutation,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 
@@ -77,6 +80,8 @@ const steps = [
 export default function OnboardingForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [createEmployee, { isLoading }] = usePostApiV1EmployeeMutation();
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const {
@@ -265,11 +270,31 @@ export default function OnboardingForm() {
 
   const onSubmit = async (data: OnboardingFormValues) => {
     console.log("Form data:", data);
+    const payload = {
+      createEmployeeRequest: transformFormData(data),
+    } satisfies PostApiV1EmployeeApiArg;
+
     try {
-      const payload = {
-        createEmployeeRequest: transformFormData(data),
-      } satisfies PostApiV1EmployeeApiArg;
-      await createEmployee(payload).unwrap();
+      const employeeId = await createEmployee(payload).unwrap();
+      //only after successful submission
+      if (employeeId) {
+        const formData = new FormData();
+        // Ensure attachments are an array
+        const attachmentsArray = Array.isArray(data.passportPhoto)
+          ? data.passportPhoto
+          : Array.from(data.passportPhoto); // Convert FileList to an array
+
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.Employee,
+          modelId: employeeId,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
+
       toast.success("Form sent successfully");
       reset();
       setIsSubmitted(true);
@@ -368,7 +393,11 @@ export default function OnboardingForm() {
                   className="flex items-center gap-2"
                 >
                   <Icon
-                    name={isLoading ? "LoaderCircle" : "Plus"}
+                    name={
+                      isLoading || isUploadingAttachment
+                        ? "LoaderCircle"
+                        : "Plus"
+                    }
                     className={cn("h-4 w-4", { "animate-spin": isLoading })}
                   />
                   <span>Save</span>
