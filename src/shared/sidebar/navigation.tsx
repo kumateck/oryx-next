@@ -315,8 +315,8 @@ export const ROUTES: Route[] = [
         icon: "Folder",
         items: [
           {
-            title: "Manage Users",
-            url: "/access-management/roles",
+            title: "Manage Users Directory",
+            url: "/access-management/users",
           },
         ],
       },
