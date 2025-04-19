@@ -11388,19 +11388,13 @@ export type ProcessQuotation = {
 };
 export type CreateRoleRequest = {
   name: string;
-  permissions?: string[] | null;
-};
-export type PermissionResponseDto = {
-  groupName?: string | null;
-  action?: string | null;
-  description?: string | null;
+  permissions?: PermissionModuleDto[] | null;
 };
 export type RolePermissionDto = {
   id?: string;
   displayName?: string | null;
   name?: string | null;
-  permissions?: PermissionResponseDto[] | null;
-  users?: CollectionItemDto[] | null;
+  permissions?: PermissionModuleDto[] | null;
 };
 export type RolePermissionDtoIEnumerablePaginateable = {
   data?: RolePermissionDto[] | null;

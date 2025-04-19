@@ -14,6 +14,7 @@ import {
   hasOptions,
   isErrorResponse,
   permissionOptions,
+  removeDuplicateTypes,
   // removeDuplicateTypes,
 } from "@/lib/utils";
 
@@ -182,7 +183,7 @@ const Page = () => {
   const onSubmit = async (data: RoleRequestDto) => {
     const payload = {
       name: data.name,
-      // permissions: removeDuplicateTypes(permissions),
+      permissions: removeDuplicateTypes(permissions),
     };
     try {
       await saveRole({
