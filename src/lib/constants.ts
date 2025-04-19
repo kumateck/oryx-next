@@ -56,6 +56,7 @@ export const CODE_SETTINGS = {
     StockTransfer: "StockTransfer",
     Waybill: "Waybill",
     BillingSheet: "BillingSheet",
+    Employee: "Employee",
   },
   nameTypes: {
     Time: 2,

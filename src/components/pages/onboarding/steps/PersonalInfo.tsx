@@ -74,6 +74,18 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
   return (
     <>
       <FormWizard
+        config={[
+          {
+            type: InputTypes.DRAGNDROP,
+            label: "Passport Size Photo",
+            name: `passportPhoto`,
+            defaultValue: null,
+            control: control as Control,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
         className="w-full gap-x-10 gap-y-5 space-y-0"
         config={[
           {

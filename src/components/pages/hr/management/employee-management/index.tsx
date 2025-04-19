@@ -63,6 +63,9 @@ const EmployeeManagement = () => {
       </div>
 
       <ServerDatatable
+        onRowClick={(row) => {
+          router.push(`/hr/employee-management/${row.id}/details`);
+        }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
