@@ -128,6 +128,7 @@ const Page = () => {
 
   const onSubmit = async () => {
     try {
+      // console.log(findSelectedQuotation(state));
       await saveProcess({
         body: findSelectedQuotation(state),
       }).unwrap();

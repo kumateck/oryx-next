@@ -51,6 +51,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         name: data.name,
         description: data.description || "",
         departmentIds: data.departmentIds.map((d) => d.value),
+        maximumLeaveDays: data.maximumLeaveDays,
       } satisfies CreateDesignationRequest;
 
       await createDesignation({

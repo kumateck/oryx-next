@@ -8,8 +8,10 @@ import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   convertToLargestUnit,
+  convertToSmallestUnit,
   EMaterialKind,
   ErrorResponse,
+  getLargestUnit,
   getSmallestUnit,
   isErrorResponse,
   RevisionType,
@@ -82,6 +84,7 @@ const RevisePurchaseOrder = () => {
           label: qty.unit ?? "",
           value: item.uom?.id ?? "",
         },
+        supplierId: res.supplier?.id ?? "",
         quantity: qty.value ?? 0,
         price: item.price ?? 0,
         currency: supplierCurrency,
@@ -109,15 +112,21 @@ const RevisePurchaseOrder = () => {
     try {
       await saveMutation({
         purchaseOrderId: POId,
-        body: itemLists?.map((item) => ({
-          uoMId: item.uoM?.value,
-          materialId: item.material?.value,
-          currencyId: item.currency?.value,
-          type: Number(item.type) as RevisionType,
-          quantity: item.quantity,
-          price: item.price,
-          purchaseOrderItemId: item.purchaseOrderItemId,
-        })),
+        body: itemLists?.map((item) => {
+          const qty = convertToSmallestUnit(
+            item.quantity as number,
+            getLargestUnit(item.uoM?.label as Units),
+          );
+          return {
+            uoMId: item.uoM?.value,
+            materialId: item.material?.value,
+            currencyId: item.currency?.value,
+            type: Number(item.type) as RevisionType,
+            quantity: qty.value,
+            price: item.price,
+            purchaseOrderItemId: item.purchaseOrderItemId,
+          };
+        }),
       } satisfies PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg).unwrap();
       toast.success("Purchase Order revised successfully");
       router.back();

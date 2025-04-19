@@ -9,6 +9,14 @@ export const CreateDesignationSchema = z.object({
     .array(IdSchema("Department"))
     .min(1, { message: "At least one department must be selected" }),
   description: z.string().optional(),
+  maximumLeaveDays: z
+    .number({
+      required_error: "Maximum Leave Days is required",
+      invalid_type_error: "Maximum Leave Days must be a number",
+    })
+    .positive({
+      message: "Maximum Leave Days must be greater than 0",
+    }),
 });
 
 export type DesignationRequestDto = z.infer<typeof CreateDesignationSchema>;

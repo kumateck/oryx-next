@@ -53,6 +53,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       name: details.name as string,
       description: details.description as string,
       departmentIds: defaultDepartments,
+      maximumLeaveDays: details.maximumLeaveDays as number,
     },
   });
 
@@ -67,6 +68,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         name: data.name,
         description: data.description || "",
         departmentIds: data.departmentIds.map((d) => d.value),
+        maximumLeaveDays: data.maximumLeaveDays,
       } satisfies CreateDesignationRequest;
       await editDesignation({
         id: details.id as string,
