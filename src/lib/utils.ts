@@ -14,6 +14,7 @@ import {
   tens,
 } from "./constants";
 import {
+  ApprovalDocument,
   BatchSizeType,
   BatchStatus,
   FloorType,
@@ -212,6 +213,16 @@ export function isStockUnAvailable(
   materials: ProductionScheduleProcurementDto[],
 ): boolean {
   for (const item of materials) {
+    console.log(
+      item,
+      "item",
+      item.status,
+      Number(item.quantityOnHand),
+      Number(item.quantityNeeded),
+      Number(item.quantityOnHand) < Number(item.quantityNeeded),
+      Number(item.status) === MaterialStatus.NoSource &&
+        Number(item.quantityOnHand) < Number(item.quantityNeeded),
+    );
     if (
       Number(item.status) === MaterialStatus.NoSource &&
       Number(item.quantityOnHand) < Number(item.quantityNeeded)
@@ -223,6 +234,20 @@ export function isStockUnAvailable(
   return false; // All stocks are sufficient
 }
 
+export function isStockAvailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  for (const item of materials) {
+    if (
+      Number(item.status) === MaterialStatus.InHouse &&
+      Number(item.quantityOnHand) >= Number(item.quantityNeeded)
+    ) {
+      console.log("I cannot process, I need to add a stock.");
+      return true; // At least one stock is insufficient
+    }
+  }
+  return false; // All stocks are sufficient
+}
 export const quantityAvailable = (
   materials: ProductionScheduleProcurementDto[],
 ) => {
@@ -868,6 +893,13 @@ export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
   label: key,
   value: FloorType[key as keyof typeof FloorType],
 })) as Option[];
+
+export const ApprovalDocumentOptions = Object.keys(ApprovalDocument).map(
+  (key) => ({
+    label: key,
+    value: ApprovalDocument[key as keyof typeof ApprovalDocument],
+  }),
+) as Option[];
 
 export const RawLocationOptions = Object.keys(RawLocationType).map((key) => ({
   label: key,

@@ -13,6 +13,7 @@ import {
   Units,
   convertToLargestUnit,
   isErrorResponse,
+  isStockAvailable,
   isStockUnAvailable,
   routes,
 } from "@/lib";
@@ -112,10 +113,12 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
       const isnotAvailable =
         isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
 
+      const isAvailable =
+        isStockAvailable(rResponse) && isStockAvailable(pResponse);
       if (isnotAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Purchase);
       }
-      if (!isnotAvailable) {
+      if (isAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Start);
       }
 
@@ -267,6 +270,7 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
   };
 
   const ProductStatus = (status: ScheduleProductStatus) => {
+    console.log(status, "status");
     switch (status) {
       case ScheduleProductStatus.Start:
         return (

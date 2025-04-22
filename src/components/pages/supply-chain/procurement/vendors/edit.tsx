@@ -54,22 +54,6 @@ const Edit = () => {
   } = useForm<VendorRequestDto>({
     resolver: CreateVendorValidator,
     mode: "all",
-    // defaultValues: {
-    //   associatedManufacturers: [
-    //     {
-    //       material: {
-    //         label: "",
-    //         value: "",
-    //       },
-    //       manufacturer: [
-    //         {
-    //           label: "",
-    //           value: "",
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
   });
 
   useEffect(() => {
@@ -84,6 +68,7 @@ const Edit = () => {
 
     const associatedManufacturers = res?.associatedManufacturers || [];
 
+    // console.log(associatedManufacturers, "associatedManufacturers");
     const groupedManufacturers = associatedManufacturers.reduce((acc, item) => {
       if (!item.material) return acc; // Skip if material is missing
 
@@ -94,7 +79,7 @@ const Edit = () => {
       };
 
       const manufacturerEntry =
-        !item.default && item.manufacturer
+        !item.default && !!item.manufacturer
           ? {
               label: item.manufacturer.name as string,
               value: item.manufacturer.id as string,
@@ -102,12 +87,21 @@ const Edit = () => {
           : { label: "", value: "" };
 
       const defaultManufacturerEntry =
-        item.default && item.manufacturer
+        item.default && !!item.manufacturer
           ? {
               label: item.manufacturer.name as string,
               value: item.manufacturer.id as string,
             }
           : { label: "", value: "" };
+
+      console.log(
+        item.default && !!item.manufacturer,
+        "default",
+        item.default,
+        // item.manufacturer,
+        item.material.id,
+        item.manufacturer?.id,
+      );
 
       if (!acc.has(materialKey)) {
         acc.set(materialKey, {
