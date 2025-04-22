@@ -18,6 +18,7 @@ import {
   TemplateRequestDto,
   templateQuestions,
 } from "./type";
+import PageTitle from "@/shared/title";
 
 const CreateTemplate = () => {
   const router = useRouter();
@@ -81,9 +82,7 @@ const CreateTemplate = () => {
                 router.back();
               }}
             />
-            <span className="font-Medium text-primary-500 text-xl">
-              Create Template
-            </span>
+            <PageTitle title="Create Template" />
           </div>
           <Button
             type="submit"
