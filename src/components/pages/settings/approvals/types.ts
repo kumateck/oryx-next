@@ -8,28 +8,6 @@ const IdSchema = z.object({
   label: z.string(),
 });
 
-// const CreateApprovalStageRequestSchema = z
-//   .object({
-//     type: z
-//       .enum(["Role", "User"], { required_error: "Type is required" }) // Error message for type
-//       .refine((value) => value === "Role" || value === "User", {
-//         message: "Type must be either 'Role' or 'User'",
-//         path: ["type"],
-//       }),
-//     userId: IdSchema.optional(),
-//     roleId: IdSchema.optional(),
-//     required: z.boolean().optional(),
-//     order: IdSchema.optional(),
-//   })
-//   .refine((data) => data.type !== "Role" || data.roleId != null, {
-//     message: "roleId is required when type is 'Role'",
-//     path: ["roleId"],
-//   })
-//   .refine((data) => data.type !== "User" || data.userId != null, {
-//     message: "userId is required when type is 'User'",
-//     path: ["userId"],
-//   });
-
 const CreateApprovalStageRequestSchema = z
   .object({
     type: z

@@ -11,7 +11,7 @@ import {
 
 import { InputTypes, Option, TimeType, cn } from "@/lib";
 
-import { Button, Icon, Label } from "../ui";
+import { Button, Icon, Label, Switch } from "../ui";
 import { SuggestionProps } from "../ui/adusei-editor/suggestion";
 import { FetchOptionsResult } from "../ui/async-select";
 // import { FetchOptionsResult } from "../ui/paginated-select";
@@ -69,6 +69,12 @@ interface FileInputProps extends BaseInputProps<FieldValues> {
   control: Control<FieldValues>;
   name: string;
   defaultValue?: string;
+}
+
+interface SwitchInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.SWITCH;
+  control: Control<FieldValues>;
+  name: string;
 }
 
 interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
@@ -198,6 +204,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | SpecialSelectInputProps<TFieldValues, TContext>
   | ButtonProps
   | SpaceProps
+  | SwitchInputProps
   | LabelProps
   | null
   | undefined;
@@ -284,6 +291,18 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           )}
         />
       );
+
+    case InputTypes.SWITCH:
+      return (
+        <Controller
+          name={formInput.name}
+          control={formInput.control}
+          render={({ field }) => (
+            <Switch checked={field.value} onCheckedChange={field.onChange} />
+          )}
+        />
+      );
+
     case InputTypes.ASYNC_SELECT:
       return (
         <Controller

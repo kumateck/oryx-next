@@ -47,6 +47,13 @@ export enum CodeModelTypes {
   GRNNumber = "GrnNumber",
 }
 
+export enum ApprovalDocument {
+  PurchaseRequisition = "PurchaseRequisition",
+  StockRequisition = "StockRequisition",
+  PurchaseOrder = "PurchaseOrder",
+  BillingSheet = "BillingSheet",
+}
+
 export enum StockTransfer {
   New = 0,
   Approved = 1,

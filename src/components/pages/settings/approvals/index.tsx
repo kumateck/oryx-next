@@ -242,6 +242,7 @@ import { useGetApiV1ApprovalQuery } from "@/lib/redux/api/openapi.generated";
 
 import AddApproval from "./add-approval";
 import ApprovalCard from "./card";
+import Link from "next/link";
 
 const Page = () => {
   const { data: responseDto } = useGetApiV1ApprovalQuery({
@@ -257,7 +258,9 @@ const Page = () => {
     <div className="w-full">
       <div className="flex items-center justify-between">
         <span className="text-2xl font-semibold capitalize">Approvals</span>
-        <Button onClick={() => setIsOpen(true)}>Create</Button>
+        <Link href={"/settings/approvals/create"}>
+          <Button>Create</Button>
+        </Link>
       </div>
       <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <ul>
