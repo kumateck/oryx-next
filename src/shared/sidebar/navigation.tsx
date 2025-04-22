@@ -289,6 +289,10 @@ export const ROUTES: Route[] = [
             title: "Designation Management",
             url: "/hr/designation-management",
           },
+          {
+            title: "Leave Management",
+            url: "/hr/leave-management",
+          },
         ],
       },
     ],

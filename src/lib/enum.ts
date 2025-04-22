@@ -332,6 +332,17 @@ export enum Religions {
 }
 
 export enum EmployeeType {
-  Casual,
-  Permanent,
+  Casual = 0,
+  Permanent = 1,
+}
+
+export enum AbsenceType {
+  Sick = "Sick",
+  Military = "Military",
+  TOWP = "Time off without pay",
+  Vacation = "Vacation",
+  JuryDuty = "Jury Duty",
+  Bereavement = "Bereavement",
+  MaternityPaternity = "Maternity/Paternity",
+  Other = "Other",
 }

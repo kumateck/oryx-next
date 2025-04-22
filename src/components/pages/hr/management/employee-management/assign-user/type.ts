@@ -1,7 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-export const assignLocationSchema = z.object({
+export const employeeInfoSchema = z.object({
+  type: z.string().transform((value) => {
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      throw new Error("Invalid value for type");
+    }
+    return numValue;
+  }),
   name: z.string().min(1, "Employee name is required"),
   email: z.string().email().min(1, "Employee email is required"),
   departmentId: z.object(
@@ -25,16 +32,16 @@ export const assignLocationSchema = z.object({
     },
     { message: "Reporting manager is required" },
   ),
-  startDate: z.preprocess(
-    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-    z.date({
-      required_error: "Emplyment Start Date is required",
-      invalid_type_error: "Emplyment Start Date Date must be a valid date",
-    }),
-  ),
+  // startDate: z.preprocess(
+  //   (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+  //   z.date({
+  //     required_error: "Emplyment Start Date is required",
+  //     invalid_type_error: "Emplyment Start Date Date must be a valid date",
+  //   }),
+  // ),
   staffId: z.string().min(1, "Staff ID is required"),
 });
 
-export type AssignUserRequestDto = z.infer<typeof assignLocationSchema>;
+export type EmployeeInfoRequestDto = z.infer<typeof employeeInfoSchema>;
 
-export const AssignLocationValidator = zodResolver(assignLocationSchema);
+export const EmployeeInfoValidator = zodResolver(employeeInfoSchema);

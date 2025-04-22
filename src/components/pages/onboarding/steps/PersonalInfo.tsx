@@ -55,6 +55,8 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
     .map(([key, value]) => ({
       label: key,
       value: String(value),
+      // Add original value for easier comparison
+      originalValue: value,
     }));
 
   const religionptions = Object.entries(Religions)

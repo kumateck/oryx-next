@@ -9,6 +9,7 @@ import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { EmployeeType, splitWords } from "@/lib";
+import { useRouter } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -18,10 +19,11 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeDto | null>(
-    null,
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeDto>(
+    {} as EmployeeDto,
   );
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -32,13 +34,29 @@ export function DataTableRowActions<TData extends EmployeeDto>({
             onClick={() => {
               setSelectedEmployee(row.original);
               setIsAssignLocationOpen(true);
+              console.log(row.original.type);
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit Info</span>
+          </div>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-center gap-2"
+            onClick={() => {
+              router.push(`/hr/employee-management/${row.id}/details`);
             }}
           >
             <Icon
               name="User"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
-            <span>Assign Employee</span>
+            <span>Employee Details</span>
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
