@@ -200,7 +200,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
                       label: "Other Manufacturers",
                       control: control as Control,
                       type: InputTypes.MULTI,
-                      name: `associatedManufacturers.${index}.manufacturer`,
+                      name: `associatedManufacturers.${index}.otherManufacturers`,
                       placeholder: "Manufacturer",
                       options: otherManufacturers, // Dynamically loaded options
                       errors,

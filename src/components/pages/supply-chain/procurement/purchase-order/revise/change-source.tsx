@@ -107,9 +107,9 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
     materialId: details.material.value,
     type: sourceType as SupplierType,
   });
-  const options = data?.map((vendor) => ({
-    label: vendor.name,
-    value: vendor.id,
+  const options = data?.map((supplier) => ({
+    label: supplier.name,
+    value: supplier.id,
   })) as Option[];
 
   return (

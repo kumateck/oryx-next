@@ -16,7 +16,9 @@ const objectSchema = (msg: string) =>
   });
 const AssociatedManufacturersSchema = z.object({
   material: objectSchema("Material is required"),
-  manufacturer: z.array(objectSchema("Manufacturer is required")).optional(),
+  otherManufacturers: z
+    .array(objectSchema("Manufacturer is required"))
+    .optional(),
   defaultManufacturer: objectSchema("Manufacturer is required"),
 });
 export const CreateVendorSchema = z.object({
@@ -56,8 +58,8 @@ export function mapAssociatedManufacturers(
     }
 
     // Map each selected manufacturer with default: false
-    if (item.manufacturer && item.manufacturer.length > 0) {
-      item.manufacturer.forEach((manu) => {
+    if (item.otherManufacturers && item.otherManufacturers.length > 0) {
+      item.otherManufacturers.forEach((manu) => {
         if (manu.value && materialId) {
           mappedResults.push({
             materialId,

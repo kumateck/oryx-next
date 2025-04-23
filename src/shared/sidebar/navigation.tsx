@@ -155,8 +155,8 @@ export const ROUTES: Route[] = [
             url: "/procurement/manufacturers",
           },
           {
-            title: "Vendors",
-            url: "/procurement/vendors",
+            title: "Suppliers",
+            url: "/procurement/suppliers",
           },
 
           {

@@ -51,7 +51,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
         <DropdownMenuItem className="group">
           <Link
             className="flex cursor-pointer items-center justify-start gap-2"
-            href={routes.editVendor(row.original.id as string)}
+            href={routes.editSupplier(row.original.id as string)}
           >
             <span className="text-black">
               <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
@@ -83,7 +83,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
             await deleteMutation({
               supplierId: details.id as string,
             }).unwrap();
-            toast.success("Vendor deleted successfully");
+            toast.success("Supplier deleted successfully");
             dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -172,7 +172,7 @@ export function DataTableRowStatus<TData extends SupplierDto>({
 export const columns: ColumnDef<SupplierDto>[] = [
   {
     accessorKey: "type",
-    header: "Vendor Type",
+    header: "Supplier Type",
 
     cell: ({ row }) => (
       <div>

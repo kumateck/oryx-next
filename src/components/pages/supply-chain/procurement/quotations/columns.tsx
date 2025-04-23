@@ -40,7 +40,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
 export const columns: ColumnDef<SupplierQuotationDto>[] = [
   {
     accessorKey: "supplier",
-    header: "Vendor",
+    header: "Supplier",
     cell: ({ row }) => (
       <div className="min-w-36">{row.original.supplier?.name}</div>
     ),
