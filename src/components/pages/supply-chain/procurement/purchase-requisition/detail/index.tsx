@@ -52,7 +52,7 @@ const Page = () => {
         ).value,
         uomId: material.uoM?.id,
         source: "",
-        sourceVendors: [],
+        sourceSuppliers: [],
         options: [],
       })) as unknown as MaterialRequestDto[];
       setPurchaseLists(items);
@@ -68,7 +68,7 @@ const Page = () => {
           materialId: item.materialId,
           quantity: convertToSmallestUnit(item.quantity, item.uom as Units)
             .value,
-          suppliers: item.sourceVendors?.map((item) => {
+          suppliers: item.sourceSuppliers?.map((item) => {
             return {
               supplierId: item?.value,
             };

@@ -68,52 +68,49 @@ const Edit = () => {
 
     const associatedManufacturers = res?.associatedManufacturers || [];
 
-    // console.log(associatedManufacturers, "associatedManufacturers");
-    const groupedManufacturers = associatedManufacturers.reduce((acc, item) => {
-      if (!item.material) return acc; // Skip if material is missing
+    const groupedManufacturers = associatedManufacturers.reduce(
+      (acc, item) => {
+        if (!item.material || !item.manufacturer) return acc;
 
-      const materialKey = item.material.id as string; // Use material ID as key
-      const materialEntry = {
-        label: item.material.name as string,
-        value: item.material.id as string,
-      };
+        const materialKey = item.material.id as string;
 
-      const manufacturerEntry =
-        !item.default && !!item.manufacturer
-          ? {
-              label: item.manufacturer.name as string,
-              value: item.manufacturer.id as string,
-            }
-          : { label: "", value: "" };
+        const materialEntry = {
+          label: item.material.name as string,
+          value: item.material.id as string,
+        };
 
-      const defaultManufacturerEntry =
-        item.default && !!item.manufacturer
-          ? {
-              label: item.manufacturer.name as string,
-              value: item.manufacturer.id as string,
-            }
-          : { label: "", value: "" };
+        const manufacturerEntry = {
+          label: item.manufacturer.name as string,
+          value: item.manufacturer.id as string,
+        };
 
-      console.log(
-        item.default && !!item.manufacturer,
-        "default",
-        item.default,
-        // item.manufacturer,
-        item.material.id,
-        item.manufacturer?.id,
-      );
+        if (!acc.has(materialKey)) {
+          acc.set(materialKey, {
+            material: materialEntry,
+            defaultManufacturer: { label: "", value: "" },
+            otherManufacturers: [] as { label: string; value: string }[],
+          });
+        }
 
-      if (!acc.has(materialKey)) {
-        acc.set(materialKey, {
-          material: materialEntry,
-          manufacturer: [],
-          defaultManufacturer: { label: "", value: "" },
-        });
-      }
-      acc.get(materialKey)!.defaultManufacturer = defaultManufacturerEntry;
-      acc.get(materialKey)?.manufacturer.push(manufacturerEntry);
-      return acc;
-    }, new Map<string, { material: { label: string; value: string }; defaultManufacturer: { label: string; value: string }; manufacturer: { label: string; value: string }[] }>());
+        const entry = acc.get(materialKey)!;
+
+        if (item.default) {
+          entry.defaultManufacturer = manufacturerEntry;
+        } else {
+          entry.otherManufacturers.push(manufacturerEntry);
+        }
+
+        return acc;
+      },
+      new Map<
+        string,
+        {
+          material: { label: string; value: string };
+          defaultManufacturer: { label: string; value: string };
+          otherManufacturers: { label: string; value: string }[];
+        }
+      >(),
+    );
 
     const defaultSupplier = {
       address: res.address as string,
@@ -129,9 +126,10 @@ const Edit = () => {
         label: res.currency?.name as string,
         value: res.currency?.id as string,
       },
-
       associatedManufacturers: Array.from(groupedManufacturers.values()),
     } as VendorRequestDto;
+
+    console.log(defaultSupplier, "defaultSupplier");
 
     setDefaultValues(defaultSupplier);
     reset(defaultSupplier);
@@ -171,20 +169,6 @@ const Edit = () => {
   const [loadMaterialManufacturers] =
     useLazyGetApiV1ProcurementManufacturerMaterialByMaterialIdQuery();
 
-  // const typeValues =
-  //   useWatch({
-  //     control,
-  //     name: "associatedManufacturers",
-  //   })?.map((item) => item?.material) || [];
-  // Your existing code
-  // const typeValues = useMemo(() => {
-  //   return (
-  //     useWatch({
-  //       control,
-  //       name: "associatedManufacturers",
-  //     })?.map((item) => item?.material) || []
-  //   );
-  // }, [control]);
   const associatedManufacturers = useWatch({
     control,
     name: "associatedManufacturers",
@@ -202,13 +186,6 @@ const Edit = () => {
     );
   }, [associatedManufacturers]);
   const onSubmit = async (data: VendorRequestDto) => {
-    // const associatedManufacturers = data.associatedManufacturers.flatMap(
-    //   (item) =>
-    //     item.manufacturer.map((manufacturer) => ({
-    //       materialId: item.material.value,
-    //       manufacturerId: manufacturer.value,
-    //     })),
-    // );
     const associatedManufacturers = mapAssociatedManufacturers(
       data.associatedManufacturers,
     );
@@ -225,8 +202,8 @@ const Edit = () => {
         createSupplierRequest: payload,
         supplierId,
       } as PutApiV1ProcurementSupplierBySupplierIdApiArg);
-      toast.success("Vendor updated successfully");
-      router.push(routes.vendors());
+      toast.success("Supplier updated successfully");
+      router.push(routes.suppliers());
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -280,13 +257,13 @@ const Edit = () => {
               onClick={onBack}
               className="cursor-pointer"
             />
-            <PageTitle title={"Edit Vendor"} />
+            <PageTitle title={"Edit Supplier"} />
           </div>
           <div className="flex justify-end gap-4 py-6">
             <Button
               type="button"
               variant="secondary"
-              onClick={() => router.push(routes.vendors())}
+              onClick={() => router.push(routes.suppliers())}
             >
               Cancel
             </Button>

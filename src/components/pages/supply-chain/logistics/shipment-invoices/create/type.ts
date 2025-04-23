@@ -35,7 +35,7 @@ export const createRequisitionRequestSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  supplierId: IdSchema("Vendor"),
+  supplierId: IdSchema("Supplier"),
   purchaseOrderIds: z.array(IdSchema("Purchase Order")).min(1, {
     message: "Purchase Order is required",
   }),

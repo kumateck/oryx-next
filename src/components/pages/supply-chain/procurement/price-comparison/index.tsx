@@ -132,7 +132,7 @@ const Page = () => {
       await saveProcess({
         body: findSelectedQuotation(state),
       }).unwrap();
-      toast.success("Vendors Selected successfully");
+      toast.success("Supplier Selected successfully");
       handleLoadPriceComparison(type);
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
