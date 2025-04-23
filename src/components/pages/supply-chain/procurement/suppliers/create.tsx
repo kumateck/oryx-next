@@ -56,7 +56,7 @@ const Create = () => {
             label: "",
             value: "",
           },
-          manufacturer: [
+          otherManufacturers: [
             {
               label: "",
               value: "",
@@ -126,13 +126,6 @@ const Create = () => {
 
   const onSubmit = async (data: VendorRequestDto) => {
     try {
-      // const associatedManufacturers = data.associatedManufacturers.flatMap(
-      //   (item) =>
-      //     item?.manufacturer?.map((manufacturer) => ({
-      //       materialId: item.material.value,
-      //       manufacturerId: manufacturer.value,
-      //     })),
-      // );
       const associatedManufacturers = mapAssociatedManufacturers(
         data.associatedManufacturers,
       );
@@ -145,14 +138,13 @@ const Create = () => {
         currencyId: currency.value,
       } satisfies CreateSupplierRequest;
 
-      console.log(payload, "payload");
       // Call the mutation to create the supplier
       await createMutation({
         createSupplierRequest: payload,
       } as PostApiV1ProcurementSupplierApiArg).unwrap();
       // Handle success (e.g., show a success message, redirect, etc.)
-      toast.success("Vendor created successfully");
-      router.push(routes.vendors());
+      toast.success("Supplier created successfully");
+      router.push(routes.suppliers());
       // reset(); // Reset the form after submission
       // onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -213,7 +205,7 @@ const Create = () => {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => router.push(routes.vendors())}
+              onClick={() => router.push(routes.suppliers())}
             >
               Cancel
             </Button>

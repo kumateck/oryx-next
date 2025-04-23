@@ -101,8 +101,8 @@ export const routes = {
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "/warehouse/materials",
   viewMaterial: (id: string) => `/warehouse/materials/${id}/details`,
-  vendors: () => `/procurement/vendors`,
-  editVendor: (id: string) => `/procurement/vendors/${id}/edit`,
+  suppliers: () => `/procurement/suppliers`,
+  editSupplier: (id: string) => `/procurement/suppliers/${id}/edit`,
   viewScheduleRequisition: (scheduleId: string, productId: string) =>
     `/production/schedules/${scheduleId}/product/${productId}/requisition`,
 

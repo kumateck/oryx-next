@@ -13,35 +13,28 @@ interface Props {
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
 }
 const TableForData = ({ lists, setItemLists }: Props) => {
-  // const { data: vendorLists } = useGetApiV1ProcurementSupplierQuery({
-  //   page: 1,
-  //   pageSize: 10000000,
-  // });
   const [loadSuppliers] =
     useLazyGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery();
 
   const handleLoadingSupplier = async (rowIndex: number, value: unknown) => {
-    const vendorLists = await loadSuppliers({
+    const supplierLists = await loadSuppliers({
       materialId: lists[rowIndex].materialId,
       type: value as SupplierType,
     }).unwrap();
 
-    const vendorOptions = vendorLists?.map((vendor) => ({
-      label: vendor.name,
-      value: vendor.id,
+    const supplierOptions = supplierLists?.map((supplier) => ({
+      label: supplier.name,
+      value: supplier.id,
     })) as Option[];
 
     TableUpdateData({
       rowIndex,
       columnId: "options",
-      value: vendorOptions,
+      value: supplierOptions,
       setTableData: setItemLists,
     });
-
-    // console.log(vendorOptions, "vendorOptions", rowIndex, columnId, value);
   };
 
-  // console.log(vendorOptions, "vendorOptions");
   const columns = getColumns(
     setItemLists,
     sourceOptions,

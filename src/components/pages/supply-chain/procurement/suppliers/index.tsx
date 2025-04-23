@@ -50,9 +50,9 @@ const Page = () => {
     <div>
       <PageWrapper className="w-full space-y-2 py-1">
         <div className="flex items-center justify-between py-2">
-          <PageTitle title="Vendor Lists" />
+          <PageTitle title="Supplier Lists" />
           <div className="flex items-center justify-end gap-2">
-            <Link href={"/procurement/vendors/create"}>
+            <Link href={"/procurement/suppliers/create"}>
               <Button
                 variant="default"
                 size={"sm"}

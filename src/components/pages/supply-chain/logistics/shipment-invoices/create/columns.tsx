@@ -75,7 +75,6 @@ export const getColumns = (
         type: ColumnType.SELECT,
         editable: true,
         setItemLists,
-        // options: vendorOptions,
       },
     },
   },

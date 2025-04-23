@@ -2452,6 +2452,65 @@ const injectedRtkApi = api.injectEndpoints({
           url: `/api/v1/production-schedule/stock-requisition/package/${queryArg.productionScheduleId}/${queryArg.productId}`,
         }),
       }),
+    postApiV1ProductionScheduleReturnBeforeProduction: build.mutation<
+      PostApiV1ProductionScheduleReturnBeforeProductionApiResponse,
+      PostApiV1ProductionScheduleReturnBeforeProductionApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/return-before-production`,
+        method: "POST",
+        params: {
+          productionScheduleId: queryArg.productionScheduleId,
+          productId: queryArg.productId,
+        },
+      }),
+    }),
+    postApiV1ProductionScheduleReturnAfterProduction: build.mutation<
+      PostApiV1ProductionScheduleReturnAfterProductionApiResponse,
+      PostApiV1ProductionScheduleReturnAfterProductionApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/return-after-production`,
+        method: "POST",
+        body: queryArg.body,
+        params: {
+          productionScheduleId: queryArg.productionScheduleId,
+          productId: queryArg.productId,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleMaterialReturnNote: build.query<
+      GetApiV1ProductionScheduleMaterialReturnNoteApiResponse,
+      GetApiV1ProductionScheduleMaterialReturnNoteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/material-return-note`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteId:
+      build.query<
+        GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiResponse,
+        GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/material-return-note/${queryArg.materialReturnNoteId}`,
+        }),
+      }),
+    putApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteId:
+      build.mutation<
+        PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiResponse,
+        PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/material-return-note/complete/${queryArg.materialReturnNoteId}`,
+          method: "PUT",
+        }),
+      }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -3404,7 +3463,7 @@ export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg = {
   approvalRequestBody: ApprovalRequestBody;
 };
 export type GetApiV1ApprovalMyPendingApiResponse =
-  /** status 200 OK */ ApprovalEntity[];
+  /** status 200 OK */ ApprovalEntityRead[];
 export type GetApiV1ApprovalMyPendingApiArg = void;
 export type PostApiV1AuthLoginApiResponse = /** status 200 OK */ LoginResponse;
 export type PostApiV1AuthLoginApiArg = {
@@ -4959,6 +5018,48 @@ export type GetApiV1ProductionScheduleStockRequisitionPackageByProductionSchedul
     /** The Product ID. */
     productId: string;
   };
+export type PostApiV1ProductionScheduleReturnBeforeProductionApiResponse =
+  unknown;
+export type PostApiV1ProductionScheduleReturnBeforeProductionApiArg = {
+  /** The ID of the Production Schedule. */
+  productionScheduleId?: string;
+  /** The ID of the Product. */
+  productId?: string;
+};
+export type PostApiV1ProductionScheduleReturnAfterProductionApiResponse =
+  unknown;
+export type PostApiV1ProductionScheduleReturnAfterProductionApiArg = {
+  /** The ID of the Production Schedule. */
+  productionScheduleId?: string;
+  /** The ID of the Product. */
+  productId?: string;
+  /** The list of partially used materials to return. */
+  body: PartialMaterialToReturn[];
+};
+export type GetApiV1ProductionScheduleMaterialReturnNoteApiResponse =
+  /** status 200 OK */ MaterialReturnNoteDtoIEnumerablePaginateable;
+export type GetApiV1ProductionScheduleMaterialReturnNoteApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+};
+export type GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiResponse =
+  /** status 200 OK */ MaterialReturnNoteDto;
+export type GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiArg =
+  {
+    /** The ID of the Material Return Note. */
+    materialReturnNoteId: string;
+  };
+export type PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiArg =
+  {
+    /** The ID of the Material Return Note. */
+    materialReturnNoteId: string;
+  };
 export type PostApiV1RequisitionApiResponse = unknown;
 export type PostApiV1RequisitionApiArg = {
   /** The CreateRequisitionRequest object. */
@@ -5593,10 +5694,55 @@ export type ApprovalDtoIEnumerablePaginateable = {
 export type ApprovalRequestBody = {
   comments?: string | null;
 };
+export type DepartmentType = 0 | 1;
+export type WarehouseType = 0 | 1 | 2 | 3;
+export type WarehouseDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: CollectionItemDto[] | null;
+};
+export type DepartmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+};
+export type DepartmentDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+  isBeta?: boolean;
+};
+export type ApprovalLog = {
+  user?: CollectionItemDto;
+  approvedAt?: string | null;
+  comments?: string | null;
+};
 export type ApprovalEntity = {
   id?: string;
   code?: string | null;
   modelType?: string | null;
+  department?: DepartmentDto;
+  approvalLogs?: ApprovalLog[] | null;
+  createdAt?: string;
+};
+export type ApprovalEntityRead = {
+  id?: string;
+  code?: string | null;
+  modelType?: string | null;
+  department?: DepartmentDtoRead;
+  approvalLogs?: ApprovalLog[] | null;
   createdAt?: string;
 };
 export type LoginResponse = {
@@ -5709,8 +5855,6 @@ export type TypeResponse = {
   value?: number;
   name?: string | null;
 };
-export type DepartmentType = 0 | 1;
-export type WarehouseType = 0 | 1 | 2 | 3;
 export type CreateWarehouseLocationShelfRequest = {
   code?: string | null;
   name?: string | null;
@@ -5740,34 +5884,6 @@ export type CreateDepartmentRequest = {
   description?: string | null;
   type?: DepartmentType;
   warehouses?: CreateWarehouseRequest[] | null;
-};
-export type WarehouseDto = {
-  id?: string;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: CollectionItemDto[] | null;
-};
-export type DepartmentDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-};
-export type DepartmentDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-  isBeta?: boolean;
 };
 export type DepartmentDtoIEnumerablePaginateable = {
   data?: DepartmentDto[] | null;
@@ -5912,6 +6028,9 @@ export type EmployeeDto = {
   gender?: Gender;
   residentialAddress?: string | null;
   nationality?: string | null;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
   region?: string | null;
   maritalStatus?: MaritalStatus;
   religion?: Religion;
@@ -5919,6 +6038,7 @@ export type EmployeeDto = {
   email?: string | null;
   phoneNumber?: string | null;
   type?: EmployeeType;
+  dateEmployed?: string;
   designationName?: string | null;
   departmentName?: string | null;
   mother?: PersonDto;
@@ -6304,8 +6424,18 @@ export type MaterialBatchReservedQuantityDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  materialBatch?: CollectionItemDto;
+  materialBatch?: MaterialBatchDto;
   warehouse?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type MaterialBatchReservedQuantityDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  materialBatch?: MaterialBatchDto;
+  warehouse?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
   quantity?: number;
 };
 export type DistributedMaterialBatchDto = {
@@ -6463,7 +6593,7 @@ export type MaterialBatchDtoRead = {
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
-  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDtoRead[] | null;
   reservedQuantity?: number;
 };
 export type CreateSrRequest = {
@@ -8370,6 +8500,7 @@ export type ProductionActivityStepRead = {
   startedAt?: string | null;
   completedAt?: string | null;
 };
+export type ApprovalStatus = 0 | 1 | 2;
 export type RequisitionApproval = {
   userId?: string | null;
   user?: User;
@@ -8377,8 +8508,10 @@ export type RequisitionApproval = {
   role?: Role;
   required?: boolean;
   order?: number;
-  approved?: boolean;
+  status?: ApprovalStatus;
   approvalTime?: string | null;
+  approvedById?: string | null;
+  approvedBy?: User;
   comments?: string | null;
   id?: string;
   requisitionId?: string;
@@ -8391,8 +8524,10 @@ export type RequisitionApprovalRead = {
   role?: Role;
   required?: boolean;
   order?: number;
-  approved?: boolean;
+  status?: ApprovalStatus;
   approvalTime?: string | null;
+  approvedById?: string | null;
+  approvedBy?: User;
   comments?: string | null;
   id?: string;
   requisitionId?: string;
@@ -9211,8 +9346,10 @@ export type PurchaseOrderApproval = {
   role?: Role;
   required?: boolean;
   order?: number;
-  approved?: boolean;
+  status?: ApprovalStatus;
   approvalTime?: string | null;
+  approvedById?: string | null;
+  approvedBy?: User;
   comments?: string | null;
   id?: string;
   purchaseOrderId?: string;
@@ -9225,8 +9362,10 @@ export type PurchaseOrderApprovalRead = {
   role?: Role;
   required?: boolean;
   order?: number;
-  approved?: boolean;
+  status?: ApprovalStatus;
   approvalTime?: string | null;
+  approvedById?: string | null;
+  approvedBy?: User;
   comments?: string | null;
   id?: string;
   purchaseOrderId?: string;
@@ -9780,6 +9919,8 @@ export type MaterialBatchReservedQuantity = {
   productionSchedule?: ProductionSchedule;
   productId?: string;
   product?: Product;
+  uoMId?: string | null;
+  uoM?: UnitOfMeasure;
   quantity?: number;
 };
 export type MaterialBatchReservedQuantityRead = {
@@ -9801,6 +9942,8 @@ export type MaterialBatchReservedQuantityRead = {
   productionSchedule?: ProductionScheduleRead;
   productId?: string;
   product?: ProductRead;
+  uoMId?: string | null;
+  uoM?: UnitOfMeasureRead;
   quantity?: number;
 };
 export type MaterialBatch = {
@@ -11255,6 +11398,43 @@ export type RequisitionDtoRead = {
   product?: ProductDtoRead;
   comments?: string | null;
 };
+export type PartialMaterialToReturn = {
+  materialId?: string;
+  uoMId?: string | null;
+  quantity?: number;
+};
+export type MaterialReturnStatus = 0 | 1;
+export type MaterialReturnNoteFullReturnDto = {
+  batchReservedQuantity?: MaterialBatchReservedQuantityDto;
+  destinationWarehouse?: CollectionItemDto;
+};
+export type MaterialReturnNotePartialReturnDto = {
+  material?: MaterialDto;
+  quantity?: number;
+  uoM?: UnitOfMeasureDto;
+  destinationWarehouse?: CollectionItemDto;
+};
+export type MaterialReturnNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  returnDate?: string;
+  batchNumber?: string | null;
+  productionSchedule?: CollectionItemDto;
+  product?: CollectionItemDto;
+  status?: MaterialReturnStatus;
+  fullReturns?: MaterialReturnNoteFullReturnDto[] | null;
+  partialReturns?: MaterialReturnNotePartialReturnDto[] | null;
+};
+export type MaterialReturnNoteDtoIEnumerablePaginateable = {
+  data?: MaterialReturnNoteDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateRequisitionItemRequest = {
   materialId?: string;
   quantity?: number;
@@ -12267,6 +12447,13 @@ export const {
   useLazyGetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdQuery,
   useGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
+  usePostApiV1ProductionScheduleReturnBeforeProductionMutation,
+  usePostApiV1ProductionScheduleReturnAfterProductionMutation,
+  useGetApiV1ProductionScheduleMaterialReturnNoteQuery,
+  useLazyGetApiV1ProductionScheduleMaterialReturnNoteQuery,
+  useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
+  useLazyGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
+  usePutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
