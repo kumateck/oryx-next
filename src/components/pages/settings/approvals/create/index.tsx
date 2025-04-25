@@ -6,10 +6,25 @@ import React, { useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { ApprovalRequestDto, ApprovalValidator } from "../types";
 import ApprovalForm from "./form";
-import { COLLECTION_TYPES, Option } from "@/lib";
-import { usePostApiV1CollectionMutation } from "@/lib/redux/api/openapi.generated";
+import {
+  COLLECTION_TYPES,
+  formatClock24,
+  InterestType,
+  Option,
+  parseClock,
+  routes,
+} from "@/lib";
+import {
+  PostApiV1ApprovalApiArg,
+  usePostApiV1ApprovalMutation,
+  usePostApiV1CollectionMutation,
+} from "@/lib/redux/api/openapi.generated";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
 
 const CreateApproval = () => {
+  const [saveApproval, { isLoading }] = usePostApiV1ApprovalMutation();
+
   const router = useRouter();
   const {
     register,
@@ -46,10 +61,40 @@ const CreateApproval = () => {
       value: user.id,
     }),
   ) as Option[];
-  const onSubmit = async (data: ApprovalRequestDto) => {
-    console.log(data, "data");
-  };
 
+  // console.log(errors, "errors");
+  const onSubmit = async (data: ApprovalRequestDto) => {
+    const itemType = data.itemType?.value;
+
+    const approvalStages = data.approvalStages?.map((stage, i) => ({
+      roleId:
+        stage.type === InterestType.Role ? stage.roleId?.value : undefined,
+      userId:
+        stage.type === InterestType.User ? stage.userId?.value : undefined,
+      required: true, //stage.required ? true : false,
+      order: i + 1,
+    }));
+    const formatClock24Input = parseClock(data.escalationDuration);
+    const payload = {
+      createApprovalRequest: {
+        approvalStages,
+        itemType,
+        escalationDuration: formatClock24(
+          formatClock24Input.hours,
+          formatClock24Input.minutes,
+          formatClock24Input.light,
+          formatClock24Input.days,
+        ),
+      },
+    } as PostApiV1ApprovalApiArg;
+    try {
+      await saveApproval(payload).unwrap();
+      toast.success("Approval created successfully");
+      router.push(routes.approvals());
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
   const typeValues =
     useWatch({
       control,
@@ -67,7 +112,7 @@ const CreateApproval = () => {
                 router.back();
               }}
             />
-            <PageTitle title="Create Template" />
+            <PageTitle title="Create Approval" />
           </div>
           <Button
             type="submit"
@@ -75,9 +120,9 @@ const CreateApproval = () => {
             size="default"
             className="flex h-9 items-center gap-2"
           >
-            {/* {isLoading && (
+            {isLoading && (
               <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-            )} */}
+            )}
             <span>Save Changes</span>
           </Button>
         </div>

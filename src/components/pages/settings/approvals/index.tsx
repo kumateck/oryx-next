@@ -240,7 +240,7 @@ import React from "react";
 import { Button } from "@/components/ui";
 import { useGetApiV1ApprovalQuery } from "@/lib/redux/api/openapi.generated";
 
-import AddApproval from "./add-approval";
+// import AddApproval from "./add-approval";
 import ApprovalCard from "./card";
 import Link from "next/link";
 
@@ -252,7 +252,7 @@ const Page = () => {
 
   const approvals = responseDto?.data || [];
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  // const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <div className="w-full">
@@ -262,7 +262,7 @@ const Page = () => {
           <Button>Create</Button>
         </Link>
       </div>
-      <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {/* <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       <ul>
         {approvals.map((approval, idx) => (
           <li key={idx}>

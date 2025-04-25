@@ -335,6 +335,12 @@ export const ROUTES: Route[] = [
         //   url: "string"
         // }]
       },
+      {
+        title: "Pending Approvals",
+        url: "/qa/pending-approvals",
+        icon: "CircleDotDashed",
+        isActive: false,
+      },
     ],
   },
   {

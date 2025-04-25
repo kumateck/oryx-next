@@ -1,6 +1,54 @@
 import { api } from "./index";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    postApiV1AbsenceRequest: build.mutation<
+      PostApiV1AbsenceRequestApiResponse,
+      PostApiV1AbsenceRequestApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/absence-request`,
+        method: "POST",
+        body: queryArg.createAbsenceRequest,
+      }),
+    }),
+    getApiV1AbsenceRequest: build.query<
+      GetApiV1AbsenceRequestApiResponse,
+      GetApiV1AbsenceRequestApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/absence-request`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1AbsenceRequestById: build.query<
+      GetApiV1AbsenceRequestByIdApiResponse,
+      GetApiV1AbsenceRequestByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/absence-request/${queryArg.id}` }),
+    }),
+    putApiV1AbsenceRequestById: build.mutation<
+      PutApiV1AbsenceRequestByIdApiResponse,
+      PutApiV1AbsenceRequestByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/absence-request/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createAbsenceRequest,
+      }),
+    }),
+    deleteApiV1AbsenceRequestById: build.mutation<
+      DeleteApiV1AbsenceRequestByIdApiResponse,
+      DeleteApiV1AbsenceRequestByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/absence-request/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     getApiV1ActivityLog: build.query<
       GetApiV1ActivityLogApiResponse,
       GetApiV1ActivityLogApiArg
@@ -723,6 +771,54 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    postApiV1LeaveRequest: build.mutation<
+      PostApiV1LeaveRequestApiResponse,
+      PostApiV1LeaveRequestApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/leave-request`,
+        method: "POST",
+        body: queryArg.createLeaveRequest,
+      }),
+    }),
+    getApiV1LeaveRequest: build.query<
+      GetApiV1LeaveRequestApiResponse,
+      GetApiV1LeaveRequestApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/leave-request`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1LeaveRequestById: build.query<
+      GetApiV1LeaveRequestByIdApiResponse,
+      GetApiV1LeaveRequestByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/leave-request/${queryArg.id}` }),
+    }),
+    putApiV1LeaveRequestById: build.mutation<
+      PutApiV1LeaveRequestByIdApiResponse,
+      PutApiV1LeaveRequestByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/leave-request/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createLeaveRequest,
+      }),
+    }),
+    deleteApiV1LeaveRequestById: build.mutation<
+      DeleteApiV1LeaveRequestByIdApiResponse,
+      DeleteApiV1LeaveRequestByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/leave-request/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     postApiV1LeaveType: build.mutation<
       PostApiV1LeaveTypeApiResponse,
       PostApiV1LeaveTypeApiArg
@@ -730,7 +826,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/leave-type`,
         method: "POST",
-        body: queryArg.leaveTypeDto,
+        body: queryArg.createLeaveTypeRequest,
       }),
     }),
     getApiV1LeaveType: build.query<
@@ -3421,6 +3517,32 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 });
 export { injectedRtkApi as api };
+export type PostApiV1AbsenceRequestApiResponse = /** status 200 OK */ string;
+export type PostApiV1AbsenceRequestApiArg = {
+  createAbsenceRequest: CreateAbsenceRequest;
+};
+export type GetApiV1AbsenceRequestApiResponse =
+  /** status 200 OK */ AbsenceRequestDtoIEnumerablePaginateable;
+export type GetApiV1AbsenceRequestApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type GetApiV1AbsenceRequestByIdApiResponse =
+  /** status 200 OK */ AbsenceRequestDto;
+export type GetApiV1AbsenceRequestByIdApiArg = {
+  id: string;
+};
+export type PutApiV1AbsenceRequestByIdApiResponse =
+  /** status 204 No Content */ AbsenceRequestDto;
+export type PutApiV1AbsenceRequestByIdApiArg = {
+  id: string;
+  createAbsenceRequest: CreateAbsenceRequest;
+};
+export type DeleteApiV1AbsenceRequestByIdApiResponse = unknown;
+export type DeleteApiV1AbsenceRequestByIdApiArg = {
+  id: string;
+};
 export type GetApiV1ActivityLogApiResponse =
   /** status 200 OK */ ActivityLogDtoIEnumerablePaginateable;
 export type GetApiV1ActivityLogApiArg = {
@@ -3878,21 +4000,50 @@ export type DeleteApiV1LeaveEntitlementByIdApiResponse = unknown;
 export type DeleteApiV1LeaveEntitlementByIdApiArg = {
   id: string;
 };
-export type PostApiV1LeaveTypeApiResponse = unknown;
-export type PostApiV1LeaveTypeApiArg = {
-  leaveTypeDto: LeaveTypeDto;
+export type PostApiV1LeaveRequestApiResponse = /** status 200 OK */ string;
+export type PostApiV1LeaveRequestApiArg = {
+  createLeaveRequest: CreateLeaveRequest;
 };
-export type GetApiV1LeaveTypeApiResponse = unknown;
+export type GetApiV1LeaveRequestApiResponse =
+  /** status 200 OK */ LeaveRequestDtoIEnumerablePaginateable;
+export type GetApiV1LeaveRequestApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type GetApiV1LeaveRequestByIdApiResponse =
+  /** status 200 OK */ LeaveRequestDto;
+export type GetApiV1LeaveRequestByIdApiArg = {
+  id: string;
+};
+export type PutApiV1LeaveRequestByIdApiResponse =
+  /** status 204 No Content */ LeaveRequestDto;
+export type PutApiV1LeaveRequestByIdApiArg = {
+  id: string;
+  createLeaveRequest: CreateLeaveRequest;
+};
+export type DeleteApiV1LeaveRequestByIdApiResponse = unknown;
+export type DeleteApiV1LeaveRequestByIdApiArg = {
+  id: string;
+};
+export type PostApiV1LeaveTypeApiResponse = /** status 200 OK */ string;
+export type PostApiV1LeaveTypeApiArg = {
+  createLeaveTypeRequest: CreateLeaveTypeRequest;
+};
+export type GetApiV1LeaveTypeApiResponse =
+  /** status 200 OK */ LeaveTypeDtoIEnumerablePaginateable;
 export type GetApiV1LeaveTypeApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
-export type GetApiV1LeaveTypeByIdApiResponse = unknown;
+export type GetApiV1LeaveTypeByIdApiResponse =
+  /** status 200 OK */ LeaveTypeDto;
 export type GetApiV1LeaveTypeByIdApiArg = {
   id: string;
 };
-export type PutApiV1LeaveTypeByIdApiResponse = unknown;
+export type PutApiV1LeaveTypeByIdApiResponse =
+  /** status 204 No Content */ LeaveTypeDto;
 export type PutApiV1LeaveTypeByIdApiArg = {
   id: string;
   leaveTypeDto: LeaveTypeDto;
@@ -5608,6 +5759,36 @@ export type DeleteApiV1WorkOrderByWorkOrderIdApiArg = {
   /** The ID of the user performing the deletion. */
   userId?: string;
 };
+export type ProblemDetails = {
+  type?: string | null;
+  title?: string | null;
+  status?: number | null;
+  detail?: string | null;
+  instance?: string | null;
+  [key: string]: any;
+};
+export type CreateAbsenceRequest = {
+  leaveTypeId: string;
+  employeeId: string;
+  startDate: string;
+  endDate: string;
+};
+export type AbsenceRequestDto = {
+  id?: string;
+  leaveTypeId?: string;
+  startDate?: string;
+  endDate?: string;
+  employeeId?: string;
+};
+export type AbsenceRequestDtoIEnumerablePaginateable = {
+  data?: AbsenceRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CollectionItemDto = {
   id?: string | null;
   name?: string | null;
@@ -5650,14 +5831,6 @@ export type ActivityLogDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type SortDirection = 0 | 1 | 2;
-export type ProblemDetails = {
-  type?: string | null;
-  title?: string | null;
-  status?: number | null;
-  detail?: string | null;
-  instance?: string | null;
-  [key: string]: any;
-};
 export type CreateApprovalStageRequest = {
   userId?: string | null;
   roleId?: string | null;
@@ -5666,9 +5839,9 @@ export type CreateApprovalStageRequest = {
 };
 export type CreateApprovalRequest = {
   itemType?: string | null;
+  escalationDuration?: string;
   approvalStages?: CreateApprovalStageRequest[] | null;
 };
-export type RequisitionType = 0 | 1;
 export type ApprovalStageDto = {
   user?: CollectionItemDto;
   role?: CollectionItemDto;
@@ -5677,7 +5850,7 @@ export type ApprovalStageDto = {
 };
 export type ApprovalDto = {
   id?: string;
-  requisitionType?: RequisitionType;
+  itemType?: string | null;
   approvalStages?: ApprovalStageDto[] | null;
   createdBy?: CollectionItemDto;
   createdAt?: string;
@@ -6027,6 +6200,7 @@ export type EmployeeDto = {
   dateOfBirth?: string;
   gender?: Gender;
   residentialAddress?: string | null;
+  annualLeaveDays?: number;
   nationality?: string | null;
   bankAccountNumber?: string | null;
   ssnitNumber?: string | null;
@@ -6225,13 +6399,59 @@ export type LeaveEntitlementDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type LeaveTypeDto = {
+export type CreateLeaveRequest = {
+  leaveTypeId: string;
+  startDate: string;
+  endDate: string;
+  employeeId: string;
+  contactPerson: string;
+  contactPersonNumber: string;
+};
+export type LeaveRequestDto = {
+  id?: string;
+  leaveTypeId?: string;
+  startDate?: string;
+  endDate?: string;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
+  employeeId?: string;
+};
+export type LeaveRequestDtoIEnumerablePaginateable = {
+  data?: LeaveRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateLeaveTypeRequest = {
   name: string;
   isPaid: boolean;
   deductFromBalance: boolean;
+  deductionLimit?: number | null;
   numberOfDays: number;
   isActive: boolean;
   designationList: string[];
+};
+export type LeaveTypeDto = {
+  id?: string;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designationList?: string[] | null;
+};
+export type LeaveTypeDtoIEnumerablePaginateable = {
+  data?: LeaveTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type CreateMaterialRequest = {
   code?: string | null;
@@ -7229,6 +7449,7 @@ export type MaterialRead = {
   status?: BatchKind;
   totalStock?: number;
 };
+export type RequisitionType = 0 | 1;
 export type ProductCategory = {
   id?: string;
   createdAt?: string;
@@ -8501,6 +8722,58 @@ export type ProductionActivityStepRead = {
   completedAt?: string | null;
 };
 export type ApprovalStatus = 0 | 1 | 2;
+export type ApprovalStage = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  id?: string;
+  approvalId?: string;
+  approval?: Approval;
+  order?: number;
+  required?: boolean;
+};
+export type ApprovalStageRead = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  id?: string;
+  approvalId?: string;
+  approval?: Approval;
+  order?: number;
+  required?: boolean;
+};
+export type Approval = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  itemType?: string | null;
+  escalationDuration?: string;
+  approvalStages?: ApprovalStage[] | null;
+};
+export type ApprovalRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  itemType?: string | null;
+  escalationDuration?: string;
+  approvalStages?: ApprovalStageRead[] | null;
+};
 export type RequisitionApproval = {
   userId?: string | null;
   user?: User;
@@ -8508,14 +8781,19 @@ export type RequisitionApproval = {
   role?: Role;
   required?: boolean;
   order?: number;
+  stageStartTime?: string | null;
   status?: ApprovalStatus;
   approvalTime?: string | null;
   approvedById?: string | null;
   approvedBy?: User;
+  createdAt?: string;
+  activatedAt?: string | null;
   comments?: string | null;
   id?: string;
   requisitionId?: string;
   requisition?: Requisition;
+  approvalId?: string;
+  approval?: Approval;
 };
 export type RequisitionApprovalRead = {
   userId?: string | null;
@@ -8524,14 +8802,19 @@ export type RequisitionApprovalRead = {
   role?: Role;
   required?: boolean;
   order?: number;
+  stageStartTime?: string | null;
   status?: ApprovalStatus;
   approvalTime?: string | null;
   approvedById?: string | null;
   approvedBy?: User;
+  createdAt?: string;
+  activatedAt?: string | null;
   comments?: string | null;
   id?: string;
   requisitionId?: string;
   requisition?: Requisition;
+  approvalId?: string;
+  approval?: ApprovalRead;
 };
 export type Requisition = {
   id?: string;
@@ -9346,14 +9629,19 @@ export type PurchaseOrderApproval = {
   role?: Role;
   required?: boolean;
   order?: number;
+  stageStartTime?: string | null;
   status?: ApprovalStatus;
   approvalTime?: string | null;
   approvedById?: string | null;
   approvedBy?: User;
+  createdAt?: string;
+  activatedAt?: string | null;
   comments?: string | null;
   id?: string;
   purchaseOrderId?: string;
   purchaseOrder?: PurchaseOrder;
+  approvalId?: string;
+  approval?: Approval;
 };
 export type PurchaseOrderApprovalRead = {
   userId?: string | null;
@@ -9362,14 +9650,19 @@ export type PurchaseOrderApprovalRead = {
   role?: Role;
   required?: boolean;
   order?: number;
+  stageStartTime?: string | null;
   status?: ApprovalStatus;
   approvalTime?: string | null;
   approvedById?: string | null;
   approvedBy?: User;
+  createdAt?: string;
+  activatedAt?: string | null;
   comments?: string | null;
   id?: string;
   purchaseOrderId?: string;
   purchaseOrder?: PurchaseOrder;
+  approvalId?: string;
+  approval?: ApprovalRead;
 };
 export type PurchaseOrder = {
   id?: string;
@@ -12073,6 +12366,13 @@ export type UpdateWorkOrderRequest = {
   steps?: CreateProductionStepRequest[] | null;
 };
 export const {
+  usePostApiV1AbsenceRequestMutation,
+  useGetApiV1AbsenceRequestQuery,
+  useLazyGetApiV1AbsenceRequestQuery,
+  useGetApiV1AbsenceRequestByIdQuery,
+  useLazyGetApiV1AbsenceRequestByIdQuery,
+  usePutApiV1AbsenceRequestByIdMutation,
+  useDeleteApiV1AbsenceRequestByIdMutation,
   useGetApiV1ActivityLogQuery,
   useLazyGetApiV1ActivityLogQuery,
   usePostApiV1ApprovalMutation,
@@ -12178,6 +12478,13 @@ export const {
   useLazyGetApiV1LeaveEntitlementByIdQuery,
   usePutApiV1LeaveEntitlementByIdMutation,
   useDeleteApiV1LeaveEntitlementByIdMutation,
+  usePostApiV1LeaveRequestMutation,
+  useGetApiV1LeaveRequestQuery,
+  useLazyGetApiV1LeaveRequestQuery,
+  useGetApiV1LeaveRequestByIdQuery,
+  useLazyGetApiV1LeaveRequestByIdQuery,
+  usePutApiV1LeaveRequestByIdMutation,
+  useDeleteApiV1LeaveRequestByIdMutation,
   usePostApiV1LeaveTypeMutation,
   useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1LeaveTypeQuery,

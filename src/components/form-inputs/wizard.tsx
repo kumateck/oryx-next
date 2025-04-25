@@ -98,7 +98,9 @@ interface TimeInputProps extends BaseInputProps<FieldValues> {
   name: string;
   defaultValue?: string;
   moment?: boolean;
+  showDays?: boolean;
 }
+
 interface RichTextInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.RICHTEXT;
   control: Control<FieldValues>;
@@ -266,6 +268,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               onChange={onChange}
               name={formInput.name}
               type={formInput.type as unknown as TimeType}
+              showDays={formInput.showDays}
             />
           )}
         />
