@@ -115,8 +115,10 @@ export const routes = {
   newRegulation: () => "/compliance/external/regulations/create",
   newInspection: () => "/inspections/create",
   newAudit: () => "/audits/create",
-  certifications: () => "/compliance/internal/certifications",
-  newCertification: () => "/compliance/internal/certifications/create",
+  approvals: () => "/settings/approvals",
+  newApproval: () => "/settings/approvals/create",
+  editApproval: (params: { id: string }) =>
+    `/settings/approvals/edit/${params.id}`,
   observations: () => "/observations",
   inspections: () => "/inspections",
   regulations: () => "/compliance/external/regulations",
@@ -138,10 +140,28 @@ export const routes = {
   access: () => "/access-management/permissions",
 };
 
-export const formatClock = (hours: number, minutes: number, light: boolean) => {
-  const result = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${light ? "AM" : "PM"}`;
-  return result.trim(); // Ensure there are no extra spaces
-};
+// export const formatClock = (hours: number, minutes: number, light: boolean) => {
+//   const result = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${light ? "AM" : "PM"}`;
+//   return result.trim(); // Ensure there are no extra spaces
+// };
+// export const formatClock = (
+//   hours: number,
+//   minutes: number,
+//   light: boolean,
+//   days?: number
+// ): string => {
+//   const timeStr = `${hours.toString().padStart(2, "0")}:${minutes
+//     .toString()
+//     .padStart(2, "0")} ${light ? "AM" : "PM"}`;
+
+//   if (days && days > 0) {
+//     console.log(days, "days",`${days}d ${timeStr}`.trim());
+//     return `${days}d ${timeStr}`.trim();
+//   }
+
+//   console.log(timeStr.trim(), "time only")
+//   return timeStr.trim();
+// };
 
 export type OptionsMap = {
   [key: string]: Option[];

@@ -112,9 +112,22 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
 
       const isnotAvailable =
         isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
+      console.log(
+        "checking isnotAvailable",
+        isnotAvailable,
+        isStockUnAvailable(rResponse),
+        isStockUnAvailable(pResponse),
+      );
 
       const isAvailable =
         isStockAvailable(rResponse) && isStockAvailable(pResponse);
+      console.log(
+        "checking isAvailable",
+        isAvailable,
+        isStockAvailable(rResponse),
+        isStockAvailable(pResponse),
+      );
+
       if (isnotAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Purchase);
       }

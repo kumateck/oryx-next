@@ -11,12 +11,19 @@ import {
 
 import { FormInput, FormWizard } from "@/components/form-inputs";
 
-import { InputTypes, Option } from "@/lib";
+import {
+  ApprovalDocumentOptions,
+  InputTypes,
+  InterestType,
+  Option,
+} from "@/lib";
 
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import StepWrapper from "@/shared/wrapper";
 
 import DropdownBtns from "@/shared/btns/drop-btn";
+import { Button, Icon } from "@/components/ui";
+import PageTitle from "@/shared/title";
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
@@ -40,7 +47,7 @@ const ApprovalForm = <TFieldValues extends FieldValues, TContext>({
   errors,
   fields,
   append,
-  // remove,
+  remove,
   control,
   roleOptions,
   userOptions,
@@ -49,27 +56,59 @@ const ApprovalForm = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="w-full">
       <div>
-        <FormWizard config={[]} />
+        <FormWizard
+          className="grid w-full grid-cols-2 gap-x-4 space-y-0"
+          // fieldWrapperClassName="flex-grow"
+          config={[
+            {
+              label: "Approval Document",
+              control: control as Control,
+              type: InputTypes.SELECT,
+              name: `itemType`,
+              required: true,
+              onModal: true,
+              placeholder: "Document",
+              options: ApprovalDocumentOptions,
+              errors,
+            },
+            {
+              control: control as Control,
+              name: "escalationDuration",
+              label: "Escalation Duration",
+              placeholder: "Select Duration",
+              type: InputTypes.TIME,
+              showDays: true,
+              required: true,
+              errors,
+            },
+          ]}
+        />
       </div>
 
       <div className="flex justify-between px-2 py-5">
-        <span>Approval Stages</span>
+        <PageTitle title="Approval Stages" />
         <DropdownBtns
           title="Add Level Type"
           icon="Plus"
           menus={[
             {
               name: "User",
-              onClick: () => append((defaultStage.type = "User" as any)),
+              onClick: () => {
+                const stage = { ...defaultStage, type: InterestType.User };
+                append(stage as any);
+              },
             },
             {
               name: "Role",
-              onClick: () => append((defaultStage.type = "Role" as any)),
+              onClick: () => {
+                const stage = { ...defaultStage, type: InterestType.Role };
+                append(stage as any);
+              },
             },
           ]}
         />
       </div>
-      <ScrollablePageWrapper className="space-y-5 pb-60">
+      <ScrollablePageWrapper className=" pb-60 grid grid-cols-2 gap-4">
         {fields?.map((field, index) => {
           const type = typeValues[index];
           const roleForm = {
@@ -94,10 +133,21 @@ const ApprovalForm = <TFieldValues extends FieldValues, TContext>({
             options: userOptions,
             errors,
           };
-          const typeSelect = type === "Role" ? roleForm : userForm;
+          const typeSelect = type === InterestType.Role ? roleForm : userForm;
 
           return (
-            <StepWrapper className="w-full" key={field.id}>
+            <StepWrapper className="w-full space-y-5" key={field.id}>
+              <div className="flex justify-between gap-2">
+                <PageTitle title={`Level ${index + 1}`} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => remove(index)}
+                  className="rounded-full size-8"
+                >
+                  <Icon name="Trash2" className="text-danger-default " />
+                </Button>
+              </div>
               <FormWizard
                 className="grid w-full grid-cols-2 gap-10 space-y-0"
                 fieldWrapperClassName="flex-grow"

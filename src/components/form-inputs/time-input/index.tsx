@@ -77,6 +77,7 @@ interface Props {
   placeholder?: string;
   type: TimeType;
   name: string;
+  showDays?: boolean;
 }
 export const FormClockInput = ({
   label,
@@ -88,6 +89,7 @@ export const FormClockInput = ({
   placeholder,
   type,
   name,
+  showDays,
 }: Props) => {
   // Ensure value is controlled by falling back to an empty string if undefined
   const effectiveValue = value !== undefined ? value : "";
@@ -116,7 +118,11 @@ export const FormClockInput = ({
         {type === TimeType.Moment ? (
           <MomentInput onChange={onChange} />
         ) : (
-          <TimeInput onChange={onChange} />
+          <TimeInput
+            onChange={onChange}
+            showDays={showDays}
+            value={effectiveValue}
+          />
         )}
       </PopoverContent>
     </Popover>

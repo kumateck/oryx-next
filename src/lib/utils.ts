@@ -213,18 +213,10 @@ export function isStockUnAvailable(
   materials: ProductionScheduleProcurementDto[],
 ): boolean {
   for (const item of materials) {
-    console.log(
-      item,
-      "item",
-      item.status,
-      Number(item.quantityOnHand),
-      Number(item.quantityNeeded),
-      Number(item.quantityOnHand) < Number(item.quantityNeeded),
-      Number(item.status) === MaterialStatus.NoSource &&
-        Number(item.quantityOnHand) < Number(item.quantityNeeded),
-    );
+    // console.log(item.material?.name, item.quantityOnHand, item.quantityNeeded,Number(item.quantityOnHand) >= Number(item.quantityNeeded),"unavailable");
+
     if (
-      Number(item.status) === MaterialStatus.NoSource &&
+      // Number(item.status) === MaterialStatus.NoSource &&
       Number(item.quantityOnHand) < Number(item.quantityNeeded)
     ) {
       console.log("I cannot process, I need to add a stock.");
@@ -238,8 +230,10 @@ export function isStockAvailable(
   materials: ProductionScheduleProcurementDto[],
 ): boolean {
   for (const item of materials) {
+    // console.log(item.material?.name, item.quantityOnHand, item.quantityNeeded,Number(item.quantityOnHand) >= Number(item.quantityNeeded),"available");
     if (
-      Number(item.status) === MaterialStatus.InHouse &&
+      // Number(item.status) === MaterialStatus.InHouse &&
+
       Number(item.quantityOnHand) >= Number(item.quantityNeeded)
     ) {
       console.log("I cannot process, I need to add a stock.");
@@ -896,7 +890,7 @@ export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
 
 export const ApprovalDocumentOptions = Object.keys(ApprovalDocument).map(
   (key) => ({
-    label: key,
+    label: splitWords(key),
     value: ApprovalDocument[key as keyof typeof ApprovalDocument],
   }),
 ) as Option[];
@@ -1309,3 +1303,76 @@ export const findRecordWithNotIncludedAccess = (
 //   }
 //   return false; // Return null if the key is not found or FullAccess is not in types
 // };
+
+export const formatClock = (
+  hours: number,
+  minutes: number,
+  light: boolean,
+  days?: number,
+): string => {
+  const timeStr = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")} ${light ? "AM" : "PM"}`;
+  if (days && days > 0) {
+    const result = `${days}d ${timeStr}`.trim();
+    return result;
+  }
+  const result = timeStr.trim();
+  return result;
+};
+
+export const parseClock = (input: string) => {
+  const regex = /(?:(\d+)d\s*)?(\d{2}):(\d{2})\s*(AM|PM)/i;
+  const match = input.match(regex);
+
+  if (!match) return { days: 0, hours: 0, minutes: 0, light: true };
+
+  const [, d, h, m, ampm] = match;
+  return {
+    days: d ? parseInt(d) : 0,
+    hours: h ? parseInt(h) : 0,
+    minutes: m ? parseInt(m) : 0,
+    light: ampm?.toUpperCase() === "AM",
+  };
+};
+
+export const formatClock24 = (
+  hours: number,
+  minutes: number,
+  light: boolean,
+  days?: number,
+): string => {
+  // Convert 12-hour to 24-hour format
+  let h = hours % 12; // converts 12 to 0
+  if (!light) h += 12;
+
+  const hh = h.toString().padStart(2, "0");
+  const mm = minutes.toString().padStart(2, "0");
+  const ss = "00";
+
+  if (typeof days === "number" && days > 0) {
+    return `${days}.${hh}:${mm}:${ss}`;
+  }
+
+  return `0.${hh}:${mm}:${ss}`;
+};
+
+export const parseClockReadable = (input: string): string => {
+  const regex = /^(\d+)\.(\d{2}):(\d{2}):(\d{2})$/;
+  const match = input.match(regex);
+
+  if (!match) return "0d 12:00 AM";
+
+  const [, d, hhStr, mmStr] = match;
+  const days = parseInt(d, 10);
+  const hours24 = parseInt(hhStr, 10);
+  const minutes = parseInt(mmStr, 10);
+
+  const light = hours24 < 12;
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+  const paddedHours = hours12.toString().padStart(2, "0");
+  const paddedMinutes = minutes.toString().padStart(2, "0");
+  const ampm = light ? "AM" : "PM";
+
+  return `${days}d ${paddedHours}:${paddedMinutes} ${ampm}`;
+};

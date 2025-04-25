@@ -54,6 +54,11 @@ export enum ApprovalDocument {
   BillingSheet = "BillingSheet",
 }
 
+export enum InterestType {
+  User = "User",
+  Role = "Role",
+}
+
 export enum StockTransfer {
   New = 0,
   Approved = 1,
