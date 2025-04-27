@@ -690,7 +690,7 @@ type ObjectType = {
   [key: number]: boolean;
 };
 interface DataProps {
-  id: string;
+  id?: string;
 }
 export function getMatchingIds(
   array: DataProps[],
@@ -699,7 +699,7 @@ export function getMatchingIds(
   const result: string[] = [];
   array.forEach((item, index) => {
     if (object[index] === true) {
-      result.push(item.id);
+      result.push(item.id as string);
     }
   });
   return result;

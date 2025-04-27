@@ -8,7 +8,10 @@ import { useDispatch } from "react-redux";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Checkbox, Icon } from "@/components/ui";
 import { EMaterialKind } from "@/lib";
-import { useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  DistributedRequisitionMaterialDto,
+  useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
 import { getMatchingIds } from "@/lib/utils";
@@ -47,16 +50,21 @@ const ReceivingArea = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, page, pageSize, triggerReload]);
 
-  const data = (result?.data || []).map((item) => ({
-    ...item,
-    id: item.id || "",
-  }));
+  const data = (result?.data || []).map(
+    (item: DistributedRequisitionMaterialDto) => ({
+      ...item,
+      // id: item.id || "",
+    }),
+  );
   const selectedIds = getMatchingIds(data, rowSelection);
 
-  const selectedData = data.filter((item) => selectedIds.includes(item.id));
+  const selectedData = data.filter((item: DistributedRequisitionMaterialDto) =>
+    selectedIds.includes(item.id as string),
+  );
 
   const isCreateGRNDisabled =
-    selectedData.length === 0 || selectedData.some((row) => row.status === 0);
+    selectedData.length === 0 ||
+    selectedData.some((row: Record<string, any>) => row.status === 0);
 
   const pathname = usePathname();
 
