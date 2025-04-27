@@ -48,6 +48,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             }),
             label: `Total FOB Value (${currency})`,
             placeholder: "Enter total FOB Value",
+            readOnly: true,
             type: InputTypes.NUMBER,
             required: true,
             errors,

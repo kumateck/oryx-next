@@ -11,7 +11,7 @@ export const associateEmployeesRequestSchema = z.object({
       message: `Employee Type is required`,
     },
   ),
-  email: z.string().min(1, { message: "Email is required" }),
+  email: z.string().email().min(1, { message: "Email is required" }),
 });
 
 export const CreateEmployeeSchema = z.object({

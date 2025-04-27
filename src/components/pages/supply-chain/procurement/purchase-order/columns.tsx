@@ -28,6 +28,8 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   const dispatch = useDispatch();
 
   const details = row.original;
+  const totalFobValue =
+    row.original.items?.reduce((sum, item) => sum + (item.cost || 0), 0) || 0;
   return (
     <section className="flex items-center justify-end gap-2">
       <PrintPreview
@@ -69,7 +71,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
               : new Date(),
             freight: details.seaFreight as number,
             insuranceAmount: details.insurance as number,
-            totalFobValue: details.totalFobValue as number,
+            totalFobValue: totalFobValue,
             deliveryMode: {
               label: details.deliveryMode?.name as string,
               value: details.deliveryMode?.id as string,

@@ -38,6 +38,7 @@ import {
   fullOnboardingSchema,
   stepSchemas,
 } from "./types";
+import { usePathname, useRouter } from "next/navigation";
 
 const steps = [
   {
@@ -143,6 +144,9 @@ export default function OnboardingForm() {
       ],
     },
   });
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const {
     fields: childFields,
@@ -317,11 +321,25 @@ export default function OnboardingForm() {
         </div>
       ) : (
         <>
+          {pathname?.includes("hr/employee-management") && (
+            <div>
+              <div
+                className="inline-flex items-center gap-2 mb-4 hover:cursor-pointer"
+                onClick={() => router.back()}
+              >
+                <Icon name="ArrowLeft" className="h-5 w-5" />
+                <h1 className="font-medium text-base text-primary-500">
+                  Employee List
+                </h1>
+              </div>
+            </div>
+          )}
           {currentStep !== steps.length - 1 && (
             <h1 className="mb-8 text-center text-3xl font-bold">
               ENTRANCE PHARMACEUTICALS EMPLOYEE REGISTRATION FORM
             </h1>
           )}
+
           <PageTitle title={steps[currentStep].title} />
           <ProgressIndicator steps={steps.length} currentStep={currentStep} />
 

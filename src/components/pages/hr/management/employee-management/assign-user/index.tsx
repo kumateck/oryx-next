@@ -11,7 +11,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { EMaterialKind, ErrorResponse, Option, isErrorResponse } from "@/lib";
+import {
+  EMaterialKind,
+  EmployeeType,
+  ErrorResponse,
+  Option,
+  isErrorResponse,
+} from "@/lib";
 import {
   EmployeeDto,
   useGetApiV1DepartmentQuery,
@@ -21,7 +27,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import AssignUserForm from "./form";
-import { AssignLocationValidator, AssignUserRequestDto } from "./type";
+import { EmployeeInfoRequestDto, EmployeeInfoValidator } from "./type";
 
 interface AssignLocationDialogProps {
   open: boolean;
@@ -43,16 +49,20 @@ const UserDialog = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<AssignUserRequestDto>({
-    resolver: AssignLocationValidator,
+  } = useForm<EmployeeInfoRequestDto>({
+    resolver: EmployeeInfoValidator,
     mode: "onSubmit",
     defaultValues: {
       name: selectedEmployee?.fullName as string,
       email: selectedEmployee?.email as string,
+      type: selectedEmployee?.type?.toString() as unknown as EmployeeType,
+      // departmentId: selectedEmployee.departmenId
+      // designationId: selectedEmployee.designation.value
+      staffId: selectedEmployee?.staffNumber as string,
     },
   });
   const [assignUser, { isLoading }] = usePutApiV1EmployeeByIdAssignMutation();
-  console.log(assignUser);
+  console.log("Employee Type", selectedEmployee?.type);
   const pageSize = 30;
   const page = 1;
 
@@ -79,6 +89,10 @@ const UserDialog = ({
       reset({
         name: selectedEmployee.fullName as string,
         email: selectedEmployee.email as string,
+        type: selectedEmployee.type?.toString() as unknown as EmployeeType,
+        // departmentId: selectedEmployee.departmenId
+        // designationId: selectedEmployee.designation.value
+        staffId: selectedEmployee.staffNumber as string,
       });
     }
   }, [open, selectedEmployee, reset]);
@@ -98,7 +112,7 @@ const UserDialog = ({
     value: user.id,
   })) as Option[];
 
-  const onSubmit = async (data: AssignUserRequestDto) => {
+  const onSubmit = async (data: EmployeeInfoRequestDto) => {
     try {
       if (!selectedEmployee) {
         toast.error("No employee selected");
@@ -110,7 +124,6 @@ const UserDialog = ({
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
         staffId: data.staffId,
-        startDate: data.startDate.toISOString(),
         reportingManagerId: data.reportingManagerId?.value,
       };
 

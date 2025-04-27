@@ -855,7 +855,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/leave-type/${queryArg.id}`,
         method: "PUT",
-        body: queryArg.leaveTypeDto,
+        body: queryArg.createLeaveTypeRequest,
       }),
     }),
     deleteApiV1LeaveTypeById: build.mutation<
@@ -1140,6 +1140,36 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material/${queryArg.materialId}/stock/departments`,
       }),
+    }),
+    postApiV1MaterialDepartment: build.mutation<
+      PostApiV1MaterialDepartmentApiResponse,
+      PostApiV1MaterialDepartmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/department`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
+    getApiV1MaterialDepartment: build.query<
+      GetApiV1MaterialDepartmentApiResponse,
+      GetApiV1MaterialDepartmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/department`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          departmentId: queryArg.departmentId,
+        },
+      }),
+    }),
+    getApiV1MaterialDepartmentNotLinked: build.query<
+      GetApiV1MaterialDepartmentNotLinkedApiResponse,
+      GetApiV1MaterialDepartmentNotLinkedApiArg
+    >({
+      query: () => ({ url: `/api/v1/material/department/not-linked` }),
     }),
     getApiV1PermissionModules: build.query<
       GetApiV1PermissionModulesApiResponse,
@@ -2896,6 +2926,54 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/api/v1/role/check/${queryArg.id}` }),
     }),
+    postApiV1ShiftType: build.mutation<
+      PostApiV1ShiftTypeApiResponse,
+      PostApiV1ShiftTypeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type`,
+        method: "POST",
+        body: queryArg.createShiftTypeRequest,
+      }),
+    }),
+    getApiV1ShiftType: build.query<
+      GetApiV1ShiftTypeApiResponse,
+      GetApiV1ShiftTypeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    putApiV1ShiftType: build.mutation<
+      PutApiV1ShiftTypeApiResponse,
+      PutApiV1ShiftTypeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type`,
+        method: "PUT",
+        body: queryArg.createShiftTypeRequest,
+      }),
+    }),
+    getApiV1ShiftTypeById: build.query<
+      GetApiV1ShiftTypeByIdApiResponse,
+      GetApiV1ShiftTypeByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/shift-type/${queryArg.id}` }),
+    }),
+    deleteApiV1ShiftTypeById: build.mutation<
+      DeleteApiV1ShiftTypeByIdApiResponse,
+      DeleteApiV1ShiftTypeByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     postApiV1User: build.mutation<
       PostApiV1UserApiResponse,
       PostApiV1UserApiArg
@@ -3522,19 +3600,18 @@ export type PostApiV1AbsenceRequestApiArg = {
   createAbsenceRequest: CreateAbsenceRequest;
 };
 export type GetApiV1AbsenceRequestApiResponse =
-  /** status 200 OK */ AbsenceRequestDtoIEnumerablePaginateable;
+  /** status 200 OK */ AbsenceRequestDtoIEnumerablePaginateableRead;
 export type GetApiV1AbsenceRequestApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
 export type GetApiV1AbsenceRequestByIdApiResponse =
-  /** status 200 OK */ AbsenceRequestDto;
+  /** status 200 OK */ AbsenceRequestDtoRead;
 export type GetApiV1AbsenceRequestByIdApiArg = {
   id: string;
 };
-export type PutApiV1AbsenceRequestByIdApiResponse =
-  /** status 204 No Content */ AbsenceRequestDto;
+export type PutApiV1AbsenceRequestByIdApiResponse = unknown;
 export type PutApiV1AbsenceRequestByIdApiArg = {
   id: string;
   createAbsenceRequest: CreateAbsenceRequest;
@@ -3816,7 +3893,7 @@ export type PostApiV1EmployeeApiArg = {
   createEmployeeRequest: CreateEmployeeRequest;
 };
 export type GetApiV1EmployeeApiResponse =
-  /** status 200 OK */ EmployeeDtoIEnumerablePaginateable;
+  /** status 200 OK */ EmployeeDtoIEnumerablePaginateableRead;
 export type GetApiV1EmployeeApiArg = {
   page?: number;
   pageSize?: number;
@@ -3828,12 +3905,13 @@ export type PostApiV1EmployeeUserApiResponse = /** status 200 OK */ string;
 export type PostApiV1EmployeeUserApiArg = {
   employeeUserDto: EmployeeUserDto;
 };
-export type GetApiV1EmployeeByIdApiResponse = /** status 200 OK */ EmployeeDto;
+export type GetApiV1EmployeeByIdApiResponse =
+  /** status 200 OK */ EmployeeDtoRead;
 export type GetApiV1EmployeeByIdApiArg = {
   id: string;
 };
 export type PutApiV1EmployeeByIdApiResponse =
-  /** status 204 No Content */ EmployeeDto;
+  /** status 204 No Content */ EmployeeDtoRead;
 export type PutApiV1EmployeeByIdApiArg = {
   id: string;
   createEmployeeRequest: CreateEmployeeRequest;
@@ -3843,7 +3921,7 @@ export type DeleteApiV1EmployeeByIdApiArg = {
   id: string;
 };
 export type PutApiV1EmployeeByIdAssignApiResponse =
-  /** status 204 No Content */ EmployeeDto;
+  /** status 204 No Content */ EmployeeDtoRead;
 export type PutApiV1EmployeeByIdAssignApiArg = {
   id: string;
   assignEmployeeDto: AssignEmployeeDto;
@@ -4005,19 +4083,19 @@ export type PostApiV1LeaveRequestApiArg = {
   createLeaveRequest: CreateLeaveRequest;
 };
 export type GetApiV1LeaveRequestApiResponse =
-  /** status 200 OK */ LeaveRequestDtoIEnumerablePaginateable;
+  /** status 200 OK */ LeaveRequestDtoIEnumerablePaginateableRead;
 export type GetApiV1LeaveRequestApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
 export type GetApiV1LeaveRequestByIdApiResponse =
-  /** status 200 OK */ LeaveRequestDto;
+  /** status 200 OK */ LeaveRequestDtoRead;
 export type GetApiV1LeaveRequestByIdApiArg = {
   id: string;
 };
 export type PutApiV1LeaveRequestByIdApiResponse =
-  /** status 204 No Content */ LeaveRequestDto;
+  /** status 204 No Content */ LeaveRequestDtoRead;
 export type PutApiV1LeaveRequestByIdApiArg = {
   id: string;
   createLeaveRequest: CreateLeaveRequest;
@@ -4031,22 +4109,22 @@ export type PostApiV1LeaveTypeApiArg = {
   createLeaveTypeRequest: CreateLeaveTypeRequest;
 };
 export type GetApiV1LeaveTypeApiResponse =
-  /** status 200 OK */ LeaveTypeDtoIEnumerablePaginateable;
+  /** status 200 OK */ LeaveTypeDtoIEnumerablePaginateableRead;
 export type GetApiV1LeaveTypeApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
 export type GetApiV1LeaveTypeByIdApiResponse =
-  /** status 200 OK */ LeaveTypeDto;
+  /** status 200 OK */ LeaveTypeDtoRead;
 export type GetApiV1LeaveTypeByIdApiArg = {
   id: string;
 };
 export type PutApiV1LeaveTypeByIdApiResponse =
-  /** status 204 No Content */ LeaveTypeDto;
+  /** status 204 No Content */ LeaveTypeDtoRead;
 export type PutApiV1LeaveTypeByIdApiArg = {
   id: string;
-  leaveTypeDto: LeaveTypeDto;
+  createLeaveTypeRequest: CreateLeaveTypeRequest;
 };
 export type DeleteApiV1LeaveTypeByIdApiResponse = unknown;
 export type DeleteApiV1LeaveTypeByIdApiArg = {
@@ -4237,6 +4315,26 @@ export type GetApiV1MaterialByMaterialIdStockDepartmentsApiArg = {
   /** The ID of the material. */
   materialId: string;
 };
+export type PostApiV1MaterialDepartmentApiResponse = unknown;
+export type PostApiV1MaterialDepartmentApiArg = {
+  /** The list of material departments to create. */
+  body: CreateMaterialDepartment[];
+};
+export type GetApiV1MaterialDepartmentApiResponse =
+  /** status 200 OK */ MaterialDepartmentDtoIEnumerablePaginateable;
+export type GetApiV1MaterialDepartmentApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+  /** Optional department ID filter. */
+  departmentId?: string;
+};
+export type GetApiV1MaterialDepartmentNotLinkedApiResponse =
+  /** status 200 OK */ MaterialDto[];
+export type GetApiV1MaterialDepartmentNotLinkedApiArg = void;
 export type GetApiV1PermissionModulesApiResponse =
   /** status 200 OK */ PermissionModuleDto[];
 export type GetApiV1PermissionModulesApiArg = void;
@@ -5416,6 +5514,32 @@ export type GetApiV1RoleCheckByIdApiResponse = unknown;
 export type GetApiV1RoleCheckByIdApiArg = {
   id: string;
 };
+export type PostApiV1ShiftTypeApiResponse = /** status 200 OK */ string;
+export type PostApiV1ShiftTypeApiArg = {
+  createShiftTypeRequest: CreateShiftTypeRequest;
+};
+export type GetApiV1ShiftTypeApiResponse =
+  /** status 200 OK */ ShiftTypeDtoIEnumerablePaginateable;
+export type GetApiV1ShiftTypeApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type PutApiV1ShiftTypeApiResponse =
+  /** status 204 No Content */ ShiftTypeDto;
+export type PutApiV1ShiftTypeApiArg = {
+  id: string;
+  createShiftTypeRequest: CreateShiftTypeRequest;
+};
+export type GetApiV1ShiftTypeByIdApiResponse =
+  /** status 200 OK */ ShiftTypeDto;
+export type GetApiV1ShiftTypeByIdApiArg = {
+  id: string;
+};
+export type DeleteApiV1ShiftTypeByIdApiResponse = unknown;
+export type DeleteApiV1ShiftTypeByIdApiArg = {
+  id: string;
+};
 export type PostApiV1UserApiResponse = unknown;
 export type PostApiV1UserApiArg = {
   createUserRequest: CreateUserRequest;
@@ -5773,22 +5897,6 @@ export type CreateAbsenceRequest = {
   startDate: string;
   endDate: string;
 };
-export type AbsenceRequestDto = {
-  id?: string;
-  leaveTypeId?: string;
-  startDate?: string;
-  endDate?: string;
-  employeeId?: string;
-};
-export type AbsenceRequestDtoIEnumerablePaginateable = {
-  data?: AbsenceRequestDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
 export type CollectionItemDto = {
   id?: string | null;
   name?: string | null;
@@ -5807,6 +5915,214 @@ export type UserDto = {
   createdAt?: string;
   signature?: string | null;
   department?: CollectionItemDto;
+};
+export type DepartmentType = 0 | 1;
+export type WarehouseType = 0 | 1 | 2 | 3;
+export type WarehouseDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: CollectionItemDto[] | null;
+};
+export type DepartmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+};
+export type DepartmentDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+  isBeta?: boolean;
+};
+export type DesignationDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  maximumLeaveDays?: number;
+  departments?: DepartmentDto[] | null;
+};
+export type DesignationDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  maximumLeaveDays?: number;
+  departments?: DepartmentDtoRead[] | null;
+};
+export type LeaveTypeDto = {
+  id?: string;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: DesignationDto[] | null;
+};
+export type LeaveTypeDtoRead = {
+  id?: string;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: DesignationDtoRead[] | null;
+};
+export type Gender = 0 | 1;
+export type MaritalStatus = 0 | 1;
+export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type EmployeeType = 0 | 1;
+export type LifeStatus = 0 | 1;
+export type PersonDto = {
+  fullName: string;
+  phoneNumber: string;
+  occupation: string;
+  lifeStatus: LifeStatus;
+};
+export type EmergencyContactDto = {
+  fullName: string;
+  contactNumber: string;
+  relationship: string;
+  residentialAddress: string;
+};
+export type ChildDto = {
+  fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+};
+export type SiblingDto = {
+  fullName?: string | null;
+  contact: string;
+  gender: Gender;
+};
+export type EducationDto = {
+  schoolName: string;
+  startDate: string;
+  endDate: string;
+  major: string;
+  qualificationEarned: string;
+};
+export type EmploymentHistoryDto = {
+  companyName?: string | null;
+  startDate?: string;
+  endDate?: string;
+  position?: string | null;
+};
+export type EmployeeDto = {
+  id?: string;
+  fullName?: string | null;
+  avatar?: string | null;
+  dateOfBirth?: string;
+  gender?: Gender;
+  residentialAddress?: string | null;
+  annualLeaveDays?: number;
+  nationality?: string | null;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
+  region?: string | null;
+  maritalStatus?: MaritalStatus;
+  religion?: Religion;
+  staffNumber?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  type?: EmployeeType;
+  dateEmployed?: string;
+  designation?: DesignationDto;
+  department?: DepartmentDto;
+  mother?: PersonDto;
+  father?: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact?: EmergencyContactDto;
+  nextOfKin?: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground?: EducationDto[] | null;
+  employmentHistory?: EmploymentHistoryDto[] | null;
+};
+export type EmployeeDtoRead = {
+  id?: string;
+  fullName?: string | null;
+  avatar?: string | null;
+  dateOfBirth?: string;
+  gender?: Gender;
+  residentialAddress?: string | null;
+  annualLeaveDays?: number;
+  nationality?: string | null;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
+  region?: string | null;
+  maritalStatus?: MaritalStatus;
+  religion?: Religion;
+  staffNumber?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  type?: EmployeeType;
+  dateEmployed?: string;
+  designation?: DesignationDtoRead;
+  department?: DepartmentDtoRead;
+  mother?: PersonDto;
+  father?: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact?: EmergencyContactDto;
+  nextOfKin?: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground?: EducationDto[] | null;
+  employmentHistory?: EmploymentHistoryDto[] | null;
+};
+export type AbsenceRequestDto = {
+  id?: string;
+  leaveTypeId?: string;
+  leaveType?: LeaveTypeDto;
+  startDate?: string;
+  endDate?: string;
+  employeeId?: string;
+  employee?: EmployeeDto;
+};
+export type AbsenceRequestDtoRead = {
+  id?: string;
+  leaveTypeId?: string;
+  leaveType?: LeaveTypeDtoRead;
+  startDate?: string;
+  endDate?: string;
+  employeeId?: string;
+  employee?: EmployeeDtoRead;
+};
+export type AbsenceRequestDtoIEnumerablePaginateable = {
+  data?: AbsenceRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type AbsenceRequestDtoIEnumerablePaginateableRead = {
+  data?: AbsenceRequestDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type ActionType = 0 | 1 | 2 | 3;
 export type ActivityLogDto = {
@@ -5851,6 +6167,7 @@ export type ApprovalStageDto = {
 export type ApprovalDto = {
   id?: string;
   itemType?: string | null;
+  escalationDuration?: string;
   approvalStages?: ApprovalStageDto[] | null;
   createdBy?: CollectionItemDto;
   createdAt?: string;
@@ -5866,36 +6183,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
 };
 export type ApprovalRequestBody = {
   comments?: string | null;
-};
-export type DepartmentType = 0 | 1;
-export type WarehouseType = 0 | 1 | 2 | 3;
-export type WarehouseDto = {
-  id?: string;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: CollectionItemDto[] | null;
-};
-export type DepartmentDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-};
-export type DepartmentDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-  isBeta?: boolean;
 };
 export type ApprovalLog = {
   user?: CollectionItemDto;
@@ -6082,24 +6369,6 @@ export type CreateDesignationRequest = {
   maximumLeaveDays: number;
   departmentIds: string[];
 };
-export type DesignationDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  maximumLeaveDays?: number;
-  departments?: DepartmentDto[] | null;
-};
-export type DesignationDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  maximumLeaveDays?: number;
-  departments?: DepartmentDtoRead[] | null;
-};
 export type DesignationDtoIEnumerablePaginateable = {
   data?: DesignationDto[] | null;
   pageIndex?: number;
@@ -6118,7 +6387,6 @@ export type DesignationDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type EmployeeType = 0 | 1;
 export type EmployeeInviteDto = {
   email?: string | null;
   employeeType?: EmployeeType;
@@ -6126,45 +6394,6 @@ export type EmployeeInviteDto = {
 };
 export type OnboardEmployeeDto = {
   emailList: EmployeeInviteDto[];
-};
-export type Gender = 0 | 1;
-export type MaritalStatus = 0 | 1;
-export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type LifeStatus = 0 | 1;
-export type PersonDto = {
-  fullName: string;
-  phoneNumber: string;
-  occupation: string;
-  lifeStatus: LifeStatus;
-};
-export type EmergencyContactDto = {
-  fullName: string;
-  contactNumber: string;
-  relationship: string;
-  residentialAddress: string;
-};
-export type ChildDto = {
-  fullName: string;
-  dateOfBirth: string;
-  gender: Gender;
-};
-export type SiblingDto = {
-  fullName?: string | null;
-  contact: string;
-  gender: Gender;
-};
-export type EducationDto = {
-  schoolName: string;
-  startDate: string;
-  endDate: string;
-  major: string;
-  qualificationEarned: string;
-};
-export type EmploymentHistoryDto = {
-  companyName?: string | null;
-  startDate?: string;
-  endDate?: string;
-  position?: string | null;
 };
 export type CreateEmployeeRequest = {
   avatar?: string | null;
@@ -6193,40 +6422,17 @@ export type CreateEmployeeRequest = {
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
 };
-export type EmployeeDto = {
-  id?: string;
-  fullName?: string | null;
-  avatar?: string | null;
-  dateOfBirth?: string;
-  gender?: Gender;
-  residentialAddress?: string | null;
-  annualLeaveDays?: number;
-  nationality?: string | null;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
-  region?: string | null;
-  maritalStatus?: MaritalStatus;
-  religion?: Religion;
-  staffNumber?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
-  type?: EmployeeType;
-  dateEmployed?: string;
-  designationName?: string | null;
-  departmentName?: string | null;
-  mother?: PersonDto;
-  father?: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact?: EmergencyContactDto;
-  nextOfKin?: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground?: EducationDto[] | null;
-  employmentHistory?: EmploymentHistoryDto[] | null;
-};
 export type EmployeeDtoIEnumerablePaginateable = {
   data?: EmployeeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type EmployeeDtoIEnumerablePaginateableRead = {
+  data?: EmployeeDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -6410,14 +6616,36 @@ export type CreateLeaveRequest = {
 export type LeaveRequestDto = {
   id?: string;
   leaveTypeId?: string;
+  leaveType?: LeaveTypeDto;
   startDate?: string;
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
   employeeId?: string;
+  employee?: EmployeeDto;
+};
+export type LeaveRequestDtoRead = {
+  id?: string;
+  leaveTypeId?: string;
+  leaveType?: LeaveTypeDtoRead;
+  startDate?: string;
+  endDate?: string;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
+  employeeId?: string;
+  employee?: EmployeeDtoRead;
 };
 export type LeaveRequestDtoIEnumerablePaginateable = {
   data?: LeaveRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type LeaveRequestDtoIEnumerablePaginateableRead = {
+  data?: LeaveRequestDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -6434,18 +6662,17 @@ export type CreateLeaveTypeRequest = {
   isActive: boolean;
   designationList: string[];
 };
-export type LeaveTypeDto = {
-  id?: string;
-  name?: string | null;
-  isPaid?: boolean;
-  deductFromBalance?: boolean;
-  deductionLimit?: number | null;
-  numberOfDays?: number;
-  isActive?: boolean;
-  designationList?: string[] | null;
-};
 export type LeaveTypeDtoIEnumerablePaginateable = {
   data?: LeaveTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type LeaveTypeDtoIEnumerablePaginateableRead = {
+  data?: LeaveTypeDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -6644,16 +6871,6 @@ export type MaterialBatchReservedQuantityDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  materialBatch?: MaterialBatchDto;
-  warehouse?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
-export type MaterialBatchReservedQuantityDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  materialBatch?: MaterialBatchDto;
   warehouse?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
   quantity?: number;
@@ -6813,7 +7030,7 @@ export type MaterialBatchDtoRead = {
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
-  reservedQuantities?: MaterialBatchReservedQuantityDtoRead[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
   reservedQuantity?: number;
 };
 export type CreateSrRequest = {
@@ -6963,6 +7180,28 @@ export type MaterialStockByWarehouseDto = {
 export type MaterialStockByDepartmentDto = {
   department?: CollectionItemDto;
   totalQuantity?: number;
+};
+export type CreateMaterialDepartment = {
+  materialId?: string;
+  reOrderLevel?: number;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+};
+export type MaterialDepartmentDto = {
+  material?: MaterialDto;
+  department?: CollectionItemDto;
+  reOrderLevel?: number;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+};
+export type MaterialDepartmentDtoIEnumerablePaginateable = {
+  data?: MaterialDepartmentDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type PermissionDetailDto = {
   key?: string | null;
@@ -7416,9 +7655,6 @@ export type Material = {
   alphabet?: string | null;
   materialCategoryId?: string | null;
   materialCategory?: MaterialCategory;
-  reOrderLevel?: number;
-  minimumStockLevel?: number;
-  maximumStockLevel?: number;
   batches?: MaterialBatch[] | null;
   kind?: MaterialKind;
   status?: BatchKind;
@@ -7441,9 +7677,6 @@ export type MaterialRead = {
   alphabet?: string | null;
   materialCategoryId?: string | null;
   materialCategory?: MaterialCategoryRead;
-  reOrderLevel?: number;
-  minimumStockLevel?: number;
-  maximumStockLevel?: number;
   batches?: MaterialBatch[] | null;
   kind?: MaterialKind;
   status?: BatchKind;
@@ -8836,9 +9069,9 @@ export type Requisition = {
   status?: RequestStatus;
   comments?: string | null;
   expectedDelivery?: string | null;
-  productId?: string;
+  productId?: string | null;
   product?: Product;
-  productionScheduleId?: string;
+  productionScheduleId?: string | null;
   productionSchedule?: ProductionSchedule;
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStep;
@@ -8866,9 +9099,9 @@ export type RequisitionRead = {
   status?: RequestStatus;
   comments?: string | null;
   expectedDelivery?: string | null;
-  productId?: string;
+  productId?: string | null;
   product?: ProductRead;
-  productionScheduleId?: string;
+  productionScheduleId?: string | null;
   productionSchedule?: ProductionScheduleRead;
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStepRead;
@@ -10510,6 +10743,44 @@ export type WarehouseRead = {
   arrivalLocation?: WarehouseArrivalLocationRead;
   type?: WarehouseType;
 };
+export type LeaveType = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: Designation[] | null;
+};
+export type LeaveTypeRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: Designation[] | null;
+};
 export type Designation = {
   id?: string;
   createdAt?: string;
@@ -10525,6 +10796,7 @@ export type Designation = {
   description?: string | null;
   maximumLeaveDays?: number;
   departments?: Department[] | null;
+  leaveTypes?: LeaveType[] | null;
 };
 export type DesignationRead = {
   id?: string;
@@ -10541,6 +10813,7 @@ export type DesignationRead = {
   description?: string | null;
   maximumLeaveDays?: number;
   departments?: Department[] | null;
+  leaveTypes?: LeaveTypeRead[] | null;
 };
 export type Department = {
   id?: string;
@@ -11882,6 +12155,34 @@ export type UpdateRoleRequest = {
   name: string;
   displayName: string;
 };
+export type RotationType = 0 | 1;
+export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type CreateShiftTypeRequest = {
+  shiftName: string;
+  rotationType: RotationType;
+  startTime: string;
+  endTime: string;
+  applicableDays: DayOfWeek[];
+};
+export type ShiftTypeDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  shiftName?: string | null;
+  rotationType?: RotationType;
+  startTime?: string;
+  endTime?: string;
+  applicableDays?: DayOfWeek[] | null;
+};
+export type ShiftTypeDtoIEnumerablePaginateable = {
+  data?: ShiftTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateUserRequest = {
   firstName: string;
   lastName: string;
@@ -12536,6 +12837,11 @@ export const {
   useLazyGetApiV1MaterialByMaterialIdStockWarehousesQuery,
   useGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   useLazyGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
+  usePostApiV1MaterialDepartmentMutation,
+  useGetApiV1MaterialDepartmentQuery,
+  useLazyGetApiV1MaterialDepartmentQuery,
+  useGetApiV1MaterialDepartmentNotLinkedQuery,
+  useLazyGetApiV1MaterialDepartmentNotLinkedQuery,
   useGetApiV1PermissionModulesQuery,
   useLazyGetApiV1PermissionModulesQuery,
   useGetApiV1PermissionQuery,
@@ -12805,6 +13111,13 @@ export const {
   useDeleteApiV1RoleByIdMutation,
   useGetApiV1RoleCheckByIdQuery,
   useLazyGetApiV1RoleCheckByIdQuery,
+  usePostApiV1ShiftTypeMutation,
+  useGetApiV1ShiftTypeQuery,
+  useLazyGetApiV1ShiftTypeQuery,
+  usePutApiV1ShiftTypeMutation,
+  useGetApiV1ShiftTypeByIdQuery,
+  useLazyGetApiV1ShiftTypeByIdQuery,
+  useDeleteApiV1ShiftTypeByIdMutation,
   usePostApiV1UserMutation,
   useGetApiV1UserQuery,
   useLazyGetApiV1UserQuery,

@@ -101,6 +101,7 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Enter your mother's life status",
             type: InputTypes.SELECT,
             control: control as Control,
+            required: true,
             options: lifeStatusOptions,
             errors,
           },
@@ -125,7 +126,7 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
                 label: "Spouse's Full Name",
                 placeholder: "Enter your spouse's full name",
                 type: InputTypes.TEXT,
-                required: true,
+                // required: true,
                 errors,
               },
               {
@@ -135,7 +136,7 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
                 label: "Spouse's Contact Number",
                 placeholder: "Enter your spouse's phone number",
                 type: InputTypes.TEXT,
-                required: true,
+                // required: true,
                 errors,
               },
               {
@@ -143,7 +144,7 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
                 label: "Spouse's Life Status",
                 placeholder: "Enter your spouse's life status",
                 type: InputTypes.SELECT,
-                required: true,
+                // required: true,
                 control: control as Control,
                 options: lifeStatusOptions,
                 errors,
@@ -153,7 +154,7 @@ const FamilyInfo1Step = <TFieldValues extends FieldValues, TContext>({
                 label: "Spouse's Occupation",
                 placeholder: "Enter your spouse's occupation",
                 type: InputTypes.TEXT,
-                required: true,
+                // required: true,
                 errors,
               },
             ]}

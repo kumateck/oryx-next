@@ -53,7 +53,7 @@ const DesignationForm = <TFieldValues extends FieldValues, TContext>({
             register: register("maximumLeaveDays" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Maximum Leave Days",
+            label: "Paid Leave Days Entitlement (Days)",
             placeholder: "Enter in days",
             type: InputTypes.NUMBER,
 

@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, Separator } from "@/components/ui";
 import { EmployeeType, Gender, MaritalStatus, Religions } from "@/lib";
 import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
-import Image from "next/image";
+import { format } from "date-fns";
+// import Image from "next/image";
 import React from "react";
 
 interface Props {
@@ -16,42 +17,61 @@ function LeftCard({ data }: Props) {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
                 {data?.avatar ? (
-                  <Image
-                    src={data.avatar as string}
-                    alt={`Image of ${data?.fullName}`}
-                    className="h-24 w-24 cursor-pointer rounded border object-cover transition-shadow "
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={data.avatar}
+                    alt={`Image of ${data?.fullName || "user"}`}
+                    className="h-24 w-24 cursor-pointer rounded-full border object-cover transition-shadow"
                     width={300}
                     height={300}
-                    priority
+                    onError={(e) => {
+                      // Handle image load error by setting a fallback or hiding the image
+                      e.currentTarget.style.display = "none";
+                      // Alternatively, set a fallback image:
+                      // e.currentTarget.src = '/path/to/fallback-avatar.png';
+                    }}
                   />
-                ) : null}
-                <div className="absolute inset-0 rounded bg-black bg-opacity-0 transition-opacity " />
+                ) : (
+                  // Fallback when no avatar is available
+                  <div className="h-24 w-24 flex items-center justify-center rounded-full border bg-gray-200 text-gray-500">
+                    {data?.fullName
+                      ? data.fullName.charAt(0).toUpperCase()
+                      : "U"}
+                  </div>
+                )}
               </div>
               <div>
                 <h2 className="font-bold text-xl">{data?.fullName}</h2>
-                <span>{data?.designationName ?? "-"}</span>
-                <span className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500">
+                  {data?.designation?.name ?? "-"}
+                </p>
+                <p className="text-sm text-gray-500">
                   {data?.staffNumber ?? "-"}
-                </span>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <h3 className="text-lg font-bold">Employee Information</h3>
+        <h3 className="text-lg font-semibold">Employee Information</h3>
         <div className="space-y-2 mt-2">
-          <div>
-            <span className="text-gray-500 font-light">Job Title: </span>
-            <span className="font-bold">{data?.designationName ?? "N/A"}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Job Title:</span>
+            <span className="font-semibold">
+              {data?.designation?.name ?? "N/A"}
+            </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Department: </span>
-            <span className="font-bold">{data?.departmentName ?? "N/A"}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Department:</span>
+            <span className="font-semibold">
+              {data?.department?.name ?? "N/A"}
+            </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Employee Type: </span>
-            <span className="font-bold">
+
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Employee Type: </span>
+            <span className="font-semibold">
               {EmployeeType[data?.type as EmployeeType]}
             </span>
           </div>
@@ -59,47 +79,51 @@ function LeftCard({ data }: Props) {
 
         <Separator className="my-6" />
 
-        <h3 className="text-lg font-bold">Personal Information</h3>
+        <h3 className="text-lg font-semibold">Personal Information</h3>
         <div className="space-y-2 mt-2">
-          <div>
-            <span className="text-gray-500 font-light">Date of Birth: </span>
-            <span className="font-bold">{data?.dateOfBirth ?? "N/A"}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Date of Birth: </span>
+            <span className="font-semibold">
+              {data?.dateOfBirth
+                ? format(new Date(data.dateOfBirth), "MMM d, yyyy")
+                : "N/A"}
+            </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Email: </span>
-            <span className="font-bold">{data?.email ?? "N/A"}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Email: </span>
+            <span className="font-semibold">{data?.email ?? "N/A"}</span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Contact: </span>
-            <span className="font-bold">{data?.phoneNumber}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Contact: </span>
+            <span className="font-semibold">{data?.phoneNumber}</span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Gender: </span>
-            <span className="font-bold">
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Gender: </span>
+            <span className="font-semibold">
               {Gender[data?.gender as Gender] ?? "N/A"}
             </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">
               Residential Address:{" "}
             </span>
-            <span className="font-bold">
+            <span className="font-semibold">
               {data?.residentialAddress ?? "N/A"}
             </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Nationality: </span>
-            <span className="font-bold">{data?.nationality ?? "N/A"}</span>
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Nationality: </span>
+            <span className="font-semibold">{data?.nationality ?? "N/A"}</span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Marital Status: </span>
-            <span className="font-bold">
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Marital Status: </span>
+            <span className="font-semibold">
               {MaritalStatus[data?.maritalStatus as MaritalStatus] ?? "N/A"}
             </span>
           </div>
-          <div>
-            <span className="text-gray-500 font-light">Religion: </span>
-            <span className="font-bold">
+          <div className="flex gap-2 text-sm">
+            <span className="font-light text-gray-500">Religion: </span>
+            <span className="font-semibold">
               {Religions[data?.religion as Religions]}
             </span>
           </div>

@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
-  useGetApiV1DesignationQuery,
-  useLazyGetApiV1DesignationQuery,
+  useGetApiV1LeaveTypeQuery,
+  useLazyGetApiV1LeaveTypeQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -19,14 +19,14 @@ const Page = () => {
   // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1DesignationQuery({
+  const { data: result, isLoading } = useGetApiV1LeaveTypeQuery({
     page,
     pageSize,
   });
-  const [loadDesignations, { isFetching }] = useLazyGetApiV1DesignationQuery();
+  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveTypeQuery();
 
   useEffect(() => {
-    loadDesignations({
+    loadLeaveTypes({
       page,
       pageSize,
     });
@@ -39,7 +39,7 @@ const Page = () => {
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Designation Management" />
+        <PageTitle title="Leave Type Configuration" />
         <div className="flex items-center justify-end gap-2">
           <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
             <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>

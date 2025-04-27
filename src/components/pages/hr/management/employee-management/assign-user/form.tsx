@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { EmployeeType, InputTypes, Option } from "@/lib";
 
 interface FormProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -35,6 +35,21 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
         className="grid w-full gap-4 space-y-0"
         fieldWrapperClassName="flex-grow"
         config={[
+          {
+            label: "Employee Type",
+            control: control as Control,
+            type: InputTypes.RADIO,
+            name: "type",
+            required: true,
+            placeholder: "Select employee type",
+            options: Object.entries(EmployeeType)
+              .filter(([, value]) => typeof value === "number")
+              .map(([key, value]) => ({
+                label: key, // "Raw" or "Package"
+                value: value.toString(), // 0 or 1
+              })),
+            errors,
+          },
           {
             register: register("name" as Path<TFieldValues>),
             label: "Employee Name",
@@ -83,21 +98,22 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
             options: userOptions,
             errors,
           },
-          {
-            label: "Employment Start Date",
-            control: control as Control,
-            type: InputTypes.DATE,
-            name: `startDate` as Path<TFieldValues>,
-            required: true,
-            placeholder: "Select Start Date",
-            errors,
-          },
+          // {
+          //   label: "Employment Start Date",
+          //   control: control as Control,
+          //   type: InputTypes.DATE,
+          //   name: `startDate` as Path<TFieldValues>,
+          //   required: true,
+          //   placeholder: "Select Start Date",
+          //   errors,
+          // },
           {
             register: register(`staffId` as Path<TFieldValues>),
             label: "Staff ID",
             type: InputTypes.TEXT,
             required: true,
             placeholder: "Enter staff ID",
+            readOnly: true,
             errors,
           },
         ]}

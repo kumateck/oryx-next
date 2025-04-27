@@ -7,6 +7,7 @@ import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import {
   GrnDto,
   MaterialBatchDto,
+  MaterialBatchDtoRead,
   useGetApiV1WarehouseGrnByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -24,38 +25,42 @@ const GRNDetail = () => {
 
   useEffect(() => {
     if (grnResponse) {
-      const batchOptions = grnResponse.materialBatches?.map((item) => {
-        const batchNumber = item?.batchNumber as string;
+      const batchOptions = grnResponse.materialBatches?.map(
+        (item: MaterialBatchDtoRead) => {
+          const batchNumber = item?.batchNumber as string;
 
-        const materialName = item?.checklist?.material?.name as string;
+          const materialName = item?.checklist?.material?.name as string;
 
-        const manufacturerName = item?.checklist?.manufacturer?.name as string;
+          const manufacturerName = item?.checklist?.manufacturer
+            ?.name as string;
 
-        // const invoiceNumber = parseFloat(qtyNeeded.toString()).toFixed(2);
-        const invoiceNumber = item?.checklist?.shipmentInvoice?.code as string;
+          // const invoiceNumber = parseFloat(qtyNeeded.toString()).toFixed(2);
+          const invoiceNumber = item?.checklist?.shipmentInvoice
+            ?.code as string;
 
-        const totalQuantity = item?.totalQuantity as number;
+          const totalQuantity = item?.totalQuantity as number;
 
-        const expiryDate = item.expiryDate;
+          const expiryDate = item.expiryDate;
 
-        const manufacturingDate = item.dateReceived;
+          const manufacturingDate = item.dateReceived;
 
-        const retestDate = item.dateReceived;
+          const retestDate = item.dateReceived;
 
-        const status = item.status;
+          const status = item.status;
 
-        return {
-          batchNumber,
-          materialName,
-          manufacturerName,
-          invoiceNumber,
-          totalQuantity,
-          expiryDate,
-          manufacturingDate,
-          retestDate,
-          status,
-        };
-      }) as GrnDto[];
+          return {
+            batchNumber,
+            materialName,
+            manufacturerName,
+            invoiceNumber,
+            totalQuantity,
+            expiryDate,
+            manufacturingDate,
+            retestDate,
+            status,
+          };
+        },
+      ) as GrnDto[];
       setPackageLists(batchOptions);
     }
   }, [grnResponse]);
