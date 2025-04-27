@@ -13,56 +13,55 @@ import {
 } from "@/components/ui";
 import { Option } from "@/lib";
 import {
-  useGetApiV1EmployeeQuery,
   useGetApiV1LeaveTypeQuery,
-  useLazyGetApiV1LeaveRequestQuery,
-  usePostApiV1LeaveRequestMutation,
+  useLazyGetApiV1DesignationQuery,
+  usePostApiV1LeaveTypeMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
-import { CreateLeaveValidator, LeaveRequestDto } from "./types";
-import LeaveRequestForm from "./form";
+import LeaveTypeForm from "./form";
+import { CreateLeaveTypeValidator, LeaveTypeRequestDto } from "./types";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const LeaveRequest = ({ isOpen, onClose }: Props) => {
-  const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
-  const [createLeaveRequest, { isLoading }] =
-    usePostApiV1LeaveRequestMutation();
+const Create = ({ isOpen, onClose }: Props) => {
+  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const [createLeaveType, { isLoading }] = usePostApiV1LeaveTypeMutation();
+
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<LeaveRequestDto>({
-    resolver: CreateLeaveValidator,
+  } = useForm<LeaveTypeRequestDto>({
+    resolver: CreateLeaveTypeValidator,
     mode: "all",
   });
   const dispatch = useDispatch();
 
-  const onSubmit = async (data: LeaveRequestDto) => {
+  const onSubmit = async (data: LeaveTypeRequestDto) => {
     try {
       const payload = {
-        leaveTypeId: data.leaveTypeId.value,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
-        employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson,
-        contactPersonNumber: data.contactPersonNumber,
+        name: data.name,
+        isPaid: data.isPaid,
+        designationList: data.designationIds.map((d) => d.value),
+        numberOfDays: data.maxDuration,
+        isActive: data.deductFromBalance,
+        deductFromBalance: data.deductFromBalance,
       };
       console.log(payload);
 
-      await createLeaveRequest({
-        createLeaveRequest: payload,
+      await createLeaveType({
+        createLeaveTypeRequest: payload,
       });
 
-      toast.success("Leave Request sent successfully");
-      loadLeaveRequests({ page: 1, pageSize: 10 });
+      toast.success("Leave type created successfully");
+      loadDesignations({ page: 1, pageSize: 10 });
       reset();
       onClose();
       dispatch(commonActions.setTriggerReload());
@@ -71,48 +70,32 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const { data: employeesResponse } = useGetApiV1EmployeeQuery({
-    page: 1,
-    pageSize: 40,
-  });
-
-  const employees = employeesResponse?.data ?? [];
-
-  const employeeOptions = employees?.map((item) => {
-    return {
-      label: item.fullName,
-      value: item?.id,
-    };
-  }) as Option[];
-
   const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
     page: 1,
-    pageSize: 40,
+    pageSize: 1000,
   });
 
-  const leaveTypes = leaveTypesResponse?.data ?? [];
-
-  const leaveTypesOptions = leaveTypes?.map((item) => {
+  const designationData = leaveTypesResponse?.data;
+  const designationsOptions = designationData?.map((item) => {
     return {
       label: item.name,
-      value: item?.id,
+      value: item.id,
     };
   }) as Option[];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Staff Leave Request Form</DialogTitle>
+          <DialogTitle>Leave Type Configuration</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <LeaveRequestForm
+          <LeaveTypeForm
             register={register}
             control={control}
             errors={errors}
-            employeeOptions={employeeOptions}
-            leaveTypesOptions={leaveTypesOptions}
+            designationsOptions={designationsOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -139,4 +122,4 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   );
 };
 
-export default LeaveRequest;
+export default Create;

@@ -2,39 +2,42 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  DesignationDto,
+  LeaveRequestDto,
   useDeleteApiV1DesignationByIdMutation,
   useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
+import { TableMenuAction } from "@/shared/table-menu";
+import { format } from "date-fns";
 
 // import { TableMenuAction } from "@/shared/table-menu";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends DesignationDto>({
+export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
 
-  const [details, setDetails] = useState<DesignationDto>({} as DesignationDto);
+  const [details, setDetails] = useState<LeaveRequestDto>(
+    {} as LeaveRequestDto,
+  );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {/* <TableMenuAction>
+      <TableMenuAction>
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsOpen(true);
-            }}
+            // onClick={() => {
+            //   setDetails(row.original);
+            //   setIsOpen(true);
+            // }}
           >
             <Icon
               name="Pencil"
@@ -58,7 +61,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
             <span>Delete</span>
           </div>
         </DropdownMenuItem>
-      </TableMenuAction> */}
+      </TableMenuAction>
       {/* <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-500"
@@ -95,28 +98,52 @@ export function DataTableRowActions<TData extends DesignationDto>({
   );
 }
 
-export const columns: ColumnDef<DesignationDto>[] = [
+export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
     accessorKey: "name",
-    header: "Designation Name",
-    cell: ({ row }) => <div>{row.original.name}</div>,
+    header: "Employee Name",
+    cell: ({ row }) => <div>{row.original.employee?.fullName}</div>,
   },
   {
-    accessorKey: "associatedDepartment",
-    header: "Associated Department",
-    cell: ({ row }) => (
-      // <div>{row.original.departments?.map((d) => d.name)}</div>
-      <div>{row.original.departments?.map((d) => d.name).join(", ")}</div>
-    ),
+    accessorKey: "department",
+    header: "Department",
+    cell: ({ row }) => <div>{row.original.employee?.department?.name}</div>,
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "startDate",
+    header: "Start Date",
     cell: ({ row }) => (
       <div>
-        <TheAduseiEditorViewer content={row.original.description as string} />
+        {row.original.startDate
+          ? format(row.original?.startDate, "MMMM dd, yyyy")
+          : "-"}
       </div>
     ),
+  },
+  {
+    accessorKey: "endDate",
+    header: "End Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original.endDate
+          ? format(row.original?.endDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "type",
+    header: "Leave Type",
+    cell: ({ row }) => <div>{row.original.leaveType?.name}</div>,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: (
+      {
+        //  row
+      },
+    ) => <div>{}</div>,
   },
 
   {

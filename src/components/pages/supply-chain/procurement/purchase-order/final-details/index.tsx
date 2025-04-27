@@ -19,8 +19,10 @@ import {
   amountToWordsBritishStyle,
   isErrorResponse, // numberToWords,
 } from "@/lib";
+import { useSelector } from "@/lib/redux/store";
 import {
   PostApiV1CollectionApiArg,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -28,6 +30,10 @@ import {
 // import { commonActions } from "@/lib/redux/slices/common";
 import Form from "./form";
 import { CreateFinalDetailsValidator, FinalDetailsRequestDto } from "./types";
+import { ListsTable } from "@/shared/datatable";
+import { getColumns } from "../details/columns";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 interface Props {
   isOpen: boolean;
@@ -49,8 +55,24 @@ const Create = ({
   defaultValues,
 }: Props) => {
   // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+
   const [saveMutation, { isLoading }] =
     usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
+  const [loadPO, { data }] =
+    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
+
+  useEffect(() => {
+    loadPO({
+      purchaseOrderId: purchaseOrderId,
+    }).unwrap();
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchaseOrderId, triggerReload]);
   const {
     register,
     control,
@@ -154,39 +176,46 @@ const Create = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>Purchase Order Final Details</DialogTitle>
         </DialogHeader>
+        <div className="flex items-start gap-4">
+          <div className="w-1/2">
+            <ListsTable
+              data={data?.items ?? []}
+              columns={getColumns(data?.supplier?.currency?.symbol ?? "")}
+            />
+          </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="w-1/2">
+            <Form
+              register={register}
+              errors={errors}
+              control={control}
+              termsOfPayment={termsOfPayment}
+              deliveryMode={deliveryMode}
+              currency={currency.symbol}
+            />
+            <DialogFooter className="justify-end gap-4 py-6">
+              <Button type="button" variant="secondary" onClick={onClose}>
+                Cancel
+              </Button>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Form
-            register={register}
-            errors={errors}
-            control={control}
-            termsOfPayment={termsOfPayment}
-            deliveryMode={deliveryMode}
-            currency={currency.symbol}
-          />
-          <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-
-            <Button
-              type="submit"
-              variant="default"
-              className="flex items-center gap-2"
-            >
-              {isLoading ? (
-                <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-              ) : (
-                <Icon name="Plus" className="h-4 w-4" />
-              )}
-              <span>Save</span>
-            </Button>
-          </DialogFooter>
-        </form>
+              <Button
+                type="submit"
+                variant="default"
+                className="flex items-center gap-2"
+              >
+                {isLoading ? (
+                  <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Icon name="Plus" className="h-4 w-4" />
+                )}
+                <span>Save</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

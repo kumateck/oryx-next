@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
@@ -9,11 +9,33 @@ import DropdownBtns from "@/shared/btns/drop-btn";
 import AbsenceRequest from "./absence-request";
 import LeaveRequest from "./leave-request";
 import ExitPassRequest from "./exit-pass-request";
+import { ServerDatatable } from "@/shared/datatable";
+import {
+  useGetApiV1LeaveRequestQuery,
+  useLazyGetApiV1LeaveRequestQuery,
+} from "@/lib/redux/api/openapi.generated";
+import { columns } from "./columns";
 
 const Page = () => {
   const [isAbsenceOpen, setIsAbsenceOpen] = useState(false);
   const [isLeaveOpen, setIsLeaveOpen] = useState(false);
   const [isExitOpen, setIsExitOpen] = useState(false);
+  const [pageSize, setPageSize] = useState(30);
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useGetApiV1LeaveRequestQuery({
+    page,
+    pageSize,
+  });
+  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveRequestQuery();
+
+  useEffect(() => {
+    loadLeaveTypes({
+      page,
+      pageSize,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize]);
+  const data = result?.data || [];
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
@@ -59,6 +81,23 @@ const Page = () => {
           />
         </div>
       </div>
+
+      <ServerDatatable
+        data={data}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        setPage={setPage}
+        setPageSize={setPageSize}
+        meta={{
+          pageIndex: result?.pageIndex as number,
+          pageCount: result?.pageCount as number,
+          totalRecordCount: result?.totalRecordCount as number,
+          numberOfPagesToShow: result?.numberOfPagesToShow as number,
+          startPageIndex: result?.startPageIndex as number,
+          stopPageIndex: result?.stopPageIndex as number,
+          pageSize,
+        }}
+      />
     </PageWrapper>
   );
 };

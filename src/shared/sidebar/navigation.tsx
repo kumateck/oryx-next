@@ -293,6 +293,10 @@ export const ROUTES: Route[] = [
             title: "Leave Management",
             url: "/hr/leave-management",
           },
+          {
+            title: "Leave Type Configuration",
+            url: "/hr/leave-configuration",
+          },
         ],
       },
     ],

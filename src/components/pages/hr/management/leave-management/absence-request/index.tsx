@@ -10,17 +10,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  // Icon,
+  Icon,
 } from "@/components/ui";
-import { AbsenceType, Option } from "@/lib";
+import { Option } from "@/lib";
 import {
-  // CreateDesignationRequest,
   useGetApiV1EmployeeQuery,
+  useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1DesignationQuery,
-  // usePostApiV1DesignationMutation,
+  usePostApiV1AbsenceRequestMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { ErrorResponse, isErrorResponse } from "@/lib/utils";
+import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import { CreateAbsenceFormValidator, AbsenceFormRequestDto } from "./types";
 import AbsenceRequestForm from "./form";
@@ -32,8 +32,16 @@ interface Props {
 
 const AbsenceRequest = ({ isOpen, onClose }: Props) => {
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
-  // const [createDesignation, { isLoading }] = usePostApiV1DesignationMutation();
-
+  const [createAbsenceRequest, { isLoading }] =
+    usePostApiV1AbsenceRequestMutation();
+  const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
+    page: 1,
+    pageSize: 40,
+  });
+  const { data: employeesResponse } = useGetApiV1EmployeeQuery({
+    page: 1,
+    pageSize: 40,
+  });
   const {
     register,
     control,
@@ -49,16 +57,16 @@ const AbsenceRequest = ({ isOpen, onClose }: Props) => {
   const onSubmit = async (data: AbsenceFormRequestDto) => {
     try {
       const payload = {
-        absenceTypeId: data.absenceTypeId.value,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        employeeId: data.employeeId,
+        leaveTypeId: data.absenceTypeId.value,
+        startDate: data.startDate.toISOString(),
+        endDate: data.endDate.toISOString(),
+        employeeId: data.employeeId.value,
       };
       console.log(payload);
 
-      // await createDesignation({
-      //   createDesignationRequest: payload,
-      // });
+      await createAbsenceRequest({
+        createAbsenceRequest: payload,
+      }).unwrap();
 
       toast.success("Absence Request sent successfully");
       loadDesignations({ page: 1, pageSize: 10 });
@@ -70,11 +78,6 @@ const AbsenceRequest = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const { data: employeesResponse } = useGetApiV1EmployeeQuery({
-    page: 1,
-    pageSize: 40,
-  });
-
   const employees = employeesResponse?.data ?? [];
 
   const employeeOptions = employees?.map((item) => {
@@ -84,12 +87,14 @@ const AbsenceRequest = ({ isOpen, onClose }: Props) => {
     };
   }) as Option[];
 
-  const absenceTypeOptions = Object.entries(AbsenceType)
-    .filter(([key]) => isNaN(Number(key)))
-    .map(([key, value]) => ({
-      label: key,
-      value: String(value),
-    }));
+  const leaveTypes = leaveTypesResponse?.data ?? [];
+
+  const leaveTypesOptions = leaveTypes?.map((item) => {
+    return {
+      label: item.name,
+      value: item?.id,
+    };
+  }) as Option[];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -107,7 +112,7 @@ const AbsenceRequest = ({ isOpen, onClose }: Props) => {
             register={register}
             control={control}
             errors={errors}
-            absenceTypeOptions={absenceTypeOptions}
+            leaveTypesOptions={leaveTypesOptions}
             employeeOptions={employeeOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
@@ -120,12 +125,12 @@ const AbsenceRequest = ({ isOpen, onClose }: Props) => {
               type="submit"
               className="flex items-center gap-2"
             >
-              {/* <Icon
+              <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
                   "animate-spin": isLoading,
                 })}
-              /> */}
+              />
               <span>Save</span>
             </Button>
           </DialogFooter>

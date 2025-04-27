@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-export const CreateDesignationSchema = z.object({
+export const CreateLeaveSchema = z.object({
   leaveTypeId: z.object(
     {
       value: z.string().min(1, { message: "Leave type is required" }),
@@ -40,5 +40,5 @@ export const CreateDesignationSchema = z.object({
     .min(1, { message: "Contact Person's Number is required" }),
 });
 
-export type DesignationRequestDto = z.infer<typeof CreateDesignationSchema>;
-export const CreateDesignationValidator = zodResolver(CreateDesignationSchema);
+export type LeaveRequestDto = z.infer<typeof CreateLeaveSchema>;
+export const CreateLeaveValidator = zodResolver(CreateLeaveSchema);

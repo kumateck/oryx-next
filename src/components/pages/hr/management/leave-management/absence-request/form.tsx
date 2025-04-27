@@ -13,7 +13,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  absenceTypeOptions: Option[];
+  leaveTypesOptions: Option[];
   employeeOptions: Option[];
   defaultValues?: TFieldValues;
 }
@@ -21,7 +21,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 const AbsenceRequestForm = <TFieldValues extends FieldValues, TContext>({
   control,
   errors,
-  absenceTypeOptions,
+  leaveTypesOptions,
   employeeOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
@@ -38,7 +38,7 @@ const AbsenceRequestForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             defaultValue: defaultValues?.absenceTypeId,
             placeholder: "Select absence type",
-            options: absenceTypeOptions,
+            options: leaveTypesOptions,
             errors,
           },
         ]}
