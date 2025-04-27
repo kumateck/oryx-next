@@ -1165,14 +1165,11 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1MaterialDepartmentNotLinked: build.mutation<
-      PostApiV1MaterialDepartmentNotLinkedApiResponse,
-      PostApiV1MaterialDepartmentNotLinkedApiArg
+    getApiV1MaterialDepartmentNotLinked: build.query<
+      GetApiV1MaterialDepartmentNotLinkedApiResponse,
+      GetApiV1MaterialDepartmentNotLinkedApiArg
     >({
-      query: () => ({
-        url: `/api/v1/material/department/not-linked`,
-        method: "POST",
-      }),
+      query: () => ({ url: `/api/v1/material/department/not-linked` }),
     }),
     getApiV1PermissionModules: build.query<
       GetApiV1PermissionModulesApiResponse,
@@ -4335,9 +4332,9 @@ export type GetApiV1MaterialDepartmentApiArg = {
   /** Optional department ID filter. */
   departmentId?: string;
 };
-export type PostApiV1MaterialDepartmentNotLinkedApiResponse =
+export type GetApiV1MaterialDepartmentNotLinkedApiResponse =
   /** status 200 OK */ MaterialDto[];
-export type PostApiV1MaterialDepartmentNotLinkedApiArg = void;
+export type GetApiV1MaterialDepartmentNotLinkedApiArg = void;
 export type GetApiV1PermissionModulesApiResponse =
   /** status 200 OK */ PermissionModuleDto[];
 export type GetApiV1PermissionModulesApiArg = void;
@@ -12843,7 +12840,8 @@ export const {
   usePostApiV1MaterialDepartmentMutation,
   useGetApiV1MaterialDepartmentQuery,
   useLazyGetApiV1MaterialDepartmentQuery,
-  usePostApiV1MaterialDepartmentNotLinkedMutation,
+  useGetApiV1MaterialDepartmentNotLinkedQuery,
+  useLazyGetApiV1MaterialDepartmentNotLinkedQuery,
   useGetApiV1PermissionModulesQuery,
   useLazyGetApiV1PermissionModulesQuery,
   useGetApiV1PermissionQuery,
