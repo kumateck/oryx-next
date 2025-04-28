@@ -4327,7 +4327,7 @@ export type PostApiV1MaterialDepartmentApiArg = {
   body: CreateMaterialDepartment[];
 };
 export type GetApiV1MaterialDepartmentApiResponse =
-  /** status 200 OK */ MaterialDepartmentDtoIEnumerablePaginateable;
+  /** status 200 OK */ MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable;
 export type GetApiV1MaterialDepartmentApiArg = {
   /** The current page number. */
   page?: number;
@@ -4341,7 +4341,7 @@ export type GetApiV1MaterialDepartmentApiArg = {
   departmentId?: string;
 };
 export type GetApiV1MaterialDepartmentNotLinkedApiResponse =
-  /** status 200 OK */ MaterialDto[];
+  /** status 200 OK */ MaterialDepartmentWithWarehouseStockDto[];
 export type GetApiV1MaterialDepartmentNotLinkedApiArg = {
   /** The material kind to filter */
   kind?: MaterialKind;
@@ -7200,15 +7200,16 @@ export type CreateMaterialDepartment = {
   minimumStockLevel?: number;
   maximumStockLevel?: number;
 };
-export type MaterialDepartmentDto = {
+export type MaterialDepartmentWithWarehouseStockDto = {
   material?: MaterialDto;
   department?: CollectionItemDto;
   reOrderLevel?: number;
   minimumStockLevel?: number;
   maximumStockLevel?: number;
+  warehouseStock?: number;
 };
-export type MaterialDepartmentDtoIEnumerablePaginateable = {
-  data?: MaterialDepartmentDto[] | null;
+export type MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable = {
+  data?: MaterialDepartmentWithWarehouseStockDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;

@@ -1,7 +1,7 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
 import { EMaterialKind, getMatchingIds } from "@/lib";
-import { useLazyGetApiV1MaterialQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1MaterialDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import React, { useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
@@ -52,25 +52,25 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, kind]);
   const [loadMaterials, { isLoading, isFetching, data: rawMaterials }] =
-    useLazyGetApiV1MaterialQuery();
+    useLazyGetApiV1MaterialDepartmentQuery();
 
   const loadPackagePurchaseData = () => {
     const material =
       rawMaterials?.data?.map((item) => ({
-        id: item?.id as string,
+        id: item?.material?.id as string,
       })) ?? [];
     const ids = getMatchingIds(material, rowSelection);
     // const productFound = data?.products?.find(
     //   (item) => item.product?.id === productId,
     // );
     const filteredItems = rawMaterials?.data?.filter((item) =>
-      ids.includes(item?.id as string),
+      ids.includes(item?.material?.id as string),
     );
-    const filtered = filteredItems?.map((material) => {
+    const filtered = filteredItems?.map((item) => {
       return {
-        code: material?.code,
-        materialName: material?.name,
-        materialId: material?.id,
+        code: item.material?.code,
+        materialName: item.material?.name,
+        materialId: item.material?.id,
         // uom,
         quantityOnHand: 0,
         quantityRequested: 0,
@@ -83,6 +83,7 @@ const Page = () => {
     setIsOpenPurchase(true);
   };
 
+  // console.log(rawMaterials?.data, "rawMaterials?.data");
   return (
     <PageWrapper>
       <div className="flex items-center justify-between py-2">

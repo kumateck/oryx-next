@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { MaterialDepartmentDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialDepartmentWithWarehouseStockDto } from "@/lib/redux/api/openapi.generated";
 // import { TableMenuAction } from "@/shared/table-menu";
 
 // import Edit from "./edit";
@@ -79,7 +79,7 @@ import { MaterialDepartmentDto } from "@/lib/redux/api/openapi.generated";
 //   );
 // }
 
-export const columns: ColumnDef<MaterialDepartmentDto>[] = [
+export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   {
     accessorKey: "code",
     header: "Code",
@@ -106,7 +106,12 @@ export const columns: ColumnDef<MaterialDepartmentDto>[] = [
     header: "Maximum Stock Level",
     cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
   },
+  {
+    accessorKey: "warehouseStock",
+    header: "Stock in my Warehouse",
 
+    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+  },
   // {
   //   id: "actions",
   //   meta: { omitRowClick: true },

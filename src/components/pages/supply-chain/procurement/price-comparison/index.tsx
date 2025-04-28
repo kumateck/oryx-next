@@ -72,6 +72,7 @@ const Page = () => {
   }, [type]);
 
   const handleLoadPriceComparison = async (type: SupplierType) => {
+    setState([]);
     try {
       const response = await loadPrices({
         supplierType: type ?? SupplierType.Foreign,

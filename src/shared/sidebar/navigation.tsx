@@ -218,12 +218,12 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
-            title: "Raw Material Requisitions",
+            title: "Material Requisitions",
             url: "/production/requisition/general",
           },
           {
-            title: "Package Material Requisitions",
-            url: "/production/requisition/general",
+            title: "Create Purchase Requisitions",
+            url: "/production/requisition/create",
           },
           {
             title: "Others",
