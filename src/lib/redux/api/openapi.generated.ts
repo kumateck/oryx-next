@@ -1161,6 +1161,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          kind: queryArg.kind,
           departmentId: queryArg.departmentId,
         },
       }),
@@ -1169,7 +1170,12 @@ const injectedRtkApi = api.injectEndpoints({
       GetApiV1MaterialDepartmentNotLinkedApiResponse,
       GetApiV1MaterialDepartmentNotLinkedApiArg
     >({
-      query: () => ({ url: `/api/v1/material/department/not-linked` }),
+      query: (queryArg) => ({
+        url: `/api/v1/material/department/not-linked`,
+        params: {
+          kind: queryArg.kind,
+        },
+      }),
     }),
     getApiV1PermissionModules: build.query<
       GetApiV1PermissionModulesApiResponse,
@@ -4329,12 +4335,17 @@ export type GetApiV1MaterialDepartmentApiArg = {
   pageSize?: number;
   /** Search query for filtering results. */
   searchQuery?: string;
+  /** The material kind to filter */
+  kind?: MaterialKind;
   /** Optional department ID filter. */
   departmentId?: string;
 };
 export type GetApiV1MaterialDepartmentNotLinkedApiResponse =
   /** status 200 OK */ MaterialDto[];
-export type GetApiV1MaterialDepartmentNotLinkedApiArg = void;
+export type GetApiV1MaterialDepartmentNotLinkedApiArg = {
+  /** The material kind to filter */
+  kind?: MaterialKind;
+};
 export type GetApiV1PermissionModulesApiResponse =
   /** status 200 OK */ PermissionModuleDto[];
 export type GetApiV1PermissionModulesApiArg = void;
@@ -6196,6 +6207,7 @@ export type ApprovalEntity = {
   department?: DepartmentDto;
   approvalLogs?: ApprovalLog[] | null;
   createdAt?: string;
+  requestedBy?: CollectionItemDto;
 };
 export type ApprovalEntityRead = {
   id?: string;
@@ -6204,6 +6216,7 @@ export type ApprovalEntityRead = {
   department?: DepartmentDtoRead;
   approvalLogs?: ApprovalLog[] | null;
   createdAt?: string;
+  requestedBy?: CollectionItemDto;
 };
 export type LoginResponse = {
   userId?: string | null;
