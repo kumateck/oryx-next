@@ -6,7 +6,7 @@ import { ColumnType } from "@/shared/datatable";
 // import { Option } from "@/lib";
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
-import { MaterialDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialDepartmentWithWarehouseStockDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
 
 export const getColumns =
@@ -113,41 +113,54 @@ export const getPurchaseColumns = (
   },
 ];
 
-export const columns: ColumnDef<MaterialDto>[] = [
+export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   TableCheckbox(),
   {
     accessorKey: "code",
     header: "Code",
 
-    cell: ({ row }) => <div>{row.getValue("code")}</div>,
+    cell: ({ row }) => <div>{row.original.material?.code}</div>,
   },
   {
     accessorKey: "name",
     header: "Name",
 
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
   {
-    accessorKey: "kind",
-    header: "Kind",
+    accessorKey: "reOrderLevel",
+    header: "Re-Order Level",
+    cell: ({ row }) => <div>{row.original.reOrderLevel}</div>,
+  },
+  {
+    accessorKey: "minimumStockLevel",
+    header: "Minimum Stock Level",
+    cell: ({ row }) => <div>{row.original.minimumStockLevel}</div>,
+  },
+  {
+    accessorKey: "maximumStockLevel",
+    header: "Maximum Stock Level",
+    cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
+  },
+  {
+    accessorKey: "warehouseStock",
+    header: "Stock in my Warehouse",
 
-    cell: ({ row }) => (
-      <div>{Number(row.original.kind) === 1 ? "Package" : "Raw"}</div>
-    ),
+    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
   },
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => <div>{row.original.materialCategory?.name}</div>,
-  },
-  {
-    accessorKey: "pharmacopoeia",
-    header: "Pharmacopoeia",
-    cell: ({ row }) => <div>{row.original.pharmacopoeia}</div>,
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
-  },
+  // {
+  //   accessorKey: "kind",
+  //   header: "Kind",
+
+  //   cell: ({ row }) => (
+  //     <div>{Number(row.original.kind) === 1 ? "Package" : "Raw"}</div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "category",
+  //   header: "Category",
+  //   cell: ({ row }) => (
+  //     <div>{row.original.material?.materialCategory?.name}</div>
+  //   ),
+  // },
 ];

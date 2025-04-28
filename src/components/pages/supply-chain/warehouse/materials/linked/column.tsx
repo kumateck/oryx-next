@@ -106,7 +106,12 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
     header: "Maximum Stock Level",
     cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
   },
+  {
+    accessorKey: "warehouseStock",
+    header: "Stock in my Warehouse",
 
+    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+  },
   // {
   //   id: "actions",
   //   meta: { omitRowClick: true },
