@@ -114,6 +114,14 @@ export const ROUTES: Route[] = [
             title: "Materials",
             url: "/warehouse/materials",
           },
+          {
+            title: "Unlink Materials",
+            url: "/warehouse/materials/unlink",
+          },
+          {
+            title: "Linked Materials",
+            url: "/warehouse/materials/linked",
+          },
           // {
           //   title: "Raw Materials Requests",
           //   url: "/warehouse/raw-materials-requests",
