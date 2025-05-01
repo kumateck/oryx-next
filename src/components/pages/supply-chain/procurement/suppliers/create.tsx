@@ -25,6 +25,7 @@ import {
   VendorRequestDto,
   mapAssociatedManufacturers,
 } from "./types";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
 
 export type ManufacturerMap = {
   [key: string]: Option[];
@@ -221,20 +222,22 @@ const Create = () => {
             </Button>
           </div>
         </div>
-        <VendorForm
-          control={control}
-          register={register}
-          errors={errors}
-          countryOptions={countryOptions}
-          currencyOptions={currencyOptions}
-          fields={fields}
-          remove={remove}
-          materialOptions={materialOptions}
-          manufacturerOptionsMap={manufacturerOptionsMap}
-          typeValues={typeValues}
-          deManValues={deManValues}
-          append={append}
-        />
+        <ScrollableWrapper>
+          <VendorForm
+            control={control}
+            register={register}
+            errors={errors}
+            countryOptions={countryOptions}
+            currencyOptions={currencyOptions}
+            fields={fields}
+            remove={remove}
+            materialOptions={materialOptions}
+            manufacturerOptionsMap={manufacturerOptionsMap}
+            typeValues={typeValues}
+            deManValues={deManValues}
+            append={append}
+          />
+        </ScrollableWrapper>
       </form>
     </div>
   );

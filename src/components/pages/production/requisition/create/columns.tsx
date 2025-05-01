@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { subtract } from "lodash";
 
 import { ColumnType } from "@/shared/datatable";
@@ -8,6 +8,10 @@ import { ColumnType } from "@/shared/datatable";
 import { MaterialRequestDto } from "./type";
 import { MaterialDepartmentWithWarehouseStockDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
+
+import { useState } from "react";
+import AllStockByMaterial from "@/shared/all-stock";
+import { Units } from "@/lib";
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
@@ -113,6 +117,54 @@ export const getPurchaseColumns = (
   },
 ];
 
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+}
+export function DataTableRowActions<
+  TData extends MaterialDepartmentWithWarehouseStockDto,
+>({ row }: DataTableRowActionsProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const leftOverStock =
+    (row.original.material?.totalStock as number) -
+    (row.original.warehouseStock as number);
+  const rowData = row?.original;
+  const AllStockRow = {
+    materialId: rowData?.material?.id as string,
+    materialName: rowData?.material?.name as string,
+    qtyNeeded: rowData?.material?.totalStock,
+    quantityOnHand: rowData?.warehouseStock,
+    quantityRequested: "0",
+    uom: "",
+    uomId: "",
+    finalQuantityNeeded: "0",
+  };
+  return (
+    <section className="">
+      {leftOverStock > 0 ? (
+        <div
+          className="cursor-pointer underline hover:text-primary-hover"
+          onClick={() => setIsOpen(true)}
+        >
+          {leftOverStock}
+        </div>
+      ) : (
+        <div>{leftOverStock}</div>
+      )}
+
+      {isOpen && (
+        <AllStockByMaterial
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          materialId={AllStockRow.materialId}
+          materialName={AllStockRow.materialName as string}
+          qtyNeeded={AllStockRow.finalQuantityNeeded}
+          uomName={AllStockRow.uom as Units}
+        />
+      )}
+    </section>
+  );
+}
+
 export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   TableCheckbox(),
   {
@@ -148,6 +200,12 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
 
     cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
   },
+  {
+    id: "totalStock",
+    header: "Stock in Other Sources",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+  },
+
   // {
   //   accessorKey: "kind",
   //   header: "Kind",
