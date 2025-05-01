@@ -130,21 +130,21 @@ const Access: React.FC = () => {
           {permissions && (
             <div className="space-y-5">
               <StepWrapper>
-                <Tabs value={permissions[0]?.section}>
+                <Tabs value={permissions[0]?.module}>
                   <TabsList className="mb-4 gap-6 rounded-none border-b border-b-neutral-300 bg-transparent p-0 py-0">
                     {permissions?.map((tab, idx) => (
                       <TabsTrigger
                         key={idx}
-                        value={tab.section}
+                        value={tab.module}
                         className="h-10 px-0 pl-0 capitalize data-[state=active]:rounded-none data-[state=active]:border-b data-[state=active]:border-b-primary-500 data-[state=active]:bg-transparent data-[state=active]:font-Bold data-[state=active]:text-primary-500 data-[state=active]:shadow-none"
                       >
-                        {tab.section}
+                        {tab.module}
                       </TabsTrigger>
                     ))}
                   </TabsList>
                   {permissions?.map((tab, pidx) => (
                     <TabsContent
-                      value={tab.section}
+                      value={tab.module}
                       key={pidx}
                       className="h-full"
                     >

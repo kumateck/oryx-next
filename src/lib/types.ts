@@ -20,13 +20,13 @@ export type RecordItem = {
   key: string;
   name: string;
   description: string;
-  module: string;
+  subModule: string;
   hasOptions: boolean;
   types: string[];
 };
 
 export type Section = {
-  section: string;
+  module: string;
   isActive: boolean;
   children: RecordItem[];
 };

@@ -1197,8 +1197,8 @@ export const hasOptions = [Access];
 export const groupByModule = (children: RecordItem[]) => {
   return children.reduce(
     (acc, child) => {
-      acc[child.module] = acc[child.module] || [];
-      acc[child.module].push(child);
+      acc[child.subModule] = acc[child.subModule] || [];
+      acc[child.subModule].push(child);
       return acc;
     },
     {} as Record<string, RecordItem[]>,

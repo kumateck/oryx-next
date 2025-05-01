@@ -42,15 +42,15 @@ const Permissions = ({
           {permissions?.map((tab, idx) => (
             <TabsTrigger
               key={idx}
-              value={tab.section}
+              value={tab.module}
               className="h-9 px-0 pl-0 capitalize data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-b-primary-default data-[state=active]:bg-transparent data-[state=active]:font-Bold data-[state=active]:text-primary-default data-[state=active]:shadow-none"
             >
-              {tab.section}
+              {tab.module}
             </TabsTrigger>
           ))}
         </TabsList>
         {permissions?.map((tab, pidx) => (
-          <TabsContent value={tab.section} key={pidx} className="h-full">
+          <TabsContent value={tab.module} key={pidx} className="h-full">
             <div className="flex items-center gap-2 pb-8">
               <Icon
                 name={tab.isActive ? "LockKeyholeOpen" : "LockKeyhole"}
