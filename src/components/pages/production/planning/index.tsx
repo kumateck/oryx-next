@@ -5,20 +5,28 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  routes,
+  Section,
+} from "@/lib";
 import { useLazyGetApiV1ProductQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
+  const [pageSize, setPageSize] = useState(30);
+  const [page, setPage] = useState(1);
+
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1ProductQuery();
 
-  const [pageSize, setPageSize] = useState(30);
-  const [page, setPage] = useState(1);
   useEffect(() => {
     loadData({
       page,
@@ -27,6 +35,25 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+  if (
+    !findRecordWithFullAccess(
+      permissions,
+      PermissionKeys.production.viewPlannedProducts,
+    )
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
+  // permissions ends here
+
   const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">

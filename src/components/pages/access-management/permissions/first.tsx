@@ -1,10 +1,9 @@
-import { Permission } from "@/lib/utils";
-
+import { Section } from "@/lib";
 import Permissions from "./permission";
 
 interface Props {
-  permissions: Permission[];
-  firstPermission: Permission;
+  permissions: Section[];
+  firstPermission: Section;
   handleTogglePermission: (
     sectionIndex: number,
     childKey: string,
@@ -12,7 +11,7 @@ interface Props {
   ) => void;
   handleSectionToggle: (sectionIndex: number) => void;
 
-  setPermissions: React.Dispatch<React.SetStateAction<Permission[]>>;
+  setPermissions: React.Dispatch<React.SetStateAction<Section[]>>;
 }
 const FirstPermissionLoad = ({
   permissions,
@@ -29,7 +28,7 @@ const FirstPermissionLoad = ({
           permissions={permissions}
           handleSectionToggle={handleSectionToggle}
           handleTogglePermission={handleTogglePermission}
-          firstSection={firstPermission?.module}
+          firstSection={firstPermission?.section}
         />
       )}
     </>

@@ -8,11 +8,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { Permission, cn, groupByModule, permissionOptions } from "@/lib/utils";
+import { cn, groupByModule, permissionOptions } from "@/lib/utils";
 import StepWrapper from "@/shared/wrapper";
+import { Section } from "@/lib";
 
 interface Props {
-  permissions: Permission[];
+  permissions: Section[];
   handleTogglePermission: (
     sectionIndex: number,
     childKey: string,
@@ -20,7 +21,7 @@ interface Props {
   ) => void;
   handleSectionToggle: (sectionIndex: number) => void;
   firstSection?: string;
-  setPermissions: React.Dispatch<React.SetStateAction<Permission[]>>;
+  setPermissions: React.Dispatch<React.SetStateAction<Section[]>>;
 }
 const Permissions = ({
   firstSection,
@@ -41,15 +42,15 @@ const Permissions = ({
           {permissions?.map((tab, idx) => (
             <TabsTrigger
               key={idx}
-              value={tab.module}
+              value={tab.section}
               className="h-9 px-0 pl-0 capitalize data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-b-primary-default data-[state=active]:bg-transparent data-[state=active]:font-Bold data-[state=active]:text-primary-default data-[state=active]:shadow-none"
             >
-              {tab.module}
+              {tab.section}
             </TabsTrigger>
           ))}
         </TabsList>
         {permissions?.map((tab, pidx) => (
-          <TabsContent value={tab.module} key={pidx} className="h-full">
+          <TabsContent value={tab.section} key={pidx} className="h-full">
             <div className="flex items-center gap-2 pb-8">
               <Icon
                 name={tab.isActive ? "LockKeyholeOpen" : "LockKeyhole"}

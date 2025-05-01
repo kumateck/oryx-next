@@ -8,9 +8,11 @@ import PageTitle from "@/shared/title";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { columns } from "./column";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
+  const searchQuery = useSelector((state) => state.common.searchInput);
 
   const searchParams = useSearchParams();
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
@@ -25,21 +27,23 @@ const Page = () => {
     kind: EMaterialKind,
     page: number,
     pageSize: number,
+    searchQuery?: string,
   ) => {
     await loadMaterials({
       page,
       pageSize,
       kind: kind || EMaterialKind.Raw,
+      searchQuery,
     }).unwrap();
   };
 
   useEffect(() => {
-    handleLoadMaterials(kind, page, pageSize);
+    handleLoadMaterials(kind, page, pageSize, searchQuery);
     // if (triggerReload) {
     //   // dispatch(commonActions.unSetTriggerReload());
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, page, pageSize]);
+  }, [kind, page, pageSize, searchQuery]);
   // Get a new searchParams string by merging the current
   // searchParams with a provided key/value pair
   const createQueryString = useCallback(
