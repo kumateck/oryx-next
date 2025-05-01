@@ -12,13 +12,14 @@ import {
 } from "@/components/ui";
 import { Option } from "@/lib";
 import {
+  CreateExitPassRequest,
   useGetApiV1EmployeeQuery,
   useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ErrorResponse, isErrorResponse } from "@/lib/utils";
 
-import { CreateDesignationValidator, DesignationRequestDto } from "./types";
+import { CreateExitPassValidator, ExitPassRequestDto } from "./types";
 import ExitPassRequestForm from "./form";
 
 interface Props {
@@ -35,21 +36,21 @@ const ExitPassRequest = ({ isOpen, onClose }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<DesignationRequestDto>({
-    resolver: CreateDesignationValidator,
+  } = useForm<ExitPassRequestDto>({
+    resolver: CreateExitPassValidator,
     mode: "all",
   });
   const dispatch = useDispatch();
 
-  const onSubmit = async (data: DesignationRequestDto) => {
+  const onSubmit = async (data: ExitPassRequestDto) => {
     try {
       const payload = {
-        date: data.date,
+        date: data.date.toISOString(),
         timeIn: data.timeIn,
         timeOut: data.timeOut,
         employeeId: data.employeeId.value,
         justification: data.justification,
-      };
+      } satisfies CreateExitPassRequest;
       console.log(payload);
 
       // await createDesignation({

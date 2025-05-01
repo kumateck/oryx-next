@@ -3,7 +3,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  isErrorResponse,
+  LeaveCategories,
+  splitWords,
+} from "@/lib";
 import {
   LeaveRequestDto,
   useDeleteApiV1DesignationByIdMutation,
@@ -137,15 +142,25 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
     cell: ({ row }) => <div>{row.original.leaveType?.name}</div>,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: (
-      {
-        //  row
-      },
-    ) => <div>{}</div>,
+    accessorKey: "requestCategory",
+    header: "Leave Category",
+    cell: ({ row }) => (
+      <div>
+        {splitWords(
+          LeaveCategories[row.original.requestCategory as LeaveCategories],
+        )}
+      </div>
+    ),
   },
-
+  // {
+  //   accessorKey: "status",
+  //   header: "Status",
+  //   cell: (
+  //     {
+  //        row
+  //     },
+  //   ) => <div>{row.original.sta}</div>,
+  // },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

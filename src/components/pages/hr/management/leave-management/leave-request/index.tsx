@@ -11,15 +11,20 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { CODE_SETTINGS, LeaveCategories, Option } from "@/lib";
 import {
+  CreateLeaveRequest,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
+  PostApiV1LeaveRequestApiArg,
+  RequestCategory,
   useGetApiV1EmployeeQuery,
   useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1LeaveRequestQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1LeaveRequestMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
+import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
 import { CreateLeaveValidator, LeaveRequestDto } from "./types";
 import LeaveRequestForm from "./form";
@@ -33,6 +38,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
   const [createLeaveRequest, { isLoading }] =
     usePostApiV1LeaveRequestMutation();
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
   const {
     register,
     control,
@@ -44,6 +51,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     mode: "all",
   });
   const dispatch = useDispatch();
+  const requestCategory = 0;
 
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
@@ -54,14 +62,32 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson,
         contactPersonNumber: data.contactPersonNumber,
-      };
+        requestCategory: requestCategory as RequestCategory,
+      } satisfies CreateLeaveRequest;
       console.log(payload);
 
-      await createLeaveRequest({
+      const leaveRequestId = await createLeaveRequest({
         createLeaveRequest: payload,
-      });
+      } as PostApiV1LeaveRequestApiArg).unwrap();
 
-      toast.success("Leave Request sent successfully");
+      if (leaveRequestId) {
+        const formData = new FormData();
+        // Ensure attachments are an array
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
+          modelId: leaveRequestId,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
+      toast.success("Leave Request created successfully");
       loadLeaveRequests({ page: 1, pageSize: 10 });
       reset();
       onClose();
@@ -99,6 +125,13 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     };
   }) as Option[];
 
+  const categoryOptions = Object.entries(LeaveCategories)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -113,6 +146,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
             errors={errors}
             employeeOptions={employeeOptions}
             leaveTypesOptions={leaveTypesOptions}
+            categoryOptions={categoryOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -125,7 +159,9 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
               className="flex items-center gap-2"
             >
               <Icon
-                name={isLoading ? "LoaderCircle" : "Plus"}
+                name={
+                  isLoading || isUploadingAttachment ? "LoaderCircle" : "Plus"
+                }
                 className={cn("h-4 w-4", {
                   "animate-spin": isLoading,
                 })}

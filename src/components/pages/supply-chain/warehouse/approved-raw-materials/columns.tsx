@@ -30,9 +30,9 @@ export const columns: ColumnDef<MaterialDetailsDto>[] = [
       );
     },
   },
-  {
-    accessorKey: "reOrderLevel",
-    header: "Reorder Level",
-    cell: ({ row }) => <div>{row.original?.material?.reOrderLevel}</div>,
-  },
+  // {
+  //   accessorKey: "reOrderLevel",
+  //   header: "Reorder Level",
+  //   cell: ({ row }) => <div>{row.original?.material?.reOrderLevel}</div>,
+  // },
 ];
