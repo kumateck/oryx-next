@@ -5,26 +5,27 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  UserDto,
-  WarehouseLocationRackDto,
-  useDeleteApiV1WarehouseRackByRackIdMutation,
-  useLazyGetApiV1WarehouseRackQuery,
+  UserWithRoleDto,
+  useDeleteApiV1UserByIdMutation,
+  useLazyGetApiV1UserQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
+import Edit from "./edit";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
+export function DataTableRowActions<TData extends UserWithRoleDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseRackByRackIdMutation();
+  const [deleteMutation] = useDeleteApiV1UserByIdMutation();
 
-  const [details, setDetails] = useState<WarehouseLocationRackDto>(
-    {} as WarehouseLocationRackDto,
+  const [details, setDetails] = useState<UserWithRoleDto>(
+    {} as UserWithRoleDto,
   );
+  const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const [loadUsers] = useLazyGetApiV1UserQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -34,7 +35,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             className="flex cursor-pointer items-center justify-start gap-2"
             onClick={() => {
               setDetails(row.original);
-              // setIsOpen(true);
+              setIsOpen(true);
             }}
           >
             <Icon
@@ -44,21 +45,21 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             <span>Edit</span>
           </div>
         </DropdownMenuItem>
-        {/* <DropdownMenuItem className="group">
-           <div
-             className="flex cursor-pointer items-center justify-start gap-2"
-             onClick={() => {
-               setDetails(row.original);
-               setIsDeleteOpen(true);
-             }}
-           >
-             <Icon
-               name="Trash2"
-               className="text-danger-500 h-5 w-5 cursor-pointer"
-             />
-             <span>Delete</span>
-           </div>
-         </DropdownMenuItem> */}
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
       </TableMenuAction>
       {/* <Icon
          name="Pencil"
@@ -77,16 +78,23 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
          }}
        /> */}
 
+      {details.id && isOpen && (
+        <Edit
+          details={details}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
           try {
             await deleteMutation({
-              rackId: details.id as string,
+              id: details.id as string,
             }).unwrap();
-            toast.success("Rack deleted successfully");
-            loadWarehouseLocationRacks({
+            toast.success("User deleted successfully");
+            loadUsers({
               pageSize: 30,
             });
           } catch (error) {
@@ -98,7 +106,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
 }
 
-export const columns: ColumnDef<UserDto>[] = [
+export const columns: ColumnDef<UserWithRoleDto>[] = [
   {
     accessorKey: "name",
     header: "Employee Name",
@@ -112,7 +120,7 @@ export const columns: ColumnDef<UserDto>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <div>{row.original.role}</div>,
+    cell: ({ row }) => <div>{row.original.roles?.[0].name}</div>,
   },
   {
     accessorKey: "department",

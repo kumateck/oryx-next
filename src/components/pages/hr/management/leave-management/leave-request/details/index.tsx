@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
 import { useGetApiV1LeaveRequestByIdQuery } from "@/lib/redux/api/openapi.generated";
@@ -7,8 +8,9 @@ import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { columns } from "./columns";
-import { LeaveCategories, LeaveStatus, splitWords } from "@/lib";
+import { isImageFile, LeaveCategories, LeaveStatus, splitWords } from "@/lib";
 import { format } from "date-fns";
+import Link from "next/link";
 // import Link from "next/link";
 
 const statusColors: Record<LeaveStatus, string> = {
@@ -153,15 +155,16 @@ function LeaveDetails() {
             <ListsTable data={data ? [data] : []} columns={columns} />
           </div>
 
-          {/* <div className="mt-5">
+          <div className="mt-5">
             <span className="font-semibold">Attachments</span>
             {data?.attachments?.length ? (
               <>
-
                 <span>Images</span>
                 <div className="gap-4 grid grid-cols-3 mt-2">
                   {data.attachments
-                    .filter((attachment) => isImageFile(attachment.name))
+                    .filter((attachment) =>
+                      isImageFile(attachment?.name as string),
+                    )
                     .map((attachment) => (
                       <div key={attachment.id} className="group relative">
                         <Link
@@ -182,11 +185,12 @@ function LeaveDetails() {
                     ))}
                 </div>
 
-
                 <span>Documents</span>
                 <div className="mt-4 space-y-2">
                   {data.attachments
-                    .filter((attachment) => !isImageFile(attachment.name))
+                    .filter(
+                      (attachment) => !isImageFile(attachment?.name as string),
+                    )
                     .map((attachment) => (
                       <div
                         key={attachment.id}
@@ -215,7 +219,14 @@ function LeaveDetails() {
                 No attachments found
               </div>
             )}
-          </div> */}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>Approval Log</CardHeader>
+        <CardContent>
+          <span className="">Activity Log</span>
         </CardContent>
       </Card>
     </ScrollablePageWrapper>
