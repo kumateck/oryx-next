@@ -113,7 +113,7 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
             type: InputTypes.TEXT,
             required: true,
             placeholder: "Enter staff ID",
-            readOnly: true,
+            // readOnly: true,
             errors,
           },
         ]}

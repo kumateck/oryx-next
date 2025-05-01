@@ -336,13 +336,14 @@ export enum EmployeeType {
   Permanent = 1,
 }
 
-export enum AbsenceType {
-  Sick = "Sick",
-  Military = "Military",
-  TOWP = "Time off without pay",
-  Vacation = "Vacation",
-  JuryDuty = "Jury Duty",
-  Bereavement = "Bereavement",
-  MaternityPaternity = "Maternity/Paternity",
-  Other = "Other",
+export enum LeaveCategories {
+  LeaveRequest = 0,
+  AbsenceRequest = 1,
+  ExitPassRequest = 2,
+}
+
+export enum LeaveStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
 }

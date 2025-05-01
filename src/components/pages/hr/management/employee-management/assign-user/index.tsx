@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -43,6 +43,22 @@ const UserDialog = ({
   onSuccess,
   selectedEmployee,
 }: AssignLocationDialogProps) => {
+  const defaultDepartment = useMemo(
+    () => ({
+      label: selectedEmployee?.department?.name as string,
+      value: selectedEmployee?.department?.id as string,
+    }),
+    [selectedEmployee?.department?.name, selectedEmployee?.department?.id],
+  );
+
+  const defaultDesignation = useMemo(
+    () => ({
+      label: selectedEmployee?.designation?.name as string,
+      value: selectedEmployee?.designation?.id as string,
+    }),
+    [selectedEmployee?.designation?.name, selectedEmployee?.designation?.id],
+  );
+
   const {
     control,
     register,
@@ -56,8 +72,8 @@ const UserDialog = ({
       name: selectedEmployee?.fullName as string,
       email: selectedEmployee?.email as string,
       type: selectedEmployee?.type?.toString() as unknown as EmployeeType,
-      // departmentId: selectedEmployee.departmenId
-      // designationId: selectedEmployee.designation.value
+      departmentId: defaultDepartment,
+      designationId: defaultDesignation,
       staffId: selectedEmployee?.staffNumber as string,
     },
   });
@@ -90,12 +106,12 @@ const UserDialog = ({
         name: selectedEmployee.fullName as string,
         email: selectedEmployee.email as string,
         type: selectedEmployee.type?.toString() as unknown as EmployeeType,
-        // departmentId: selectedEmployee.departmenId
-        // designationId: selectedEmployee.designation.value
+        departmentId: defaultDepartment,
+        designationId: defaultDesignation,
         staffId: selectedEmployee.staffNumber as string,
       });
     }
-  }, [open, selectedEmployee, reset]);
+  }, [open, selectedEmployee, reset, defaultDepartment, defaultDesignation]);
 
   const departmentOptions = departments?.map((department) => ({
     label: department?.name,
