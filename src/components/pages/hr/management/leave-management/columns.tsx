@@ -1,12 +1,9 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   isErrorResponse,
   LeaveCategories,
+  LeaveStatus,
   splitWords,
 } from "@/lib";
 import {
@@ -14,10 +11,12 @@ import {
   useDeleteApiV1DesignationByIdMutation,
   useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
-import { TableMenuAction } from "@/shared/table-menu";
 import { format } from "date-fns";
-
-// import { TableMenuAction } from "@/shared/table-menu";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
+import { toast } from "sonner";
+import { useState } from "react";
+import Edit from "./leave-request/edit";
+import { TableMenuAction } from "@/shared/table-menu";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -30,6 +29,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
   const [details, setDetails] = useState<LeaveRequestDto>(
     {} as LeaveRequestDto,
   );
+  const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
@@ -39,10 +39,11 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
-            // onClick={() => {
-            //   setDetails(row.original);
-            //   setIsOpen(true);
-            // }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
           >
             <Icon
               name="Pencil"
@@ -54,7 +55,8 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setDetails(row.original);
               setIsDeleteOpen(true);
             }}
@@ -67,23 +69,14 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
-      {/* <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      /> */}
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
 
+      {details.id && isOpen && (
+        <Edit
+          details={details}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -152,15 +145,15 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "status",
-  //   header: "Status",
-  //   cell: (
-  //     {
-  //        row
-  //     },
-  //   ) => <div>{row.original.sta}</div>,
-  // },
+  {
+    accessorKey: "leaveStatus",
+    header: "Leave Status",
+    cell: ({ row }) => (
+      <div>
+        {splitWords(LeaveStatus[row.original.leaveStatus as LeaveStatus])}
+      </div>
+    ),
+  },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

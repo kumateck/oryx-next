@@ -51,6 +51,7 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
+
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -87,6 +88,11 @@ export const columns: ColumnDef<LeaveTypeDto>[] = [
     cell: ({ row }) => (
       <div>{row.original.deductFromBalance ? "Yes" : "No"}</div>
     ),
+  },
+  {
+    accessorKey: "maxLeaveDays",
+    header: "Maximum Leave Days",
+    cell: ({ row }) => <div>{row.original.numberOfDays}</div>,
   },
 
   {

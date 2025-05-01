@@ -8,7 +8,7 @@ import PageTitle from "@/shared/title";
 import DropdownBtns from "@/shared/btns/drop-btn";
 
 import LeaveRequest from "./leave-request";
-import ExitPassRequest from "./exit-pass-request";
+
 import { ServerDatatable } from "@/shared/datatable";
 import {
   useGetApiV1LeaveRequestQuery,
@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [isLeaveOpen, setIsLeaveOpen] = useState(false);
-  const [isExitOpen, setIsExitOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const { data: result, isLoading } = useGetApiV1LeaveRequestQuery({
@@ -46,12 +45,6 @@ const Page = () => {
         />
       )}
 
-      {isExitOpen && (
-        <ExitPassRequest
-          onClose={() => setIsExitOpen(false)}
-          isOpen={isExitOpen}
-        />
-      )}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Leave Management" />
         <div className="flex items-center justify-end gap-2">
@@ -62,10 +55,6 @@ const Page = () => {
               {
                 name: "Leave Request",
                 onClick: () => setIsLeaveOpen(true),
-              },
-              {
-                name: "Exit Pass Request",
-                onClick: () => setIsExitOpen(true),
               },
             ]}
           />
