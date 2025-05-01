@@ -26,6 +26,7 @@ import { toast } from "sonner";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchQuery = useSelector((state) => state.common.searchInput);
 
   const [saveMutation, { isLoading: isSaving }] =
     usePostApiV1MaterialDepartmentMutation();
@@ -58,21 +59,25 @@ const Page = () => {
     useLazyGetApiV1MaterialDepartmentNotLinkedQuery();
 
   useEffect(() => {
-    handleLoadMaterials(kind);
+    handleLoadMaterials(kind, searchQuery);
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, triggerReload]);
+  }, [kind, searchQuery, triggerReload]);
 
   const [loadUom] = useLazyGetApiV1CollectionUomQuery();
 
-  const handleLoadMaterials = async (kind) => {
+  const handleLoadMaterials = async (
+    kind: EMaterialKind,
+    searchQuery?: string,
+  ) => {
     const response = await loadUnlinkedMaterials({
       kind: (Number(kind) as EMaterialKind) || EMaterialKind.Raw,
       page: 1,
       pageSize: 30,
+      searchQuery,
     }).unwrap();
 
     const uomResponse = await loadUom({
