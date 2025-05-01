@@ -36,7 +36,14 @@ function EmployeeDetails() {
 
       <div className="flex items-center justify-between">
         <PageTitle title="Employee Details" />
-        <div className="flex items-center gap-2 mb-4 hover:cursor-pointer">
+        <div
+          className="flex items-center gap-2 mb-4 hover:cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/hr/employee-management/${employeeId}/edit/${data?.type}`,
+            )
+          }
+        >
           <Icon name="Pencil" className="h-5 w-5 " />
           <span>Edit</span>
         </div>

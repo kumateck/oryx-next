@@ -11,60 +11,77 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, LeaveCategories, Option } from "@/lib";
+import { LeaveCategories, Option } from "@/lib";
 import {
   CreateLeaveRequest,
-  PostApiV1FileByModelTypeAndModelIdApiArg,
-  PostApiV1LeaveRequestApiArg,
+  LeaveRequestDto,
+  PutApiV1LeaveRequestByIdApiArg,
   RequestCategory,
   useGetApiV1EmployeeQuery,
   useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1LeaveRequestQuery,
-  usePostApiV1FileByModelTypeAndModelIdMutation,
-  usePostApiV1LeaveRequestMutation,
+  usePutApiV1LeaveRequestByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
-import { CreateLeaveValidator, LeaveRequestDto } from "./types";
+import { CreateLeaveValidator, LeaveRequestDto as LeaveRequest } from "./types";
 import LeaveRequestForm from "./form";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  details: LeaveRequestDto;
 }
 
-const LeaveRequest = ({ isOpen, onClose }: Props) => {
+const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
-  const [createLeaveRequest, { isLoading }] =
-    usePostApiV1LeaveRequestMutation();
-  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
-    usePostApiV1FileByModelTypeAndModelIdMutation();
+  const [updateLeaveRequest, { isLoading }] =
+    usePutApiV1LeaveRequestByIdMutation();
+
+  const defaultEmployee = {
+    label: details?.employee?.fullName as string,
+    value: details?.employee?.id as string,
+  };
+
+  const defaultCategory = {
+    value: details.requestCategory?.toString() as string,
+    label: splitWords(LeaveCategories[details.requestCategory ?? 0]) || "",
+  };
+
+  const defaultLeaveType = {
+    label: details?.leaveType?.name as string,
+    value: details?.leaveType?.id as string,
+  };
+
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<LeaveRequestDto>({
+  } = useForm<LeaveRequest>({
     resolver: CreateLeaveValidator,
     mode: "all",
+    defaultValues: {
+      employeeId: defaultEmployee,
+      leaveCategory: defaultCategory,
+      contactPerson: details.contactPerson as string,
+      contactPersonNumber: details.contactPersonNumber as string,
+      leaveTypeId: defaultLeaveType,
+      startDate: new Date(details.startDate as string),
+      endDate: new Date(details.endDate as string),
+    },
   });
-  const dispatch = useDispatch();
 
   const selectedCategory = useWatch({
     control,
     name: "leaveCategory",
   });
 
-  const isExitPass =
-    selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
-  const isLeaveOrAbsence = [
-    String(LeaveCategories.LeaveRequest),
-    String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
+  const dispatch = useDispatch();
 
-  const onSubmit = async (data: LeaveRequestDto) => {
+  const onSubmit = async (data: LeaveRequest) => {
     try {
       const payload = {
         leaveTypeId: data.leaveTypeId.value,
@@ -79,9 +96,10 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
       } satisfies CreateLeaveRequest;
       console.log(payload);
 
-      const leaveRequestId = await createLeaveRequest({
+      const leaveRequestId = await updateLeaveRequest({
         createLeaveRequest: payload,
-      } as PostApiV1LeaveRequestApiArg).unwrap();
+        id: details.id as string,
+      } as PutApiV1LeaveRequestByIdApiArg).unwrap();
 
       if (leaveRequestId) {
         const formData = new FormData();
@@ -94,17 +112,17 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
           formData.append("files", attachment, attachment.name);
         });
 
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
-          modelId: leaveRequestId,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+        // await uploadAttachment({
+        //   modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
+        //   modelId: leaveRequestId,
+        //   body: formData,
+        // } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
       toast.success("Leave Request created successfully");
-      reset();
-      onClose();
       loadLeaveRequests({ page: 1, pageSize: 10 });
       dispatch(commonActions.setTriggerReload());
+      reset();
+      onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -138,6 +156,13 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     };
   }) as Option[];
 
+  const isExitPass =
+    selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
+  const isLeaveOrAbsence = [
+    String(LeaveCategories.LeaveRequest),
+    String(LeaveCategories.AbsenceRequest),
+  ].includes(selectedCategory?.value);
+
   const categoryOptions = Object.entries(LeaveCategories)
     .filter(([key]) => isNaN(Number(key)))
     .map(([key, value]) => ({
@@ -147,7 +172,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Staff Leave Request Form</DialogTitle>
         </DialogHeader>
@@ -174,9 +199,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
               className="flex items-center gap-2"
             >
               <Icon
-                name={
-                  isLoading || isUploadingAttachment ? "LoaderCircle" : "Plus"
-                }
+                name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
                   "animate-spin": isLoading,
                 })}
@@ -190,4 +213,4 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   );
 };
 
-export default LeaveRequest;
+export default Edit;

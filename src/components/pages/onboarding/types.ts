@@ -3,7 +3,7 @@ import { imageValidationSchema } from "./type";
 
 const personalInfoSchema = z.object({
   passportPhoto: imageValidationSchema,
-  fullName: z.string().min(1, "Full name is required"),
+  fullName: z.string().min(3, "Full name is required"),
   dob: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -61,7 +61,7 @@ const personalInfoSchema = z.object({
 });
 
 const familyMemberSchema = z.object({
-  fullName: z.string().min(5, "Full name is required"),
+  fullName: z.string().min(3, "Full name is required"),
   contactNumber: z.string().min(10, "Phone number is required"),
   lifeStatus: z.object(
     {
@@ -93,7 +93,7 @@ const familyMemberSchema = z.object({
 // });
 
 const emergencyContactSchema = z.object({
-  fullName: z.string().min(5, "Full name is required"),
+  fullName: z.string().min(3, "Full name is required"),
   contactNumber: z
     .string()
     .min(10, "Phone number is required")
@@ -121,7 +121,7 @@ const familyInfo1Schema = z.object({
 });
 
 const childrenSchema = z.object({
-  fullName: z.string().min(1, "Child's date of birth is required").optional(),
+  fullName: z.string().min(3, "Child's date of birth is required").optional(),
   dob: z
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
@@ -143,7 +143,7 @@ const childrenSchema = z.object({
 });
 
 const siblingSchema = z.object({
-  fullName: z.string().min(1, "Sibling's date of birth is required").optional(),
+  fullName: z.string().min(3, "Sibling's date of birth is required").optional(),
   contactNumber: z.string().min(10, "Sibling's phone number is required"),
   sex: z.object(
     {
