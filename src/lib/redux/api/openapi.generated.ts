@@ -65,6 +65,14 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getApiV1ApprovalByModelTypeAndModelId: build.query<
+      GetApiV1ApprovalByModelTypeAndModelIdApiResponse,
+      GetApiV1ApprovalByModelTypeAndModelIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/approval/${queryArg.modelType}/${queryArg.modelId}`,
+      }),
+    }),
     postApiV1ApprovalApproveByModelTypeAndModelId: build.mutation<
       PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse,
       PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg
@@ -2883,6 +2891,9 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/requisition/source/quotation/process-purchase-order`,
         method: "POST",
         body: queryArg.body,
+        params: {
+          supplierType: queryArg.supplierType,
+        },
       }),
     }),
     getApiV1Role: build.query<GetApiV1RoleApiResponse, GetApiV1RoleApiArg>({
@@ -3693,6 +3704,12 @@ export type PutApiV1ApprovalByApprovalIdApiArg = {
 export type DeleteApiV1ApprovalByApprovalIdApiResponse = unknown;
 export type DeleteApiV1ApprovalByApprovalIdApiArg = {
   approvalId: string;
+};
+export type GetApiV1ApprovalByModelTypeAndModelIdApiResponse =
+  /** status 200 OK */ ApprovalEntityRead;
+export type GetApiV1ApprovalByModelTypeAndModelIdApiArg = {
+  modelType: string;
+  modelId: string;
 };
 export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse = unknown;
 export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg = {
@@ -5563,6 +5580,8 @@ export type GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg = {
 export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse =
   unknown;
 export type PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg = {
+  /** The type of the supplier (example Local, Foreign). */
+  supplierType?: SupplierType;
   /** The list of quotations to process. */
   body: ProcessQuotation[];
 };
@@ -6075,9 +6094,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type ApprovalRequestBody = {
-  comments?: string | null;
-};
 export type DepartmentType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
 export type WarehouseDto = {
@@ -6132,6 +6148,9 @@ export type ApprovalEntityRead = {
   approvalLogs?: ApprovalLog[] | null;
   createdAt?: string;
   requestedBy?: CollectionItemDto;
+};
+export type ApprovalRequestBody = {
+  comments?: string | null;
 };
 export type LoginResponse = {
   userId?: string | null;
@@ -12846,6 +12865,8 @@ export const {
   useLazyGetApiV1ApprovalByApprovalIdQuery,
   usePutApiV1ApprovalByApprovalIdMutation,
   useDeleteApiV1ApprovalByApprovalIdMutation,
+  useGetApiV1ApprovalByModelTypeAndModelIdQuery,
+  useLazyGetApiV1ApprovalByModelTypeAndModelIdQuery,
   usePostApiV1ApprovalApproveByModelTypeAndModelIdMutation,
   useGetApiV1ApprovalMyPendingQuery,
   useLazyGetApiV1ApprovalMyPendingQuery,
