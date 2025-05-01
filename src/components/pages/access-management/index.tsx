@@ -9,8 +9,9 @@ import { Button, Icon } from "@/components/ui";
 
 import {
   Option,
-  Permission,
+  // Permission,
   PermissionType,
+  Section,
   hasOptions,
   permissionOptions,
   removeDuplicateTypes,
@@ -115,16 +116,16 @@ const Access: React.FC = () => {
   const [loadAllPermissions, { isLoading: isLoadingAllPermissions }] =
     useLazyGetApiV1PermissionModulesQuery();
 
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [permissions, setPermissions] = useState<Section[]>([]);
 
   const triggerLoadingPermissions = async (roleId: string) => {
     try {
       const rolePermissionsData = await loadRolePermissions({
         roleId,
       }).unwrap();
-      const rolePermissions = (rolePermissionsData ?? []) as Permission[];
+      const rolePermissions = (rolePermissionsData ?? []) as Section[];
       const allPermissions = await loadAllPermissions().unwrap();
-      const allPermissionsData = (allPermissions ?? []) as Permission[];
+      const allPermissionsData = (allPermissions ?? []) as Section[];
       const permissions =
         rolePermissions.length > 0 ? rolePermissions : allPermissionsData;
       setPermissions(permissions);
@@ -152,7 +153,7 @@ const Access: React.FC = () => {
 
       // await loadUserSidebarPermissions({}).unwrap();
 
-      const userPermissions = (response ?? []) as Permission[];
+      const userPermissions = (response ?? []) as Section[];
       dispatch(authActions.setUserPermissions(userPermissions));
 
       toast.success("Changes applied successfully");

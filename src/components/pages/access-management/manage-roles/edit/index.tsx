@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { InputTypes, PermissionType } from "@/lib";
 
 import {
-  Permission,
+  Section,
   // findRecordWithFullAccess,
   hasOptions,
   permissionOptions,
@@ -58,7 +58,7 @@ const Page = () => {
   //   (state) => state.persistedReducer.auth?.permissions,
   // );
 
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [permissions, setPermissions] = useState<Section[]>([]);
 
   const triggerLoadingPermissions = async () => {
     try {
@@ -70,7 +70,7 @@ const Page = () => {
       const rolePermissionsData = await loadRolePermissions({
         roleId,
       }).unwrap();
-      const rolePermissions = (rolePermissionsData ?? []) as Permission[];
+      const rolePermissions = (rolePermissionsData ?? []) as Section[];
       setPermissions(rolePermissions);
     } catch (error) {
       console.error("Error loading permissions:", error);

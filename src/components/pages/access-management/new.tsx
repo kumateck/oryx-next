@@ -10,7 +10,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { Option, cn } from "@/lib";
+import { Option, Section, cn, groupByModule } from "@/lib";
 import {
   useGetApiV1RoleQuery,
   useLazyGetApiV1PermissionRoleByRoleIdQuery,
@@ -33,7 +33,7 @@ const Access: React.FC = () => {
     [data],
   );
 
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [permissions, setPermissions] = useState<Section[]>([]);
 
   const handleLoadPermissions = useCallback(
     async (roleId: string) => {
@@ -41,7 +41,7 @@ const Access: React.FC = () => {
         const response = await loadPermissions({
           roleId,
         }).unwrap();
-        setPermissions(response as Permission[]);
+        setPermissions(response as Section[]);
       } catch (error) {
         console.error("Error loading permissions:", error);
       }
@@ -231,7 +231,7 @@ const Access: React.FC = () => {
                                             {child.description}
                                           </p>
                                         </div>
-                                        {types.map((type, tidx) => (
+                                        {["Access"].map((type, tidx) => (
                                           <div
                                             className="mx-auto flex w-full items-center justify-center border-b border-b-neutral-300 bg-white"
                                             key={tidx}
@@ -285,29 +285,29 @@ const Access: React.FC = () => {
 
 export default Access;
 
-const types = ["Self", "Direct", "Indirect", "Everyone"];
+// const types = ["Self", "Direct", "Indirect", "Everyone"];
 
-interface PermissionChild {
-  key: string;
-  name: string;
-  description: string;
-  module: string;
-  types: string[];
-}
+// interface PermissionChild {
+//   key: string;
+//   name: string;
+//   description: string;
+//   module: string;
+//   types: string[];
+// }
 
-interface Permission {
-  section: string;
-  isActive: boolean;
-  children: PermissionChild[];
-}
+// interface Permission {
+//   section: string;
+//   isActive: boolean;
+//   children: PermissionChild[];
+// }
 
-const groupByModule = (children: PermissionChild[]) => {
-  return children.reduce(
-    (acc, child) => {
-      acc[child.module] = acc[child.module] || [];
-      acc[child.module].push(child);
-      return acc;
-    },
-    {} as Record<string, PermissionChild[]>,
-  );
-};
+// const groupByModule = (children: PermissionChild[]) => {
+//   return children.reduce(
+//     (acc, child) => {
+//       acc[child.module] = acc[child.module] || [];
+//       acc[child.module].push(child);
+//       return acc;
+//     },
+//     {} as Record<string, PermissionChild[]>,
+//   );
+// };
