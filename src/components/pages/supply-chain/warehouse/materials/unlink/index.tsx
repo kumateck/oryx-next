@@ -70,7 +70,7 @@ const Page = () => {
       kind: kind || EMaterialKind.Raw,
     }).unwrap();
 
-    const results = response?.map((item) => ({
+    const results = response?.data?.map((item) => ({
       materialId: item.id,
       materialName: item.name,
       code: item.code,
