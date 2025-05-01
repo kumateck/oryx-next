@@ -21,7 +21,7 @@ import {
 import {
   EmployeeDto,
   useGetApiV1DepartmentQuery,
-  useGetApiV1DesignationQuery,
+  useGetApiV1DesignationDepartmentByIdQuery,
   useGetApiV1UserQuery,
   usePutApiV1EmployeeByIdAssignMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -87,9 +87,8 @@ const UserDialog = ({
     pageSize,
   });
 
-  const { data: designationResults } = useGetApiV1DesignationQuery({
-    page,
-    pageSize,
+  const { data: designations } = useGetApiV1DesignationDepartmentByIdQuery({
+    id: selectedEmployee?.department?.id as string,
   });
 
   const { data: userResults } = useGetApiV1UserQuery({
@@ -97,7 +96,6 @@ const UserDialog = ({
     pageSize,
   });
   const departments = departmentResults?.data ?? [];
-  const designations = designationResults?.data ?? [];
   const users = userResults?.data ?? [];
 
   useEffect(() => {
