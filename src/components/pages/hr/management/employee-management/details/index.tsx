@@ -466,7 +466,7 @@ function EmployeeDetails() {
           </Card>
 
           {/* Payment Information */}
-          {/* <Card>
+          <Card>
             <CardHeader>Payment Information</CardHeader>
             <CardContent className="grid grid-cols-3">
               <div className="flex gap-2 text-sm">
@@ -490,7 +490,7 @@ function EmployeeDetails() {
                 </span>
               </div>
             </CardContent>
-          </Card> */}
+          </Card>
         </div>
       </div>
     </ScrollablePageWrapper>

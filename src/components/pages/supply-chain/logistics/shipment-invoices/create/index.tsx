@@ -122,10 +122,11 @@ const Page = () => {
           code: x.material?.code as string,
           costPrice: x.price?.toString(),
           totalCost: totalCost?.toString(),
-          options: x.manufacturers?.map((item) => ({
-            label: item.name,
-            value: item.id,
-          })),
+          // options: x.manufacturers?.map((item) => ({
+          //   label: item.name,
+          //   value: item.id,
+          // })),
+          options: [],
         };
       }) as MaterialRequestDto[];
       return {

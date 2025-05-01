@@ -461,6 +461,14 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getApiV1DesignationDepartmentById: build.query<
+      GetApiV1DesignationDepartmentByIdApiResponse,
+      GetApiV1DesignationDepartmentByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/designation/department/${queryArg.id}`,
+      }),
+    }),
     postApiV1EmployeeRegister: build.mutation<
       PostApiV1EmployeeRegisterApiResponse,
       PostApiV1EmployeeRegisterApiArg
@@ -3937,6 +3945,11 @@ export type DeleteApiV1DesignationByIdApiResponse = unknown;
 export type DeleteApiV1DesignationByIdApiArg = {
   id: string;
 };
+export type GetApiV1DesignationDepartmentByIdApiResponse =
+  /** status 200 OK */ DesignationDtoRead[];
+export type GetApiV1DesignationDepartmentByIdApiArg = {
+  id: string;
+};
 export type PostApiV1EmployeeRegisterApiResponse = unknown;
 export type PostApiV1EmployeeRegisterApiArg = {
   onboardEmployeeDto: OnboardEmployeeDto;
@@ -5992,7 +6005,6 @@ export type UserDto = {
   lastName?: string | null;
   email?: string | null;
   isDisabled?: boolean;
-  role?: string | null;
   avatar?: string | null;
   createdAt?: string;
   signature?: string | null;
@@ -7440,7 +7452,7 @@ export type PurchaseOrderItemDto = {
   quantity?: number;
   price?: number;
   currency?: CollectionItemDto;
-  manufacturers?: ManufacturerDto[] | null;
+  manufacturers?: SupplierManufacturerDto[] | null;
   canReassignSupplier?: boolean;
 };
 export type PurchaseOrderItemDtoRead = {
@@ -7451,7 +7463,7 @@ export type PurchaseOrderItemDtoRead = {
   quantity?: number;
   price?: number;
   currency?: CollectionItemDto;
-  manufacturers?: ManufacturerDto[] | null;
+  manufacturers?: SupplierManufacturerDto[] | null;
   cost?: number;
   canReassignSupplier?: boolean;
 };
@@ -12379,7 +12391,6 @@ export type UserWithRoleDto = {
   lastName?: string | null;
   email?: string | null;
   isDisabled?: boolean;
-  role?: string | null;
   avatar?: string | null;
   createdAt?: string;
   signature?: string | null;
@@ -12406,15 +12417,7 @@ export type UpdateUserRequest = {
   dateOfBirth?: string | null;
   departmentId?: string | null;
   avatar?: string | null;
-};
-export type UpdateUserRequestRead = {
-  firstName: string;
-  lastName: string;
-  phoneNumber?: string | null;
-  dateOfBirth?: string | null;
-  departmentId?: string | null;
-  avatar?: string | null;
-  roleNames?: string[] | null;
+  roleName?: string | null;
 };
 export type UpdateUserRoleRequest = {
   roleNames?: string[] | null;
@@ -12903,6 +12906,8 @@ export const {
   useLazyGetApiV1DesignationByIdQuery,
   usePutApiV1DesignationByIdMutation,
   useDeleteApiV1DesignationByIdMutation,
+  useGetApiV1DesignationDepartmentByIdQuery,
+  useLazyGetApiV1DesignationDepartmentByIdQuery,
   usePostApiV1EmployeeRegisterMutation,
   usePostApiV1EmployeeMutation,
   useGetApiV1EmployeeQuery,
