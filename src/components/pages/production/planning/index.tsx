@@ -35,19 +35,24 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+  const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   // check permissions here
   const permissions = useSelector(
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
 
   // check permissions access
-  if (
-    !findRecordWithFullAccess(
-      permissions,
-      PermissionKeys.production.viewPlannedProducts,
-    )
-  ) {
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.viewPlannedProducts,
+  );
+
+  if (isClient && !hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
