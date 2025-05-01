@@ -18,6 +18,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   employeeOptions: Option[];
   categoryOptions: Option[];
   defaultValues?: TFieldValues;
+  isExitPass: boolean;
+  isLeaveOrAbsence: boolean;
 }
 
 const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
@@ -28,6 +30,8 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
   employeeOptions,
   categoryOptions,
   defaultValues,
+  isExitPass,
+  // isLeaveOrAbsence,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -58,52 +62,79 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <FormWizard
-        className="w-full my-5 gap-4 grid grid-cols-2"
-        config={[
-          {
-            label: "Start Date",
-            control: control as Control,
-            type: InputTypes.DATE,
-            name: "startDate",
-            required: true,
-            placeholder: "Select start date",
-            errors,
-          },
-          {
-            label: "End Date",
-            control: control as Control,
-            type: InputTypes.DATE,
-            name: "endDate",
-            required: true,
-            placeholder: "Select end date",
-            errors,
-          },
-        ]}
-      />
-      {/* <FormWizard
-        className="w-full my-5 gap-4 grid grid-cols-2"
-        config={[
-          {
-            label: "Time In",
-            control: control as Control,
-            type: InputTypes.TIME,
-            name: "timeIn",
-            required: true,
-            placeholder: "Select time in",
-            errors,
-          },
-          {
-            label: "Time Out",
-            control: control as Control,
-            type: InputTypes.TIME,
-            name: "timeOut",
-            required: true,
-            placeholder: "Select time out",
-            errors,
-          },
-        ]}
-      /> */}
+      {!isExitPass && (
+        <div className="w-full my-5 gap-4 grid grid-cols-2">
+          <FormWizard
+            config={[
+              {
+                label: "Start Date",
+                control: control as Control,
+                type: InputTypes.DATE,
+                name: "startDate",
+                required: true,
+                placeholder: "Select start date",
+                errors,
+              },
+            ]}
+          />
+          <FormWizard
+            config={[
+              {
+                label: "End Date",
+                control: control as Control,
+                type: InputTypes.DATE,
+                name: "endDate",
+                required: true,
+                placeholder: "Select end date",
+                errors,
+              },
+            ]}
+          />
+        </div>
+      )}
+      {isExitPass && (
+        <div className="w-full my-5 gap-4">
+          <FormWizard
+            className="w-full"
+            config={[
+              {
+                label: "Date",
+                control: control as Control,
+                type: InputTypes.DATE,
+                name: "startDate",
+                required: true,
+                placeholder: "Select date",
+                errors,
+              },
+            ]}
+          />
+        </div>
+      )}
+      {isExitPass && (
+        <FormWizard
+          className="w-full my-5 gap-4 grid grid-cols-2"
+          config={[
+            {
+              label: "Time In",
+              control: control as Control,
+              type: InputTypes.TIME,
+              name: "timeIn",
+              required: true,
+              placeholder: "Select time in",
+              errors,
+            },
+            {
+              label: "Time Out",
+              control: control as Control,
+              type: InputTypes.TIME,
+              name: "timeOut",
+              required: true,
+              placeholder: "Select time out",
+              errors,
+            },
+          ]}
+        />
+      )}
       <FormWizard
         className="w-full space-y-5"
         config={[

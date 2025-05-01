@@ -41,7 +41,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
               name="Pencil"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
-            <span>Edit Info</span>
+            <span>Update Employee Info</span>
           </div>
         </DropdownMenuItem>
 

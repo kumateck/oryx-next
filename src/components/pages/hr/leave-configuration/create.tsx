@@ -14,8 +14,8 @@ import {
 import { Option } from "@/lib";
 import {
   CreateLeaveTypeRequest,
-  useGetApiV1LeaveTypeQuery,
-  useLazyGetApiV1DesignationQuery,
+  useGetApiV1DesignationQuery,
+  useLazyGetApiV1LeaveTypeQuery,
   usePostApiV1LeaveTypeMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -30,7 +30,7 @@ interface Props {
 }
 
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const [loadLeaveTypes] = useLazyGetApiV1LeaveTypeQuery();
   const [createLeaveType, { isLoading }] = usePostApiV1LeaveTypeMutation();
 
   const {
@@ -62,7 +62,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       });
 
       toast.success("Leave type created successfully");
-      loadDesignations({ page: 1, pageSize: 10 });
+      loadLeaveTypes({ page: 1, pageSize: 10 });
       reset();
       onClose();
       dispatch(commonActions.setTriggerReload());
@@ -71,12 +71,12 @@ const Create = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
+  const { data: designationResponse } = useGetApiV1DesignationQuery({
     page: 1,
     pageSize: 1000,
   });
 
-  const designationData = leaveTypesResponse?.data;
+  const designationData = designationResponse?.data;
   const designationsOptions = designationData?.map((item) => {
     return {
       label: item.name,
