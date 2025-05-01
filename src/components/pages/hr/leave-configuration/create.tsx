@@ -13,6 +13,7 @@ import {
 } from "@/components/ui";
 import { Option } from "@/lib";
 import {
+  CreateLeaveTypeRequest,
   useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1DesignationQuery,
   usePostApiV1LeaveTypeMutation,
@@ -53,7 +54,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         numberOfDays: data.maxDuration,
         isActive: data.deductFromBalance,
         deductFromBalance: data.deductFromBalance,
-      };
+      } satisfies CreateLeaveTypeRequest;
       console.log(payload);
 
       await createLeaveType({

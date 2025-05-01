@@ -103,7 +103,7 @@ export const formatTime = (hours: number, minutes: number) => {
 };
 
 export function splitWords(input: string) {
-  return input.replace(/([a-z])([A-Z])/g, "$1 $2"); // Insert space before each uppercase letter if it follows a lowercase letter
+  return input?.replace(/([a-z])([A-Z])/g, "$1 $2"); // Insert space before each uppercase letter if it follows a lowercase letter
 }
 
 export function getFirstCharacter(word: string) {

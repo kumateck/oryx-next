@@ -16,6 +16,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   leaveTypesOptions: Option[];
   employeeOptions: Option[];
+  categoryOptions: Option[];
   defaultValues?: TFieldValues;
 }
 
@@ -25,6 +26,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
   errors,
   leaveTypesOptions,
   employeeOptions,
+  categoryOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -41,6 +43,17 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             defaultValue: defaultValues?.leaveTypesId,
             placeholder: "Select leave type",
             options: leaveTypesOptions,
+            errors,
+          },
+          {
+            label: "Leave Category",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "leaveCategory",
+            required: true,
+            defaultValue: defaultValues?.leaveCategory,
+            placeholder: "Select leave category",
+            options: categoryOptions,
             errors,
           },
         ]}
@@ -68,6 +81,29 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+      {/* <FormWizard
+        className="w-full my-5 gap-4 grid grid-cols-2"
+        config={[
+          {
+            label: "Time In",
+            control: control as Control,
+            type: InputTypes.TIME,
+            name: "timeIn",
+            required: true,
+            placeholder: "Select time in",
+            errors,
+          },
+          {
+            label: "Time Out",
+            control: control as Control,
+            type: InputTypes.TIME,
+            name: "timeOut",
+            required: true,
+            placeholder: "Select time out",
+            errors,
+          },
+        ]}
+      /> */}
       <FormWizard
         className="w-full space-y-5"
         config={[
@@ -82,6 +118,11 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             options: employeeOptions,
             errors,
           },
+        ]}
+      />
+      <FormWizard
+        className="w-full space-y-5 my-5"
+        config={[
           {
             register: register("contactPerson" as Path<TFieldValues>),
             label: "Contact Person",
@@ -96,6 +137,19 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Enter contact person number",
             type: InputTypes.TEXT,
             required: true,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        className="w-full space-y-5 my-5"
+        config={[
+          {
+            type: InputTypes.DRAGNDROP,
+            label: "Attach Documents",
+            name: `attachments`,
+            defaultValue: null,
+            control: control as Control,
             errors,
           },
         ]}

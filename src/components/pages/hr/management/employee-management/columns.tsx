@@ -49,7 +49,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
           <div
             className="flex cursor-pointer items-center justify-center gap-2"
             onClick={() => {
-              router.push(`/hr/employee-management/${row.id}/details`);
+              router.push(`/hr/employee-management/${row.original.id}/details`);
             }}
           >
             <Icon

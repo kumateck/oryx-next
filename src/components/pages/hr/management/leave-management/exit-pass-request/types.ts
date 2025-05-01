@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-export const CreateDesignationSchema = z.object({
+export const CreateExitPassSchema = z.object({
   date: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -25,5 +25,5 @@ export const CreateDesignationSchema = z.object({
     .min(1, { message: "Exit Pass Justification is required" }),
 });
 
-export type DesignationRequestDto = z.infer<typeof CreateDesignationSchema>;
-export const CreateDesignationValidator = zodResolver(CreateDesignationSchema);
+export type ExitPassRequestDto = z.infer<typeof CreateExitPassSchema>;
+export const CreateExitPassValidator = zodResolver(CreateExitPassSchema);
