@@ -5,7 +5,6 @@ import { ColumnType } from "@/shared/datatable";
 
 export const getColumns = (
   setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
-  // options?: Option[],
 ): ColumnDef<MaterialRequestDto>[] => [
   {
     accessorKey: "code",
@@ -14,6 +13,17 @@ export const getColumns = (
   {
     accessorKey: "materialName",
     header: "Material Name",
+  },
+  {
+    accessorKey: "uomId",
+    header: "Unit of Measurement",
+    meta: {
+      edittableCell: {
+        type: ColumnType.SELECT,
+        editable: true,
+        setItemLists,
+      },
+    },
   },
   {
     accessorKey: "reOrderLevel",

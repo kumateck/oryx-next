@@ -106,7 +106,26 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
     header: "Maximum Stock Level",
     cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
   },
+  {
+    accessorKey: "warehouseStock",
+    header: "Stock in my Warehouse",
 
+    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+  },
+  {
+    accessorKey: "totalStock",
+    header: "Stock in Other Sources",
+
+    cell: ({ row }) => {
+      const leftOverStock =
+        (row.original.material?.totalStock as number) -
+        (row.original.warehouseStock as number);
+      return <div>{leftOverStock}</div>;
+    },
+  },
+  // const totalStock = item?.material?.totalStock as number;
+  // const leftStock = totalStock - qtyOnHand;
+  // const leftOverStock = leftStock > 0 ? leftStock : 0;
   // {
   //   id: "actions",
   //   meta: { omitRowClick: true },
