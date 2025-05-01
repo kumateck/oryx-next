@@ -56,7 +56,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("code" as Path<TFieldValues>),
             label: "Product Code",
-            readOnly: true,
+            // readOnly: true,
             required: true,
             description: (
               <span className="text-sm text-neutral-500">

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 // import { useState } from "react";
 
 // import { Icon } from "@/components/ui";
-import { fullname } from "@/lib";
+
 import { ApprovalEntityRead } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "./edit";
@@ -52,10 +52,7 @@ export const columns: ColumnDef<ApprovalEntityRead>[] = [
     accessorKey: "createdBy",
     header: "Requested By",
     cell: ({ row }) => {
-      const name = fullname(
-        row.original.department?.createdBy?.firstName as string,
-        row.original.department?.createdBy?.lastName as string,
-      );
+      const name = row.original?.requestedBy?.name as string;
       return <div className="min-w-36">{name}</div>;
     },
   },
