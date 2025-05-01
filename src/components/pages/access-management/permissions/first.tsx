@@ -28,7 +28,7 @@ const FirstPermissionLoad = ({
           permissions={permissions}
           handleSectionToggle={handleSectionToggle}
           handleTogglePermission={handleTogglePermission}
-          firstSection={firstPermission?.section}
+          firstSection={firstPermission?.module}
         />
       )}
     </>
