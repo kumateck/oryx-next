@@ -52,6 +52,7 @@ export enum ApprovalDocument {
   StockRequisition = "StockRequisition",
   PurchaseOrder = "PurchaseOrder",
   BillingSheet = "BillingSheet",
+  LeaveRequest = "LeaveRequest",
 }
 
 export enum InterestType {
