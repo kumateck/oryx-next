@@ -110,7 +110,11 @@ export const columns: ColumnDef<UserWithRoleDto>[] = [
   {
     accessorKey: "name",
     header: "Employee Name",
-    cell: ({ row }) => <div>{row.original.firstName}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.firstName} {row.original.lastName}
+      </div>
+    ),
   },
   {
     accessorKey: "email",

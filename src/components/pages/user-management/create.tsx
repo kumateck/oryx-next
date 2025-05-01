@@ -51,7 +51,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       };
       await createUser({
         employeeUserDto: payload,
-      });
+      }).unwrap();
       toast.success("User created successfully");
       loadUsers({
         page: 1,

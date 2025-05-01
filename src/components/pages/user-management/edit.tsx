@@ -12,17 +12,18 @@ import {
 } from "@/components/ui";
 import { Option } from "@/lib";
 import {
+  UpdateUserRoleRequest,
   useGetApiV1EmployeeQuery,
   useGetApiV1RoleQuery,
   useLazyGetApiV1UserQuery,
-  usePostApiV1EmployeeUserMutation,
+  usePutApiV1UserRoleByIdMutation,
   UserWithRoleDto, // CreateUserRequest,
   // usePostApiV1UserMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import { CreateUserValidator, UserRequestDto } from "./types";
-import UserForm from "./form";
+import EditRoleForm from "./edit-form";
 
 interface Props {
   isOpen: boolean;
@@ -31,7 +32,7 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [loadUsers] = useLazyGetApiV1UserQuery();
-  const [createUser, { isLoading }] = usePostApiV1EmployeeUserMutation();
+  const [createUser, { isLoading }] = usePutApiV1UserRoleByIdMutation();
   const defaultEmployee = {
     label: (details?.firstName + " " + details.lastName) as string,
     value: details?.id as string,
@@ -61,12 +62,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       console.log(data);
       const payload = {
-        employeeId: data.employeeId.value,
-        roleName: data.roleId.value,
-      };
+        roleNames: [data.roleId.value],
+      } satisfies UpdateUserRoleRequest;
       await createUser({
-        employeeUserDto: payload,
-      });
+        updateUserRoleRequest: payload,
+        id: details.id as string,
+      }).unwrap();
       toast.success("User updated successfully");
       loadUsers({
         page: 1,
@@ -109,7 +110,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <UserForm
+          <EditRoleForm
             register={register}
             control={control}
             errors={errors}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -77,18 +77,24 @@ const UserDialog = ({
       staffId: selectedEmployee?.staffNumber as string,
     },
   });
+
+  const watchedDepartmentId = useWatch({
+    control,
+    name: "departmentId.value",
+  });
+
+  const { data: designations } = useGetApiV1DesignationDepartmentByIdQuery(
+    { id: watchedDepartmentId as string },
+    { skip: !watchedDepartmentId },
+  );
+
   const [assignUser, { isLoading }] = usePutApiV1EmployeeByIdAssignMutation();
-  console.log("Employee Type", selectedEmployee?.type);
   const pageSize = 30;
   const page = 1;
 
   const { data: departmentResults } = useGetApiV1DepartmentQuery({
     page,
     pageSize,
-  });
-
-  const { data: designations } = useGetApiV1DesignationDepartmentByIdQuery({
-    id: selectedEmployee?.department?.id as string,
   });
 
   const { data: userResults } = useGetApiV1UserQuery({
