@@ -35,18 +35,24 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+
+  // check permissions here
   const permissions = useSelector(
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
 
+  // check permissions access
   if (
     !findRecordWithFullAccess(
       permissions,
       PermissionKeys.production.viewPlannedProducts,
     )
   ) {
+    //redirect to no access
     return <NoAccess />;
   }
+
+  // permissions ends here
 
   const data = result?.data || [];
   return (
