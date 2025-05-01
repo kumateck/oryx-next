@@ -105,6 +105,9 @@ const Page = () => {
         );
 
         const totalCost = ((x.price || 0) * (converted.value || 0)).toFixed(2);
+        const defaultManufacturer = x.manufacturers?.find(
+          (item) => item.default,
+        );
         return {
           materialId: x.material?.id as string,
           uomId: x.uom?.id as string,
@@ -114,19 +117,18 @@ const Page = () => {
           receivedQuantity: converted.value,
           reason: "",
           manufacturerId: {
-            label: "",
-            value: "",
+            label: defaultManufacturer?.manufacturer?.name,
+            value: defaultManufacturer?.manufacturer?.id,
           },
           purchaseOrderId: item.id as string,
           purchaseOrderCode: item.code as string,
           code: x.material?.code as string,
           costPrice: x.price?.toString(),
           totalCost: totalCost?.toString(),
-          // options: x.manufacturers?.map((item) => ({
-          //   label: item.name,
-          //   value: item.id,
-          // })),
-          options: [],
+          options: x.manufacturers?.map((item) => ({
+            label: item.manufacturer?.name,
+            value: item.manufacturer?.id,
+          })),
         };
       }) as MaterialRequestDto[];
       return {
