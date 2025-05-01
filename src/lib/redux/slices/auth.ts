@@ -2,7 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 // import { deleteCookie } from "cookies-next";
 import { ReduxState } from "../store";
-import { Permission } from "@/lib/utils";
+
+import { Section } from "@/lib/types";
 
 export interface AuthState {
   accessToken?: string;
@@ -11,7 +12,7 @@ export interface AuthState {
   triggerRefresh: boolean;
   avatar?: string | null;
   expiresIn?: number | null;
-  permissions: Permission[];
+  permissions: Section[];
 }
 
 const initialState: AuthState = {
@@ -53,10 +54,7 @@ export const authSlice = createSlice({
       state.expiresIn = action.payload.expiresIn as number;
       state.userId = action.payload.userId as string;
     },
-    setUserPermissions: (
-      state,
-      action: PayloadAction<Permission[], string>,
-    ) => {
+    setUserPermissions: (state, action: PayloadAction<Section[], string>) => {
       state.permissions = action.payload;
     },
     setUserId: (state, action: PayloadAction<string, string>) => {
