@@ -1,6 +1,6 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind, getMatchingIds } from "@/lib";
+import { EMaterialKind, getLargestUnit, getMatchingIds, Units } from "@/lib";
 import { useLazyGetApiV1MaterialDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import React, { useCallback, useEffect, useState } from "react";
@@ -71,12 +71,12 @@ const Page = () => {
         code: item.material?.code,
         materialName: item.material?.name,
         materialId: item.material?.id,
-        // uom,
+        uom: getLargestUnit(item.uoM?.symbol as Units),
         quantityOnHand: 0,
         quantityRequested: 0,
         quantity: 0,
         totalStock: 0,
-        // uomId: material.?.id,
+        uomId: item.uoM?.id,
       };
     }) as unknown as MaterialRequestDto[];
     setPurchaseLists(filtered);
@@ -149,8 +149,6 @@ const Page = () => {
           lists={purchaseLists}
           onClose={() => setIsOpenPurchase(false)}
           isOpen={isOpenPurchase}
-          productId={""}
-          productionScheduleId={""}
         />
       )}
     </PageWrapper>

@@ -11,7 +11,7 @@ import { TableCheckbox } from "@/shared/datatable/table-check";
 
 import { useState } from "react";
 import AllStockByMaterial from "@/shared/all-stock";
-import { Units } from "@/lib";
+import { getLargestUnit, Units } from "@/lib";
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
@@ -178,6 +178,14 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
     header: "Name",
 
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
+  },
+  {
+    accessorKey: "uom",
+    header: "UOM",
+
+    cell: ({ row }) => (
+      <div>{getLargestUnit(row.original.uoM?.symbol as Units)}</div>
+    ),
   },
   {
     accessorKey: "reOrderLevel",

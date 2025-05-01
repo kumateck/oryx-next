@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  UserDto,
+  UserWithRoleDto,
   WarehouseLocationRackDto,
   useDeleteApiV1WarehouseRackByRackIdMutation,
   useLazyGetApiV1WarehouseRackQuery,
@@ -98,7 +98,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
 }
 
-export const columns: ColumnDef<UserDto>[] = [
+export const columns: ColumnDef<UserWithRoleDto>[] = [
   {
     accessorKey: "name",
     header: "Employee Name",
@@ -112,7 +112,7 @@ export const columns: ColumnDef<UserDto>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <div>{row.original.role}</div>,
+    cell: ({ row }) => <div>{row.original?.roles?.[0].name}</div>,
   },
   {
     accessorKey: "department",
