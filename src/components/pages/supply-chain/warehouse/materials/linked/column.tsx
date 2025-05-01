@@ -92,6 +92,11 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
   {
+    accessorKey: "uom",
+    header: "UOM",
+    cell: ({ row }) => <div>{row.original.uoM?.symbol}</div>,
+  },
+  {
     accessorKey: "reOrderLevel",
     header: "Re-Order Level",
     cell: ({ row }) => <div>{row.original.reOrderLevel}</div>,
