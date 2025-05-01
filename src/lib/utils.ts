@@ -1188,38 +1188,24 @@ export function formatAmount(
   return negative ? `-${result}` : result;
 }
 
-export interface PermissionChild {
-  key: string;
-  name: string;
-  description: string;
-  subModule: string;
-  hasOptions: boolean;
-  types: string[];
-}
-
-export interface Permission {
-  module: string;
-  isActive: boolean;
-  children: PermissionChild[];
-}
 const Access = "Access";
 // const Self = "Self";
 // const Direct = "Direct";
 // const Indirect = "Indirect";
 export const permissionOptions = [Access];
 export const hasOptions = [Access];
-export const groupByModule = (children: PermissionChild[]) => {
+export const groupByModule = (children: RecordItem[]) => {
   return children.reduce(
     (acc, child) => {
-      acc[child.subModule] = acc[child.subModule] || [];
-      acc[child.subModule].push(child);
+      acc[child.module] = acc[child.module] || [];
+      acc[child.module].push(child);
       return acc;
     },
-    {} as Record<string, PermissionChild[]>,
+    {} as Record<string, RecordItem[]>,
   );
 };
 
-export const removeDuplicateTypes = (data: Permission[]): Permission[] => {
+export const removeDuplicateTypes = (data: Section[]): Section[] => {
   return data.map((section) => ({
     ...section,
     children: section.children.map((child) => ({

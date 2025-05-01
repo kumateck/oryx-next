@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 
-import { InputTypes, PermissionType } from "@/lib";
+import { InputTypes, PermissionType, Section } from "@/lib";
 
 import {
   ErrorResponse,
-  Permission,
+  // Permission,
   // findRecordWithFullAccess,
   // findRecordWithFullAccess,
   hasOptions,
@@ -57,12 +57,12 @@ const Page = () => {
 
   console.log(accessPermissions, "accessPermissions");
 
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [permissions, setPermissions] = useState<Section[]>([]);
 
   const triggerLoadingPermissions = async () => {
     try {
       const allPermissions = await loadAllPermissions().unwrap();
-      const permissions = (allPermissions ?? []) as Permission[];
+      const permissions = (allPermissions ?? []) as Section[];
       setPermissions(permissions);
     } catch (error) {
       console.error("Error loading permissions:", error);

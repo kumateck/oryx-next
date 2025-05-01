@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { Permission } from "@/lib/utils";
 
 import LoadingSkeleton from "../skeleton";
 import FirstPermissionLoad from "./first";
+import { Section } from "@/lib";
 
 interface Props {
   triggerLoadingPermissions: (roleId: string) => void;
-  permissions: Permission[];
+  permissions: Section[];
   handleTogglePermission: (
     sectionIndex: number,
     childKey: string,
@@ -14,7 +14,7 @@ interface Props {
   ) => void;
   handleSectionToggle: (sectionIndex: number) => void;
   firstRoleId: string;
-  setPermissions: React.Dispatch<React.SetStateAction<Permission[]>>;
+  setPermissions: React.Dispatch<React.SetStateAction<Section[]>>;
   isLoading?: boolean;
 }
 const PermissionLoad = ({
