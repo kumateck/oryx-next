@@ -1221,9 +1221,9 @@ export const findRecordWithFullAccess = (
 ): RecordItem | null => {
   for (const section of sections) {
     for (const child of section.children) {
-      if (child.key === key) {
+      if (child?.key === key) {
         // Check if the types array includes FullAccess
-        if (child.types.includes(Access)) {
+        if (child?.types?.includes(Access)) {
           return child;
         }
       }
