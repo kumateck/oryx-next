@@ -14,9 +14,11 @@ import { useSelector } from "@/lib/redux/store";
 import { ClientDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./columns";
+import { useRouter } from "next/navigation";
 
 const PendingApprovals = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
@@ -42,7 +44,9 @@ const PendingApprovals = () => {
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
-        // onRowClick={(row) => router.push(`requisition/${row.id}`)}
+        onRowClick={(row) =>
+          router.push(`/qa/pending-approvals/${row.modelType}/${row.id}`)
+        }
       />
     </PageWrapper>
   );
