@@ -5,12 +5,13 @@ import { useDispatch } from "react-redux";
 
 import { useSelector } from "@/lib/redux/store";
 import {
+  useLazyGetApiV1CollectionUomQuery,
   useLazyGetApiV1MaterialDepartmentNotLinkedQuery,
   usePostApiV1MaterialDepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, Option } from "@/lib";
 
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
@@ -65,18 +66,34 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, triggerReload]);
 
+  const [loadUom] = useLazyGetApiV1CollectionUomQuery();
+
   const handleLoadMaterials = async (kind) => {
     const response = await loadUnlinkedMaterials({
-      kind: kind || EMaterialKind.Raw,
+      kind: (Number(kind) as EMaterialKind) || EMaterialKind.Raw,
+      page: 1,
+      pageSize: 30,
     }).unwrap();
 
-    const results = response?.map((item) => ({
-      materialId: item.id,
-      materialName: item.name,
-      code: item.code,
+    const uomResponse = await loadUom({
+      isRawMaterial: Number(kind) === EMaterialKind.Packing ? false : true,
+    }).unwrap();
+    const uomOptions = uomResponse?.map((uom) => ({
+      label: uom.symbol,
+      value: uom.id,
+    })) as Option[];
+    const results = response.data?.map((item) => ({
+      materialId: item?.id,
+      materialName: item?.name,
+      uomId: {
+        label: "",
+        value: "",
+      },
+      code: item?.code,
       reOrderLevel: 0,
       minimumStockLevel: 0,
       maximumStockLevel: 0,
+      options: uomOptions,
     })) as MaterialRequestDto[];
     setItemLists(results);
   };
@@ -95,7 +112,7 @@ const Page = () => {
     const validate = itemsRequestSchema.safeParse(payload);
 
     if (!validate.success) {
-      console.log(validate.error.issues, "issues");
+      // console.log(validate.error.issues, "issues");
       const errors = validate.error.issues.map(
         ({ message, path }) =>
           `${payload[path[0] as number].materialName}: ${message}`,
@@ -105,7 +122,13 @@ const Page = () => {
     } else {
       try {
         await saveMutation({
-          body: payload,
+          body: payload?.map((item) => ({
+            materialId: item.materialId,
+            uoMId: item.uomId?.value,
+            reOrderLevel: item.reOrderLevel,
+            minimumStockLevel: item.minimumStockLevel,
+            maximumStockLevel: item.maximumStockLevel,
+          })),
         }).unwrap();
         toast.success("Materials Linked to Department");
         handleLoadMaterials(kind);

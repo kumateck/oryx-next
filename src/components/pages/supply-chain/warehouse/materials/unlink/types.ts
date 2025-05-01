@@ -1,3 +1,4 @@
+import { IdSchema } from "@/lib";
 import { z } from "zod";
 
 export const createMaterialSchema = z
@@ -5,6 +6,7 @@ export const createMaterialSchema = z
     code: z.string().optional(),
     materialName: z.string().optional(),
     materialId: z.string(),
+    uomId: IdSchema("Uom").optional(),
     reOrderLevel: z.number(),
     minimumStockLevel: z.number(),
     maximumStockLevel: z.number(),
