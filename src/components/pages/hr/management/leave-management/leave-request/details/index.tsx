@@ -86,7 +86,9 @@ function LeaveDetails() {
             </div>
             <div className="flex gap-2 items-center">
               <span>Requested By:</span>
-              <span className="font-medium">{data?.employee?.fullName}</span>
+              <span className="font-medium">
+                {data?.employee?.firstName} {data?.employee?.lastName}
+              </span>
             </div>
             <div className="flex gap-2 items-center">
               <span>Request Date:</span>
@@ -105,7 +107,9 @@ function LeaveDetails() {
             {/* Row 1 */}
             <div className="flex gap-2 items-center">
               <span>Staff Name:</span>
-              <span className="font-semibold">{data?.employee?.fullName}</span>
+              <span className="font-semibold">
+                {data?.employee?.firstName} {data?.employee?.lastName}
+              </span>
             </div>
             <div className="flex gap-2 items-center">
               <span>Leave Type:</span>

@@ -40,7 +40,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     usePutApiV1LeaveRequestByIdMutation();
 
   const defaultEmployee = {
-    label: details?.employee?.fullName as string,
+    label: ((details?.employee?.firstName ?? "") +
+      (details?.employee?.lastName ?? "")) as string,
     value: details?.employee?.id as string,
   };
 
@@ -137,7 +138,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
   const employeeOptions = employees?.map((item) => {
     return {
-      label: item.fullName,
+      label: item.firstName + " " + item.lastName,
       value: item?.id,
     };
   }) as Option[];

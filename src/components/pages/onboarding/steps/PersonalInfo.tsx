@@ -88,12 +88,20 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
         ]}
       />
       <FormWizard
-        className="w-full gap-x-10 gap-y-5 space-y-0"
+        className="grid grid-cols-2 gap-x-10 gap-y-5 space-y-0"
         config={[
           {
-            register: register("fullName" as Path<TFieldValues>),
-            label: "Full Name",
-            placeholder: "Enter your full name",
+            register: register("firstName" as Path<TFieldValues>),
+            label: "First Name",
+            placeholder: "Enter your first name",
+            type: InputTypes.TEXT,
+            required: true,
+            errors,
+          },
+          {
+            register: register("lastName" as Path<TFieldValues>),
+            label: "Last Name",
+            placeholder: "Enter your last name",
             type: InputTypes.TEXT,
             required: true,
             errors,

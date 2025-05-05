@@ -3,7 +3,8 @@ import { imageValidationSchema } from "./type";
 
 const personalInfoSchema = z.object({
   passportPhoto: imageValidationSchema,
-  fullName: z.string().min(3, "Full name is required"),
+  firstName: z.string().min(2, "First name is required"),
+  lastName: z.string().min(2, "Last name is required"),
   dob: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({

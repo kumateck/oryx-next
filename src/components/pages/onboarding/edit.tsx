@@ -82,7 +82,8 @@ const steps = [
 const transformApiDataToFormValues = (
   data: EmployeeDto,
 ): OnboardingFormValues => ({
-  fullName: data.fullName as string,
+  firstName: data.firstName as string,
+  lastName: data.lastName as string,
   address: data.residentialAddress as string,
   email: data.email as string,
   contactNumber: data.phoneNumber as string,
@@ -266,7 +267,8 @@ export default function EditEmployeeForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     try {
       const payload: CreateEmployeeRequest = {
-        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
         dateOfBirth: data.dob.toISOString(),
         gender: parseInt(data.gender.value) as unknown as Gender,
         phoneNumber: data.contactNumber,
@@ -391,7 +393,9 @@ export default function EditEmployeeForm() {
         </div>
       </div>
 
-      <PageTitle title={`Edit Employee - ${employeeData?.fullName || ""}`} />
+      <PageTitle
+        title={`Edit Employee - ${employeeData?.firstName || ""} ${employeeData?.lastName || ""}`}
+      />
       <ProgressIndicator steps={steps.length} currentStep={currentStep} />
 
       <form

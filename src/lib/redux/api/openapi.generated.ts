@@ -6427,7 +6427,8 @@ export type EmploymentHistoryDto = {
 };
 export type CreateEmployeeRequest = {
   avatar?: string | null;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   dateOfBirth: string;
   gender: Gender;
   phoneNumber: string;
@@ -6452,9 +6453,19 @@ export type CreateEmployeeRequest = {
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
 };
-export type EmployeeDto = {
+export type AttachmentDto = {
+  link?: string | null;
+  name?: string | null;
   id?: string;
-  fullName?: string | null;
+  reference?: string | null;
+};
+export type EmployeeDto = {
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  firstName?: string | null;
+  lastName?: string | null;
   avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
@@ -6485,8 +6496,12 @@ export type EmployeeDto = {
   employmentHistory?: EmploymentHistoryDto[] | null;
 };
 export type EmployeeDtoRead = {
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   id?: string;
-  fullName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
@@ -6609,12 +6624,6 @@ export type FormSectionDto = {
   name?: string | null;
   description?: string | null;
   fields?: FormFieldDto[] | null;
-};
-export type AttachmentDto = {
-  link?: string | null;
-  name?: string | null;
-  id?: string;
-  reference?: string | null;
 };
 export type FormResponseDto = {
   id?: string;

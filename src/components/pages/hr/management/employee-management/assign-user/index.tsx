@@ -69,7 +69,8 @@ const UserDialog = ({
     resolver: EmployeeInfoValidator,
     mode: "onSubmit",
     defaultValues: {
-      name: selectedEmployee?.fullName as string,
+      firstName: selectedEmployee?.firstName as string,
+      lastName: selectedEmployee?.lastName as string,
       email: selectedEmployee?.email as string,
       type: selectedEmployee?.type?.toString() as unknown as EmployeeType,
       departmentId: defaultDepartment,
@@ -107,7 +108,8 @@ const UserDialog = ({
   useEffect(() => {
     if (open && selectedEmployee) {
       reset({
-        name: selectedEmployee.fullName as string,
+        firstName: selectedEmployee.firstName as string,
+        lastName: selectedEmployee.lastName as string,
         email: selectedEmployee.email as string,
         type: selectedEmployee.type?.toString() as unknown as EmployeeType,
         departmentId: defaultDepartment,

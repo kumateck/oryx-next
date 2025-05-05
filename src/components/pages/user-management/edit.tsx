@@ -88,7 +88,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const employees = employeesResponse?.data ?? [];
   const employeeOptions = employees?.map((item) => {
     return {
-      label: item.fullName,
+      label: item.firstName + " " + item.lastName,
       value: item?.id,
     };
   }) as Option[];
