@@ -96,7 +96,8 @@ export default function OnboardingForm() {
     resolver: zodResolver(fullOnboardingSchema),
     mode: "onTouched",
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       address: "",
       email: "",
       contactNumber: "",
@@ -191,8 +192,8 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
-    // picture: "",
-    fullName: data.fullName,
+    firstName: data.firstName,
+    lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),
     // gender: Number(data.gender.value as unknown as Gender),
     gender: parseInt(data.gender.value) as unknown as Gender,

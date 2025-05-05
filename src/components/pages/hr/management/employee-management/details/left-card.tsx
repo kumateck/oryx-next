@@ -20,7 +20,7 @@ function LeftCard({ data }: Props) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={data.avatar}
-                    alt={`Image of ${data?.fullName || "user"}`}
+                    alt={`Image of ${data?.firstName || "user"}`}
                     className="h-24 w-24 cursor-pointer rounded-full border object-cover transition-shadow"
                     width={300}
                     height={300}
@@ -34,14 +34,16 @@ function LeftCard({ data }: Props) {
                 ) : (
                   // Fallback when no avatar is available
                   <div className="h-24 w-24 flex items-center justify-center rounded-full border bg-gray-200 text-gray-500">
-                    {data?.fullName
-                      ? data.fullName.charAt(0).toUpperCase()
+                    {data?.firstName && data?.lastName
+                      ? data.firstName.charAt(0).toUpperCase()
                       : "U"}
                   </div>
                 )}
               </div>
               <div>
-                <h2 className="font-bold text-xl">{data?.fullName}</h2>
+                <h2 className="font-bold text-xl">
+                  {data?.firstName} {data?.lastName}
+                </h2>
                 <p className="text-sm text-gray-500">
                   {data?.designation?.name ?? "-"}
                 </p>

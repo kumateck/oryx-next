@@ -100,7 +100,11 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
     accessorKey: "name",
     header: "Employee Name",
-    cell: ({ row }) => <div>{row.original.employee?.fullName}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.employee?.firstName} {row.original.employee?.lastName}
+      </div>
+    ),
   },
   {
     accessorKey: "department",

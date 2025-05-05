@@ -119,7 +119,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
   const employeeOptions = employees?.map((item) => {
     return {
-      label: item.fullName,
+      label: item.firstName + " " + item.lastName,
       value: item?.id,
     };
   }) as Option[];

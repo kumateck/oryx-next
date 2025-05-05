@@ -9,7 +9,8 @@ export const employeeInfoSchema = z.object({
     }
     return numValue;
   }),
-  name: z.string().min(1, "Employee name is required"),
+  firstName: z.string().min(1, "Employee name is required"),
+  lastName: z.string().min(1, "Employee name is required"),
   email: z.string().email().min(1, "Employee email is required"),
   departmentId: z.object(
     {
