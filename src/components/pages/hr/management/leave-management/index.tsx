@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 
-import DropdownBtns from "@/shared/btns/drop-btn";
-
 import LeaveRequest from "./leave-request";
 
 import { ServerDatatable } from "@/shared/datatable";
@@ -16,9 +14,10 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
 import { useRouter } from "next/navigation";
+import { Button, Icon } from "@/components/ui";
 
 const Page = () => {
-  const [isLeaveOpen, setIsLeaveOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const { data: result, isLoading } = useGetApiV1LeaveRequestQuery({
@@ -38,26 +37,16 @@ const Page = () => {
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
-      {isLeaveOpen && (
-        <LeaveRequest
-          onClose={() => setIsLeaveOpen(false)}
-          isOpen={isLeaveOpen}
-        />
+      {isOpen && (
+        <LeaveRequest onClose={() => setIsOpen(false)} isOpen={isOpen} />
       )}
 
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Leave Management" />
         <div className="flex items-center justify-end gap-2">
-          <DropdownBtns
-            title="Request"
-            icon="Plus"
-            menus={[
-              {
-                name: "Leave Request",
-                onClick: () => setIsLeaveOpen(true),
-              },
-            ]}
-          />
+          <Button onClick={() => setIsOpen(true)}>
+            <Icon name="Plus" className="h-4 w-4" /> Request Leave
+          </Button>
         </div>
       </div>
 

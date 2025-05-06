@@ -6433,6 +6433,7 @@ export type CreateEmployeeRequest = {
   gender: Gender;
   phoneNumber: string;
   region: string;
+  employeeType: EmployeeType;
   nationality: string;
   residentialAddress: string;
   maritalStatus: MaritalStatus;
@@ -6460,10 +6461,10 @@ export type AttachmentDto = {
   reference?: string | null;
 };
 export type EmployeeDto = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   firstName?: string | null;
   lastName?: string | null;
   avatar?: string | null;
@@ -6496,10 +6497,10 @@ export type EmployeeDto = {
   employmentHistory?: EmploymentHistoryDto[] | null;
 };
 export type EmployeeDtoRead = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   firstName?: string | null;
   lastName?: string | null;
   avatar?: string | null;
@@ -6750,6 +6751,7 @@ export type LeaveRequestDto = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  justification?: string | null;
   requestCategory?: RequestCategory;
   createdAt?: string;
   leaveStatus?: LeaveStatus;
@@ -6768,6 +6770,7 @@ export type LeaveRequestDtoRead = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  justification?: string | null;
   requestCategory?: RequestCategory;
   createdAt?: string;
   leaveStatus?: LeaveStatus;

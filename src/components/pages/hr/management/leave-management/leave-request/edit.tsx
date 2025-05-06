@@ -72,6 +72,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       leaveTypeId: defaultLeaveType,
       startDate: new Date(details.startDate as string),
       endDate: new Date(details.endDate as string),
+      justification: details.justification as string,
     },
   });
 
@@ -94,6 +95,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,
+        justification: data.justification,
       } satisfies CreateLeaveRequest;
       console.log(payload);
 

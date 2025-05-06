@@ -92,7 +92,9 @@ function LeaveDetails() {
             </div>
             <div className="flex gap-2 items-center">
               <span>Request Date:</span>
-              <span className="font-medium">{}</span>
+              <span className="font-medium">
+                {data?.createdAt ? format(data.createdAt, "MMM dd, yyyy") : "-"}
+              </span>
             </div>
           </div>
         </CardContent>
@@ -160,7 +162,7 @@ function LeaveDetails() {
           </div>
 
           <div className="mt-5">
-            <span className="font-semibold">Attachments</span>
+            <div className="font-semibold">Attachments</div>
             {data?.attachments?.length ? (
               <>
                 <span>Images</span>

@@ -71,13 +71,13 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         startDate: data.startDate.toISOString(),
         endDate: data.endDate.toISOString(),
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson,
-        contactPersonNumber: data.contactPersonNumber,
+        contactPerson: data.contactPerson ?? "",
+        contactPersonNumber: data.contactPersonNumber ?? "",
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,
+        justification: data.justification,
       } satisfies CreateLeaveRequest;
-      console.log(payload);
 
       const leaveRequestId = await createLeaveRequest({
         createLeaveRequest: payload,
@@ -95,7 +95,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
+          modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
           modelId: leaveRequestId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
