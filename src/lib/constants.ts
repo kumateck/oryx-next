@@ -57,6 +57,7 @@ export const CODE_SETTINGS = {
     Waybill: "Waybill",
     BillingSheet: "BillingSheet",
     Employee: "Employee",
+    LeaveRequest: "LeaveRequest",
   },
   nameTypes: {
     Time: 2,

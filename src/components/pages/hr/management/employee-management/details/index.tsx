@@ -174,64 +174,7 @@ function EmployeeDetails() {
           {/* Family Information 2 */}
           <Card>
             <CardHeader>Family Information (2)</CardHeader>
-            <CardContent className="grid grid-cols-3">
-              {/* Child */}
-              {data?.children && data.children.length > 0 && (
-                <>
-                  <div>
-                    {data.children.map((child, index) => (
-                      <div key={index}>
-                        {data?.children && data?.children?.length > 1 ? (
-                          <h4 className="mb-2 font-medium text-gray-400">
-                            Child {index + 1}
-                          </h4>
-                        ) : (
-                          <h4 className="mb-2 font-medium text-gray-400">
-                            Child
-                          </h4>
-                        )}
-
-                        <div className="flex flex-col">
-                          <div className="flex gap-2 text-sm">
-                            <span className="font-light text-gray-500">
-                              Full Name:
-                            </span>
-                            <span className="font-semibold">
-                              {child.fullName}
-                            </span>
-                          </div>
-                          <div className="flex gap-2 text-sm">
-                            <span className="font-light text-gray-500">
-                              Date of Birth:
-                            </span>
-                            <span className="font-semibold">
-                              {child?.dateOfBirth
-                                ? format(
-                                    new Date(child?.dateOfBirth),
-                                    "MMM d, yyyy",
-                                  )
-                                : "N/A"}
-                            </span>
-                          </div>
-                          <div className="flex gap-2 text-sm">
-                            <span className="font-light text-gray-500">
-                              Gender:
-                            </span>
-                            <span className="font-semibold">
-                              {child.gender !== undefined
-                                ? child.gender === 0
-                                  ? "Male"
-                                  : "Female"
-                                : "N/A"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-
+            <CardContent className="grid grid-cols-3 gap-6">
               {/* Emergency Contact */}
               <div>
                 <h4 className="mb-2 font-medium text-gray-400">
@@ -307,119 +250,92 @@ function EmployeeDetails() {
                   </div>
                 </div>
               </div>
+
+              {/* Child */}
+              {data?.children && data.children.length > 0 && (
+                <>
+                  {data.children.map((child, index) => (
+                    <div key={index}>
+                      {data?.children && data?.children?.length > 1 ? (
+                        <h4 className="mb-2 font-medium text-gray-400">
+                          Child {index + 1}
+                        </h4>
+                      ) : (
+                        <h4 className="mb-2 font-medium text-gray-400">
+                          Child
+                        </h4>
+                      )}
+
+                      <div className="flex flex-col">
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Full Name:
+                          </span>
+                          <span className="font-semibold">
+                            {child.fullName}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Date of Birth:
+                          </span>
+                          <span className="font-semibold">
+                            {child?.dateOfBirth
+                              ? format(
+                                  new Date(child?.dateOfBirth),
+                                  "MMM d, yyyy",
+                                )
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Gender:
+                          </span>
+                          <span className="font-semibold">
+                            {child.gender !== undefined
+                              ? child.gender === 0
+                                ? "Male"
+                                : "Female"
+                              : "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </CardContent>
           </Card>
 
           {/* Education History */}
           <Card>
             <CardHeader>Educational & Training Background</CardHeader>
-            <CardContent className="grid grid-cols-3">
+            <CardContent className="grid grid-cols-3 gap-6">
               {/* Education */}
               {data?.educationBackground &&
                 data.educationBackground.length > 0 && (
                   <>
-                    <div>
-                      {data.educationBackground.map((education, index) => (
-                        <div key={index}>
-                          {data?.educationBackground &&
-                          data?.educationBackground?.length > 1 ? (
-                            <h4 className="mb-2 font-medium text-gray-400">
-                              Education {index + 1}
-                            </h4>
-                          ) : (
-                            <h4 className="mb-2 font-medium text-gray-400">
-                              Education
-                            </h4>
-                          )}
-
-                          <div className="flex flex-col">
-                            <div className="flex gap-2 text-sm">
-                              <span className="font-light text-gray-500">
-                                School Name:
-                              </span>
-                              <span className="font-semibold">
-                                {education.schoolName}
-                              </span>
-                            </div>
-                            <div className="flex gap-2 text-sm">
-                              <span className="font-light text-gray-500">
-                                Start Date:
-                              </span>
-                              <span className="font-semibold">
-                                {education.startDate
-                                  ? format(
-                                      new Date(education.startDate),
-                                      "MMM d, yyyy",
-                                    )
-                                  : "N/A"}
-                              </span>
-                            </div>
-                            <div className="flex gap-2 text-sm">
-                              <span className="font-light text-gray-500">
-                                End Date:
-                              </span>
-                              <span className="font-semibold">
-                                {education.endDate
-                                  ? format(
-                                      new Date(education.endDate),
-                                      "MMM d, yyyy",
-                                    )
-                                  : "N/A"}
-                              </span>
-                            </div>
-                            <div className="flex gap-2 text-sm">
-                              <span className="font-light text-gray-500">
-                                Major:
-                              </span>
-                              <span className="font-semibold">
-                                {education.major ?? "N/A"}
-                              </span>
-                            </div>
-                            <div className="flex gap-2 text-sm">
-                              <span className="font-light text-gray-500">
-                                Qualification Earned:
-                              </span>
-                              <span className="font-semibold">
-                                {education.qualificationEarned ?? "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-            </CardContent>
-          </Card>
-
-          {/* Employment History */}
-          <Card>
-            <CardHeader>Employment History</CardHeader>
-            <CardContent className="grid grid-cols-3">
-              {/* Education */}
-              {data?.employmentHistory && data.employmentHistory.length > 0 && (
-                <>
-                  <div>
-                    {data.employmentHistory.map((employer, index) => (
+                    {data.educationBackground.map((education, index) => (
                       <div key={index}>
-                        {data?.employmentHistory &&
-                        data?.employmentHistory?.length > 1 ? (
+                        {data?.educationBackground &&
+                        data?.educationBackground?.length > 1 ? (
                           <h4 className="mb-2 font-medium text-gray-400">
-                            Employer {index + 1}
+                            Education {index + 1}
                           </h4>
                         ) : (
                           <h4 className="mb-2 font-medium text-gray-400">
-                            Employer
+                            Education
                           </h4>
                         )}
 
                         <div className="flex flex-col">
                           <div className="flex gap-2 text-sm">
                             <span className="font-light text-gray-500">
-                              Company Name:
+                              School Name:
                             </span>
                             <span className="font-semibold">
-                              {employer.companyName}
+                              {education.schoolName}
                             </span>
                           </div>
                           <div className="flex gap-2 text-sm">
@@ -427,9 +343,9 @@ function EmployeeDetails() {
                               Start Date:
                             </span>
                             <span className="font-semibold">
-                              {employer.startDate
+                              {education.startDate
                                 ? format(
-                                    new Date(employer.startDate),
+                                    new Date(education.startDate),
                                     "MMM d, yyyy",
                                   )
                                 : "N/A"}
@@ -440,9 +356,9 @@ function EmployeeDetails() {
                               End Date:
                             </span>
                             <span className="font-semibold">
-                              {employer.endDate
+                              {education.endDate
                                 ? format(
-                                    new Date(employer.endDate),
+                                    new Date(education.endDate),
                                     "MMM d, yyyy",
                                   )
                                 : "N/A"}
@@ -450,16 +366,94 @@ function EmployeeDetails() {
                           </div>
                           <div className="flex gap-2 text-sm">
                             <span className="font-light text-gray-500">
-                              Position:
+                              Major:
                             </span>
                             <span className="font-semibold">
-                              {employer.position}
+                              {education.major ?? "N/A"}
+                            </span>
+                          </div>
+                          <div className="flex gap-2 text-sm">
+                            <span className="font-light text-gray-500">
+                              Qualification Earned:
+                            </span>
+                            <span className="font-semibold">
+                              {education.qualificationEarned ?? "N/A"}
                             </span>
                           </div>
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </>
+                )}
+            </CardContent>
+          </Card>
+
+          {/* Employment History */}
+          <Card>
+            <CardHeader>Employment History</CardHeader>
+            <CardContent className="grid grid-cols-3 gap-6">
+              {/* Education */}
+              {data?.employmentHistory && data.employmentHistory.length > 0 && (
+                <>
+                  {data.employmentHistory.map((employer, index) => (
+                    <div key={index}>
+                      {data?.employmentHistory &&
+                      data?.employmentHistory?.length > 1 ? (
+                        <h4 className="mb-2 font-medium text-gray-400">
+                          Employer {index + 1}
+                        </h4>
+                      ) : (
+                        <h4 className="mb-2 font-medium text-gray-400">
+                          Employer
+                        </h4>
+                      )}
+
+                      <div className="flex flex-col">
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Company Name:
+                          </span>
+                          <span className="font-semibold">
+                            {employer.companyName}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Start Date:
+                          </span>
+                          <span className="font-semibold">
+                            {employer.startDate
+                              ? format(
+                                  new Date(employer.startDate),
+                                  "MMM d, yyyy",
+                                )
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            End Date:
+                          </span>
+                          <span className="font-semibold">
+                            {employer.endDate
+                              ? format(
+                                  new Date(employer.endDate),
+                                  "MMM d, yyyy",
+                                )
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <span className="font-light text-gray-500">
+                            Position:
+                          </span>
+                          <span className="font-semibold">
+                            {employer.position}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </>
               )}
             </CardContent>
@@ -468,7 +462,7 @@ function EmployeeDetails() {
           {/* Payment Information */}
           <Card>
             <CardHeader>Payment Information</CardHeader>
-            <CardContent className="grid grid-cols-3">
+            <CardContent className="grid grid-cols-3 gap-6">
               <div className="flex gap-2 text-sm">
                 <span className="font-light text-gray-500">
                   Abii National Account Number:

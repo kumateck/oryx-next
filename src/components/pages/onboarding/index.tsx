@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
+  EmployeeType,
   ErrorResponse,
   Gender,
   LifeStatus,
@@ -38,7 +39,7 @@ import {
   fullOnboardingSchema,
   stepSchemas,
 } from "./types";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 const steps = [
   {
@@ -84,6 +85,9 @@ export default function OnboardingForm() {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const { type } = useParams();
+  const etype = type as unknown as EmployeeType;
 
   const {
     register,
@@ -192,6 +196,7 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
+    employeeType: etype,
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),
@@ -274,13 +279,17 @@ export default function OnboardingForm() {
   });
 
   const onSubmit = async (data: OnboardingFormValues) => {
-    console.log("Form data:", data);
-    const payload = {
-      createEmployeeRequest: transformFormData(data),
-    } satisfies PostApiV1EmployeeApiArg;
-
     try {
-      const employeeId = await createEmployee(payload).unwrap();
+      const payload = {
+        createEmployeeRequest: transformFormData(data),
+      };
+
+      const employeeId = await createEmployee({
+        createEmployeeRequest: payload.createEmployeeRequest,
+      } as PostApiV1EmployeeApiArg).unwrap();
+
+      // const employeeId = await createEmployee(payload).unwrap();
+
       //only after successful submission
       if (employeeId) {
         const formData = new FormData();

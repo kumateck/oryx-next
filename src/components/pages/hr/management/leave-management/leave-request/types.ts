@@ -96,6 +96,7 @@ export const CreateLeaveSchema = z.object({
     .string()
     .min(1, { message: "Contact Person's Number is required" }),
   attachments: imageValidationSchema.optional(),
+  justification: z.string().optional(),
 });
 
 export type LeaveRequestDto = z.infer<typeof CreateLeaveSchema>;

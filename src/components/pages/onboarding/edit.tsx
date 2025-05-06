@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
+  EmployeeType,
   ErrorResponse,
   Gender,
   LifeStatus,
@@ -133,17 +134,10 @@ const transformApiDataToFormValues = (
           fullName: data.spouse.fullName as string,
           contactNumber: data.spouse.phoneNumber as string,
           occupation: data.spouse.occupation as string,
-          lifeStatus: data.spouse.lifeStatus
-            ? {
-                value: data.spouse.lifeStatus.toString() as string,
-                label: LifeStatus[
-                  data.spouse.lifeStatus as LifeStatus
-                ] as string,
-              }
-            : {
-                value: "",
-                label: "",
-              },
+          lifeStatus: {
+            value: data.spouse.lifeStatus.toString() as string,
+            label: LifeStatus[data.spouse.lifeStatus as LifeStatus] as string,
+          },
         }
       : undefined,
   emergencyContact: {
@@ -206,6 +200,9 @@ export default function EditEmployeeForm() {
   const [updateEmployee, { isLoading }] = usePutApiV1EmployeeByIdMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
 
+  const { type } = useParams();
+  const etype = type as unknown as EmployeeType;
+
   const {
     register,
     handleSubmit,
@@ -267,6 +264,7 @@ export default function EditEmployeeForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     try {
       const payload: CreateEmployeeRequest = {
+        employeeType: etype,
         firstName: data.firstName,
         lastName: data.lastName,
         dateOfBirth: data.dob.toISOString(),
