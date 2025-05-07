@@ -143,6 +143,7 @@ const InputSwitch = ({
           value={editingValue as unknown as Option}
           options={options as Option[]}
           onChange={(option) => handleSpecialOnchange(option)}
+          defaultValue={editingValue as unknown as Option}
           // onBlur={handleBlur}
           // isClearable
         />

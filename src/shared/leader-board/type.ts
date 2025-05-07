@@ -15,6 +15,8 @@ export interface Task {
   productName: string;
   productCode: string;
   scheduleCode: string;
+  batchNumber: string;
+  createdAt?: string;
   images?: {
     url?: string;
     name: string;

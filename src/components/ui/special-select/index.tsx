@@ -39,7 +39,8 @@ export function SpecialSelect(props: SearchableDropdownProps) {
 
   useEffect(() => {
     if (props.defaultValue) setSelectedOptions(props.defaultValue);
-  }, [props.defaultValue]);
+    if (props.value && props.defaultValue) setSelectedOptions(props.value);
+  }, [props.defaultValue, props.value]);
 
   const fuse = new Fuse(props.options ?? [], fuseOptions);
 
