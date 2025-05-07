@@ -1,4 +1,4 @@
-import Padlock from "@/assets/images/no-access.png";
+import Padlock from "@/assets/images/Lock-Icon.svg";
 // import { Icon } from "@/components/ui";
 import Image from "next/image";
 

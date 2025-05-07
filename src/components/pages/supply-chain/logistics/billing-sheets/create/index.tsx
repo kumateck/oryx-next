@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -55,6 +55,7 @@ const CreateBillingSheet = () => {
     resolver: CreateBillingSheetValidator,
     mode: "all",
   });
+
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
   const [invoiceOptions, setInvoiceOptions] = useState<Option[]>([]);
   const searchParams = useSearchParams();
@@ -122,7 +123,14 @@ const CreateBillingSheet = () => {
     control,
     name: "charges",
   });
-
+  const charges = useWatch<BillingSheetRequestDto>({
+    control,
+    name: "charges",
+  });
+  const totalCost = charges?.reduce((acc, charge) => {
+    const cost = Number(charge.cost);
+    return acc + (isNaN(cost) ? 0 : cost);
+  }, 0);
   const supplierId = invoiceData?.supplier?.id ?? "";
 
   useEffect(() => {
@@ -304,6 +312,7 @@ const CreateBillingSheet = () => {
           materialLists={materialLists}
           setMaterialLists={setMaterialLists}
           currency={currency}
+          totalCost={totalCost}
           // createCharge={createCharge}
         />
       </form>

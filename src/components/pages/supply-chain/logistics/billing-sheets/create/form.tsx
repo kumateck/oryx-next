@@ -30,6 +30,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   materialLists: MaterialRequestDto[];
   setMaterialLists: Dispatch<SetStateAction<MaterialRequestDto[]>>;
   currency: string;
+  totalCost?: number;
   // createCharge: (input: string) => void;
 }
 
@@ -51,6 +52,7 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
   materialLists,
   setMaterialLists,
   currency,
+  totalCost,
   // createCharge,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -235,17 +237,30 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
                           type: InputTypes.NUMBER,
                           required: true,
                           errors,
+                          prefixText: currency,
                         },
-                        {
-                          type: InputTypes.LABEL,
-                          label: "Currency",
-                          title: currency,
-                        },
+                        // {
+                        //   type: InputTypes.LABEL,
+                        //   label: "Currency",
+                        //   title: currency,
+                        // },
                       ]}
                     />
                   </div>
                 );
               })}
+            </div>
+            <div className="grid w-full grid-cols-3 gap-x-10 space-y-0 pt-4">
+              <div></div>
+              <div className="flex items-center justify-start mt-4">
+                <span className="text-lg font-semibold">Grand Total: </span>{" "}
+                &nbsp;
+                <span className="text-lg font-semibold">
+                  {" "}
+                  {currency}
+                  {totalCost?.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
         </CardContent>
