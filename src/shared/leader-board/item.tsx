@@ -5,6 +5,7 @@ import { AvatarStack } from "@/components/ui";
 import { cn, getInitials } from "@/lib";
 
 import { CardItemProps, DragItem } from "./type";
+import { format } from "date-fns";
 
 export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
   const router = useRouter();
@@ -25,23 +26,36 @@ export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
         router.push(`/production/activities/${step.activityId}/board`)
       }
     >
+      <div>
+        <span className="text-xs text-neutral-hover">
+          {step.createdAt
+            ? format(step.createdAt, "eee, MMMM do, yyyy 'at' h:mm a")
+            : ""}
+        </span>
+      </div>
       <div className="inline-flex rounded-2xl bg-primary-default px-1.5 text-white">
-        <span className="text-xs">{step.scheduleCode}</span>
+        <span className="text-xs">{step.batchNumber}</span>
       </div>
       <div className="space-y-5">
         <span className="block text-sm font-semibold"> {step.productName}</span>
-        {step?.images && (
-          <AvatarStack
-            spacing={"sm"}
-            avatarClass="h-8 w-8"
-            fallbackClass={cn("bg-neutral-input text-neutral-dark text-xs")}
-            avatars={step?.images?.map((item) => ({
-              name: getInitials(item?.name),
-              fullname: item?.name,
-              url: item?.url,
-            }))}
-          />
-        )}
+        <div className="flex items-center justify-between">
+          {step?.images && (
+            <AvatarStack
+              spacing={"sm"}
+              avatarClass="h-8 w-8"
+              fallbackClass={cn("bg-neutral-input text-neutral-dark text-xs")}
+              avatars={step?.images?.map((item) => ({
+                name: getInitials(item?.name),
+                fullname: item?.name,
+                url: item?.url,
+              }))}
+            />
+          )}
+
+          <span className="block text-xs font-normal text-neutral-default">
+            {step.scheduleCode}
+          </span>
+        </div>
       </div>
     </div>
   );

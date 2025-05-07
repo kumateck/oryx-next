@@ -25,6 +25,8 @@ const Activities = () => {
           productName: activity?.product?.name as string,
           productCode: activity?.product?.code as string,
           scheduleCode: activity?.productionSchedule?.code as string,
+          batchNumber: activity?.batchNumber as string,
+          createdAt: activity?.createdAt as string,
           images: activity?.currentStep?.responsibleUsers?.map((x) => ({
             name: fullname(
               x?.user?.firstName as string,
