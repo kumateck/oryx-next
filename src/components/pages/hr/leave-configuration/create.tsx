@@ -59,7 +59,7 @@ const Create = ({ isOpen, onClose }: Props) => {
 
       await createLeaveType({
         createLeaveTypeRequest: payload,
-      });
+      }).unwrap();
 
       toast.success("Leave type created successfully");
       loadLeaveTypes({ page: 1, pageSize: 10 });
