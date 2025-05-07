@@ -26,6 +26,7 @@ import { FormSpecialMultiSelect } from "./special-multi-input";
 import { FormTextInput } from "./text-input";
 import { FormTextareaInput } from "./textarea-input";
 import { FormClockInput } from "./time-input";
+import FormImageInput from "./image-input";
 
 interface SpaceProps {
   type: InputTypes.SPACE;
@@ -78,11 +79,18 @@ interface SwitchInputProps extends BaseInputProps<FieldValues> {
 }
 
 interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
-  type: InputTypes.UPLOAD | InputTypes.DRAGNDROP;
+  type: InputTypes.DRAGNDROP;
   control: Control<FieldValues>;
   name: string;
   defaultValue: FileList | null;
   single?: boolean;
+}
+
+interface ImageUploadInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.IMAGE;
+  control: Control<FieldValues>;
+  name: string;
+  defaultValue: string | null;
 }
 
 interface DateInputProps extends BaseInputProps<FieldValues> {
@@ -198,6 +206,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | MultiInputProps<TFieldValues, TContext>
   | FileInputProps
   | FilesUploadInputProps
+  | ImageUploadInputProps
   | DateInputProps
   | RadioInputProps
   | RichTextInputProps
@@ -422,6 +431,23 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               onChange={onChange}
               errors={formInput.errors}
               single={formInput.single}
+            />
+          )}
+        />
+      );
+    case InputTypes.IMAGE:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => (
+            <FormImageInput
+              name={formInput.name}
+              defaultValue={formInput.defaultValue ?? value}
+              label={formInput.label}
+              required={formInput.required}
+              onChange={onChange}
+              errors={formInput.errors}
             />
           )}
         />

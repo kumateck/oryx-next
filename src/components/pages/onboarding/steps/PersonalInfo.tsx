@@ -76,20 +76,19 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
   return (
     <>
       <FormWizard
+        className="grid grid-cols-2 gap-x-10 gap-y-5 space-y-0"
         config={[
           {
-            type: InputTypes.DRAGNDROP,
+            type: InputTypes.IMAGE,
             label: "Passport Size Photo",
             name: `passportPhoto`,
             defaultValue: null,
             control: control as Control,
             errors,
           },
-        ]}
-      />
-      <FormWizard
-        className="grid grid-cols-2 gap-x-10 gap-y-5 space-y-0"
-        config={[
+          {
+            type: InputTypes.SPACE,
+          },
           {
             register: register("firstName" as Path<TFieldValues>),
             label: "First Name",

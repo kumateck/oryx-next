@@ -3,6 +3,7 @@ import { Control, FieldValues, useWatch } from "react-hook-form";
 import { Button, Card, CardContent } from "@/components/ui";
 
 import { OnboardingFormValues } from "../types";
+import Image from "next/image";
 
 interface ReviewItem {
   label: string;
@@ -254,8 +255,21 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
     },
   ];
 
+  const imagePreview =
+    data.passportPhoto &&
+    data.passportPhoto.type.startsWith("image") &&
+    URL.createObjectURL(data.passportPhoto);
+
   return (
     <div className="space-y-6 p-4">
+      <div></div>
+      <div className=" w-48 h-48 overflow-hidden relative rounded-2xl">
+        <Image
+          src={imagePreview}
+          alt="Image Preview"
+          className="w-full h-full object-cover"
+        />
+      </div>
       {sections.map((section) => (
         <Card key={section.title} className="mb-4 border-0 pt-5">
           <CardContent>

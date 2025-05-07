@@ -294,13 +294,13 @@ export default function OnboardingForm() {
       if (employeeId) {
         const formData = new FormData();
         // Ensure attachments are an array
-        const attachmentsArray = Array.isArray(data.passportPhoto)
-          ? data.passportPhoto
-          : Array.from(data.passportPhoto); // Convert FileList to an array
+        // const attachmentsArray = Array.isArray(data.passportPhoto)
+        //   ? data.passportPhoto
+        //   : Array.from(data.passportPhoto); // Convert FileList to an array
 
-        attachmentsArray.forEach((attachment: File) => {
-          formData.append("files", attachment, attachment.name);
-        });
+        formData.append("files", data.passportPhoto, data.passportPhoto.name);
+        // attachmentsArray.forEach((attachment: File) => {
+        // });
 
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.Employee,
