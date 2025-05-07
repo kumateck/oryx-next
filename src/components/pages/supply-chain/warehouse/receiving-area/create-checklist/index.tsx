@@ -85,6 +85,7 @@ const CreateChecklist = () => {
         };
         setMaterialQty(qtyPya);
         reset({
+          date: new Date(),
           materialName: response.material?.name as string,
           materialId: response.material?.id as string,
           shipmentInvoiceId: response.shipmentInvoice?.id as string,
