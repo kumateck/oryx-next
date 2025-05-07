@@ -1,40 +1,42 @@
 import { Button, Icon } from "@/components/ui";
-import { RequisitionType } from "@/lib";
+import { ApprovalDocument, splitWords } from "@/lib";
 import { ApprovalDto } from "@/lib/redux/api/openapi.generated";
+import Link from "next/link";
 
 interface Props {
   approval: ApprovalDto;
   number: number;
+  deleteHandler: (id: string) => void;
+  isDeleteMutationLoading?: boolean;
 }
-const ApprovalCard = ({ approval, number }: Props) => {
-  const isDeleting = false;
+const ApprovalCard = ({
+  approval,
+  number,
+  deleteHandler,
+  isDeleteMutationLoading,
+}: Props) => {
   return (
     <div className="mt-2 w-full">
       <div className="rounded-lg border border-neutral-200 bg-white px-8 py-4">
         <div className="flex items-center justify-between">
-          <div className="text-left">
+          <div className="text-left space-y-4">
             <div className="flex flex-1 gap-1 text-sm capitalize text-neutral-900">
               <span>{number + 1}.</span>
               <span>
-                {RequisitionType[approval?.requisitionType as RequisitionType]}
+                {approval?.itemType &&
+                  splitWords(approval?.itemType as ApprovalDocument)}
               </span>
             </div>
             <div>
-              <span className="text-sm text-neutral-400">
-                {/* {question?.type?.title} */}
-              </span>
               <ul className="flex flex-wrap gap-2">
                 {approval?.approvalStages?.map((res, index) => (
                   <li key={index}>
-                    <div className="whitespace-nowrap rounded-3xl border border-neutral-300 p-1 px-2 text-sm text-neutral-700">
-                      <span className="text-danger-500 text-base">
-                        {res.required ? "*" : ""}
-                      </span>
-                      <span className="text-neutral-500">
+                    <div className="whitespace-nowrap rounded-3xl border border-neutral-secondaryAlt p-1 px-2 text-sm text-neutral-dark flex flex-col justify-center items-center">
+                      <span className="text-neutral-default text-xl font-semibold px-5">
                         {res?.role?.name ?? res?.user?.name}{" "}
-                        <small className="text-warning-500">
-                          (Level {res.order})
-                        </small>
+                      </span>
+                      <span className="text-neutral-tertiary">
+                        (Level {Number(res.order)})
                       </span>
                     </div>
                   </li>
@@ -44,27 +46,29 @@ const ApprovalCard = ({ approval, number }: Props) => {
           </div>
 
           <div className="flex w-2/6 items-center justify-end gap-1 px-2">
+            <Link href={`/settings/approvals/edit/${approval.id}`}>
+              <Button
+                // onClick={() =>}
+                variant={"outline"}
+                className="flex items-center gap-1.5 border-neutral-default bg-white text-neutral-dark"
+              >
+                <Icon name="Pencil" size={14} />
+                <span>Edit</span>
+              </Button>
+            </Link>
             <Button
-              // onClick={() => onEdit(question)}
+              onClick={() => deleteHandler(approval.id as string)}
               variant={"outline"}
-              className="flex items-center gap-1.5 border-neutral-300 bg-white text-neutral-700"
+              className="text-danger-default border-danger-default flex items-center gap-1.5"
             >
-              <Icon name="Pencil" size={14} />
-              <span>Edit</span>
-            </Button>
-            <Button
-              // onClick={() => onDelete(question.id)}
-              variant={"outline"}
-              className="text-destructive-500 border-danger-500 flex items-center gap-1.5"
-            >
-              {isDeleting ? (
-                <Icon name="LoaderCircle" size={14} className="animate-spin" />
-              ) : (
+              {isDeleteMutationLoading ? (
                 <Icon
-                  name="Trash2"
+                  name="LoaderCircle"
                   size={14}
-                  className="text-destructive-500"
+                  className="animate-spin text-neutral-dark"
                 />
+              ) : (
+                <Icon name="Trash2" size={14} className="text-danger-default" />
               )}
               <span>Delete</span>
             </Button>

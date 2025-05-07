@@ -1,22 +1,23 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
+import { Icon } from "@/components/ui";
 import {
-  Button,
-  Calendar,
-  Icon,
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui";
-import { PurchaseOrderStatusList } from "@/lib";
+  convertToLargestUnit,
+  getSmallestUnit,
+  PurchaseOrderStatusList,
+  Units,
+} from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 
+// import PrintPreview from "./print/preview";
+import Create from "./final-details";
 import PrintPreview from "./print/preview";
 
 // import Edit from "./edit";
@@ -27,54 +28,76 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [purchaseOrderId, setPurchaseOrderId] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
+  const dispatch = useDispatch();
 
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const details = row.original;
 
+  const computeTotalFobValue = (items: any[]) => {
+    return items.reduce((total, item) => {
+      if (!item.quantity || !item.price || !item.uom?.symbol) return total;
+      const smallestUnit = getSmallestUnit(item.uom.symbol as Units);
+      const converted = convertToLargestUnit(item.quantity, smallestUnit);
+      return total + converted.value * item.price;
+    }, 0);
+  };
+
+  const totalFobValue = computeTotalFobValue(details.items || []);
   return (
     <section className="flex items-center justify-end gap-2">
-      {isOpen && (
-        <PrintPreview
-          id={purchaseOrderId}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          date={date}
+      <PrintPreview
+        id={row.original.id as string}
+        isOpen={isPrintOpen}
+        onClose={() => {
+          setIsPrintOpen(false);
+          dispatch(commonActions.setTriggerReload()); // Add this line
+        }}
+      />
+      <Icon
+        name="Printer"
+        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+        onClick={() => setIsCreateOpen(true)}
+      />
+      <Icon
+        name="Trash2"
+        className="h-5 w-5 cursor-pointer text-danger-default hover:cursor-pointer"
+        onClick={() => setIsCreateOpen(true)}
+      />
+      {isCreateOpen && (
+        <Create
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          onSuccess={() => {
+            setIsCreateOpen(false);
+            setIsPrintOpen(true);
+          }}
+          purchaseOrderId={row.original.id as string}
+          currency={{
+            symbol: row.original.supplier?.currency?.symbol as string,
+            name: row.original.supplier?.currency?.name as string,
+          }}
+          defaultValues={{
+            amountInWords: details.amountInFigures as string,
+            cifValue: details.totalCifValue as number,
+            estimatedDeliveryDate: details.estimatedDeliveryDate
+              ? new Date(details.estimatedDeliveryDate)
+              : new Date(),
+            freight: details.seaFreight as number,
+            insuranceAmount: details.insurance as number,
+            totalFobValue: totalFobValue,
+            deliveryMode: {
+              label: details.deliveryMode?.name as string,
+              value: details.deliveryMode?.id as string,
+            },
+            termsOfPayment: {
+              label: details.termsOfPayment?.name as string,
+              value: details.termsOfPayment?.id as string,
+            },
+            invoiceNumber: details.proFormaInvoiceNumber as string,
+          }}
         />
       )}
-      <Popover>
-        <PopoverTrigger>
-          <Icon
-            name="Printer"
-            className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-          />
-        </PopoverTrigger>
-        <PopoverContent align="end" side="bottom">
-          <div className="w-full">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className=""
-              fromYear={1900}
-              initialFocus
-            />
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              onClick={() => {
-                setPurchaseOrderId(row.original.id as string);
-                setIsOpen(true);
-              }}
-            >
-              Print
-            </Button>
-            <PopoverClose>
-              <Button variant="outline">Cancel</Button>
-            </PopoverClose>
-          </div>
-        </PopoverContent>
-      </Popover>
     </section>
   );
 }
@@ -99,29 +122,6 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
       </div>
     ),
   },
-
-  // {
-  //   accessorKey: "total",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "totalprice",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.price || 0) * (item?.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "status",
     header: "Status",
@@ -133,6 +133,60 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
   },
   {
     id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+  },
+];
+
+export const listsColumns: ColumnDef<PurchaseOrderDtoRead>[] = [
+  {
+    accessorKey: "code",
+    header: "PO Number",
+    cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
+  },
+  {
+    accessorKey: "supplier",
+    header: "Supplier",
+    cell: ({ row }) => (
+      <div className="min-w-36">{row.original.supplier?.name}</div>
+    ),
+  },
+
+  {
+    accessorKey: "createdAt",
+    header: "Order Date",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.createdAt
+          ? format(row.original.createdAt, "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "expectedDeliveryDate",
+    header: "Expected Delivery Date",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.expectedDeliveryDate
+          ? format(row.original.expectedDeliveryDate, "MMM d, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    meta: {
+      omitRowClick: true,
+    },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

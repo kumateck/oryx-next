@@ -12,6 +12,7 @@ interface Props {
   onChange: (files: FileList | null) => void;
   defaultValue: FileList | null;
   name: string;
+  single?: boolean;
 }
 export default function FormDropzoneInput({
   label,
@@ -20,6 +21,7 @@ export default function FormDropzoneInput({
   defaultValue,
   onChange,
   name,
+  single,
 }: Props) {
   return (
     <div className="flex w-full flex-col gap-2">
@@ -29,7 +31,12 @@ export default function FormDropzoneInput({
           {required && <span className="text-red-500"> * </span>}
         </Label>
       )}
-      <DropZone name={name} onChange={onChange} defaultValue={defaultValue} />
+      <DropZone
+        single={single}
+        name={name}
+        onChange={onChange}
+        defaultValue={defaultValue}
+      />
       <FormError errors={errors} fieldName={name} />
     </div>
   );

@@ -47,6 +47,19 @@ export enum CodeModelTypes {
   GRNNumber = "GrnNumber",
 }
 
+export enum ApprovalDocument {
+  PurchaseRequisition = "PurchaseRequisition",
+  StockRequisition = "StockRequisition",
+  PurchaseOrder = "PurchaseOrder",
+  BillingSheet = "BillingSheet",
+  LeaveRequest = "LeaveRequest",
+}
+
+export enum InterestType {
+  User = "User",
+  Role = "Role",
+}
+
 export enum StockTransfer {
   New = 0,
   Approved = 1,
@@ -75,10 +88,32 @@ export enum RequisitionStatus {
 export enum RequisitionType {
   StockVoucher,
   Purchase,
+  StockTransfer,
+  StockRequisition,
+  Planning,
+  Production,
+  PurchaseRequisition,
+  Sourcing,
+  PriceComparison,
+  PurchaseOrder,
+  ProfomaInvoice,
+  GRN,
+  Checklist,
 }
 export enum EMaterialKind {
   Raw = 0,
   Packing = 1,
+}
+export enum PermissionType {
+  Access = "Access",
+}
+
+export enum RevisionType {
+  ReassignSupplier = 0,
+  ChangeSource = 1,
+  AddItem = 2,
+  UpdateItem = 3,
+  RemoveItem = 4,
 }
 
 export enum WarehouseType {
@@ -104,6 +139,18 @@ export enum ActivityStepStatus {
 export enum FORM_BUILDER_CONFIG {
   TEMPLATES = "Templates",
   QUESTIONS = "Questions",
+}
+export enum QuestionType {
+  ShortAnswer = 0,
+  LongAnswer = 1,
+  Paragraph = 2,
+  Datepicker = 3,
+  SingleChoice = 4,
+  Dropdown = 5,
+  Checkbox = 6,
+  FileUpload = 7,
+  Signature = 8,
+  Reference = 9,
 }
 
 export enum InputTypes {
@@ -168,18 +215,7 @@ export enum MaterialStatus {
   IssuedRequisition = 6,
   InHouse = 7,
 }
-export enum QuestionTypes {
-  ShortAnswer = 0,
-  LongAnswer = 1,
-  Paragraph = 2,
-  Datepicker = 3,
-  SingleChoice = 4,
-  Dropdown = 5,
-  Checkbox = 6,
-  FileUpload = 7,
-  Signature = 8,
-  Reference = 9,
-}
+
 export enum Units {
   ML = "ml",
   MG = "mg",
@@ -250,4 +286,71 @@ export enum PackLocationType {
 export enum TransferType {
   Incoming,
   Outgoing,
+}
+
+export enum ShipmentStatus {
+  New = 0,
+  InTransit = 1,
+  Cleared = 2,
+  Arrived = 3,
+}
+
+export enum WaybillStatus {
+  New = 0,
+  Cleared = 1,
+  Arrived = 3,
+}
+export enum BillingSheetStatus {
+  Pending,
+  Paid,
+}
+
+export enum MaritalStatus {
+  Single,
+  Married,
+}
+
+export enum Gender {
+  Male,
+  Female,
+}
+
+export enum LifeStatus {
+  Alive,
+  Deceased,
+}
+
+export enum Religions {
+  Christianity,
+  Islam,
+  Hinduism,
+  Buddhism,
+  Judaism,
+  TARs,
+  Sikhism,
+  Baháí,
+  Other,
+}
+
+export enum EmployeeType {
+  Casual = 0,
+  Permanent = 1,
+}
+
+export enum LeaveCategories {
+  LeaveRequest = 0,
+  AbsenceRequest = 1,
+  ExitPassRequest = 2,
+}
+
+export enum LeaveStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum ApprovalStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
 }

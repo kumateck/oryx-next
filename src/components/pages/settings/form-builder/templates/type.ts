@@ -1,12 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { QuestionType } from "@/lib";
+
 const CreateTemplateSchema = z.object({
-  formTypeId: z.object({
-    value: z.string().min(1, "formTypeId is required"),
-    label: z.string().min(1, "formTypeId is required"),
-    // required: z.boolean().optional(), // Assuming required can be optional
-  }),
+  // formTypeId: z.object({
+  //   value: z.string().min(1, "formTypeId is required"),
+  //   label: z.string().min(1, "formTypeId is required"),
+  //   // required: z.boolean().optional(), // Assuming required can be optional
+  // }),
   name: z.string().min(1, "name is required"),
   // sections: z
   //   .array(
@@ -33,5 +35,13 @@ export interface QuestionsProps {
   required?: boolean;
   name: string;
   type: string;
+  options: { name: string }[];
+}
+
+export interface templateQuestions {
+  id: string;
+  required?: boolean;
+  label: string;
+  type: QuestionType;
   options: { name: string }[];
 }

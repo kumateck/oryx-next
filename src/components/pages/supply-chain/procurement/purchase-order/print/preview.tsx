@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
@@ -11,11 +11,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, formatAmount, isErrorResponse } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   SupplierDto,
-  useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
+  useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -30,14 +30,18 @@ interface Props {
   id: string;
   date?: Date;
 }
-const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
+const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   const dispatch = useDispatch();
   const [emailQuotation, { isLoading: isSending }] =
     usePostApiV1ProcurementPurchaseOrderByPurchaseOrderIdMutation();
-  const { data, isLoading } =
-    useGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery({
-      purchaseOrderId: id,
-    });
+  const [loadData, { data, isLoading }] =
+    useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
+
+  useEffect(() => {
+    if (isOpen && id) {
+      loadData({ purchaseOrderId: id });
+    }
+  }, [isOpen, id, loadData]);
 
   // console.log(date, "date");
   const items = data?.items ?? [];
@@ -49,7 +53,7 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
       await emailQuotation({
         purchaseOrderId: id,
         sendPurchaseOrderRequest: {
-          expectedDeliveryDate: date,
+          expectedDeliveryDate: data?.estimatedDeliveryDate,
         },
       } as PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg).unwrap();
     } catch (error) {
@@ -83,7 +87,7 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
-      <DialogContent className="max-w-3xl rounded-none" noClose>
+      <DialogContent className="max-w-4xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
           <Button variant="outline" onClick={() => handlePrint()}>
             {isSending ? (
@@ -107,6 +111,59 @@ const PrintPreview = ({ isOpen, onClose, id, date }: Props) => {
             <span className="text-2xl font-semibold">Purchase Order</span>
           </div>
           <ListsTable columns={columns} data={items} isLoading={isLoading} />
+
+          <div className="mt-16 flex items-center justify-between text-sm">
+            <div>
+              <div>
+                <span className="block">Amount in words: </span>
+                <p className="font-bold">{data?.amountInFigures}</p>
+              </div>
+
+              <div>
+                <span>Terms of payment: </span>
+                <span className="font-bold">{data?.termsOfPayment?.name}</span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-primary-default/30 px-8 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <span>Total FOB Value in USD: </span>
+                <span className="font-bold">
+                  {formatAmount(Number(data?.totalFobValue), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <span className="">Insurance in USD: </span>
+                <span className="font-bold">
+                  {formatAmount(Number(data?.insurance), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <span>Freight in USD: </span>
+                <span className="font-bold">
+                  {formatAmount(Number(data?.seaFreight), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <span>Total CIF Value in USD: </span>
+                <span className="font-bold">
+                  {formatAmount(Number(data?.totalCifValue), {
+                    currencySymbol:
+                      data?.supplier?.currency?.symbol?.toString(),
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
         </article>
       </DialogContent>
     </Dialog>

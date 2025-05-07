@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { useState } from "react";
 
@@ -29,8 +31,7 @@ const FormBuilder = () => {
   ].filter((tab) => !!tab) as { name: string; icon: LucideIconProps }[];
   const [activeTab, setActiveTab] = useState<string>(tabLists[0]?.name);
   const [isOpenQuestion, setIsOpenQuestion] = useState<boolean>(false);
-  // const [childOneFunction, setChildOneFunction] = useState(null);
-  // const [triggerReload, setTriggerReload] = useState(false);
+
   return (
     <div className="w-full space-y-6">
       <div className="flex w-full items-center justify-between">
@@ -46,7 +47,7 @@ const FormBuilder = () => {
                 key={idx}
                 value={tab.name}
                 onClick={() => setActiveTab(tab.name)}
-                className="data-[state=active]:border-b-primary-500 data-[state=active]:font-Bold data-[state=active]:text-primary-500 flex h-10 items-center gap-2 px-0 pl-0 capitalize data-[state=active]:rounded-none data-[state=active]:border-b data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="flex h-9 items-center gap-2 px-0 pl-0 capitalize data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-b-primary-default data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary-default data-[state=active]:shadow-none"
               >
                 <Icon name={tab.icon} className="h-5 w-5" />
                 <span className="font-Bold text-sm">{tab.name}</span>
@@ -55,17 +56,14 @@ const FormBuilder = () => {
           </TabsList>
           <div>
             {activeTab === FORM_BUILDER_CONFIG.TEMPLATES ? (
-              <Link
-                href={"create-template"}
-                className="bg-primary-500 rounded-2xl text-white"
-              >
+              <Link href={"template/create"}>
                 <Button
                   type="button"
                   variant="default"
                   size="default"
                   className="flex h-9 items-center gap-2"
                 >
-                  <Icon name="Plus" className="text-secondary-500 h-4 w-4" />
+                  <Icon name="Plus" className="h-4 w-4" />
                   <span>Create Template </span>
                 </Button>
               </Link>
@@ -77,28 +75,25 @@ const FormBuilder = () => {
                 size="default"
                 className="flex h-9 items-center gap-2"
               >
-                <Icon name="Plus" className="text-secondary-500 h-4 w-4" />
+                <Icon name="Plus" className="h-4 w-4" />
                 <span>Create Question</span>
               </Button>
             )}
           </div>
         </div>
         <TabsContent value={FORM_BUILDER_CONFIG.QUESTIONS}>
-          <QuestionCards
-          // triggerReload={triggerReload}
-          // setTriggerReload={setTriggerReload}
-          // setFunction={(func) => setChildOneFunction(() => func)}
-          />
+          <QuestionCards />
         </TabsContent>
         <TabsContent value={FORM_BUILDER_CONFIG.TEMPLATES}>
           <TemplateCards />
         </TabsContent>
       </Tabs>
-      <CreateQuestionTypes
-        isOpen={isOpenQuestion}
-        onClose={() => setIsOpenQuestion(false)}
-        setTriggerReload={() => console.log("setTriggerReload")}
-      />
+      {isOpenQuestion && (
+        <CreateQuestionTypes
+          isOpen={isOpenQuestion}
+          onClose={() => setIsOpenQuestion(false)}
+        />
+      )}
     </div>
   );
 };

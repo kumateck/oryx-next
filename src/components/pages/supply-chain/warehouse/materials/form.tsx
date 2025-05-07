@@ -98,6 +98,16 @@ const MaterialForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
+            register: register("reorderLevel" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Re-Order Level",
+            placeholder: "Enter re-order level",
+            type: InputTypes.NUMBER,
+            errors,
+            required: true,
+          },
+          {
             register: register("description" as Path<TFieldValues>),
             label: "Description",
             placeholder: "Enter description",

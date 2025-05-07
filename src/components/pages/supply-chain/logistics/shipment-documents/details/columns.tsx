@@ -1,47 +1,66 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ShipmentInvoiceItemDto } from "@/lib/redux/api/openapi.generated";
+import { Units, convertToLargestUnit } from "@/lib";
 
-export const getColumns = (): ColumnDef<ShipmentInvoiceItemDto>[] => [
+import { MaterialRequestDto } from "../create/type";
+
+export const columns: ColumnDef<MaterialRequestDto>[] = [
+  // {
+  //   accessorKey: "purchaseOrderCode",
+  //   header: "PO Code",
+  // },
   {
-    accessorKey: "materialCode",
+    accessorKey: "code",
     header: "Material Code",
-    cell: ({ row }) => <div>{row.original.material?.code ?? "-"}</div>,
   },
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original.material?.name ?? "-"}</div>,
   },
   {
-    accessorKey: "manufacturerName",
-    header: "Manufacturer Name",
-    cell: ({ row }) => <div>{row.original.manufacturer?.name ?? "-"}</div>,
+    accessorKey: "uomName",
+    header: "Unit of Measurement",
+  },
+  // {
+  //   accessorKey: "costPrice",
+  //   header: "Price per Unit",
+  // },
+  {
+    accessorKey: "expectedQuantity",
+    header: "Expected Quantity",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.expectedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "orderQuantity",
-    header: "Order Quantity",
-    cell: ({ row }) => <div>{row.original.receivedQuantity ?? "-"}</div>,
+    accessorKey: "receivedQuantity",
+    header: "Received Quantity",
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.receivedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div className="">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "uom",
-    header: "Unit of Measure",
-    cell: ({ row }) => <div>{row.original.uoM?.name ?? "-"}</div>,
+    accessorKey: "manufacturer",
+    header: "Manufacturers",
   },
   {
-    accessorKey: "pricePerUnit",
-    header: "Price per Unit",
-    cell: ({ row }) => <div>{row.original.price ?? "-"}</div>,
-  },
-  {
-    accessorKey: "totalCost",
-    header: "Total Cost",
-    cell: ({ row }) => (
-      <div>
-        {row.original.price !== undefined
-          ? (row.original.receivedQuantity as number) * row.original.price
-          : "-"}
-      </div>
-    ),
+    accessorKey: "reason",
+    header: "Reason",
   },
 ];

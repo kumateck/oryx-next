@@ -11,7 +11,7 @@ import {
 
 import { InputTypes, Option, TimeType, cn } from "@/lib";
 
-import { Button, Icon, Label } from "../ui";
+import { Button, Icon, Label, Switch } from "../ui";
 import { SuggestionProps } from "../ui/adusei-editor/suggestion";
 import { FetchOptionsResult } from "../ui/async-select";
 // import { FetchOptionsResult } from "../ui/paginated-select";
@@ -26,6 +26,7 @@ import { FormSpecialMultiSelect } from "./special-multi-input";
 import { FormTextInput } from "./text-input";
 import { FormTextareaInput } from "./textarea-input";
 import { FormClockInput } from "./time-input";
+import FormImageInput from "./image-input";
 
 interface SpaceProps {
   type: InputTypes.SPACE;
@@ -61,6 +62,7 @@ interface TextInputProps<TFieldValues extends FieldValues>
   suffixClass?: string;
   prefixText?: string;
   description?: React.ReactNode;
+  onSuffixClick?: () => void;
 }
 
 interface FileInputProps extends BaseInputProps<FieldValues> {
@@ -70,12 +72,25 @@ interface FileInputProps extends BaseInputProps<FieldValues> {
   defaultValue?: string;
 }
 
+interface SwitchInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.SWITCH;
+  control: Control<FieldValues>;
+  name: string;
+}
+
 interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
-  type: InputTypes.UPLOAD | InputTypes.DRAGNDROP;
+  type: InputTypes.DRAGNDROP;
   control: Control<FieldValues>;
   name: string;
   defaultValue: FileList | null;
-  multiple?: boolean;
+  single?: boolean;
+}
+
+interface ImageUploadInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.IMAGE;
+  control: Control<FieldValues>;
+  name: string;
+  defaultValue: string | null;
 }
 
 interface DateInputProps extends BaseInputProps<FieldValues> {
@@ -91,7 +106,9 @@ interface TimeInputProps extends BaseInputProps<FieldValues> {
   name: string;
   defaultValue?: string;
   moment?: boolean;
+  showDays?: boolean;
 }
+
 interface RichTextInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.RICHTEXT;
   control: Control<FieldValues>;
@@ -189,6 +206,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | MultiInputProps<TFieldValues, TContext>
   | FileInputProps
   | FilesUploadInputProps
+  | ImageUploadInputProps
   | DateInputProps
   | RadioInputProps
   | RichTextInputProps
@@ -197,6 +215,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | SpecialSelectInputProps<TFieldValues, TContext>
   | ButtonProps
   | SpaceProps
+  | SwitchInputProps
   | LabelProps
   | null
   | undefined;
@@ -258,6 +277,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               onChange={onChange}
               name={formInput.name}
               type={formInput.type as unknown as TimeType}
+              showDays={formInput.showDays}
             />
           )}
         />
@@ -283,6 +303,18 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           )}
         />
       );
+
+    case InputTypes.SWITCH:
+      return (
+        <Controller
+          name={formInput.name}
+          control={formInput.control}
+          render={({ field }) => (
+            <Switch checked={field.value} onCheckedChange={field.onChange} />
+          )}
+        />
+      );
+
     case InputTypes.ASYNC_SELECT:
       return (
         <Controller
@@ -392,6 +424,24 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           name={formInput.name}
           render={({ field: { onChange, value } }) => (
             <FormDropzoneInput
+              name={formInput.name}
+              defaultValue={formInput.defaultValue ?? value}
+              label={formInput.label}
+              required={formInput.required}
+              onChange={onChange}
+              errors={formInput.errors}
+              single={formInput.single}
+            />
+          )}
+        />
+      );
+    case InputTypes.IMAGE:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => (
+            <FormImageInput
               name={formInput.name}
               defaultValue={formInput.defaultValue ?? value}
               label={formInput.label}

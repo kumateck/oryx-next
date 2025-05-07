@@ -111,8 +111,16 @@ export const ROUTES: Route[] = [
             url: "/warehouse/shelves",
           },
           {
-            title: "Raw Materials",
+            title: "Materials",
             url: "/warehouse/materials",
+          },
+          {
+            title: "Unlink Materials",
+            url: "/warehouse/materials/unlink",
+          },
+          {
+            title: "Linked Materials",
+            url: "/warehouse/materials/linked",
           },
           // {
           //   title: "Raw Materials Requests",
@@ -155,8 +163,8 @@ export const ROUTES: Route[] = [
             url: "/procurement/manufacturers",
           },
           {
-            title: "Vendors",
-            url: "/procurement/vendors",
+            title: "Suppliers",
+            url: "/procurement/suppliers",
           },
 
           {
@@ -185,8 +193,12 @@ export const ROUTES: Route[] = [
             url: "/procurement/profoma-responses",
           },
           {
-            title: "Purchase Orders",
+            title: "Create Purchase Orders",
             url: "/procurement/purchase-orders",
+          },
+          {
+            title: "Purchase Order Lists",
+            url: "/procurement/purchase-order-lists",
           },
           {
             title: "Material Distribution",
@@ -206,12 +218,12 @@ export const ROUTES: Route[] = [
         //    isActive: false,
         items: [
           {
-            title: "Raw Material Requisitions",
+            title: "Material Requisitions",
             url: "/production/requisition/general",
           },
           {
-            title: "Package Material Requisitions",
-            url: "/production/requisition/general",
+            title: "Create Purchase Requisitions",
+            url: "/production/requisition/create",
           },
           {
             title: "Others",
@@ -273,16 +285,57 @@ export const ROUTES: Route[] = [
   {
     title: "Human Resource",
     menu: [
-      // {
-      //   title: "string",
-      //   url: "string",
-      //   icon: "BookUser",
-      //   isActive: false,
-      //   // items: [{
-      //   //   title: "string",
-      //   //   url: "string"
-      //   // }]
-      // },
+      {
+        title: "Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Employee Management",
+            url: "/hr/employee-management",
+          },
+          {
+            title: "Designation Management",
+            url: "/hr/designation-management",
+          },
+          {
+            title: "Leave Management",
+            url: "/hr/leave-management",
+          },
+          {
+            title: "Leave Type Configuration",
+            url: "/hr/leave-configuration",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Access Control",
+    menu: [
+      {
+        title: "Access Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Roles",
+            url: "/access-management/roles",
+          },
+          {
+            title: "Manage Permissions",
+            url: "/access-management/permissions",
+          },
+        ],
+      },
+      {
+        title: "User Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Users Directory",
+            url: "/access-management/users",
+          },
+        ],
+      },
     ],
   },
   {
@@ -297,6 +350,12 @@ export const ROUTES: Route[] = [
         //   title: "string",
         //   url: "string"
         // }]
+      },
+      {
+        title: "Pending Approvals",
+        url: "/qa/pending-approvals",
+        icon: "CircleDotDashed",
+        isActive: false,
       },
     ],
   },

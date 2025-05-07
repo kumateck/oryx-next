@@ -122,6 +122,21 @@ const FormOptionTabs: TabProps[] = [
         modelType: COLLECTION_TYPES.PackageStyle,
         title: "Pack Style",
       },
+      {
+        icon: "Tag",
+        modelType: COLLECTION_TYPES.Charge,
+        title: "Billing Sheet Charge",
+      },
+      {
+        icon: "Tag",
+        modelType: COLLECTION_TYPES.TermsOfPayment,
+        title: "Terms of Payment",
+      },
+      {
+        icon: "Tag",
+        modelType: COLLECTION_TYPES.DeliveryMode,
+        title: "Delivery Mode",
+      },
     ],
   },
 ];

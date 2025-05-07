@@ -15,7 +15,7 @@ const Page = () => {
     <BgWrapper>
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
-          Welcome
+          Welcome{" "}
           {isLoading ? (
             <Icon name="LoaderCircle" className="animate-spin" />
           ) : (
@@ -27,7 +27,7 @@ const Page = () => {
         </span>
       </div>
       <ScrollablePageWrapper>
-        <div></div>
+        <div>{/* <ImageUpload /> */}</div>
       </ScrollablePageWrapper>
     </BgWrapper>
   );

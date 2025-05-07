@@ -15,3 +15,33 @@ export interface Quotations {
   uomName: string;
   supplierQuotations: SupplierQuotation[];
 }
+
+export type RecordItem = {
+  key: string;
+  name: string;
+  description: string;
+  subModule: string;
+  hasOptions: boolean;
+  types: string[];
+};
+
+export type Section = {
+  module: string;
+  isActive: boolean;
+  children: RecordItem[];
+};
+
+// export interface PermissionChild {
+//   key: string;
+//   name: string;
+//   description: string;
+//   subModule: string;
+//   hasOptions: boolean;
+//   types: string[];
+// }
+
+// export interface Permission {
+//   module: string;
+//   isActive: boolean;
+//   children: PermissionChild[];
+// }

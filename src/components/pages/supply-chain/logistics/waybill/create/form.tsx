@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
@@ -25,10 +25,10 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 }
 const WaybillForm = <TFieldValues extends FieldValues, TContext>({
   control,
-  register,
   errors,
   invoiceOptions,
   materialLists,
+  register,
   setMaterialLists,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -38,26 +38,33 @@ const WaybillForm = <TFieldValues extends FieldValues, TContext>({
         fieldWrapperClassName="flex-grow"
         config={[
           {
+            register: register("code" as Path<TFieldValues>),
+            label: "Waybill Code",
+            placeholder: "Code will be generated",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            required: true,
+            description: (
+              <span className="text-neutral-seondary text-sm">
+                You can’t change the waybill code
+              </span>
+            ),
+            errors,
+          },
+          {
             label: "Invoice Number",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "invoiceId",
+            name: "shipmentInvoiceId",
             required: true,
             placeholder: "Select Invoice",
             options: invoiceOptions,
             errors,
           },
-          {
-            register: register("supplierName" as Path<TFieldValues>),
-            label: "Supplier Name",
-            placeholder: "Enter Supplier Name",
-            type: InputTypes.TEXT,
-            errors,
-          },
         ]}
       />
       <Card className="my-5 space-y-4 p-5">
-        <CardTitle>Invoice Item</CardTitle>
+        <CardTitle className="px-5">Invoice Item</CardTitle>
         <CardContent>
           <TableForData
             lists={materialLists}
@@ -65,6 +72,22 @@ const WaybillForm = <TFieldValues extends FieldValues, TContext>({
             setItemLists={setMaterialLists}
           />
         </CardContent>
+        <CardFooter className="flex items-center justify-end">
+          <div className="flex justify-end gap-2 font-semibold">
+            <span>Total Cost:</span>
+            <span className="text-neutral-seondary ">
+              {" "}
+              {materialLists
+                ?.reduce(
+                  (acc, item) =>
+                    acc +
+                    Number(item.receivedQuantity) * Number(item.costPrice),
+                  0,
+                )
+                .toFixed(2)}
+            </span>
+          </div>
+        </CardFooter>
       </Card>
 
       <div>

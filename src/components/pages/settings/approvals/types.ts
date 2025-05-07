@@ -1,34 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Option, RequisitionType } from "@/lib";
+import { Option } from "@/lib";
 
 const IdSchema = z.object({
   value: z.string(),
   label: z.string(),
 });
-
-// const CreateApprovalStageRequestSchema = z
-//   .object({
-//     type: z
-//       .enum(["Role", "User"], { required_error: "Type is required" }) // Error message for type
-//       .refine((value) => value === "Role" || value === "User", {
-//         message: "Type must be either 'Role' or 'User'",
-//         path: ["type"],
-//       }),
-//     userId: IdSchema.optional(),
-//     roleId: IdSchema.optional(),
-//     required: z.boolean().optional(),
-//     order: IdSchema.optional(),
-//   })
-//   .refine((data) => data.type !== "Role" || data.roleId != null, {
-//     message: "roleId is required when type is 'Role'",
-//     path: ["roleId"],
-//   })
-//   .refine((data) => data.type !== "User" || data.userId != null, {
-//     message: "userId is required when type is 'User'",
-//     path: ["userId"],
-//   });
 
 const CreateApprovalStageRequestSchema = z
   .object({
@@ -39,6 +17,7 @@ const CreateApprovalStageRequestSchema = z
         path: ["type"],
       }),
     userId: IdSchema.optional(),
+    // itemType: IdSchema,
     roleId: IdSchema.optional(),
     required: z.boolean().optional(),
     order: IdSchema.optional(),
@@ -54,21 +33,12 @@ const CreateApprovalStageRequestSchema = z
 
 const RequisitionTypeSchema = z.object({
   label: z.string(),
-  value: z
-    .string()
-    .refine(
-      (val) =>
-        Object.values(RequisitionType).includes(
-          Number(val) as unknown as RequisitionType,
-        ),
-      {
-        message: "Value must be a valid RequisitionType",
-      },
-    ),
+  value: z.string(),
 });
 
 const CreateApprovalRequestSchema = z.object({
-  requisitionType: RequisitionTypeSchema,
+  itemType: RequisitionTypeSchema,
+  escalationDuration: z.string().min(1, "Escalation Duration is required"),
   approvalStages: z
     .array(CreateApprovalStageRequestSchema)
     .nullable()

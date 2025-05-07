@@ -72,6 +72,7 @@ const Page = () => {
   }, [type]);
 
   const handleLoadPriceComparison = async (type: SupplierType) => {
+    setState([]);
     try {
       const response = await loadPrices({
         supplierType: type ?? SupplierType.Foreign,
@@ -128,10 +129,11 @@ const Page = () => {
 
   const onSubmit = async () => {
     try {
+      // console.log(findSelectedQuotation(state));
       await saveProcess({
         body: findSelectedQuotation(state),
       }).unwrap();
-      toast.success("Vendors Selected successfully");
+      toast.success("Supplier Selected successfully");
       handleLoadPriceComparison(type);
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

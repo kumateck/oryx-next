@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
@@ -15,15 +16,14 @@ import {
 import {
   CODE_SETTINGS,
   ErrorResponse,
-  InputTypes,
-  PurchaseOrderStatusList,
+  InputTypes, // PurchaseOrderStatusList,
   isErrorResponse,
 } from "@/lib";
 import {
   PostApiV1FileByModelTypeAndModelIdApiArg,
-  useLazyGetApiV1ProcurementPurchaseOrderQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 
 import { AttachmentRequestDto, AttachmentValidator } from "./type";
 
@@ -33,6 +33,7 @@ interface Props {
   id: string;
 }
 const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
+  const dispatch = useDispatch();
   const {
     control,
     formState: { errors },
@@ -44,7 +45,7 @@ const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
 
   const [uploadAttachment, { isLoading }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
-  const [loadData] = useLazyGetApiV1ProcurementPurchaseOrderQuery();
+
   const onSubmit = async (data: AttachmentRequestDto) => {
     const formData = new FormData();
     const attachmentsArray = Array.isArray(data.attachments)
@@ -62,11 +63,7 @@ const AttachDocuments = ({ isOpen, onClose, id }: Props) => {
         body: formData,
       } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       toast.success("Attachment uploaded successfully");
-      await loadData({
-        page: 1,
-        pageSize: 30,
-        status: PurchaseOrderStatusList.Delivered,
-      });
+      dispatch(commonActions.setTriggerReload());
       onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);

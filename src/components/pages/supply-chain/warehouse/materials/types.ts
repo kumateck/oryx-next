@@ -6,6 +6,12 @@ import { EMaterialKind } from "@/lib";
 export const CreateMaterialSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   code: z.string().min(1, { message: "Code is required" }),
+  // reorderLevel: z
+  //   .number({
+  //     required_error: "Re-order Level is required",
+  //     invalid_type_error: "Re-order Level must be a number",
+  //   })
+  //   .positive({ message: "Re-order Level must be greater than 0" }),
   description: z.string().optional(),
   pharmacopoeia: z.string().optional(),
   // kind: z.nativeEnum(EMaterialKind, {

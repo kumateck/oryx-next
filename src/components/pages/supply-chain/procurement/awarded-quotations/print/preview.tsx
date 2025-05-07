@@ -22,7 +22,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { ListsTable } from "@/shared/datatable";
 import InvoiceHeader from "@/shared/invoice/header";
 
-import { columns } from "./column";
+import { getColums } from "./column";
 
 interface Props {
   isOpen: boolean;
@@ -41,6 +41,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
 
   const items = data?.items ?? [];
   const supplier = data?.supplier;
+  const currency = supplier?.currency?.symbol as string;
   const contentRef = useRef<HTMLDivElement>(null);
 
   const onSubmit = async () => {
@@ -104,7 +105,11 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
               Profoma Invoice Request
             </span>
           </div>
-          <ListsTable columns={columns} data={items} isLoading={isLoading} />
+          <ListsTable
+            columns={getColums(currency)}
+            data={items}
+            isLoading={isLoading}
+          />
         </article>
       </DialogContent>
     </Dialog>

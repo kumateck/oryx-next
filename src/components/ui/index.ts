@@ -49,3 +49,4 @@ export * from "./textarea";
 export * from "./tooltip-elipsis";
 export * from "./tooltip-lists";
 export * from "./tooltip";
+export * from "./image-upload";

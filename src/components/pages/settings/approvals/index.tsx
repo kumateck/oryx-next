@@ -238,10 +238,16 @@
 import React from "react";
 
 import { Button } from "@/components/ui";
-import { useGetApiV1ApprovalQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  useDeleteApiV1ApprovalByApprovalIdMutation,
+  useGetApiV1ApprovalQuery,
+} from "@/lib/redux/api/openapi.generated";
 
-import AddApproval from "./add-approval";
+// import AddApproval from "./add-approval";
 import ApprovalCard from "./card";
+import Link from "next/link";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
 
 const Page = () => {
   const { data: responseDto } = useGetApiV1ApprovalQuery({
@@ -249,21 +255,40 @@ const Page = () => {
     page: 1,
   });
 
+  const [deleteApproval, { isLoading: isDeleteMutationLoading }] =
+    useDeleteApiV1ApprovalByApprovalIdMutation();
   const approvals = responseDto?.data || [];
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  const deleteHandler = async (id: string) => {
+    try {
+      await deleteApproval({
+        approvalId: id,
+      });
+      toast.success("Deleted successfully");
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
+  // const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <div className="w-full">
       <div className="flex items-center justify-between">
         <span className="text-2xl font-semibold capitalize">Approvals</span>
-        <Button onClick={() => setIsOpen(true)}>Create</Button>
+        <Link href={"/settings/approvals/create"}>
+          <Button>Create</Button>
+        </Link>
       </div>
-      <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {/* <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       <ul>
         {approvals.map((approval, idx) => (
           <li key={idx}>
-            <ApprovalCard approval={approval} number={idx} />
+            <ApprovalCard
+              approval={approval}
+              number={idx}
+              isDeleteMutationLoading={isDeleteMutationLoading}
+              deleteHandler={deleteHandler}
+            />
           </li>
         ))}
       </ul>

@@ -17,6 +17,7 @@ import {
 import { CODE_SETTINGS } from "@/lib";
 import {
   CreateGrnRequest,
+  MaterialBatchDtoRead,
   NamingType,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -76,7 +77,7 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
       }).unwrap();
 
       const materialBatchIds = batchDetails.map(
-        (detail) => detail.id,
+        (detail: MaterialBatchDtoRead) => detail.id,
       ) as string[];
       console.log("Material Batch Ids:::", materialBatchIds);
 

@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { subtract } from "lodash";
 
 import { ColumnType } from "@/shared/datatable";
@@ -6,6 +6,12 @@ import { ColumnType } from "@/shared/datatable";
 // import { Option } from "@/lib";
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
+import { MaterialDepartmentWithWarehouseStockDto } from "@/lib/redux/api/openapi.generated";
+import { TableCheckbox } from "@/shared/datatable/table-check";
+
+import { useState } from "react";
+import AllStockByMaterial from "@/shared/all-stock";
+import { getLargestUnit, Units } from "@/lib";
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
@@ -109,4 +115,118 @@ export const getPurchaseColumns = (
       },
     },
   },
+];
+
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+}
+export function DataTableRowActions<
+  TData extends MaterialDepartmentWithWarehouseStockDto,
+>({ row }: DataTableRowActionsProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const leftOverStock =
+    (row.original.material?.totalStock as number) -
+    (row.original.warehouseStock as number);
+  const rowData = row?.original;
+  const AllStockRow = {
+    materialId: rowData?.material?.id as string,
+    materialName: rowData?.material?.name as string,
+    qtyNeeded: rowData?.material?.totalStock,
+    quantityOnHand: rowData?.warehouseStock,
+    quantityRequested: "0",
+    uom: "",
+    uomId: "",
+    finalQuantityNeeded: "0",
+  };
+  return (
+    <section className="">
+      {leftOverStock > 0 ? (
+        <div
+          className="cursor-pointer underline hover:text-primary-hover"
+          onClick={() => setIsOpen(true)}
+        >
+          {leftOverStock}
+        </div>
+      ) : (
+        <div>{leftOverStock}</div>
+      )}
+
+      {isOpen && (
+        <AllStockByMaterial
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          materialId={AllStockRow.materialId}
+          materialName={AllStockRow.materialName as string}
+          qtyNeeded={AllStockRow.finalQuantityNeeded}
+          uomName={AllStockRow.uom as Units}
+        />
+      )}
+    </section>
+  );
+}
+
+export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
+  TableCheckbox(),
+  {
+    accessorKey: "code",
+    header: "Code",
+
+    cell: ({ row }) => <div>{row.original.material?.code}</div>,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+
+    cell: ({ row }) => <div>{row.original.material?.name}</div>,
+  },
+  {
+    accessorKey: "uom",
+    header: "UOM",
+
+    cell: ({ row }) => (
+      <div>{getLargestUnit(row.original.uoM?.symbol as Units)}</div>
+    ),
+  },
+  {
+    accessorKey: "reOrderLevel",
+    header: "Re-Order Level",
+    cell: ({ row }) => <div>{row.original.reOrderLevel}</div>,
+  },
+  {
+    accessorKey: "minimumStockLevel",
+    header: "Minimum Stock Level",
+    cell: ({ row }) => <div>{row.original.minimumStockLevel}</div>,
+  },
+  {
+    accessorKey: "maximumStockLevel",
+    header: "Maximum Stock Level",
+    cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
+  },
+  {
+    accessorKey: "warehouseStock",
+    header: "Stock in my Warehouse",
+
+    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+  },
+  {
+    id: "totalStock",
+    header: "Stock in Other Sources",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+  },
+
+  // {
+  //   accessorKey: "kind",
+  //   header: "Kind",
+
+  //   cell: ({ row }) => (
+  //     <div>{Number(row.original.kind) === 1 ? "Package" : "Raw"}</div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "category",
+  //   header: "Category",
+  //   cell: ({ row }) => (
+  //     <div>{row.original.material?.materialCategory?.name}</div>
+  //   ),
+  // },
 ];

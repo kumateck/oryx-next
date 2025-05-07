@@ -15,7 +15,7 @@ export const createRequisitionItemRequestSchema = z.object({
   // code: z.string().optional(),
   uom: z.string().optional(),
   source: z.string().optional(),
-  sourceVendors: z.array(IdSchema("Vendor")).optional(),
+  sourceSuppliers: z.array(IdSchema("Supplier")).optional(),
   // options: z.array(z.string()).optional(),
   // id: z.string().optional(),
 });
@@ -27,7 +27,7 @@ export const createRequisitionItemRequestSchema = z.object({
 // quantity: material.quantity,
 // uomId: material.uoM?.id,
 // source: "",
-// sourceVendors: [],
+// sourceSuppliers: [],
 // options: [],
 
 export const itemsRequestSchema = z.array(createRequisitionItemRequestSchema);

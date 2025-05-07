@@ -52,7 +52,12 @@ export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
     header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
-        {row.original.materialBatch?.manufacturingDate?.split("T")[0] ?? "-"}
+        {row.original.materialBatch?.manufacturingDate
+          ? format(
+              row.original?.materialBatch?.manufacturingDate,
+              "MMMM dd, yyyy",
+            )
+          : "-"}
       </div>
     ),
   },
@@ -60,14 +65,22 @@ export const generalColumns: ColumnDef<ShelfMaterialBatchDto>[] = [
     accessorKey: "expiryDate",
     header: "Expiry Date",
     cell: ({ row }) => (
-      <div>{row.original.materialBatch?.expiryDate?.split("T")[0] ?? "-"}</div>
+      <div>
+        {row.original.materialBatch?.expiryDate
+          ? format(row.original?.materialBatch?.expiryDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "retestdate",
     header: "Retest Date",
     cell: ({ row }) => (
-      <div>{row.original.materialBatch?.retestDate?.split("T")[0] ?? "-"}</div>
+      <div>
+        {row.original.materialBatch?.retestDate
+          ? format(row.original?.materialBatch?.retestDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
 ];

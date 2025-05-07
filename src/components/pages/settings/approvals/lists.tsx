@@ -1,6 +1,6 @@
 import { Option } from "@/lib";
 
-import ApprovalCard from "./card";
+// import ApprovalCard from "./card";
 import { Approvals } from "./types";
 
 interface Props {
@@ -23,7 +23,7 @@ const ApprovalLists = ({
     <ul className="w-full space-y-6">
       {approvalLists?.map((approval, idx) => (
         <li key={idx}>
-          <ApprovalCard
+          {/* <ApprovalCard
             number={idx}
             // deleteHandler={deleteHandler}
             // employeesOptions={employeesOptions}
@@ -32,7 +32,7 @@ const ApprovalLists = ({
             // setApprovalLists={setApprovalLists}
             // isDeleteMutationLoading={isDeleteMutationLoading}
             // setChangesApplied={setChangesApplied}
-          />
+          /> */}
         </li>
       ))}
     </ul>

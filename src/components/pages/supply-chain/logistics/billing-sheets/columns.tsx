@@ -1,6 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
+import { BillingSheetStatus } from "@/lib";
 import { BillingSheetDto } from "@/lib/redux/api/openapi.generated";
+
+const batchStatusColors: Record<BillingSheetStatus, string> = {
+  [BillingSheetStatus.Pending]: "bg-yellow-100 text-yellow-800",
+  [BillingSheetStatus.Paid]: "bg-green-100 text-green-800",
+};
 
 export const columns: ColumnDef<BillingSheetDto>[] = [
   {
@@ -12,22 +19,22 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
     accessorKey: "supplierName",
     header: "Supplier Name",
     cell: ({ row }) => (
-      <div className="min-w-36">{row.original.supplier?.name}</div>
+      <div className="min-w-36">{row.original.invoice?.supplier?.name}</div>
     ),
   },
-  {
-    accessorKey: "invoiceAmount",
-    header: "Invoice Amount",
-    cell: (
-      {
-        // row
-      },
-    ) => (
-      <div className="min-w-36">
-        {"invoice amount"} {/*replace with amount */}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "invoiceAmount",
+  //   header: "Invoice Amount",
+  //   cell: (
+  //     {
+  //       // row
+  //     },
+  //   ) => (
+  //     <div className="min-w-36">
+  //       {"invoice amount"} {/*replace with amount */}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",
@@ -35,41 +42,50 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
       <div className="min-w-36">{row.original.invoice?.code}</div>
     ),
   },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"billing sheet amount"}</div>,
-  },
+  // {
+  //   accessorKey: "amount",
+  //   header: "Amount",
+  //   cell: (
+  //     {
+  //       row
+  //     },
+  //   ) => <div className="min-w-36">{row.original.invoice?.amount}</div>,
+  // },
   {
     accessorKey: "orderDate",
     header: "Order Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"order date"}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.invoice?.createdAt
+          ? format(row.original?.invoice.createdAt, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "expectedDeliveryDate",
     header: "Expected delivery Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"Expected delivery date"}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original?.expectedArrivalDate
+          ? format(row.original?.expectedArrivalDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "status",
-    header: "Expected delivery Date",
-    cell: (
-      {
-        // row
-      },
-    ) => <div className="min-w-36">{"status"}</div>,
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status as BillingSheetStatus;
+      return (
+        <div
+          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+        >
+          {BillingSheetStatus[status]}
+        </div>
+      );
+    },
   },
   // {
   //   id: "actions",

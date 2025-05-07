@@ -47,6 +47,7 @@ export function ClientDatatable<TData, TValue>({
   rowSelection,
   setRowSelection,
   normalTable,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -125,6 +126,7 @@ export function ClientDatatable<TData, TValue>({
                       "bg-primary-selected":
                         rowSelection && row?.getIsSelected(),
                     })}
+                    onClick={() => onRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

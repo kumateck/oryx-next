@@ -114,6 +114,14 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     name: "Equipment",
     tag: "/settings/equipments",
   },
+  {
+    name: "Work Flow",
+    tag: "/settings/form-builder",
+  },
+  {
+    name: "User Directory",
+    tag: "/settings/user-directory",
+  },
 ];
 
 export type SidebarProps = {

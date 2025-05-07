@@ -5,16 +5,27 @@ import { z } from "zod";
 
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
-import { APP_NAME, CODE_SETTINGS, Option } from "./constants";
 import {
+  APP_NAME,
+  CODE_SETTINGS,
+  Option,
+  ones,
+  scales,
+  tens,
+} from "./constants";
+import {
+  ApprovalDocument,
   BatchSizeType,
   BatchStatus,
   FloorType,
   MaterialStatus,
   PackLocationType,
+  QuestionType,
   RawLocationType,
+  ShipmentStatus,
   SupplierStatus,
   Units,
+  WaybillStatus,
 } from "./enum";
 // import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
 // import {
@@ -33,7 +44,7 @@ import {
   NamingType,
   ProductionScheduleProcurementDto,
 } from "./redux/api/openapi.generated";
-import { Quotations } from "./types";
+import { Quotations, RecordItem, Section } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -92,7 +103,7 @@ export const formatTime = (hours: number, minutes: number) => {
 };
 
 export function splitWords(input: string) {
-  return input.replace(/([a-z])([A-Z])/g, "$1 $2"); // Insert space before each uppercase letter if it follows a lowercase letter
+  return input?.replace(/([a-z])([A-Z])/g, "$1 $2"); // Insert space before each uppercase letter if it follows a lowercase letter
 }
 
 export function getFirstCharacter(word: string) {
@@ -202,8 +213,10 @@ export function isStockUnAvailable(
   materials: ProductionScheduleProcurementDto[],
 ): boolean {
   for (const item of materials) {
+    // console.log(item.material?.name, item.quantityOnHand, item.quantityNeeded,Number(item.quantityOnHand) >= Number(item.quantityNeeded),"unavailable");
+
     if (
-      Number(item.status) === MaterialStatus.NoSource &&
+      // Number(item.status) === MaterialStatus.NoSource &&
       Number(item.quantityOnHand) < Number(item.quantityNeeded)
     ) {
       console.log("I cannot process, I need to add a stock.");
@@ -213,6 +226,22 @@ export function isStockUnAvailable(
   return false; // All stocks are sufficient
 }
 
+export function isStockAvailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  for (const item of materials) {
+    // console.log(item.material?.name, item.quantityOnHand, item.quantityNeeded,Number(item.quantityOnHand) >= Number(item.quantityNeeded),"available");
+    if (
+      // Number(item.status) === MaterialStatus.InHouse &&
+
+      Number(item.quantityOnHand) >= Number(item.quantityNeeded)
+    ) {
+      console.log("I cannot process, I need to add a stock.");
+      return true; // At least one stock is insufficient
+    }
+  }
+  return false; // All stocks are sufficient
+}
 export const quantityAvailable = (
   materials: ProductionScheduleProcurementDto[],
 ) => {
@@ -661,7 +690,7 @@ type ObjectType = {
   [key: number]: boolean;
 };
 interface DataProps {
-  id: string;
+  id?: string;
 }
 export function getMatchingIds(
   array: DataProps[],
@@ -670,7 +699,7 @@ export function getMatchingIds(
   const result: string[] = [];
   array.forEach((item, index) => {
     if (object[index] === true) {
-      result.push(item.id);
+      result.push(item.id as string);
     }
   });
   return result;
@@ -841,10 +870,30 @@ export const BatchStatusOptions = Object.values(BatchStatus)
     };
   }) as Option[];
 
+export const QuestionTypeOptions = Object.values(QuestionType)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = QuestionType[enumValue as QuestionType];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
 export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
   label: key,
   value: FloorType[key as keyof typeof FloorType],
 })) as Option[];
+
+export const ApprovalDocumentOptions = Object.keys(ApprovalDocument).map(
+  (key) => ({
+    label: splitWords(key),
+    value: ApprovalDocument[key as keyof typeof ApprovalDocument],
+  }),
+) as Option[];
 
 export const RawLocationOptions = Object.keys(RawLocationType).map((key) => ({
   label: key,
@@ -859,3 +908,457 @@ export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
 export function waitForTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+export const isImageFile = (filename: string) => {
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+  return imageExtensions.some((ext) => filename.toLowerCase().endsWith(ext));
+};
+
+export const ShipmentStatusOptions = Object.values(ShipmentStatus)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = ShipmentStatus[enumValue as ShipmentStatus];
+    return {
+      label: enumKey, // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
+
+export const capitalizeFirstWord = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+export const WaybillStatusOptions = Object.values(WaybillStatus)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = WaybillStatus[enumValue as WaybillStatus];
+    return {
+      label: enumKey, // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
+
+export const numberToWords = (num: number): string => {
+  const convertHundreds = (n: number): string => {
+    let result = "";
+    if (n >= 100) {
+      result += ones[Math.floor(n / 100)] + " Hundred ";
+      n %= 100;
+    }
+    if (n >= 20) {
+      result += tens[Math.floor(n / 10)] + " ";
+      n %= 10;
+    }
+    if (n > 0) {
+      result += ones[n] + " ";
+    }
+    return result.trim();
+  };
+
+  if (num === 0) return "Zero";
+  let result = "";
+  let scaleIndex = 0;
+
+  while (num > 0) {
+    const chunk = num % 1000;
+    if (chunk !== 0) {
+      result = convertHundreds(chunk) + " " + scales[scaleIndex] + " " + result;
+    }
+    num = Math.floor(num / 1000);
+    scaleIndex++;
+  }
+
+  // Handle decimal part for cents
+  const decimalPart = Math.round((num - Math.floor(num)) * 100);
+  if (decimalPart > 0) {
+    result += `and ${decimalPart}/100`;
+  }
+
+  return result.replace(/\s+/g, " ").trim() + " Dollars";
+};
+
+export function amountToWordsBritishStyle(
+  num: number,
+  currency?: string,
+): string {
+  const belowTwenty = [
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
+
+  const thousands = ["", "Thousand", "Million", "Billion"];
+
+  function helper(n: number): string {
+    if (n === 0) return "";
+    if (n < 20) return belowTwenty[n];
+    if (n < 100)
+      return (
+        tens[Math.floor(n / 10)] +
+        (n % 10 !== 0 ? "-" + belowTwenty[n % 10] : "")
+      );
+    if (n < 1000) {
+      const remainder = n % 100;
+      return (
+        belowTwenty[Math.floor(n / 100)] +
+        " Hundred" +
+        (remainder !== 0 ? " and " + helper(remainder) : "")
+      );
+    }
+    return "";
+  }
+
+  function convertInteger(n: number): string {
+    if (n === 0) return "Zero";
+    let res = "";
+    let i = 0;
+    while (n > 0) {
+      const chunk = n % 1000;
+      if (chunk !== 0) {
+        const chunkStr = helper(chunk);
+        res =
+          chunkStr +
+          (thousands[i] ? " " + thousands[i] : "") +
+          (res ? " " + res : "");
+      }
+      n = Math.floor(n / 1000);
+      i++;
+    }
+    return res.trim();
+  }
+
+  const [whole, decimal] = num.toFixed(2).split(".");
+  const dollars = parseInt(whole);
+  const cents = parseInt(decimal);
+
+  let result =
+    convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
+  if (cents > 0) {
+    result +=
+      " and " + convertInteger(cents) + " coin" + (cents !== 1 ? "s" : "");
+  }
+
+  return result;
+}
+
+export function amountToWordsAmericanStyle(
+  num: number,
+  currency?: string,
+): string {
+  const belowTwenty = [
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
+
+  const thousands = ["", "Thousand", "Million", "Billion"];
+
+  function helper(n: number): string {
+    if (n === 0) return "";
+    else if (n < 20) return belowTwenty[n] + " ";
+    else if (n < 100) return tens[Math.floor(n / 10)] + " " + helper(n % 10);
+    else
+      return belowTwenty[Math.floor(n / 100)] + " Hundred " + helper(n % 100);
+  }
+
+  function convertInteger(n: number): string {
+    if (n === 0) return "Zero";
+    let res = "";
+    let i = 0;
+    while (n > 0) {
+      if (n % 1000 !== 0) {
+        res = helper(n % 1000) + thousands[i] + " " + res;
+      }
+      n = Math.floor(n / 1000);
+      i++;
+    }
+    return res.trim();
+  }
+
+  const [whole, decimal] = num.toFixed(2).split(".");
+  const dollars = parseInt(whole);
+  const cents = parseInt(decimal);
+
+  let result =
+    convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
+  if (cents > 0) {
+    result +=
+      " and " + convertInteger(cents) + " Coin" + (cents !== 1 ? "s" : "");
+  }
+
+  return result; //.replace(/\s+/g, " ").trim() + " "+ currency;
+}
+
+export function formatAmount(
+  value: number,
+  options?: {
+    currencySymbol?: string;
+    decimalPlaces?: number;
+    thousandSeparator?: string;
+    decimalSeparator?: string;
+    prefix?: string;
+    suffix?: string;
+  },
+): string {
+  const {
+    currencySymbol = "",
+    decimalPlaces = 2,
+    thousandSeparator = ",",
+    decimalSeparator = ".",
+    prefix = "",
+    suffix = "",
+  } = options || {};
+
+  const negative = value < 0;
+  const absValue = Math.abs(value).toFixed(decimalPlaces);
+
+  const [integerPart, decimalPart] = absValue.split(".");
+
+  const withThousands = integerPart.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    thousandSeparator,
+  );
+
+  let result = `${currencySymbol}${withThousands}`;
+  if (decimalPlaces > 0) {
+    result += `${decimalSeparator}${decimalPart}`;
+  }
+
+  if (prefix) result = prefix + result;
+  if (suffix) result += suffix;
+
+  return negative ? `-${result}` : result;
+}
+
+const Access = "Access";
+// const Self = "Self";
+// const Direct = "Direct";
+// const Indirect = "Indirect";
+export const permissionOptions = [Access];
+export const hasOptions = [Access];
+export const groupByModule = (children: RecordItem[]) => {
+  return children.reduce(
+    (acc, child) => {
+      acc[child.subModule] = acc[child.subModule] || [];
+      acc[child.subModule].push(child);
+      return acc;
+    },
+    {} as Record<string, RecordItem[]>,
+  );
+};
+
+export const removeDuplicateTypes = (data: Section[]): Section[] => {
+  return data.map((section) => ({
+    ...section,
+    children: section.children.map((child) => ({
+      ...child,
+      types: [...new Set(child.types)], // Remove duplicate values
+    })),
+  }));
+};
+
+export const findRecordWithFullAccess = (
+  sections: Section[],
+  key: string,
+): RecordItem | null => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child?.key === key) {
+        // Check if the types array includes FullAccess
+        if (child?.types?.includes(Access)) {
+          return child;
+        }
+      }
+    }
+  }
+  return null; // Return null if the key is not found or FullAccess is not in types
+};
+export const findRecordWithSpecifiedAccess = (
+  sections: Section[],
+  key: string,
+  access: string,
+): boolean => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child.key === key) {
+        // Check if the types array includes FullAccess
+        if (child.types.includes(access)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false; // Return null if the key is not found or FullAccess is not in types
+};
+
+export const findRecordWithNotIncludedAccess = (
+  sections: Section[],
+  key: string,
+  access: string,
+): boolean => {
+  for (const section of sections) {
+    for (const child of section.children) {
+      if (child.key === key) {
+        console.log(child.types, access, "access, types");
+        // Check if the types array includes FullAccess
+        if (!child.types.includes(access)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false; // Return null if the key is not found or FullAccess is not in types
+};
+
+// export const isSelfPlusOtherOrNonSelf = (accessList: string[]): boolean => {
+//   return !(accessList.length === 1 && accessList.includes(Self));
+// };
+// export const findRecordWithNotIncludedSelfAccess = (
+//   sections: Section[],
+//   key: string,
+// ): boolean => {
+//   for (const section of sections) {
+//     for (const child of section.children) {
+//       if (child.key === key) {
+//         // console.log(child.types, access, "access, types");
+//         // Check if the types array includes FullAccess
+//         return isSelfPlusOtherOrNonSelf(child.types);
+//         // if (!child.types.includes(access)) {
+//         //   return true;
+//         // }
+//       }
+//     }
+//   }
+//   return false; // Return null if the key is not found or FullAccess is not in types
+// };
+
+export const formatClock = (
+  hours: number,
+  minutes: number,
+  light: boolean,
+  days?: number,
+): string => {
+  const timeStr = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")} ${light ? "AM" : "PM"}`;
+  if (days && days > 0) {
+    const result = `${days}d ${timeStr}`.trim();
+    return result;
+  }
+  const result = timeStr.trim();
+  return result;
+};
+
+export const parseClock = (input: string) => {
+  const regex = /(?:(\d+)d\s*)?(\d{2}):(\d{2})\s*(AM|PM)/i;
+  const match = input.match(regex);
+
+  if (!match) return { days: 0, hours: 0, minutes: 0, light: true };
+
+  const [, d, h, m, ampm] = match;
+  return {
+    days: d ? parseInt(d) : 0,
+    hours: h ? parseInt(h) : 0,
+    minutes: m ? parseInt(m) : 0,
+    light: ampm?.toUpperCase() === "AM",
+  };
+};
+
+export const formatClock24 = (
+  hours: number,
+  minutes: number,
+  light: boolean,
+  days?: number,
+): string => {
+  // Convert 12-hour to 24-hour format
+  let h = hours % 12; // converts 12 to 0
+  if (!light) h += 12;
+
+  const hh = h.toString().padStart(2, "0");
+  const mm = minutes.toString().padStart(2, "0");
+  const ss = "00";
+
+  if (typeof days === "number" && days > 0) {
+    return `${days}.${hh}:${mm}:${ss}`;
+  }
+
+  return `0.${hh}:${mm}:${ss}`;
+};
+
+export const parseClockReadable = (input: string): string => {
+  const regex = /^(\d+)\.(\d{2}):(\d{2}):(\d{2})$/;
+  const match = input.match(regex);
+
+  if (!match) return "0d 12:00 AM";
+
+  const [, d, hhStr, mmStr] = match;
+  const days = parseInt(d, 10);
+  const hours24 = parseInt(hhStr, 10);
+  const minutes = parseInt(mmStr, 10);
+
+  const light = hours24 < 12;
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+  const paddedHours = hours12.toString().padStart(2, "0");
+  const paddedMinutes = minutes.toString().padStart(2, "0");
+  const ampm = light ? "AM" : "PM";
+
+  return `${days}d ${paddedHours}:${paddedMinutes} ${ampm}`;
+};

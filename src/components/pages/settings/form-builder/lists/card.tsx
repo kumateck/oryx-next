@@ -4,17 +4,18 @@ import type { FC } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
-import { Icon } from "@/components/ui";
-import { QuestionTypes, cn } from "@/lib";
+import { Icon, Switch } from "@/components/ui";
+import { QuestionType, cn } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 
+import { templateQuestions } from "../templates/type";
 import { ItemTypes } from "./type";
 
 const style = {
-  border: "1px dashed gray",
+  // border: "1px dashed gray",
   padding: "0.5rem 1rem",
   marginBottom: ".5rem",
-  backgroundColor: "white",
+  // backgroundColor: "blue",
   cursor: "move",
 };
 
@@ -25,6 +26,7 @@ export interface CardProps {
   setHighlightedQuestion: React.Dispatch<
     React.SetStateAction<QuestionDto | undefined>
   >;
+  setQuestions: React.Dispatch<React.SetStateAction<templateQuestions[]>>;
   onDeleteQuestion: (questionId: string) => void;
 
   index: number;
@@ -43,6 +45,7 @@ export const Card: FC<CardProps> = ({
   highlightedQuestion,
   setHighlightedQuestion,
   onDeleteQuestion,
+  setQuestions,
   index,
   moveCard,
 }) => {
@@ -120,48 +123,61 @@ export const Card: FC<CardProps> = ({
 
   const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
+
+  // const isActive = canDrop && isOver
+  // let backgroundColor = 'white'
+  // if (isActive) {
+  //   backgroundColor = 'darkgreen'
+  // } else if (canDrop) {
+  //   backgroundColor = 'darkkhaki'
+  // }
+
+  // console.log(canDrop,isOver,isActive,backgroundColor)
   return (
     <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
       <div
         className={cn("relative w-full rounded-2xl border bg-white p-8", {
-          "border-secondary-500 shadow-secondary-500 shadow-sm":
+          "border-dashed border-primary-default":
             highlightedQuestion?.id === question.id,
         })}
         onClick={() => setHighlightedQuestion(question)}
       >
         {highlightedQuestion?.id === question.id && (
           <div className="absolute left-1/2 top-0 translate-x-1 translate-y-1/2 transform">
-            <Icon name="GripHorizontal" className="h-6 w-8 text-neutral-300" />
+            <Icon
+              name="GripHorizontal"
+              className="h-6 w-8 text-neutral-input"
+            />
           </div>
         )}
         <div className="flex items-center justify-between gap-6">
           <div className="w-full space-y-1">
-            <span className="font-Medium block text-sm text-neutral-900">
+            <span className="font-Medium block text-sm text-neutral-dark">
               {question?.label}
             </span>
 
-            {(QuestionTypes.ShortAnswer === question.type ||
-              QuestionTypes.LongAnswer === question.type) && (
+            {(QuestionType.ShortAnswer === question.type ||
+              QuestionType.LongAnswer === question.type) && (
               <div className="rounded-2xl border px-3 py-2.5">
-                <span className="text-sm text-neutral-400">Short Answer</span>
+                <span className="text-sm text-neutral-input">Short Answer</span>
               </div>
             )}
 
-            {QuestionTypes.Paragraph === question.type && (
+            {QuestionType.Paragraph === question.type && (
               <div className="h-28 rounded-2xl border px-3 py-2.5">
-                <span className="text-sm text-neutral-400">Paragraph</span>
+                <span className="text-sm text-neutral-input">Paragraph</span>
               </div>
             )}
-            {(question.type === QuestionTypes.SingleChoice ||
-              question.type === QuestionTypes.Checkbox) && (
+            {(question.type === QuestionType.SingleChoice ||
+              question.type === QuestionType.Checkbox) && (
               <ul className="space-y-2">
                 {question?.options?.map((option, idx) => (
                   <li className="flex items-center gap-2" key={idx}>
                     <div
                       className={cn("h-6 w-6 border border-neutral-400", {
                         "rounded-full":
-                          question.type === QuestionTypes.SingleChoice,
-                        "rounded-2xl": question.type === QuestionTypes.Checkbox,
+                          question.type === QuestionType.SingleChoice,
+                        "rounded-2xl": question.type === QuestionType.Checkbox,
                       })}
                     />
                     <span className="text-sm text-black">{option.name}</span>
@@ -170,26 +186,26 @@ export const Card: FC<CardProps> = ({
               </ul>
             )}
 
-            {QuestionTypes.Dropdown === question.type && (
+            {QuestionType.Dropdown === question.type && (
               <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">Select One</span>
                 <Icon name="ChevronDown" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
-            {QuestionTypes.Datepicker === question.type && (
+            {QuestionType.Datepicker === question.type && (
               <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">DD/MM/YY</span>
                 <Icon name="Calendar" className="h-5 w-5 text-neutral-500" />
               </div>
             )}
-            {/* {QuestionTypes.Time === question.type && (
+            {/* {QuestionType.Time === question.type && (
               <div className="flex w-full max-w-md items-center justify-between rounded-2xl border px-3 py-2.5">
                 <span className="text-sm text-neutral-400">12:00</span>
                 <Icon name="Clock" className="h-5 w-5 text-neutral-500" />
               </div>
             )} */}
 
-            {QuestionTypes.FileUpload === question.type && (
+            {QuestionType.FileUpload === question.type && (
               <div className="flex w-full flex-col items-center rounded-2xl border border-dashed border-neutral-400 p-4">
                 <div className="w-full max-w-md text-center">
                   <input
@@ -225,23 +241,21 @@ export const Card: FC<CardProps> = ({
             />
           )}
         </div>
-        {/* {highlightedQuestion?.id === question.id && (
+        {highlightedQuestion?.id === question.id && (
           <div className="pt-5">
             <Switch
               className="h-4 w-7"
-              checked={question.}
+              // checked={}
               onCheckedChange={(e) =>
                 setQuestions((prevState) =>
-                  prevState.map((item) =>
-                    item.questionId === question.questionId
-                      ? { ...item, required: e }
-                      : item,
+                  prevState?.map((item) =>
+                    item.id === question.id ? { ...item, required: e } : item,
                   ),
                 )
               }
             />
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
