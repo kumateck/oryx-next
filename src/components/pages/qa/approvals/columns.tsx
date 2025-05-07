@@ -5,6 +5,7 @@ import { format } from "date-fns";
 // import { Icon } from "@/components/ui";
 
 import { ApprovalEntityRead } from "@/lib/redux/api/openapi.generated";
+import { splitWords } from "@/lib";
 
 // import Edit from "./edit";
 
@@ -34,7 +35,11 @@ export const columns: ColumnDef<ApprovalEntityRead>[] = [
   {
     accessorKey: "modelType",
     header: "Approval Type",
-    cell: ({ row }) => <div className="min-w-36">{row.original.modelType}</div>,
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {splitWords(row.original.modelType as string)}
+      </div>
+    ),
   },
   {
     accessorKey: "code",
