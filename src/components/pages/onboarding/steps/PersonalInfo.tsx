@@ -119,6 +119,12 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.DATE,
             control: control as Control,
             required: true,
+            disabled: {
+              // after: new Date(2010, 1, 1),
+              after: new Date(
+                new Date().setFullYear(new Date().getFullYear() - 16),
+              ),
+            },
             errors,
           },
           {

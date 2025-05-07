@@ -13,7 +13,7 @@ import {
   useLazyGetApiV1LeaveRequestQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 
 const Page = () => {
@@ -25,7 +25,7 @@ const Page = () => {
     pageSize,
   });
   const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveRequestQuery();
-  const router = useRouter();
+  // const router = useRouter();
   useEffect(() => {
     loadLeaveTypes({
       page,
@@ -51,9 +51,9 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        onRowClick={(row) => {
-          router.push(`/hr/leave-management/${row.id}/details`);
-        }}
+        // onRowClick={(row) => {
+        //   router.push(`/hr/leave-management/${row.id}/details`);
+        // }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}

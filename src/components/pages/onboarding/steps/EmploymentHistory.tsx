@@ -93,6 +93,7 @@ const EmploymentHistoryStep = <TFieldValues extends FieldValues, TContext>({
                     placeholder: "Select your start date",
                     control: control as Control,
                     required: true,
+                    disabled: { after: new Date() },
                     errors,
                   },
                   {
@@ -102,6 +103,7 @@ const EmploymentHistoryStep = <TFieldValues extends FieldValues, TContext>({
                     placeholder: "Select your end date",
                     control: control as Control,
                     required: true,
+                    disabled: { after: new Date() },
                     errors,
                   },
                 ]}
