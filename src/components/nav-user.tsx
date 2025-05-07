@@ -63,6 +63,7 @@ export function NavUser() {
                 <span className="truncate text-xs">
                   {user?.department?.name}
                 </span>
+                <span>{user?.roles?.map((role) => role.name).join(", ")}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
