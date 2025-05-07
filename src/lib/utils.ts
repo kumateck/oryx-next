@@ -1063,7 +1063,7 @@ export function amountToWordsBritishStyle(
     convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
   if (cents > 0) {
     result +=
-      " and " + convertInteger(cents) + " Pesewa" + (cents !== 1 ? "s" : "");
+      " and " + convertInteger(cents) + " coin" + (cents !== 1 ? "s" : "");
   }
 
   return result;
@@ -1141,7 +1141,7 @@ export function amountToWordsAmericanStyle(
     convertInteger(dollars) + " " + currency + (dollars !== 1 ? "s" : "");
   if (cents > 0) {
     result +=
-      " and " + convertInteger(cents) + " Cent" + (cents !== 1 ? "s" : "");
+      " and " + convertInteger(cents) + " Coin" + (cents !== 1 ? "s" : "");
   }
 
   return result; //.replace(/\s+/g, " ").trim() + " "+ currency;

@@ -45,6 +45,7 @@ const RevisePurchaseOrder = () => {
     useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
 
   useEffect(() => {
+    setItemLists(() => []);
     handleLoadPO(POId);
 
     if (triggerReload) {
@@ -94,7 +95,7 @@ const RevisePurchaseOrder = () => {
       };
     }) as RevisionRequestDto[];
 
-    setItemLists(response);
+    setItemLists(() => response);
   };
 
   const onBack = () => {
@@ -129,7 +130,7 @@ const RevisePurchaseOrder = () => {
         }),
       } satisfies PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg).unwrap();
       toast.success("Purchase Order revised successfully");
-      router.back();
+      router.push(`/procurement/purchase-orders/${POId}`);
     } catch (error) {
       console.error("Error saving purchase order:", error);
       toast.error(
