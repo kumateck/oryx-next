@@ -118,6 +118,11 @@ export const columns: ColumnDef<DesignationDto>[] = [
     ),
   },
   {
+    accessorKey: "maximumLeaveDays",
+    header: "Maximum Leave Days",
+    cell: ({ row }) => <div>{row.original.maximumLeaveDays}</div>,
+  },
+  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => (
