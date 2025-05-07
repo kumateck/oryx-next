@@ -33,7 +33,6 @@ const Board = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityId, triggerReload]);
   const steps = data?.steps;
-
   const activities = steps?.map((step) => ({
     id: step.id as string,
     title: step.operation?.name as string,
