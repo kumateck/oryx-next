@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
@@ -72,6 +72,22 @@ const WaybillForm = <TFieldValues extends FieldValues, TContext>({
             setItemLists={setMaterialLists}
           />
         </CardContent>
+        <CardFooter className="flex items-center justify-end">
+          <div className="flex justify-end gap-2 font-semibold">
+            <span>Total Cost:</span>
+            <span className="text-neutral-seondary ">
+              {" "}
+              {materialLists
+                ?.reduce(
+                  (acc, item) =>
+                    acc +
+                    Number(item.receivedQuantity) * Number(item.costPrice),
+                  0,
+                )
+                .toFixed(2)}
+            </span>
+          </div>
+        </CardFooter>
       </Card>
 
       <div>

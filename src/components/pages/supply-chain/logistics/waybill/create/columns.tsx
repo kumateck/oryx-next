@@ -46,8 +46,10 @@ export const columns: ColumnDef<MaterialRequestDto>[] = [
     cell: ({ row }) => (
       <div>
         {row.original.costPrice !== undefined
-          ? Number(row.original.receivedQuantity) *
-            Number(row.original.costPrice)
+          ? (
+              Number(row.original.receivedQuantity) *
+              Number(row.original.costPrice)
+            ).toFixed(2)
           : "-"}
       </div>
     ),
