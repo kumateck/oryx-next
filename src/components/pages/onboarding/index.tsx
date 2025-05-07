@@ -87,7 +87,7 @@ export default function OnboardingForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { type } = useParams();
-  const etype = type as unknown as EmployeeType;
+  const etype = type as string;
 
   const {
     register,
@@ -196,7 +196,7 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
-    employeeType: etype,
+    employeeType: parseInt(etype) as unknown as EmployeeType,
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),

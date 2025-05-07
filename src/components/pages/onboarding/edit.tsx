@@ -83,6 +83,7 @@ const steps = [
 const transformApiDataToFormValues = (
   data: EmployeeDto,
 ): OnboardingFormValues => ({
+  passportPhoto: data.attachments,
   firstName: data.firstName as string,
   lastName: data.lastName as string,
   address: data.residentialAddress as string,
@@ -185,7 +186,6 @@ const transformApiDataToFormValues = (
       endDate: new Date(emp.endDate as string),
       position: emp.position as string,
     })) || [],
-  passportPhoto: null,
 });
 
 export default function EditEmployeeForm() {
@@ -415,6 +415,7 @@ export default function EditEmployeeForm() {
             register={register}
             control={control}
             errors={errors}
+            defaulValues={employeeData}
             fields={
               currentStep === 2
                 ? childFields

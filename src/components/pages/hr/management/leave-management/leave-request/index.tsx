@@ -67,12 +67,12 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
       const payload = {
-        leaveTypeId: data.leaveTypeId.value,
+        leaveTypeId: data.leaveTypeId?.value as string,
         startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson ?? "",
-        contactPersonNumber: data.contactPersonNumber ?? "",
+        contactPerson: data.contactPerson ?? "-",
+        contactPersonNumber: data.contactPersonNumber ?? "-",
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,

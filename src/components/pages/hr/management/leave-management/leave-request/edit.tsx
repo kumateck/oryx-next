@@ -86,12 +86,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const onSubmit = async (data: LeaveRequest) => {
     try {
       const payload = {
-        leaveTypeId: data.leaveTypeId.value,
+        leaveTypeId: data.leaveTypeId?.value as string,
         startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson,
-        contactPersonNumber: data.contactPersonNumber,
+        contactPerson: data.contactPerson as string,
+        contactPersonNumber: data.contactPersonNumber as string,
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,
