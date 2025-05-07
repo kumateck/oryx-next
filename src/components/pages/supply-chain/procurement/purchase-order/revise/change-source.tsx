@@ -14,6 +14,7 @@ import {
   InputTypes,
   isErrorResponse,
   Option,
+  RevisionType,
   SupplierType,
   Units,
 } from "@/lib";
@@ -32,6 +33,7 @@ import {
   useGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery,
   useGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery,
   usePostApiV1RequisitionSourceMutation,
+  usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
@@ -47,6 +49,8 @@ interface Props {
 const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
   const { id } = useParams();
   const purchaseOrderId = id as string;
+  const [saveChangesMutation, { isLoading: isSaving }] =
+    usePutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseMutation();
 
   const { data: requisitionId } =
     useGetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdQuery(
@@ -56,7 +60,6 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
       },
     );
 
-  // console.log(requisitionId, "requisition");
   const dispatch = useDispatch();
   const {
     control,
@@ -66,7 +69,6 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
   } = useForm<SuppliersRequestDto>({
     resolver: CreateSuppliersValidator,
     mode: "all",
-    // defaultValues: {},
   });
   const [saveMutation, { isLoading }] = usePostApiV1RequisitionSourceMutation();
   const onSubmit = async (data: SuppliersRequestDto) => {
@@ -94,6 +96,20 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
       await saveMutation({
         createSourceRequisitionRequest: payload,
       } as PostApiV1RequisitionSourceApiArg);
+      await saveChangesMutation({
+        purchaseOrderId,
+        body: [
+          {
+            uoMId: details.uoM.value,
+            materialId: details.material?.value,
+            currencyId: details.currency?.value,
+            type: RevisionType.ChangeSource,
+            quantity: details.quantity,
+            price: details.price,
+            purchaseOrderItemId: details.purchaseOrderItemId,
+          },
+        ],
+      });
       toast.success("Sourcing created successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
@@ -144,7 +160,7 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
               Cancel
             </Button>
             <Button>
-              {isLoading && (
+              {(isLoading || isSaving) && (
                 <Icon name="LoaderCircle" className="animate-spin" />
               )}
               <span>Save Changes</span>
