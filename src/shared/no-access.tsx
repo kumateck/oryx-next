@@ -1,5 +1,6 @@
-import Padlock from "@/assets/images/Lock-Icon.svg";
-// import { Icon } from "@/components/ui";
+// No access UI updated
+// Path: Src > Shared > no-access.tsx
+
 import Image from "next/image";
 
 const NoAccess = () => {
@@ -8,7 +9,7 @@ const NoAccess = () => {
       <div className="text-center">
         {/* Image from next-images*/}
         <Image
-          src={Padlock.src}
+          src="/icons/Lock-Icon.svg"
           alt="Access Denied"
           width={150}
           height={150}
