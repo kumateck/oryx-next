@@ -8,6 +8,7 @@ import {
   InputTypes,
   PackLocationOptions,
   RawLocationOptions,
+  WarehouseType,
 } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
@@ -53,7 +54,9 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             placeholder: "Select name",
             options:
-              warehouseType === 1 ? RawLocationOptions : PackLocationOptions,
+              warehouseType === WarehouseType.RawMaterial
+                ? RawLocationOptions
+                : PackLocationOptions,
             errors,
           },
         ]}
