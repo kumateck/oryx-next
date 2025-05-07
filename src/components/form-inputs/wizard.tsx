@@ -82,7 +82,7 @@ interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
   control: Control<FieldValues>;
   name: string;
   defaultValue: FileList | null;
-  multiple?: boolean;
+  single?: boolean;
 }
 
 interface DateInputProps extends BaseInputProps<FieldValues> {
@@ -421,6 +421,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               required={formInput.required}
               onChange={onChange}
               errors={formInput.errors}
+              single={formInput.single}
             />
           )}
         />
