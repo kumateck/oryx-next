@@ -183,8 +183,14 @@ const Create = ({
         </DialogHeader>
         <div className="flex items-start gap-4">
           <div className="w-1/2">
-            <div className="mb-2">
-              <span className="text-xl">Purchase Order {data?.code}</span>
+            <div className="mb-5">
+              <p className="text-lg">Purchase Order {data?.code}</p>
+              <p className="text-gray-500">
+                Supplier Name: {data?.supplier?.name}
+              </p>
+              <p className="text-gray-500">
+                Supplier Contact: {data?.supplier?.contactNumber}
+              </p>
             </div>
             <ListsTable
               data={data?.items ?? []}
