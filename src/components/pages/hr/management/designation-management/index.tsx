@@ -14,11 +14,16 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
+import { useDispatch } from "react-redux";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
 
 const Page = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+
   const { data: result, isLoading } = useGetApiV1DesignationQuery({
     page,
     pageSize,
@@ -30,8 +35,11 @@ const Page = () => {
       page,
       pageSize,
     });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
