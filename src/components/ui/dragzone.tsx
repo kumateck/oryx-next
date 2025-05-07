@@ -14,9 +14,11 @@ interface Props {
   onChange: (files: FileList | null) => void;
   defaultValue: FileList | null;
   name: string;
+  multiple?: boolean;
+  single?: boolean;
 }
 
-export function DropZone({ onChange, defaultValue, name }: Props) {
+export function DropZone({ onChange, defaultValue, name, single }: Props) {
   const [files, setFiles] = useState<FileType[]>([]);
 
   const updateOnChange = useCallback(
@@ -68,6 +70,7 @@ export function DropZone({ onChange, defaultValue, name }: Props) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    multiple: !single,
     accept: {
       "image/png": [],
       "image/jpeg": [], // covers both JPG and JPEG
