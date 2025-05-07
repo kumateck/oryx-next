@@ -31,9 +31,10 @@ import {
 import Form from "./form";
 import { CreateFinalDetailsValidator, FinalDetailsRequestDto } from "./types";
 import { ListsTable } from "@/shared/datatable";
-import { getColumns } from "../details/columns";
+
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { getColumns } from "../details/columns";
 
 interface Props {
   isOpen: boolean;
@@ -182,6 +183,9 @@ const Create = ({
         </DialogHeader>
         <div className="flex items-start gap-4">
           <div className="w-1/2">
+            <div className="mb-2">
+              <span className="text-xl">Purchase Order {data?.code}</span>
+            </div>
             <ListsTable
               data={data?.items ?? []}
               columns={getColumns(data?.supplier?.currency?.symbol ?? "")}

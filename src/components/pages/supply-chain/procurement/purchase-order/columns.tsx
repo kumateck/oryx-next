@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
-import { PurchaseOrderStatusList } from "@/lib";
+import {
+  convertToLargestUnit,
+  getSmallestUnit,
+  PurchaseOrderStatusList,
+  Units,
+} from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
@@ -28,8 +33,17 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   const dispatch = useDispatch();
 
   const details = row.original;
-  const totalFobValue =
-    row.original.items?.reduce((sum, item) => sum + (item.cost || 0), 0) || 0;
+
+  const computeTotalFobValue = (items: any[]) => {
+    return items.reduce((total, item) => {
+      if (!item.quantity || !item.price || !item.uom?.symbol) return total;
+      const smallestUnit = getSmallestUnit(item.uom.symbol as Units);
+      const converted = convertToLargestUnit(item.quantity, smallestUnit);
+      return total + converted.value * item.price;
+    }, 0);
+  };
+
+  const totalFobValue = computeTotalFobValue(details.items || []);
   return (
     <section className="flex items-center justify-end gap-2">
       <PrintPreview
