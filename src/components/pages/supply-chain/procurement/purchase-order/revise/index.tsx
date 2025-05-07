@@ -45,6 +45,7 @@ const RevisePurchaseOrder = () => {
     useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery();
 
   useEffect(() => {
+    setItemLists(() => []);
     handleLoadPO(POId);
 
     if (triggerReload) {
@@ -94,7 +95,7 @@ const RevisePurchaseOrder = () => {
       };
     }) as RevisionRequestDto[];
 
-    setItemLists(response);
+    setItemLists(() => response);
   };
 
   const onBack = () => {
