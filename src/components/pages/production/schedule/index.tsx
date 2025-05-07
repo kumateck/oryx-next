@@ -1,3 +1,6 @@
+// Permission and Access (Schedule)
+// path: src > components > pages > production > schedule> index.tsx
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -11,6 +14,10 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
 
 const Page = () => {
   const router = useRouter();
@@ -27,6 +34,31 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check User permissions access
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.viewProductSchedules,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect user to no access
+    return <NoAccess />;
+  }
+
+  // permissions ends here!
+
   const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
