@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
+  EmployeeType,
   ErrorResponse,
   Gender,
   LifeStatus,
@@ -38,7 +39,7 @@ import {
   fullOnboardingSchema,
   stepSchemas,
 } from "./types";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 const steps = [
   {
@@ -85,6 +86,9 @@ export default function OnboardingForm() {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const { type } = useParams();
+  const etype = type as string;
+
   const {
     register,
     handleSubmit,
@@ -96,7 +100,8 @@ export default function OnboardingForm() {
     resolver: zodResolver(fullOnboardingSchema),
     mode: "onTouched",
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       address: "",
       email: "",
       contactNumber: "",
@@ -191,8 +196,9 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
-    // picture: "",
-    fullName: data.fullName,
+    employeeType: parseInt(etype) as unknown as EmployeeType,
+    firstName: data.firstName,
+    lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),
     // gender: Number(data.gender.value as unknown as Gender),
     gender: parseInt(data.gender.value) as unknown as Gender,
@@ -273,13 +279,17 @@ export default function OnboardingForm() {
   });
 
   const onSubmit = async (data: OnboardingFormValues) => {
-    console.log("Form data:", data);
-    const payload = {
-      createEmployeeRequest: transformFormData(data),
-    } satisfies PostApiV1EmployeeApiArg;
-
     try {
-      const employeeId = await createEmployee(payload).unwrap();
+      const payload = {
+        createEmployeeRequest: transformFormData(data),
+      };
+
+      const employeeId = await createEmployee({
+        createEmployeeRequest: payload.createEmployeeRequest,
+      } as PostApiV1EmployeeApiArg).unwrap();
+
+      // const employeeId = await createEmployee(payload).unwrap();
+
       //only after successful submission
       if (employeeId) {
         const formData = new FormData();

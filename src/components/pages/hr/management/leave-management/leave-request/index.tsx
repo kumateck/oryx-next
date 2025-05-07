@@ -67,17 +67,17 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
       const payload = {
-        leaveTypeId: data.leaveTypeId.value,
+        leaveTypeId: data.leaveTypeId?.value as string,
         startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson,
-        contactPersonNumber: data.contactPersonNumber,
+        contactPerson: data.contactPerson ?? "-",
+        contactPersonNumber: data.contactPersonNumber ?? "-",
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,
+        justification: data.justification,
       } satisfies CreateLeaveRequest;
-      console.log(payload);
 
       const leaveRequestId = await createLeaveRequest({
         createLeaveRequest: payload,
@@ -95,7 +95,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
+          modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
           modelId: leaveRequestId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
@@ -119,7 +119,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
   const employeeOptions = employees?.map((item) => {
     return {
-      label: item.fullName,
+      label: item.firstName + " " + item.lastName,
       value: item?.id,
     };
   }) as Option[];

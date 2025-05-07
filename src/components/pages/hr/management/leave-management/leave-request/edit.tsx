@@ -40,7 +40,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     usePutApiV1LeaveRequestByIdMutation();
 
   const defaultEmployee = {
-    label: details?.employee?.fullName as string,
+    label: ((details?.employee?.firstName ?? "") +
+      (details?.employee?.lastName ?? "")) as string,
     value: details?.employee?.id as string,
   };
 
@@ -71,6 +72,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       leaveTypeId: defaultLeaveType,
       startDate: new Date(details.startDate as string),
       endDate: new Date(details.endDate as string),
+      justification: details.justification as string,
     },
   });
 
@@ -84,15 +86,16 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const onSubmit = async (data: LeaveRequest) => {
     try {
       const payload = {
-        leaveTypeId: data.leaveTypeId.value,
+        leaveTypeId: data.leaveTypeId?.value as string,
         startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson,
-        contactPersonNumber: data.contactPersonNumber,
+        contactPerson: data.contactPerson as string,
+        contactPersonNumber: data.contactPersonNumber as string,
         requestCategory: parseInt(
           data.leaveCategory.value,
         ) as unknown as RequestCategory,
+        justification: data.justification,
       } satisfies CreateLeaveRequest;
       console.log(payload);
 
@@ -137,7 +140,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
   const employeeOptions = employees?.map((item) => {
     return {
-      label: item.fullName,
+      label: item.firstName + " " + item.lastName,
       value: item?.id,
     };
   }) as Option[];

@@ -42,7 +42,8 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
         {
           // No heading provided; render details in a 3-column grid.
           details: [
-            { label: "Full Name", value: data.fullName || "" },
+            { label: "First Name", value: data.firstName || "" },
+            { label: "Last Name", value: data.lastName || "" },
             {
               label: "Date of Birth",
               value: data.dob ? new Date(data.dob).toLocaleDateString() : "",

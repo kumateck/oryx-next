@@ -39,17 +39,6 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
         className="w-full space-y-5"
         config={[
           {
-            label: "Leave Type",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "leaveTypeId",
-            required: true,
-            defaultValue: defaultValues?.leaveTypesId,
-            placeholder: "Select leave type",
-            options: leaveTypesOptions,
-            errors,
-          },
-          {
             label: "Leave Category",
             control: control as Control,
             type: InputTypes.SELECT,
@@ -62,6 +51,26 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+      {!isExitPass && (
+        <div className="w-full my-5">
+          <FormWizard
+            className="w-full space-y-5"
+            config={[
+              {
+                label: "Leave Type",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "leaveTypeId",
+                required: true,
+                defaultValue: defaultValues?.leaveTypesId,
+                placeholder: "Select leave type",
+                options: leaveTypesOptions,
+                errors,
+              },
+            ]}
+          />
+        </div>
+      )}
       {!isExitPass && (
         <div className="w-full my-5 gap-4 grid grid-cols-2">
           <FormWizard
@@ -151,27 +160,30 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <FormWizard
-        className="w-full space-y-5 my-5"
-        config={[
-          {
-            register: register("contactPerson" as Path<TFieldValues>),
-            label: "Contact Person",
-            placeholder: "Enter contact person name",
-            type: InputTypes.TEXT,
-            required: true,
-            errors,
-          },
-          {
-            register: register("contactPersonNumber" as Path<TFieldValues>),
-            label: "Contact Person Number",
-            placeholder: "Enter contact person number",
-            type: InputTypes.TEXT,
-            required: true,
-            errors,
-          },
-        ]}
-      />
+      {!isExitPass && (
+        <div className="w-full my-5 gap-4">
+          <FormWizard
+            config={[
+              {
+                register: register("contactPerson" as Path<TFieldValues>),
+                label: "Contact Person",
+                placeholder: "Enter contact person name",
+                type: InputTypes.TEXT,
+                required: true,
+                errors,
+              },
+              {
+                register: register("contactPersonNumber" as Path<TFieldValues>),
+                label: "Contact Person Number",
+                placeholder: "Enter contact person number",
+                type: InputTypes.TEXT,
+                required: true,
+                errors,
+              },
+            ]}
+          />
+        </div>
+      )}
       <FormWizard
         className="w-full space-y-5 my-5"
         config={[
@@ -181,6 +193,21 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             name: `attachments`,
             defaultValue: null,
             control: control as Control,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        className="w-full"
+        config={[
+          {
+            label: "Justification",
+            control: control as Control,
+            type: InputTypes.RICHTEXT,
+            name: "justification",
+            autoFocus: true,
+            placeholder: "Enter justification for leave",
+            suggestions: [],
             errors,
           },
         ]}

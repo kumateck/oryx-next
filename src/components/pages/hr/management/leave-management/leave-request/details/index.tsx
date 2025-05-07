@@ -86,11 +86,15 @@ function LeaveDetails() {
             </div>
             <div className="flex gap-2 items-center">
               <span>Requested By:</span>
-              <span className="font-medium">{data?.employee?.fullName}</span>
+              <span className="font-medium">
+                {data?.employee?.firstName} {data?.employee?.lastName}
+              </span>
             </div>
             <div className="flex gap-2 items-center">
               <span>Request Date:</span>
-              <span className="font-medium">{}</span>
+              <span className="font-medium">
+                {data?.createdAt ? format(data.createdAt, "MMM dd, yyyy") : "-"}
+              </span>
             </div>
           </div>
         </CardContent>
@@ -105,7 +109,9 @@ function LeaveDetails() {
             {/* Row 1 */}
             <div className="flex gap-2 items-center">
               <span>Staff Name:</span>
-              <span className="font-semibold">{data?.employee?.fullName}</span>
+              <span className="font-semibold">
+                {data?.employee?.firstName} {data?.employee?.lastName}
+              </span>
             </div>
             <div className="flex gap-2 items-center">
               <span>Leave Type:</span>
@@ -156,7 +162,7 @@ function LeaveDetails() {
           </div>
 
           <div className="mt-5">
-            <span className="font-semibold">Attachments</span>
+            <div className="font-semibold">Attachments</div>
             {data?.attachments?.length ? (
               <>
                 <span>Images</span>

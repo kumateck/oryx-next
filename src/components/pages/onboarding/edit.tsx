@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 import {
   CODE_SETTINGS,
+  EmployeeType,
   ErrorResponse,
   Gender,
   LifeStatus,
@@ -82,7 +83,9 @@ const steps = [
 const transformApiDataToFormValues = (
   data: EmployeeDto,
 ): OnboardingFormValues => ({
-  fullName: data.fullName as string,
+  passportPhoto: data.attachments,
+  firstName: data.firstName as string,
+  lastName: data.lastName as string,
   address: data.residentialAddress as string,
   email: data.email as string,
   contactNumber: data.phoneNumber as string,
@@ -132,17 +135,10 @@ const transformApiDataToFormValues = (
           fullName: data.spouse.fullName as string,
           contactNumber: data.spouse.phoneNumber as string,
           occupation: data.spouse.occupation as string,
-          lifeStatus: data.spouse.lifeStatus
-            ? {
-                value: data.spouse.lifeStatus.toString() as string,
-                label: LifeStatus[
-                  data.spouse.lifeStatus as LifeStatus
-                ] as string,
-              }
-            : {
-                value: "",
-                label: "",
-              },
+          lifeStatus: {
+            value: data.spouse.lifeStatus.toString() as string,
+            label: LifeStatus[data.spouse.lifeStatus as LifeStatus] as string,
+          },
         }
       : undefined,
   emergencyContact: {
@@ -190,7 +186,6 @@ const transformApiDataToFormValues = (
       endDate: new Date(emp.endDate as string),
       position: emp.position as string,
     })) || [],
-  passportPhoto: null,
 });
 
 export default function EditEmployeeForm() {
@@ -204,6 +199,9 @@ export default function EditEmployeeForm() {
 
   const [updateEmployee, { isLoading }] = usePutApiV1EmployeeByIdMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
+
+  const { type } = useParams();
+  const etype = type as unknown as EmployeeType;
 
   const {
     register,
@@ -266,7 +264,9 @@ export default function EditEmployeeForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     try {
       const payload: CreateEmployeeRequest = {
-        fullName: data.fullName,
+        employeeType: etype,
+        firstName: data.firstName,
+        lastName: data.lastName,
         dateOfBirth: data.dob.toISOString(),
         gender: parseInt(data.gender.value) as unknown as Gender,
         phoneNumber: data.contactNumber,
@@ -391,7 +391,9 @@ export default function EditEmployeeForm() {
         </div>
       </div>
 
-      <PageTitle title={`Edit Employee - ${employeeData?.fullName || ""}`} />
+      <PageTitle
+        title={`Edit Employee - ${employeeData?.firstName || ""} ${employeeData?.lastName || ""}`}
+      />
       <ProgressIndicator steps={steps.length} currentStep={currentStep} />
 
       <form
@@ -413,6 +415,7 @@ export default function EditEmployeeForm() {
             register={register}
             control={control}
             errors={errors}
+            defaulValues={employeeData}
             fields={
               currentStep === 2
                 ? childFields

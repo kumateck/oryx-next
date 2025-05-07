@@ -6427,11 +6427,13 @@ export type EmploymentHistoryDto = {
 };
 export type CreateEmployeeRequest = {
   avatar?: string | null;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   dateOfBirth: string;
   gender: Gender;
   phoneNumber: string;
   region: string;
+  employeeType: EmployeeType;
   nationality: string;
   residentialAddress: string;
   maritalStatus: MaritalStatus;
@@ -6452,9 +6454,19 @@ export type CreateEmployeeRequest = {
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
 };
+export type AttachmentDto = {
+  link?: string | null;
+  name?: string | null;
+  id?: string;
+  reference?: string | null;
+};
 export type EmployeeDto = {
   id?: string;
-  fullName?: string | null;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  firstName?: string | null;
+  lastName?: string | null;
   avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
@@ -6486,7 +6498,11 @@ export type EmployeeDto = {
 };
 export type EmployeeDtoRead = {
   id?: string;
-  fullName?: string | null;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  firstName?: string | null;
+  lastName?: string | null;
   avatar?: string | null;
   dateOfBirth?: string;
   gender?: Gender;
@@ -6609,12 +6625,6 @@ export type FormSectionDto = {
   name?: string | null;
   description?: string | null;
   fields?: FormFieldDto[] | null;
-};
-export type AttachmentDto = {
-  link?: string | null;
-  name?: string | null;
-  id?: string;
-  reference?: string | null;
 };
 export type FormResponseDto = {
   id?: string;
@@ -6741,6 +6751,7 @@ export type LeaveRequestDto = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  justification?: string | null;
   requestCategory?: RequestCategory;
   createdAt?: string;
   leaveStatus?: LeaveStatus;
@@ -6759,6 +6770,7 @@ export type LeaveRequestDtoRead = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  justification?: string | null;
   requestCategory?: RequestCategory;
   createdAt?: string;
   leaveStatus?: LeaveStatus;
