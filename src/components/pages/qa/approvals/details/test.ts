@@ -7,7 +7,7 @@ export const mockApprovalLogs = [
     },
     approvedAt: "2024-03-15T09:30:00Z",
     status: ApprovalStatus.Approved,
-    comments: "Looks good, approved for processing",
+    // comments: "Looks good, approved for processing",
   },
   {
     user: {

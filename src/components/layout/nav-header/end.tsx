@@ -60,12 +60,15 @@ const HeaderEnd = () => {
           align="end"
         >
           <DropdownMenuLabel>
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 ">
               <span className="block text-nowrap text-sm font-normal text-black">
                 {fullname(user?.firstName as string, user?.lastName as string)}
               </span>
-              <span className="text-center font-bold uppercase text-[xs] text-neutral-600">
+              <span className="text-left block font-bold uppercase text-[xs] text-neutral-600">
                 {user?.department?.name}
+              </span>
+              <span className="text-left text-xs text-neutral-primaryAlt capitalize">
+                {user?.roles?.map((role) => role.name).join(", ")}
               </span>
             </div>
           </DropdownMenuLabel>

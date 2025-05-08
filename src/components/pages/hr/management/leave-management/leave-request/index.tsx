@@ -35,11 +35,13 @@ interface Props {
 }
 
 const LeaveRequest = ({ isOpen, onClose }: Props) => {
+  const dispatch = useDispatch();
   const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
-  const [createLeaveRequest, { isLoading }] =
+  const [createLeaveRequest, { isLoading: creating }] =
     usePostApiV1LeaveRequestMutation();
-  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+  const [uploadAttachment, { isLoading: uploading }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
+
   const {
     register,
     control,
@@ -50,7 +52,6 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     resolver: CreateLeaveValidator,
     mode: "all",
   });
-  const dispatch = useDispatch();
 
   const selectedCategory = useWatch({
     control,
@@ -66,6 +67,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
+      // 1. Create the leave request
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
         startDate: data.startDate.toISOString(),
@@ -73,9 +75,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "-",
-        requestCategory: parseInt(
-          data.leaveCategory.value,
-        ) as unknown as RequestCategory,
+        requestCategory: parseInt(data.leaveCategory.value) as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
@@ -83,60 +83,63 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         createLeaveRequest: payload,
       } as PostApiV1LeaveRequestApiArg).unwrap();
 
-      if (leaveRequestId) {
-        const formData = new FormData();
-        // Ensure attachments are an array
-        const attachmentsArray = Array.isArray(data.attachments)
-          ? data.attachments
-          : Array.from(data.attachments); // Convert FileList to an array
-
-        attachmentsArray.forEach((attachment: File) => {
-          formData.append("files", attachment, attachment.name);
-        });
-
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
-          modelId: leaveRequestId,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-      }
-      toast.success("Leave Request created successfully");
+      // 2. Immediately reset & close the form
       reset();
       onClose();
+      toast.success("Leave Request created successfully");
+
+      // 3. Refresh the table
       loadLeaveRequests({ page: 1, pageSize: 10 });
       dispatch(commonActions.setTriggerReload());
+
+      // 4. Then, upload attachments in the background
+      if (leaveRequestId && data.attachments) {
+        const files = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments);
+
+        const formData = new FormData();
+        files.forEach((file) => {
+          formData.append("files", file, file.name);
+        });
+
+        try {
+          await uploadAttachment({
+            modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
+            modelId: leaveRequestId,
+            body: formData,
+          } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+        } catch (err) {
+          console.error(err);
+          toast.error("Failed to upload attachment(s).");
+        }
+      }
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Failed to create leave request.",
+      );
     }
   };
 
+  // fetch employee + leave-type options as before...
   const { data: employeesResponse } = useGetApiV1EmployeeQuery({
     page: 1,
     pageSize: 40,
   });
-
-  const employees = employeesResponse?.data ?? [];
-
-  const employeeOptions = employees?.map((item) => {
-    return {
-      label: item.firstName + " " + item.lastName,
-      value: item?.id,
-    };
-  }) as Option[];
+  const employeeOptions = (employeesResponse?.data || []).map((e) => ({
+    label: `${e.firstName} ${e.lastName}`,
+    value: e.id,
+  })) as Option[];
 
   const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
     page: 1,
     pageSize: 40,
   });
-
-  const leaveTypes = leaveTypesResponse?.data ?? [];
-
-  const leaveTypesOptions = leaveTypes?.map((item) => {
-    return {
-      label: item.name,
-      value: item?.id,
-    };
-  }) as Option[];
+  const leaveTypesOptions = (leaveTypesResponse?.data || []).map((lt) => ({
+    label: lt.name,
+    value: lt.id,
+  })) as Option[];
 
   const categoryOptions = Object.entries(LeaveCategories)
     .filter(([key]) => isNaN(Number(key)))
@@ -163,22 +166,22 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
             isExitPass={isExitPass}
             isLeaveOrAbsence={isLeaveOrAbsence}
           />
+
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>
 
             <Button
-              variant={"default"}
               type="submit"
+              variant="default"
+              disabled={creating || uploading}
               className="flex items-center gap-2"
             >
               <Icon
-                name={
-                  isLoading || isUploadingAttachment ? "LoaderCircle" : "Plus"
-                }
+                name={creating || uploading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": isLoading,
+                  "animate-spin": creating || uploading,
                 })}
               />
               <span>Save</span>

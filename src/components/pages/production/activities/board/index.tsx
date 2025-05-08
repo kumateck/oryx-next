@@ -33,7 +33,7 @@ const Board = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityId, triggerReload]);
   const steps = data?.steps;
-  const activities = steps?.map((step) => ({
+  const activitySteps = steps?.map((step) => ({
     id: step.id as string,
     title: step.operation?.name as string,
     isActive: step.id === data?.currentStep?.id,
@@ -74,7 +74,7 @@ const Board = () => {
       </div>
       <ScrollablePageWrapper className="px-10 py-5">
         <TimelineLayout
-          steps={activities}
+          steps={activitySteps}
           activityId={activityId}
           productId={data?.product?.id as string}
           scheduleId={data?.productionSchedule?.id as string}

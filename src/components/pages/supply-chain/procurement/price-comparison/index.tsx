@@ -77,6 +77,7 @@ const Page = () => {
       const response = await loadPrices({
         supplierType: type ?? SupplierType.Foreign,
       }).unwrap();
+      setState(() => []);
       const prices = response?.map((item) => {
         return {
           materialCode: item?.material?.code,
@@ -96,7 +97,7 @@ const Page = () => {
           }),
         };
       }) as Quotations[];
-      setState(prices);
+      setState(() => prices);
     } catch (error) {
       console.log(error);
     }
@@ -129,9 +130,10 @@ const Page = () => {
 
   const onSubmit = async () => {
     try {
-      // console.log(findSelectedQuotation(state));
+      const body = findSelectedQuotation(state);
       await saveProcess({
-        body: findSelectedQuotation(state),
+        supplierType: type,
+        body,
       }).unwrap();
       toast.success("Supplier Selected successfully");
       handleLoadPriceComparison(type);
@@ -214,6 +216,7 @@ const Page = () => {
                                 value={quote?.supplierId}
                                 id="newPassport"
                                 className="h-8 w-8"
+                                checked={quote?.selected}
                               >
                                 <Icon
                                   name="CheckCheck"

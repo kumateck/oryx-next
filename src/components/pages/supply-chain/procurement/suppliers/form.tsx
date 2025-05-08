@@ -15,6 +15,7 @@ import { Button, Icon } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 
 import { ManufacturerMap } from "./create";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
 
 const defaultAssociated = {
   material: { label: "", value: "" },
@@ -143,75 +144,77 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
           Add
         </Button>
       </div>
-      <div className="max-h-[500px] min-h-[400px] w-full space-y-4 overflow-y-auto">
-        {fields.map((field, index) => {
-          const type = typeValues[index];
-          const currentManufacturerOptions =
-            manufacturerOptionsMap[type?.value] || []; // Get the options for the selected material
-          const defaultMaterial =
-            defaultValues?.associatedManufacturers[index]?.material;
-          const otherManufacturers =
-            manufacturerOptionsMap[type?.value]?.filter(
-              (item2) =>
-                !deManValues?.some((item1) => item1?.value === item2?.value),
-            ) || [];
-          return (
-            <div key={field.id} className="relative rounded-2xl border p-2">
-              <div className="absolute right-2 top-2">
-                <Icon
-                  onClick={() => remove(index)}
-                  name="CircleMinus"
-                  className="text-danger-500 h-5 w-5 hover:cursor-pointer"
-                />
-              </div>
+      <ScrollableWrapper>
+        <div className=" w-full space-y-4 h-full pb-12">
+          {fields.map((field, index) => {
+            const type = typeValues[index];
+            const currentManufacturerOptions =
+              manufacturerOptionsMap[type?.value] || []; // Get the options for the selected material
+            const defaultMaterial =
+              defaultValues?.associatedManufacturers[index]?.material;
+            const otherManufacturers =
+              manufacturerOptionsMap[type?.value]?.filter(
+                (item2) =>
+                  !deManValues?.some((item1) => item1?.value === item2?.value),
+              ) || [];
+            return (
+              <div key={field.id} className="relative rounded-2xl border p-2">
+                <div className="absolute right-2 top-2">
+                  <Icon
+                    onClick={() => remove(index)}
+                    name="CircleMinus"
+                    className="text-danger-500 h-5 w-5 hover:cursor-pointer"
+                  />
+                </div>
 
-              <div className="flex w-full gap-2">
-                <FormWizard
-                  className="grid w-full grid-cols-3 gap-4 space-y-0"
-                  fieldWrapperClassName="flex-grow"
-                  config={[
-                    {
-                      label: "Material",
-                      control: control as Control,
-                      type: InputTypes.SELECT,
-                      name: `associatedManufacturers.${index}.material`,
-                      required: true,
-                      defaultValue: defaultMaterial,
-                      placeholder: "Material",
-                      options: materialOptions?.filter(
-                        (item2) =>
-                          !typeValues?.some(
-                            (item1) => item1.value === item2.value,
-                          ),
-                      ),
-                      errors,
-                    },
-                    {
-                      label: "Default Manufacturer",
-                      control: control as Control,
-                      type: InputTypes.SELECT,
-                      name: `associatedManufacturers.${index}.defaultManufacturer`,
-                      required: true,
-                      placeholder: "Manufacturer",
-                      options: currentManufacturerOptions, // Dynamically loaded options
-                      errors,
-                    },
-                    {
-                      label: "Other Manufacturers",
-                      control: control as Control,
-                      type: InputTypes.MULTI,
-                      name: `associatedManufacturers.${index}.otherManufacturers`,
-                      placeholder: "Manufacturer",
-                      options: otherManufacturers, // Dynamically loaded options
-                      errors,
-                    },
-                  ]}
-                />
+                <div className="flex w-full gap-2">
+                  <FormWizard
+                    className="grid w-full grid-cols-3 gap-4 space-y-0"
+                    fieldWrapperClassName="flex-grow"
+                    config={[
+                      {
+                        label: "Material",
+                        control: control as Control,
+                        type: InputTypes.SELECT,
+                        name: `associatedManufacturers.${index}.material`,
+                        required: true,
+                        defaultValue: defaultMaterial,
+                        placeholder: "Material",
+                        options: materialOptions?.filter(
+                          (item2) =>
+                            !typeValues?.some(
+                              (item1) => item1.value === item2.value,
+                            ),
+                        ),
+                        errors,
+                      },
+                      {
+                        label: "Default Manufacturer",
+                        control: control as Control,
+                        type: InputTypes.SELECT,
+                        name: `associatedManufacturers.${index}.defaultManufacturer`,
+                        required: true,
+                        placeholder: "Manufacturer",
+                        options: currentManufacturerOptions, // Dynamically loaded options
+                        errors,
+                      },
+                      {
+                        label: "Other Manufacturers",
+                        control: control as Control,
+                        type: InputTypes.MULTI,
+                        name: `associatedManufacturers.${index}.otherManufacturers`,
+                        placeholder: "Manufacturer",
+                        options: otherManufacturers, // Dynamically loaded options
+                        errors,
+                      },
+                    ]}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </ScrollableWrapper>
     </div>
   );
 };

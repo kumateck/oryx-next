@@ -1,5 +1,6 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
+  ApprovalStatus,
   ErrorResponse,
   isErrorResponse,
   LeaveCategories,
@@ -21,6 +22,12 @@ import { TableMenuAction } from "@/shared/table-menu";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
+
+const batchStatusColors: Record<ApprovalStatus, string> = {
+  [ApprovalStatus.Pending]: "bg-gray-500 text-white",
+  [ApprovalStatus.Approved]: "bg-green-100 text-green-800",
+  [ApprovalStatus.Rejected]: "bg-red-100 text-red-800",
+};
 export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
@@ -152,14 +159,24 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
     accessorKey: "leaveStatus",
     header: "Leave Status",
-    cell: ({ row }) => (
-      <div>
-        {splitWords(LeaveStatus[row.original.leaveStatus as LeaveStatus])}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.leaveStatus as ApprovalStatus;
+      return (
+        <div
+          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+        >
+          {splitWords(LeaveStatus[row.original.leaveStatus as LeaveStatus])}
+        </div>
+      );
+    },
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => {
+      if (row.original.leaveStatus !== ApprovalStatus.Pending) {
+        return null;
+      }
+      return <DataTableRowActions row={row} />;
+    },
   },
 ];

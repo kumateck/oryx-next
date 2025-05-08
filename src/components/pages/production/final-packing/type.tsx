@@ -101,6 +101,7 @@ export interface MaterialMatrix {
   materialId: string;
   materialName: string;
   receivedQuantity: number;
+  subsequentDeliveredQuantity: number;
 }
 
 export const getMaterialSchema = (totalReceivedQuantity: number) =>
@@ -121,3 +122,11 @@ export const getMaterialSchema = (totalReceivedQuantity: number) =>
     totalAccountedForQuantity: z.number().nonnegative(), // Auto-calculated
     percentageLoss: z.number().nonnegative(), // Auto-calculated
   });
+
+export type GroupedData = {
+  materialId: string;
+  materialName: string;
+  uoMId: string;
+  uoMName: string;
+  totalQty: number;
+};
