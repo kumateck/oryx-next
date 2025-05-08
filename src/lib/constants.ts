@@ -134,6 +134,8 @@ export const routes = {
     `/warehouse/receiving-area/${id}/view-checklist`,
   viewFinalPacking: (id: string) =>
     `/production/activities/${id}/final-packing`,
+  viewExtraPacking: (id: string, pid: string, psId: string) =>
+    `/production/activities/${id}/extra-packing/${pid}/${psId}`,
   viewBoard: (id: string) => `/production/activities/${id}/board`,
   manageRoles: () => "/access-management/roles",
   newRole: () => "/access-management/roles/create",

@@ -12,6 +12,7 @@ import {
   getInitials,
   isErrorResponse,
   routes,
+  splitWords,
 } from "@/lib";
 import {
   ProductionStatus,
@@ -24,6 +25,7 @@ import { Button } from "../button";
 import { Icon } from "../icon";
 import { Label } from "../label";
 import { TimelineItemProps } from "./type";
+import Link from "next/link";
 
 interface Props {
   item: TimelineItemProps;
@@ -32,6 +34,7 @@ interface Props {
   inProgress?: boolean;
   showFinalPacking?: boolean;
   showFinishedGoods?: boolean;
+  showExtraPackging?: boolean;
   activityId?: string;
   productId?: string;
   scheduleId?: string;
@@ -46,6 +49,7 @@ const TimelineCard = ({
   activityId,
   scheduleId,
   productId,
+  showExtraPackging,
 }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -71,72 +75,99 @@ const TimelineCard = ({
   // const onFinishedGoods = (id: string) => {
   //   router.push(routes.viewFinalPacking(id));
   // };
+  const onExtraPacking = (id: string) => {
+    router.push(
+      routes.viewExtraPacking(id, productId as string, scheduleId as string),
+    );
+  };
   return (
-    <div
-      className={cn(
-        "max-w-4xl rounded-2xl bg-white p-4 shadow transition-opacity",
-        className,
-      )}
-    >
-      <h3 className="mb-1 flex items-center justify-between text-lg font-semibold text-neutral-dark">
-        {item.title}
+    <div className="relative">
+      <div
+        className={cn(
+          "max-w-4xl rounded-2xl bg-white p-4 shadow transition-opacity relative",
+          className,
+        )}
+      >
+        <div className=" ">
+          <span className=" rounded-full  h-6 w-6 bg-white ring-2  ring-lime-300 absolute -top-3 left-0 flex items-center justify-center">
+            {item.order}
+          </span>
+        </div>
+        <h3 className="mb-1 flex items-center justify-between text-lg font-semibold text-neutral-dark">
+          {item.title}
 
-        <span className="me-2 ms-3 rounded-2xl bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800">
-          {ActivityStepStatus[item.status as ActivityStepStatus]}
-        </span>
-      </h3>
+          <span className="me-2 ms-3 rounded-2xl bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800">
+            {splitWords(ActivityStepStatus[item.status as ActivityStepStatus])}
+          </span>
+        </h3>
 
-      <p className="mb-4 text-sm font-normal text-neutral-default">
-        {item.description}{" "}
-      </p>
-      <div className="flex items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Label className="text-base font-semibold text-neutral-secondary">
-            {item.imagesLabel}
-          </Label>
-          {item.images && (
-            <AvatarStack
-              fallbackClass={cn("bg-neutral-input text-neutral-dark")}
-              avatars={item.images?.map((item) => ({
-                name: getInitials(item?.name),
-                fullname: item?.name,
-                url: item?.url,
-              }))}
+        <p className="mb-4 text-sm font-normal text-neutral-default">
+          {item.description}{" "}
+        </p>
+        <div className="flex items-center justify-between gap-4">
+          <div className="space-y-2">
+            <Label className="text-base font-semibold text-neutral-secondary">
+              {item.imagesLabel}
+            </Label>
+            {item.images && (
+              <AvatarStack
+                fallbackClass={cn("bg-neutral-input text-neutral-dark")}
+                avatars={item.images?.map((item) => ({
+                  name: getInitials(item?.name),
+                  fullname: item?.name,
+                  url: item?.url,
+                }))}
+              />
+            )}
+          </div>
+          {item.extra}
+
+          <div className="flex items-center gap-2 justify-end">
+            <Link href={routes.viewBoard(activityId as string)}>
+              <Button variant="secondary" className="text-sm font-semibold">
+                View Details
+              </Button>
+            </Link>
+
+            {inProgress && (
+              <Button onClick={() => onComplete(ActivityStepStatus.InProgress)}>
+                {isLoading ? (
+                  <Icon name="LoaderCircle" className="animate-spin" />
+                ) : (
+                  ActivityStepStatus[ActivityStepStatus.InProgress]
+                )}
+              </Button>
+            )}
+            {isComplete && (
+              <Button onClick={() => onComplete(ActivityStepStatus.Completed)}>
+                {isLoading ? (
+                  <Icon name="LoaderCircle" className="animate-spin" />
+                ) : (
+                  ActivityStepStatus[ActivityStepStatus.Completed]
+                )}
+              </Button>
+            )}
+            {showFinalPacking && (
+              <Button onClick={() => onFinalPacking(activityId as string)}>
+                <Icon name="Navigation" />
+                <span>Final Packing</span>
+              </Button>
+            )}
+            {showExtraPackging && (
+              <Button onClick={() => onExtraPacking(activityId as string)}>
+                <Icon name="Navigation" />
+                <span>Extra Packing Request</span>
+              </Button>
+            )}
+          </div>
+          {showFinishedGoods && (
+            <FinishedGoodsTransfer
+              scheduleId={scheduleId as string}
+              productId={productId as string}
+              productionActivityStepId={item?.id as string}
             />
           )}
         </div>
-        {item.extra}
-        {inProgress && (
-          <Button onClick={() => onComplete(ActivityStepStatus.InProgress)}>
-            {isLoading ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              ActivityStepStatus[ActivityStepStatus.InProgress]
-            )}
-          </Button>
-        )}
-        {isComplete && (
-          <Button onClick={() => onComplete(ActivityStepStatus.Completed)}>
-            {isLoading ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              ActivityStepStatus[ActivityStepStatus.Completed]
-            )}
-          </Button>
-        )}
-        {showFinalPacking && (
-          <Button onClick={() => onFinalPacking(activityId as string)}>
-            <Icon name="Navigation" />
-            <span>Final Packing</span>
-          </Button>
-        )}
-        {showFinishedGoods && (
-          <FinishedGoodsTransfer
-            scheduleId={scheduleId as string}
-            productId={productId as string}
-            productionActivityStepId={item?.id as string}
-          />
-        )}
       </div>
     </div>
   );

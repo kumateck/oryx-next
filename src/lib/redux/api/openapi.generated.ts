@@ -2671,6 +2671,68 @@ const injectedRtkApi = api.injectEndpoints({
           method: "PUT",
         }),
       }),
+    postApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductId:
+      build.mutation<
+        PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiResponse,
+        PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+      }),
+    getApiV1ProductionScheduleExtraPacking: build.query<
+      GetApiV1ProductionScheduleExtraPackingApiResponse,
+      GetApiV1ProductionScheduleExtraPackingApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/extra-packing`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleExtraPackingByProductionExtraPackingId:
+      build.query<
+        GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiResponse,
+        GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing/${queryArg.productionExtraPackingId}`,
+        }),
+      }),
+    getApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductId:
+      build.query<
+        GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiResponse,
+        GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing/by-product${queryArg.productionScheduleId}/${queryArg.productId}`,
+        }),
+      }),
+    getApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialId:
+      build.query<
+        GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiResponse,
+        GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing/batches-to-supply/${queryArg.extraPackingMaterialId}`,
+        }),
+      }),
+    postApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingId:
+      build.mutation<
+        PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiResponse,
+        PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing/approve/${queryArg.productionExtraPackingId}`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+      }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -5166,7 +5228,7 @@ export type GetApiV1ProductionScheduleActivityStatusGroupedApiResponse =
   };
 export type GetApiV1ProductionScheduleActivityStatusGroupedApiArg = void;
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiResponse =
-  /** status 200 OK */ ProductionActivityGroupResultDto[];
+  /** status 200 OK */ ProductionActivityGroupResultDtoRead[];
 export type GetApiV1ProductionScheduleActivityOperationGroupedApiArg = void;
 export type PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiResponse =
   unknown;
@@ -5424,6 +5486,59 @@ export type PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturn
   {
     /** The ID of the Material Return Note. */
     materialReturnNoteId: string;
+  };
+export type PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiResponse =
+  unknown;
+export type PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiArg =
+  {
+    /** The ID of the Production Schedule. */
+    productionScheduleId: string;
+    /** The ID of the Product. */
+    productId: string;
+    /** List of Extra Packing details to create. */
+    body: CreateProductionExtraPacking[];
+  };
+export type GetApiV1ProductionScheduleExtraPackingApiResponse =
+  /** status 200 OK */ ProductionExtraPackingDtoIEnumerablePaginateable;
+export type GetApiV1ProductionScheduleExtraPackingApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+};
+export type GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiResponse =
+  /** status 200 OK */ ProductionExtraPackingWithBatchesDto;
+export type GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiArg =
+  {
+    /** The ID of the Extra Packing. */
+    productionExtraPackingId: string;
+  };
+export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiResponse =
+  /** status 200 OK */ ProductionExtraPackingDto[];
+export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiArg =
+  {
+    /** The production schedule Id linked to the extra packing> */
+    productionScheduleId: string;
+    /** The product Id linked to the extra paccking */
+    productId: string;
+  };
+export type GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiResponse =
+  /** status 200 OK */ BatchToSupplyRead[];
+export type GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiArg =
+  {
+    /** The ID of the Extra Packing Material. */
+    extraPackingMaterialId: string;
+  };
+export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiResponse =
+  unknown;
+export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiArg =
+  {
+    /** The ID of the Extra Packing. */
+    productionExtraPackingId: string;
+    /** The list of batches for approval. */
+    body: BatchTransferRequest[];
   };
 export type PostApiV1RequisitionApiResponse = unknown;
 export type PostApiV1RequisitionApiArg = {
@@ -11787,7 +11902,20 @@ export type ProductionActivityGroupDto = {
   createdBy?: UserDto;
   createdAt?: string;
   productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
+  product?: ProductListDto;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  currentStep?: ProductionActivityStepDto;
+  batchNumber?: string | null;
+  quantity?: number;
+};
+export type ProductionActivityGroupDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: ProductListDtoRead;
   status?: ProductionStatus;
   startedAt?: string;
   completedAt?: string | null;
@@ -11798,6 +11926,10 @@ export type ProductionActivityGroupDto = {
 export type ProductionActivityGroupResultDto = {
   operation?: CollectionItemDto;
   activities?: ProductionActivityGroupDto[] | null;
+};
+export type ProductionActivityGroupResultDtoRead = {
+  operation?: CollectionItemDto;
+  activities?: ProductionActivityGroupDtoRead[] | null;
 };
 export type ProductionActivityStepDtoIEnumerablePaginateable = {
   data?: ProductionActivityStepDto[] | null;
@@ -12183,6 +12315,41 @@ export type MaterialReturnNoteDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type CreateProductionExtraPacking = {
+  materialId?: string;
+  uoMId?: string;
+  quantity?: number;
+};
+export type ProductionExtraPackingDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: CollectionItemDto;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type ProductionExtraPackingDtoIEnumerablePaginateable = {
+  data?: ProductionExtraPackingDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ProductionExtraPackingWithBatchesDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: CollectionItemDto;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  batches?: BatchToSupply[] | null;
 };
 export type CreateRequisitionItemRequest = {
   materialId?: string;
@@ -13291,6 +13458,16 @@ export const {
   useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
   useLazyGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
   usePutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdMutation,
+  usePostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdMutation,
+  useGetApiV1ProductionScheduleExtraPackingQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingQuery,
+  useGetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdQuery,
+  useGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
+  usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,

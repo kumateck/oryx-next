@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 
 import { AvatarStack } from "@/components/ui";
-import { cn, getInitials } from "@/lib";
+import { cn, getInitials, routes } from "@/lib";
 
 import { CardItemProps, DragItem } from "./type";
 import { format } from "date-fns";
@@ -22,9 +22,7 @@ export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
       ref={drag as unknown as React.Ref<HTMLDivElement>}
       className="mb-2 cursor-move space-y-1 rounded-2xl bg-white p-2 shadow-md"
       style={{ opacity: isDragging ? 0.5 : 1 }}
-      onClick={() =>
-        router.push(`/production/activities/${step.activityId}/board`)
-      }
+      onClick={() => router.push(routes.viewBoard(step.activityId))}
     >
       <div>
         <span className="text-xs text-neutral-hover">

@@ -17,6 +17,7 @@ const showProgress = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 const showComplete = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15];
 const showFinalPacking = [12];
 const showFinishedGoods = [16];
+const showExtraPackging = [6, 7, 8, 9, 10];
 const Active = ({ item, activityId, scheduleId, productId }: Props) => {
   return (
     <li className="mb-10 ms-6">
@@ -43,6 +44,7 @@ const Active = ({ item, activityId, scheduleId, productId }: Props) => {
           showFinishedGoods.includes(Number(item.order)) &&
           item.status === ActivityStepStatus.New
         }
+        showExtraPackging={showExtraPackging.includes(Number(item.order))}
         item={item}
         className="border border-primary-inverted"
       />

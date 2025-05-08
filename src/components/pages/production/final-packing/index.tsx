@@ -30,9 +30,11 @@ import {
   routes,
 } from "@/lib";
 import {
+  ProductionExtraPackingDto,
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
   useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleFinalPackingMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -42,6 +44,7 @@ import MaterialForm from "./form";
 import PackedForm from "./packed";
 import {
   CreatePackingValidator,
+  GroupedData,
   MaterialMatrix,
   PackingRequestDto,
   getMaterialSchema,
@@ -74,6 +77,8 @@ const FinalPacking = () => {
     usePostApiV1ProductionScheduleFinalPackingMutation();
   const [loadFinalPacking, { isLoading: isLoadingFinalPacking }] =
     useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery();
+  const [loadExtraPacking, { isLoading: isLoadingExtraPacking }] =
+    useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery();
 
   useEffect(() => {
     if (activityId) {
@@ -192,15 +197,23 @@ const FinalPacking = () => {
       const productId = response?.product?.id as string;
       const scheduleId = response?.productionSchedule?.id as string;
 
-      const [productResponse, scheduleResponse, packingResponse] =
-        await Promise.all([
-          loadProduct({ productId }).unwrap(),
-          loadSchedule({ scheduleId }).unwrap(),
-          loadFinalPacking({
-            productionScheduleId: scheduleId,
-            productId,
-          }).unwrap(),
-        ]);
+      const [
+        productResponse,
+        scheduleResponse,
+        packingResponse,
+        extraPackingResponse,
+      ] = await Promise.all([
+        loadProduct({ productId }).unwrap(),
+        loadSchedule({ scheduleId }).unwrap(),
+        loadFinalPacking({
+          productionScheduleId: scheduleId,
+          productId,
+        }).unwrap(),
+        loadExtraPacking({
+          productionScheduleId: scheduleId,
+          productId,
+        }).unwrap(),
+      ]);
       const findProduct = scheduleResponse?.products?.find(
         (p) => p.product?.id === productId,
       );
@@ -230,8 +243,6 @@ const FinalPacking = () => {
       setScheduleId(scheduleId);
       setCurrentStepId(stepId);
 
-      // console.log(results, "stock packaging");
-
       const materialForMatrix = packingResponse?.items?.map((item) => ({
         materialId: item.material?.id as string,
         materialName: item.material?.name as string,
@@ -242,6 +253,18 @@ const FinalPacking = () => {
           item.quantity as number,
           getSmallestUnit(item.uoM?.symbol as Units),
         ).value as number,
+        subsequentDeliveredQuantity: convertToLargestUnit(
+          findExtraPackingMaterialBymaterialId(
+            extraPackingResponse,
+            item.material?.id as string,
+          )?.totalQty as number,
+          getSmallestUnit(
+            findExtraPackingMaterialBymaterialId(
+              extraPackingResponse,
+              item.material?.id as string,
+            )?.uoMName as Units,
+          ),
+        ).value as number,
       })) as MaterialMatrix[];
       setMaterialMatrix(materialForMatrix);
 
@@ -249,13 +272,15 @@ const FinalPacking = () => {
       materialForMatrix.forEach((material) => {
         initialFormData[material.materialId] = {
           receivedQuantity: material.receivedQuantity, // Read-only
-          subsequentDeliveredQuantity: 0,
-          totalReceivedQuantity: material.receivedQuantity, // Initially same as receivedQuantity
+          subsequentDeliveredQuantity: material.subsequentDeliveredQuantity, // Read-only
+          totalReceivedQuantity:
+            material.receivedQuantity + material.subsequentDeliveredQuantity, // Auto-calculated
           packedQuantity: 0, // Default to 1 since it must be > 0
           returnedQuantity: 0,
           rejectedQuantity: 0,
           sampledQuantity: 0,
-          totalAccountedForQuantity: material.receivedQuantity, // Same as totalReceivedQuantity
+          totalAccountedForQuantity:
+            material.receivedQuantity + material.subsequentDeliveredQuantity, // Auto-calculated
           percentageLoss: 0,
         };
       });
@@ -264,6 +289,7 @@ const FinalPacking = () => {
       console.error(error);
     }
   };
+
   // const  {data:}
   const [materialMatrix, setMaterialMatrix] = React.useState<MaterialMatrix[]>(
     [],
@@ -380,7 +406,11 @@ const FinalPacking = () => {
                   setErrors={setErrors}
                   formData={formData}
                   setFormData={setFormData}
-                  isLoading={isLoadingActivity || isLoadingFinalPacking}
+                  isLoading={
+                    isLoadingActivity ||
+                    isLoadingFinalPacking ||
+                    isLoadingExtraPacking
+                  }
                 />
               </CardContent>
               <CardFooter></CardFooter>
@@ -419,5 +449,41 @@ const FinalPacking = () => {
     </PageWrapper>
   );
 };
+
+const findExtraPackingMaterialBymaterialId = (
+  extraPackingResponse: ProductionExtraPackingDto[],
+  materialId: string,
+) => {
+  const groupedData = groupAndSumQuantities(extraPackingResponse);
+  const res = groupedData?.find((item) => item.materialId === materialId);
+
+  return res;
+};
+function groupAndSumQuantities(
+  data: ProductionExtraPackingDto[],
+): GroupedData[] {
+  const groupedData: { [key: string]: GroupedData } = {};
+
+  // Iterate over the data and group by materialId and uoMId
+  data.forEach((item) => {
+    const key = `${item.material?.id}-${item.uoM?.id}`;
+    if (groupedData[key]) {
+      // If the group already exists, update the total quantity
+      groupedData[key].totalQty += item.quantity || 0;
+    } else {
+      // If the group doesn't exist, create it
+      groupedData[key] = {
+        materialId: item.material?.id as string,
+        materialName: item.material?.name as string,
+        uoMId: item.uoM?.id as string,
+        uoMName: item.uoM?.symbol as Units,
+        totalQty: item.quantity as number,
+      };
+    }
+  });
+
+  // Return the values as an array
+  return Object.values(groupedData);
+}
 
 export default FinalPacking;
