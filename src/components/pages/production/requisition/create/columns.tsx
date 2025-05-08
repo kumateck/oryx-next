@@ -12,6 +12,54 @@ import { TableCheckbox } from "@/shared/datatable/table-check";
 import { useState } from "react";
 import AllStockByMaterial from "@/shared/all-stock";
 import { getLargestUnit, Units } from "@/lib";
+import { TableMenuAction } from "@/shared/table-menu";
+import { DropdownMenuItem } from "@/components/ui";
+import InternalTransfers from "../../schedule/product-requisition/internal-request";
+
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+}
+export function PurchaseDataTableRowActions<
+  TData extends MaterialDepartmentWithWarehouseStockDto,
+>({ row }: DataTableRowActionsProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [materialInfo, setMaterialInfo] =
+    useState<MaterialDepartmentWithWarehouseStockDto>(
+      {} as MaterialDepartmentWithWarehouseStockDto,
+    );
+
+  const difference = row.original?.material?.totalStock ?? 0;
+
+  const canTransferStock = difference > 0;
+
+  return (
+    <div className="flex items-center justify-end gap-2">
+      {canTransferStock && (
+        <TableMenuAction>
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setMaterialInfo(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <span className="text-neutral-dark">Internal Stock Transfer</span>
+            </div>
+          </DropdownMenuItem>
+        </TableMenuAction>
+      )}
+
+      {row.original.material?.id && isOpen && (
+        <InternalTransfers
+          materialInfo={materialInfo}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
@@ -117,9 +165,6 @@ export const getPurchaseColumns = (
   },
 ];
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
 export function DataTableRowActions<
   TData extends MaterialDepartmentWithWarehouseStockDto,
 >({ row }: DataTableRowActionsProps<TData>) {
@@ -211,9 +256,18 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   {
     id: "totalStock",
     header: "Stock in Other Sources",
+    enableHiding: false,
+    meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
-
+  {
+    id: "tools",
+    enableHiding: false,
+    meta: { omitRowClick: true, pin: "right" },
+    cell: ({ row }) => {
+      return <PurchaseDataTableRowActions row={row} />;
+    },
+  },
   // {
   //   accessorKey: "kind",
   //   header: "Kind",
