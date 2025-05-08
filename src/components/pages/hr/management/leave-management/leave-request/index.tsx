@@ -100,9 +100,9 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("Leave Request created successfully");
-      reset();
       onClose();
+      reset();
+      toast.success("Leave Request created successfully");
       loadLeaveRequests({ page: 1, pageSize: 10 });
       dispatch(commonActions.setTriggerReload());
     } catch (error) {

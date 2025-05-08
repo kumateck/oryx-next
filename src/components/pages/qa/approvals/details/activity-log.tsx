@@ -63,11 +63,9 @@ export default function ActivityLog({ approvalLogs = [] }: ActivityLogProps) {
                     </span>
                   </div>
 
-                  {log.comments && (
-                    <div className="mt-1 text-sm text-gray-600">
-                      Comments: {log.comments}
-                    </div>
-                  )}
+                  <div className="mt-1 text-sm text-gray-600">
+                    Comments: {log.comments ?? "-"}
+                  </div>
                 </div>
               );
             })}
