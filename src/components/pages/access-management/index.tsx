@@ -31,11 +31,12 @@ import {
 import { SpecialSelect } from "@/components/ui/special-select";
 import Link from "next/link";
 import { authActions } from "@/lib/redux/slices/auth";
+import { useSelector } from "@/lib/redux/store";
 
 const Access: React.FC = () => {
   const dispatch = useDispatch();
   const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery();
-
+  const userId = useSelector((state) => state.persistedReducer?.auth?.userId);
   // const [loadAllPermissions] = restApi.useLazyGetPermissionsQuery();
 
   const [applyChanges, { isLoading: isLoadingApplyChanges }] =
@@ -149,7 +150,9 @@ const Access: React.FC = () => {
         body: removeDuplicateTypes(permissions),
       }).unwrap();
 
-      const response = await loadUserPermissions({ userId: "" }).unwrap();
+      const response = await loadUserPermissions({
+        userId: userId as string,
+      }).unwrap();
 
       // await loadUserSidebarPermissions({}).unwrap();
 
