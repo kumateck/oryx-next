@@ -172,6 +172,11 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => {
+      if (row.original.leaveStatus !== ApprovalStatus.Pending) {
+        return null;
+      }
+      return <DataTableRowActions row={row} />;
+    },
   },
 ];

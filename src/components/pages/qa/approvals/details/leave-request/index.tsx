@@ -9,6 +9,7 @@ import { columns } from "./columns";
 import { isImageFile } from "@/lib";
 import { format } from "date-fns";
 import Link from "next/link";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 // import Link from "next/link";
 
 function LeaveApproval({ id }: { id: string }) {
@@ -67,6 +68,12 @@ function LeaveApproval({ id }: { id: string }) {
           <div className="flex gap-2 items-center">
             <span>Contact Person Number:</span>
             <span className="font-semibold">{data?.contactPersonNumber}</span>
+          </div>
+          <div className="flex gap-2 items-center">
+            <span>Justification:</span>
+            <span className="font-semibold">
+              <TheAduseiEditorViewer content={data?.justification as string} />
+            </span>
           </div>
         </div>
 
