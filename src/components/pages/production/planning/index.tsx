@@ -65,13 +65,18 @@ const Page = () => {
       <div className="flex items-center justify-between py-3">
         <PageTitle title="Planned Products" />
         <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="default"
-            size={"sm"}
-            onClick={() => router.push(routes.newPlanning())}
-          >
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          {findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.production.createNewProductionPlan,
+          ) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => router.push(routes.newPlanning())}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
+          )}
         </div>
       </div>
 

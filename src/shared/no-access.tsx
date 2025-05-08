@@ -1,14 +1,11 @@
-import Padlock from "@/assets/images/Lock-Icon.svg";
-// import { Icon } from "@/components/ui";
 import Image from "next/image";
 
 const NoAccess = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
       <div className="text-center">
-        {/* Image from next-images*/}
         <Image
-          src={Padlock.src}
+          src={"/icons/Lock-Icon.svg"}
           alt="Access Denied"
           width={150}
           height={150}
