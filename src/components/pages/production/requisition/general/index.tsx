@@ -10,7 +10,6 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-
 import { columns } from "./columns";
 
 const Page = () => {
@@ -30,11 +29,30 @@ const Page = () => {
       page,
       pageSize,
     });
+  }, [page, pageSize, loadData]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  {
+    /* const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions
+  ) as Section[];
+
+ const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.createRawMaterialStockRequisition,
+  );
+  if (isClient && !hasAccess) {
+    return <NoAccess />;
+  } */
+  }
 
   const data = result?.data || [];
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -60,12 +78,12 @@ const Page = () => {
         setPage={setPage}
         setPageSize={setPageSize}
         meta={{
-          pageIndex: result?.pageIndex as number,
-          pageCount: result?.pageCount as number,
-          totalRecordCount: result?.totalRecordCount as number,
-          numberOfPagesToShow: result?.numberOfPagesToShow as number,
-          startPageIndex: result?.startPageIndex as number,
-          stopPageIndex: result?.stopPageIndex as number,
+          pageIndex: result?.pageIndex ?? 1,
+          pageCount: result?.pageCount ?? 1,
+          totalRecordCount: result?.totalRecordCount ?? 0,
+          numberOfPagesToShow: result?.numberOfPagesToShow ?? 5,
+          startPageIndex: result?.startPageIndex ?? 1,
+          stopPageIndex: result?.stopPageIndex ?? 1,
           pageSize,
         }}
       />

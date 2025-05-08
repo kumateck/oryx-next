@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+//import React, { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import { RequisitionStatus, RequisitionType } from "@/lib";
@@ -12,6 +12,8 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+//import NoAccess from "@/shared/no-access";
+//import { useSelector } from "@/lib/redux/store";
 
 const requisitionStatusColors: { [key in RequisitionStatus]: string } = {
   [RequisitionStatus.Pending]: "bg-gray-500",
@@ -29,6 +31,31 @@ const RequisitionDetails = () => {
   });
 
   const isPurchase = data?.requisitionType === RequisitionType.Purchase;
+
+  {
+    /* const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  const permissions = useSelector(
+      (state) => state.persistedReducer?.auth?.permissions,
+    ) as Section[];
+  
+    // check User permissions access
+  
+    const hasAccess = findRecordWithFullAccess(
+      permissions,
+      PermissionKeys.production.createRawMaterialPurchaseRequisition,
+    );
+  
+    if (isClient && !hasAccess) {
+      //redirect user to no access
+      return <NoAccess />;
+    }
+  
+    // permissions ends here!*/
+  }
 
   return (
     <ScrollablePageWrapper>
@@ -95,5 +122,4 @@ const RequisitionDetails = () => {
     </ScrollablePageWrapper>
   );
 };
-
 export default RequisitionDetails;

@@ -19,6 +19,14 @@ import { columns } from "./columns";
 import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
 
+// imported
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const Page = () => {
   const router = useRouter();
   const [pageSize, setPageSize] = useState(30);
@@ -51,6 +59,11 @@ const Page = () => {
     permissions,
     PermissionKeys.production.viewPlannedProducts,
   );
+  // check permission for button
+  const hasCreateAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.createNewProductionPlan,
+  );
 
   if (isClient && !hasAccess) {
     //redirect to no access
@@ -65,13 +78,30 @@ const Page = () => {
       <div className="flex items-center justify-between py-3">
         <PageTitle title="Planned Products" />
         <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="default"
-            size={"sm"}
-            onClick={() => router.push(routes.newPlanning())}
-          >
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => router.push(routes.newPlanning())}
+                    disabled={!hasCreateAccess}
+                    className={
+                      !hasCreateAccess ? "cursor-not-allowed opacity-50" : ""
+                    }
+                  >
+                    <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {!hasCreateAccess && (
+                <TooltipContent>
+                  You don&apos;t have access to create Planned product
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 

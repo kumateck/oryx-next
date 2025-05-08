@@ -83,6 +83,26 @@ const Page = () => {
     setIsOpenPurchase(true);
   };
 
+  {
+    /* const [isClient, setIsClient] = useState(false);
+  
+      useEffect(() => {
+      setIsClient(true);
+    }, []);
+  
+  const permissions = useSelector(
+      (state) => state.persistedReducer?.auth?.permissions
+    ) as Section[];
+  
+   const hasAccess = findRecordWithFullAccess(
+      permissions,
+      PermissionKeys.production.viewRawMaterialRequisitions,
+    );
+    if (isClient && !hasAccess) {
+      return <NoAccess />;
+    } */
+  }
+
   // console.log(rawMaterials?.data, "rawMaterials?.data");
   return (
     <PageWrapper>
