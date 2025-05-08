@@ -27,6 +27,7 @@ const DetailPage = () => {
     modelType: type as string,
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [actionType, setActionType] = useState<"approve" | "reject">("approve");
 
   return (
     <ScrollablePageWrapper className="space-y-5">
@@ -36,6 +37,7 @@ const DetailPage = () => {
           isOpen={isOpen}
           id={id as string}
           type={type as string}
+          action={actionType}
         />
       )}
       <div className="flex items-center justify-between">
@@ -52,11 +54,26 @@ const DetailPage = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant={"success"} onClick={() => setIsOpen(true)}>
+          <Button
+            variant="success"
+            onClick={() => {
+              setActionType("approve");
+              setIsOpen(true);
+            }}
+          >
             <Icon name="Plus" className="h-4 w-4 text-secondary-500" />
             Approve
           </Button>
-          <Button variant={"destructive"}>Reject</Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              setActionType("reject");
+              setIsOpen(true);
+            }}
+          >
+            <Icon name="X" className="h-4 w-4" />
+            Reject
+          </Button>
         </div>
       </div>
 

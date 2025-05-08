@@ -83,6 +83,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.approvalRequestBody,
       }),
     }),
+    postApiV1ApprovalRejectByModelTypeAndModelId: build.mutation<
+      PostApiV1ApprovalRejectByModelTypeAndModelIdApiResponse,
+      PostApiV1ApprovalRejectByModelTypeAndModelIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/approval/reject/${queryArg.modelType}/${queryArg.modelId}`,
+        method: "POST",
+        body: queryArg.approvalRequestBody,
+      }),
+    }),
     getApiV1ApprovalMyPending: build.query<
       GetApiV1ApprovalMyPendingApiResponse,
       GetApiV1ApprovalMyPendingApiArg
@@ -3717,6 +3727,12 @@ export type PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg = {
   modelId: string;
   approvalRequestBody: ApprovalRequestBody;
 };
+export type PostApiV1ApprovalRejectByModelTypeAndModelIdApiResponse = unknown;
+export type PostApiV1ApprovalRejectByModelTypeAndModelIdApiArg = {
+  modelType: string;
+  modelId: string;
+  approvalRequestBody: ApprovalRequestBody;
+};
 export type GetApiV1ApprovalMyPendingApiResponse =
   /** status 200 OK */ ApprovalEntityRead[];
 export type GetApiV1ApprovalMyPendingApiArg = void;
@@ -6716,8 +6732,8 @@ export type CreateLeaveRequest = {
   endDate: string;
   employeeId: string;
   requestCategory: RequestCategory;
-  contactPerson: string;
-  contactPersonNumber: string;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
   justification?: string | null;
 };
 export type LeaveTypeDto = {
@@ -6740,11 +6756,12 @@ export type LeaveTypeDtoRead = {
   isActive?: boolean;
   designations?: DesignationDtoRead[] | null;
 };
-export type LeaveStatus = 0 | 1 | 2;
+export type LeaveStatus = 0 | 1 | 2 | 3;
 export type LeaveRequestDto = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   leaveTypeId?: string;
   leaveType?: LeaveTypeDto;
   startDate?: string;
@@ -6753,7 +6770,6 @@ export type LeaveRequestDto = {
   contactPersonNumber?: string | null;
   justification?: string | null;
   requestCategory?: RequestCategory;
-  createdAt?: string;
   leaveStatus?: LeaveStatus;
   unpaidDays?: number;
   paidDays?: number;
@@ -6761,9 +6777,10 @@ export type LeaveRequestDto = {
   employee?: EmployeeDto;
 };
 export type LeaveRequestDtoRead = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   leaveTypeId?: string;
   leaveType?: LeaveTypeDtoRead;
   startDate?: string;
@@ -6772,7 +6789,6 @@ export type LeaveRequestDtoRead = {
   contactPersonNumber?: string | null;
   justification?: string | null;
   requestCategory?: RequestCategory;
-  createdAt?: string;
   leaveStatus?: LeaveStatus;
   unpaidDays?: number;
   paidDays?: number;
@@ -6865,7 +6881,7 @@ export type MaterialDtoIEnumerablePaginateable = {
 export type UpdateReOrderLevelRequest = {
   reOrderLevel?: number;
 };
-export type RequestStatus = 0 | 1 | 2 | 3;
+export type RequestStatus = 0 | 1 | 2 | 3 | 4;
 export type BatchToSupply = {
   batch?: MaterialBatchDto;
   quantityToTake?: number;
@@ -7498,7 +7514,7 @@ export type PurchaseOrderItemDtoRead = {
   cost?: number;
   canReassignSupplier?: boolean;
 };
-export type PurchaseOrderStatus = 0 | 1 | 2 | 3;
+export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4;
 export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
 export type PurchaseOrderRevisionDto = {
   revisionNumber?: number;
@@ -7667,7 +7683,7 @@ export type CreateBillingSheetRequest = {
   packageDescription?: string | null;
   containerPackageStyleId?: string | null;
 };
-export type BillingSheetStatus = 0 | 1;
+export type BillingSheetStatus = 0 | 1 | 2;
 export type ChargeDto = {
   name?: string | null;
   description?: string | null;
@@ -11777,6 +11793,7 @@ export type ProductionActivityGroupDto = {
   completedAt?: string | null;
   currentStep?: ProductionActivityStepDto;
   batchNumber?: string | null;
+  quantity?: number;
 };
 export type ProductionActivityGroupResultDto = {
   operation?: CollectionItemDto;
@@ -12880,6 +12897,7 @@ export const {
   useGetApiV1ApprovalByModelTypeAndModelIdQuery,
   useLazyGetApiV1ApprovalByModelTypeAndModelIdQuery,
   usePostApiV1ApprovalApproveByModelTypeAndModelIdMutation,
+  usePostApiV1ApprovalRejectByModelTypeAndModelIdMutation,
   useGetApiV1ApprovalMyPendingQuery,
   useLazyGetApiV1ApprovalMyPendingQuery,
   usePostApiV1AuthLoginMutation,
