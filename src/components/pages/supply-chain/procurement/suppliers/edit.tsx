@@ -26,7 +26,6 @@ import {
   VendorRequestDto,
   mapAssociatedManufacturers,
 } from "./types";
-import ScrollableWrapper from "@/shared/scroll-wrapper";
 
 const Edit = () => {
   const router = useRouter();
@@ -280,23 +279,22 @@ const Edit = () => {
             </Button>
           </div>
         </div>
-        <ScrollableWrapper>
-          <VendorForm
-            control={control}
-            register={register}
-            errors={errors}
-            countryOptions={countryOptions}
-            currencyOptions={currencyOptions}
-            fields={fields}
-            defaultValues={defaultValues}
-            remove={remove}
-            materialOptions={materialOptions}
-            manufacturerOptionsMap={manufacturerOptionsMap}
-            typeValues={typeValues}
-            deManValues={deManValues}
-            append={append}
-          />
-        </ScrollableWrapper>
+
+        <VendorForm
+          control={control}
+          register={register}
+          errors={errors}
+          countryOptions={countryOptions}
+          currencyOptions={currencyOptions}
+          fields={fields}
+          defaultValues={defaultValues}
+          remove={remove}
+          materialOptions={materialOptions}
+          manufacturerOptionsMap={manufacturerOptionsMap}
+          typeValues={typeValues}
+          deManValues={deManValues}
+          append={append}
+        />
       </form>
     </div>
   );
