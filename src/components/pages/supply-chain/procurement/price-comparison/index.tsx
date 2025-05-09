@@ -132,7 +132,7 @@ const Page = () => {
     try {
       const body = findSelectedQuotation(state);
       await saveProcess({
-        supplierType: type,
+        supplierType: type || SupplierType.Foreign,
         body,
       }).unwrap();
       toast.success("Supplier Selected successfully");
