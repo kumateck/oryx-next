@@ -80,10 +80,11 @@ export enum PurchaseOrderStatusList {
   Completed = 3,
 }
 export enum RequisitionStatus {
-  Pending = 0,
-  Sourced = 1,
-  Completed = 2,
-  Rejected = 3,
+  New = 0,
+  Pending = 1,
+  Sourced = 2,
+  Completed = 3,
+  Rejected = 4,
 }
 export enum RequisitionType {
   StockVoucher,

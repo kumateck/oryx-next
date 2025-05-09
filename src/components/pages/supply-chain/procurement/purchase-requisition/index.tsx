@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { RequisitionStatus } from "@/lib";
+import { RequisitionStatus, RequisitionType } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import {
@@ -26,6 +26,7 @@ const Page = () => {
     page,
     pageSize,
     status: RequisitionStatus.Pending,
+    type: RequisitionType.Purchase,
   });
 
   const [loadData, { isFetching }] = useLazyGetApiV1RequisitionQuery();
