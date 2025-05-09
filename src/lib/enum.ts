@@ -74,10 +74,11 @@ export enum ProductionStatus {
   Cancelled,
 }
 export enum PurchaseOrderStatusList {
-  Pending = 0,
-  Delivered = 1,
-  Attached = 2,
-  Completed = 3,
+  New = 0,
+  Pending = 1,
+  Delivered = 2,
+  Attached = 3,
+  Completed = 4,
 }
 export enum RequisitionStatus {
   New = 0,
