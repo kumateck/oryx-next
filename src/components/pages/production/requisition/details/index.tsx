@@ -14,7 +14,8 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 
 const requisitionStatusColors: { [key in RequisitionStatus]: string } = {
-  [RequisitionStatus.Pending]: "bg-gray-500",
+  [RequisitionStatus.New]: "bg-gray-500",
+  [RequisitionStatus.Pending]: "bg-blue-500",
   [RequisitionStatus.Sourced]: "bg-yellow-500",
   [RequisitionStatus.Completed]: "bg-green-500",
   [RequisitionStatus.Rejected]: "bg-red-500",
