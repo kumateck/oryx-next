@@ -11,6 +11,8 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import Edit from "./edit";
 
@@ -23,6 +25,7 @@ export function DataTableRowActions<
   const [issueMutation, { isLoading }] =
     usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation();
 
+  const dispatch = useDispatch();
   const onIssue = async () => {
     try {
       const body = row.original.batches?.map((item) => {
@@ -37,6 +40,7 @@ export function DataTableRowActions<
       }).unwrap();
 
       toast.success("Extra Packing issued successfully");
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       console.error("Error loading STOCK", error);
       ThrowErrorMessage(error);
