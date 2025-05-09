@@ -109,6 +109,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   NamingType,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
+  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
 } from "./redux/api/openapi.generated";
 import { GenerateCodeOptions, generateCode } from "./utils";
 
@@ -130,6 +131,8 @@ export const useCodeGen = (
       modelType,
     });
 
+  const [loadCountConfig] =
+    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
   const generate = async () => {
     if (!codeConfig) return null;
 
@@ -139,7 +142,12 @@ export const useCodeGen = (
     if (modelType && fetchCountQuery) {
       try {
         const countResponse = await fetchCountQuery();
-        seriesCounter = (countResponse?.totalRecordCount ?? 0) + 1;
+        const countConfigResponse = await loadCountConfig({
+          modelType,
+          prefix: codeConfig?.prefix as string,
+        }).unwrap();
+        seriesCounter =
+          (countConfigResponse ?? countResponse?.totalRecordCount ?? 0) + 1;
       } catch (error) {
         console.error("Error fetching total record count:", error);
       }

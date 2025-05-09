@@ -43,13 +43,18 @@ export const columns: ColumnDef<MaterialRequestDto>[] = [
   {
     accessorKey: "totalCost",
     header: "Total Cost",
-    cell: ({ row }) => (
-      <div>
-        {row.original.costPrice !== undefined
-          ? Number(row.original.receivedQuantity) *
-            Number(row.original.costPrice)
-          : "-"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.expectedQuantity as number,
+        row.original.uomName as Units,
+      );
+      return (
+        <div>
+          {row.original.costPrice !== undefined
+            ? Number(qty.value) * Number(row.original.costPrice)
+            : "-"}
+        </div>
+      );
+    },
   },
 ];
