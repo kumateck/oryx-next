@@ -11,10 +11,14 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 const Page = () => {
   // const router = useRouter();
-
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
@@ -27,8 +31,12 @@ const Page = () => {
       pageSize,
     });
 
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   const data = result?.data || [];
 
