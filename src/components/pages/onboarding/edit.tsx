@@ -201,7 +201,7 @@ export default function EditEmployeeForm() {
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
 
   const { type } = useParams();
-  const etype = type as unknown as EmployeeType;
+  const etype = type as string;
 
   const {
     register,
@@ -264,7 +264,7 @@ export default function EditEmployeeForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     try {
       const payload: CreateEmployeeRequest = {
-        employeeType: etype,
+        employeeType: parseInt(etype) as unknown as EmployeeType,
         firstName: data.firstName,
         lastName: data.lastName,
         dateOfBirth: data.dob.toISOString(),

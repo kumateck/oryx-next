@@ -64,7 +64,7 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
           config={[
             {
               register: register("code" as Path<TFieldValues>),
-              label: "Waybill Code",
+              label: "Billing Sheet Code",
               placeholder: "Code will be generated",
               type: InputTypes.TEXT,
               readOnly: true,
