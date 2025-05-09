@@ -7,10 +7,7 @@ import PageWrapper from "@/components/layout/wrapper";
 import { RequisitionStatus, RequisitionType } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
-import {
-  useGetApiV1RequisitionQuery,
-  useLazyGetApiV1RequisitionQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1RequisitionQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -22,20 +19,15 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const { data: result, isLoading } = useGetApiV1RequisitionQuery({
-    page,
-    pageSize,
-    status: RequisitionStatus.Pending,
-    type: RequisitionType.Purchase,
-  });
-
-  const [loadData, { isFetching }] = useLazyGetApiV1RequisitionQuery();
+  const [loadData, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1RequisitionQuery();
 
   useEffect(() => {
     loadData({
       page,
       pageSize,
       status: RequisitionStatus.Pending,
+      type: RequisitionType.Purchase,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
