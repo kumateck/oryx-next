@@ -52,7 +52,7 @@ const Page = () => {
     loadData({
       page,
       pageSize,
-      status: PurchaseOrderStatusList.Pending,
+      status: PurchaseOrderStatusList.New,
       type: type ?? SupplierType.Foreign,
     });
     if (triggerReload) {
