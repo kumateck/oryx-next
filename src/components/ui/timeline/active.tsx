@@ -16,7 +16,7 @@ interface Props {
 const showProgress = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 const showComplete = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15];
 const showFinalPacking = [12];
-const showFinishedGoods = [16];
+const showFinishedGoods = [13];
 const showExtraPackging = [6, 7, 8, 9, 10];
 const Active = ({ item, activityId, scheduleId, productId }: Props) => {
   return (
@@ -30,7 +30,11 @@ const Active = ({ item, activityId, scheduleId, productId }: Props) => {
         activityId={activityId}
         inProgress={
           showProgress.includes(Number(item.order)) &&
-          item.status === ActivityStepStatus.New
+          item.status === ActivityStepStatus.New &&
+          !(
+            showFinishedGoods.includes(Number(item.order)) &&
+            item.status === ActivityStepStatus.New
+          )
         }
         isComplete={
           showComplete.includes(Number(item.order)) &&

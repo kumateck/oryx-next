@@ -28,6 +28,7 @@ import {
   getSmallestUnit,
   isErrorResponse,
   routes,
+  sanitizeNumber,
 } from "@/lib";
 import {
   ProductionExtraPackingDto,
@@ -271,16 +272,20 @@ const FinalPacking = () => {
       const initialFormData: { [key: string]: { [key: string]: number } } = {};
       materialForMatrix.forEach((material) => {
         initialFormData[material.materialId] = {
-          receivedQuantity: material.receivedQuantity, // Read-only
-          subsequentDeliveredQuantity: material.subsequentDeliveredQuantity, // Read-only
+          receivedQuantity: sanitizeNumber(material.receivedQuantity), // Read-only
+          subsequentDeliveredQuantity: sanitizeNumber(
+            material.subsequentDeliveredQuantity,
+          ), // Read-only
           totalReceivedQuantity:
-            material.receivedQuantity + material.subsequentDeliveredQuantity, // Auto-calculated
+            sanitizeNumber(material.receivedQuantity) +
+            sanitizeNumber(material.subsequentDeliveredQuantity), // Auto-calculated
           packedQuantity: 0, // Default to 1 since it must be > 0
           returnedQuantity: 0,
           rejectedQuantity: 0,
           sampledQuantity: 0,
           totalAccountedForQuantity:
-            material.receivedQuantity + material.subsequentDeliveredQuantity, // Auto-calculated
+            sanitizeNumber(material.receivedQuantity) +
+            sanitizeNumber(material.subsequentDeliveredQuantity), // Auto-calculated
           percentageLoss: 0,
         };
       });
@@ -320,7 +325,6 @@ const FinalPacking = () => {
   const onSubmit = async (data: PackingRequestDto) => {
     // console.log(data, validateForm(), errors);
     if (validateForm()) {
-      console.log("✅ Validated Data:", formData);
       const materialArray = Object.entries(formData).map(
         ([materialId, values]) => ({
           materialId,
@@ -477,7 +481,7 @@ function groupAndSumQuantities(
         materialName: item.material?.name as string,
         uoMId: item.uoM?.id as string,
         uoMName: item.uoM?.symbol as Units,
-        totalQty: item.quantity as number,
+        totalQty: (item.quantity as number) || 0,
       };
     }
   });

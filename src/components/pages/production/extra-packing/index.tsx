@@ -13,7 +13,7 @@ import { MaterialRequestDto } from "./type";
 import TableForData from "./table";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
-import { routes } from "@/lib";
+import { convertToSmallestUnit, getLargestUnit, routes, Units } from "@/lib";
 
 const ExtraPacking = () => {
   const router = useRouter();
@@ -63,7 +63,10 @@ const ExtraPacking = () => {
         productId: productId,
         body: itemLists?.map((item) => ({
           materialId: item?.materialId,
-          quantity: item?.quantity,
+          quantity: convertToSmallestUnit(
+            item.quantity as number,
+            getLargestUnit(item.uom as Units),
+          ).value,
           uoMId: item?.uomId,
         })),
       }).unwrap();
@@ -78,7 +81,7 @@ const ExtraPacking = () => {
     <PageWrapper>
       <Card className="space-y-4 p-5">
         <div className="flex items-center justify-between">
-          <CardTitle>Extra Packasging Material</CardTitle>
+          <CardTitle>Extra Packing Material</CardTitle>
           <Button
             type="button"
             onClick={handleSubmit}

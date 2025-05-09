@@ -134,7 +134,7 @@ const TimelineCard = ({
                 {isLoading ? (
                   <Icon name="LoaderCircle" className="animate-spin" />
                 ) : (
-                  ActivityStepStatus[ActivityStepStatus.InProgress]
+                  splitWords(ActivityStepStatus[ActivityStepStatus.InProgress])
                 )}
               </Button>
             )}

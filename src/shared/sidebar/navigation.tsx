@@ -139,6 +139,10 @@ export const ROUTES: Route[] = [
             url: "/warehouse/stock-requisition",
           },
           {
+            title: "Extra Packing Requisitions",
+            url: "/warehouse/extra-packing",
+          },
+          {
             title: "Stock Transfer issues",
             url: "/warehouse/stock-transfer-requests",
           },

@@ -48,19 +48,20 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
       const updatedMaterial = { ...prev[materialId], [field]: value };
 
       // Auto-update `totalReceivedQuantity`
-      // if (field === "subsequentDeliveredQuantity") {
-      // }
-
-      console.log(updatedMaterial, " updatedMaterial");
-      updatedMaterial.totalReceivedQuantity =
-        updatedMaterial.receivedQuantity +
-        value +
-        updatedMaterial.subsequentDeliveredQuantity;
+      if (field === "subsequentDeliveredQuantity") {
+        // console.log(updatedMaterial, " updatedMaterial");
+        updatedMaterial.totalReceivedQuantity =
+          updatedMaterial.receivedQuantity +
+          value +
+          updatedMaterial.subsequentDeliveredQuantity;
+      }
 
       // Auto-update `rejectedQuantity`
       updatedMaterial.rejectedQuantity =
         updatedMaterial.totalReceivedQuantity -
-        (updatedMaterial.packedQuantity + updatedMaterial.returnedQuantity);
+        (updatedMaterial.packedQuantity +
+          updatedMaterial.returnedQuantity +
+          updatedMaterial.sampledQuantity);
 
       // Auto-update `totalAccountedForQuantity`
       updatedMaterial.totalAccountedForQuantity =
