@@ -1362,3 +1362,8 @@ export const parseClockReadable = (input: string): string => {
 
   return `${days}d ${paddedHours}:${paddedMinutes} ${ampm}`;
 };
+
+export function sanitizeNumber(value: any): number {
+  const num = Number(value);
+  return isNaN(num) || value === null || value === undefined ? 0 : num;
+}
