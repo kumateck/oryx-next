@@ -5499,7 +5499,7 @@ export type PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProd
     body: CreateProductionExtraPacking[];
   };
 export type GetApiV1ProductionScheduleExtraPackingApiResponse =
-  /** status 200 OK */ ProductionExtraPackingDtoIEnumerablePaginateable;
+  /** status 200 OK */ ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable;
 export type GetApiV1ProductionScheduleExtraPackingApiArg = {
   /** The current page number. */
   page?: number;
@@ -5516,7 +5516,7 @@ export type GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiA
     productionExtraPackingId: string;
   };
 export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ ProductionExtraPackingDto[];
+  /** status 200 OK */ ProductionExtraPackingWithBatchesDto[];
 export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiArg =
   {
     /** The production schedule Id linked to the extra packing> */
@@ -12321,25 +12321,6 @@ export type CreateProductionExtraPacking = {
   uoMId?: string;
   quantity?: number;
 };
-export type ProductionExtraPackingDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: CollectionItemDto;
-  material?: MaterialDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
-export type ProductionExtraPackingDtoIEnumerablePaginateable = {
-  data?: ProductionExtraPackingDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
 export type ProductionExtraPackingWithBatchesDto = {
   id?: string;
   createdBy?: UserDto;
@@ -12350,6 +12331,15 @@ export type ProductionExtraPackingWithBatchesDto = {
   uoM?: UnitOfMeasureDto;
   quantity?: number;
   batches?: BatchToSupply[] | null;
+};
+export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
+  data?: ProductionExtraPackingWithBatchesDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type CreateRequisitionItemRequest = {
   materialId?: string;

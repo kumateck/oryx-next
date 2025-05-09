@@ -1,38 +1,66 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
-import Link from "next/link";
 
-import { Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import { Button, Icon } from "@/components/ui";
+import { convertToLargestUnit, getSmallestUnit, Units } from "@/lib";
 import {
-  ProductDto,
-  ProductionExtraPackingDto,
+  BatchToSupply,
+  BatchTransferRequest,
+  ProductionExtraPackingWithBatchesDto,
+  usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
 
 // import Edit from "./edit";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends ProductDto>({
-  row,
-}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<
+  TData extends ProductionExtraPackingWithBatchesDto,
+>({ row }: DataTableRowActionsProps<TData>) {
+  const [issueMutation, { isLoading }] =
+    usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation();
+
+  const onIssue = async () => {
+    try {
+      const body = row.original.batches?.map((item) => {
+        return {
+          batchId: item?.batch?.id as string,
+          quantity: item?.quantityToTake as number,
+        };
+      }) as BatchTransferRequest[];
+      await issueMutation({
+        productionExtraPackingId: row.original.id as string,
+        body,
+      }).unwrap();
+
+      toast.success("Extra Packing issued successfully");
+    } catch (error) {
+      console.error("Error loading STOCK", error);
+      ThrowErrorMessage(error);
+    }
+  };
   return (
     <section className="flex items-center justify-end gap-2">
-      <Link href={routes.viewPlanning(row.original.id as string)}>
-        <Icon name="Eye" className="h-5 w-5 cursor-pointer text-neutral-500" />
-      </Link>
-      <Link href={routes.editPlanning(row.original.id as string)}>
-        <Icon
-          name="Pencil"
-          className="h-5 w-5 cursor-pointer text-neutral-500"
-        />
-      </Link>
+      <Button
+        onClick={onIssue}
+        variant={"default"}
+        className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
+      >
+        {isLoading ? (
+          <Icon name="LoaderCircle" className="animate-spin" />
+        ) : (
+          <Icon name="CircleCheck" className="size-4" />
+        )}
+        <span>Issue</span>{" "}
+      </Button>
     </section>
   );
 }
 
-export const columns: ColumnDef<ProductionExtraPackingDto>[] = [
+export const columns: ColumnDef<ProductionExtraPackingWithBatchesDto>[] = [
   {
     accessorKey: "createdAt",
     header: "Requested Date",
@@ -73,10 +101,65 @@ export const columns: ColumnDef<ProductionExtraPackingDto>[] = [
     header: "UOM",
     cell: ({ row }) => <div className="">{row.original.uoM?.symbol}</div>,
   },
+  // {
+  //   accessorKey: "qty",
+  //   header: "Quantity",
+  //   cell: ({ row }) => <div className="">{row.original.quantity}</div>,
+  // },
   {
-    accessorKey: "qty",
-    header: "Quantity",
-    cell: ({ row }) => <div className="">{row.original.quantity}</div>,
+    accessorKey: "issuedQty",
+    header: "Total Issued Qty",
+
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original?.quantity as number,
+        getSmallestUnit(row.original?.uoM?.symbol as Units),
+      );
+      return <div>{`${qty.value} ${qty.unit}`}</div>;
+    },
+  },
+  {
+    accessorKey: "batchbreakdown",
+    header: "Batchwise Breakdown",
+    cell: ({ row }) => (
+      <div>
+        <ul className="flex flex-wrap gap-2">
+          {row.original.batches?.map((batch: BatchToSupply, idx: number) => {
+            const qty = convertToLargestUnit(
+              batch?.quantityToTake as number,
+              getSmallestUnit(row.original?.uoM?.symbol as Units),
+            );
+            return (
+              <li
+                className="inline-block rounded-2xl border px-2 py-1 text-sm"
+                key={idx}
+              >
+                <div className="flex gap-2">
+                  <div className="text-primary-default">
+                    {batch.batch?.batchNumber || "No Batch"}
+                  </div>
+                  <div className="font-semibold">
+                    ( {`${qty.value} ${qty.unit}`})
+                  </div>
+                </div>
+                <div className="text-xs text-danger-default">
+                  {batch.batch?.expiryDate
+                    ? format(
+                        new Date(batch?.batch?.expiryDate ?? ""),
+                        "MMM d, yyyy",
+                      )
+                    : "N/A"}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 
   // {

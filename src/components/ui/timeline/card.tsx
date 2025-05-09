@@ -26,6 +26,9 @@ import { Icon } from "../icon";
 import { Label } from "../label";
 import { TimelineItemProps } from "./type";
 import Link from "next/link";
+import { TriangleAlertIcon } from "lucide-react";
+
+import { Alert, AlertDescription, AlertTitle } from "../alert";
 
 interface Props {
   item: TimelineItemProps;
@@ -35,6 +38,7 @@ interface Props {
   showFinalPacking?: boolean;
   showFinishedGoods?: boolean;
   showExtraPackging?: boolean;
+  isPendingExtraPacking?: boolean;
   activityId?: string;
   productId?: string;
   scheduleId?: string;
@@ -50,6 +54,7 @@ const TimelineCard = ({
   scheduleId,
   productId,
   showExtraPackging,
+  isPendingExtraPacking,
 }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -123,7 +128,12 @@ const TimelineCard = ({
           {item.extra}
 
           <div className="flex items-center gap-2 justify-end">
-            <Link href={routes.viewBoard(activityId as string)}>
+            <Link
+              href={routes.viewDetails(
+                activityId as string,
+                item?.id as string,
+              )}
+            >
               <Button variant="secondary" className="text-sm font-semibold">
                 View Details
               </Button>
@@ -160,6 +170,7 @@ const TimelineCard = ({
               </Button>
             )}
           </div>
+
           {showFinishedGoods && (
             <FinishedGoodsTransfer
               scheduleId={scheduleId as string}
@@ -168,6 +179,17 @@ const TimelineCard = ({
             />
           )}
         </div>
+        {isPendingExtraPacking && (
+          <div className="pt-2  w-full">
+            <Alert variant={"warning"}>
+              <TriangleAlertIcon className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                Extra packing request is pending for approval
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
       </div>
     </div>
   );

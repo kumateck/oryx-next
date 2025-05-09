@@ -5,6 +5,7 @@ import { ActivityStepStatus } from "@/lib";
 
 import TimelineCard from "./card";
 import { TimelineItemProps } from "./type";
+import { useGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
   item: TimelineItemProps;
@@ -19,6 +20,14 @@ const showFinalPacking = [12];
 const showFinishedGoods = [13];
 const showExtraPackging = [6, 7, 8, 9, 10];
 const Active = ({ item, activityId, scheduleId, productId }: Props) => {
+  const { data } =
+    useGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery(
+      {
+        productionScheduleId: scheduleId,
+        productId,
+      },
+    );
+
   return (
     <li className="mb-10 ms-6">
       <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white ring-8 ring-white">
@@ -31,11 +40,14 @@ const Active = ({ item, activityId, scheduleId, productId }: Props) => {
         inProgress={
           showProgress.includes(Number(item.order)) &&
           item.status === ActivityStepStatus.New &&
+          data &&
+          data?.length === 0 &&
           !(
             showFinishedGoods.includes(Number(item.order)) &&
             item.status === ActivityStepStatus.New
           )
         }
+        isPendingExtraPacking={data && data?.length > 0}
         isComplete={
           showComplete.includes(Number(item.order)) &&
           item.status === ActivityStepStatus.InProgress

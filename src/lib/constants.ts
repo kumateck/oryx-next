@@ -137,6 +137,9 @@ export const routes = {
   viewExtraPacking: (id: string, pid: string, psId: string) =>
     `/production/activities/${id}/extra-packing/${pid}/${psId}`,
   viewBoard: (id: string) => `/production/activities/${id}/board`,
+  viewDetails: (id: string, sid: string) =>
+    `/production/activities/${id}/board/${sid}`,
+
   manageRoles: () => "/access-management/roles",
   newRole: () => "/access-management/roles/create",
   editRole: (id: string) => `/access-management/roles/edit/${id}`,

@@ -31,7 +31,7 @@ import {
   sanitizeNumber,
 } from "@/lib";
 import {
-  ProductionExtraPackingDto,
+  ProductionExtraPackingWithBatchesDto,
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
   useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
@@ -455,7 +455,7 @@ const FinalPacking = () => {
 };
 
 const findExtraPackingMaterialBymaterialId = (
-  extraPackingResponse: ProductionExtraPackingDto[],
+  extraPackingResponse: ProductionExtraPackingWithBatchesDto[],
   materialId: string,
 ) => {
   const groupedData = groupAndSumQuantities(extraPackingResponse);
@@ -464,7 +464,7 @@ const findExtraPackingMaterialBymaterialId = (
   return res;
 };
 function groupAndSumQuantities(
-  data: ProductionExtraPackingDto[],
+  data: ProductionExtraPackingWithBatchesDto[],
 ): GroupedData[] {
   const groupedData: { [key: string]: GroupedData } = {};
 
