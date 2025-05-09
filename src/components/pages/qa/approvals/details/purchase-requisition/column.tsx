@@ -1,0 +1,40 @@
+import { ColumnDef } from "@tanstack/react-table";
+
+import { Units, convertToLargestUnit } from "@/lib";
+import { RequisitionItemDto } from "@/lib/redux/api/openapi.generated";
+
+export const columns: ColumnDef<RequisitionItemDto>[] = [
+  {
+    accessorKey: "material",
+    header: "Material",
+    cell: ({ row }) => <div>{row.original.material?.name}</div>,
+  },
+  {
+    accessorKey: "quantity",
+    header: "Requested Quantity",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uoM?.symbol as Units,
+          ).value
+        }
+      </div>
+    ),
+  },
+  {
+    accessorKey: "uom",
+    header: "Unit of Measurement",
+    cell: ({ row }) => (
+      <div>
+        {
+          convertToLargestUnit(
+            row.original.quantity as number,
+            row.original.uoM?.symbol as Units,
+          ).unit
+        }
+      </div>
+    ),
+  },
+];
