@@ -3,7 +3,7 @@
 import React from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { fullname } from "@/lib";
+import { convertToLargestUnit, fullname, Units } from "@/lib";
 import { useGetApiV1ProductionScheduleActivityOperationGroupedQuery } from "@/lib/redux/api/openapi.generated";
 import LeaderBoard from "@/shared/leader-board";
 import { Activity } from "@/shared/leader-board/type";
@@ -19,6 +19,10 @@ const Activities = () => {
       id: item.operation?.id as string,
       name: item.operation?.name as string,
       steps: item?.activities?.map((activity) => {
+        const convertUnit = convertToLargestUnit(
+          Number(activity.quantity),
+          activity?.product?.baseUoM?.symbol as Units,
+        );
         return {
           id: activity.id as string,
           activityId: activity?.currentStep?.productionActivity?.id as string,
@@ -27,6 +31,7 @@ const Activities = () => {
           scheduleCode: activity?.productionSchedule?.code as string,
           batchNumber: activity?.batchNumber as string,
           createdAt: activity?.createdAt as string,
+          batchSize: convertUnit.value + " " + convertUnit.unit,
           images: activity?.currentStep?.responsibleUsers?.map((x) => ({
             name: fullname(
               x?.user?.firstName as string,

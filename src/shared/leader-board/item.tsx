@@ -6,6 +6,7 @@ import { cn, getInitials, routes } from "@/lib";
 
 import { CardItemProps, DragItem } from "./type";
 import { format } from "date-fns";
+import ActionToolTip from "@/components/ui/action-tooltip";
 
 export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
   const router = useRouter();
@@ -31,8 +32,14 @@ export const CardItem: React.FC<CardItemProps> = ({ step, columnId }) => {
             : ""}
         </span>
       </div>
-      <div className="inline-flex rounded-2xl bg-primary-default px-1.5 text-white">
-        <span className="text-xs">{step.batchNumber}</span>
+      <ActionToolTip title="Batch Number">
+        <div className="inline-flex rounded-2xl bg-primary-default px-1.5 text-white">
+          <span className="text-xs">{step.batchNumber}</span>
+        </div>
+      </ActionToolTip>
+      <div className="text-xs">
+        <span className="font-semibold">Batch Size: </span>
+        <span className="text-xs text-neutral-dark">{step.batchSize}</span>
       </div>
       <div className="space-y-5">
         <span className="block text-sm font-semibold"> {step.productName}</span>

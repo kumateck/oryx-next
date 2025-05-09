@@ -17,6 +17,7 @@ export interface Task {
   scheduleCode: string;
   batchNumber: string;
   createdAt?: string;
+  batchSize: string;
   images?: {
     url?: string;
     name: string;
