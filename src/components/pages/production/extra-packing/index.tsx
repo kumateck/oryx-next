@@ -61,14 +61,16 @@ const ExtraPacking = () => {
       await savePackingMaterial({
         productionScheduleId: productionScheduleId,
         productId: productId,
-        body: itemLists?.map((item) => ({
-          materialId: item?.materialId,
-          quantity: convertToSmallestUnit(
-            item.quantity as number,
-            getLargestUnit(item.uom as Units),
-          ).value,
-          uoMId: item?.uomId,
-        })),
+        body: itemLists
+          ?.filter((item) => Number(item?.quantity) > 0)
+          ?.map((item) => ({
+            materialId: item?.materialId,
+            quantity: convertToSmallestUnit(
+              item.quantity as number,
+              getLargestUnit(item.uom as Units),
+            ).value,
+            uoMId: item?.uomId,
+          })),
       }).unwrap();
       toast.success("Extra Packing Saved Successfully");
       router.push(routes.viewBoard(activityId));
