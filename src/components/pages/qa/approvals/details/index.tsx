@@ -12,6 +12,7 @@ import ActivityLog from "./activity-log";
 import { format } from "date-fns";
 import LeaveDetails from "./leave-request";
 import Comments from "./comments";
+import PurchaseRequisition from "./purchase-requisition";
 
 // const statusColors: Record<ApprovalStatus, string> = {
 //   [ApprovalStatus.Pending]: "bg-gray-500 text-white",
@@ -129,6 +130,8 @@ const DetailPage = () => {
             return <POApproval id={id as string} />;
           case ApprovalDocument.LeaveRequest:
             return <LeaveDetails id={id as string} />;
+          case ApprovalDocument.PurchaseRequisition:
+            return <PurchaseRequisition id={id as string} />;
 
           default:
             return null;
