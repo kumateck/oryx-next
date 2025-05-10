@@ -28,6 +28,8 @@ const Active = ({ item, activityId, scheduleId, productId }: Props) => {
       },
     );
 
+  console.log(data, "data");
+
   return (
     <li className="mb-10 ms-6">
       <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white ring-8 ring-white">

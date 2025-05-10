@@ -15,6 +15,8 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -44,15 +46,49 @@ const Page = () => {
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
+  //permission start from here
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.procurement.viewManufacturerDetails,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
+  //permission end here
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Approved Manufacturers" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          {findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.procurement.createManufacturer,
+          ) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
+          )}
         </div>
       </div>
       <ServerDatatable
