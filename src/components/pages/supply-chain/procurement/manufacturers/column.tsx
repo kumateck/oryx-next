@@ -4,7 +4,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  findRecordWithFullAccess,
+  isErrorResponse,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import {
   ManufacturerDto,
   MaterialDto,
@@ -13,6 +19,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -26,25 +33,38 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
-
+      {findRecordWithFullAccess(
+        permissions,
+        PermissionKeys.procurement.updateManufacturerDetails,
+      ) && (
+        <Icon
+          name="Pencil"
+          className="h-5 w-5 cursor-pointer text-neutral-500"
+          onClick={() => {
+            setDetails(row.original);
+            setIsOpen(true);
+          }}
+        />
+      )}
+      {findRecordWithFullAccess(
+        permissions,
+        PermissionKeys.procurement.deleteManufacturer,
+      ) && (
+        <Icon
+          name="Trash2"
+          className="text-danger-500 h-5 w-5 cursor-pointer"
+          onClick={() => {
+            setDetails(row.original);
+            setIsDeleteOpen(true);
+          }}
+        />
+      )}
       {details.id && isOpen && (
         <Edit
           details={details}
