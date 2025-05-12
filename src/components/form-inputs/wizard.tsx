@@ -101,7 +101,7 @@ interface DateInputProps extends BaseInputProps<FieldValues> {
 }
 
 interface TimeInputProps extends BaseInputProps<FieldValues> {
-  type: InputTypes.TIME | InputTypes.MOMENT;
+  type: InputTypes.TIME | InputTypes.MOMENT | InputTypes.CLOCK;
   control: Control<FieldValues>;
   name: string;
   defaultValue?: string;
@@ -263,6 +263,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
       return <FormTextareaInput {...formInput} />;
     case InputTypes.TIME:
     case InputTypes.MOMENT:
+    case InputTypes.CLOCK:
       return (
         <Controller
           control={formInput.control}

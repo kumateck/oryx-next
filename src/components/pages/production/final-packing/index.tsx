@@ -35,9 +35,9 @@ import {
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
   useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
-  useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleFinalPackingMutation,
+  useLazyGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 
@@ -79,7 +79,7 @@ const FinalPacking = () => {
   const [loadFinalPacking, { isLoading: isLoadingFinalPacking }] =
     useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery();
   const [loadExtraPacking, { isLoading: isLoadingExtraPacking }] =
-    useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery();
+    useLazyGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery();
 
   useEffect(() => {
     if (activityId) {

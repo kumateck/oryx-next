@@ -66,6 +66,7 @@ import { TimeType } from "@/lib";
 import { LabelInput } from "./label";
 import { MomentInput } from "./moment";
 import { TimeInput } from "./time";
+import { ClockInput } from "./clock";
 
 interface Props {
   label: string;
@@ -117,6 +118,8 @@ export const FormClockInput = ({
       >
         {type === TimeType.Moment ? (
           <MomentInput onChange={onChange} />
+        ) : type === TimeType.Clock ? (
+          <ClockInput onChange={onChange} value={effectiveValue} />
         ) : (
           <TimeInput
             onChange={onChange}

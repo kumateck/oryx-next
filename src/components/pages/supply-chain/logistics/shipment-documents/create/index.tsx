@@ -13,6 +13,7 @@ import {
   Option,
   PermissionKeys,
   Section,
+  SupplierType,
   findRecordWithFullAccess,
   generateCode,
   isErrorResponse,
@@ -57,12 +58,14 @@ const Page = () => {
   const { data: invoicesResponse } =
     useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
 
-  const invoiceOptions = invoicesResponse?.map((item) => {
-    return {
-      label: item.code,
-      value: item?.id,
-    };
-  }) as Option[];
+  const invoiceOptions = invoicesResponse
+    ?.filter((s) => s.supplier?.type === SupplierType.Foreign)
+    ?.map((item) => {
+      return {
+        label: item.code,
+        value: item?.id,
+      };
+    }) as Option[];
 
   const {
     register,
