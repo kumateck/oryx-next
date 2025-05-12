@@ -11,7 +11,13 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui";
-import { EMaterialKind, routes } from "@/lib";
+import {
+  EMaterialKind,
+  findRecordWithFullAccess,
+  PermissionKeys,
+  routes,
+  Section,
+} from "@/lib";
 import {
   MaterialKind,
   useLazyGetApiV1MaterialQuery,
@@ -23,6 +29,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -60,6 +67,44 @@ const Page = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewRawMaterials,
+  );
+  // check permission for packaging meterial
+  const hasAccessToPackageMaterial = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewPackagingMaterials,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (isClient && !hasAccessToPackageMaterial && kind.toString() === "1") {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  const cantCreateNewRawMaterial = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.createNewRawMaterials,
+  );
+  const cantCreateNewPackagingMaterial = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.createNewRawMaterials,
+  );
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && (
@@ -85,17 +130,28 @@ const Page = () => {
               <RadioGroupItem value={EMaterialKind.Raw.toString()} id="r1" />
               <Label htmlFor="r1">Raw Materials</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value={EMaterialKind.Packing.toString()}
-                id="r2"
-              />
-              <Label htmlFor="r2">Package Materials</Label>
-            </div>
+            {findRecordWithFullAccess(
+              permissions,
+              PermissionKeys.warehouse.viewPackagingMaterials,
+            ) && (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={EMaterialKind.Packing.toString()}
+                  id="r2"
+                />
+                <Label htmlFor="r2">Package Materials</Label>
+              </div>
+            )}
           </RadioGroup>
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          {(cantCreateNewPackagingMaterial || cantCreateNewRawMaterial) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
+          )}
         </div>
       </div>
 

@@ -12,10 +12,13 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
+  Section,
   StockTransfer,
   TransferType,
   Units,
   convertToLargestUnit,
+  findRecordWithFullAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -24,6 +27,7 @@ import {
   usePutApiV1ProductionScheduleStockTransferRejectByStockTransferIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 
 export const getColumns = (
   type: TransferType,
@@ -133,37 +137,46 @@ export function DataTableRowActions<
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  //permissions checks
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
   return (
     <section className="flex items-center justify-end gap-2">
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant="success"
-          size="sm"
-          className="rounded-2xl"
-          onClick={() => setIsApprovalOpen(true)}
-        >
-          {isLoadingApprove ? (
-            <Icon name="LoaderCircle" className="size-4 animate-spin" />
-          ) : (
-            <Icon name="Check" className="size-4" />
-          )}
-          <span>Approve</span>
-        </Button>
+      {findRecordWithFullAccess(
+        permissions,
+        PermissionKeys.production.approveOrRejectStockTransferRequest,
+      ) && (
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="success"
+            size="sm"
+            className="rounded-2xl"
+            onClick={() => setIsApprovalOpen(true)}
+          >
+            {isLoadingApprove ? (
+              <Icon name="LoaderCircle" className="size-4 animate-spin" />
+            ) : (
+              <Icon name="Check" className="size-4" />
+            )}
+            <span>Approve</span>
+          </Button>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          className="rounded-2xl"
-          onClick={() => setIsRejectedOpen(true)}
-        >
-          {isLoadingReject ? (
-            <Icon name="LoaderCircle" className="size-4 animate-spin" />
-          ) : (
-            <Icon name="X" className="size-4" />
-          )}
-          <span>Reject</span>
-        </Button>
-      </div>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="rounded-2xl"
+            onClick={() => setIsRejectedOpen(true)}
+          >
+            {isLoadingReject ? (
+              <Icon name="LoaderCircle" className="size-4 animate-spin" />
+            ) : (
+              <Icon name="X" className="size-4" />
+            )}
+            <span>Reject</span>
+          </Button>
+        </div>
+      )}
 
       <ConfirmDialog
         confirmText="Approve"

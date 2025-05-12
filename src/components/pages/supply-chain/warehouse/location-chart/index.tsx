@@ -1,10 +1,16 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { AsyncSelect, Card, CardTitle } from "@/components/ui";
-import { EMaterialKind, Option } from "@/lib";
+import {
+  EMaterialKind,
+  findRecordWithFullAccess,
+  Option,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import {
   MaterialBatchDto,
   WarehouseLocationRackDto,
@@ -19,6 +25,8 @@ import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { useSelector } from "@/lib/redux/store";
 
 const LocationChart = () => {
   const searchParams = useSearchParams();
@@ -83,26 +91,96 @@ const LocationChart = () => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
     setReloadTrigger(true);
   };
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccessToRawMaterialLocationChart = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewRawMaterialLocationChartList,
+  );
+  // check permission for packaging meterial
+  const hasAccessToPackageMaterialLocationChart = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
+  );
+
+  if (isClient && !hasAccessToRawMaterialLocationChart) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (
+    isClient &&
+    !hasAccessToPackageMaterialLocationChart &&
+    kind?.toString() === "1"
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
         <div className="flex items-center justify-between py-2">
           <PageTitle title="Location Chart Records" />
-          <AccessTabs
-            handleTabClick={handleTabClick}
-            type={kind}
-            tabs={[
-              {
-                label: EMaterialKind[EMaterialKind.Raw],
-                value: EMaterialKind.Raw.toString(),
-              },
-              {
-                label: EMaterialKind[EMaterialKind.Packing],
-                value: EMaterialKind.Packing.toString(),
-              },
-            ]}
-          />
+          {hasAccessToPackageMaterialLocationChart &&
+            hasAccessToRawMaterialLocationChart && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  {
+                    label: EMaterialKind[EMaterialKind.Raw],
+                    value: EMaterialKind.Raw.toString(),
+                  },
+                  {
+                    label: EMaterialKind[EMaterialKind.Packing],
+                    value: EMaterialKind.Packing.toString(),
+                  },
+                ]}
+              />
+            )}
+          {hasAccessToPackageMaterialLocationChart &&
+            !hasAccessToRawMaterialLocationChart && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  // {
+                  //   label: EMaterialKind[EMaterialKind.Raw],
+                  //   value: EMaterialKind.Raw.toString(),
+                  // },
+                  {
+                    label: EMaterialKind[EMaterialKind.Packing],
+                    value: EMaterialKind.Packing.toString(),
+                  },
+                ]}
+              />
+            )}
+          {!hasAccessToPackageMaterialLocationChart &&
+            hasAccessToRawMaterialLocationChart && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  {
+                    label: EMaterialKind[EMaterialKind.Raw],
+                    value: EMaterialKind.Raw.toString(),
+                  },
+                  // {
+                  //   label: EMaterialKind[EMaterialKind.Packing],
+                  //   value: EMaterialKind.Packing.toString(),
+                  // },
+                ]}
+              />
+            )}
         </div>
 
         <div className="max-w-md">

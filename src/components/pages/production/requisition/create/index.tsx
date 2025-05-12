@@ -1,6 +1,14 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind, getLargestUnit, getMatchingIds, Units } from "@/lib";
+import {
+  EMaterialKind,
+  findRecordWithFullAccess,
+  getLargestUnit,
+  getMatchingIds,
+  PermissionKeys,
+  Section,
+  Units,
+} from "@/lib";
 import { useLazyGetApiV1MaterialDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import React, { useCallback, useEffect, useState } from "react";
@@ -12,6 +20,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { Button, Icon, Separator } from "@/components/ui";
 import { MaterialRequestDto } from "./type";
 import Purchase from "../../schedule/details/products/purchase";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
@@ -84,6 +93,20 @@ const Page = () => {
   };
 
   // console.log(rawMaterials?.data, "rawMaterials?.data");
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const canCreateRawMaterialRequisition = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.createRawMaterialPurchaseRequisition,
+  );
+  // check permission for packaging meterial
+  const canCreatePackagingRequisistion = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.createPackagingMaterialStockRequisition,
+  );
   return (
     <PageWrapper>
       <div className="flex items-center justify-between py-2">
@@ -109,20 +132,57 @@ const Page = () => {
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
-          <AccessTabs
-            handleTabClick={handleTabClick}
-            type={kind}
-            tabs={[
-              {
-                label: EMaterialKind[EMaterialKind.Raw],
-                value: EMaterialKind.Raw.toString(),
-              },
-              {
-                label: EMaterialKind[EMaterialKind.Packing],
-                value: EMaterialKind.Packing.toString(),
-              },
-            ]}
-          />
+          {canCreateRawMaterialRequisition &&
+            canCreatePackagingRequisistion && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  {
+                    label: EMaterialKind[EMaterialKind.Raw],
+                    value: EMaterialKind.Raw.toString(),
+                  },
+                  {
+                    label: EMaterialKind[EMaterialKind.Packing],
+                    value: EMaterialKind.Packing.toString(),
+                  },
+                ]}
+              />
+            )}
+          {!canCreateRawMaterialRequisition &&
+            canCreatePackagingRequisistion && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  // {
+                  //   label: EMaterialKind[EMaterialKind.Raw],
+                  //   value: EMaterialKind.Raw.toString(),
+                  // },
+                  {
+                    label: EMaterialKind[EMaterialKind.Packing],
+                    value: EMaterialKind.Packing.toString(),
+                  },
+                ]}
+              />
+            )}
+          {canCreateRawMaterialRequisition &&
+            !canCreatePackagingRequisistion && (
+              <AccessTabs
+                handleTabClick={handleTabClick}
+                type={kind}
+                tabs={[
+                  {
+                    label: EMaterialKind[EMaterialKind.Raw],
+                    value: EMaterialKind.Raw.toString(),
+                  },
+                  // {
+                  //   label: EMaterialKind[EMaterialKind.Packing],
+                  //   value: EMaterialKind.Packing.toString(),
+                  // },
+                ]}
+              />
+            )}
         </div>
       </div>
 

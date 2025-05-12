@@ -5,7 +5,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { TransferType } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  Section,
+  TransferType,
+} from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -17,6 +22,7 @@ import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
 import TransferTable from "./table";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -86,6 +92,25 @@ const Page = () => {
   const handleTabClick = (tabType: TransferType) => {
     router.push(pathname + "?" + createQueryString("type", tabType.toString()));
   };
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.production.viewStockTransferRequests,
+  );
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

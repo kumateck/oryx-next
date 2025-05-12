@@ -4,7 +4,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { StockTransfer } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  Section,
+  StockTransfer,
+} from "@/lib";
 import {
   DepartmentStockTransferDtoRead,
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery, // useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -14,6 +19,8 @@ import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
 import TransferTable from "./table";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -80,6 +87,37 @@ const Page = () => {
   const onRowClick = (row: DepartmentStockTransferDtoRead) => {
     router.push(`/warehouse/stock-transfer-requests/${row.id}/details`);
   };
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccessToRawMaterialTransferList = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewRawMaterialTransferList,
+  );
+  //TODO: enable access to view packaging meterial transfer request permission
+  // const hasAccessToPackageMaterialTransferList = findRecordWithFullAccess(
+  //   permissions,
+  // PermissionKeys.warehouse.viewPackagingMaterialTransferList,
+  // );
+
+  if (isClient && !hasAccessToRawMaterialTransferList) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  //TODO: enable access to view packaging meterial transfer request permission
+  // if (isClient && !hasAccessToPackageMaterialTransferList && kind.toString() === "1") {
+  //   //redirect to no access
+  //   return <NoAccess />;
+  // }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
