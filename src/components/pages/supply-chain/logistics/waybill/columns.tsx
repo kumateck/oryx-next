@@ -10,8 +10,11 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
+  Section,
   WaybillStatus,
   WaybillStatusOptions,
+  findRecordWithFullAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -19,6 +22,7 @@ import {
   usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -42,33 +46,45 @@ function DataTableRowStatus<TData extends ShipmentDocumentDto>({
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
 
   return (
     <div className="flex items-center gap-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
-              statusColors[row.original.status as WaybillStatus] ?? ""
-            }`}
-          >
-            {WaybillStatus[row.original.status as WaybillStatus] ?? "Unknown"}
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-          {WaybillStatusOptions.map((opt) => (
-            <DropdownMenuItem
-              key={opt.value}
-              onClick={() =>
-                handleStatusUpdate(Number(opt.value) as WaybillStatus)
-              }
-              className="group flex cursor-pointer items-center gap-2"
+      {findRecordWithFullAccess(
+        permissions,
+        PermissionKeys.logistics.changeWaybillStatus,
+      ) && (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div
+              className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
+                statusColors[row.original.status as WaybillStatus] ?? ""
+              }`}
             >
-              {opt.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+              {WaybillStatus[row.original.status as WaybillStatus] ?? "Unknown"}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            side="bottom"
+            className="rounded-2xl"
+          >
+            {WaybillStatusOptions.map((opt) => (
+              <DropdownMenuItem
+                key={opt.value}
+                onClick={() =>
+                  handleStatusUpdate(Number(opt.value) as WaybillStatus)
+                }
+                className="group flex cursor-pointer items-center gap-2"
+              >
+                {opt.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 }

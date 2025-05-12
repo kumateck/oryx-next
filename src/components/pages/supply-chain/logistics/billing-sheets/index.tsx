@@ -11,6 +11,9 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -28,6 +31,27 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.viewBillingSheet,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   const data = result?.data || [];
   return (

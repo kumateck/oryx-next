@@ -11,6 +11,9 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
+  PermissionKeys,
+  Section,
+  findRecordWithFullAccess,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -33,6 +36,8 @@ import { CreateShipmentValidator, ShipmentRequestDto } from "../types";
 import DocumentForm from "./form";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -163,6 +168,27 @@ const Page = () => {
   };
 
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.createBillingSheet,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper className="space-y-6">

@@ -8,11 +8,17 @@ import { useSelector } from "@/lib/redux/store";
 import { useLazyGetApiV1RoleQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  routes,
+  Section,
+} from "@/lib";
 import Link from "next/link";
 import { ClientDatatable } from "@/shared/datatable";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
+import NoAccess from "@/shared/no-access";
 
 const ManageRoles = () => {
   const dispatch = useDispatch();
@@ -33,6 +39,28 @@ const ManageRoles = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerReload]);
   const roles = data ?? [];
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.humanResources.viewRoles,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2">
       <div className="flex items-center justify-between py-2">
@@ -48,12 +76,17 @@ const ManageRoles = () => {
               .createAndAssign,
           ) && (
           )} */}
-        <Link href={routes.newRole()}>
-          <Button type="button" className="gap-2">
-            <Icon name="Plus" className="h-4 w-4 text-secondary-500" />
-            <span>Create New Role</span>
-          </Button>
-        </Link>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.createRoleAndAssignPermissions,
+        ) && (
+          <Link href={routes.newRole()}>
+            <Button type="button" className="gap-2">
+              <Icon name="Plus" className="h-4 w-4 text-secondary-500" />
+              <span>Create New Role</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div>

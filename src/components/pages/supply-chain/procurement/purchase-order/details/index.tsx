@@ -7,7 +7,12 @@ import { useDispatch } from "react-redux";
 
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 // import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { formatAmount } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  formatAmount,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import {
   useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   // useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
@@ -44,6 +49,10 @@ const PODetail = () => {
     router.back();
   };
 
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
@@ -57,15 +66,20 @@ const PODetail = () => {
             <PageTitle title="Purchase Order" />
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant={"default"}
-              onClick={() =>
-                router.push(`/procurement/purchase-orders/${id}/revise`)
-              }
-            >
-              <Icon name="FilePenLine" />
-              <span>Revise</span>
-            </Button>
+            {findRecordWithFullAccess(
+              permissions,
+              PermissionKeys.procurement.reviseExistingPurchaseOrder,
+            ) && (
+              <Button
+                variant={"default"}
+                onClick={() =>
+                  router.push(`/procurement/purchase-orders/${id}/revise`)
+                }
+              >
+                <Icon name="FilePenLine" />
+                <span>Revise</span>
+              </Button>
+            )}
             <Button variant={"success"}>
               <Icon name="Mail" />
               <span>Send Mail</span>

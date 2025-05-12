@@ -11,7 +11,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  findRecordWithFullAccess,
+  isErrorResponse,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   SupplierDto,
@@ -23,6 +29,7 @@ import { ListsTable } from "@/shared/datatable";
 import InvoiceHeader from "@/shared/invoice/header";
 
 import { getColums } from "./column";
+import { useSelector } from "@/lib/redux/store";
 
 interface Props {
   isOpen: boolean;
@@ -77,18 +84,28 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     dispatch(commonActions.setTriggerReload());
     onClose();
   };
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
-          <Button variant="outline" onClick={() => handlePrint()}>
-            {isSending ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              <Icon name="Printer" />
-            )}
-            <span>Send Email</span>
-          </Button>
+          {findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.procurement.sendAwardedQuotations,
+          ) && (
+            <Button variant="outline" onClick={() => handlePrint()}>
+              {isSending ? (
+                <Icon name="LoaderCircle" className="animate-spin" />
+              ) : (
+                <Icon name="Printer" />
+              )}
+              <span>Send Email</span>
+            </Button>
+          )}
           <Button variant="destructive" onClick={() => onClose()}>
             <span>Close</span>
           </Button>

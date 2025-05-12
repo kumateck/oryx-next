@@ -14,6 +14,8 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -40,14 +42,40 @@ const Page = () => {
   console.log(page);
   const router = useRouter();
 
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.viewWaybill,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Waybill" />
         <div className="flex items-center justify-end gap-2">
-          <Link href={"/logistics/waybill/create"}>
-            <Button>Create</Button>
-          </Link>
+          {findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.logistics.createWaybill,
+          ) && (
+            <Link href={"/logistics/waybill/create"}>
+              <Button>Create</Button>
+            </Link>
+          )}
         </div>
       </div>
 

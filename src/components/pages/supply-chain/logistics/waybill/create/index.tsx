@@ -11,6 +11,9 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
+  PermissionKeys,
+  Section,
+  findRecordWithFullAccess,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -32,6 +35,8 @@ import PageTitle from "@/shared/title";
 import { MaterialRequestDto } from "../../shipment-documents/create/type";
 import { WaybillRequestDto } from "../types";
 import WaybillForm from "./form";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Create = () => {
   const {
@@ -163,6 +168,27 @@ const Create = () => {
     }
   };
 
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.createWaybill,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
