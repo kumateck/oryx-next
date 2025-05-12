@@ -98,32 +98,32 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
   const onSubmit = async (data: TransferRequestDto) => {
     // console.log(data);
 
-    const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
-    const totalQtyNeeded = Number(qtyNeeded);
+    // const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
+    // const totalQtyNeeded = Number(qtyNeeded);
 
-    const sources = data.sources?.map((item) => {
-      // console.log(
-      //   getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
-      //   materialInfo.baseUoM?.symbol,
-      // );
-      return {
-        quantity: convertToSmallestUnit(
-          item.quantity,
-          getLargestUnit(materialInfo.baseUoM?.symbol as Units),
-        ).value,
-      };
-    });
+    // const sources = data.sources?.map((item) => {
+    //   // console.log(
+    //   //   getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
+    //   //   materialInfo.baseUoM?.symbol,
+    //   // );
+    //   return {
+    //     quantity: convertToSmallestUnit(
+    //       item.quantity,
+    //       getLargestUnit(materialInfo.baseUoM?.symbol as Units),
+    //     ).value,
+    //   };
+    // });
     // console.log(sources);
-    const sourceTotalQty = sources?.reduce((accumulator, item) => {
-      return accumulator + (item.quantity || 0);
-    }, 0);
+    // const sourceTotalQty = sources?.reduce((accumulator, item) => {
+    //   return accumulator + (item.quantity || 0);
+    // }, 0);
 
-    if (
-      Number(sourceTotalQty.toFixed(2)) !== Number(totalQtyNeeded?.toFixed(2))
-    ) {
-      toast.warning("U cannot source partial");
-      return;
-    }
+    // if (
+    //   Number(sourceTotalQty.toFixed(2)) !== Number(totalQtyNeeded?.toFixed(2))
+    // ) {
+    //   toast.warning("U cannot source partial");
+    //   return;
+    // }
 
     try {
       await saveMutation({
