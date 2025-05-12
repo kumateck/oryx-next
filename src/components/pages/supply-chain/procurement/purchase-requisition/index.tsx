@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { RequisitionStatus, RequisitionType } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  RequisitionStatus,
+  RequisitionType,
+  Section,
+} from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import { useLazyGetApiV1RequisitionQuery } from "@/lib/redux/api/openapi.generated";
@@ -12,6 +18,8 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -34,6 +42,29 @@ const Page = () => {
   }, [page, pageSize]);
 
   const data = result?.data || [];
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  console.log("all permisinons", permissions);
+  // check permissions access
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.procurement.viewPurchaseRequisitions,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">

@@ -15,9 +15,12 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
+  Section,
   SupplierStatus,
   SupplierType,
   SupplierTypeOptions,
+  findRecordWithFullAccess,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -29,6 +32,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
+import { useSelector } from "@/lib/redux/store";
 
 // import Edit from "./edit";
 
@@ -45,34 +49,50 @@ export function DataTableRowActions<TData extends SupplierDto>({
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <Link
-            className="flex cursor-pointer items-center justify-start gap-2"
-            href={routes.editSupplier(row.original.id as string)}
-          >
-            <span className="text-black">
-              <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
-            </span>
-            <span>Edit</span>
-          </Link>
-        </DropdownMenuItem>{" "}
-        <DropdownMenuItem className="group">
-          <div
-            onClick={() => {
-              setDetails(row.original);
-              setIsDeleteOpen(true);
-            }}
-            className="flex cursor-pointer items-center justify-start gap-2"
-          >
-            <span className="text-black">
-              <Icon name="Trash2" className="h-5 w-5 text-danger-default" />
-            </span>
-            <span>Delete</span>
-          </div>
-        </DropdownMenuItem>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.procurement.updateVendorDetails,
+        ) && (
+          <DropdownMenuItem className="group">
+            <Link
+              className="flex cursor-pointer items-center justify-start gap-2"
+              href={routes.editSupplier(row.original.id as string)}
+            >
+              <span className="text-black">
+                <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
+              </span>
+              <span>Edit</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.procurement.deleteVendor,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              onClick={() => {
+                setDetails(row.original);
+                setIsDeleteOpen(true);
+              }}
+              className="flex cursor-pointer items-center justify-start gap-2"
+            >
+              <span className="text-black">
+                <Icon name="Trash2" className="h-5 w-5 text-danger-default" />
+              </span>
+              <span>Delete</span>
+            </div>
+          </DropdownMenuItem>
+        )}
       </TableMenuAction>
 
       <ConfirmDeleteDialog

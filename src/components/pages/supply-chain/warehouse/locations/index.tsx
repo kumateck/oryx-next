@@ -14,6 +14,8 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -36,6 +38,26 @@ const Page = () => {
   }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewLocations,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
@@ -43,9 +65,18 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title=" Warehouse Locations" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Add Location</span>
-          </Button>
+          {findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.warehouse.addNewLocation,
+          ) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Add Location</span>
+            </Button>
+          )}
         </div>
       </div>
 

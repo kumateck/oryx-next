@@ -5,7 +5,10 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
+  Section,
   WarehouseType,
+  findRecordWithFullAccess,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -16,6 +19,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,16 +32,25 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   const [details, setDetails] = useState<WarehouseDto>({} as WarehouseDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouse] = useLazyGetApiV1WarehouseQuery();
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
+      {findRecordWithFullAccess(
+        permissions,
+        PermissionKeys.warehouse.editWarehouse,
+      ) && (
+        <Icon
+          name="Pencil"
+          className="h-5 w-5 cursor-pointer text-neutral-500"
+          onClick={() => {
+            setDetails(row.original);
+            setIsOpen(true);
+          }}
+        />
+      )}
       <Icon
         name="Trash2"
         className="text-danger-500 h-5 w-5 cursor-pointer"
@@ -46,7 +59,6 @@ export function DataTableRowActions<TData extends WarehouseDto>({
           setIsDeleteOpen(true);
         }}
       />
-
       {details.id && isOpen && (
         <Edit
           details={details}

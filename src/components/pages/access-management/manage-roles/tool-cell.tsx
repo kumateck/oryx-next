@@ -1,5 +1,10 @@
 import { ConfirmDeleteDialog } from "@/components/ui";
-import { routes } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  routes,
+  Section,
+} from "@/lib";
 import { useDeleteApiV1RoleByIdMutation } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 // import { useSelector } from "@/lib/redux/store";
@@ -9,6 +14,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useSelector } from "@/lib/redux/store";
 
 interface Props {
   roleId: string;
@@ -30,6 +36,9 @@ export default function ToolCell({ roleId }: Props) {
       ThrowErrorMessage(error);
     }
   };
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
   return (
     <div className="">
       <ul className="flex gap-2  items-center justify-end">
@@ -40,28 +49,38 @@ export default function ToolCell({ roleId }: Props) {
          import Link from "next/link";
 
         )} */}
-        <li>
-          <Link href={routes.editRole(roleId)}>
-            <span className="cursor-pointer text-primary-500 hover:cursor-pointer">
-              <Pencil className="h-5 w-5" />
-            </span>
-          </Link>
-        </li>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.editRoleWithItsPermissions,
+        ) && (
+          <li>
+            <Link href={routes.editRole(roleId)}>
+              <span className="cursor-pointer text-primary-500 hover:cursor-pointer">
+                <Pencil className="h-5 w-5" />
+              </span>
+            </Link>
+          </li>
+        )}
         {/* {findRecordWithFullAccess(
           permissions,
           PermissionKeys.resourceManagement.rolesAndPermissions.delete,
         ) && (
          
         )} */}
-        <li
-          onClick={() => {
-            setIsDeleteOpen(true);
-          }}
-        >
-          <span className="cursor-pointer text-danger-500">
-            <Trash2 className="h-5 w-5" />
-          </span>
-        </li>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.deleteRole,
+        ) && (
+          <li
+            onClick={() => {
+              setIsDeleteOpen(true);
+            }}
+          >
+            <span className="cursor-pointer text-danger-500">
+              <Trash2 className="h-5 w-5" />
+            </span>
+          </li>
+        )}
       </ul>
       <ConfirmDeleteDialog
         open={isDeleteOpen}

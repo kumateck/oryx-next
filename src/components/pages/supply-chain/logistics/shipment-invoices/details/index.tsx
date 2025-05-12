@@ -8,6 +8,10 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import TableForData from "./table";
+import { useEffect, useState } from "react";
+import { useSelector } from "@/lib/redux/store";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const ShipmentInvoiceDetails = () => {
   const { id } = useParams();
@@ -16,6 +20,27 @@ const ShipmentInvoiceDetails = () => {
   const { data } = useGetApiV1ProcurementShipmentInvoiceByIdQuery({
     id: shipmentInvoiceId,
   });
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.viewShipmentInvoice,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

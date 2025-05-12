@@ -3,7 +3,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  findRecordWithFullAccess,
+  isErrorResponse,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import {
   WarehouseLocationRackDto,
   useDeleteApiV1WarehouseRackByRackIdMutation,
@@ -12,6 +18,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,24 +34,34 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
 
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsOpen(true);
-            }}
-          >
-            <Icon
-              name="Pencil"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Edit</span>
-          </div>
-        </DropdownMenuItem>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.warehouse.editRack,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <Icon
+                name="Pencil"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Edit</span>
+            </div>
+          </DropdownMenuItem>
+        )}
         {/* <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
