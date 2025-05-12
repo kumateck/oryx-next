@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { TransferType } from "@/lib";
+import { StockTransfer, TransferType } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -52,7 +52,7 @@ const Page = () => {
       loadInboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.New,
+        status: StockTransfer.New,
       });
     }
 
@@ -60,7 +60,7 @@ const Page = () => {
       loadOutboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.Approved,
+        status: StockTransfer.Approved,
       });
     }
     if (triggerReload) {

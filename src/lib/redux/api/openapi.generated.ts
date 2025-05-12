@@ -2704,13 +2704,13 @@ const injectedRtkApi = api.injectEndpoints({
           url: `/api/v1/production-schedule/extra-packing/${queryArg.productionExtraPackingId}`,
         }),
       }),
-    getApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductId:
+    getApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductId:
       build.query<
-        GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiArg
+        GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiResponse,
+        GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/by-product${queryArg.productionScheduleId}/${queryArg.productId}`,
+          url: `/api/v1/production-schedule/extra-packing/by-product/${queryArg.productionScheduleId}/${queryArg.productId}`,
         }),
       }),
     getApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialId:
@@ -5515,9 +5515,9 @@ export type GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiA
     /** The ID of the Extra Packing. */
     productionExtraPackingId: string;
   };
-export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiResponse =
+export type GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiResponse =
   /** status 200 OK */ ProductionExtraPackingWithBatchesDto[];
-export type GetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdApiArg =
+export type GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiArg =
   {
     /** The production schedule Id linked to the extra packing> */
     productionScheduleId: string;
@@ -12047,7 +12047,7 @@ export type StockTransferSourceRequest = {
 export type CreateStockTransferRequest = {
   code?: string | null;
   materialId?: string;
-  uoMId?: string;
+  uoMId?: string | null;
   reason?: string | null;
   requiredQuantity?: number;
   productId?: string | null;
@@ -12321,6 +12321,7 @@ export type CreateProductionExtraPacking = {
   uoMId?: string;
   quantity?: number;
 };
+export type ProductionExtraPackingStatus = 0 | 1;
 export type ProductionExtraPackingWithBatchesDto = {
   id?: string;
   createdBy?: UserDto;
@@ -12329,6 +12330,7 @@ export type ProductionExtraPackingWithBatchesDto = {
   product?: CollectionItemDto;
   material?: MaterialDto;
   uoM?: UnitOfMeasureDto;
+  status?: ProductionExtraPackingStatus;
   quantity?: number;
   batches?: BatchToSupply[] | null;
 };
@@ -13453,8 +13455,8 @@ export const {
   useLazyGetApiV1ProductionScheduleExtraPackingQuery,
   useGetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdQuery,
-  useGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
-  useLazyGetApiV1ProductionScheduleExtraPackingByProductbyProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery,
   useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,

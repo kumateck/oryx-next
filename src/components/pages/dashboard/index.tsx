@@ -27,7 +27,7 @@ const Page = () => {
         </span>
       </div>
       <ScrollablePageWrapper>
-        <div>{/* <ImageUpload /> */}</div>
+        <div></div>
       </ScrollablePageWrapper>
     </BgWrapper>
   );

@@ -13,6 +13,7 @@ import {
   Option,
   PermissionKeys,
   Section,
+  SupplierType,
   findRecordWithFullAccess,
   generateCode,
   isErrorResponse,
@@ -66,12 +67,14 @@ const Create = () => {
     useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
       modelType: CODE_SETTINGS.modelTypes.Waybill,
     });
-  const invoiceOptions = invoicesResponse?.map((item) => {
-    return {
-      label: item.code,
-      value: item?.id,
-    };
-  }) as Option[];
+  const invoiceOptions = invoicesResponse
+    ?.filter((s) => s.supplier?.type === SupplierType.Local)
+    ?.map((item) => {
+      return {
+        label: item.code,
+        value: item?.id,
+      };
+    }) as Option[];
 
   useEffect(() => {
     loadCodes();
