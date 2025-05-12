@@ -5,7 +5,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { ProcurementType, SupplierType } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  PermissionKeys,
+  ProcurementType,
+  Section,
+  SupplierType,
+} from "@/lib";
 import { useLazyGetApiV1RequisitionSourceSupplierQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -14,6 +20,7 @@ import PageTitle from "@/shared/title";
 
 import AccessTabs from "../../../../../shared/access";
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -59,6 +66,29 @@ const Page = () => {
   }, [page, pageSize, type, triggerReload]);
 
   const data = result?.data || [];
+
+  // Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.procurement.sendQuotationRequest,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

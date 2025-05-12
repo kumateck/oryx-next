@@ -5,13 +5,22 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { ShipmentStatus, isImageFile, splitWords } from "@/lib";
+import {
+  PermissionKeys,
+  Section,
+  ShipmentStatus,
+  findRecordWithFullAccess,
+  isImageFile,
+  splitWords,
+} from "@/lib";
 import { useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { MaterialRequestDto } from "../create/type";
 import TableForData from "./table";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -51,6 +60,27 @@ const ShipmentDocumentDetails = () => {
       setMaterialLists(payload);
     }
   }, [data]);
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.logistics.viewShipmentDocument,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

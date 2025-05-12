@@ -7,13 +7,17 @@ import { Button, Icon } from "@/components/ui";
 import {
   DistributedMaterialStatus,
   Option,
+  PermissionKeys,
+  Section,
   Units,
   convertToLargestUnit,
+  findRecordWithFullAccess,
   routes,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -29,18 +33,27 @@ export function DataTableRowActions<
     status === DistributedMaterialStatus.Distributed ||
     status === DistributedMaterialStatus.Arrived;
 
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <section className="flex items-center justify-end gap-2">
       <div className="flex items-center justify-end gap-2">
         {canCreateChecklist ? (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => router.push(routes.createChecklist(id as string))}
-          >
-            <Icon name="Plus" className="h-4 w-4" />{" "}
-            <span>Create Checklist</span>
-          </Button>
+          findRecordWithFullAccess(
+            permissions,
+            PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
+          ) && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => router.push(routes.createChecklist(id as string))}
+            >
+              <Icon name="Plus" className="h-4 w-4" />{" "}
+              <span>Create Checklist</span>
+            </Button>
+          )
         ) : (
           <Button
             variant="default"

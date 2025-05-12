@@ -18,10 +18,13 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
   ProcurementType,
   Quotations,
+  Section,
   SupplierType,
   cn,
+  findRecordWithFullAccess,
   findSelectedQuotation,
   isErrorResponse,
 } from "@/lib";
@@ -34,6 +37,8 @@ import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -141,6 +146,27 @@ const Page = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  // Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.procurement.selectVendorPricing,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

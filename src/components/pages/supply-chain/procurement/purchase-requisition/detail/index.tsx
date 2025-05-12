@@ -7,10 +7,13 @@ import { toast } from "sonner";
 import { Button, Card, Icon } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
   RequisitionType,
+  Section,
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
+  findRecordWithFullAccess,
   fullname,
   isErrorResponse,
 } from "@/lib";
@@ -25,6 +28,8 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import NoAccess from "@/shared/no-access";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const { id } = useParams();
@@ -89,6 +94,27 @@ const Page = () => {
     }
   };
   // console.log(requisition, "requisition");
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.procurement.sourceItemsBasedOnRequisition,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">

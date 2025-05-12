@@ -14,6 +14,9 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
+import { useSelector } from "@/lib/redux/store";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   // const dispatch = useDispatch();
@@ -35,9 +38,34 @@ const Page = () => {
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewWarehouses,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
-      {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
+      {isOpen &&
+        findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.warehouse.addWarehouse,
+        ) && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Warehouses" />
         {/* <div className="flex items-center justify-end gap-2">

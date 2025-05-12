@@ -4,13 +4,20 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind } from "@/lib";
+import {
+  EMaterialKind,
+  findRecordWithFullAccess,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import { useLazyGetApiV1WarehouseGrnsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -49,6 +56,37 @@ const Page = () => {
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+
+  const hasAccessToPacking = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
+  );
+
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (isClient && !hasAccessToPacking && kind?.toString() === "1") {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

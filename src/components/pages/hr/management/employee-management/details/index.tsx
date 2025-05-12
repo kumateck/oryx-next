@@ -7,10 +7,17 @@ import PageTitle from "@/shared/title";
 
 import { useParams, useRouter } from "next/navigation";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LeftCard from "./left-card";
-import { LifeStatus } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  LifeStatus,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import { format } from "date-fns";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 function EmployeeDetails() {
   const { id } = useParams();
@@ -19,6 +26,27 @@ function EmployeeDetails() {
     id: employeeId,
   });
   const router = useRouter();
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.humanResources.viewEmployee,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>
@@ -36,17 +64,22 @@ function EmployeeDetails() {
 
       <div className="flex items-center justify-between">
         <PageTitle title="Employee Details" />
-        <div
-          className="flex items-center gap-2 mb-4 hover:cursor-pointer"
-          onClick={() =>
-            router.push(
-              `/hr/employee-management/${employeeId}/edit/${data?.type}`,
-            )
-          }
-        >
-          <Icon name="Pencil" className="h-5 w-5 " />
-          <span>Edit</span>
-        </div>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.updateEmployeeDetails,
+        ) && (
+          <div
+            className="flex items-center gap-2 mb-4 hover:cursor-pointer"
+            onClick={() =>
+              router.push(
+                `/hr/employee-management/${employeeId}/edit/${data?.type}`,
+              )
+            }
+          >
+            <Icon name="Pencil" className="h-5 w-5 " />
+            <span>Edit</span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-6 mt-6">

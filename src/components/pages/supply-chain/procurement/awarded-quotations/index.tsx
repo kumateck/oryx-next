@@ -62,6 +62,7 @@ const Page = () => {
   }, [page, pageSize, type, triggerReload]);
 
   const data = result?.data || [];
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">

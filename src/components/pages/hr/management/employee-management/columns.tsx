@@ -8,8 +8,15 @@ import { useState } from "react";
 import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import { EmployeeType, splitWords } from "@/lib";
+import {
+  EmployeeType,
+  findRecordWithFullAccess,
+  PermissionKeys,
+  Section,
+  splitWords,
+} from "@/lib";
 import { useRouter } from "next/navigation";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -25,40 +32,58 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
   const router = useRouter();
 
+  //Check Permision
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => {
-              setSelectedEmployee(row.original);
-              setIsAssignLocationOpen(true);
-              console.log(row.original.type);
-            }}
-          >
-            <Icon
-              name="Pencil"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Update Employee Info</span>
-          </div>
-        </DropdownMenuItem>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.updateEmployeeDetails,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-center gap-2"
+              onClick={() => {
+                setSelectedEmployee(row.original);
+                setIsAssignLocationOpen(true);
+                console.log(row.original.type);
+              }}
+            >
+              <Icon
+                name="Pencil"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Update Employee Info</span>
+            </div>
+          </DropdownMenuItem>
+        )}
 
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => {
-              router.push(`/hr/employee-management/${row.original.id}/details`);
-            }}
-          >
-            <Icon
-              name="User"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Employee Details</span>
-          </div>
-        </DropdownMenuItem>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.humanResources.viewEmployee,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-center gap-2"
+              onClick={() => {
+                router.push(
+                  `/hr/employee-management/${row.original.id}/details`,
+                );
+              }}
+            >
+              <Icon
+                name="User"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Employee Details</span>
+            </div>
+          </DropdownMenuItem>
+        )}
       </TableMenuAction>
 
       <UserDialog
