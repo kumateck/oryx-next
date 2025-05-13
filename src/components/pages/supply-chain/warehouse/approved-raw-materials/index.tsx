@@ -4,13 +4,20 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind } from "@/lib";
+import {
+  EMaterialKind,
+  findRecordWithFullAccess,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 import { useLazyGetApiV1MaterialApprovedMaterialsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const router = useRouter();
@@ -50,25 +57,88 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, kind]);
   const data = result?.data || [];
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccess = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewApprovedRawMaterials,
+  );
+  // check permissions access
+  const hasAccessToApprovedPackaging = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.warehouse.viewApprovedPackagingMaterials,
+  );
+
+  if (isClient && !hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (isClient && !hasAccessToApprovedPackaging && kind?.toString() === "1") {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Approved Materials" />
         <div className="flex items-center justify-end gap-2">
-          <AccessTabs
-            handleTabClick={handleTabClick}
-            type={kind}
-            tabs={[
-              {
-                label: EMaterialKind[EMaterialKind.Raw],
-                value: EMaterialKind.Raw.toString(),
-              },
-              {
-                label: EMaterialKind[EMaterialKind.Packing],
-                value: EMaterialKind.Packing.toString(),
-              },
-            ]}
-          />
+          {hasAccess && hasAccessToApprovedPackaging && (
+            <AccessTabs
+              handleTabClick={handleTabClick}
+              type={kind}
+              tabs={[
+                {
+                  label: EMaterialKind[EMaterialKind.Raw],
+                  value: EMaterialKind.Raw.toString(),
+                },
+                {
+                  label: EMaterialKind[EMaterialKind.Packing],
+                  value: EMaterialKind.Packing.toString(),
+                },
+              ]}
+            />
+          )}
+          {hasAccess && !hasAccessToApprovedPackaging && (
+            <AccessTabs
+              handleTabClick={handleTabClick}
+              type={kind}
+              tabs={[
+                {
+                  label: EMaterialKind[EMaterialKind.Raw],
+                  value: EMaterialKind.Raw.toString(),
+                },
+                // {
+                //   label: EMaterialKind[EMaterialKind.Packing],
+                //   value: EMaterialKind.Packing.toString(),
+                // },
+              ]}
+            />
+          )}
+          {hasAccessToApprovedPackaging && !hasAccess && (
+            <AccessTabs
+              handleTabClick={handleTabClick}
+              type={kind}
+              tabs={[
+                // {
+                //   label: EMaterialKind[EMaterialKind.Raw],
+                //   value: EMaterialKind.Raw.toString(),
+                // },
+                {
+                  label: EMaterialKind[EMaterialKind.Packing],
+                  value: EMaterialKind.Packing.toString(),
+                },
+              ]}
+            />
+          )}
         </div>
       </div>
 

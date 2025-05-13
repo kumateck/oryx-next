@@ -1,7 +1,9 @@
 import { Icon } from "@/components/ui";
-import { cn } from "@/lib/utils";
+import { cn, findRecordWithFullAccess } from "@/lib/utils";
 
 import ActionToolTip from "./action-tooltip";
+import { useSelector } from "@/lib/redux/store";
+import { PermissionKeys, Section } from "@/lib";
 
 interface Props {
   isLoading: boolean;
@@ -33,6 +35,22 @@ export const FormOptionActions = ({
   isBeingDeleted,
   isInputError,
 }: Props) => {
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const canDeleteProductCategory = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.categories.productCategory.delete,
+  );
+  const canDeleteRawCategory = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.categories.rawCategory.delete,
+  );
+  const canDeletePackageCategory = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.categories.packageCategory.delete,
+  );
   return (
     <div className="flex items-center justify-center gap-0.5 [&>svg]:cursor-pointer">
       {editMode ? (
@@ -66,18 +84,22 @@ export const FormOptionActions = ({
             />
           </ActionToolTip>
           <ActionToolTip title="Delete">
-            <Icon
-              name={isBeingDeleted ? "LoaderCircle" : "Trash2"}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                deleteOption();
-              }}
-              className={cn("text-danger-400", {
-                "text-primary-500 animate-spin": isBeingDeleted,
-              })}
-              size={20}
-            />
+            {(canDeletePackageCategory ||
+              canDeleteProductCategory ||
+              canDeleteRawCategory) && (
+              <Icon
+                name={isBeingDeleted ? "LoaderCircle" : "Trash2"}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  deleteOption();
+                }}
+                className={cn("text-danger-400", {
+                  "text-primary-500 animate-spin": isBeingDeleted,
+                })}
+                size={20}
+              />
+            )}
           </ActionToolTip>
         </>
       ) : createMode ? (
