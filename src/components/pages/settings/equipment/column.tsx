@@ -4,7 +4,14 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, IsYesorNo, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  IsYesorNo,
+  PermissionKeys,
+  Section,
+  findRecordWithFullAccess,
+  isErrorResponse,
+} from "@/lib";
 import {
   EquipmentDto,
   useDeleteApiV1ProductEquipmentByEquipmentIdMutation,
@@ -13,6 +20,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
+import { useSelector } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,39 +35,53 @@ export function DataTableRowActions<TData extends EquipmentDto>({
   const [details, setDetails] = useState<EquipmentDto>({} as EquipmentDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsOpen(true);
-            }}
-          >
-            <Icon
-              name="Pencil"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Edit</span>
-          </div>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsDeleteOpen(true);
-            }}
-          >
-            <Icon
-              name="Trash2"
-              className="text-danger-500 h-5 w-5 cursor-pointer"
-            />
-            <span>Delete</span>
-          </div>
-        </DropdownMenuItem>
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.equipment.edit,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <Icon
+                name="Pencil"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Edit</span>
+            </div>
+          </DropdownMenuItem>
+        )}
+        {findRecordWithFullAccess(
+          permissions,
+          PermissionKeys.equipment.delete,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsDeleteOpen(true);
+              }}
+            >
+              <Icon
+                name="Trash2"
+                className="text-danger-500 h-5 w-5 cursor-pointer"
+              />
+              <span>Delete</span>
+            </div>
+          </DropdownMenuItem>
+        )}
       </TableMenuAction>
 
       {details.id && isOpen && (

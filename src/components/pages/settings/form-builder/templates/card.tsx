@@ -1,7 +1,10 @@
+"use client";
 import { useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
 import { FormDto } from "@/lib/redux/api/openapi.generated";
+import { useSelector } from "@/lib/redux/store";
+import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
 
 interface Props {
   template: FormDto;
@@ -12,7 +15,9 @@ interface Props {
 
 const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
   const navigate = useRouter();
-
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
   return (
     <div className="mt-2 w-full">
       <div className="rounded-lg border border-neutral-light bg-white px-8 py-4">
@@ -30,28 +35,46 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
           </div>
 
           <div className="flex w-2/6 items-center justify-center gap-1 px-2">
-            <Button
-              onClick={() =>
-                navigate.push(`/settings/template/${template.id}/edit`)
-              }
-              variant={"outline"}
-              className="flex items-center gap-1.5 border-neutral-300 bg-white text-neutral-700"
-            >
-              <Icon name="Pencil" size={14} />
-              <span>Edit</span>
-            </Button>
-            <Button
-              onClick={() => onDelete(template?.id as string)}
-              variant={"outline"}
-              className="flex items-center gap-1.5 border-danger-default text-danger-default"
-            >
-              {isDeleting ? (
-                <Icon name="LoaderCircle" size={14} className="animate-spin" />
-              ) : (
-                <Icon name="Trash2" size={14} className="text-danger-default" />
-              )}
-              <span>Delete</span>
-            </Button>
+            {findRecordWithFullAccess(
+              permissions,
+              PermissionKeys.workflowForms.templates.edit,
+            ) && (
+              <Button
+                onClick={() =>
+                  navigate.push(`/settings/template/${template.id}/edit`)
+                }
+                variant={"outline"}
+                className="flex items-center gap-1.5 border-neutral-300 bg-white text-neutral-700"
+              >
+                <Icon name="Pencil" size={14} />
+                <span>Edit</span>
+              </Button>
+            )}
+            {findRecordWithFullAccess(
+              permissions,
+              PermissionKeys.workflowForms.templates.delete,
+            ) && (
+              <Button
+                onClick={() => onDelete(template?.id as string)}
+                variant={"outline"}
+                className="flex items-center gap-1.5 border-danger-default text-danger-default"
+              >
+                {isDeleting ? (
+                  <Icon
+                    name="LoaderCircle"
+                    size={14}
+                    className="animate-spin"
+                  />
+                ) : (
+                  <Icon
+                    name="Trash2"
+                    size={14}
+                    className="text-danger-default"
+                  />
+                )}
+                <span>Delete</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

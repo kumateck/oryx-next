@@ -35,8 +35,6 @@ const FormView = ({ tab }: Props) => {
   return (
     <div className="space-y-5">
       {tab?.views?.map((view, index) => {
-        console.log(view?.modelType);
-
         if (
           canViewPackageCategory &&
           view.modelType === COLLECTION_TYPES.PackageCategory
@@ -54,6 +52,12 @@ const FormView = ({ tab }: Props) => {
           view.modelType === COLLECTION_TYPES.MaterialCategory
         ) {
           return <Page key={index} view={view} />;
+        } else {
+          const notAnyCategory =
+            view.modelType !== COLLECTION_TYPES.MaterialCategory ||
+            view.modelType !== COLLECTION_TYPES.ProductCategory ||
+            view.modelType !== COLLECTION_TYPES.PackageCategory;
+          return notAnyCategory && <Page key={index} view={view} />;
         }
       })}
     </div>
