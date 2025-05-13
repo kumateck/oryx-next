@@ -155,6 +155,12 @@ export enum QuestionType {
   Reference = 9,
 }
 
+export enum ExtraPackingStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
 export enum InputTypes {
   SWITCH = "switch",
   TEXT = "text",
@@ -180,6 +186,7 @@ export enum InputTypes {
   DRAGNDROP = "drag-n-drop",
   MOMENT = "moment",
   TIME = "time",
+  CLOCK = "clock",
   IMAGE = "image",
   BUTTON = "button",
   SUBMIT = "submit",
@@ -201,6 +208,7 @@ export enum Status {
 export enum TimeType {
   Time = "time",
   Moment = "moment",
+  Clock = "clock",
 }
 
 export enum ProcurementType {

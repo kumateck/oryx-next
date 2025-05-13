@@ -10,6 +10,7 @@ import {
   PermissionKeys,
   Section,
   TransferType,
+  StockTransfer,
 } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
@@ -58,7 +59,7 @@ const Page = () => {
       loadInboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.New,
+        status: StockTransfer.New,
       });
     }
 
@@ -66,7 +67,7 @@ const Page = () => {
       loadOutboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.Approved,
+        status: StockTransfer.Approved,
       });
     }
     if (triggerReload) {
