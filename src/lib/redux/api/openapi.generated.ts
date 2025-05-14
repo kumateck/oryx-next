@@ -738,6 +738,54 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    postApiV1Holidays: build.mutation<
+      PostApiV1HolidaysApiResponse,
+      PostApiV1HolidaysApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/holidays`,
+        method: "POST",
+        body: queryArg.createHolidayRequest,
+      }),
+    }),
+    getApiV1Holidays: build.query<
+      GetApiV1HolidaysApiResponse,
+      GetApiV1HolidaysApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/holidays`,
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1HolidaysById: build.query<
+      GetApiV1HolidaysByIdApiResponse,
+      GetApiV1HolidaysByIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/v1/holidays/${queryArg.id}` }),
+    }),
+    putApiV1HolidaysById: build.mutation<
+      PutApiV1HolidaysByIdApiResponse,
+      PutApiV1HolidaysByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/holidays/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createHolidayRequest,
+      }),
+    }),
+    deleteApiV1HolidaysById: build.mutation<
+      DeleteApiV1HolidaysByIdApiResponse,
+      DeleteApiV1HolidaysByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/holidays/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     postApiV1LeaveEntitlement: build.mutation<
       PostApiV1LeaveEntitlementApiResponse,
       PostApiV1LeaveEntitlementApiArg
@@ -4213,6 +4261,32 @@ export type DeleteApiV1FormQuestionByQuestionIdApiArg = {
   /** The ID of the question to be deleted. */
   questionId: string;
 };
+export type PostApiV1HolidaysApiResponse = /** status 200 OK */ string;
+export type PostApiV1HolidaysApiArg = {
+  createHolidayRequest: CreateHolidayRequest;
+};
+export type GetApiV1HolidaysApiResponse =
+  /** status 200 OK */ HolidayDtoIEnumerablePaginateableRead;
+export type GetApiV1HolidaysApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+};
+export type GetApiV1HolidaysByIdApiResponse =
+  /** status 200 OK */ HolidayDtoRead;
+export type GetApiV1HolidaysByIdApiArg = {
+  id: string;
+};
+export type PutApiV1HolidaysByIdApiResponse =
+  /** status 204 No Content */ HolidayDtoRead;
+export type PutApiV1HolidaysByIdApiArg = {
+  id: string;
+  createHolidayRequest: CreateHolidayRequest;
+};
+export type DeleteApiV1HolidaysByIdApiResponse = unknown;
+export type DeleteApiV1HolidaysByIdApiArg = {
+  id: string;
+};
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
   leaveEntitlementDto: LeaveEntitlementDto;
@@ -6142,27 +6216,16 @@ export type DeleteApiV1WorkOrderByWorkOrderIdApiArg = {
   /** The ID of the user performing the deletion. */
   userId?: string;
 };
-export type CollectionItemDto = {
-  id?: string | null;
-  name?: string | null;
-  code?: string | null;
-  description?: string | null;
-  symbol?: string | null;
-};
-export type UserDto = {
+export type BsonUserDto = {
   id?: string;
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
-  isDisabled?: boolean;
-  avatar?: string | null;
   createdAt?: string;
-  signature?: string | null;
-  department?: CollectionItemDto;
 };
 export type ActionType = 0 | 1 | 2 | 3;
 export type ActivityLogDto = {
-  user?: UserDto;
+  user?: BsonUserDto;
   action?: string | null;
   module?: string | null;
   subModule?: string | null;
@@ -6202,6 +6265,13 @@ export type CreateApprovalRequest = {
   escalationDuration?: string;
   approvalStages?: CreateApprovalStageRequest[] | null;
 };
+export type CollectionItemDto = {
+  id?: string | null;
+  name?: string | null;
+  code?: string | null;
+  description?: string | null;
+  symbol?: string | null;
+};
 export type ApprovalStageDto = {
   user?: CollectionItemDto;
   role?: CollectionItemDto;
@@ -6224,6 +6294,17 @@ export type ApprovalDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type UserDto = {
+  id?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  isDisabled?: boolean;
+  avatar?: string | null;
+  createdAt?: string;
+  signature?: string | null;
+  department?: CollectionItemDto;
 };
 export type DepartmentType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
@@ -6819,6 +6900,84 @@ export type CreateQuestionRequest = {
 };
 export type QuestionDtoIEnumerablePaginateable = {
   data?: QuestionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateHolidayRequest = {
+  name: string;
+  date: string;
+  shiftSchedules: string[];
+  description?: string | null;
+};
+export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4;
+export type RotationType = 0 | 1;
+export type ShiftTypeDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  shiftName?: string | null;
+  rotationType?: RotationType;
+  startTime?: string;
+  endTime?: string;
+  applicableDays?: DayOfWeek[] | null;
+};
+export type ShiftScheduleDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  scheduleName?: string | null;
+  startTime?: string;
+  startDate?: DayOfWeek;
+  frequency?: ScheduleFrequency;
+  shiftType?: ShiftTypeDto[] | null;
+  departmentId?: string;
+  department?: DepartmentDto;
+};
+export type ShiftScheduleDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  scheduleName?: string | null;
+  startTime?: string;
+  startDate?: DayOfWeek;
+  frequency?: ScheduleFrequency;
+  shiftType?: ShiftTypeDto[] | null;
+  departmentId?: string;
+  department?: DepartmentDtoRead;
+};
+export type HolidayDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  date?: string;
+  shiftSchedules?: ShiftScheduleDto[] | null;
+  description?: string | null;
+};
+export type HolidayDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  date?: string;
+  shiftSchedules?: ShiftScheduleDtoRead[] | null;
+  description?: string | null;
+};
+export type HolidayDtoIEnumerablePaginateable = {
+  data?: HolidayDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type HolidayDtoIEnumerablePaginateableRead = {
+  data?: HolidayDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -12497,7 +12656,6 @@ export type UpdateRoleRequest = {
   name: string;
   displayName: string;
 };
-export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4;
 export type CreateShiftScheduleRequest = {
   scheduleName: string;
   frequency: ScheduleFrequency;
@@ -12505,35 +12663,6 @@ export type CreateShiftScheduleRequest = {
   startDate?: DayOfWeek;
   shiftTypeIds: string[];
   departmentId: string;
-};
-export type RotationType = 0 | 1;
-export type ShiftTypeDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  shiftName?: string | null;
-  rotationType?: RotationType;
-  startTime?: string;
-  endTime?: string;
-  applicableDays?: DayOfWeek[] | null;
-};
-export type ShiftScheduleDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  scheduleName?: string | null;
-  shiftType?: ShiftTypeDto[] | null;
-  departmentId?: string;
-  department?: DepartmentDto;
-};
-export type ShiftScheduleDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  scheduleName?: string | null;
-  shiftType?: ShiftTypeDto[] | null;
-  departmentId?: string;
-  department?: DepartmentDtoRead;
 };
 export type ShiftScheduleDtoIEnumerablePaginateable = {
   data?: ShiftScheduleDto[] | null;
@@ -13153,6 +13282,13 @@ export const {
   useLazyGetApiV1FormQuestionByQuestionIdQuery,
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
+  usePostApiV1HolidaysMutation,
+  useGetApiV1HolidaysQuery,
+  useLazyGetApiV1HolidaysQuery,
+  useGetApiV1HolidaysByIdQuery,
+  useLazyGetApiV1HolidaysByIdQuery,
+  usePutApiV1HolidaysByIdMutation,
+  useDeleteApiV1HolidaysByIdMutation,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,
