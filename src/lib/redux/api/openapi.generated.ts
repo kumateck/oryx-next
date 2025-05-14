@@ -4266,19 +4266,18 @@ export type PostApiV1HolidaysApiArg = {
   createHolidayRequest: CreateHolidayRequest;
 };
 export type GetApiV1HolidaysApiResponse =
-  /** status 200 OK */ HolidayDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ HolidayDtoIEnumerablePaginateable;
 export type GetApiV1HolidaysApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
 };
-export type GetApiV1HolidaysByIdApiResponse =
-  /** status 200 OK */ HolidayDtoRead;
+export type GetApiV1HolidaysByIdApiResponse = /** status 200 OK */ HolidayDto;
 export type GetApiV1HolidaysByIdApiArg = {
   id: string;
 };
 export type PutApiV1HolidaysByIdApiResponse =
-  /** status 204 No Content */ HolidayDtoRead;
+  /** status 204 No Content */ HolidayDto;
 export type PutApiV1HolidaysByIdApiArg = {
   id: string;
   createHolidayRequest: CreateHolidayRequest;
@@ -6910,44 +6909,7 @@ export type QuestionDtoIEnumerablePaginateable = {
 export type CreateHolidayRequest = {
   name: string;
   date: string;
-  shiftSchedules: string[];
   description?: string | null;
-};
-export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4;
-export type RotationType = 0 | 1;
-export type ShiftTypeDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  shiftName?: string | null;
-  rotationType?: RotationType;
-  startTime?: string;
-  endTime?: string;
-  applicableDays?: DayOfWeek[] | null;
-};
-export type ShiftScheduleDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  scheduleName?: string | null;
-  startTime?: string;
-  startDate?: DayOfWeek;
-  frequency?: ScheduleFrequency;
-  shiftType?: ShiftTypeDto[] | null;
-  departmentId?: string;
-  department?: DepartmentDto;
-};
-export type ShiftScheduleDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  scheduleName?: string | null;
-  startTime?: string;
-  startDate?: DayOfWeek;
-  frequency?: ScheduleFrequency;
-  shiftType?: ShiftTypeDto[] | null;
-  departmentId?: string;
-  department?: DepartmentDtoRead;
 };
 export type HolidayDto = {
   id?: string;
@@ -6955,29 +6917,10 @@ export type HolidayDto = {
   createdAt?: string;
   name?: string | null;
   date?: string;
-  shiftSchedules?: ShiftScheduleDto[] | null;
-  description?: string | null;
-};
-export type HolidayDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  date?: string;
-  shiftSchedules?: ShiftScheduleDtoRead[] | null;
   description?: string | null;
 };
 export type HolidayDtoIEnumerablePaginateable = {
   data?: HolidayDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type HolidayDtoIEnumerablePaginateableRead = {
-  data?: HolidayDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -12656,6 +12599,7 @@ export type UpdateRoleRequest = {
   name: string;
   displayName: string;
 };
+export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4;
 export type CreateShiftScheduleRequest = {
   scheduleName: string;
   frequency: ScheduleFrequency;
@@ -12663,6 +12607,41 @@ export type CreateShiftScheduleRequest = {
   startDate?: DayOfWeek;
   shiftTypeIds: string[];
   departmentId: string;
+};
+export type RotationType = 0 | 1;
+export type ShiftTypeDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  shiftName?: string | null;
+  rotationType?: RotationType;
+  startTime?: string;
+  endTime?: string;
+  applicableDays?: DayOfWeek[] | null;
+};
+export type ShiftScheduleDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  scheduleName?: string | null;
+  startTime?: string;
+  startDate?: DayOfWeek;
+  frequency?: ScheduleFrequency;
+  shiftType?: ShiftTypeDto[] | null;
+  departmentId?: string;
+  department?: DepartmentDto;
+};
+export type ShiftScheduleDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  scheduleName?: string | null;
+  startTime?: string;
+  startDate?: DayOfWeek;
+  frequency?: ScheduleFrequency;
+  shiftType?: ShiftTypeDto[] | null;
+  departmentId?: string;
+  department?: DepartmentDtoRead;
 };
 export type ShiftScheduleDtoIEnumerablePaginateable = {
   data?: ShiftScheduleDto[] | null;
