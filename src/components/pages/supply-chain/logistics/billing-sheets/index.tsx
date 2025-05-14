@@ -12,7 +12,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
@@ -43,7 +43,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.logistics.viewBillingSheet,
   );

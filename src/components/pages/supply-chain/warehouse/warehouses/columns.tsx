@@ -8,7 +8,7 @@ import {
   PermissionKeys,
   Section,
   WarehouseType,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -38,7 +38,7 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   ) as Section[];
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.warehouse.editWarehouse,
       ) && (

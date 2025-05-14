@@ -10,7 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import LeftCard from "./left-card";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   LifeStatus,
   PermissionKeys,
   Section,
@@ -38,7 +38,7 @@ function EmployeeDetails() {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.humanResources.viewEmployee,
   );
@@ -64,7 +64,7 @@ function EmployeeDetails() {
 
       <div className="flex items-center justify-between">
         <PageTitle title="Employee Details" />
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.updateEmployeeDetails,
         ) && (

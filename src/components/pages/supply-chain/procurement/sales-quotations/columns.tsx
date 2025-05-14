@@ -6,7 +6,7 @@ import { SupplierQuotationDto } from "@/lib/redux/api/openapi.generated";
 
 import Cost from "./cost";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 
 // import Edit from "./edit";
 
@@ -35,7 +35,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.procurement.inputResponses,
       ) && (

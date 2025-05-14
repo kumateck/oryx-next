@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -37,11 +37,11 @@ export function DataTableRowActions<TData extends MaterialDto>({
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
 
-  const cantEditRawMaterial = findRecordWithFullAccess(
+  const cantEditRawMaterial = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.editRawMaterials,
   );
-  const cantDitPackagingMaterial = findRecordWithFullAccess(
+  const cantDitPackagingMaterial = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.editPackagingMaterials,
   );

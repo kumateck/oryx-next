@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -39,7 +39,7 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.procurement.updateManufacturerDetails,
       ) && (
@@ -52,7 +52,7 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
           }}
         />
       )}
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.procurement.deleteManufacturer,
       ) && (

@@ -13,7 +13,7 @@ import {
   TabsTrigger,
 } from "@/components/ui";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   FORM_BUILDER_CONFIG,
   PermissionKeys,
   Section,
@@ -50,11 +50,11 @@ const FormBuilder = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToWorkFlowFormQuestions = findRecordWithFullAccess(
+  const hasAccessToWorkFlowFormQuestions = findRecordWithAccess(
     permissions,
     PermissionKeys.workflowForms.questions.view,
   );
-  const hasAccessToWorkFlowFormTemplate = findRecordWithFullAccess(
+  const hasAccessToWorkFlowFormTemplate = findRecordWithAccess(
     permissions,
     PermissionKeys.workflowForms.templates.view,
   );
@@ -99,7 +99,7 @@ const FormBuilder = () => {
           </TabsList>
           <div>
             {activeTab === FORM_BUILDER_CONFIG.TEMPLATES
-              ? findRecordWithFullAccess(
+              ? findRecordWithAccess(
                   permissions,
                   PermissionKeys.workflowForms.templates.createNew,
                 ) && (
@@ -115,7 +115,7 @@ const FormBuilder = () => {
                     </Button>
                   </Link>
                 )
-              : findRecordWithFullAccess(
+              : findRecordWithAccess(
                   permissions,
                   PermissionKeys.workflowForms.questions.createNew,
                 ) && (

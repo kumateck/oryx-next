@@ -13,7 +13,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
@@ -60,7 +60,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.equipment.view,
   );
@@ -75,7 +75,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Equipments" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.equipment.addNew,
           ) && (

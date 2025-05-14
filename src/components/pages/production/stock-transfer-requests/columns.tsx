@@ -18,7 +18,7 @@ import {
   TransferType,
   Units,
   convertToLargestUnit,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -143,7 +143,7 @@ export function DataTableRowActions<
   ) as Section[];
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.production.approveOrRejectStockTransferRequest,
       ) && (

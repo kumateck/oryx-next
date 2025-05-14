@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   ApprovalStatus,
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   LeaveCategories,
   LeaveStatus,
@@ -52,7 +52,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.humanResources.editLeaveRequest,
           ) && (
@@ -73,7 +73,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           )}
         </DropdownMenuItem>
         <DropdownMenuItem className="group">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
           ) && (

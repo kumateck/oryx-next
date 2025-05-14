@@ -14,7 +14,7 @@ import {
   PermissionKeys,
   Section,
   SupplierType,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -183,7 +183,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.logistics.createBillingSheet,
   );

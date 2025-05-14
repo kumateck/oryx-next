@@ -9,7 +9,7 @@ import {
   PermissionKeys,
   Section,
   ShipmentStatus,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isImageFile,
   splitWords,
 } from "@/lib";
@@ -72,7 +72,7 @@ const ShipmentDocumentDetails = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.logistics.viewShipmentDocument,
   );

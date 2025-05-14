@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -42,7 +42,7 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.updateUserDetails,
         ) && (
@@ -62,7 +62,7 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
             </div>
           </DropdownMenuItem>
         )}
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.deleteUser,
         ) && (

@@ -11,7 +11,7 @@ import {
   Section,
   Units,
   convertToLargestUnit,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   routes,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
@@ -41,7 +41,7 @@ export function DataTableRowActions<
     <section className="flex items-center justify-end gap-2">
       <div className="flex items-center justify-end gap-2">
         {canCreateChecklist ? (
-          findRecordWithFullAccess(
+          findRecordWithAccess(
             permissions,
             PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
           ) && (

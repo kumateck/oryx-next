@@ -10,7 +10,7 @@ import {
   Section,
   Units,
   convertToLargestUnit,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
 } from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -41,12 +41,12 @@ export function DataTableRowActions<TData extends MaterialBatchWithShelfId>({
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToRawMaterialLocationChart = findRecordWithFullAccess(
+  const hasAccessToRawMaterialLocationChart = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewRawMaterialLocationChartList,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialLocationChart = findRecordWithFullAccess(
+  const hasAccessToPackageMaterialLocationChart = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
   );

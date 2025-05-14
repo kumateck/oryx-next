@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { Button, Icon, Skeleton } from "@/components/ui";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   FormOption,
   PermissionKeys,
   Section,
@@ -51,27 +51,27 @@ export const FormOptionContainer = ({
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const canCreateProductCategory = findRecordWithFullAccess(
+  const canCreateProductCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.productCategory.createNew,
   );
-  const canCreateRawCategory = findRecordWithFullAccess(
+  const canCreateRawCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.rawCategory.createNew,
   );
-  const canCreatePackageCategory = findRecordWithFullAccess(
+  const canCreatePackageCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.packageCategory.createNew,
   );
-  const canEditProductCategory = findRecordWithFullAccess(
+  const canEditProductCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.productCategory.edit,
   );
-  const canEditRawCategory = findRecordWithFullAccess(
+  const canEditRawCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.rawCategory.edit,
   );
-  const canEditPackageCategory = findRecordWithFullAccess(
+  const canEditPackageCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.packageCategory.edit,
   );

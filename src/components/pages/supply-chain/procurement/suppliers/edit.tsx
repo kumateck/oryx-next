@@ -26,7 +26,7 @@ import {
 import {
   ErrorResponse,
   cn,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib/utils";
 import PageTitle from "@/shared/title";
@@ -273,7 +273,7 @@ const Edit = () => {
 
   // check permissions access
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.procurement.updateVendorDetails,
   );

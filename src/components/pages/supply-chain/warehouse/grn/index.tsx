@@ -4,13 +4,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, PermissionKeys } from "@/lib";
 import { useLazyGetApiV1WarehouseGrnsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { withPermission } from "@/shared/withPermissions";
 
 const GRNPage = () => {
   const searchParams = useSearchParams();
@@ -62,12 +63,12 @@ const GRNPage = () => {
   // ) as Section[];
   // // check permissions access
 
-  // const hasAccessToPacking = findRecordWithFullAccess(
+  // const hasAccessToPacking = findRecordWithAccess(
   //   permissions,
   //   PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
   // );
 
-  // const hasAccessToRaw = findRecordWithFullAccess(
+  // const hasAccessToRaw = findRecordWithAccess(
   //   permissions,
   //   PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
   // );
@@ -128,4 +129,7 @@ const GRNPage = () => {
   );
 };
 
-export default GRNPage;
+export default withPermission(
+  GRNPage,
+  PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
+);

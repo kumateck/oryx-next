@@ -5,7 +5,7 @@ import {
   QuestionType,
   Section,
   capitalizeFirstWord,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   splitWords,
 } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
@@ -46,7 +46,7 @@ const QuestionCard = ({
           </div>
 
           <div className="flex w-2/6 items-center justify-end gap-1 px-2">
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.workflowForms.questions.edit,
             ) && (
@@ -60,7 +60,7 @@ const QuestionCard = ({
               </Button>
             )}
 
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.workflowForms.questions.delete,
             ) && (

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 import { FormDto } from "@/lib/redux/api/openapi.generated";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 
 interface Props {
   template: FormDto;
@@ -35,7 +35,7 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
           </div>
 
           <div className="flex w-2/6 items-center justify-center gap-1 px-2">
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.workflowForms.templates.edit,
             ) && (
@@ -50,7 +50,7 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
                 <span>Edit</span>
               </Button>
             )}
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.workflowForms.templates.delete,
             ) && (

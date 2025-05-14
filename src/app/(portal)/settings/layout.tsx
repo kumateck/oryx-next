@@ -5,7 +5,7 @@ import PageTitle from "@/shared/title";
 
 import { Sidebar } from "./sidebar";
 import NoAccess from "@/shared/no-access";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import { useSelector } from "@/lib/redux/store";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.settings.viewSystemSettings,
   );

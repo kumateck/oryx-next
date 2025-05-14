@@ -6,7 +6,7 @@ import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   DepartmentType,
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -40,7 +40,7 @@ export function DataTableRowActions<TData extends DepartmentDto>({
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.warehouse.editLocation,
         ) && (

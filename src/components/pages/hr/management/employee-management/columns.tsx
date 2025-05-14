@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import {
   EmployeeType,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   Section,
   splitWords,
@@ -41,7 +41,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.updateEmployeeDetails,
         ) && (
@@ -63,7 +63,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
           </DropdownMenuItem>
         )}
 
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.viewEmployee,
         ) && (

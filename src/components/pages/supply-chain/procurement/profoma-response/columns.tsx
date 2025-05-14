@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Icon } from "@/components/ui";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   PurchaseOrderStatusList,
   Section,
@@ -39,7 +39,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.procurement.uploadProformaInvoice,
       ) && (

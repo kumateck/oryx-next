@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -93,7 +93,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.procurement.sendAwardedQuotations,
           ) && (

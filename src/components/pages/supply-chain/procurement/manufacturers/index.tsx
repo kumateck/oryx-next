@@ -15,7 +15,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
@@ -60,7 +60,7 @@ const Page = () => {
 
   // check permissions access
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.procurement.viewManufacturerDetails,
   );
@@ -77,7 +77,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Approved Manufacturers" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.procurement.createManufacturer,
           ) && (

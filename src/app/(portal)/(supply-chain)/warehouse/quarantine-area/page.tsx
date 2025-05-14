@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/supply-chain/warehouse/grn/perm";
+export { default } from "@/components/pages/supply-chain/warehouse/grn";
