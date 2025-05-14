@@ -32,9 +32,12 @@ import { SpecialSelect } from "@/components/ui/special-select";
 import Link from "next/link";
 import { authActions } from "@/lib/redux/slices/auth";
 import { useSelector } from "@/lib/redux/store";
+// import { useCookies } from "next-client-cookies";
 
 const Access: React.FC = () => {
   const dispatch = useDispatch();
+  // const cookies = useCookies();
+
   const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery();
   const userId = useSelector((state) => state.persistedReducer?.auth?.userId);
   // const [loadAllPermissions] = restApi.useLazyGetPermissionsQuery();
@@ -157,7 +160,9 @@ const Access: React.FC = () => {
       // await loadUserSidebarPermissions({}).unwrap();
 
       const userPermissions = (response ?? []) as Section[];
+      // persistPermissions
       dispatch(authActions.setUserPermissions(userPermissions));
+      // persistPermissions(cookies, userPermissions);
 
       toast.success("Changes applied successfully");
     } catch (error) {

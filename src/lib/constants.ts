@@ -6,12 +6,14 @@ export const IS_DEV = process.env.NODE_ENV !== "production";
 export const APP_NAME = "Oryx ERP";
 
 export const COOKIE_ID = "_bt3HfM6509fhsYE";
-
+export const USER_PERMISSIONS = "PERMISSIONS";
 export enum APP_CONTEXT {
   ORYX_ERP = "oryx-erp",
 }
 
 export const ORYX_ERP_COOKIE_ID = `${APP_CONTEXT.ORYX_ERP}-${COOKIE_ID}`;
+
+export const USER_PERMISSIONS_COOKIE_ID = `${APP_CONTEXT.ORYX_ERP}-${COOKIE_ID}-${USER_PERMISSIONS}`;
 
 export const COLLECTION_TYPES = {
   ProductCategory: "ProductCategory",
