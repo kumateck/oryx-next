@@ -74,19 +74,23 @@ const Page = () => {
     PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
   );
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccessToRaw = findRecordWithFullAccess(
     permissions,
     PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
   );
 
-  if (isClient && !hasAccess) {
+  if (isClient && !(hasAccessToRaw || hasAccessToPacking)) {
     //redirect to no access
     return <NoAccess />;
   }
-  if (isClient && !hasAccessToPacking && kind?.toString() === "1") {
-    //redirect to no access
-    return <NoAccess />;
-  }
+  // if (
+  //   isClient &&
+  //   !hasAccessToPacking &&
+  //   kind?.toString() === EMaterialKind.Packing.toString()
+  // ) {
+  //   //redirect to no access
+  //   return <NoAccess />;
+  // }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
