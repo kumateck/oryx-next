@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -12,11 +12,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { FORM_BUILDER_CONFIG } from "@/lib";
+import {
+  findRecordWithFullAccess,
+  FORM_BUILDER_CONFIG,
+  PermissionKeys,
+  Section,
+} from "@/lib";
 
 import QuestionCards from "./questions";
 import CreateQuestionTypes from "./questions/question-types";
 import TemplateCards from "./templates";
+import { useSelector } from "@/lib/redux/store";
+import NoAccess from "@/shared/no-access";
 
 const FormBuilder = () => {
   const tabLists = [
@@ -31,6 +38,42 @@ const FormBuilder = () => {
   ].filter((tab) => !!tab) as { name: string; icon: LucideIconProps }[];
   const [activeTab, setActiveTab] = useState<string>(tabLists[0]?.name);
   const [isOpenQuestion, setIsOpenQuestion] = useState<boolean>(false);
+
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const permissions = useSelector(
+    (state) => state.persistedReducer?.auth?.permissions,
+  ) as Section[];
+  // check permissions access
+  const hasAccessToWorkFlowFormQuestions = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.workflowForms.questions.view,
+  );
+  const hasAccessToWorkFlowFormTemplate = findRecordWithFullAccess(
+    permissions,
+    PermissionKeys.workflowForms.templates.view,
+  );
+  if (
+    isClient &&
+    !hasAccessToWorkFlowFormQuestions &&
+    activeTab === FORM_BUILDER_CONFIG.QUESTIONS
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (
+    isClient &&
+    !hasAccessToWorkFlowFormTemplate &&
+    activeTab === FORM_BUILDER_CONFIG.TEMPLATES
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <div className="w-full space-y-6">
@@ -55,30 +98,38 @@ const FormBuilder = () => {
             ))}
           </TabsList>
           <div>
-            {activeTab === FORM_BUILDER_CONFIG.TEMPLATES ? (
-              <Link href={"template/create"}>
-                <Button
-                  type="button"
-                  variant="default"
-                  size="default"
-                  className="flex h-9 items-center gap-2"
-                >
-                  <Icon name="Plus" className="h-4 w-4" />
-                  <span>Create Template </span>
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                type="button"
-                onClick={() => setIsOpenQuestion(true)}
-                variant="default"
-                size="default"
-                className="flex h-9 items-center gap-2"
-              >
-                <Icon name="Plus" className="h-4 w-4" />
-                <span>Create Question</span>
-              </Button>
-            )}
+            {activeTab === FORM_BUILDER_CONFIG.TEMPLATES
+              ? findRecordWithFullAccess(
+                  permissions,
+                  PermissionKeys.workflowForms.templates.createNew,
+                ) && (
+                  <Link href={"template/create"}>
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="default"
+                      className="flex h-9 items-center gap-2"
+                    >
+                      <Icon name="Plus" className="h-4 w-4" />
+                      <span>Create Template </span>
+                    </Button>
+                  </Link>
+                )
+              : findRecordWithFullAccess(
+                  permissions,
+                  PermissionKeys.workflowForms.questions.createNew,
+                ) && (
+                  <Button
+                    type="button"
+                    onClick={() => setIsOpenQuestion(true)}
+                    variant="default"
+                    size="default"
+                    className="flex h-9 items-center gap-2"
+                  >
+                    <Icon name="Plus" className="h-4 w-4" />
+                    <span>Create Question</span>
+                  </Button>
+                )}
           </div>
         </div>
         <TabsContent value={FORM_BUILDER_CONFIG.QUESTIONS}>
