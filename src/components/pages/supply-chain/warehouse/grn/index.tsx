@@ -4,22 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  EMaterialKind,
-  findRecordWithFullAccess,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { EMaterialKind } from "@/lib";
 import { useLazyGetApiV1WarehouseGrnsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
-import NoAccess from "@/shared/no-access";
 
-const Page = () => {
+const GRNPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
@@ -58,31 +51,31 @@ const Page = () => {
   };
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
+  // const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
+  // useEffect(() => {
+  //   setIsClient(true);
+  // }, []);
+  // // check permissions here
+  // const permissions = useSelector(
+  //   (state) => state.persistedReducer?.auth?.permissions,
+  // ) as Section[];
+  // // check permissions access
 
-  const hasAccessToPacking = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
-  );
+  // const hasAccessToPacking = findRecordWithFullAccess(
+  //   permissions,
+  //   PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
+  // );
 
-  const hasAccessToRaw = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
-  );
+  // const hasAccessToRaw = findRecordWithFullAccess(
+  //   permissions,
+  //   PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
+  // );
 
-  if (isClient && !(hasAccessToRaw || hasAccessToPacking)) {
-    //redirect to no access
-    return <NoAccess />;
-  }
+  // if (isClient && !(hasAccessToRaw || hasAccessToPacking)) {
+  //   //redirect to no access
+  //   return <NoAccess />;
+  // }
   // if (
   //   isClient &&
   //   !hasAccessToPacking &&
@@ -135,4 +128,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default GRNPage;
