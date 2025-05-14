@@ -150,6 +150,10 @@ export const ROUTES: Route[] = [
             title: "Location Chart Record",
             url: "/warehouse/location-chart",
           },
+          {
+            title: "Material Returns Note",
+            url: "/warehouse/material-returns",
+          },
           // {
           //   title: "Packaging Materials Receiving Area",
           //   url: "/warehouse/packaging-receiving-area",
@@ -337,6 +341,10 @@ export const ROUTES: Route[] = [
           {
             title: "Manage Users Directory",
             url: "/access-management/users",
+          },
+          {
+            title: "Audit Trail",
+            url: "/access-management/audit-trail",
           },
         ],
       },

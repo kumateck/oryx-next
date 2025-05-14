@@ -364,3 +364,9 @@ export enum ApprovalStatus {
   Approved = 1,
   Rejected = 2,
 }
+
+export enum MaterialReturnsStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
