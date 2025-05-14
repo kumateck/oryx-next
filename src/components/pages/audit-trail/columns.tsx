@@ -9,7 +9,7 @@ export const columns: ColumnDef<ActivityLogDto>[] = [
     header: "Name",
     cell: ({ row }) => (
       <div className="min-w-36 flex items-center gap-2">
-        {row.original.user?.avatar && (
+        {/* {row.original.user?.avatar && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={row.original.user.avatar}
@@ -18,7 +18,7 @@ export const columns: ColumnDef<ActivityLogDto>[] = [
             height={24}
             className="rounded-full"
           />
-        )}
+        )} */}
         {row.original.user?.firstName} {row.original.user?.lastName}
       </div>
     ),
