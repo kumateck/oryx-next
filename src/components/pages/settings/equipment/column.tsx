@@ -9,7 +9,7 @@ import {
   IsYesorNo,
   PermissionKeys,
   Section,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -42,10 +42,7 @@ export function DataTableRowActions<TData extends EquipmentDto>({
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
-          permissions,
-          PermissionKeys.equipment.edit,
-        ) && (
+        {findRecordWithAccess(permissions, PermissionKeys.equipment.edit) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"
@@ -62,10 +59,7 @@ export function DataTableRowActions<TData extends EquipmentDto>({
             </div>
           </DropdownMenuItem>
         )}
-        {findRecordWithFullAccess(
-          permissions,
-          PermissionKeys.equipment.delete,
-        ) && (
+        {findRecordWithAccess(permissions, PermissionKeys.equipment.delete) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"

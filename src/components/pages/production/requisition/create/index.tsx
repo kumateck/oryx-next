@@ -2,7 +2,7 @@
 import PageWrapper from "@/components/layout/wrapper";
 import {
   EMaterialKind,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   getLargestUnit,
   getMatchingIds,
   PermissionKeys,
@@ -98,12 +98,12 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const canCreateRawMaterialRequisition = findRecordWithFullAccess(
+  const canCreateRawMaterialRequisition = findRecordWithAccess(
     permissions,
     PermissionKeys.production.createRawMaterialPurchaseRequisition,
   );
   // check permission for packaging meterial
-  const canCreatePackagingRequisistion = findRecordWithFullAccess(
+  const canCreatePackagingRequisistion = findRecordWithAccess(
     permissions,
     PermissionKeys.production.createPackagingMaterialStockRequisition,
   );

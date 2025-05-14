@@ -12,7 +12,7 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import Create from "./create";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const EmployeeManagement = () => {
@@ -45,7 +45,7 @@ const EmployeeManagement = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.humanResources.viewEmployee,
   );
@@ -65,7 +65,7 @@ const EmployeeManagement = () => {
             <Icon name="Plus" className="h-4 w-4" />{" "}
             <span>Register Employee</span>
           </Button> */}
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.humanResources.registerEmployee,
           ) && (

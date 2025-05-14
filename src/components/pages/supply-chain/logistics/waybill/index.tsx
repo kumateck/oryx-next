@@ -15,7 +15,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.logistics.viewWaybill,
   );
@@ -68,7 +68,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Waybill" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.logistics.createWaybill,
           ) && (

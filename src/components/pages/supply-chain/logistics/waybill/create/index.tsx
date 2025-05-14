@@ -14,7 +14,7 @@ import {
   PermissionKeys,
   Section,
   SupplierType,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -183,7 +183,7 @@ const Create = () => {
   ) as Section[];
 
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.logistics.createWaybill,
   );

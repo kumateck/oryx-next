@@ -18,7 +18,7 @@ import { Button, Icon } from "@/components/ui";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
@@ -56,7 +56,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.humanResources.viewLeaveRequests,
   );
@@ -75,7 +75,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Leave Management" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.humanResources.createLeaveRequest,
           ) && (

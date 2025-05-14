@@ -20,7 +20,7 @@ import {
   SupplierStatus,
   SupplierType,
   SupplierTypeOptions,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -58,7 +58,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.procurement.updateVendorDetails,
         ) && (
@@ -74,7 +74,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
             </Link>
           </DropdownMenuItem>
         )}
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.procurement.deleteVendor,
         ) && (

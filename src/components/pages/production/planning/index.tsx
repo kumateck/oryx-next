@@ -5,12 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  findRecordWithFullAccess,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { findRecordWithAccess, PermissionKeys, routes, Section } from "@/lib";
 import { useLazyGetApiV1ProductQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -48,7 +43,7 @@ const Page = () => {
 
   // check permissions access
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.production.viewPlannedProducts,
   );
@@ -66,7 +61,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-3">
         <PageTitle title="Planned Products" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.production.createNewProductionPlan,
           ) && (

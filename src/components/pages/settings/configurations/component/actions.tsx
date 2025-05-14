@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui";
-import { cn, findRecordWithFullAccess } from "@/lib/utils";
+import { cn, findRecordWithAccess } from "@/lib/utils";
 
 import ActionToolTip from "./action-tooltip";
 import { useSelector } from "@/lib/redux/store";
@@ -39,15 +39,15 @@ export const FormOptionActions = ({
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const canDeleteProductCategory = findRecordWithFullAccess(
+  const canDeleteProductCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.productCategory.delete,
   );
-  const canDeleteRawCategory = findRecordWithFullAccess(
+  const canDeleteRawCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.rawCategory.delete,
   );
-  const canDeletePackageCategory = findRecordWithFullAccess(
+  const canDeletePackageCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.packageCategory.delete,
   );

@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 // import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   formatAmount,
   PermissionKeys,
   Section,
@@ -66,7 +66,7 @@ const PODetail = () => {
             <PageTitle title="Purchase Order" />
           </div>
           <div className="flex items-center gap-2">
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.procurement.reviseExistingPurchaseOrder,
             ) && (

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AsyncSelect, Card, CardTitle } from "@/components/ui";
 import {
   EMaterialKind,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   Option,
   PermissionKeys,
   Section,
@@ -102,12 +102,12 @@ const LocationChart = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToRawMaterialLocationChart = findRecordWithFullAccess(
+  const hasAccessToRawMaterialLocationChart = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewRawMaterialLocationChartList,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialLocationChart = findRecordWithFullAccess(
+  const hasAccessToPackageMaterialLocationChart = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
   );

@@ -11,7 +11,7 @@ import {
   PermissionKeys,
   QuestionType,
   Section,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -124,11 +124,11 @@ const EditTemplate = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToWorkFlowFormQuestions = findRecordWithFullAccess(
+  const hasAccessToWorkFlowFormQuestions = findRecordWithAccess(
     permissions,
     PermissionKeys.workflowForms.questions.view,
   );
-  const hasAccessToWorkFlowFormTemplate = findRecordWithFullAccess(
+  const hasAccessToWorkFlowFormTemplate = findRecordWithAccess(
     permissions,
     PermissionKeys.workflowForms.templates.view,
   );

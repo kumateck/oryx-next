@@ -9,8 +9,8 @@ import { InputTypes, PermissionType, Section } from "@/lib";
 import {
   ErrorResponse,
   // Permission,
-  // findRecordWithFullAccess,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
+  // findRecordWithAccess,
   hasOptions,
   isErrorResponse,
   permissionOptions,
@@ -198,7 +198,7 @@ const Page = () => {
   };
 
   // if (
-  //   !findRecordWithFullAccess(
+  //   !findRecordWithAccess(
   //     accessPermissions,
   //     PermissionKeys.resourceManagement.rolesAndPermissions.createAndAssign,
   //   )

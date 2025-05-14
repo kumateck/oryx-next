@@ -10,7 +10,7 @@ import PageTitle from "@/shared/title";
 
 import MaterialDetails from "./material-details";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const ApprovedRawMaterialDetail = () => {
@@ -32,7 +32,7 @@ const ApprovedRawMaterialDetail = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewApprovedRawMaterials,
   );

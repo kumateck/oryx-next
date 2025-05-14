@@ -17,7 +17,7 @@ import Create from "./create";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
@@ -56,7 +56,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.humanResources.viewDesignation,
   );
@@ -71,7 +71,7 @@ const Page = () => {
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Designation Management" />
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.createDesignation,
         ) && (

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   RequisitionStatus,
   RequisitionType,
@@ -56,7 +56,7 @@ const Page = () => {
   console.log("all permisinons", permissions);
   // check permissions access
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.procurement.viewPurchaseRequisitions,
   );

@@ -14,7 +14,7 @@ import {
   Section,
   WaybillStatus,
   WaybillStatusOptions,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -52,7 +52,7 @@ function DataTableRowStatus<TData extends ShipmentDocumentDto>({
 
   return (
     <div className="flex items-center gap-2">
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.logistics.changeWaybillStatus,
       ) && (

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   Section,
   StockTransfer,
@@ -99,12 +99,12 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToRawMaterialTransferList = findRecordWithFullAccess(
+  const hasAccessToRawMaterialTransferList = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewRawMaterialTransferList,
   );
   //TODO: enable access to view packaging meterial transfer request permission
-  // const hasAccessToPackageMaterialTransferList = findRecordWithFullAccess(
+  // const hasAccessToPackageMaterialTransferList = findRecordWithAccess(
   //   permissions,
   // PermissionKeys.warehouse.viewPackagingMaterialTransferList,
   // );

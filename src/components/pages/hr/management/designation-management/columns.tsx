@@ -6,7 +6,7 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -72,7 +72,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
           </div>
         </DropdownMenuItem>
       </TableMenuAction> */}
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.humanResources.editDesignation,
       ) && (
@@ -85,7 +85,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
           }}
         />
       )}
-      {findRecordWithFullAccess(
+      {findRecordWithAccess(
         permissions,
         PermissionKeys.humanResources.deleteDesignation,
       ) && (

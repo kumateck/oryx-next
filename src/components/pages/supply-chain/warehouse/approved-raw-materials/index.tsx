@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import {
   EMaterialKind,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   Section,
 } from "@/lib";
@@ -68,12 +68,12 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewApprovedRawMaterials,
   );
   // check permissions access
-  const hasAccessToApprovedPackaging = findRecordWithFullAccess(
+  const hasAccessToApprovedPackaging = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewApprovedPackagingMaterials,
   );

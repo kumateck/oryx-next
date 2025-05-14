@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
 import {
   ErrorResponse,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   isErrorResponse,
   PermissionKeys,
   Section,
@@ -51,12 +51,12 @@ const IssueStockRequistions = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccessToRawMaterialReQuests = findRecordWithFullAccess(
+  const hasAccessToRawMaterialReQuests = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.issueRawMaterialRequisitions,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialRequests = findRecordWithFullAccess(
+  const hasAccessToPackageMaterialRequests = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.issuePackagingMaterialRequisitions,
   );

@@ -1,5 +1,5 @@
 "use client";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
 import GRNPage from ".";
@@ -10,12 +10,12 @@ const GRNPermission = () => {
   ) as Section[];
 
   const handlePermissions = (permissions: Section[]) => {
-    const hasAccessToPacking = findRecordWithFullAccess(
+    const hasAccessToPacking = findRecordWithAccess(
       permissions,
       PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
     );
 
-    const hasAccessToRaw = findRecordWithFullAccess(
+    const hasAccessToRaw = findRecordWithAccess(
       permissions,
       PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
     );

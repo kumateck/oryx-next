@@ -1215,7 +1215,7 @@ export const removeDuplicateTypes = (data: Section[]): Section[] => {
   }));
 };
 
-export const findRecordWithFullAccess = (
+export const findRecordWithAccess = (
   sections: Section[],
   key: string,
 ): RecordItem | null => {
@@ -1230,6 +1230,14 @@ export const findRecordWithFullAccess = (
     }
   }
   return null; // Return null if the key is not found or FullAccess is not in types
+};
+
+export const hasPermissionForKey = (
+  sections: Section[],
+  key: string,
+): boolean => {
+  const record = findRecordWithAccess(sections, key);
+  return !!record;
 };
 export const findRecordWithSpecifiedAccess = (
   sections: Section[],

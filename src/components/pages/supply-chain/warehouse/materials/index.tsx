@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import {
   EMaterialKind,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   routes,
   Section,
@@ -78,12 +78,12 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewRawMaterials,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterial = findRecordWithFullAccess(
+  const hasAccessToPackageMaterial = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewPackagingMaterials,
   );
@@ -96,11 +96,11 @@ const Page = () => {
     //redirect to no access
     return <NoAccess />;
   }
-  const cantCreateNewRawMaterial = findRecordWithFullAccess(
+  const cantCreateNewRawMaterial = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.createNewRawMaterials,
   );
-  const cantCreateNewPackagingMaterial = findRecordWithFullAccess(
+  const cantCreateNewPackagingMaterial = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.createNewRawMaterials,
   );
@@ -130,7 +130,7 @@ const Page = () => {
               <RadioGroupItem value={EMaterialKind.Raw.toString()} id="r1" />
               <Label htmlFor="r1">Raw Materials</Label>
             </div>
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.warehouse.viewPackagingMaterials,
             ) && (

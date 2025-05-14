@@ -8,12 +8,7 @@ import { useSelector } from "@/lib/redux/store";
 import { useLazyGetApiV1RoleQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
-import {
-  findRecordWithFullAccess,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { findRecordWithAccess, PermissionKeys, routes, Section } from "@/lib";
 import Link from "next/link";
 import { ClientDatatable } from "@/shared/datatable";
 import PageWrapper from "@/components/layout/wrapper";
@@ -51,7 +46,7 @@ const ManageRoles = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.humanResources.viewRoles,
   );
@@ -70,13 +65,13 @@ const ManageRoles = () => {
           </Link>
           <PageTitle title="Manage Roles" />
         </div>
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
             permissions,
             PermissionKeys.resourceManagement.rolesAndPermissions
               .createAndAssign,
           ) && (
           )} */}
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.createRoleAndAssignPermissions,
         ) && (

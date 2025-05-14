@@ -1,10 +1,5 @@
 import { ConfirmDeleteDialog } from "@/components/ui";
-import {
-  findRecordWithFullAccess,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { findRecordWithAccess, PermissionKeys, routes, Section } from "@/lib";
 import { useDeleteApiV1RoleByIdMutation } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 // import { useSelector } from "@/lib/redux/store";
@@ -42,14 +37,14 @@ export default function ToolCell({ roleId }: Props) {
   return (
     <div className="">
       <ul className="flex gap-2  items-center justify-end">
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
           permissions,
           PermissionKeys.resourceManagement.rolesAndPermissions.editAndUpdate,
         ) && (
          import Link from "next/link";
 
         )} */}
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.editRoleWithItsPermissions,
         ) && (
@@ -61,13 +56,13 @@ export default function ToolCell({ roleId }: Props) {
             </Link>
           </li>
         )}
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
           permissions,
           PermissionKeys.resourceManagement.rolesAndPermissions.delete,
         ) && (
          
         )} */}
-        {findRecordWithFullAccess(
+        {findRecordWithAccess(
           permissions,
           PermissionKeys.humanResources.deleteRole,
         ) && (

@@ -15,7 +15,7 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import Create from "./create";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
@@ -49,7 +49,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewWarehouses,
   );
@@ -62,7 +62,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen &&
-        findRecordWithFullAccess(
+        findRecordWithAccess(
           permissions,
           PermissionKeys.warehouse.addWarehouse,
         ) && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}

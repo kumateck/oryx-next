@@ -17,7 +17,7 @@ import { columns } from "./columns";
 
 import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 
 const Page = () => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const Page = () => {
 
   // check User permissions access
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.production.viewProductSchedules,
   );
@@ -65,7 +65,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Production Schedules" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
+          {findRecordWithAccess(
             permissions,
             PermissionKeys.production.createProductSchedule,
           ) && (

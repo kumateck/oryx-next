@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import {
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   Section,
   TransferType,
@@ -104,7 +104,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.production.viewStockTransferRequests,
   );

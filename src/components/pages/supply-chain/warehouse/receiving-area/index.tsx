@@ -14,7 +14,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, getMatchingIds } from "@/lib/utils";
+import { findRecordWithAccess, getMatchingIds } from "@/lib/utils";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -96,12 +96,12 @@ const ReceivingArea = () => {
   ) as Section[];
   // check permissions access
 
-  const hasAccessToPacking = findRecordWithFullAccess(
+  const hasAccessToPacking = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewReceivedPackagingMaterialsItems,
   );
 
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
   );
@@ -141,7 +141,7 @@ const ReceivingArea = () => {
               />
               <div>{Object.keys(rowSelection).length} Items</div>
             </div>
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.warehouse.createGrnForRawMaterialsChecklistedItems,
             ) && (
@@ -156,7 +156,7 @@ const ReceivingArea = () => {
                 <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
               </Button>
             )}
-            {findRecordWithFullAccess(
+            {findRecordWithAccess(
               permissions,
               PermissionKeys.warehouse
                 .createGrnForPackagingMaterialsChecklistedItems,

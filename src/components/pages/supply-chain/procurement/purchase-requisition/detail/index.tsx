@@ -13,7 +13,7 @@ import {
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   fullname,
   isErrorResponse,
 } from "@/lib";
@@ -106,7 +106,7 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.procurement.sourceItemsBasedOnRequisition,
   );

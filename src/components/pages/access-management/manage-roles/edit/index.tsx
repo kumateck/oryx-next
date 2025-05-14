@@ -8,7 +8,7 @@ import { InputTypes, PermissionType } from "@/lib";
 
 import {
   Section,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
   hasOptions,
   permissionOptions,
   removeDuplicateTypes,
@@ -161,7 +161,7 @@ const Page = () => {
     }
 
     // if (
-    //   !findRecordWithFullAccess(
+    //   !findRecordWithAccess(
     //     editPermissions,
     //     PermissionKeys.resourceManagement.rolesAndPermissions.editAndUpdate,
     //   )

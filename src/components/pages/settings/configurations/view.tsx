@@ -6,7 +6,7 @@ import Page from "./component";
 import { useSelector } from "@/lib/redux/store";
 import {
   COLLECTION_TYPES,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   PermissionKeys,
   Section,
 } from "@/lib";
@@ -20,15 +20,15 @@ const FormView = ({ tab }: Props) => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const canViewProductCategory = findRecordWithFullAccess(
+  const canViewProductCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.productCategory.view,
   );
-  const canViewRawCategory = findRecordWithFullAccess(
+  const canViewRawCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.rawCategory.view,
   );
-  const canViewPackageCategory = findRecordWithFullAccess(
+  const canViewPackageCategory = findRecordWithAccess(
     permissions,
     PermissionKeys.categories.packageCategory.view,
   );

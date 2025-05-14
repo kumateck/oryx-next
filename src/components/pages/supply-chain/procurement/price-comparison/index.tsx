@@ -24,7 +24,7 @@ import {
   Section,
   SupplierType,
   cn,
-  findRecordWithFullAccess,
+  findRecordWithAccess,
   findSelectedQuotation,
   isErrorResponse,
 } from "@/lib";
@@ -158,7 +158,7 @@ const Page = () => {
   ) as Section[];
 
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
+  const hasAccess = findRecordWithAccess(
     permissions,
     PermissionKeys.procurement.selectVendorPricing,
   );
