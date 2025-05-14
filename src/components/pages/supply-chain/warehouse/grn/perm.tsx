@@ -8,26 +8,31 @@ const GRNPermission = () => {
   const permissions = useSelector(
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
-  // check permissions access
 
-  const hasAccessToPacking = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
+  const handlePermissions = (permissions: Section[]) => {
+    const hasAccessToPacking = findRecordWithFullAccess(
+      permissions,
+      PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
+    );
+
+    const hasAccessToRaw = findRecordWithFullAccess(
+      permissions,
+      PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
+    );
+
+    if (!hasAccessToRaw) {
+      //redirect to no access
+      return true;
+    }
+    if (!hasAccessToPacking) {
+      return true;
+    }
+    return false;
+  };
+
+  return (
+    <div>{handlePermissions(permissions) ? <NoAccess /> : <GRNPage />}</div>
   );
-
-  const hasAccessToRaw = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
-  );
-
-  console.log(hasAccessToPacking, hasAccessToRaw);
-
-  if (!(hasAccessToRaw || hasAccessToPacking)) {
-    //redirect to no access
-    return <NoAccess />;
-  }
-
-  return <GRNPage />;
 };
 
 export default GRNPermission;
