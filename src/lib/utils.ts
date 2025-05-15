@@ -117,6 +117,7 @@ interface ErrorDetail {
   code: string;
   description: string;
   type: number;
+  message?: string;
 }
 
 export interface ErrorResponse {
@@ -1220,7 +1221,7 @@ export const findRecordWithAccess = (
   key: string,
 ): RecordItem | null => {
   for (const section of sections) {
-    for (const child of section.children) {
+    for (const child of section?.children) {
       if (child?.key === key) {
         // Check if the types array includes FullAccess
         if (child?.types?.includes(Access)) {
@@ -1374,4 +1375,44 @@ export const parseClockReadable = (input: string): string => {
 export function sanitizeNumber(value: any): number {
   const num = Number(value);
   return isNaN(num) || value === null || value === undefined ? 0 : num;
+}
+
+//server actions
+
+export const unexpectedServerErrorResponse = {
+  errors: [
+    {
+      message:
+        "An unexpected server error occurred. We are working on restoring the service.",
+      status: 500,
+    },
+  ],
+};
+
+export function routeHandlerResponse(response: any, init?: ResponseInit) {
+  if (!response) {
+    return Response.json(unexpectedServerErrorResponse, {
+      status: 500,
+    });
+  }
+
+  // handle REST error
+  if (response.error || response.data?.error) {
+    return Response.json(response.data ?? response.error, {
+      status: response.data?.status ?? response.error?.status,
+    });
+  }
+
+  // handle REST cookie
+  if (response.response?.headers?.get("set-cookie")) {
+    return Response.json(response.data, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        "Set-Cookie": response.response.headers.get("set-cookie"),
+      },
+    });
+  }
+
+  return Response.json(response.data, init);
 }
