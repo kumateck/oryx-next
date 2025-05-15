@@ -1416,3 +1416,42 @@ export function routeHandlerResponse(response: any, init?: ResponseInit) {
 
   return Response.json(response.data, init);
 }
+
+export function evaluateExpressionWithOperator(
+  expr: string,
+  values: Record<string, string | number>,
+): number {
+  const evaluatedExpr = expr.replace(/:(\w+)/g, (_, key) => {
+    if (values.hasOwnProperty(key)) {
+      return values[key]!.toString();
+    }
+    throw new Error(`Missing value for parameter: ${key}`);
+  });
+
+  return new Function(`return ${evaluatedExpr}`)();
+}
+
+function renderExpressionTemplate(
+  expr: string,
+  values: Record<string, string | number>,
+): string {
+  return expr.replace(/:(\w+)/g, (_, key) => {
+    if (values.hasOwnProperty(key)) {
+      return values[key]!.toString();
+    }
+    throw new Error(`Missing value for parameter: ${key}`);
+  });
+}
+
+function evaluateRenderedExpression(rendered: string): number {
+  return new Function(`return ${rendered}`)();
+}
+
+export function evaluateExpressionWithPreview(
+  expr: string,
+  values: Record<string, string | number>,
+): { preview: string; result: number } {
+  const preview = renderExpressionTemplate(expr, values);
+  const result = evaluateRenderedExpression(preview);
+  return { preview, result };
+}
