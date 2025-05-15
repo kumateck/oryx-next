@@ -7,7 +7,8 @@ import { fullname } from "@/lib";
 import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
 import BgWrapper from "@/shared/bg-wrapper";
 
-import WeeklyFullCalendar from "@/shared/calendar/weekly";
+// import WeeklyFullCalendar from "@/shared/calendar/weekly";
+import TestTemplateBuilder from "@/components/formular";
 
 const Page = () => {
   const { data: user, isLoading } = useGetApiV1UserAuthenticatedQuery();
@@ -31,7 +32,8 @@ const Page = () => {
         <div>
         </div>
       </ScrollablePageWrapper> */}
-      <WeeklyFullCalendar />
+      {/* <WeeklyFullCalendar /> */}
+      <TestTemplateBuilder />
     </BgWrapper>
   );
 };

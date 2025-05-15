@@ -10,6 +10,7 @@ const publicRoutes = [
   routes.resetPassword(),
   routes.setPassword(),
   routes.onboarding(),
+  "/formular",
   "/api/public",
   "/_next",
   "/static",
@@ -19,6 +20,9 @@ const publicRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
   const isDesktop = request.headers.get("user-agent")?.includes("Tauri");
 
   const isPublicRoute = publicRoutes.some(
@@ -27,8 +31,8 @@ export function middleware(request: NextRequest) {
 
   const clientCookie = request.cookies.get(ORYX_ERP_COOKIE_ID);
   // const permissionCookie = request.cookies.get(USER_PERMISSIONS_COOKIE_ID);
-  // const checkAllCookies = request.cookies.getAll()
-  // console.log(checkAllCookies, "permissionCookie");
+  const checkAllCookies = request.cookies.getAll();
+  console.log(checkAllCookies, "permissionCookie");
   const isLoggedIn = !!clientCookie;
 
   if (isPublicRoute && isLoggedIn && pathname === routes.signin()) {
