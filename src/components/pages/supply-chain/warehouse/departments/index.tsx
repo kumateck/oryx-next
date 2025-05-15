@@ -17,10 +17,12 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import Create from "./create";
 import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
-import NoAccess from "@/shared/no-access";
+// import NoAccess from "@/shared/no-access";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -60,8 +62,10 @@ const Page = () => {
   );
 
   if (isClient && !hasAccess) {
+    router.replace("/no-access");
+    return;
     //redirect to no access
-    return <NoAccess />;
+    // return <NoAccess />;
   }
 
   return (
