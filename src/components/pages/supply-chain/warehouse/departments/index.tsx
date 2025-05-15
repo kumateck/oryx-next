@@ -56,18 +56,32 @@ const Page = () => {
     (state) => state.persistedReducer?.auth?.permissions,
   ) as Section[];
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewDepartments,
-  );
 
-  if (isClient && !hasAccess) {
-    router.replace("/no-access");
-    return;
-    //redirect to no access
-    // return <NoAccess />;
-  }
+  const handleHasAccess = (permissions: Section[]) => {
+    try {
+      const hasAccess = findRecordWithAccess(
+        permissions,
+        PermissionKeys.warehouse.viewDepartments,
+      );
+      if (isClient && !hasAccess) {
+        router.replace("/no-access");
+        return;
+        //redirect to no access
+        // return <NoAccess />;
+      }
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    // const hasAccess = findRecordWithAccess(
+    //   permissions,
+    //   PermissionKeys.warehouse.viewDepartments,
+    // );
 
+    return true;
+  };
+
+  handleHasAccess(permissions);
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
