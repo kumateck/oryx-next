@@ -60,7 +60,7 @@ const Page = () => {
   const handleHasAccess = (permissions: Section[]) => {
     try {
       const hasAccess = findRecordWithAccess(
-        permissions,
+        permissions ?? [],
         PermissionKeys.warehouse.viewDepartments,
       );
       if (isClient && !hasAccess) {
