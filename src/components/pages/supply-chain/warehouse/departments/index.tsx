@@ -16,13 +16,16 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 // import NoAccess from "@/shared/no-access";
-import { useRouter } from "next/navigation";
+
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
+  const { hasPermissionForKey } = useUserPermissions();
+
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -46,42 +49,41 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+
   // check permissions access
 
-  const handleHasAccess = (permissions: Section[]) => {
-    try {
-      const hasAccess = findRecordWithAccess(
-        permissions,
-        PermissionKeys.warehouse.viewDepartments,
-      );
-      if (isClient && !hasAccess) {
-        router.replace("/no-access");
-        return;
-        //redirect to no access
-        // return <NoAccess />;
-      }
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-    // const hasAccess = findRecordWithAccess(
-    //   permissions,
-    //   PermissionKeys.warehouse.viewDepartments,
-    // );
+  // const handleHasAccess = (permissions: Section[]) => {
+  //   try {
+  //     const hasAccess = findRecordWithAccess(
+  //       permissions ?? [],
+  //       PermissionKeys.warehouse.viewDepartments,
+  //     );
+  //     if (isClient && !hasAccess) {
+  //       router.replace("/no-access");
+  //       return;
+  //       //redirect to no access
+  //       // return <NoAccess />;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+  //   // const hasAccess = findRecordWithAccess(
+  //   //   permissions,
+  //   //   PermissionKeys.warehouse.viewDepartments,
+  //   // );
 
-    return true;
-  };
+  //   return true;
+  // };
 
-  handleHasAccess(permissions);
+  // handleHasAccess(permissions);
+  if (!hasPermissionForKey(PermissionKeys.warehouse.viewDepartments)) {
+    // router.replace("/no-access");
+    // return;
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
@@ -89,8 +91,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Departments" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithAccess(
-            permissions,
+          {hasPermissionForKey(
             PermissionKeys.warehouse.createNewDepartment,
           ) && (
             <Button
