@@ -24,8 +24,10 @@ import {
 import SearchWithAnimation from "@/components/ui/search";
 import { ORYX_ERP_COOKIE_ID, fullname, getInitials, routes } from "@/lib";
 import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const HeaderEnd = () => {
+  const { clearPermissions } = useUserPermissions();
   const { data: user } = useGetApiV1UserAuthenticatedQuery();
 
   const [passwordOpen, setPasswordOpen] = useState(false);
@@ -33,6 +35,7 @@ const HeaderEnd = () => {
   const router = useRouter();
   const handleLogout = () => {
     cookies.remove(ORYX_ERP_COOKIE_ID);
+    clearPermissions();
     router.push(routes.signin());
   };
   return (

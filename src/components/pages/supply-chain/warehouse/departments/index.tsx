@@ -13,18 +13,18 @@ import { useDispatch, useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
-// import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
 import { PermissionKeys } from "@/lib";
-// import NoAccess from "@/shared/no-access";
 
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const dispatch = useDispatch();
-  const { hasPermissionForKey } = useUserPermissions();
+
+  //this is the custom hook for user permissions
+  const { hasPermissionAccess } = useUserPermissions();
 
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
@@ -48,40 +48,7 @@ const Page = () => {
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
-  //Check Permision
-
-  // check permissions here
-
-  // check permissions access
-
-  // const handleHasAccess = (permissions: Section[]) => {
-  //   try {
-  //     const hasAccess = findRecordWithAccess(
-  //       permissions ?? [],
-  //       PermissionKeys.warehouse.viewDepartments,
-  //     );
-  //     if (isClient && !hasAccess) {
-  //       router.replace("/no-access");
-  //       return;
-  //       //redirect to no access
-  //       // return <NoAccess />;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     return;
-  //   }
-  //   // const hasAccess = findRecordWithAccess(
-  //   //   permissions,
-  //   //   PermissionKeys.warehouse.viewDepartments,
-  //   // );
-
-  //   return true;
-  // };
-
-  // handleHasAccess(permissions);
-  if (!hasPermissionForKey(PermissionKeys.warehouse.viewDepartments)) {
-    // router.replace("/no-access");
-    // return;
+  if (!hasPermissionAccess(PermissionKeys.warehouse.viewDepartments)) {
     return <NoAccess />;
   }
   return (
@@ -91,7 +58,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Departments" />
         <div className="flex items-center justify-end gap-2">
-          {hasPermissionForKey(
+          {hasPermissionAccess(
             PermissionKeys.warehouse.createNewDepartment,
           ) && (
             <Button

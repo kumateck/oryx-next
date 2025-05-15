@@ -30,9 +30,7 @@ export function middleware(request: NextRequest) {
   );
 
   const clientCookie = request.cookies.get(ORYX_ERP_COOKIE_ID);
-  // const permissionCookie = request.cookies.get(USER_PERMISSIONS_COOKIE_ID);
-  const checkAllCookies = request.cookies.getAll();
-  console.log(checkAllCookies, "permissionCookie");
+
   const isLoggedIn = !!clientCookie;
 
   if (isPublicRoute && isLoggedIn && pathname === routes.signin()) {
