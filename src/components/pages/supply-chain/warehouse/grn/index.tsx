@@ -11,9 +11,11 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { withPermission } from "@/shared/withPermissions";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const GRNPage = () => {
+  const { hasPermissionAccess } = useUserPermissions();
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
@@ -51,41 +53,9 @@ const GRNPage = () => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
 
-  //Check Permision
-  // const [isClient, setIsClient] = useState(false);
-
-  // useEffect(() => {
-  //   setIsClient(true);
-  // }, []);
-  // // check permissions here
-  // const permissions = useSelector(
-  //   (state) => state.persistedReducer?.auth?.permissions,
-  // ) as Section[];
-  // // check permissions access
-
-  // const hasAccessToPacking = findRecordWithAccess(
-  //   permissions,
-  //   PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
-  // );
-
-  // const hasAccessToRaw = findRecordWithAccess(
-  //   permissions,
-  //   PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
-  // );
-
-  // if (isClient && !(hasAccessToRaw || hasAccessToPacking)) {
-  //   //redirect to no access
-  //   return <NoAccess />;
-  // }
-  // if (
-  //   isClient &&
-  //   !hasAccessToPacking &&
-  //   kind?.toString() === EMaterialKind.Packing.toString()
-  // ) {
-  //   //redirect to no access
-  //   return <NoAccess />;
-  // }
-
+  if (!hasPermissionAccess(PermissionKeys.warehouse.viewDepartments)) {
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -129,7 +99,4 @@ const GRNPage = () => {
   );
 };
 
-export default withPermission(
-  GRNPage,
-  PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
-);
+export default GRNPage;
