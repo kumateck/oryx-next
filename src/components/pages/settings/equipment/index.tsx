@@ -13,8 +13,9 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -50,21 +51,10 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.equipment.view,
-  );
-  if (isClient && !hasAccess) {
+  const hasAccess = hasPermissionAccess(PermissionKeys.equipment.view);
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -75,10 +65,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Equipments" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithAccess(
-            permissions,
-            PermissionKeys.equipment.addNew,
-          ) && (
+          {hasPermissionAccess(PermissionKeys.equipment.addNew) && (
             <Button
               variant="default"
               size={"sm"}

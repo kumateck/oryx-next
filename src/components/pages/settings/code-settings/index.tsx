@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/ui";
 import { Icon } from "@/components/ui";
 import { Button } from "@/components/ui/button";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   ConfigurationDto,
   useDeleteApiV1ConfigurationByConfigurationIdMutation,
@@ -18,6 +18,8 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import CodeContainer from "./container";
 import CreateCode from "./create";
 import EditCode from "./edit";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 function Codes() {
   const [pageSize] = useState(30);
@@ -72,20 +74,27 @@ function Codes() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(PermissionKeys.codeSettings.view);
+  if (!hasAccess) {
+    return <NoAccess />;
+  }
   return (
     <div className="w-full pr-10">
       <div className="flex items-center justify-between">
         <h1 className="text-primary-500 text-lg font-medium">Code Settings</h1>
-        <Button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          variant="secondary"
-          size="default"
-          className="flex h-9 items-center gap-2"
-        >
-          <Icon name="Plus" className="text-primary-500 h-4 w-4" />
-          <span>Create New Code</span>
-        </Button>
+        {hasPermissionAccess(PermissionKeys.codeSettings.addNewCodes) && (
+          <Button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            variant="secondary"
+            size="default"
+            className="flex h-9 items-center gap-2"
+          >
+            <Icon name="Plus" className="text-primary-500 h-4 w-4" />
+            <span>Create New Code</span>
+          </Button>
+        )}
       </div>
       <CreateCode isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <ScrollablePageWrapper className="pb-60">

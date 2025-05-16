@@ -16,6 +16,7 @@ import {
   EmployeeType,
   ErrorResponse,
   Option,
+  PermissionKeys,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -28,6 +29,8 @@ import {
 
 import AssignUserForm from "./form";
 import { EmployeeInfoRequestDto, EmployeeInfoValidator } from "./type";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 interface AssignLocationDialogProps {
   open: boolean;
@@ -170,6 +173,16 @@ const UserDialog = ({
   useEffect(() => {
     if (!open) reset(); // Reset form when closing
   }, [open, reset]);
+
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
+  if (
+    !hasPermissionAccess(
+      PermissionKeys.humanResources.createRoleAndAssignPermissions,
+    )
+  ) {
+    return <NoAccess />;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

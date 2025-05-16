@@ -84,7 +84,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     label: item?.warehouseLocation?.name + "-" + item.name,
     value: item.id,
   })) as Option[];
-  console.log(data, "Racks");
 
   const onSubmit = async (data: ShelfRequestDto) => {
     try {

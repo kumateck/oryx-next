@@ -16,10 +16,11 @@ import { columns } from "./columns";
 // import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 import { useDispatch } from "react-redux";
-import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
+import { PermissionKeys } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -46,22 +47,13 @@ const Page = () => {
   const data = result?.data || [];
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.humanResources.viewLeaveRequests,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -75,8 +67,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Leave Management" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.createLeaveRequest,
           ) && (
             <Button onClick={() => setIsOpen(true)}>

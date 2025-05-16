@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { isImageFile } from "@/lib";
+import { isImageFile, PermissionKeys } from "@/lib";
 import { useGetApiV1ProcurementBillingSheetByBillingSheetIdQuery } from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -15,6 +15,8 @@ import PageTitle from "@/shared/title";
 import { MaterialRequestDto } from "../create/types";
 import { chargesColumns } from "./columns";
 import TableForData from "./table";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const BillingSheetDetails = () => {
   const { id } = useParams();
@@ -44,6 +46,15 @@ const BillingSheetDetails = () => {
       setMaterialLists(payload);
     }
   }, [data]);
+
+  //Permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.viewBillingSheet,
+  );
+  if (!hasAccess) {
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

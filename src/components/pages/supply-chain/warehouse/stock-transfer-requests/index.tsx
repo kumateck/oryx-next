@@ -4,12 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  findRecordWithAccess,
-  PermissionKeys,
-  Section,
-  StockTransfer,
-} from "@/lib";
+import { PermissionKeys, StockTransfer } from "@/lib";
 import {
   DepartmentStockTransferDtoRead,
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery, // useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -19,8 +14,8 @@ import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
 import TransferTable from "./table";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -89,35 +84,20 @@ const Page = () => {
   };
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
+  const { hasPermissionAccess } = useUserPermissions();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccessToRawMaterialTransferList = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewRawMaterialTransferList,
-  );
-  //TODO: enable access to view packaging meterial transfer request permission
-  // const hasAccessToPackageMaterialTransferList = findRecordWithAccess(
-  //   permissions,
-  // PermissionKeys.warehouse.viewPackagingMaterialTransferList,
-  // );
-
-  if (isClient && !hasAccessToRawMaterialTransferList) {
+  if (
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewRawMaterialTransferList,
+    ) ||
+    hasPermissionAccess(
+      PermissionKeys.warehouse.viewPackagingMaterialTransferList,
+    )
+  ) {
     //redirect to no access
     return <NoAccess />;
   }
-  //TODO: enable access to view packaging meterial transfer request permission
-  // if (isClient && !hasAccessToPackageMaterialTransferList && kind.toString() === "1") {
-  //   //redirect to no access
-  //   return <NoAccess />;
-  // }
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">

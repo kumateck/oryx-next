@@ -4,13 +4,7 @@ import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import {
-  ErrorResponse,
-  findRecordWithAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   DesignationDto,
   useDeleteApiV1DesignationByIdMutation,
@@ -19,7 +13,7 @@ import {
 
 // import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -34,9 +28,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   //permisions checks
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -72,10 +64,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
           </div>
         </DropdownMenuItem>
       </TableMenuAction> */}
-      {findRecordWithAccess(
-        permissions,
-        PermissionKeys.humanResources.editDesignation,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.humanResources.editDesignation) && (
         <Icon
           name="Pencil"
           className="h-5 w-5 cursor-pointer text-neutral-500"
@@ -85,10 +74,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
           }}
         />
       )}
-      {findRecordWithAccess(
-        permissions,
-        PermissionKeys.humanResources.deleteDesignation,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.humanResources.deleteDesignation) && (
         <Icon
           name="Trash2"
           className="text-danger-500 h-5 w-5 cursor-pointer"

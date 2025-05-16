@@ -3,13 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import {
-  ErrorResponse,
-  findRecordWithAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   MaterialDto,
   useDeleteApiV1MaterialByMaterialIdMutation,
@@ -18,7 +12,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,16 +27,12 @@ export function DataTableRowActions<TData extends MaterialDto>({
   const [loadMaterials] = useLazyGetApiV1MaterialQuery();
 
   //permissions checks
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
-  const cantEditRawMaterial = findRecordWithAccess(
-    permissions,
+  const cantEditRawMaterial = hasPermissionAccess(
     PermissionKeys.warehouse.editRawMaterials,
   );
-  const cantDitPackagingMaterial = findRecordWithAccess(
-    permissions,
+  const cantDitPackagingMaterial = hasPermissionAccess(
     PermissionKeys.warehouse.editPackagingMaterials,
   );
   return (

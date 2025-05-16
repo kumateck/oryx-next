@@ -14,8 +14,9 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -39,22 +40,10 @@ const Page = () => {
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(PermissionKeys.warehouse.viewLocations);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewLocations,
-  );
-
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -65,10 +54,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title=" Warehouse Locations" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithAccess(
-            permissions,
-            PermissionKeys.warehouse.addNewLocation,
-          ) && (
+          {hasPermissionAccess(PermissionKeys.warehouse.addNewLocation) && (
             <Button
               variant="default"
               size={"sm"}

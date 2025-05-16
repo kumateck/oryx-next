@@ -11,13 +11,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui";
-import {
-  EMaterialKind,
-  findRecordWithAccess,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { EMaterialKind, PermissionKeys, routes } from "@/lib";
 import {
   MaterialKind,
   useLazyGetApiV1MaterialQuery,
@@ -30,6 +24,7 @@ import PageTitle from "@/shared/title";
 import { columns } from "./column";
 import Create from "./create";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -68,40 +63,28 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.warehouse.viewRawMaterials,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterial = findRecordWithAccess(
-    permissions,
+  const hasAccessToPackageMaterial = hasPermissionAccess(
     PermissionKeys.warehouse.viewPackagingMaterials,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
-  if (isClient && !hasAccessToPackageMaterial && kind.toString() === "1") {
+  if (!hasAccessToPackageMaterial && kind.toString() === "1") {
     //redirect to no access
     return <NoAccess />;
   }
-  const cantCreateNewRawMaterial = findRecordWithAccess(
-    permissions,
+  const cantCreateNewRawMaterial = hasPermissionAccess(
     PermissionKeys.warehouse.createNewRawMaterials,
   );
-  const cantCreateNewPackagingMaterial = findRecordWithAccess(
-    permissions,
+  const cantCreateNewPackagingMaterial = hasPermissionAccess(
     PermissionKeys.warehouse.createNewRawMaterials,
   );
 
@@ -130,8 +113,7 @@ const Page = () => {
               <RadioGroupItem value={EMaterialKind.Raw.toString()} id="r1" />
               <Label htmlFor="r1">Raw Materials</Label>
             </div>
-            {findRecordWithAccess(
-              permissions,
+            {hasPermissionAccess(
               PermissionKeys.warehouse.viewPackagingMaterials,
             ) && (
               <div className="flex items-center space-x-2">
