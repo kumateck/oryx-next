@@ -53,6 +53,7 @@ export enum ApprovalDocument {
   PurchaseOrder = "PurchaseOrder",
   BillingSheet = "BillingSheet",
   LeaveRequest = "LeaveRequest",
+  OvertimeRequest = "OvertimeRequest",
 }
 
 export enum InterestType {
@@ -366,6 +367,12 @@ export enum ApprovalStatus {
 }
 
 export enum MaterialReturnsStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum OvertimeStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,

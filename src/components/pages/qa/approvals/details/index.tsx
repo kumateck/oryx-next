@@ -132,6 +132,8 @@ const DetailPage = () => {
             return <LeaveDetails id={id as string} />;
           case ApprovalDocument.PurchaseRequisition:
             return <PurchaseRequisition id={id as string} />;
+          case ApprovalDocument.OvertimeRequest:
+            return <PurchaseRequisition id={id as string} />;
 
           default:
             return null;
