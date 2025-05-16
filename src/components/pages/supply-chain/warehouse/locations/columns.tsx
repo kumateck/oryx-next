@@ -6,9 +6,7 @@ import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   PermissionKeys,
-  Section,
   WarehouseType,
-  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -19,7 +17,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -36,16 +34,11 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouseLocation] = useLazyGetApiV1WarehouseLocationQuery();
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithAccess(
-          permissions,
-          PermissionKeys.warehouse.editLocation,
-        ) && (
+        {hasPermissionAccess(PermissionKeys.warehouse.editLocation) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"

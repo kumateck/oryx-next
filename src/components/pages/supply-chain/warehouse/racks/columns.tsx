@@ -3,13 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import {
-  ErrorResponse,
-  findRecordWithAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   WarehouseLocationRackDto,
   useDeleteApiV1WarehouseRackByRackIdMutation,
@@ -18,7 +12,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -35,17 +29,11 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
 
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithAccess(
-          permissions,
-          PermissionKeys.warehouse.editRack,
-        ) && (
+        {hasPermissionAccess(PermissionKeys.warehouse.editRack) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"

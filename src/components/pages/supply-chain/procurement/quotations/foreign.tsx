@@ -5,13 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  findRecordWithAccess,
-  PermissionKeys,
-  ProcurementType,
-  Section,
-  SupplierType,
-} from "@/lib";
+import { PermissionKeys, ProcurementType, SupplierType } from "@/lib";
 import { useLazyGetApiV1RequisitionSourceSupplierQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -21,6 +15,7 @@ import PageTitle from "@/shared/title";
 import AccessTabs from "../../../../../shared/access";
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -66,26 +61,14 @@ const Page = () => {
   }, [page, pageSize, type, triggerReload]);
 
   const data = result?.data || [];
-
   // Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.procurement.sendQuotationRequest,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

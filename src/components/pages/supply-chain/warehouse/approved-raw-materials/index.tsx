@@ -4,20 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  EMaterialKind,
-  findRecordWithAccess,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { EMaterialKind, PermissionKeys } from "@/lib";
 import { useLazyGetApiV1MaterialApprovedMaterialsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -58,31 +53,21 @@ const Page = () => {
   }, [page, pageSize, kind]);
   const data = result?.data || [];
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
+  const { hasPermissionAccess } = useUserPermissions();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.warehouse.viewApprovedRawMaterials,
   );
   // check permissions access
-  const hasAccessToApprovedPackaging = findRecordWithAccess(
-    permissions,
+  const hasAccessToApprovedPackaging = hasPermissionAccess(
     PermissionKeys.warehouse.viewApprovedPackagingMaterials,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
-  if (isClient && !hasAccessToApprovedPackaging && kind?.toString() === "1") {
+  if (!hasAccessToApprovedPackaging && kind?.toString() === "1") {
     //redirect to no access
     return <NoAccess />;
   }

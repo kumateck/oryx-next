@@ -1,16 +1,10 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { AsyncSelect, Card, CardTitle } from "@/components/ui";
-import {
-  EMaterialKind,
-  findRecordWithAccess,
-  Option,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { EMaterialKind, Option, PermissionKeys } from "@/lib";
 import {
   MaterialBatchDto,
   WarehouseLocationRackDto,
@@ -26,7 +20,7 @@ import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
 import NoAccess from "@/shared/no-access";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const LocationChart = () => {
   const searchParams = useSearchParams();
@@ -92,35 +86,21 @@ const LocationChart = () => {
     setReloadTrigger(true);
   };
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccessToRawMaterialLocationChart = findRecordWithAccess(
-    permissions,
+  const hasAccessToRawMaterialLocationChart = hasPermissionAccess(
     PermissionKeys.warehouse.viewRawMaterialLocationChartList,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialLocationChart = findRecordWithAccess(
-    permissions,
+  const hasAccessToPackageMaterialLocationChart = hasPermissionAccess(
     PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
   );
 
-  if (isClient && !hasAccessToRawMaterialLocationChart) {
+  if (!hasAccessToRawMaterialLocationChart) {
     //redirect to no access
     return <NoAccess />;
   }
-  if (
-    isClient &&
-    !hasAccessToPackageMaterialLocationChart &&
-    kind?.toString() === "1"
-  ) {
+  if (!hasAccessToPackageMaterialLocationChart && kind?.toString() === "1") {
     //redirect to no access
     return <NoAccess />;
   }

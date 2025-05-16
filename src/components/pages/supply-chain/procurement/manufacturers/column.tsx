@@ -4,13 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import {
-  ErrorResponse,
-  findRecordWithAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   ManufacturerDto,
   MaterialDto,
@@ -19,7 +13,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,14 +27,13 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [reload] = useLazyGetApiV1ProcurementManufacturerQuery();
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+
+  //Permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithAccess(
-        permissions,
+      {hasPermissionAccess(
         PermissionKeys.procurement.updateManufacturerDetails,
       ) && (
         <Icon
@@ -52,10 +45,7 @@ export function DataTableRowActions<TData extends ManufacturerDto>({
           }}
         />
       )}
-      {findRecordWithAccess(
-        permissions,
-        PermissionKeys.procurement.deleteManufacturer,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.procurement.deleteManufacturer) && (
         <Icon
           name="Trash2"
           className="text-danger-500 h-5 w-5 cursor-pointer"

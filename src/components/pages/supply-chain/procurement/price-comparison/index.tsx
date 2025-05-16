@@ -21,10 +21,8 @@ import {
   PermissionKeys,
   ProcurementType,
   Quotations,
-  Section,
   SupplierType,
   cn,
-  findRecordWithAccess,
   findSelectedQuotation,
   isErrorResponse,
 } from "@/lib";
@@ -37,8 +35,8 @@ import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -147,23 +145,13 @@ const Page = () => {
     }
   };
   // Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.procurement.selectVendorPricing,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

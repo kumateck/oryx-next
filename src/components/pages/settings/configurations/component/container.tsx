@@ -3,16 +3,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon, Skeleton } from "@/components/ui";
-import {
-  findRecordWithAccess,
-  FormOption,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { FormOption, PermissionKeys } from "@/lib";
 import { MaterialKind } from "@/lib/redux/api/openapi.generated";
 
 import { FormOptionNode } from "./node";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   formOptions: FormOption[];
@@ -47,32 +42,24 @@ export const FormOptionContainer = ({
     setItemCount(formOptions.length || 10);
   }, [editMode, formOptions.length]);
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const canCreateProductCategory = findRecordWithAccess(
-    permissions,
+  const canCreateProductCategory = hasPermissionAccess(
     PermissionKeys.categories.productCategory.createNew,
   );
-  const canCreateRawCategory = findRecordWithAccess(
-    permissions,
+  const canCreateRawCategory = hasPermissionAccess(
     PermissionKeys.categories.rawCategory.createNew,
   );
-  const canCreatePackageCategory = findRecordWithAccess(
-    permissions,
+  const canCreatePackageCategory = hasPermissionAccess(
     PermissionKeys.categories.packageCategory.createNew,
   );
-  const canEditProductCategory = findRecordWithAccess(
-    permissions,
+  const canEditProductCategory = hasPermissionAccess(
     PermissionKeys.categories.productCategory.edit,
   );
-  const canEditRawCategory = findRecordWithAccess(
-    permissions,
+  const canEditRawCategory = hasPermissionAccess(
     PermissionKeys.categories.rawCategory.edit,
   );
-  const canEditPackageCategory = findRecordWithAccess(
-    permissions,
+  const canEditPackageCategory = hasPermissionAccess(
     PermissionKeys.categories.packageCategory.edit,
   );
 

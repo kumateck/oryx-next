@@ -14,9 +14,9 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
-import { useSelector } from "@/lib/redux/store";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   // const dispatch = useDispatch();
@@ -39,23 +39,9 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
+  const { hasPermissionAccess } = useUserPermissions();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewShelves,
-  );
-
-  if (isClient && !hasAccess) {
-    //redirect to no access
+  if (!hasPermissionAccess(PermissionKeys.warehouse.viewShelves)) {
     return <NoAccess />;
   }
 
@@ -65,10 +51,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Shelves" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithAccess(
-            permissions,
-            PermissionKeys.warehouse.addNewShelf,
-          ) && (
+          {hasPermissionAccess(PermissionKeys.warehouse.addNewShelf) && (
             <Button
               variant="default"
               size={"sm"}

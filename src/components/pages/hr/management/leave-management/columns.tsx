@@ -2,12 +2,10 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   ApprovalStatus,
   ErrorResponse,
-  findRecordWithAccess,
   isErrorResponse,
   LeaveCategories,
   LeaveStatus,
   PermissionKeys,
-  Section,
   splitWords,
 } from "@/lib";
 import {
@@ -21,7 +19,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import Edit from "./leave-request/edit";
 import { TableMenuAction } from "@/shared/table-menu";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -44,16 +42,13 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          {findRecordWithAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.editLeaveRequest,
           ) && (
             <div
@@ -73,8 +68,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           )}
         </DropdownMenuItem>
         <DropdownMenuItem className="group">
-          {findRecordWithAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
           ) && (
             <div

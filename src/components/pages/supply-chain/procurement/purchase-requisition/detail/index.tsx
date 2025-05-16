@@ -9,11 +9,9 @@ import {
   ErrorResponse,
   PermissionKeys,
   RequisitionType,
-  Section,
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
-  findRecordWithAccess,
   fullname,
   isErrorResponse,
 } from "@/lib";
@@ -29,7 +27,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
 import NoAccess from "@/shared/no-access";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const { id } = useParams();
@@ -95,23 +93,14 @@ const Page = () => {
   };
   // console.log(requisition, "requisition");
 
-  //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  // Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.procurement.sourceItemsBasedOnRequisition,
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.procurement.viewPurchaseRequisitions,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

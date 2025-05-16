@@ -8,8 +8,6 @@ import {
   ErrorResponse,
   IsYesorNo,
   PermissionKeys,
-  Section,
-  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -18,9 +16,8 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
-
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -35,14 +32,12 @@ export function DataTableRowActions<TData extends EquipmentDto>({
   const [details, setDetails] = useState<EquipmentDto>({} as EquipmentDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithAccess(permissions, PermissionKeys.equipment.edit) && (
+        {hasPermissionAccess(PermissionKeys.equipment.edit) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"
@@ -59,7 +54,7 @@ export function DataTableRowActions<TData extends EquipmentDto>({
             </div>
           </DropdownMenuItem>
         )}
-        {findRecordWithAccess(permissions, PermissionKeys.equipment.delete) && (
+        {hasPermissionAccess(PermissionKeys.equipment.delete) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"

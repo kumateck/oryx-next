@@ -1,15 +1,21 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { COLLECTION_TYPES, EMaterialKind } from "@/lib";
+import { COLLECTION_TYPES, EMaterialKind, PermissionKeys } from "@/lib";
 import { splitWords } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { ViewProps } from "./component";
 import FormView from "./view";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const Configurations = () => {
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.settings.viewSystemSettings)) {
+    return <NoAccess />;
+  }
   return (
     <div className="w-full">
       <div className="mb-5">

@@ -5,19 +5,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
-import {
-  PermissionKeys,
-  Section,
-  Units,
-  convertToLargestUnit,
-  findRecordWithAccess,
-} from "@/lib";
+import { PermissionKeys, Units, convertToLargestUnit } from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import AssignLocationDialog from "./assign-location";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -37,17 +31,13 @@ export function DataTableRowActions<TData extends MaterialBatchWithShelfId>({
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
 
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccessToRawMaterialLocationChart = findRecordWithAccess(
-    permissions,
+  const hasAccessToRawMaterialLocationChart = hasPermissionAccess(
     PermissionKeys.warehouse.viewRawMaterialLocationChartList,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialLocationChart = findRecordWithAccess(
-    permissions,
+  const hasAccessToPackageMaterialLocationChart = hasPermissionAccess(
     PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
   );
 

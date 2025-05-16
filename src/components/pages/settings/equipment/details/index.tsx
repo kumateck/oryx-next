@@ -9,6 +9,9 @@ import { useGetApiV1MaterialByMaterialIdQuery } from "@/lib/redux/api/openapi.ge
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import StepWrapper from "@/shared/wrapper";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const ViewPage: React.FC = () => {
   const { id } = useParams();
@@ -19,6 +22,10 @@ const ViewPage: React.FC = () => {
 
   const router = useRouter();
   // const [activeTab, setActiveTab] = useState<string>(tablists[0]);
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.equipment.view)) {
+    return <NoAccess />;
+  }
   return (
     <PageWrapper>
       <ScrollablePageWrapper className="space-y-8 pr-32">

@@ -4,21 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  EMaterialKind,
-  findRecordWithAccess,
-  PermissionKeys,
-  RequisitionType,
-  Section,
-} from "@/lib";
+import { EMaterialKind, PermissionKeys, RequisitionType } from "@/lib";
 import { useLazyGetApiV1RequisitionDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -62,45 +56,25 @@ const Page = () => {
   };
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccessToRawMaterialReQuests = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewRawMaterialRequisitions,
-  );
-  // check permission for packaging meterial
-  const hasAccessToPackageMaterialRequests = findRecordWithAccess(
-    permissions,
-    PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
-  );
-
-  if (isClient && !hasAccessToRawMaterialReQuests) {
-    console.log("why is this one not running");
-    //redirect to no access
-    return <NoAccess />;
-  }
+  const { hasPermissionAccess } = useUserPermissions();
   if (
-    isClient &&
-    !hasAccessToPackageMaterialRequests &&
-    kind.toString() === "1"
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
+    ) ||
+    !hasPermissionAccess(PermissionKeys.warehouse.viewRawMaterialRequisitions)
   ) {
-    //redirect to no access
     return <NoAccess />;
   }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Stock Requisitions" />
-        {hasAccessToPackageMaterialRequests &&
-          hasAccessToRawMaterialReQuests && (
+        {hasPermissionAccess(
+          PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
+        ) ||
+          (hasPermissionAccess(
+            PermissionKeys.warehouse.viewRawMaterialRequisitions,
+          ) && (
             <AccessTabs
               handleTabClick={handleTabClick}
               type={kind}
@@ -115,41 +89,7 @@ const Page = () => {
                 },
               ]}
             />
-          )}
-        {hasAccessToRawMaterialReQuests &&
-          !hasAccessToPackageMaterialRequests && (
-            <AccessTabs
-              handleTabClick={handleTabClick}
-              type={kind}
-              tabs={[
-                {
-                  label: EMaterialKind[EMaterialKind.Raw],
-                  value: EMaterialKind.Raw.toString(),
-                },
-                // {
-                //   label: EMaterialKind[EMaterialKind.Packing],
-                //   value: EMaterialKind.Packing.toString(),
-                // },
-              ]}
-            />
-          )}
-        {hasAccessToPackageMaterialRequests &&
-          !hasAccessToRawMaterialReQuests && (
-            <AccessTabs
-              handleTabClick={handleTabClick}
-              type={kind}
-              tabs={[
-                // {
-                //   label: EMaterialKind[EMaterialKind.Raw],
-                //   value: EMaterialKind.Raw.toString(),
-                // },
-                {
-                  label: EMaterialKind[EMaterialKind.Packing],
-                  value: EMaterialKind.Packing.toString(),
-                },
-              ]}
-            />
-          )}
+          ))}
       </div>
 
       <ServerDatatable

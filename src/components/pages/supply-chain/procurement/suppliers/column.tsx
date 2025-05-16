@@ -16,11 +16,9 @@ import {
 import {
   ErrorResponse,
   PermissionKeys,
-  Section,
   SupplierStatus,
   SupplierType,
   SupplierTypeOptions,
-  findRecordWithAccess,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -32,7 +30,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
 
@@ -49,17 +47,14 @@ export function DataTableRowActions<TData extends SupplierDto>({
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   // check permissions access
 
   return (
     <div className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithAccess(
-          permissions,
+        {hasPermissionAccess(
           PermissionKeys.procurement.updateVendorDetails,
         ) && (
           <DropdownMenuItem className="group">
@@ -74,10 +69,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
             </Link>
           </DropdownMenuItem>
         )}
-        {findRecordWithAccess(
-          permissions,
-          PermissionKeys.procurement.deleteVendor,
-        ) && (
+        {hasPermissionAccess(PermissionKeys.procurement.deleteVendor) && (
           <DropdownMenuItem className="group">
             <div
               onClick={() => {

@@ -4,13 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  findRecordWithAccess,
-  PermissionKeys,
-  RequisitionStatus,
-  RequisitionType,
-  Section,
-} from "@/lib";
+import { PermissionKeys, RequisitionStatus, RequisitionType } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import { useLazyGetApiV1RequisitionQuery } from "@/lib/redux/api/openapi.generated";
@@ -18,8 +12,8 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -43,25 +37,14 @@ const Page = () => {
 
   const data = result?.data || [];
 
-  //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  console.log("all permisinons", permissions);
+  // Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.procurement.viewPurchaseRequisitions,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

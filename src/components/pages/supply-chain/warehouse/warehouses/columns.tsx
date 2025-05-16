@@ -6,9 +6,7 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   PermissionKeys,
-  Section,
   WarehouseType,
-  findRecordWithAccess,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -19,7 +17,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,15 +31,11 @@ export function DataTableRowActions<TData extends WarehouseDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouse] = useLazyGetApiV1WarehouseQuery();
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
+
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithAccess(
-        permissions,
-        PermissionKeys.warehouse.editWarehouse,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.warehouse.editWarehouse) && (
         <Icon
           name="Pencil"
           className="h-5 w-5 cursor-pointer text-neutral-500"

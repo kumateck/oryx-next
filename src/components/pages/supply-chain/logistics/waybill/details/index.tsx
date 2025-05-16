@@ -5,13 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { WaybillStatus, isImageFile } from "@/lib";
+import { PermissionKeys, WaybillStatus, isImageFile } from "@/lib";
 import { useGetApiV1ProcurementWaybillByWaybillIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { MaterialRequestDto } from "../create/types";
 import TableForData from "./table";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -49,6 +51,11 @@ const WaybillDetails = () => {
       setMaterialLists(payload);
     }
   }, [data]);
+  //Permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.logistics.viewWaybill)) {
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

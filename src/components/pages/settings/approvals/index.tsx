@@ -248,6 +248,9 @@ import ApprovalCard from "./card";
 import Link from "next/link";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 const Page = () => {
   const { data: responseDto } = useGetApiV1ApprovalQuery({
@@ -271,13 +274,23 @@ const Page = () => {
   };
   // const [isOpen, setIsOpen] = React.useState(false);
 
+  //check permission
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.approvals.view)) {
+    return <NoAccess />;
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between">
         <span className="text-2xl font-semibold capitalize">Approvals</span>
-        <Link href={"/settings/approvals/create"}>
-          <Button>Create</Button>
-        </Link>
+        {hasPermissionAccess(
+          PermissionKeys.approvals.createOrConfigureNewApproval,
+        ) && (
+          <Link href={"/settings/approvals/create"}>
+            <Button>Create</Button>
+          </Link>
+        )}
       </div>
       {/* <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       <ul>

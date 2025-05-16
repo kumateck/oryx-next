@@ -12,9 +12,7 @@ import {
   GenerateCodeOptions,
   Option,
   PermissionKeys,
-  Section,
   SupplierType,
-  findRecordWithAccess,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -36,8 +34,8 @@ import PageTitle from "@/shared/title";
 import { MaterialRequestDto } from "../../shipment-documents/create/type";
 import { WaybillRequestDto } from "../types";
 import WaybillForm from "./form";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Create = () => {
   const {
@@ -172,31 +170,15 @@ const Create = () => {
   };
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
-  // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
-    PermissionKeys.logistics.createWaybill,
-  );
-
-  if (isClient && !hasAccess) {
-    //redirect to no access
+  //Premissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.logistics.createWaybill)) {
     return <NoAccess />;
   }
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
         <PageTitle title="Create Waybill" />
-
         <div>
           <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex items-center justify-end gap-2">
