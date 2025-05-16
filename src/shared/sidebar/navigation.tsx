@@ -313,6 +313,10 @@ export const ROUTES: Route[] = [
             title: "Leave Type Configuration",
             url: "/hr/leave-configuration",
           },
+          {
+            title: "Overtime Management",
+            url: "/hr/overtime-management",
+          },
         ],
       },
     ],
