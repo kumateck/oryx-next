@@ -2,11 +2,9 @@
 import PageWrapper from "@/components/layout/wrapper";
 import {
   EMaterialKind,
-  findRecordWithAccess,
   getLargestUnit,
   getMatchingIds,
   PermissionKeys,
-  Section,
   Units,
 } from "@/lib";
 import { useLazyGetApiV1MaterialDepartmentQuery } from "@/lib/redux/api/openapi.generated";
@@ -20,7 +18,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { Button, Icon, Separator } from "@/components/ui";
 import { MaterialRequestDto } from "./type";
 import Purchase from "../../schedule/details/products/purchase";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -94,17 +92,13 @@ const Page = () => {
 
   // console.log(rawMaterials?.data, "rawMaterials?.data");
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const canCreateRawMaterialRequisition = findRecordWithAccess(
-    permissions,
+  const canCreateRawMaterialRequisition = hasPermissionAccess(
     PermissionKeys.production.createRawMaterialPurchaseRequisition,
   );
   // check permission for packaging meterial
-  const canCreatePackagingRequisistion = findRecordWithAccess(
-    permissions,
+  const canCreatePackagingRequisistion = hasPermissionAccess(
     PermissionKeys.production.createPackagingMaterialStockRequisition,
   );
   return (

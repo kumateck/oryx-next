@@ -10,8 +10,6 @@ import {
   ErrorResponse,
   PermissionKeys,
   QuestionType,
-  Section,
-  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -27,7 +25,7 @@ import {
   TemplateRequestDto,
   templateQuestions,
 } from "./type";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
 
 const EditTemplate = () => {
@@ -114,29 +112,15 @@ const EditTemplate = () => {
   };
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccessToWorkFlowFormQuestions = findRecordWithAccess(
-    permissions,
+  const hasAccessToWorkFlowFormQuestions = hasPermissionAccess(
     PermissionKeys.workflowForms.questions.view,
   );
-  const hasAccessToWorkFlowFormTemplate = findRecordWithAccess(
-    permissions,
+  const hasAccessToWorkFlowFormTemplate = hasPermissionAccess(
     PermissionKeys.workflowForms.templates.view,
   );
-  if (
-    isClient &&
-    !hasAccessToWorkFlowFormQuestions &&
-    !hasAccessToWorkFlowFormTemplate
-  ) {
+  if (!hasAccessToWorkFlowFormQuestions && !hasAccessToWorkFlowFormTemplate) {
     //redirect to no access
     return <NoAccess />;
   }

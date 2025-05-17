@@ -1,22 +1,20 @@
 "use client";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
-import { useSelector } from "@/lib/redux/store";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import GRNPage from ".";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const GRNPermission = () => {
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
-  const handlePermissions = (permissions: Section[]) => {
-    const hasAccessToPacking = findRecordWithAccess(
-      permissions,
+  const handlePermissions = (
+    hasPermissionAccess: (value: string) => boolean,
+  ) => {
+    const hasAccessToPacking = hasPermissionAccess(
       PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
     );
 
-    const hasAccessToRaw = findRecordWithAccess(
-      permissions,
+    const hasAccessToRaw = hasPermissionAccess(
       PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
     );
 
@@ -31,7 +29,9 @@ const GRNPermission = () => {
   };
 
   return (
-    <div>{handlePermissions(permissions) ? <NoAccess /> : <GRNPage />}</div>
+    <div>
+      {handlePermissions(hasPermissionAccess) ? <NoAccess /> : <GRNPage />}
+    </div>
   );
 };
 

@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
 import { FormDto } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   template: FormDto;
@@ -15,9 +15,7 @@ interface Props {
 
 const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
   const navigate = useRouter();
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <div className="mt-2 w-full">
       <div className="rounded-lg border border-neutral-light bg-white px-8 py-4">
@@ -35,8 +33,7 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
           </div>
 
           <div className="flex w-2/6 items-center justify-center gap-1 px-2">
-            {findRecordWithAccess(
-              permissions,
+            {hasPermissionAccess(
               PermissionKeys.workflowForms.templates.edit,
             ) && (
               <Button
@@ -50,8 +47,7 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
                 <span>Edit</span>
               </Button>
             )}
-            {findRecordWithAccess(
-              permissions,
+            {hasPermissionAccess(
               PermissionKeys.workflowForms.templates.delete,
             ) && (
               <Button

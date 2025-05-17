@@ -13,12 +13,10 @@ import {
 import {
   ErrorResponse,
   PermissionKeys,
-  Section,
   StockTransfer,
   TransferType,
   Units,
   convertToLargestUnit,
-  findRecordWithAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -27,7 +25,7 @@ import {
   usePutApiV1ProductionScheduleStockTransferRejectByStockTransferIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 export const getColumns = (
   type: TransferType,
@@ -138,13 +136,10 @@ export function DataTableRowActions<
     }
   };
   //permissions checks
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
-      {findRecordWithAccess(
-        permissions,
+      {hasPermissionAccess(
         PermissionKeys.production.approveOrRejectStockTransferRequest,
       ) && (
         <div className="flex items-center justify-end gap-2">
