@@ -5,13 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import {
-  ErrorResponse,
-  findRecordWithAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   useGetApiV1RequisitionByRequisitionIdQuery,
   usePostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdMutation,
@@ -21,7 +15,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 const IssueStockRequistions = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -47,17 +41,13 @@ const IssueStockRequistions = () => {
     }
   };
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccessToRawMaterialReQuests = findRecordWithAccess(
-    permissions,
+  const hasAccessToRawMaterialReQuests = hasPermissionAccess(
     PermissionKeys.warehouse.issueRawMaterialRequisitions,
   );
   // check permission for packaging meterial
-  const hasAccessToPackageMaterialRequests = findRecordWithAccess(
-    permissions,
+  const hasAccessToPackageMaterialRequests = hasPermissionAccess(
     PermissionKeys.warehouse.issuePackagingMaterialRequisitions,
   );
 

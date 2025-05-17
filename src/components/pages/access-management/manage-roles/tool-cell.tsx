@@ -1,5 +1,5 @@
 import { ConfirmDeleteDialog } from "@/components/ui";
-import { findRecordWithAccess, PermissionKeys, routes, Section } from "@/lib";
+import { PermissionKeys, routes } from "@/lib";
 import { useDeleteApiV1RoleByIdMutation } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 // import { useSelector } from "@/lib/redux/store";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   roleId: string;
@@ -18,9 +18,6 @@ export default function ToolCell({ roleId }: Props) {
   const dispatch = useDispatch();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteMutation] = useDeleteApiV1RoleByIdMutation();
-  // const permissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
 
   const handleDelete = async () => {
     try {
@@ -31,9 +28,7 @@ export default function ToolCell({ roleId }: Props) {
       ThrowErrorMessage(error);
     }
   };
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <div className="">
       <ul className="flex gap-2  items-center justify-end">
@@ -44,8 +39,7 @@ export default function ToolCell({ roleId }: Props) {
          import Link from "next/link";
 
         )} */}
-        {findRecordWithAccess(
-          permissions,
+        {hasPermissionAccess(
           PermissionKeys.humanResources.editRoleWithItsPermissions,
         ) && (
           <li>
@@ -56,16 +50,7 @@ export default function ToolCell({ roleId }: Props) {
             </Link>
           </li>
         )}
-        {/* {findRecordWithAccess(
-          permissions,
-          PermissionKeys.resourceManagement.rolesAndPermissions.delete,
-        ) && (
-         
-        )} */}
-        {findRecordWithAccess(
-          permissions,
-          PermissionKeys.humanResources.deleteRole,
-        ) && (
+        {hasPermissionAccess(PermissionKeys.humanResources.deleteRole) && (
           <li
             onClick={() => {
               setIsDeleteOpen(true);

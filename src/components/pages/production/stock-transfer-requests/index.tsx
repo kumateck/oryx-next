@@ -5,13 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  findRecordWithAccess,
-  PermissionKeys,
-  Section,
-  TransferType,
-  StockTransfer,
-} from "@/lib";
+import { PermissionKeys, TransferType, StockTransfer } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -24,6 +18,7 @@ import PageTitle from "@/shared/title";
 import { getColumns } from "./columns";
 import TransferTable from "./table";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -94,21 +89,11 @@ const Page = () => {
     router.push(pathname + "?" + createQueryString("type", tabType.toString()));
   };
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.production.viewStockTransferRequests,
   );
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

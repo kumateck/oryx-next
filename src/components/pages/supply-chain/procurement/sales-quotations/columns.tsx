@@ -5,8 +5,8 @@ import { Icon } from "@/components/ui";
 import { SupplierQuotationDto } from "@/lib/redux/api/openapi.generated";
 
 import Cost from "./cost";
-import { useSelector } from "@/lib/redux/store";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
 
@@ -21,10 +21,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
   const [quotationId, setQuotationId] = useState("");
 
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
@@ -35,10 +32,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      {findRecordWithAccess(
-        permissions,
-        PermissionKeys.procurement.inputResponses,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.procurement.inputResponses) && (
         <Icon
           onClick={() => {
             setQuotationId(row.original?.id as string);

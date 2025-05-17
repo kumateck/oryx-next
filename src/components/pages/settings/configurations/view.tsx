@@ -3,33 +3,23 @@ import React from "react";
 
 import { TabProps } from ".";
 import Page from "./component";
-import { useSelector } from "@/lib/redux/store";
-import {
-  COLLECTION_TYPES,
-  findRecordWithAccess,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { COLLECTION_TYPES, PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   tab: TabProps;
 }
 const FormView = ({ tab }: Props) => {
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const canViewProductCategory = findRecordWithAccess(
-    permissions,
+  const canViewProductCategory = hasPermissionAccess(
     PermissionKeys.categories.productCategory.view,
   );
-  const canViewRawCategory = findRecordWithAccess(
-    permissions,
+  const canViewRawCategory = hasPermissionAccess(
     PermissionKeys.categories.rawCategory.view,
   );
-  const canViewPackageCategory = findRecordWithAccess(
-    permissions,
+  const canViewPackageCategory = hasPermissionAccess(
     PermissionKeys.categories.packageCategory.view,
   );
   return (
