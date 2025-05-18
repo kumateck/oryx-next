@@ -29,6 +29,7 @@ interface Props {
 }
 
 const Create = ({ isOpen, onClose }: Props) => {
+  const dispatch = useDispatch();
   const [createLeaveType, { isLoading }] = usePostApiV1LeaveTypeMutation();
 
   const {
@@ -41,7 +42,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     resolver: CreateLeaveTypeValidator,
     mode: "all",
   });
-  const dispatch = useDispatch();
 
   const onSubmit = async (data: LeaveTypeRequestDto) => {
     try {
@@ -56,7 +56,7 @@ const Create = ({ isOpen, onClose }: Props) => {
 
       await createLeaveType({
         module: AuditModules.management.name,
-        subModule: AuditModules.management.leaveManagement,
+        subModule: AuditModules.management.leaveTypeConfiguration,
         createLeaveTypeRequest: payload,
       }).unwrap();
 

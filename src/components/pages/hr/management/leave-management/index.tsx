@@ -5,13 +5,10 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 
-import LeaveRequest from "./leave-request";
+import LeaveRequest from "./leave-request/create";
 
 import { ServerDatatable } from "@/shared/datatable";
-import {
-  useGetApiV1LeaveRequestQuery,
-  useLazyGetApiV1LeaveRequestQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1LeaveRequestQuery } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
 // import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
@@ -20,7 +17,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useSelector } from "@/lib/redux/store";
-import { PermissionKeys } from "@/lib";
+import { AuditModules, PermissionKeys } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -28,16 +25,16 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1LeaveRequestQuery({
-    page,
-    pageSize,
-  });
-  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveRequestQuery();
-  // const router = useRouter();
+
+  const [loadLeaveRequests, { data: result, isLoading, isFetching }] =
+    useLazyGetApiV1LeaveRequestQuery();
+
   useEffect(() => {
-    loadLeaveTypes({
+    loadLeaveRequests({
       page,
       pageSize,
+      module: AuditModules.management.name,
+      subModule: AuditModules.management.leaveManagement,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
@@ -78,9 +75,6 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        // onRowClick={(row) => {
-        //   router.push(`/hr/leave-management/${row.id}/details`);
-        // }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}

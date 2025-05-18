@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
 import {
+  AuditModules,
   CODE_SETTINGS,
   EmployeeType,
   ErrorResponse,
@@ -286,6 +287,8 @@ export default function OnboardingForm() {
 
       const employeeId = await createEmployee({
         createEmployeeRequest: payload.createEmployeeRequest,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.employeeManagement,
       } as PostApiV1EmployeeApiArg).unwrap();
 
       // const employeeId = await createEmployee(payload).unwrap();
@@ -306,6 +309,8 @@ export default function OnboardingForm() {
           modelType: CODE_SETTINGS.modelTypes.Employee,
           modelId: employeeId,
           body: formData,
+          module: AuditModules.general.name,
+          subModule: AuditModules.general.fileUpload,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
 

@@ -12,6 +12,7 @@ import {
 
 import Create from "./create";
 import { FinishedGoodsNoteRequestDto } from "./types";
+import { AuditModules } from "@/lib";
 
 interface Props {
   scheduleId: string;
@@ -27,12 +28,16 @@ function FinishedGoodsTransfer({
 
   const { data: productResponse } = useGetApiV1ProductByProductIdQuery({
     productId,
+    module: AuditModules.production.name,
+    subModule: AuditModules.production.planning,
   });
   const { data: bmrResponse } =
     useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery(
       {
         productionId: productId,
         productionScheduleId: scheduleId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.bmr,
       },
     );
   const { data: finalPackingResponse } =
@@ -40,6 +45,8 @@ function FinishedGoodsTransfer({
       {
         productionScheduleId: scheduleId,
         productId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.finalPacking,
       },
     );
 

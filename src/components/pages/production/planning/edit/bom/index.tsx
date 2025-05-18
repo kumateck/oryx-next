@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
+  useGetApiV1ProductByProductIdBomQuery,
   useGetApiV1ProductByProductIdQuery,
   usePostApiV1BomMutation,
   usePutApiV1ProductByProductIdBomArchiveMutation,
@@ -26,6 +27,12 @@ const BOM = () => {
   const { data: product } = useGetApiV1ProductByProductIdQuery({
     productId,
   });
+
+  const { data: bomReponse } = useGetApiV1ProductByProductIdBomQuery({
+    productId,
+  });
+
+  console.log(bomReponse, "bomResponse");
 
   const defaultBillOfMaterials =
     product?.currentBillOfMaterial?.billOfMaterial?.items?.map((bom, idx) => ({

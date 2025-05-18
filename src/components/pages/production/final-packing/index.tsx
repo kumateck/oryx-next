@@ -21,6 +21,7 @@ import {
   TabsTrigger,
 } from "@/components/ui";
 import {
+  AuditModules,
   ErrorResponse,
   Units,
   cn,
@@ -194,6 +195,8 @@ const FinalPacking = () => {
     try {
       const response = await loadActivity({
         productionActivityId: activityId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.activities,
       }).unwrap();
       const productId = response?.product?.id as string;
       const scheduleId = response?.productionSchedule?.id as string;
@@ -204,15 +207,27 @@ const FinalPacking = () => {
         packingResponse,
         extraPackingResponse,
       ] = await Promise.all([
-        loadProduct({ productId }).unwrap(),
-        loadSchedule({ scheduleId }).unwrap(),
+        loadProduct({
+          productId,
+          module: AuditModules.production.name,
+          subModule: AuditModules.production.planning,
+        }).unwrap(),
+        loadSchedule({
+          scheduleId,
+          module: AuditModules.production.name,
+          subModule: AuditModules.production.productSchedule,
+        }).unwrap(),
         loadFinalPacking({
           productionScheduleId: scheduleId,
           productId,
+          module: AuditModules.production.name,
+          subModule: AuditModules.production.finalPacking,
         }).unwrap(),
         loadExtraPacking({
           productionScheduleId: scheduleId,
           productId,
+          module: AuditModules.production.name,
+          subModule: AuditModules.production.extraPacking,
         }).unwrap(),
       ]);
       const findProduct = scheduleResponse?.products?.find(
@@ -225,8 +240,7 @@ const FinalPacking = () => {
       const expectedYield =
         Number(findProduct?.quantity) /
         Number(productResponse?.basePackingQuantity);
-      // console.log(scheduleResponse, "scheduleResponse");
-      // console.log(productResponse, "productResponse");
+
       setValue(
         "averageVolumeFilledPerBottle",
         productResponse?.filledWeight as unknown as number,
@@ -354,6 +368,8 @@ const FinalPacking = () => {
       try {
         await finalPackingMutation({
           createFinalPacking: payload,
+          module: AuditModules.production.name,
+          subModule: AuditModules.production.finalPacking,
         }).unwrap();
         toast.success("Final Packing updated successfully");
         router.push(routes.viewBoard(activityId));

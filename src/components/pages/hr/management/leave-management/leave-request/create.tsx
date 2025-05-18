@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, LeaveCategories, Option } from "@/lib";
+import { AuditModules, CODE_SETTINGS, LeaveCategories, Option } from "@/lib";
 import {
   CreateLeaveRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
@@ -19,7 +19,6 @@ import {
   RequestCategory,
   useGetApiV1EmployeeQuery,
   useGetApiV1LeaveTypeQuery,
-  useLazyGetApiV1LeaveRequestQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1LeaveRequestMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -36,7 +35,7 @@ interface Props {
 
 const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const dispatch = useDispatch();
-  const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
+
   const [createLeaveRequest, { isLoading: creating }] =
     usePostApiV1LeaveRequestMutation();
   const [uploadAttachment, { isLoading: uploading }] =
@@ -81,16 +80,15 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
       const leaveRequestId = await createLeaveRequest({
         createLeaveRequest: payload,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.leaveManagement,
       } as PostApiV1LeaveRequestApiArg).unwrap();
 
-      // 2. Immediately reset & close the form
-      reset();
-      onClose();
+      dispatch(commonActions.setTriggerReload());
       toast.success("Leave Request created successfully");
+      // 2. Immediately reset & close the form
 
       // 3. Refresh the table
-      loadLeaveRequests({ page: 1, pageSize: 10 });
-      dispatch(commonActions.setTriggerReload());
 
       // 4. Then, upload attachments in the background
       if (leaveRequestId && data.attachments) {
@@ -103,17 +101,16 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
           formData.append("files", file, file.name);
         });
 
-        try {
-          await uploadAttachment({
-            modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
-            modelId: leaveRequestId,
-            body: formData,
-          } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-        } catch (err) {
-          console.error(err);
-          toast.error("Failed to upload attachment(s).");
-        }
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.LeaveRequest,
+          modelId: leaveRequestId,
+          body: formData,
+          module: AuditModules.general.name,
+          subModule: AuditModules.general.fileUpload,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
+      reset();
+      onClose();
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
@@ -126,6 +123,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const { data: employeesResponse } = useGetApiV1EmployeeQuery({
     page: 1,
     pageSize: 40,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.employeeManagement,
   });
   const employeeOptions = (employeesResponse?.data || []).map((e) => ({
     label: `${e.firstName} ${e.lastName}`,
@@ -135,6 +134,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
     page: 1,
     pageSize: 40,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.leaveTypeConfiguration,
   });
   const leaveTypesOptions = (leaveTypesResponse?.data || []).map((lt) => ({
     label: lt.name,

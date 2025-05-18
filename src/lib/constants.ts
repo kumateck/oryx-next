@@ -556,6 +556,11 @@ export const PermissionKeys = {
 };
 
 export const AuditModules = {
+  general: {
+    name: "General",
+    fileUpload: "File Upload",
+    collection: "Collection",
+  },
   logistics: {
     name: "Logistics",
     availableStock: "Available Stock",
@@ -568,10 +573,8 @@ export const AuditModules = {
 
   warehouse: {
     name: "Warehouse",
-
     receivingArea: "Receiving Area",
     quarantineAreaGRN: "Quarantine Area/GRN",
-
     materials: "Materials",
     unlinkMaterials: "Unlink Materials",
     linkedMaterials: "Linked Materials",
@@ -580,11 +583,12 @@ export const AuditModules = {
     extraPackingRequisitions: "Extra Packing Requisitions",
     stockTransferIssues: "Stock Transfer Issues",
     locationChartRecord: "Location Chart Record",
+    packingStock: "Packing Material Stock",
+    rawStock: "Raw Material Stock ",
   },
 
   procurement: {
     name: "Procurement",
-
     purchaseRequisition: "Purchase Requisition",
     quotationsRequest: "Quotations Request",
     quotationsResponses: "Quotations Responses",
@@ -601,16 +605,23 @@ export const AuditModules = {
     materialRequisitions: "Material Requisitions",
     createPurchaseRequisitions: "Create Purchase Requisitions",
     others: "Others",
-    planning: "Planning",
+    planning: "Product Planning",
     stockTransferRequests: "Stock Transfer Requests",
     productSchedule: "Product Schedule",
+    activities: "Activities",
+    steps: "Steps",
+    bmr: "BMR",
+    goodsReceivedNotes: "Goods Received Notes",
+    finalPacking: "Final Packing",
+    extraPacking: "Extra Packing",
   },
   management: {
     name: "HR Management",
-    employeeManagement: "Employee Management",
-    designationManagement: "Designation Management",
-    leaveManagement: "Leave Management",
-    leaveTypeConfiguration: "Leave Type Configuration",
+    employeeManagement: "Employee",
+    designationManagement: "Designation",
+    leaveManagement: "Leave Request",
+    leaveTypeConfiguration: "Leave Type",
+    overTimeMangement: "Over Time",
   },
 
   accessManagement: {

@@ -22,7 +22,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import StepDetailsDailog from "@/components/StepDetailsDailog";
-import { cn, fullname, getInitials } from "@/lib";
+import { AuditModules, cn, fullname, getInitials } from "@/lib";
 
 const Details = () => {
   const { id, sid } = useParams();
@@ -38,13 +38,21 @@ const Details = () => {
 
   const [loadActivityStep, { data: stepData }] =
     useLazyGetApiV1ProductionScheduleActivityStepByProductionActivityStepIdQuery();
-  console.log(stepData, "stepData");
+
   useEffect(() => {
     if (activityId) {
-      loadActivity({ productionActivityId: activityId }).unwrap();
+      loadActivity({
+        productionActivityId: activityId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.activities,
+      }).unwrap();
     }
     if (stepId) {
-      loadActivityStep({ productionActivityStepId: stepId }).unwrap();
+      loadActivityStep({
+        productionActivityStepId: stepId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.steps,
+      }).unwrap();
     }
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
