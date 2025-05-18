@@ -12,18 +12,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import {
-  findRecordWithAccess,
-  FORM_BUILDER_CONFIG,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { FORM_BUILDER_CONFIG, PermissionKeys } from "@/lib";
 
 import QuestionCards from "./questions";
 import CreateQuestionTypes from "./questions/question-types";
 import TemplateCards from "./templates";
-import { useSelector } from "@/lib/redux/store";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const FormBuilder = () => {
   const tabLists = [
@@ -46,16 +41,11 @@ const FormBuilder = () => {
     setIsClient(true);
   }, []);
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-  const hasAccessToWorkFlowFormQuestions = findRecordWithAccess(
-    permissions,
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccessToWorkFlowFormQuestions = hasPermissionAccess(
     PermissionKeys.workflowForms.questions.view,
   );
-  const hasAccessToWorkFlowFormTemplate = findRecordWithAccess(
-    permissions,
+  const hasAccessToWorkFlowFormTemplate = hasPermissionAccess(
     PermissionKeys.workflowForms.templates.view,
   );
   if (
@@ -99,8 +89,7 @@ const FormBuilder = () => {
           </TabsList>
           <div>
             {activeTab === FORM_BUILDER_CONFIG.TEMPLATES
-              ? findRecordWithAccess(
-                  permissions,
+              ? hasPermissionAccess(
                   PermissionKeys.workflowForms.templates.createNew,
                 ) && (
                   <Link href={"template/create"}>
@@ -115,8 +104,7 @@ const FormBuilder = () => {
                     </Button>
                   </Link>
                 )
-              : findRecordWithAccess(
-                  permissions,
+              : hasPermissionAccess(
                   PermissionKeys.workflowForms.questions.createNew,
                 ) && (
                   <Button

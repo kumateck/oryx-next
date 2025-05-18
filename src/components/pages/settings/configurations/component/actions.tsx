@@ -1,9 +1,9 @@
 import { Icon } from "@/components/ui";
-import { cn, findRecordWithAccess } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import ActionToolTip from "./action-tooltip";
-import { useSelector } from "@/lib/redux/store";
-import { PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   isLoading: boolean;
@@ -35,20 +35,15 @@ export const FormOptionActions = ({
   isBeingDeleted,
   isInputError,
 }: Props) => {
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
   // check permissions access
-  const canDeleteProductCategory = findRecordWithAccess(
-    permissions,
+  const { hasPermissionAccess } = useUserPermissions();
+  const canDeleteProductCategory = hasPermissionAccess(
     PermissionKeys.categories.productCategory.delete,
   );
-  const canDeleteRawCategory = findRecordWithAccess(
-    permissions,
+  const canDeleteRawCategory = hasPermissionAccess(
     PermissionKeys.categories.rawCategory.delete,
   );
-  const canDeletePackageCategory = findRecordWithAccess(
-    permissions,
+  const canDeletePackageCategory = hasPermissionAccess(
     PermissionKeys.categories.packageCategory.delete,
   );
   return (
