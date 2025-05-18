@@ -23,12 +23,13 @@ import {
 } from "@/components/ui";
 import SearchWithAnimation from "@/components/ui/search";
 import { ORYX_ERP_COOKIE_ID, fullname, getInitials, routes } from "@/lib";
-import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
+
 import { useUserPermissions } from "@/hooks/use-permission";
+import useCurrentUser from "@/hooks/use-current";
 
 const HeaderEnd = () => {
   const { clearPermissions } = useUserPermissions();
-  const { data: user } = useGetApiV1UserAuthenticatedQuery();
+  const { user } = useCurrentUser();
 
   const [passwordOpen, setPasswordOpen] = useState(false);
   const cookies = useCookies();

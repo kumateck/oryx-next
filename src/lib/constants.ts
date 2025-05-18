@@ -555,173 +555,108 @@ export const PermissionKeys = {
   },
 };
 
-// export const PermissionKeys = {
-//   dashboard: {
-//     viewActions: "view_actions_on_dashboard",
-//     viewItems: "view_items_on_dashboard",
-//     closeItems: "close_items_on_dashboard",
-//     viewFindingsOnActions: "view_findings_on_actions",
-//     addFindingsToActions: "add_findings_to_actions",
-//   },
-//   reports: {
-//     viewDashboards: "view_dashboards",
-//     createDashboards: "create_dashboards",
-//     updateDashboards: "update_dashboards",
-//     deleteDashboards: "delete_dashboards",
-//     viewQueries: "view_queries",
-//     createQueries: "create_queries",
-//     updateQueries: "update_queries",
-//     deleteQueries: "delete_queries",
-//   },
-//   itemManagement: {
-//     incidents: {
-//       view: "view_incidents",
-//       create: "create_incidents",
-//       edit: "edit_incidents",
-//       delete: "delete_incidents",
-//       viewFindings: "view_findings_on_incidents",
-//       addFindings: "add_findings_to_incidents",
-//       addCosts: "add_costs_to_incidents",
-//       viewCosts: "view_costs_on_incidents",
-//       editCosts: "edit_costs",
-//       deleteCosts: "delete_costs",
-//       addActions: "add_actions_to_incidents",
-//     },
-//     observations: {
-//       view: "view_observations",
-//       create: "create_observations",
-//       edit: "edit_observations",
-//       delete: "delete_observations",
-//       viewFindings: "view_findings_on_observations",
-//       addFindings: "add_findings_to_observations",
-//       addActions: "add_actions_to_observations",
-//     },
-//     inspections: {
-//       view: "view_inspections",
-//       create: "create_inspections",
-//       delete: "delete_inspections",
-//       respondAndSubmit: "respond_to_and_submit_inspections",
-//       viewFindings: "view_findings_on_inspections",
-//       addFindings: "add_findings_to_inspections",
-//       addActions: "add_actions_to_inspections",
-//     },
-//     audits: {
-//       view: "view_audits",
-//       create: "create_audits",
-//       delete: "delete_audits",
-//       respondAndSubmit: "respond_to_and_submit_audits",
-//       viewFindings: "view_findings_on_audits",
-//       addFindings: "add_findings_to_audits",
-//       addActions: "add_actions_to_audits",
-//     },
-//   },
-//   complianceManagement: {
-//     certifications: {
-//       view: "view_certifications",
-//       create: "create_certifications",
-//       update: "update_certifications",
-//       delete: "delete_certifications",
-//       viewRenewals: "view_renewals_on_certifications",
-//       addRenewals: "add_renewals_to_certifications",
-//       updateRenewals: "update_renewals",
-//     },
-//     regulations: {
-//       view: "view_regulations",
-//       create: "create_regulations",
-//       update: "update_regulations",
-//       delete: "delete_regulations",
-//       viewPermits: "view_permits_on_regulations",
-//       addPermits: "add_permits_to_regulations",
-//       updatePermits: "update_permits",
-//     },
-//   },
-//   resourceManagement: {
-//     employees: {
-//       view: "view_employees",
-//       create: "create_employees",
-//       update: "update_employees",
-//       delete: "delete_employees",
-//     },
-//     rolesAndPermissions: {
-//       view: "view_roles_and_permissions",
-//       createAndAssign: "create_roles_and_assign_permissions",
-//       editAndUpdate: "edit_roles_and_update_permissions",
-//       delete: "delete_roles",
-//     },
-//   },
-//   inventory: {
-//     generalRecords: {
-//       view: "view_general_inventory_records",
-//       add: "add_general_inventory_records",
-//       update: "update_general_inventory_records",
-//       delete: "delete_general_inventory_records",
-//     },
-//     healthRecords: {
-//       view: "view_health_inventory_records",
-//       add: "add_health_inventory_records",
-//       update: "update_health_inventory_records",
-//       delete: "delete_health_inventory_records",
-//     },
-//   },
-//   recordManagement: {
-//     environmentalRecords: {
-//       view: "view_environment_records",
-//       add: "add_environment_records",
-//       update: "update_environment_records",
-//       delete: "delete_environment_records",
-//     },
-//     healthRecords: {
-//       view: "view_health_records",
-//       add: "add_health_records",
-//       update: "update_health_records",
-//       delete: "delete_health_records",
-//     },
-//     meetingRecords: {
-//       view: "view_meeting_records",
-//       add: "add_meeting_records",
-//       update: "update_meeting_records",
-//       delete: "delete_meeting_records",
-//     },
-//     manHourRecords: {
-//       view: "view_manhour_records",
-//       add: "add_manhour_records",
-//       update: "update_manhour_records",
-//       delete: "delete_manhour_records",
-//     },
-//   },
-//   settings: {
-//     questions: {
-//       view: "view_questions",
-//       add: "add_questions",
-//       update: "update_questions",
-//       delete: "delete_questions",
-//     },
-//     templates: {
-//       view: "view_templates",
-//       add: "add_templates",
-//       update: "update_templates",
-//       delete: "delete_templates",
-//     },
-//     formOptions: {
-//       view: "view_form_options",
-//       add: "add_form_options",
-//       update: "update_form_options",
-//       delete: "delete_form_options",
-//     },
-//   },
-//   approvals: {
-//     view: "view_approvals",
-//     add: "add_approvals",
-//     update: "update_approvals",
-//     delete: "delete_approvals",
-//   },
-//   alerts: {
-//     view: "view_alerts",
-//     add: "add_alerts",
-//     update: "update_alerts",
-//     delete: "delete_alerts",
-//   },
-//   currency: {
-//     setDefault: "set_default_currency",
-//   },
-// };
+export const AuditModules = {
+  logistics: {
+    name: "Logistics",
+    availableStock: "Available Stock",
+    shipmentInvoices: "Shipment Invoices",
+    shipmentDocuments: "Shipment Documents",
+    shipmentDiscrepancy: "Shipment Discrepancy",
+    billingSheets: "Billing Sheets",
+    waybill: "Waybill",
+  },
+
+  warehouse: {
+    name: "Warehouse",
+
+    receivingArea: "Receiving Area",
+    quarantineAreaGRN: "Quarantine Area/GRN",
+
+    materials: "Materials",
+    unlinkMaterials: "Unlink Materials",
+    linkedMaterials: "Linked Materials",
+    approvedMaterials: "Approved Materials",
+    stockRequisitions: "Stock Requisitions",
+    extraPackingRequisitions: "Extra Packing Requisitions",
+    stockTransferIssues: "Stock Transfer Issues",
+    locationChartRecord: "Location Chart Record",
+  },
+
+  procurement: {
+    name: "Procurement",
+
+    purchaseRequisition: "Purchase Requisition",
+    quotationsRequest: "Quotations Request",
+    quotationsResponses: "Quotations Responses",
+    priceComparison: "Price Comparison",
+    awardedQuotations: "Awarded Quotations",
+    proformaResponses: "Proforma Responses",
+    createPurchaseOrders: "Create Purchase Orders",
+    purchaseOrderLists: "Purchase Order Lists",
+    materialDistribution: "Material Distribution",
+  },
+
+  production: {
+    name: "Production",
+    materialRequisitions: "Material Requisitions",
+    createPurchaseRequisitions: "Create Purchase Requisitions",
+    others: "Others",
+    planning: "Planning",
+    stockTransferRequests: "Stock Transfer Requests",
+    productSchedule: "Product Schedule",
+  },
+  management: {
+    name: "HR Management",
+    employeeManagement: "Employee Management",
+    designationManagement: "Designation Management",
+    leaveManagement: "Leave Management",
+    leaveTypeConfiguration: "Leave Type Configuration",
+  },
+
+  accessManagement: {
+    name: "Access Management",
+    manageRoles: "Manage Roles",
+    managePermissions: "Manage Permissions",
+  },
+
+  userManagement: {
+    name: "User Management",
+    manageUsersDirectory: "Manage Users Directory",
+  },
+
+  qualityAssurance: {
+    name: "Quality Assurance",
+    issueBMR: "Issue BMR",
+    pendingApprovals: "Pending Approvals",
+  },
+
+  settings: {
+    name: "Settings",
+    departments: "Departments",
+    configurations: "Configurations",
+    codeSettings: "Code Settings",
+    changePassword: "Change Password",
+    authUser: "Authenticated User",
+    approvals: "Approvals",
+    alertsAndNotifications: "Alerts & Notifications",
+    currencySettings: "Currency Settings",
+    equipment: "Equipment",
+    workFlow: "Work Flow",
+    userDirectory: "User Directory",
+    warehouses: "Warehouses",
+    locations: "Locations",
+    racks: "Racks",
+    shelves: "Shelves",
+    manufacturers: "Manufacturers",
+    suppliers: "Suppliers",
+  },
+  authentication: {
+    name: "Authentication",
+    login: "Login",
+    forgot: "Forgot Password",
+    reset: "Reset Password",
+    logout: "Logout",
+    setPassword: "Set Password",
+    changePassword: "Change Password",
+  },
+};

@@ -6,7 +6,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import { ManufacturerMap } from "@/components/pages/supply-chain/procurement/suppliers/create";
+import { ManufacturerMap } from "@/components/pages/settings/suppliers/create";
 import {
   Button,
   Dialog,

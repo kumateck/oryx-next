@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/settings/configurations";
+export { default } from "@/components/pages/settings";
