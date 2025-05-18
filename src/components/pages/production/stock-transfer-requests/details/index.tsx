@@ -13,9 +13,9 @@ import {
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
-import { useSelector } from "@/lib/redux/store";
-import { findRecordWithAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const GRNDetail = () => {
   const { id } = useParams();
@@ -69,21 +69,12 @@ const GRNDetail = () => {
   }, [grnResponse]);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.production.viewStockTransferRequests,
   );
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

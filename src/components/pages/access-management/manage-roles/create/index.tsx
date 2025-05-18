@@ -26,7 +26,6 @@ import {
   useLazyGetApiV1PermissionModulesQuery,
   usePostApiV1RoleMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
 // import NoAccess from "@/shared/no-access";
 import { Button, Icon } from "@/components/ui";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -51,11 +50,6 @@ const Page = () => {
   const [saveRole, { isLoading }] = usePostApiV1RoleMutation();
   const [loadAllPermissions, { isLoading: isLoadingAllPermissions }] =
     useLazyGetApiV1PermissionModulesQuery();
-  const accessPermissions = useSelector(
-    (state) => state.persistedReducer.auth?.permissions,
-  );
-
-  console.log(accessPermissions, "accessPermissions");
 
   const [permissions, setPermissions] = useState<Section[]>([]);
 

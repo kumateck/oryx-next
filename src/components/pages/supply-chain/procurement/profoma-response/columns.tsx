@@ -3,19 +3,14 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { Icon } from "@/components/ui";
-import {
-  findRecordWithAccess,
-  PermissionKeys,
-  PurchaseOrderStatusList,
-  Section,
-} from "@/lib";
+import { PermissionKeys, PurchaseOrderStatusList } from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
 
 import AttachDocuments from "./attachment";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
 
@@ -27,9 +22,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [supplierId, setSupplierId] = useState("");
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
@@ -39,8 +32,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      {findRecordWithAccess(
-        permissions,
+      {hasPermissionAccess(
         PermissionKeys.procurement.uploadProformaInvoice,
       ) && (
         <Icon

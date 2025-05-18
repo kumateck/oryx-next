@@ -1,15 +1,13 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-permission";
 import {
   PermissionKeys,
   QuestionType,
-  Section,
   capitalizeFirstWord,
-  findRecordWithAccess,
   splitWords,
 } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
 
 interface Props {
   question: QuestionDto;
@@ -25,9 +23,7 @@ const QuestionCard = ({
   onDelete,
   isDeleting,
 }: Props) => {
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <div className="mt-2 w-full">
@@ -46,8 +42,7 @@ const QuestionCard = ({
           </div>
 
           <div className="flex w-2/6 items-center justify-end gap-1 px-2">
-            {findRecordWithAccess(
-              permissions,
+            {hasPermissionAccess(
               PermissionKeys.workflowForms.questions.edit,
             ) && (
               <Button
@@ -60,8 +55,7 @@ const QuestionCard = ({
               </Button>
             )}
 
-            {findRecordWithAccess(
-              permissions,
+            {hasPermissionAccess(
               PermissionKeys.workflowForms.questions.delete,
             ) && (
               <Button

@@ -6,13 +6,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import {
-  COLLECTION_TYPES,
-  Option,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { COLLECTION_TYPES, Option, PermissionKeys, routes } from "@/lib";
 import {
   CreateSupplierRequest,
   PostApiV1CollectionApiArg,
@@ -23,12 +17,7 @@ import {
   usePostApiV1CollectionMutation,
   usePutApiV1ProcurementSupplierBySupplierIdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import {
-  ErrorResponse,
-  cn,
-  findRecordWithAccess,
-  isErrorResponse,
-} from "@/lib/utils";
+import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 import PageTitle from "@/shared/title";
 
 import VendorForm from "./form";
@@ -37,7 +26,7 @@ import {
   VendorRequestDto,
   mapAssociatedManufacturers,
 } from "./types";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
 
 const Edit = () => {
@@ -261,24 +250,14 @@ const Edit = () => {
     router.back();
   };
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
 
-  const hasAccess = findRecordWithAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.procurement.updateVendorDetails,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
