@@ -19,8 +19,11 @@ import CreateQuestionTypes from "./questions/question-types";
 import TemplateCards from "./templates";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import PageTitle from "@/shared/title";
+import { useRouter } from "next/navigation";
 
 const FormBuilder = () => {
+  const router = useRouter();
   const tabLists = [
     {
       name: FORM_BUILDER_CONFIG.QUESTIONS,
@@ -68,9 +71,17 @@ const FormBuilder = () => {
   return (
     <div className="w-full space-y-6">
       <div className="flex w-full items-center justify-between">
-        <span className="font-Medium text-2xl capitalize">
-          Form Builder Configuration
-        </span>
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Worfkflow Builder"} />
+        </div>
       </div>
       <Tabs defaultValue={activeTab}>
         <div className="flex items-center justify-between pr-4">

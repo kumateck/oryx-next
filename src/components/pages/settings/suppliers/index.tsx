@@ -20,8 +20,10 @@ import { columns } from "./column";
 import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
@@ -65,7 +67,17 @@ const Page = () => {
     <div>
       <PageWrapper className="w-full space-y-2 py-1">
         <div className="flex items-center justify-between py-2">
-          <PageTitle title="Supplier Lists" />
+          <div className="flex items-center gap-2 ">
+            <Icon
+              name="ArrowLeft"
+              className="h-5 w-5 text-black hover:cursor-pointer"
+              onClick={() => {
+                router.back();
+              }}
+            />
+
+            <PageTitle title={"Suppliers"} />
+          </div>
           <div className="flex items-center justify-end gap-2">
             {hasPermissionAccess(PermissionKeys.procurement.createVendor) && (
               <Link href={"/procurement/suppliers/create"}>

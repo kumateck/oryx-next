@@ -87,7 +87,7 @@ export const settingCategories: SettingCategory[] = [
     items: [
       {
         name: "Configurations",
-        path: "/settings/configurations",
+        path: "/settings/config",
         icon: "Settings",
       },
       { name: "Code Settings", path: "/settings/code-settings", icon: "Code" },

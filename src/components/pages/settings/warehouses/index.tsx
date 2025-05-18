@@ -17,15 +17,23 @@ import Create from "./create";
 import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+import { Icon } from "@/components/ui";
 
 const Page = () => {
-  // const dispatch = useDispatch();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const { data: result, isLoading } = useGetApiV1WarehouseQuery({
     page,
     pageSize,
   });
+
   const [loadWarehouses, { isFetching }] = useLazyGetApiV1WarehouseQuery();
 
   useEffect(() => {
@@ -33,8 +41,12 @@ const Page = () => {
       page,
       pageSize,
     });
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +63,17 @@ const Page = () => {
         <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />
       )}
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Warehouses" />
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Warehouses"} />
+        </div>
         {/* <div className="flex items-center justify-end gap-2">
           <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
             <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>

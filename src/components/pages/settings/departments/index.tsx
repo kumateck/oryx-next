@@ -19,8 +19,10 @@ import { PermissionKeys } from "@/lib";
 
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
 
   //this is the custom hook for user permissions
@@ -56,7 +58,17 @@ const Page = () => {
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
 
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Departments" />
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Departments"} />
+        </div>
         <div className="flex items-center justify-end gap-2">
           {hasPermissionAccess(
             PermissionKeys.warehouse.createNewDepartment,

@@ -20,8 +20,11 @@ import CreateCode from "./create";
 import EditCode from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import PageTitle from "@/shared/title";
+import { useRouter } from "next/navigation";
 
 function Codes() {
+  const router = useRouter();
   const [pageSize] = useState(30);
   // const [page, setPage] = useState(1);
   const [deleteCode, { isLoading: isDeleteLoading }] =
@@ -82,7 +85,17 @@ function Codes() {
   return (
     <div className="w-full pr-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-primary-500 text-lg font-medium">Code Settings</h1>
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Code Settings"} />
+        </div>{" "}
         {hasPermissionAccess(PermissionKeys.codeSettings.addNewCodes) && (
           <Button
             type="button"
