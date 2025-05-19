@@ -93,7 +93,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     };
   }) as Option[];
 
-  const { data: rolesResponse } = useGetApiV1RoleQuery();
+  const { data: rolesResponse } = useGetApiV1RoleQuery({});
 
   const roleOptions = rolesResponse?.map((item) => {
     return {

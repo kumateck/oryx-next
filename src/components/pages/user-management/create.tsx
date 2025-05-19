@@ -77,7 +77,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     };
   }) as Option[];
 
-  const { data: rolesResponse } = useGetApiV1RoleQuery();
+  const { data: rolesResponse } = useGetApiV1RoleQuery({});
 
   const roleOptions = rolesResponse?.map((item) => {
     return {

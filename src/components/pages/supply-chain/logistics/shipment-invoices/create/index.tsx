@@ -38,8 +38,9 @@ const Page = () => {
   const [saveMutation, { isLoading }] =
     usePostApiV1ProcurementShipmentInvoiceMutation();
 
-  const { data: suppliers } =
-    useGetApiV1ProcurementPurchaseOrderNotLinkedQuery();
+  const { data: suppliers } = useGetApiV1ProcurementPurchaseOrderNotLinkedQuery(
+    {},
+  );
 
   const [loadPurchaseOrder, { data: purchaseOrders }] =
     useLazyGetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedQuery();

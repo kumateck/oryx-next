@@ -59,7 +59,7 @@ const Create = () => {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
   const { data: invoicesResponse } =
-    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
+    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery({});
   const [loadDataforCodes] = useLazyGetApiV1ProcurementWaybillQuery();
   const { data: codeConfig } =
     useGetApiV1ConfigurationByModelTypeByModelTypeQuery({

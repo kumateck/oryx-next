@@ -41,7 +41,7 @@ const Edit = () => {
     useLazyGetApiV1ProcurementSupplierBySupplierIdQuery();
 
   // console.log(supplierInfo, "supplierInfo");
-  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery({});
 
   const materialOptions = materialResponse?.map((item) => ({
     label: item.name,

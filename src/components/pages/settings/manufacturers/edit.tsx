@@ -38,7 +38,7 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const dispatch = useDispatch();
-  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery({});
 
   const [changeManufacturer, { isLoading }] =
     usePutApiV1ProcurementManufacturerByManufacturerIdMutation();

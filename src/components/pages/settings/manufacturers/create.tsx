@@ -35,7 +35,7 @@ interface Props {
 }
 const Create = ({ isOpen, onClose }: Props) => {
   const dispatch = useDispatch();
-  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery({});
 
   const [createMutation, { isLoading }] =
     usePostApiV1ProcurementManufacturerMutation();

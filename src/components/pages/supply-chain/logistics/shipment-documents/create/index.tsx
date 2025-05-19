@@ -54,7 +54,7 @@ const Page = () => {
   const [loadInvoice] = useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
 
   const { data: invoicesResponse } =
-    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
+    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery({});
 
   const invoiceOptions = invoicesResponse
     ?.filter((s) => s.supplier?.type === SupplierType.Foreign)

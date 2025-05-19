@@ -37,7 +37,7 @@ const Create = () => {
   // Rest of the existing code...
   const [createMutation, { isLoading }] =
     usePostApiV1ProcurementSupplierMutation();
-  const { data: materialResponse } = useGetApiV1MaterialAllQuery();
+  const { data: materialResponse } = useGetApiV1MaterialAllQuery({});
 
   const materialOptions = materialResponse?.map((item) => ({
     label: item.name,
