@@ -8,12 +8,19 @@ import {
   Path,
 } from "react-hook-form";
 import { uniqueId } from "lodash";
-import { daysOfWeek } from "./types";
+import { DaysIndexTypes, daysOfWeek } from "./types";
+
+interface WorkdAYSTypes extends FieldArrayWithId {
+  day: DaysIndexTypes;
+  isWorkingDay: boolean;
+  startTime: string;
+  endTime: string;
+}
 
 interface FormProps<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
-  fields: FieldArrayWithId<TFieldValues>[];
+  fields: WorkdAYSTypes[];
 }
 
 const Form = <TFieldValues extends FieldValues, TContext>({
