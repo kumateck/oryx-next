@@ -38,7 +38,7 @@ const Page = () => {
       const procedureResponse = await loadProcedure({
         productId,
       }).unwrap();
-      const defaultRouting = procedureResponse?.data?.map((r, idx) => ({
+      const defaultRouting = procedureResponse?.map((r, idx) => ({
         ...r,
         idIndex: (idx + 1).toString(),
         resources: r.resources?.map((res) => {

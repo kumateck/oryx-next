@@ -39,12 +39,10 @@ const Packaging = () => {
         productId,
         module: AuditModules.production.name,
         subModule: AuditModules.production.packing,
-        pageSize: 100,
       }).unwrap();
 
-      console.log(response);
-
-      const defaultPackaging = response?.data?.map((p, idx) => ({
+      // console.log(response);
+      const defaultPackaging = response?.map((p, idx) => ({
         ...p,
         material: p.material
           ? {

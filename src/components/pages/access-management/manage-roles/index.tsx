@@ -25,7 +25,7 @@ const ManageRoles = () => {
     useLazyGetApiV1RoleQuery();
 
   useEffect(() => {
-    loadRoles();
+    loadRoles({});
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());

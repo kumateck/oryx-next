@@ -2948,11 +2948,6 @@ const injectedRtkApi = api.injectEndpoints({
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
       }),
     }),
     getApiV1ProductRoutesByRouteId: build.query<
@@ -3003,11 +2998,6 @@ const injectedRtkApi = api.injectEndpoints({
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
         },
       }),
     }),
@@ -7661,11 +7651,9 @@ export type PostApiV1ProductByProductIdRoutesApiArg = {
   subModule?: any;
   body: CreateRouteRequest[];
 };
-export type GetApiV1ProductByProductIdRoutesApiResponse = unknown;
+export type GetApiV1ProductByProductIdRoutesApiResponse =
+  /** status 200 OK */ RouteDtoRead[];
 export type GetApiV1ProductByProductIdRoutesApiArg = {
-  page?: number;
-  pageSize?: number;
-  searchQuery?: string;
   productId: string;
   /** The module this request falls under */
   module?: any;
@@ -7699,11 +7687,9 @@ export type PostApiV1ProductByProductIdPackagesApiArg = {
   subModule?: any;
   body: CreateProductPackageRequest[];
 };
-export type GetApiV1ProductByProductIdPackagesApiResponse = unknown;
+export type GetApiV1ProductByProductIdPackagesApiResponse =
+  /** status 200 OK */ ProductPackageDto[];
 export type GetApiV1ProductByProductIdPackagesApiArg = {
-  page?: number;
-  pageSize?: number;
-  searchQuery?: string;
   productId: string;
   /** The module this request falls under */
   module?: any;
