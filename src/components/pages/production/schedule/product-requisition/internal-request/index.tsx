@@ -17,6 +17,7 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  AuditModules,
   CodeModelTypes,
   EMaterialKind,
   ErrorResponse,
@@ -30,7 +31,6 @@ import { useCodeGen } from "@/lib/code-gen";
 import {
   ProductionScheduleProcurementDto,
   ProductionScheduleProcurementPackageDto,
-  useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1ProductionScheduleStockTransferMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -38,6 +38,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 
 import TransferForm from "./form";
 import { CreateTransferValidator, TransferRequestDto } from "./type";
+import useCurrentUser from "@/hooks/use-current";
 
 interface Props {
   isOpen: boolean;
@@ -52,8 +53,8 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
   const { id, pid } = useParams();
   const scheduleId = id as string;
   const productId = pid as string;
-  const { data: authUser } = useGetApiV1UserAuthenticatedQuery();
-  const myDepartment = authUser?.department?.id;
+  const { user } = useCurrentUser();
+  const myDepartment = user?.department?.id;
   // const [loadCodeModelCount] = useLazyGetApiV1RequisitionQuery();
 
   const [saveMutation, { isLoading }] =
@@ -96,37 +97,10 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     setCodeToInput,
   );
   const onSubmit = async (data: TransferRequestDto) => {
-    // console.log(data);
-
-    // const qtyNeeded = materialInfo?.quantityNeeded ?? 0;
-    // const totalQtyNeeded = Number(qtyNeeded);
-
-    // const sources = data.sources?.map((item) => {
-    //   // console.log(
-    //   //   getSmallestUnit(materialInfo.baseUoM?.symbol as Units),
-    //   //   materialInfo.baseUoM?.symbol,
-    //   // );
-    //   return {
-    //     quantity: convertToSmallestUnit(
-    //       item.quantity,
-    //       getLargestUnit(materialInfo.baseUoM?.symbol as Units),
-    //     ).value,
-    //   };
-    // });
-    // console.log(sources);
-    // const sourceTotalQty = sources?.reduce((accumulator, item) => {
-    //   return accumulator + (item.quantity || 0);
-    // }, 0);
-
-    // if (
-    //   Number(sourceTotalQty.toFixed(2)) !== Number(totalQtyNeeded?.toFixed(2))
-    // ) {
-    //   toast.warning("U cannot source partial");
-    //   return;
-    // }
-
     try {
       await saveMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.stockTransferRequests,
         createStockTransferRequest: {
           productionScheduleId: scheduleId,
           productId,

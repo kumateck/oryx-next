@@ -141,7 +141,8 @@ const ViewPage: React.FC = () => {
                         <span>Label Claims:{' '}</span>
                         <span>{singleDetailed?.}</span>
                       </div>
-                    </div> */}
+                    </div> 
+                    */}
               </div>
             </div>
           </div>

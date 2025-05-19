@@ -13,7 +13,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { AuditModules, COLLECTION_TYPES, Option } from "@/lib";
 import {
   MaterialDto,
   PostApiV1CollectionApiArg,
@@ -48,12 +48,14 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
   });
 
   const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
+    usePostApiV1CollectionMutation();
 
   const { data: materialResponse } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 100,
     kind: 0,
+    module: AuditModules.warehouse.name,
+    subModule: AuditModules.warehouse.materials,
   });
 
   const materialOptions = _.isEmpty(itemLists)
@@ -72,6 +74,8 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
 
   useEffect(() => {
     loadCollection({
+      module: AuditModules.general.name,
+      subModule: AuditModules.general.collection,
       body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.ProductCategory],
     } as PostApiV1CollectionApiArg).unwrap();
 
@@ -86,6 +90,8 @@ const Edit = ({ isOpen, onClose, setItemLists, details, itemLists }: Props) => {
 
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
 
   const uomOptions = uomResponse

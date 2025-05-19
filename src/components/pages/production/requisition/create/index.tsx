@@ -149,10 +149,6 @@ const Page = () => {
                 handleTabClick={handleTabClick}
                 type={kind}
                 tabs={[
-                  // {
-                  //   label: EMaterialKind[EMaterialKind.Raw],
-                  //   value: EMaterialKind.Raw.toString(),
-                  // },
                   {
                     label: EMaterialKind[EMaterialKind.Packing],
                     value: EMaterialKind.Packing.toString(),
@@ -170,10 +166,6 @@ const Page = () => {
                     label: EMaterialKind[EMaterialKind.Raw],
                     value: EMaterialKind.Raw.toString(),
                   },
-                  // {
-                  //   label: EMaterialKind[EMaterialKind.Packing],
-                  //   value: EMaterialKind.Packing.toString(),
-                  // },
                 ]}
               />
             )}

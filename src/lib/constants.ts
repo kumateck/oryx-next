@@ -614,6 +614,9 @@ export const AuditModules = {
     goodsReceivedNotes: "Goods Received Notes",
     finalPacking: "Final Packing",
     extraPacking: "Extra Packing",
+    bom: "BOM",
+    packing: "Packing",
+    procedure: "Procedure",
   },
   management: {
     name: "HR Management",

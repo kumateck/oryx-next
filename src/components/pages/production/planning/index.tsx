@@ -38,7 +38,7 @@ const Page = () => {
     PermissionKeys.production.viewPlannedProducts,
   );
 
-  if (hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
