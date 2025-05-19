@@ -11,6 +11,7 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  AuditModules,
   ErrorResponse,
   PermissionKeys,
   StockTransfer,
@@ -116,6 +117,8 @@ export function DataTableRowActions<
   const handleApproval = async () => {
     try {
       await approveMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.stockTransferRequests,
         stockTransferId: row.original.id as string,
       }).unwrap();
       toast.success("Transfer approved successfully");
@@ -127,6 +130,8 @@ export function DataTableRowActions<
   const handleRejection = async () => {
     try {
       await rejectMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.stockTransferRequests,
         stockTransferId: row.original.id as string,
       }).unwrap();
       toast.success("Transfer rejected successfully");

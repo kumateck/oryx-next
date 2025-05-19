@@ -1,6 +1,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   ApprovalStatus,
+  AuditModules,
   ErrorResponse,
   isErrorResponse,
   LeaveCategories,
@@ -10,8 +11,7 @@ import {
 } from "@/lib";
 import {
   LeaveRequestDto,
-  useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
+  useDeleteApiV1LeaveRequestByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
@@ -20,6 +20,8 @@ import { useState } from "react";
 import Edit from "./leave-request/edit";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,14 +35,14 @@ const batchStatusColors: Record<ApprovalStatus, string> = {
 export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const dispatch = useDispatch();
+  const [deleteMutation] = useDeleteApiV1LeaveRequestByIdMutation();
 
   const [details, setDetails] = useState<LeaveRequestDto>(
     {} as LeaveRequestDto,
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   const { hasPermissionAccess } = useUserPermissions();
 
@@ -103,9 +105,11 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           try {
             await deleteMutation({
               id: details.id as string,
+              module: AuditModules.management.name,
+              subModule: AuditModules.management.leaveManagement,
             }).unwrap();
-            toast.success("Designation deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            toast.success("Leave Request deleted successfully");
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

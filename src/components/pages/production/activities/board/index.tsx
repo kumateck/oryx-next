@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 // import { Icon } from "@/components/ui";
 import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
-import { fullname } from "@/lib";
+import { AuditModules, fullname } from "@/lib";
 import { useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -25,7 +25,11 @@ const Board = () => {
 
   useEffect(() => {
     if (activityId) {
-      loadActivity({ productionActivityId: activityId }).unwrap();
+      loadActivity({
+        productionActivityId: activityId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.activities,
+      }).unwrap();
     }
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());

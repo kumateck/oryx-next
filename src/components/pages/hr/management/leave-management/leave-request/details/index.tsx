@@ -8,7 +8,13 @@ import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { columns } from "./columns";
-import { isImageFile, LeaveCategories, LeaveStatus, splitWords } from "@/lib";
+import {
+  AuditModules,
+  isImageFile,
+  LeaveCategories,
+  LeaveStatus,
+  splitWords,
+} from "@/lib";
 import { format } from "date-fns";
 import Link from "next/link";
 // import Link from "next/link";
@@ -25,6 +31,8 @@ function LeaveDetails() {
   const router = useRouter();
   const { data } = useGetApiV1LeaveRequestByIdQuery({
     id: leaveRequestId,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.leaveManagement,
   });
   return (
     <ScrollablePageWrapper className="space-y-5">

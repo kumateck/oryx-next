@@ -82,10 +82,10 @@ export const ROUTES: Route[] = [
         icon: "Warehouse",
         //    isActive: false,
         items: [
-          {
-            title: "Departments",
-            url: "/warehouse/departments",
-          },
+          // {
+          //   title: "Departments",
+          //   url: "/warehouse/departments",
+          // },
           {
             title: "Receiving Area",
             url: "/warehouse/receiving-area",
@@ -94,22 +94,22 @@ export const ROUTES: Route[] = [
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
-          {
-            title: "Warehouses",
-            url: "/warehouse/warehouses",
-          },
-          {
-            title: "Locations",
-            url: "/warehouse/locations",
-          },
-          {
-            title: "Racks",
-            url: "/warehouse/racks",
-          },
-          {
-            title: "Shelves",
-            url: "/warehouse/shelves",
-          },
+          // {
+          //   title: "Warehouses",
+          //   url: "/warehouse/warehouses",
+          // },
+          // {
+          //   title: "Locations",
+          //   url: "/warehouse/locations",
+          // },
+          // {
+          //   title: "Racks",
+          //   url: "/warehouse/racks",
+          // },
+          // {
+          //   title: "Shelves",
+          //   url: "/warehouse/shelves",
+          // },
           {
             title: "Materials",
             url: "/warehouse/materials",
@@ -166,14 +166,14 @@ export const ROUTES: Route[] = [
         icon: "Microchip",
         //    isActive: false,
         items: [
-          {
-            title: "Manufacturers",
-            url: "/procurement/manufacturers",
-          },
-          {
-            title: "Suppliers",
-            url: "/procurement/suppliers",
-          },
+          // {
+          //   title: "Manufacturers",
+          //   url: "/procurement/manufacturers",
+          // },
+          // {
+          //   title: "Suppliers",
+          //   url: "/procurement/suppliers",
+          // },
 
           {
             title: "Purchase Requisition",

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
 import {
+  AuditModules,
   BatchSizeType,
   CODE_SETTINGS,
   ErrorResponse,
@@ -124,6 +125,8 @@ const Page = () => {
     );
 
     const payload = {
+      module: AuditModules.production.name,
+      subModule: AuditModules.production.productSchedule,
       createProductionScheduleRequest: {
         code: newCode ?? data.code,
         products,

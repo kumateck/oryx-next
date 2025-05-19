@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse, routes } from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
-  useGetApiV1ProductByProductIdQuery,
+  useLazyGetApiV1ProductByProductIdBomQuery,
   usePostApiV1BomMutation,
   usePutApiV1ProductByProductIdBomArchiveMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -23,27 +23,9 @@ const BOM = () => {
   const { id } = useParams();
   const productId = id as string;
   const router = useRouter();
-  const { data: product } = useGetApiV1ProductByProductIdQuery({
-    productId,
-  });
 
-  const defaultBillOfMaterials =
-    product?.currentBillOfMaterial?.billOfMaterial?.items?.map((bom, idx) => ({
-      ...bom,
-      idIndex: (idx + 1).toString(),
-      materialId: {
-        label: bom.material?.name as string,
-        value: bom.material?.id as string,
-      },
-      materialTypeId: {
-        label: bom.materialType?.name as string,
-        value: bom.materialType?.id as string,
-      },
-      baseUoMId: {
-        label: bom.baseUoM?.symbol as string,
-        value: bom.baseUoM?.id as string,
-      },
-    })) as BomRequestDto[];
+  const [loadBom] = useLazyGetApiV1ProductByProductIdBomQuery();
+
   const [saveBom, { isLoading }] = usePostApiV1BomMutation();
   const [archiveBom, { isLoading: archiveLoading }] =
     usePutApiV1ProductByProductIdBomArchiveMutation();
@@ -51,19 +33,49 @@ const BOM = () => {
   const [itemLists, setItemLists] = useState<BomRequestDto[]>([]);
 
   useEffect(() => {
-    if (defaultBillOfMaterials?.length > 0) {
-      setItemLists(defaultBillOfMaterials);
+    if (productId) {
+      handleLoadBom(productId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultBillOfMaterials && defaultBillOfMaterials?.length]);
-  // console.log(defaultBillOfMaterials, "defaultBillOfMaterials");
-  // if (!productId) {
-  //   return <div>Please Save a Product Info</div>;
-  // }
+  }, [productId]);
+
+  const handleLoadBom = async (productId: string) => {
+    try {
+      const bomReponse = await loadBom({
+        productId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.bom,
+      }).unwrap();
+      const defaultBillOfMaterials = bomReponse?.billOfMaterial?.items?.map(
+        (bom, idx) => ({
+          ...bom,
+          idIndex: (idx + 1).toString(),
+          materialId: {
+            label: bom.material?.name as string,
+            value: bom.material?.id as string,
+          },
+          materialTypeId: {
+            label: bom.materialType?.name as string,
+            value: bom.materialType?.id as string,
+          },
+          baseUoMId: {
+            label: bom.baseUoM?.symbol as string,
+            value: bom.baseUoM?.id as string,
+          },
+        }),
+      ) as BomRequestDto[];
+      setItemLists(defaultBillOfMaterials);
+    } catch (error) {
+      console.log(error);
+      // toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
   const handleSave = async () => {
     try {
       await saveBom({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.bom,
         createBillOfMaterialRequest: {
           productId,
           items: itemLists?.map((item) => ({
@@ -79,7 +91,8 @@ const BOM = () => {
           })),
         },
       }).unwrap();
-      toast.success("BOM Saved");
+      toast.success("BOM Saved Successfully");
+      handleLoadBom(productId);
       router.push(routes.editPlanningPackaging());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -88,7 +101,11 @@ const BOM = () => {
 
   const handleArchiveBom = async () => {
     try {
-      await archiveBom({ productId: productId as string }).unwrap();
+      await archiveBom({
+        productId: productId as string,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.bom,
+      }).unwrap();
       toast.success("BOM Archived");
       setItemLists([]);
     } catch (error) {

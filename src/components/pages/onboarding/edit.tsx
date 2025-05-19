@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
 import {
+  AuditModules,
   CODE_SETTINGS,
   EmployeeType,
   ErrorResponse,
@@ -346,6 +347,8 @@ export default function EditEmployeeForm() {
       await updateEmployee({
         id: employeeId,
         createEmployeeRequest: payload,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.employeeManagement,
       }).unwrap();
 
       if (data.passportPhoto) {
@@ -362,6 +365,8 @@ export default function EditEmployeeForm() {
           modelType: CODE_SETTINGS.modelTypes.Employee,
           modelId: employeeId,
           body: formData,
+          module: AuditModules.general.name,
+          subModule: AuditModules.general.fileUpload,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
 

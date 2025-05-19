@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse, routes } from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
   CreateRouteRequest,
   PostApiV1ProductByProductIdRoutesApiArg,
-  useGetApiV1ProductByProductIdQuery,
+  useLazyGetApiV1ProductByProductIdRoutesQuery,
   usePostApiV1ProductByProductIdRoutesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
@@ -24,53 +24,63 @@ const Page = () => {
   const { id } = useParams();
   const productId = id as string;
 
-  const { data: product } = useGetApiV1ProductByProductIdQuery({
-    productId,
-  });
-  const defaultRouting = product?.routes?.map((r, idx) => ({
-    ...r,
-    idIndex: (idx + 1).toString(),
-    resources: r.resources?.map((res) => {
-      return {
-        label: res.resource?.name as string,
-        value: res.resource?.id as string,
-      };
-    }),
-    operationId: {
-      label: r.operation?.name as string,
-      value: r.operation?.id as string,
-    },
-    workCenters: r.workCenters?.map((res) => {
-      return {
-        label: res.workCenter?.name as string,
-        value: res.workCenter?.id as string,
-      };
-    }),
-    responsibleRoles: r.responsibleRoles?.map((res) => {
-      return {
-        label: res?.role?.name as string,
-        value: res?.role?.id as string,
-      };
-    }),
-    responsibleUsers: r.responsibleUsers?.map((res) => {
-      return {
-        label: res?.user?.name as string,
-        value: res.user?.id as string,
-      };
-    }),
-  })) as RoutingRequestDto[];
+  const [loadProcedure] = useLazyGetApiV1ProductByProductIdRoutesQuery();
+
+  useEffect(() => {
+    if (productId) {
+      handleLoadProduct(productId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productId]);
+  const handleLoadProduct = async (productId: string) => {
+    try {
+      const procedureResponse = await loadProcedure({
+        productId,
+      }).unwrap();
+      const defaultRouting = procedureResponse?.map((r, idx) => ({
+        ...r,
+        idIndex: (idx + 1).toString(),
+        resources: r.resources?.map((res) => {
+          return {
+            label: res.resource?.name as string,
+            value: res.resource?.id as string,
+          };
+        }),
+        operationId: {
+          label: r.operation?.name as string,
+          value: r.operation?.id as string,
+        },
+        workCenters: r.workCenters?.map((res) => {
+          return {
+            label: res.workCenter?.name as string,
+            value: res.workCenter?.id as string,
+          };
+        }),
+        responsibleRoles: r.responsibleRoles?.map((res) => {
+          return {
+            label: res?.role?.name as string,
+            value: res?.role?.id as string,
+          };
+        }),
+        responsibleUsers: r.responsibleUsers?.map((res) => {
+          return {
+            label: res?.user?.name as string,
+            value: res.user?.id as string,
+          };
+        }),
+      })) as RoutingRequestDto[];
+      setItemLists(defaultRouting);
+    } catch (error) {
+      // toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      console.log(error);
+    }
+  };
 
   const [saveRouting, { isLoading }] =
     usePostApiV1ProductByProductIdRoutesMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [itemLists, setItemLists] = useState<RoutingRequestDto[]>([]);
-  useEffect(() => {
-    if (defaultRouting?.length > 0) {
-      setItemLists(defaultRouting);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultRouting && defaultRouting?.length]);
 
   if (!productId) {
     return <div>Please Save a Product Info</div>;
@@ -78,6 +88,8 @@ const Page = () => {
   const handleSave = async () => {
     try {
       await saveRouting({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.procedure,
         productId,
         body: itemLists?.map((item, idx) => ({
           estimatedTime: item.estimatedTime,

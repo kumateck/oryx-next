@@ -5,15 +5,19 @@ import { ListsTable } from "@/shared/datatable";
 import { columns } from "./columns";
 import PageWrapper from "@/components/layout/wrapper";
 import { useParams, useRouter } from "next/navigation";
+import { useGetApiV1OvertimeRequestsByIdQuery } from "@/lib/redux/api/openapi.generated";
+import { AuditModules } from "@/lib";
 // import Link from "next/link";
 
 function OvertimeRequestDetails() {
   const { id } = useParams();
-  const leaveRequestId = id as string;
-  // const { data } = useGetApiV1LeaveRequestByIdQuery({
-  //   id: leaveRequestId,
-  // });
-  console.log(leaveRequestId);
+  const overTimeId = id as string;
+  const { data } = useGetApiV1OvertimeRequestsByIdQuery({
+    id: overTimeId,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.overTimeMangement,
+  });
+  console.log(data, "data");
   const router = useRouter();
   return (
     <PageWrapper>
