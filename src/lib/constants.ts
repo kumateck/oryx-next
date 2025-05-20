@@ -662,6 +662,7 @@ export const AuditModules = {
     racks: "Racks",
     shelves: "Shelves",
     manufacturers: "Manufacturers",
+    holidays: "Holidays",
     suppliers: "Suppliers",
   },
   authentication: {
