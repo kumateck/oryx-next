@@ -7,8 +7,9 @@ import { fullname } from "@/lib";
 import BgWrapper from "@/shared/bg-wrapper";
 
 // import WeeklyFullCalendar from "@/shared/calendar/weekly";
-import TestTemplateBuilder from "@/components/formular";
+// import TestTemplateBuilder from "@/components/formular";
 import useCurrentUser from "@/hooks/use-current";
+import TheAduseiFormular from "@/components/ui/formular";
 
 const Page = () => {
   const { user, isLoading } = useCurrentUser();
@@ -33,7 +34,8 @@ const Page = () => {
         </div>
       </ScrollablePageWrapper> */}
       {/* <WeeklyFullCalendar /> */}
-      <TestTemplateBuilder />
+      {/* <TestTemplateBuilder /> */}
+      <TheAduseiFormular />
     </BgWrapper>
   );
 };
