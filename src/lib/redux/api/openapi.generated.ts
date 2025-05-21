@@ -420,32 +420,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1WorkingDaysById: build.query<
-      GetApiV1WorkingDaysByIdApiResponse,
-      GetApiV1WorkingDaysByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/working-days/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WorkingDaysById: build.mutation<
-      PutApiV1WorkingDaysByIdApiResponse,
-      PutApiV1WorkingDaysByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/working-days/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.companyWorkingDaysRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
     postApiV1Configuration: build.mutation<
       PostApiV1ConfigurationApiResponse,
       PostApiV1ConfigurationApiArg
@@ -1089,8 +1063,6 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
         },
       }),
@@ -4599,6 +4571,76 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1StandardTestProcedures: build.mutation<
+      PostApiV1StandardTestProceduresApiResponse,
+      PostApiV1StandardTestProceduresApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/standard-test-procedures`,
+        method: "POST",
+        body: queryArg.createStandardTestProcedureRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1StandardTestProcedures: build.query<
+      GetApiV1StandardTestProceduresApiResponse,
+      GetApiV1StandardTestProceduresApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/standard-test-procedures`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1StandardTestProceduresById: build.query<
+      GetApiV1StandardTestProceduresByIdApiResponse,
+      GetApiV1StandardTestProceduresByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/standard-test-procedures/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1StandardTestProceduresById: build.mutation<
+      PutApiV1StandardTestProceduresByIdApiResponse,
+      PutApiV1StandardTestProceduresByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/standard-test-procedures/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createStandardTestProcedureRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1StandardTestProceduresById: build.mutation<
+      DeleteApiV1StandardTestProceduresByIdApiResponse,
+      DeleteApiV1StandardTestProceduresByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/standard-test-procedures/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1User: build.mutation<
       PostApiV1UserApiResponse,
       PostApiV1UserApiArg
@@ -5758,25 +5800,6 @@ export type GetApiV1WorkingDaysApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1WorkingDaysByIdApiResponse =
-  /** status 200 OK */ CompanyWorkingDaysDto;
-export type GetApiV1WorkingDaysByIdApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-};
-export type PutApiV1WorkingDaysByIdApiResponse =
-  /** status 200 OK */ CompanyWorkingDaysDto;
-export type PutApiV1WorkingDaysByIdApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-  companyWorkingDaysRequest: CompanyWorkingDaysRequest;
-};
 export type PostApiV1ConfigurationApiResponse =
   /** status 201 Created */ string;
 export type PostApiV1ConfigurationApiArg = {
@@ -6254,8 +6277,6 @@ export type PostApiV1HolidaysApiArg = {
 export type GetApiV1HolidaysApiResponse =
   /** status 200 OK */ HolidayDtoIEnumerablePaginateable;
 export type GetApiV1HolidaysApiArg = {
-  page?: number;
-  pageSize?: number;
   searchQuery?: string;
   /** The module this request falls under */
   module?: any;
@@ -8906,6 +8927,53 @@ export type DeleteApiV1ShiftTypeByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1StandardTestProceduresApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1StandardTestProceduresApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createStandardTestProcedureRequest: CreateStandardTestProcedureRequest;
+};
+export type GetApiV1StandardTestProceduresApiResponse =
+  /** status 200 OK */ StandardTestProcedureDtoIEnumerablePaginateableRead;
+export type GetApiV1StandardTestProceduresApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1StandardTestProceduresByIdApiResponse =
+  /** status 200 OK */ StandardTestProcedureDtoRead;
+export type GetApiV1StandardTestProceduresByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1StandardTestProceduresByIdApiResponse =
+  /** status 204 No Content */ StandardTestProcedureDtoRead;
+export type PutApiV1StandardTestProceduresByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createStandardTestProcedureRequest: CreateStandardTestProcedureRequest;
+};
+export type DeleteApiV1StandardTestProceduresByIdApiResponse = unknown;
+export type DeleteApiV1StandardTestProceduresByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1UserApiResponse = unknown;
 export type PostApiV1UserApiArg = {
   /** The module this request falls under */
@@ -10067,7 +10135,7 @@ export type CreateFormRequest = {
   assignees?: CreateFormAssigneeRequest[] | null;
   reviewers?: CreateFormReviewerRequest[] | null;
 };
-export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type QuestionValidationType = 0 | 1 | 2 | 3;
 export type QuestionOptionDto = {
   id?: string;
@@ -10160,6 +10228,10 @@ export type CreateResponseRequest = {
 export type CreateQuestionOptionsRequest = {
   name?: string | null;
 };
+export type FormulaDto = {
+  expression?: string | null;
+  variables?: string | null;
+};
 export type CreateQuestionRequest = {
   label: string;
   type: QuestionType;
@@ -10167,6 +10239,7 @@ export type CreateQuestionRequest = {
   validation?: QuestionValidationType;
   options?: CreateQuestionOptionsRequest[] | null;
   reference?: string | null;
+  formula?: FormulaDto;
 };
 export type QuestionDtoIEnumerablePaginateable = {
   data?: QuestionDto[] | null;
@@ -15518,8 +15591,8 @@ export type ShiftTypeDto = {
   createdAt?: string;
   shiftName?: string | null;
   rotationType?: RotationType;
-  startTime?: string;
-  endTime?: string;
+  startTime?: string | null;
+  endTime?: string | null;
   applicableDays?: DayOfWeek[] | null;
 };
 export type ShiftScheduleDto = {
@@ -15577,6 +15650,49 @@ export type CreateShiftTypeRequest = {
 };
 export type ShiftTypeDtoIEnumerablePaginateable = {
   data?: ShiftTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateStandardTestProcedureRequest = {
+  stpNumber: string;
+  materialId: string;
+  description?: string | null;
+};
+export type StandardTestProcedureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  materialId?: string;
+  material?: Material;
+  description?: string | null;
+};
+export type StandardTestProcedureDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  materialId?: string;
+  material?: MaterialRead;
+  description?: string | null;
+};
+export type StandardTestProcedureDtoIEnumerablePaginateable = {
+  data?: StandardTestProcedureDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type StandardTestProcedureDtoIEnumerablePaginateableRead = {
+  data?: StandardTestProcedureDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -16101,9 +16217,6 @@ export const {
   usePostApiV1WorkingDaysMutation,
   useGetApiV1WorkingDaysQuery,
   useLazyGetApiV1WorkingDaysQuery,
-  useGetApiV1WorkingDaysByIdQuery,
-  useLazyGetApiV1WorkingDaysByIdQuery,
-  usePutApiV1WorkingDaysByIdMutation,
   usePostApiV1ConfigurationMutation,
   useGetApiV1ConfigurationQuery,
   useLazyGetApiV1ConfigurationQuery,
@@ -16549,6 +16662,13 @@ export const {
   useGetApiV1ShiftTypeByIdQuery,
   useLazyGetApiV1ShiftTypeByIdQuery,
   useDeleteApiV1ShiftTypeByIdMutation,
+  usePostApiV1StandardTestProceduresMutation,
+  useGetApiV1StandardTestProceduresQuery,
+  useLazyGetApiV1StandardTestProceduresQuery,
+  useGetApiV1StandardTestProceduresByIdQuery,
+  useLazyGetApiV1StandardTestProceduresByIdQuery,
+  usePutApiV1StandardTestProceduresByIdMutation,
+  useDeleteApiV1StandardTestProceduresByIdMutation,
   usePostApiV1UserMutation,
   useGetApiV1UserQuery,
   useLazyGetApiV1UserQuery,

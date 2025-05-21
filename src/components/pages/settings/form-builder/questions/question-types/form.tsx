@@ -22,6 +22,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   remove: UseFieldArrayRemove;
   append: UseFieldArrayAppend<TFieldValues>;
   showOptions?: boolean;
+  showFormular?: boolean;
   showIsMultiSelect?: boolean;
 }
 const QuestionForm = <TFieldValues extends FieldValues, TContext>({
@@ -32,6 +33,7 @@ const QuestionForm = <TFieldValues extends FieldValues, TContext>({
   append,
   remove,
   showOptions,
+  // showFormular,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">

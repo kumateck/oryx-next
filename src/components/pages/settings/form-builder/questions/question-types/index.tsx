@@ -114,6 +114,7 @@ const CreateQuestionTypes = ({ isOpen, onClose }: Props) => {
               Number(typeWatch?.value) === QuestionType.Checkbox ||
               Number(typeWatch?.value) === QuestionType.Dropdown
             }
+            showFormular={Number(typeWatch?.value) === QuestionType.Formular}
             control={control}
             remove={remove}
             append={append}

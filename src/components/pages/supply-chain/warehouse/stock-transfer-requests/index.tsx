@@ -90,10 +90,10 @@ const Page = () => {
 
   if (
     !hasPermissionAccess(
-      PermissionKeys.warehouse.viewRawMaterialTransferList,
+      PermissionKeys.warehouse.issueRawMaterialStockTransfers,
     ) ||
     hasPermissionAccess(
-      PermissionKeys.warehouse.viewPackagingMaterialTransferList,
+      PermissionKeys.warehouse.issuePackagingMaterialStockTransfers,
     )
   ) {
     //redirect to no access
