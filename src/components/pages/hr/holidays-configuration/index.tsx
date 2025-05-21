@@ -24,8 +24,6 @@ function Page() {
 
   useEffect(() => {
     loadHolidays({
-      page,
-      pageSize,
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.holidays,
     });
