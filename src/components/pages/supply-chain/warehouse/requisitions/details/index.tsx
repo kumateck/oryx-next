@@ -2,11 +2,10 @@
 
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   useGetApiV1RequisitionByRequisitionIdQuery,
   usePostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdMutation,
@@ -16,7 +15,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
-
+import { useUserPermissions } from "@/hooks/use-permission";
 const IssueStockRequistions = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -41,23 +40,37 @@ const IssueStockRequistions = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccessToRawMaterialReQuests = hasPermissionAccess(
+    PermissionKeys.warehouse.issueRawMaterialRequisitions,
+  );
+  // check permission for packaging meterial
+  const hasAccessToPackageMaterialRequests = hasPermissionAccess(
+    PermissionKeys.warehouse.issuePackagingMaterialRequisitions,
+  );
+
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <PageTitle title="Issue Stock Requisition Voucher" />
-          <Button
-            onClick={onIssue}
-            variant={"default"}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
-          >
-            {isLoading ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              <Icon name="CircleCheck" className="size-4" />
-            )}
-            <span>Issue</span>{" "}
-          </Button>
+          {(hasAccessToRawMaterialReQuests ||
+            hasAccessToPackageMaterialRequests) && (
+            <Button
+              onClick={onIssue}
+              variant={"default"}
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
+            >
+              {isLoading ? (
+                <Icon name="LoaderCircle" className="animate-spin" />
+              ) : (
+                <Icon name="CircleCheck" className="size-4" />
+              )}
+              <span>Issue</span>{" "}
+            </Button>
+          )}
         </div>
         <Card>
           <CardContent className="space-y-4 py-2">

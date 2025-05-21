@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { Button, Icon, Separator, Skeleton } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
   CreateProductRequest,
   PutApiV1ProductPackageDescriptionByProductIdApiArg,
@@ -71,6 +71,8 @@ const Create = () => {
 
     try {
       await productMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.planning,
         productId,
         updateProductPackageDescriptionRequest: payload,
       } as PutApiV1ProductPackageDescriptionByProductIdApiArg).unwrap();

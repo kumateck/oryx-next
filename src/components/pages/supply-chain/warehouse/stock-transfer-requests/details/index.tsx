@@ -6,7 +6,7 @@ import React from "react";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   BatchTransferRequest,
   useGetApiV1ProductionScheduleStockTransferBatchByStockTransferIdQuery,
@@ -17,6 +17,8 @@ import { ClientDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import { getColumns } from "./columns";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const GRNDetail = () => {
   const router = useRouter();
@@ -91,23 +93,41 @@ const GRNDetail = () => {
   //     setPackageLists(batchOptions);
   //   }
   // }, [grnResponse]);
+  const { hasPermissionAccess } = useUserPermissions();
+  if (
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewRawMaterialTransferList,
+    ) ||
+    hasPermissionAccess(
+      PermissionKeys.warehouse.viewPackagingMaterialTransferList,
+    )
+  ) {
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h1>Stock Transfer Details</h1>
-          <Button
-            onClick={onIssue}
-            variant={"default"}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
-          >
-            {isLoading ? (
-              <Icon name="LoaderCircle" className="animate-spin" />
-            ) : (
-              <Icon name="CircleCheck" className="size-4" />
-            )}
-            <span>Issue</span>{" "}
-          </Button>
+          {hasPermissionAccess(
+            PermissionKeys.warehouse.issueRawMaterialStockTransfers,
+          ) ||
+            (hasPermissionAccess(
+              PermissionKeys.warehouse.issuePackagingMaterialStockTransfers,
+            ) && (
+              <Button
+                onClick={onIssue}
+                variant={"default"}
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
+              >
+                {isLoading ? (
+                  <Icon name="LoaderCircle" className="animate-spin" />
+                ) : (
+                  <Icon name="CircleCheck" className="size-4" />
+                )}
+                <span>Issue</span>{" "}
+              </Button>
+            ))}
         </div>
         <Card>
           <CardContent className="space-y-4 py-2">

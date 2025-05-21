@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon, Skeleton } from "@/components/ui";
-import { FormOption } from "@/lib";
+import { FormOption, PermissionKeys } from "@/lib";
 import { MaterialKind } from "@/lib/redux/api/openapi.generated";
 
 import { FormOptionNode } from "./node";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   formOptions: FormOption[];
@@ -41,6 +42,27 @@ export const FormOptionContainer = ({
     setItemCount(formOptions.length || 10);
   }, [editMode, formOptions.length]);
 
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const canCreateProductCategory = hasPermissionAccess(
+    PermissionKeys.categories.productCategory.createNew,
+  );
+  const canCreateRawCategory = hasPermissionAccess(
+    PermissionKeys.categories.rawCategory.createNew,
+  );
+  const canCreatePackageCategory = hasPermissionAccess(
+    PermissionKeys.categories.packageCategory.createNew,
+  );
+  const canEditProductCategory = hasPermissionAccess(
+    PermissionKeys.categories.productCategory.edit,
+  );
+  const canEditRawCategory = hasPermissionAccess(
+    PermissionKeys.categories.rawCategory.edit,
+  );
+  const canEditPackageCategory = hasPermissionAccess(
+    PermissionKeys.categories.packageCategory.edit,
+  );
+
   return (
     <div className="space-y-6 rounded-lg border border-neutral-200 bg-white px-10 py-7">
       <div className="flex justify-between">
@@ -51,30 +73,38 @@ export const FormOptionContainer = ({
 
         {/* actions */}
         <div className="flex gap-2">
-          <Button
-            className="h-fit gap-2 px-4 py-2 text-sm text-neutral-700"
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setEditMode(!editMode);
-            }}
-          >
-            {editMode ? (
-              <Icon name="Import" size={20} />
-            ) : (
-              <Icon name="Pencil" size={20} />
-            )}
-            {editMode ? "Done" : "Edit"}
-          </Button>
-          <Button
-            className="h-fit gap-2 px-4 py-2 text-sm"
-            variant="secondary"
-            size="sm"
-            onClick={() => setCreateMode(true)}
-          >
-            <Icon name="Plus" size={20} />
-            Create New
-          </Button>
+          {(canEditPackageCategory ||
+            canEditProductCategory ||
+            canEditRawCategory) && (
+            <Button
+              className="h-fit gap-2 px-4 py-2 text-sm text-neutral-700"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setEditMode(!editMode);
+              }}
+            >
+              {editMode ? (
+                <Icon name="Import" size={20} />
+              ) : (
+                <Icon name="Pencil" size={20} />
+              )}
+              {editMode ? "Done" : "Edit"}
+            </Button>
+          )}
+          {(canCreatePackageCategory ||
+            canCreateProductCategory ||
+            canCreateRawCategory) && (
+            <Button
+              className="h-fit gap-2 px-4 py-2 text-sm"
+              variant="secondary"
+              size="sm"
+              onClick={() => setCreateMode(true)}
+            >
+              <Icon name="Plus" size={20} />
+              Create New
+            </Button>
+          )}
         </div>
       </div>
 

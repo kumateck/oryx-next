@@ -13,6 +13,9 @@ import {
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const GRNDetail = () => {
   const { id } = useParams();
@@ -64,6 +67,17 @@ const GRNDetail = () => {
       setPackageLists(batchOptions);
     }
   }, [grnResponse]);
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.production.viewStockTransferRequests,
+  );
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">

@@ -11,7 +11,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { ManufacturerMap } from "@/components/pages/supply-chain/procurement/suppliers/create";
+import { ManufacturerMap } from "@/components/pages/settings/suppliers/create";
 import { Button, Icon } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 

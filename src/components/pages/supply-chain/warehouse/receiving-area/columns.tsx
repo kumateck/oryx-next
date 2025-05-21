@@ -8,16 +8,14 @@ import {
   DistributedMaterialStatus,
   Option,
   PermissionKeys,
-  Section,
   Units,
   convertToLargestUnit,
-  findRecordWithFullAccess,
   routes,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,16 +31,13 @@ export function DataTableRowActions<
     status === DistributedMaterialStatus.Distributed ||
     status === DistributedMaterialStatus.Arrived;
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
       <div className="flex items-center justify-end gap-2">
         {canCreateChecklist ? (
-          findRecordWithFullAccess(
-            permissions,
+          hasPermissionAccess(
             PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
           ) && (
             <Button

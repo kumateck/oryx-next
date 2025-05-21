@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
 
 interface Props {
   poId: string;
@@ -21,6 +24,11 @@ const PurchaseOrders = ({ poId, lists, updateParentState }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialLists]);
 
+  //permissions check
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.logistics.createShipmentInvoice)) {
+    return <NoAccess />;
+  }
   return (
     <div className="">
       <TableForData lists={materialLists} setItemLists={setMaterialLists} />

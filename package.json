@@ -15,7 +15,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@hookform/resolvers": "^3.9.1",
+    "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -35,7 +35,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.1",
-    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-slot": "^1.2.2",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toggle": "^1.1.2",
@@ -75,22 +75,28 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
+    "cookie": "^1.0.2",
     "cookies-next": "^4.3.0",
+    "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "dnd-core": "^16.0.1",
     "framer-motion": "^12.4.2",
     "fuse.js": "^7.0.0",
     "immutability-helper": "^3.1.1",
+    "iron-session": "^8.0.4",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "next-client-cookies": "^2.0.0",
+    "next-session": "^4.0.5",
     "next-themes": "^0.3.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-calendar": "^5.1.0",
     "react-circular-progressbar": "^2.1.0",
     "react-color": "^2.19.3",
-    "react-datepicker": "^7.5.0",
+    "react-datepicker": "^7.6.0",
     "react-day-picker": "8.10.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -111,7 +117,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
     "vaul": "^1.1.2",
-    "zod": "^3.23.8"
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
@@ -145,6 +151,13 @@
     ],
     "**/*.{html,json,css,scss,md,mdx}": [
       "prettier -w"
+    ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

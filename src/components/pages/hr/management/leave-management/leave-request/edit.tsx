@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { LeaveCategories, Option } from "@/lib";
+import { AuditModules, LeaveCategories, Option } from "@/lib";
 import {
   CreateLeaveRequest,
   LeaveRequestDto,
@@ -19,7 +19,6 @@ import {
   RequestCategory,
   useGetApiV1EmployeeQuery,
   useGetApiV1LeaveTypeQuery,
-  useLazyGetApiV1LeaveRequestQuery,
   usePutApiV1LeaveRequestByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -35,7 +34,7 @@ interface Props {
 }
 
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadLeaveRequests] = useLazyGetApiV1LeaveRequestQuery();
+  const dispatch = useDispatch();
   const [updateLeaveRequest, { isLoading }] =
     usePutApiV1LeaveRequestByIdMutation();
 
@@ -81,8 +80,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     name: "leaveCategory",
   });
 
-  const dispatch = useDispatch();
-
   const onSubmit = async (data: LeaveRequest) => {
     try {
       const payload = {
@@ -97,32 +94,31 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         ) as unknown as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
-      console.log(payload);
 
       const leaveRequestId = await updateLeaveRequest({
         createLeaveRequest: payload,
         id: details.id as string,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.leaveManagement,
       } as PutApiV1LeaveRequestByIdApiArg).unwrap();
 
       if (leaveRequestId) {
-        const formData = new FormData();
-        // Ensure attachments are an array
-        const attachmentsArray = Array.isArray(data.attachments)
-          ? data.attachments
-          : Array.from(data.attachments); // Convert FileList to an array
-
-        attachmentsArray.forEach((attachment: File) => {
-          formData.append("files", attachment, attachment.name);
-        });
-
+        // const formData = new FormData();
+        // // Ensure attachments are an array
+        // const attachmentsArray = Array.isArray(data.attachments)
+        //   ? data.attachments
+        //   : Array.from(data.attachments); // Convert FileList to an array
+        // attachmentsArray.forEach((attachment: File) => {
+        //   formData.append("files", attachment, attachment.name);
+        // });
         // await uploadAttachment({
         //   modelType: CODE_SETTINGS.modelTypes.ShipmentDocument,
         //   modelId: leaveRequestId,
         //   body: formData,
         // } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("Leave Request created successfully");
-      loadLeaveRequests({ page: 1, pageSize: 10 });
+      toast.success("Leave Request updated successfully");
+
       dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
@@ -134,6 +130,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const { data: employeesResponse } = useGetApiV1EmployeeQuery({
     page: 1,
     pageSize: 40,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.employeeManagement,
   });
 
   const employees = employeesResponse?.data ?? [];
@@ -148,6 +146,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const { data: leaveTypesResponse } = useGetApiV1LeaveTypeQuery({
     page: 1,
     pageSize: 40,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.leaveTypeConfiguration,
   });
 
   const leaveTypes = leaveTypesResponse?.data ?? [];
@@ -207,7 +207,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                   "animate-spin": isLoading,
                 })}
               />
-              <span>Save</span>
+              <span>Save Changes</span>
             </Button>
           </DialogFooter>
         </form>

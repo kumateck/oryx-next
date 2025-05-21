@@ -4,22 +4,18 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import {
-  EMaterialKind,
-  findRecordWithFullAccess,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { EMaterialKind, PermissionKeys } from "@/lib";
 import { useLazyGetApiV1WarehouseGrnsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
 
-const Page = () => {
+const GRNPage = () => {
+  const { hasPermissionAccess } = useUserPermissions();
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
@@ -57,37 +53,9 @@ const Page = () => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
 
-  //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
-  // check permissions access
-
-  const hasAccessToPacking = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantineRawMaterialsRecords,
-  );
-
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
-    PermissionKeys.warehouse.viewQuarantinePackagingMaterialsRecords,
-  );
-
-  if (isClient && !hasAccess) {
-    //redirect to no access
+  if (!hasPermissionAccess(PermissionKeys.warehouse.viewDepartments)) {
     return <NoAccess />;
   }
-  if (isClient && !hasAccessToPacking && kind?.toString() === "1") {
-    //redirect to no access
-    return <NoAccess />;
-  }
-
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -131,4 +99,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default GRNPage;

@@ -53,6 +53,7 @@ export enum ApprovalDocument {
   PurchaseOrder = "PurchaseOrder",
   BillingSheet = "BillingSheet",
   LeaveRequest = "LeaveRequest",
+  OvertimeRequest = "OvertimeRequest",
 }
 
 export enum InterestType {
@@ -406,4 +407,16 @@ export enum DayOfWeek {
   Friday = 4,
   Saturday = 5,
   Sunday = 6,
+}
+
+export enum MaterialReturnsStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum OvertimeStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
 }

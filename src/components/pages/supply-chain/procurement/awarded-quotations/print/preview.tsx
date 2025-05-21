@@ -11,13 +11,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import {
-  ErrorResponse,
-  findRecordWithFullAccess,
-  isErrorResponse,
-  PermissionKeys,
-  Section,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg,
   SupplierDto,
@@ -29,7 +23,7 @@ import { ListsTable } from "@/shared/datatable";
 import InvoiceHeader from "@/shared/invoice/header";
 
 import { getColums } from "./column";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   isOpen: boolean;
@@ -85,16 +79,13 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     onClose();
   };
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
-          {findRecordWithFullAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.procurement.sendAwardedQuotations,
           ) && (
             <Button variant="outline" onClick={() => handlePrint()}>

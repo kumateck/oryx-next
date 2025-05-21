@@ -4,13 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind, RequisitionType } from "@/lib";
+import { EMaterialKind, PermissionKeys, RequisitionType } from "@/lib";
 import { useLazyGetApiV1RequisitionDepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -53,24 +55,41 @@ const Page = () => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
 
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  if (
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
+    ) ||
+    !hasPermissionAccess(PermissionKeys.warehouse.viewRawMaterialRequisitions)
+  ) {
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Stock Requisitions" />
-        <AccessTabs
-          handleTabClick={handleTabClick}
-          type={kind}
-          tabs={[
-            {
-              label: EMaterialKind[EMaterialKind.Raw],
-              value: EMaterialKind.Raw.toString(),
-            },
-            {
-              label: EMaterialKind[EMaterialKind.Packing],
-              value: EMaterialKind.Packing.toString(),
-            },
-          ]}
-        />
+        {hasPermissionAccess(
+          PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
+        ) ||
+          (hasPermissionAccess(
+            PermissionKeys.warehouse.viewRawMaterialRequisitions,
+          ) && (
+            <AccessTabs
+              handleTabClick={handleTabClick}
+              type={kind}
+              tabs={[
+                {
+                  label: EMaterialKind[EMaterialKind.Raw],
+                  value: EMaterialKind.Raw.toString(),
+                },
+                {
+                  label: EMaterialKind[EMaterialKind.Packing],
+                  value: EMaterialKind.Packing.toString(),
+                },
+              ]}
+            />
+          ))}
       </div>
 
       <ServerDatatable

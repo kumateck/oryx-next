@@ -23,6 +23,7 @@ import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import { PersistConfig } from "redux-persist/lib/types";
 
 import { api } from "./api";
+import { authApi } from "./api/special";
 import { rootReducer } from "./reducer";
 import common from "./slices/common";
 
@@ -40,6 +41,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const reduxStore = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
+    [authApi.reducerPath]: authApi.reducer,
     persistedReducer,
     common,
   },
@@ -48,7 +50,7 @@ export const reduxStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(api.middleware),
+    }).concat(api.middleware, authApi.middleware),
   devTools: process.env.NODE_ENV !== "production" && {
     name: "oryx-erp",
   },

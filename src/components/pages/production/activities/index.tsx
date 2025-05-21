@@ -3,14 +3,17 @@
 import React from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { convertToLargestUnit, fullname, Units } from "@/lib";
+import { AuditModules, convertToLargestUnit, fullname, Units } from "@/lib";
 import { useGetApiV1ProductionScheduleActivityOperationGroupedQuery } from "@/lib/redux/api/openapi.generated";
 import LeaderBoard from "@/shared/leader-board";
 import { Activity } from "@/shared/leader-board/type";
 
 const Activities = () => {
   const { data: currentOperation } =
-    useGetApiV1ProductionScheduleActivityOperationGroupedQuery({});
+    useGetApiV1ProductionScheduleActivityOperationGroupedQuery({
+      module: AuditModules.production.name,
+      subModule: AuditModules.production.activities,
+    });
 
   const currentOperationData = currentOperation ?? [];
 

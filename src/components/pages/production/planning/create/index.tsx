@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
+  AuditModules,
   CODE_SETTINGS,
   COLLECTION_TYPES,
   DepartmentType,
@@ -56,7 +57,10 @@ const Create = () => {
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
-  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({});
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.equipment,
+  });
   const equipmentOptions = equipmentResponse?.map((item) => ({
     label: item.name,
     value: item.id,
@@ -64,6 +68,8 @@ const Create = () => {
   const { data: departmentResponse } = useGetApiV1DepartmentQuery({
     type: DepartmentType.Production,
     pageSize: 100,
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.departments,
   });
 
   const departmentOptions = departmentResponse?.data?.map((item) => ({
@@ -73,6 +79,8 @@ const Create = () => {
 
   useEffect(() => {
     loadCollection({
+      module: AuditModules.general.name,
+      subModule: AuditModules.general.collection,
       body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
     } as PostApiV1CollectionApiArg).unwrap();
 
@@ -88,9 +96,13 @@ const Create = () => {
 
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
   const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: false,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
 
   const uomOptions = uomResponse?.map((uom) => ({
@@ -120,6 +132,8 @@ const Create = () => {
     try {
       await productMutation({
         createProductRequest: payload,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.planning,
       }).unwrap();
       // const productId = res as string;
       toast.success("Product Info created successfully");
@@ -131,7 +145,10 @@ const Create = () => {
   };
   // Function to fetch count (wraps RTK query)
   const fetchCount = async () => {
-    const countResponse = await loadCodeModelCount({}).unwrap();
+    const countResponse = await loadCodeModelCount({
+      module: AuditModules.settings.name,
+      subModule: AuditModules.settings.codeSettings,
+    }).unwrap();
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
 

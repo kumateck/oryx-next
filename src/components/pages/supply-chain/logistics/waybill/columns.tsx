@@ -11,10 +11,8 @@ import {
 import {
   ErrorResponse,
   PermissionKeys,
-  Section,
   WaybillStatus,
   WaybillStatusOptions,
-  findRecordWithFullAccess,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -22,7 +20,7 @@ import {
   usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -46,16 +44,12 @@ function DataTableRowStatus<TData extends ShipmentDocumentDto>({
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <div className="flex items-center gap-2">
-      {findRecordWithFullAccess(
-        permissions,
-        PermissionKeys.logistics.changeWaybillStatus,
-      ) && (
+      {hasPermissionAccess(PermissionKeys.logistics.changeWaybillStatus) && (
         <DropdownMenu>
           <DropdownMenuTrigger>
             <div

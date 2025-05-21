@@ -7,7 +7,7 @@ import React, { useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import { AuditModules, routes } from "@/lib";
 import { useGetApiV1ProductByProductIdQuery } from "@/lib/redux/api/openapi.generated";
 import { cn } from "@/lib/utils";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -21,6 +21,8 @@ const ViewPage: React.FC = () => {
   const { id } = useParams();
   const { data: singleDetailed } = useGetApiV1ProductByProductIdQuery({
     productId: id as string,
+    module: AuditModules.production.name,
+    subModule: AuditModules.production.planning,
   });
 
   const router = useRouter();
@@ -139,7 +141,8 @@ const ViewPage: React.FC = () => {
                         <span>Label Claims:{' '}</span>
                         <span>{singleDetailed?.}</span>
                       </div>
-                    </div> */}
+                    </div> 
+                    */}
               </div>
             </div>
           </div>

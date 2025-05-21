@@ -1,3 +1,4 @@
+import { LucideIconProps } from "@/components/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -64,3 +65,74 @@ export const ChangePwdSchema = z
 
 export type TChangePwd = z.infer<typeof ChangePwdSchema>;
 export const ChangePwdValidator = zodResolver(ChangePwdSchema);
+
+// types.ts
+export type SettingItem = {
+  name: string;
+  path: string;
+  icon: LucideIconProps;
+};
+
+export type SettingCategory = {
+  title: string;
+  items: SettingItem[];
+  icon: LucideIconProps;
+};
+
+// settingsData.ts
+export const settingCategories: SettingCategory[] = [
+  {
+    title: "General Settings",
+    icon: "Settings",
+    items: [
+      {
+        name: "Configurations",
+        path: "/settings/config",
+        icon: "Settings",
+      },
+      { name: "Code Settings", path: "/settings/code-settings", icon: "Code" },
+      {
+        name: "Form Builder",
+        path: "/settings/form-builder",
+        icon: "FileText",
+      },
+    ],
+  },
+  {
+    title: "User & Access",
+    icon: "User",
+    items: [
+      { name: "Approvals", path: "/settings/approvals", icon: "ClipboardList" },
+      {
+        name: "Change Password",
+        path: "/settings/change-password",
+        icon: "Key",
+      },
+    ],
+  },
+  {
+    title: "Inventory Management",
+    icon: "Package",
+    items: [
+      {
+        name: "Manufacturers",
+        path: "/settings/manufacturers",
+        icon: "Factory",
+      },
+      { name: "Suppliers", path: "/settings/suppliers", icon: "Truck" },
+      { name: "Warehouses", path: "/settings/warehouses", icon: "Warehouse" },
+      { name: "Locations", path: "/settings/locations", icon: "Layers2" },
+      { name: "Racks", path: "/settings/racks", icon: "Rows3" },
+      { name: "Shelves", path: "/settings/shelves", icon: "Rows4" },
+      { name: "Equipment", path: "/settings/equipment", icon: "Wrench" },
+    ],
+  },
+  {
+    title: "Organization Structure",
+    icon: "Building2",
+    items: [
+      { name: "Departments", path: "/settings/departments", icon: "Building" },
+      { name: "Working Days", path: "/settings/working-days", icon: "Clock" },
+    ],
+  },
+];

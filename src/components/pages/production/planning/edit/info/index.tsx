@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
+  AuditModules,
   ErrorResponse,
   convertToLargestUnit,
   convertToSmallestUnit,
@@ -77,7 +78,10 @@ const ProductInfo = () => {
     resolver: CreateProductValidator,
     mode: "all",
   });
-  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({});
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.equipment,
+  });
   const equipmentOptions = equipmentResponse?.map((item) => ({
     label: item.name,
     value: item.id,
@@ -94,6 +98,8 @@ const ProductInfo = () => {
   const handleLoadProduct = async (productId: string) => {
     const product = await loadProductInfo({
       productId,
+      module: AuditModules.production.name,
+      subModule: AuditModules.production.planning,
     }).unwrap();
 
     const category = {
@@ -175,6 +181,8 @@ const ProductInfo = () => {
 
   useEffect(() => {
     loadCollection({
+      module: AuditModules.general.name,
+      subModule: AuditModules.general.collection,
       body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
     } as PostApiV1CollectionApiArg).unwrap();
 
@@ -190,6 +198,8 @@ const ProductInfo = () => {
   const { data: departmentResponse } = useGetApiV1DepartmentQuery({
     type: DepartmentType.Production,
     pageSize: 100,
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.departments,
   });
 
   const departmentOptions = departmentResponse?.data?.map((item) => ({
@@ -214,6 +224,8 @@ const ProductInfo = () => {
       await productMutation({
         productId,
         updateProductRequest: payload,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.planning,
       } as PutApiV1ProductByProductIdApiArg).unwrap();
       toast.success("Product Info updated successfully");
       // reset();
@@ -225,9 +237,13 @@ const ProductInfo = () => {
 
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
   const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: false,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
 
   const uomOptions = uomResponse?.map((uom) => ({

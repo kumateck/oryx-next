@@ -1,70 +1,45 @@
-// import React, { useEffect, useState } from "react";
-// import { Icon } from "@/components/ui";
-// import { cn } from "@/lib/utils";
-// // import Alerts from "./alerts";
-// // import ApprovalsPage from "./approvals/index";
-// // import ChangePassword from "./chg-pwd";
-// // import FormOptionTabs from "./form-options/tabs";
-// // import TagsPage from "./tags";
-// const Sidebar: React.FC<SidebarProps> = ({ activeItem, onChange }) => {
-//   // const navigate = useNavigate(); // Hook to navigate
-//   return (
-//     <div className="h-full w-48 space-y-2">
-//       {SIDEBAR_ITEMS.map((item) => {
-//         const isActive = activeItem === item.tag;
-//         return (
-//           <div
-//             key={item.name} // Add key prop
-//             onClick={() => {
-//               onChange(item.tag);
-//               // navigate(item.tag);
-//             }}
-//             className={cn(
-//               "text-muted-foreground relative w-full cursor-pointer text-sm",
-//               isActive && "font-Bold text-black",
-//             )}
-//           >
-//             {isActive && (
-//               <div className="absolute -left-6 top-1/2 -translate-y-1/2">
-//                 <Icon name="ChevronRight" />
-//               </div>
-//             )}
-//             <span className="text-sm">{item.name}</span>
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-// const Settings = () => {
-//   // const location = useLocation();
-//   const [activePage, setActivePage] = useState(SIDEBAR_ITEMS[0].tag);
-//   const pathSegments = location.pathname.split("/").filter(Boolean); // Filters out empty strings
-//   const childRoute = pathSegments.length > 1 ? pathSegments[1] : ""; // Assumes first part is parent route, second part is child
-//   useEffect(() => {
-//     setActivePage(childRoute);
-//   }, [childRoute]);
-//   return (
-//     <div className="flex h-full w-full">
-//       <div className="w-full space-y-12 pl-2">
-//         <div className="font-Medium text-4xl">Settings</div>
-//         <div className="flex h-full gap-12 pb-24">
-//           <Sidebar
-//             activeItem={activePage}
-//             onChange={(itemName) => setActivePage(itemName)}
-//           />
-//           <div className="border-r-2 border-r-neutral-300"></div>
-//           {children}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-// export default Settings;
+"use client";
 import React from "react";
+import { settingCategories } from "./types";
+import Link from "next/link";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
+import { Icon } from "@/components/ui";
 
 const Settings = () => {
-  return <div>Settings</div>;
+  return (
+    <ScrollableWrapper className="p-6 space-y-10">
+      <h1 className="text-3xl font-bold">Settings</h1>
+      {settingCategories.map((category) => (
+        <div key={category.title}>
+          <div className="flex items-center gap-3 mb-4">
+            <Icon
+              name={category.icon}
+              className="w-6 h-6 text-primary-default"
+            />
+            <h2 className="text-2xl font-semibold text-neutral-dark">
+              {category.title}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {category.items.map((item) => (
+              <Link
+                key={item.name}
+                href={item.path}
+                className="block rounded-xl border p-5 shadow-sm hover:shadow-md transition hover:bg-neutral-light"
+              >
+                <div className="flex items-center gap-4">
+                  <Icon name={item.icon} className="size-6" />
+                  <span className="text-lg font-medium text-neutral-dark">
+                    {item.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
+    </ScrollableWrapper>
+  );
 };
 
 export default Settings;

@@ -8,15 +8,9 @@ import { useState } from "react";
 import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import {
-  EmployeeType,
-  findRecordWithFullAccess,
-  PermissionKeys,
-  Section,
-  splitWords,
-} from "@/lib";
+import { EmployeeType, PermissionKeys, splitWords } from "@/lib";
 import { useRouter } from "next/navigation";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -34,15 +28,12 @@ export function DataTableRowActions<TData extends EmployeeDto>({
 
   //Check Permision
   // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        {findRecordWithFullAccess(
-          permissions,
+        {hasPermissionAccess(
           PermissionKeys.humanResources.updateEmployeeDetails,
         ) && (
           <DropdownMenuItem className="group">
@@ -63,10 +54,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
           </DropdownMenuItem>
         )}
 
-        {findRecordWithFullAccess(
-          permissions,
-          PermissionKeys.humanResources.viewEmployee,
-        ) && (
+        {hasPermissionAccess(PermissionKeys.humanResources.viewEmployee) && (
           <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-center gap-2"

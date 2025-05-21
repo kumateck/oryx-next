@@ -6,7 +6,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { ErrorResponse, QuestionType, isErrorResponse } from "@/lib";
+import {
+  ErrorResponse,
+  PermissionKeys,
+  QuestionType,
+  isErrorResponse,
+} from "@/lib";
 import {
   PutApiV1FormByFormIdApiArg,
   QuestionDto,
@@ -20,6 +25,8 @@ import {
   TemplateRequestDto,
   templateQuestions,
 } from "./type";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const EditTemplate = () => {
   const { id } = useParams();
@@ -103,6 +110,20 @@ const EditTemplate = () => {
   const onDeleteQuestion = (questionId: string) => {
     setQuestions((prev) => prev.filter((item) => item.id !== questionId));
   };
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccessToWorkFlowFormQuestions = hasPermissionAccess(
+    PermissionKeys.workflowForms.questions.view,
+  );
+  const hasAccessToWorkFlowFormTemplate = hasPermissionAccess(
+    PermissionKeys.workflowForms.templates.view,
+  );
+  if (!hasAccessToWorkFlowFormQuestions && !hasAccessToWorkFlowFormTemplate) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <div className="w-full space-y-5">

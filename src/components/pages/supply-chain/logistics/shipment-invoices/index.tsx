@@ -13,9 +13,9 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
-import { useSelector } from "@/lib/redux/store";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -37,22 +37,13 @@ const Page = () => {
   const data = result?.data || [];
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.logistics.viewShipmentInvoice,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -61,8 +52,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Shipment Invoices" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.logistics.createShipmentInvoice,
           ) && (
             <Link href={"shipment-invoices/create"}>

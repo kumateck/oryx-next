@@ -8,25 +8,19 @@ import { useSelector } from "@/lib/redux/store";
 import { useLazyGetApiV1RoleQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
-import {
-  findRecordWithFullAccess,
-  PermissionKeys,
-  routes,
-  Section,
-} from "@/lib";
+import { PermissionKeys, routes } from "@/lib";
 import Link from "next/link";
 import { ClientDatatable } from "@/shared/datatable";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const ManageRoles = () => {
   const dispatch = useDispatch();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const triggerReload = useSelector((state) => state.common.triggerReload);
-  // const permissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
+
   const [loadRoles, { data, isLoading, isFetching }] =
     useLazyGetApiV1RoleQuery();
 
@@ -41,22 +35,13 @@ const ManageRoles = () => {
   const roles = data ?? [];
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.humanResources.viewRoles,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -70,14 +55,13 @@ const ManageRoles = () => {
           </Link>
           <PageTitle title="Manage Roles" />
         </div>
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
             permissions,
             PermissionKeys.resourceManagement.rolesAndPermissions
               .createAndAssign,
           ) && (
           )} */}
-        {findRecordWithFullAccess(
-          permissions,
+        {hasPermissionAccess(
           PermissionKeys.humanResources.createRoleAndAssignPermissions,
         ) && (
           <Link href={routes.newRole()}>

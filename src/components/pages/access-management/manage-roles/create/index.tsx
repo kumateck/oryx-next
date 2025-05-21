@@ -9,8 +9,8 @@ import { InputTypes, PermissionType, Section } from "@/lib";
 import {
   ErrorResponse,
   // Permission,
-  // findRecordWithFullAccess,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
+  // findRecordWithAccess,
   hasOptions,
   isErrorResponse,
   permissionOptions,
@@ -26,7 +26,6 @@ import {
   useLazyGetApiV1PermissionModulesQuery,
   usePostApiV1RoleMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
 // import NoAccess from "@/shared/no-access";
 import { Button, Icon } from "@/components/ui";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -51,11 +50,6 @@ const Page = () => {
   const [saveRole, { isLoading }] = usePostApiV1RoleMutation();
   const [loadAllPermissions, { isLoading: isLoadingAllPermissions }] =
     useLazyGetApiV1PermissionModulesQuery();
-  const accessPermissions = useSelector(
-    (state) => state.persistedReducer.auth?.permissions,
-  );
-
-  console.log(accessPermissions, "accessPermissions");
 
   const [permissions, setPermissions] = useState<Section[]>([]);
 
@@ -198,7 +192,7 @@ const Page = () => {
   };
 
   // if (
-  //   !findRecordWithFullAccess(
+  //   !findRecordWithAccess(
   //     accessPermissions,
   //     PermissionKeys.resourceManagement.rolesAndPermissions.createAndAssign,
   //   )

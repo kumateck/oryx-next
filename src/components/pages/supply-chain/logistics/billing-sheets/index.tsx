@@ -12,8 +12,8 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
-import { useSelector } from "@/lib/redux/store";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -33,22 +33,13 @@ const Page = () => {
   }, [page, pageSize]);
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.logistics.viewBillingSheet,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }

@@ -13,6 +13,7 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  AuditModules,
   COLLECTION_TYPES,
   ErrorResponse,
   Option,
@@ -76,6 +77,8 @@ const Create = ({
   useEffect(() => {
     loadCollection({
       body: [COLLECTION_TYPES.PackageStyle],
+      module: AuditModules.general.name,
+      subModule: AuditModules.general.collection,
     } as PostApiV1CollectionApiArg).unwrap();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,6 +94,8 @@ const Create = ({
   const onSubmit = async (data: FinishedGoodsNoteRequestDto) => {
     try {
       await saveMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.goodsReceivedNotes,
         createFinishedGoodsTransferNoteRequest: {
           batchManufacturingRecordId,
           packageStyleId: data.packageStyle.value,

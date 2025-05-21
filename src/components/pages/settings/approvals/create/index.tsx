@@ -12,6 +12,7 @@ import {
   InterestType,
   Option,
   parseClock,
+  PermissionKeys,
   routes,
 } from "@/lib";
 import {
@@ -21,6 +22,8 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const CreateApproval = () => {
   const [saveApproval, { isLoading }] = usePostApiV1ApprovalMutation();
@@ -100,6 +103,14 @@ const CreateApproval = () => {
       control,
       name: "approvalStages",
     })?.map((stage) => stage?.type) || [];
+
+  //Permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  if (
+    !hasPermissionAccess(PermissionKeys.approvals.createOrConfigureNewApproval)
+  ) {
+    return <NoAccess />;
+  }
   return (
     <div className="w-full space-y-5">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

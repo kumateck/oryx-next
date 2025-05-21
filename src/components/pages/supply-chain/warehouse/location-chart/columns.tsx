@@ -5,12 +5,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Icon } from "@/components/ui";
-import { Units, convertToLargestUnit } from "@/lib";
+import { PermissionKeys, Units, convertToLargestUnit } from "@/lib";
 import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import AssignLocationDialog from "./assign-location";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -29,25 +30,39 @@ export function DataTableRowActions<TData extends MaterialBatchWithShelfId>({
     useState<MaterialBatchWithShelfId | null>(null);
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
 
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccessToRawMaterialLocationChart = hasPermissionAccess(
+    PermissionKeys.warehouse.viewRawMaterialLocationChartList,
+  );
+  // check permission for packaging meterial
+  const hasAccessToPackageMaterialLocationChart = hasPermissionAccess(
+    PermissionKeys.warehouse.viewPackagingMaterialLocationChartList,
+  );
+
   return (
     <section className="flex items-center justify-end gap-2">
-      <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => {
-              setSelectedBatch(row.original);
-              setIsAssignLocationOpen(true);
-            }}
-          >
-            <Icon
-              name="MapPin"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Assign Location</span>
-          </div>
-        </DropdownMenuItem>
-      </TableMenuAction>
+      {(hasAccessToPackageMaterialLocationChart ||
+        hasAccessToRawMaterialLocationChart) && (
+        <TableMenuAction>
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-center gap-2"
+              onClick={() => {
+                setSelectedBatch(row.original);
+                setIsAssignLocationOpen(true);
+              }}
+            >
+              <Icon
+                name="MapPin"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Assign Location</span>
+            </div>
+          </DropdownMenuItem>
+        </TableMenuAction>
+      )}
 
       <AssignLocationDialog
         open={isAssignLocationOpen}

@@ -1,19 +1,17 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
   ApprovalStatus,
+  AuditModules,
   ErrorResponse,
-  findRecordWithFullAccess,
   isErrorResponse,
   LeaveCategories,
   LeaveStatus,
   PermissionKeys,
-  Section,
   splitWords,
 } from "@/lib";
 import {
   LeaveRequestDto,
-  useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
+  useDeleteApiV1LeaveRequestByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
@@ -21,7 +19,9 @@ import { toast } from "sonner";
 import { useState } from "react";
 import Edit from "./leave-request/edit";
 import { TableMenuAction } from "@/shared/table-menu";
-import { useSelector } from "@/lib/redux/store";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -35,25 +35,22 @@ const batchStatusColors: Record<ApprovalStatus, string> = {
 export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const dispatch = useDispatch();
+  const [deleteMutation] = useDeleteApiV1LeaveRequestByIdMutation();
 
   const [details, setDetails] = useState<LeaveRequestDto>(
     {} as LeaveRequestDto,
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          {findRecordWithFullAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.editLeaveRequest,
           ) && (
             <div
@@ -73,8 +70,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           )}
         </DropdownMenuItem>
         <DropdownMenuItem className="group">
-          {findRecordWithFullAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
           ) && (
             <div
@@ -109,9 +105,11 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           try {
             await deleteMutation({
               id: details.id as string,
+              module: AuditModules.management.name,
+              subModule: AuditModules.management.leaveManagement,
             }).unwrap();
-            toast.success("Designation deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            toast.success("Leave Request deleted successfully");
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

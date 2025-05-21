@@ -5,21 +5,19 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 
-import LeaveRequest from "./leave-request";
+import LeaveRequest from "./leave-request/create";
 
 import { ServerDatatable } from "@/shared/datatable";
-import {
-  useGetApiV1LeaveRequestQuery,
-  useLazyGetApiV1LeaveRequestQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1LeaveRequestQuery } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
 // import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
 import { useDispatch } from "react-redux";
-import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
-import { findRecordWithFullAccess, PermissionKeys, Section } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
+import { AuditModules, PermissionKeys } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -27,16 +25,16 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1LeaveRequestQuery({
-    page,
-    pageSize,
-  });
-  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveRequestQuery();
-  // const router = useRouter();
+
+  const [loadLeaveRequests, { data: result, isLoading, isFetching }] =
+    useLazyGetApiV1LeaveRequestQuery();
+
   useEffect(() => {
-    loadLeaveTypes({
+    loadLeaveRequests({
       page,
       pageSize,
+      module: AuditModules.management.name,
+      subModule: AuditModules.management.leaveManagement,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
@@ -46,22 +44,13 @@ const Page = () => {
   const data = result?.data || [];
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.humanResources.viewLeaveRequests,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -75,8 +64,7 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Leave Management" />
         <div className="flex items-center justify-end gap-2">
-          {findRecordWithFullAccess(
-            permissions,
+          {hasPermissionAccess(
             PermissionKeys.humanResources.createLeaveRequest,
           ) && (
             <Button onClick={() => setIsOpen(true)}>
@@ -87,9 +75,6 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        // onRowClick={(row) => {
-        //   router.push(`/hr/leave-management/${row.id}/details`);
-        // }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}

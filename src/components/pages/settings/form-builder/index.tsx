@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -12,13 +12,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { FORM_BUILDER_CONFIG } from "@/lib";
+import { FORM_BUILDER_CONFIG, PermissionKeys } from "@/lib";
 
 import QuestionCards from "./questions";
 import CreateQuestionTypes from "./questions/question-types";
 import TemplateCards from "./templates";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import PageTitle from "@/shared/title";
+import { useRouter } from "next/navigation";
 
 const FormBuilder = () => {
+  const router = useRouter();
   const tabLists = [
     {
       name: FORM_BUILDER_CONFIG.QUESTIONS,
@@ -32,12 +37,51 @@ const FormBuilder = () => {
   const [activeTab, setActiveTab] = useState<string>(tabLists[0]?.name);
   const [isOpenQuestion, setIsOpenQuestion] = useState<boolean>(false);
 
+  //Check Permision
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccessToWorkFlowFormQuestions = hasPermissionAccess(
+    PermissionKeys.workflowForms.questions.view,
+  );
+  const hasAccessToWorkFlowFormTemplate = hasPermissionAccess(
+    PermissionKeys.workflowForms.templates.view,
+  );
+  if (
+    isClient &&
+    !hasAccessToWorkFlowFormQuestions &&
+    activeTab === FORM_BUILDER_CONFIG.QUESTIONS
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (
+    isClient &&
+    !hasAccessToWorkFlowFormTemplate &&
+    activeTab === FORM_BUILDER_CONFIG.TEMPLATES
+  ) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <div className="w-full space-y-6">
       <div className="flex w-full items-center justify-between">
-        <span className="font-Medium text-2xl capitalize">
-          Form Builder Configuration
-        </span>
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Worfkflow Builder"} />
+        </div>
       </div>
       <Tabs defaultValue={activeTab}>
         <div className="flex items-center justify-between pr-4">
@@ -55,30 +99,36 @@ const FormBuilder = () => {
             ))}
           </TabsList>
           <div>
-            {activeTab === FORM_BUILDER_CONFIG.TEMPLATES ? (
-              <Link href={"template/create"}>
-                <Button
-                  type="button"
-                  variant="default"
-                  size="default"
-                  className="flex h-9 items-center gap-2"
-                >
-                  <Icon name="Plus" className="h-4 w-4" />
-                  <span>Create Template </span>
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                type="button"
-                onClick={() => setIsOpenQuestion(true)}
-                variant="default"
-                size="default"
-                className="flex h-9 items-center gap-2"
-              >
-                <Icon name="Plus" className="h-4 w-4" />
-                <span>Create Question</span>
-              </Button>
-            )}
+            {activeTab === FORM_BUILDER_CONFIG.TEMPLATES
+              ? hasPermissionAccess(
+                  PermissionKeys.workflowForms.templates.createNew,
+                ) && (
+                  <Link href={"template/create"}>
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="default"
+                      className="flex h-9 items-center gap-2"
+                    >
+                      <Icon name="Plus" className="h-4 w-4" />
+                      <span>Create Template </span>
+                    </Button>
+                  </Link>
+                )
+              : hasPermissionAccess(
+                  PermissionKeys.workflowForms.questions.createNew,
+                ) && (
+                  <Button
+                    type="button"
+                    onClick={() => setIsOpenQuestion(true)}
+                    variant="default"
+                    size="default"
+                    className="flex h-9 items-center gap-2"
+                  >
+                    <Icon name="Plus" className="h-4 w-4" />
+                    <span>Create Question</span>
+                  </Button>
+                )}
           </div>
         </div>
         <TabsContent value={FORM_BUILDER_CONFIG.QUESTIONS}>

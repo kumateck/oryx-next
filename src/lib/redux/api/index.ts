@@ -118,6 +118,7 @@ import { getCookie } from "cookies-next";
 
 // Import the getCookie function
 import { BASE_URL, ORYX_ERP_COOKIE_ID } from "@/lib";
+// import { PostApiV1AuthLoginApiArg, PostApiV1AuthLoginApiResponse } from "./openapi.generated";
 
 // Mutex instance to handle potential concurrent requests
 export const mutex = new Mutex();
@@ -168,6 +169,16 @@ const baseQueryWithReauth: BaseQueryFn<
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
+    // postApiV1AuthLogin: builder.mutation<
+    //       PostApiV1AuthLoginApiResponse,
+    //       PostApiV1AuthLoginApiArg
+    //     >({
+    //       query: (queryArg) => ({
+    //         url: `/api/login`,
+    //         method: "POST",
+    //         body: queryArg.loginRequest,
+    //       }),
+    //     }),
     getCodeConfigByModelType: builder.query({
       query: (queryArg) => ({
         url: `/api/v1/configuration/by-model-type/${queryArg.modelType}`,

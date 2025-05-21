@@ -7,17 +7,11 @@ import PageTitle from "@/shared/title";
 
 import { useParams, useRouter } from "next/navigation";
 
-import React, { useEffect, useState } from "react";
 import LeftCard from "./left-card";
-import {
-  findRecordWithFullAccess,
-  LifeStatus,
-  PermissionKeys,
-  Section,
-} from "@/lib";
-import { format } from "date-fns";
-import { useSelector } from "@/lib/redux/store";
+import { LifeStatus, PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { format } from "date-fns";
 
 function EmployeeDetails() {
   const { id } = useParams();
@@ -28,22 +22,13 @@ function EmployeeDetails() {
   const router = useRouter();
 
   //Check Permision
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  // check permissions here
-  const permissions = useSelector(
-    (state) => state.persistedReducer?.auth?.permissions,
-  ) as Section[];
+  const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
-  const hasAccess = findRecordWithFullAccess(
-    permissions,
+  const hasAccess = hasPermissionAccess(
     PermissionKeys.humanResources.viewEmployee,
   );
 
-  if (isClient && !hasAccess) {
+  if (!hasAccess) {
     //redirect to no access
     return <NoAccess />;
   }
@@ -64,8 +49,7 @@ function EmployeeDetails() {
 
       <div className="flex items-center justify-between">
         <PageTitle title="Employee Details" />
-        {findRecordWithFullAccess(
-          permissions,
+        {hasPermissionAccess(
           PermissionKeys.humanResources.updateEmployeeDetails,
         ) && (
           <div

@@ -8,7 +8,7 @@ import { InputTypes, PermissionType } from "@/lib";
 
 import {
   Section,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
   hasOptions,
   permissionOptions,
   removeDuplicateTypes,
@@ -54,9 +54,6 @@ const Page = () => {
     useLazyGetApiV1RoleByIdQuery();
   const [loadRolePermissions, { isLoading: isLoadingRolePermissions }] =
     useLazyGetApiV1PermissionRoleByRoleIdQuery();
-  // const editPermissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
 
   const [permissions, setPermissions] = useState<Section[]>([]);
 
@@ -161,7 +158,7 @@ const Page = () => {
     }
 
     // if (
-    //   !findRecordWithFullAccess(
+    //   !findRecordWithAccess(
     //     editPermissions,
     //     PermissionKeys.resourceManagement.rolesAndPermissions.editAndUpdate,
     //   )

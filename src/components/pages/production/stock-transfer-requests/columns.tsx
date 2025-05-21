@@ -11,7 +11,9 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  AuditModules,
   ErrorResponse,
+  PermissionKeys,
   StockTransfer,
   TransferType,
   Units,
@@ -24,6 +26,7 @@ import {
   usePutApiV1ProductionScheduleStockTransferRejectByStockTransferIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 export const getColumns = (
   type: TransferType,
@@ -114,6 +117,8 @@ export function DataTableRowActions<
   const handleApproval = async () => {
     try {
       await approveMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.stockTransferRequests,
         stockTransferId: row.original.id as string,
       }).unwrap();
       toast.success("Transfer approved successfully");
@@ -125,6 +130,8 @@ export function DataTableRowActions<
   const handleRejection = async () => {
     try {
       await rejectMutation({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.stockTransferRequests,
         stockTransferId: row.original.id as string,
       }).unwrap();
       toast.success("Transfer rejected successfully");
@@ -133,37 +140,43 @@ export function DataTableRowActions<
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  //permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant="success"
-          size="sm"
-          className="rounded-2xl"
-          onClick={() => setIsApprovalOpen(true)}
-        >
-          {isLoadingApprove ? (
-            <Icon name="LoaderCircle" className="size-4 animate-spin" />
-          ) : (
-            <Icon name="Check" className="size-4" />
-          )}
-          <span>Approve</span>
-        </Button>
+      {hasPermissionAccess(
+        PermissionKeys.production.approveOrRejectStockTransferRequest,
+      ) && (
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="success"
+            size="sm"
+            className="rounded-2xl"
+            onClick={() => setIsApprovalOpen(true)}
+          >
+            {isLoadingApprove ? (
+              <Icon name="LoaderCircle" className="size-4 animate-spin" />
+            ) : (
+              <Icon name="Check" className="size-4" />
+            )}
+            <span>Approve</span>
+          </Button>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          className="rounded-2xl"
-          onClick={() => setIsRejectedOpen(true)}
-        >
-          {isLoadingReject ? (
-            <Icon name="LoaderCircle" className="size-4 animate-spin" />
-          ) : (
-            <Icon name="X" className="size-4" />
-          )}
-          <span>Reject</span>
-        </Button>
-      </div>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="rounded-2xl"
+            onClick={() => setIsRejectedOpen(true)}
+          >
+            {isLoadingReject ? (
+              <Icon name="LoaderCircle" className="size-4 animate-spin" />
+            ) : (
+              <Icon name="X" className="size-4" />
+            )}
+            <span>Reject</span>
+          </Button>
+        </div>
+      )}
 
       <ConfirmDialog
         confirmText="Approve"
