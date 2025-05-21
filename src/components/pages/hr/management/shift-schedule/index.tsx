@@ -1,31 +1,39 @@
 "use client";
+
+import { useEffect, useState } from "react";
+
 import PageWrapper from "@/components/layout/wrapper";
-import { Button, Icon } from "@/components/ui";
 import PageTitle from "@/shared/title";
-import React, { useState, useEffect } from "react";
-import { Create } from "./create";
+
+import { ServerDatatable } from "@/shared/datatable";
+import {
+  useLazyGetApiV1ShiftSchedulesQuery,
+  useGetApiV1ShiftSchedulesQuery,
+} from "@/lib/redux/api/openapi.generated";
+import { columns } from "./columns";
+// import { useRouter } from "next/navigation";
+import { Button, Icon } from "@/components/ui";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
-import { useLazyGetApiV1HolidaysQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { ServerDatatable } from "@/shared/datatable";
-import { columns } from "./columns";
-import { AuditModules } from "@/lib";
+import Create from "./create";
 
-function Page() {
+const Page = () => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
-  const [page, setPage] = useState(1);
-  const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
-
-  const [loadHolidays, { isLoading, data: result, isFetching }] =
-    useLazyGetApiV1HolidaysQuery();
-
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useGetApiV1ShiftSchedulesQuery({
+    page,
+    pageSize,
+  });
+  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1ShiftSchedulesQuery();
+  // const router = useRouter();
   useEffect(() => {
-    loadHolidays({
-      module: AuditModules.settings.name,
-      subModule: AuditModules.settings.holidays,
+    loadLeaveTypes({
+      page,
+      pageSize,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
@@ -33,20 +41,24 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
+
   return (
-    <PageWrapper>
-      {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+    <PageWrapper className="w-full space-y-2 py-1">
+      {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
+
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Leave Type Configuration" />
+        <PageTitle title="Shift Schedule" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Add Holiday</span>
+          <Button onClick={() => setIsOpen(true)}>
+            <Icon name="Plus" className="h-4 w-4" /> Add Shift Schedule
           </Button>
         </div>
       </div>
 
-      {/* reder data table here */}
       <ServerDatatable
+        // onRowClick={(row) => {
+        //   router.push(`/hr/leave-management/${row.id}/details`);
+        // }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
@@ -64,6 +76,5 @@ function Page() {
       />
     </PageWrapper>
   );
-}
-
+};
 export default Page;
