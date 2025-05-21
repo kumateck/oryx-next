@@ -364,3 +364,46 @@ export enum ApprovalStatus {
   Approved = 1,
   Rejected = 2,
 }
+
+export enum ShiftFrequency {
+  Daily = 0,
+  Weekly = 1,
+  BiWeekly = 2,
+  Monthly = 3,
+  Yearly = 4,
+}
+
+export enum StartDay {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6,
+}
+
+export enum rotationType {
+  Rotational = 0,
+  Fixed = 1,
+}
+
+export enum applicableDays {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6,
+}
+
+export enum DayOfWeek {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6,
+}

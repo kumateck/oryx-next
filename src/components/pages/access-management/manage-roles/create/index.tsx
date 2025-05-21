@@ -61,7 +61,7 @@ const Page = () => {
 
   const triggerLoadingPermissions = async () => {
     try {
-      const allPermissions = await loadAllPermissions().unwrap();
+      const allPermissions = await loadAllPermissions({}).unwrap();
       const permissions = (allPermissions ?? []) as Section[];
       setPermissions(permissions);
     } catch (error) {

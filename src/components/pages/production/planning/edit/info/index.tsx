@@ -77,7 +77,7 @@ const ProductInfo = () => {
     resolver: CreateProductValidator,
     mode: "all",
   });
-  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery();
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({});
   const equipmentOptions = equipmentResponse?.map((item) => ({
     label: item.name,
     value: item.id,

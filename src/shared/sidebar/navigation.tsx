@@ -309,6 +309,14 @@ export const ROUTES: Route[] = [
             title: "Leave Type Configuration",
             url: "/hr/leave-configuration",
           },
+          {
+            title: "Shift Schedule",
+            url: "/hr/shift-schedule",
+          },
+          {
+            title: "Shift Types",
+            url: "/hr/shift-types",
+          },
         ],
       },
     ],

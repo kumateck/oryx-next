@@ -35,7 +35,10 @@ import { useSelector } from "@/lib/redux/store";
 
 const Access: React.FC = () => {
   const dispatch = useDispatch();
-  const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery();
+  const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery({
+    module: "",
+    subModule: "",
+  });
   const userId = useSelector((state) => state.persistedReducer?.auth?.userId);
   // const [loadAllPermissions] = restApi.useLazyGetPermissionsQuery();
 
@@ -125,7 +128,7 @@ const Access: React.FC = () => {
         roleId,
       }).unwrap();
       const rolePermissions = (rolePermissionsData ?? []) as Section[];
-      const allPermissions = await loadAllPermissions().unwrap();
+      const allPermissions = await loadAllPermissions({}).unwrap();
       const allPermissionsData = (allPermissions ?? []) as Section[];
       const permissions =
         rolePermissions.length > 0 ? rolePermissions : allPermissionsData;

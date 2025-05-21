@@ -10,7 +10,7 @@ import { Activity } from "@/shared/leader-board/type";
 
 const Activities = () => {
   const { data: currentOperation } =
-    useGetApiV1ProductionScheduleActivityOperationGroupedQuery();
+    useGetApiV1ProductionScheduleActivityOperationGroupedQuery({});
 
   const currentOperationData = currentOperation ?? [];
 

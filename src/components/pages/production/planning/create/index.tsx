@@ -56,7 +56,7 @@ const Create = () => {
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
-  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery();
+  const { data: equipmentResponse } = useGetApiV1ProductEquipmentAllQuery({});
   const equipmentOptions = equipmentResponse?.map((item) => ({
     label: item.name,
     value: item.id,
