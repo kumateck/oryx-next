@@ -662,6 +662,7 @@ export const AuditModules = {
     locations: "Locations",
     racks: "Racks",
     shelves: "Shelves",
+    standardTestProcedure: "Standard Test Procedure",
     manufacturers: "Manufacturers",
     holidays: "Holidays",
     suppliers: "Suppliers",
