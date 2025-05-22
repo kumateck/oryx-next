@@ -6,22 +6,26 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   isErrorResponse,
+  OvertimeStatus,
+  splitWords,
   // OvertimeStatus,
 } from "@/lib";
 import {
+  OvertimeRequestDtoRead,
   WarehouseLocationRackDto,
   useDeleteApiV1WarehouseRackByRackIdMutation,
   useLazyGetApiV1WarehouseRackQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
+import { format } from "date-fns";
 // import { useUserPermissions } from "@/hooks/use-permission";
 
-// const batchStatusColors: Record<OvertimeStatus, string> = {
-//   [OvertimeStatus.Pending]: "bg-gray-500 text-white",
-//   [OvertimeStatus.Approved]: "bg-green-100 text-green-800",
-//   [OvertimeStatus.Rejected]: "bg-red-100 text-red-800",
-// };
+const batchStatusColors: Record<OvertimeStatus, string> = {
+  [OvertimeStatus.Pending]: "bg-gray-500 text-white",
+  [OvertimeStatus.Approved]: "bg-green-100 text-green-800",
+  [OvertimeStatus.Rejected]: "bg-red-100 text-red-800",
+};
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -120,62 +124,67 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
 }
 
-export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
+export const columns: ColumnDef<OvertimeRequestDtoRead>[] = [
   {
     accessorKey: "code",
     header: "Overtime Request ID",
-    cell: () => (
-      // { row }
-      <div>{/* {row.original.name} */}</div>
-    ),
+    cell: ({ row }) => <div>{row.original.id}</div>,
   },
   {
     accessorKey: "department",
     header: "Department",
-    cell: () => (
-      // { row }
-      <div>{/* {row.original.warehouseLocation?.name} */}</div>
-    ),
+    cell: ({ row }) => <div>{row.original.department?.name}</div>,
   },
   {
     accessorKey: "requestDate",
     header: "Request Date",
-    cell: () => (
-      // { row }
-      <div>{/* {row.original.warehouseLocation?.name} */}</div>
+    cell: ({ row }) => (
+      <div>
+        {row.original.createdAt
+          ? format(row.original.createdAt, "MMM dd, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "startDateAndTime",
     header: "Start Date & Time",
-    cell: () => (
+    cell: ({ row }) => (
       // { row }
-      <div>{/* {row.original.warehouseLocation?.name} */}</div>
+      <div>
+        {row.original.startDate
+          ? format(row.original.startDate, "MMM dd, yyyy")
+          : "-"}{" "}
+        @ {row.original.startTime}
+      </div>
     ),
   },
   {
     accessorKey: "endDateAndTime",
     header: "End Date & Time",
-    cell: () => (
+    cell: ({ row }) => (
       // { row }
-      <div>{/* {row.original.warehouseLocation?.name} */}</div>
+      <div>
+        {row.original.endDate
+          ? format(row.original.endDate, "MMM dd, yyyy")
+          : "-"}{" "}
+        @ {row.original.endTime}
+      </div>
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: () =>
-      // { row }
-      {
-        // const status = row.original.leaveStatus as ApprovalStatus;
-        // return (
-        //   <div
-        //     className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-        //   >
-        //     {splitWords(LeaveStatus[row.original.leaveStatus as LeaveStatus])}
-        //   </div>
-        // );
-      },
+    cell: ({ row }) => {
+      const status = row.original.status as OvertimeStatus;
+      return (
+        <div
+          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+        >
+          {splitWords(OvertimeStatus[row.original.status as OvertimeStatus])}
+        </div>
+      );
+    },
   },
   {
     id: "actions",

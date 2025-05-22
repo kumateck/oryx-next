@@ -1,4 +1,3 @@
-// import { useForm } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -13,16 +12,16 @@ import {
 } from "@/components/ui";
 import { Option } from "@/lib";
 import {
-  CreateWarehouseLocationRackRequest,
-  WarehouseLocationRackDto,
+  CreateOvertimeRequest,
+  OvertimeRequestDtoRead,
   useGetApiV1DepartmentQuery,
   useGetApiV1EmployeeQuery,
-  useLazyGetApiV1WarehouseRackQuery,
-  usePutApiV1WarehouseRackByRackIdMutation,
+  useLazyGetApiV1OvertimeRequestsQuery,
+  usePutApiV1OvertimeRequestsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
-import { CreateRackValidator, RackRequestDto } from "./types";
+import { CreateOvertimeValidator, OvertimeRequestDto } from "./types";
 import OvertimeForm from "./form";
 
 // import "./types";
@@ -30,12 +29,13 @@ import OvertimeForm from "./form";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  details: WarehouseLocationRackDto;
+  details: OvertimeRequestDtoRead;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
+  const [loadOvertimeRequest] = useLazyGetApiV1OvertimeRequestsQuery();
 
-  const [editRack, { isLoading }] = usePutApiV1WarehouseRackByRackIdMutation();
+  const [editOvertimeRequest, { isLoading }] =
+    usePutApiV1OvertimeRequestsByIdMutation();
 
   // const defaultDesignations =
   //   details.designations?.map((dept) => ({
@@ -43,9 +43,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   //     value: dept.id,
   //   })) || [];
 
-  const defaultLocation = {
-    label: details?.warehouseLocation?.name as string,
-    value: details?.warehouseLocation?.id as string,
+  const defaultDepartment = {
+    label: details?.department?.name as string,
+    value: details?.department?.id as string,
   };
   const pageSize = 30;
   const page = 1;
@@ -78,27 +78,42 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<RackRequestDto>({
-    resolver: CreateRackValidator,
+  } = useForm<OvertimeRequestDto>({
+    resolver: CreateOvertimeValidator,
     mode: "all",
     defaultValues: {
-      name: details.name as string,
-      description: details.description as string,
-      locationId: defaultLocation,
+      overtimeDate: new Date(details.overtimeDate as string),
+      departmentId: defaultDepartment,
+      startTime: details.startTime as string,
+      endTime: details.endTime as string,
+      employeeIds: details.employees?.map((employee) => ({
+        value: employee.id as string,
+        label: employee.firstName + " " + employee.lastName,
+      })),
     },
   });
 
-  const onSubmit = async (data: RackRequestDto) => {
+  const onSubmit = async (data: OvertimeRequestDto) => {
     try {
       const payload = {
-        ...data,
-      } satisfies CreateWarehouseLocationRackRequest;
-      await editRack({
-        rackId: details.id as string,
-        createWarehouseLocationRackRequest: payload,
+        startDate: data.overtimeDate.toISOString(),
+        overtimeDate: data.overtimeDate.toISOString(),
+        endDate: data.overtimeDate.toISOString(),
+        startTime: data.startTime,
+        endTime: data.endTime,
+        departmentId: data.departmentId.value,
+        // totalNotExceeded: data.totalNotExceeded,
+        employeeIds: data.employeeIds.map((e) => e.value),
+        justification: data.justification,
+      } satisfies CreateOvertimeRequest;
+      await editOvertimeRequest({
+        id: details.id as string,
+        createOvertimeRequest: {
+          ...payload,
+        },
       });
-      toast.success("Rack updated successfully");
-      loadLocationRack({
+      toast.success("Overtime request updated successfully");
+      loadOvertimeRequest({
         page: 1,
         pageSize: 10,
       });
@@ -113,7 +128,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Rack</DialogTitle>
+          <DialogTitle>Edit Overtime Request</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>

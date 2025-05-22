@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 import {
@@ -7,7 +7,14 @@ import {
   convertToLargestUnit,
   getSmallestUnit,
 } from "@/lib";
+import { Icon } from "@/components/ui";
 import { BatchToSupply } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { TableMenuAction } from "@/shared/table-menu";
+import { DropdownMenuItem } from "@/components/ui";
+import AssignLocationDialog from "./assign-location";
 
 export interface BatchColumns {
   id?: string;
@@ -23,6 +30,49 @@ export interface BatchColumns {
   consumedQuantity?: number;
   remainingQuantity?: number;
   expiryDate?: string;
+}
+
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+}
+
+export function DataTableRowActions<TData extends BatchToSupply>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const dispatch = useDispatch();
+  const [selectedBatch, setSelectedBatch] = useState<BatchToSupply | null>(
+    null,
+  );
+  const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
+
+  return (
+    <section className="flex items-center justify-end gap-2">
+      <TableMenuAction>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-center gap-2"
+            onClick={() => {
+              setSelectedBatch(row.original);
+              setIsAssignLocationOpen(true);
+            }}
+          >
+            <Icon
+              name="MapPin"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Assign Location</span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
+
+      <AssignLocationDialog
+        open={isAssignLocationOpen}
+        onOpenChange={setIsAssignLocationOpen}
+        onSuccess={() => dispatch(commonActions.setTriggerReload())}
+        selectedBatch={selectedBatch}
+      />
+    </section>
+  );
 }
 
 export const getColumns = (): ColumnDef<BatchToSupply>[] => [
@@ -76,5 +126,9 @@ export const getColumns = (): ColumnDef<BatchToSupply>[] => [
     cell: ({ row }) => (
       <div>{BatchStatus[row.original.batch?.status as number]}</div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

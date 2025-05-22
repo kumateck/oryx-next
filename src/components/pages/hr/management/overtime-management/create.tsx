@@ -11,15 +11,15 @@ import {
   Icon,
 } from "@/components/ui";
 import {
-  CreateWarehouseLocationRackRequest,
+  CreateOvertimeRequest,
   useGetApiV1DepartmentQuery,
   useGetApiV1EmployeeQuery,
   useLazyGetApiV1WarehouseRackQuery,
-  usePostApiV1WarehouseByLocationIdRackMutation,
+  usePostApiV1OvertimeRequestsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
-import { CreateRackValidator, RackRequestDto } from "./types";
+import { CreateOvertimeValidator, OvertimeRequestDto } from "./types";
 import OvertimeForm from "./form";
 import { Option } from "@/lib";
 
@@ -31,8 +31,8 @@ interface Props {
 }
 const Create = ({ isOpen, onClose }: Props) => {
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
-  const [createWarehouseLocationRack, { isLoading }] =
-    usePostApiV1WarehouseByLocationIdRackMutation();
+  const [createOvertimeRequest, { isLoading }] =
+    usePostApiV1OvertimeRequestsMutation();
 
   const pageSize = 30;
   const page = 1;
@@ -65,19 +65,28 @@ const Create = ({ isOpen, onClose }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<RackRequestDto>({
-    resolver: CreateRackValidator,
+  } = useForm<OvertimeRequestDto>({
+    resolver: CreateOvertimeValidator,
     mode: "all",
   });
 
-  const onSubmit = async (data: RackRequestDto) => {
+  const onSubmit = async (data: OvertimeRequestDto) => {
     try {
       const payload = {
-        ...data,
-      } satisfies CreateWarehouseLocationRackRequest;
-      await createWarehouseLocationRack({
-        locationId: data?.locationId.value,
-        createWarehouseLocationRackRequest: payload,
+        startDate: data.overtimeDate.toISOString(),
+        overtimeDate: data.overtimeDate.toISOString(),
+        endDate: data.overtimeDate.toISOString(),
+        startTime: data.startTime,
+        endTime: data.endTime,
+        departmentId: data.departmentId.value,
+        // totalNotExceeded: data.totalNotExceeded,
+        employeeIds: data.employeeIds.map((e) => e.value),
+        justification: data.justification,
+      } satisfies CreateOvertimeRequest;
+      await createOvertimeRequest({
+        createOvertimeRequest: {
+          ...payload,
+        },
       });
       toast.success("Overtime request created successfully");
       loadWarehouseLocationRacks({

@@ -82,7 +82,9 @@ const Page = () => {
   };
 
   const onRowClick = (row: DepartmentStockTransferDtoRead) => {
-    router.push(`/warehouse/stock-transfer-requests/${row.id}/details`);
+    router.push(
+      `/warehouse/stock-transfer-requests/${type ?? TransferType.Incoming}/${row.id}/details`,
+    );
   };
 
   //Check Permision

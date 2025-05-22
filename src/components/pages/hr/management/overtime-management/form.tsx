@@ -3,7 +3,6 @@ import {
   Control,
   FieldErrors,
   FieldValues,
-  Path,
   UseFormRegister,
 } from "react-hook-form";
 
@@ -20,7 +19,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 }
 const OvertimeForm = <TFieldValues extends FieldValues, TContext>({
   control,
-  register,
   errors,
   defaultValues,
   departmentOptions,
@@ -28,44 +26,20 @@ const OvertimeForm = <TFieldValues extends FieldValues, TContext>({
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
-      <div className="grid grid-cols-2 gap-4">
-        <FormWizard
-          className="w-full space-y-5"
-          config={[
-            {
-              label: "Start Date",
-              control: control as Control,
-              type: InputTypes.DATE,
-              name: "startDate",
-              required: true,
-              placeholder: "Select start date",
-              errors,
-            },
-          ]}
-        />
-        <FormWizard
-          className="w-full space-y-5"
-          config={[
-            {
-              label: "End Date",
-              control: control as Control,
-              type: InputTypes.DATE,
-              name: "endDate",
-              required: true,
-              placeholder: "Select end date",
-              errors,
-            },
-            // {
-            //   register: register("name" as Path<TFieldValues>),
-            //   label: "Name",
-            //   placeholder: "Enter name",
-            //   type: InputTypes.TEXT,
-            //   required: true,
-            //   errors,
-            // },
-          ]}
-        />
-      </div>
+      <FormWizard
+        className="w-full space-y-5"
+        config={[
+          {
+            label: "Overtime Date",
+            control: control as Control,
+            type: InputTypes.DATE,
+            name: "overtimeDate",
+            required: true,
+            placeholder: "Select start date",
+            errors,
+          },
+        ]}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <FormWizard
@@ -117,16 +91,6 @@ const OvertimeForm = <TFieldValues extends FieldValues, TContext>({
             defaultValue: defaultValues?.departmentId,
             placeholder: "Select department",
             options: departmentOptions,
-            errors,
-          },
-          {
-            register: register("totalNotExceeded" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
-            label: "Total Overtime To Not Exceeded (Hours)",
-            placeholder: "Enter total overtime to not exceeded",
-            type: InputTypes.NUMBER,
-            required: true,
             errors,
           },
           {
