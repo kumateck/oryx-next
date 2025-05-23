@@ -77,7 +77,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
         createMaterialStandardTestProcedureRequest: payload,
       } as PostApiV1MaterialStpsApiArg).unwrap();
       //upload attachment if any
-      if (data?.attachments && data?.attachments.length > 0) {
+      if (standardTestProcedureId && data?.attachments.length > 0) {
         const files = Array.isArray(data.attachments)
           ? data.attachments
           : Array.from(data.attachments);

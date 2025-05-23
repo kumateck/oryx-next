@@ -24,24 +24,10 @@ export function DataTableRowActions<
   );
   const [deleteMaterialSTPMutation] = useDeleteApiV1MaterialStpsByIdMutation();
   const dispatch = useDispatch();
-  //function for deleting STP
-  const handleDeleteSte = async () => {
-    if (!details.id) return;
-    try {
-      await deleteMaterialSTPMutation({
-        id: details.id,
-        module: AuditModules.settings.name,
-        subModule: AuditModules.settings.standardTestProcedure,
-      }).unwrap();
-      toast.success("Standart test procedure deleted successfully");
-      dispatch(commonActions.setTriggerReload());
-    } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
-    }
-  };
+
   return (
     <div className="flex items-center justify-end gap-2">
-      <Icon name="FileDown" />
+      <Icon name="Download" />
       <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
@@ -75,13 +61,24 @@ export function DataTableRowActions<
         />
       )}
 
-      {isDeleteOpen && (
-        <ConfirmDeleteDialog
-          open={isDeleteOpen}
-          onClose={() => setIsDeleteOpen(false)}
-          onConfirm={handleDeleteSte}
-        />
-      )}
+      <ConfirmDeleteDialog
+        open={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={async () => {
+          if (!details.id) return;
+          try {
+            await deleteMaterialSTPMutation({
+              id: details.id,
+              module: AuditModules.settings.name,
+              subModule: AuditModules.settings.standardTestProcedure,
+            }).unwrap();
+            toast.success("Standart test procedure deleted successfully");
+            dispatch(commonActions.setTriggerReload());
+          } catch (error) {
+            toast.error(isErrorResponse(error as ErrorResponse)?.description);
+          }
+        }}
+      />
     </div>
   );
 }
