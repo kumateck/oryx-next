@@ -1,8 +1,8 @@
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  StandardTestProcedureDto,
-  useDeleteApiV1StandardTestProceduresByIdMutation,
+  MaterialStandardTestProcedureDto,
+  useDeleteApiV1MaterialStpsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -14,22 +14,21 @@ import { Edit } from "./edit";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends StandardTestProcedureDto>({
-  row,
-}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<
+  TData extends MaterialStandardTestProcedureDto,
+>({ row }: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(true);
-  const [details, setDetails] = useState<StandardTestProcedureDto>(
-    {} as StandardTestProcedureDto,
+  const [isEdit, setIsEdit] = useState(false);
+  const [details, setDetails] = useState<MaterialStandardTestProcedureDto>(
+    {} as MaterialStandardTestProcedureDto,
   );
-  const [deletStandartTestProcedureMutation] =
-    useDeleteApiV1StandardTestProceduresByIdMutation();
+  const [deleteMaterialSTPMutation] = useDeleteApiV1MaterialStpsByIdMutation();
   const dispatch = useDispatch();
   //function for deleting STP
   const handleDeleteSte = async () => {
     if (!details.id) return;
     try {
-      await deletStandartTestProcedureMutation({
+      await deleteMaterialSTPMutation({
         id: details.id,
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
@@ -43,7 +42,14 @@ export function DataTableRowActions<TData extends StandardTestProcedureDto>({
   return (
     <div className="flex items-center justify-end gap-2">
       <Icon name="FileDown" />
-      <Icon name="Pencil" className="h-5 w-5 cursor-pointer text-neutral-500" />
+      <Icon
+        name="Pencil"
+        className="h-5 w-5 cursor-pointer text-neutral-700"
+        onClick={() => {
+          setDetails(row.original);
+          setIsEdit(true);
+        }}
+      />
       <Icon
         name="Trash"
         className="text-red-500 h-5 w-5 cursor-pointer"
@@ -62,7 +68,7 @@ export function DataTableRowActions<TData extends StandardTestProcedureDto>({
             stpNumber: details.stpNumber as string,
             materialId: {
               value: details.materialId as string,
-              label: details.materialId as string,
+              label: details.material?.name as string,
             },
             description: details.description as string,
           }}
@@ -80,7 +86,7 @@ export function DataTableRowActions<TData extends StandardTestProcedureDto>({
   );
 }
 
-export const columns: ColumnDef<StandardTestProcedureDto>[] = [
+export const columns: ColumnDef<MaterialStandardTestProcedureDto>[] = [
   {
     accessorKey: "stpNumber",
     header: "STP Number",
@@ -89,7 +95,7 @@ export const columns: ColumnDef<StandardTestProcedureDto>[] = [
   {
     accessorKey: "materialId",
     header: "Material Number",
-    cell: ({ row }) => <div>{row.original.materialId}</div>,
+    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
   },
   {
     id: "actions",

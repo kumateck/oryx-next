@@ -47,7 +47,10 @@ export const Create = ({ isOpen, onClose }: Props) => {
       reset();
       dispatch(commonActions.setTriggerReload());
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Error occurred",
+      );
     }
   };
 
