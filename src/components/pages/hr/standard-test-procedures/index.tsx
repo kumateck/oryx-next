@@ -1,6 +1,6 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
-import { Button, Icon, Input } from "@/components/ui";
+import { Button, Icon } from "@/components/ui";
 import { AuditModules, EMaterialKind } from "@/lib";
 import { useLazyGetApiV1MaterialStpsQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -14,15 +14,12 @@ import { Create } from "./create";
 import AccessTabs from "@/shared/access";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useDebounce } from "@uidotdev/usehooks";
 
 function Page() {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
-  const [searchInput, setSearchInput] = useState("");
-
-  const debouncedSearchTerm = useDebounce(searchInput, 300);
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   const dispatch = useDispatch();
 
@@ -53,7 +50,7 @@ function Page() {
     loadStandardTest({
       page,
       pageSize,
-      searchQuery: debouncedSearchTerm,
+      searchQuery: searchValue,
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.standardTestProcedure,
     });
@@ -61,9 +58,10 @@ function Page() {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, kind, debouncedSearchTerm, searchParams, pageSize, triggerReload]);
+  }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
 
   const data = result?.data || [];
+  console.log("data", data);
   return (
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
@@ -84,19 +82,6 @@ function Page() {
           ]}
         />
         <div className="w-fit flex items-center justify-center gap-4">
-          <div className="flex items-center justify-center gap-2">
-            <Button variant="outline">
-              <Icon name="Filter" />
-              <span>Filter</span>
-            </Button>
-            <Input
-              suffix="Search"
-              prefixClass="text-neutral-default"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search"
-            />
-          </div>
           <Button onClick={() => setIsOpen(true)}>
             <Icon name="Plus" />
             <span>Add Standard Test</span>

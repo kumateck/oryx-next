@@ -23,6 +23,7 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="w-full space-y-6">
       <FormWizard
+        className="py-3"
         config={[
           {
             label: "Selete Material",
