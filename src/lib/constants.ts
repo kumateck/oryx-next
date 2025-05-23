@@ -54,6 +54,7 @@ export const CODE_SETTINGS = {
     Department: "Department",
     PurchaseOrder: "PurchaseOrder",
     ShipmentDocument: "ShipmentDocument",
+    StandardTestProcedure: "StandardTestProcedure",
     GRNNumber: "GrnNumber",
     StockTransfer: "StockTransfer",
     Waybill: "Waybill",

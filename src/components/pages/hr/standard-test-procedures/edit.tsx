@@ -8,8 +8,10 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   useGetApiV1MaterialQuery,
-  usePutApiV1StandardTestProceduresByIdMutation,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
+  usePutApiV1MaterialStpsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import {
@@ -20,11 +22,14 @@ import { StandardTestForm } from "./form";
 import {
   AuditModules,
   cn,
+  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
 } from "@/lib";
 import { toast } from "sonner";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 type Props = {
   isOpen: boolean;
@@ -34,8 +39,10 @@ type Props = {
 };
 
 export const Edit = ({ isOpen, id, onClose, detailts }: Props) => {
-  const [editStandardTestProcedureMutation, { isLoading }] =
-    usePutApiV1StandardTestProceduresByIdMutation();
+  const [updatetMaterialSTPMutation, { isLoading }] =
+    usePutApiV1MaterialStpsByIdMutation();
+  const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
+  const dispatch = useDispatch();
 
   //useForm hook
   const {
@@ -60,6 +67,7 @@ export const Edit = ({ isOpen, id, onClose, detailts }: Props) => {
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
+  //format to match the select component options
   const data = materials?.data;
   const materialOptions = data?.map((material) => {
     return {
@@ -76,16 +84,39 @@ export const Edit = ({ isOpen, id, onClose, detailts }: Props) => {
         materialId: data.materialId.value,
         description: data.description,
       };
-      await editStandardTestProcedureMutation({
+      //call api to save changes
+      await updatetMaterialSTPMutation({
         id,
-        createStandardTestProcedureRequest: payload,
+        createMaterialStandardTestProcedureRequest: payload,
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
       }).unwrap();
       toast.success("Standard test procedure updated successfully");
+      dispatch(commonActions.setTriggerReload());
       onClose();
+      if (id && data?.attachments) {
+        //upload attachment if any
+        const files = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments);
+        const formData = new FormData();
+        files.forEach((file) => {
+          formData.append("files", file, file.name);
+        });
+        // Upload the files
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
+          modelId: id,
+          module: AuditModules.settings.name,
+          subModule: AuditModules.settings.standardTestProcedure,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Failed to update STP",
+      );
     }
   };
 

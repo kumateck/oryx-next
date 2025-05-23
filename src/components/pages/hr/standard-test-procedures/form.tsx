@@ -60,6 +60,20 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+      <FormWizard
+        className="w-full space-y-5 my-5"
+        config={[
+          {
+            type: InputTypes.DRAGNDROP,
+            label: "Attach Documents",
+            name: `attachments`,
+            defaultValue: null,
+            single: true,
+            control: control as Control,
+            errors,
+          },
+        ]}
+      />
     </div>
   );
 };

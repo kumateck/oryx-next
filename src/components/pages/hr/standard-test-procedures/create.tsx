@@ -10,6 +10,7 @@ import {
 import {
   AuditModules,
   cn,
+  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -18,9 +19,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
 import {
-  CreateStandardTestProcedureRequest,
+  CreateMaterialStandardTestProcedureRequest,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   useGetApiV1MaterialQuery,
-  usePostApiV1StandardTestProceduresMutation,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
+  usePostApiV1MaterialStpsMutation,
+  PostApiV1MaterialStpsApiArg,
 } from "@/lib/redux/api/openapi.generated";
 import {
   CreateStandardTestProcedureDto,
@@ -55,7 +59,8 @@ export const Create = ({ isOpen, onClose }: Props) => {
     subModule: AuditModules.warehouse.materials,
   });
   const [createStandardTestProcedure, { isLoading }] =
-    usePostApiV1StandardTestProceduresMutation();
+    usePostApiV1MaterialStpsMutation();
+  const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
 
   //fuction fro creating standard test procedure
   const onSubmit = async (data: CreateStandardTestProcedureDto) => {
@@ -64,18 +69,40 @@ export const Create = ({ isOpen, onClose }: Props) => {
         stpNumber: data.stpNumber,
         materialId: data.materialId.value,
         description: data?.description,
-      } as CreateStandardTestProcedureRequest;
-      await createStandardTestProcedure({
+      } as CreateMaterialStandardTestProcedureRequest;
+      // 1. Create the standard test procedure
+      const standardTestProcedureId = await createStandardTestProcedure({
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
-        createStandardTestProcedureRequest: payload,
-      }).unwrap();
-      toast.success("STP createde succeffuly");
-      dispatch(commonActions.unSetTriggerReload());
+        createMaterialStandardTestProcedureRequest: payload,
+      } as PostApiV1MaterialStpsApiArg).unwrap();
+      //upload attachment if any
+      if (data?.attachments && data?.attachments.length > 0) {
+        const files = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments);
+        const formData = new FormData();
+        files.forEach((file) => {
+          formData.append("files", file, file.name);
+        });
+        // Upload the files
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
+          modelId: standardTestProcedureId,
+          module: AuditModules.settings.name,
+          subModule: AuditModules.settings.standardTestProcedure,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
+      toast.success("STP created successfully");
+      dispatch(commonActions.setTriggerReload());
       onClose();
       reset();
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Failed to create STP",
+      );
     }
   };
   const data = materials?.data;
