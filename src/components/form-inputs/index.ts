@@ -8,3 +8,4 @@ export * from "./time-input";
 export * from "./textarea-input";
 export * from "./wizard";
 export * from "./image-input";
+export * from "./expression-input";

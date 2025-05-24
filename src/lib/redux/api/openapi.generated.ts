@@ -810,6 +810,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1EmployeeDepartmentsById: build.query<
+      GetApiV1EmployeeDepartmentsByIdApiResponse,
+      GetApiV1EmployeeDepartmentsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/departments/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1EmployeeById: build.query<
       GetApiV1EmployeeByIdApiResponse,
       GetApiV1EmployeeByIdApiArg
@@ -1850,6 +1862,25 @@ const injectedRtkApi = api.injectEndpoints({
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialHolding: build.query<
+      GetApiV1MaterialHoldingApiResponse,
+      GetApiV1MaterialHoldingApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/holding`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          withProcessed: queryArg.withProcessed,
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          userId: queryArg.userId,
         },
       }),
     }),
@@ -4148,6 +4179,76 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    postApiV1ProductStps: build.mutation<
+      PostApiV1ProductStpsApiResponse,
+      PostApiV1ProductStpsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-stps`,
+        method: "POST",
+        body: queryArg.createProductStandardTestProcedureRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductStps: build.query<
+      GetApiV1ProductStpsApiResponse,
+      GetApiV1ProductStpsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-stps`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductStpsById: build.query<
+      GetApiV1ProductStpsByIdApiResponse,
+      GetApiV1ProductStpsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-stps/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ProductStpsById: build.mutation<
+      PutApiV1ProductStpsByIdApiResponse,
+      PutApiV1ProductStpsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-stps/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createProductStandardTestProcedureRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1ProductStpsById: build.mutation<
+      DeleteApiV1ProductStpsByIdApiResponse,
+      DeleteApiV1ProductStpsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-stps/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -4705,6 +4806,64 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/api/v1/shift-type/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1StaffRequisitions: build.mutation<
+      PostApiV1StaffRequisitionsApiResponse,
+      PostApiV1StaffRequisitionsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/staff-requisitions`,
+        method: "POST",
+        body: queryArg.createStaffRequisitionRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1StaffRequisitions: build.query<
+      GetApiV1StaffRequisitionsApiResponse,
+      GetApiV1StaffRequisitionsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/staff-requisitions`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+        },
+      }),
+    }),
+    getApiV1StaffRequisitionsById: build.query<
+      GetApiV1StaffRequisitionsByIdApiResponse,
+      GetApiV1StaffRequisitionsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/staff-requisitions/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1StaffRequisitionsById: build.mutation<
+      DeleteApiV1StaffRequisitionsByIdApiResponse,
+      DeleteApiV1StaffRequisitionsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/staff-requisitions/${queryArg.id}`,
         method: "DELETE",
         headers: {
           Module: queryArg["module"],
@@ -6148,6 +6307,15 @@ export type PostApiV1EmployeeUserApiArg = {
   subModule?: any;
   employeeUserDto: EmployeeUserDto;
 };
+export type GetApiV1EmployeeDepartmentsByIdApiResponse =
+  /** status 200 OK */ EmployeeDtoRead[];
+export type GetApiV1EmployeeDepartmentsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1EmployeeByIdApiResponse =
   /** status 200 OK */ EmployeeDtoRead;
 export type GetApiV1EmployeeByIdApiArg = {
@@ -6919,6 +7087,24 @@ export type GetApiV1MaterialByMaterialIdUomApiResponse =
 export type GetApiV1MaterialByMaterialIdUomApiArg = {
   /** The material Id for which you need the uom */
   materialId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialHoldingApiResponse =
+  /** status 200 OK */ MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable;
+export type GetApiV1MaterialHoldingApiArg = {
+  /** Filter to include transferred holding materials */
+  withProcessed?: boolean;
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Search query for filtering results. */
+  searchQuery?: string;
+  /** Optional user ID filter. */
+  userId?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8672,6 +8858,52 @@ export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPacki
     /** The list of batches for approval. */
     body: BatchTransferRequest[];
   };
+export type PostApiV1ProductStpsApiResponse = /** status 200 OK */ string;
+export type PostApiV1ProductStpsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createProductStandardTestProcedureRequest: CreateProductStandardTestProcedureRequest;
+};
+export type GetApiV1ProductStpsApiResponse =
+  /** status 200 OK */ ProductStandardTestProcedureDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductStpsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductStpsByIdApiResponse =
+  /** status 200 OK */ ProductStandardTestProcedureDtoRead;
+export type GetApiV1ProductStpsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ProductStpsByIdApiResponse =
+  /** status 204 No Content */ ProductStandardTestProcedureDtoRead;
+export type PutApiV1ProductStpsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createProductStandardTestProcedureRequest: CreateProductStandardTestProcedureRequest;
+};
+export type DeleteApiV1ProductStpsByIdApiResponse = unknown;
+export type DeleteApiV1ProductStpsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1RequisitionApiResponse = unknown;
 export type PostApiV1RequisitionApiArg = {
   /** The module this request falls under */
@@ -9086,6 +9318,44 @@ export type GetApiV1ShiftTypeByIdApiArg = {
 };
 export type DeleteApiV1ShiftTypeByIdApiResponse = unknown;
 export type DeleteApiV1ShiftTypeByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1StaffRequisitionsApiResponse = /** status 200 OK */ string;
+export type PostApiV1StaffRequisitionsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createStaffRequisitionRequest: CreateStaffRequisitionRequest;
+};
+export type GetApiV1StaffRequisitionsApiResponse =
+  /** status 200 OK */ StaffRequisitionDtoIEnumerablePaginateableRead;
+export type GetApiV1StaffRequisitionsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  startDate?: string;
+  endDate?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1StaffRequisitionsByIdApiResponse =
+  /** status 200 OK */ StaffRequisitionDtoRead;
+export type GetApiV1StaffRequisitionsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type DeleteApiV1StaffRequisitionsByIdApiResponse = unknown;
+export type DeleteApiV1StaffRequisitionsByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -14411,20 +14681,20 @@ export type MaterialRead = {
   totalStock?: number;
 };
 export type MaterialStandardTestProcedureDto = {
-  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
+  id?: string;
   stpNumber?: string | null;
   materialId?: string;
   material?: Material;
   description?: string | null;
 };
 export type MaterialStandardTestProcedureDtoRead = {
-  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
+  id?: string;
   stpNumber?: string | null;
   materialId?: string;
   material?: MaterialRead;
@@ -14449,12 +14719,11 @@ export type MaterialStandardTestProcedureDtoIEnumerablePaginateableRead = {
   stopPageIndex?: number;
 };
 export type CreateOvertimeRequest = {
+  code: string;
   employeeIds: string[];
   overtimeDate: string;
-  startDate: string;
   departmentId: string;
   startTime: string;
-  endDate: string;
   endTime: string;
   justification?: string | null;
 };
@@ -14463,11 +14732,10 @@ export type OvertimeRequestDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
+  code?: string | null;
   employees?: EmployeeDto[] | null;
   overtimeDate?: string;
-  startDate?: string;
   startTime?: string | null;
-  endDate?: string;
   endTime?: string | null;
   status?: OvertimeStatus;
   justification?: string | null;
@@ -14479,11 +14747,10 @@ export type OvertimeRequestDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
+  code?: string | null;
   employees?: EmployeeDtoRead[] | null;
   overtimeDate?: string;
-  startDate?: string;
   startTime?: string | null;
-  endDate?: string;
   endTime?: string | null;
   status?: OvertimeStatus;
   justification?: string | null;
@@ -16051,6 +16318,46 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type CreateProductStandardTestProcedureRequest = {
+  stpNumber: string;
+  productId: string;
+};
+export type ProductStandardTestProcedureDto = {
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  stpNumber?: string | null;
+  productId?: string;
+  product?: Product;
+};
+export type ProductStandardTestProcedureDtoRead = {
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  id?: string;
+  stpNumber?: string | null;
+  productId?: string;
+  product?: ProductRead;
+};
+export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
+  data?: ProductStandardTestProcedureDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ProductStandardTestProcedureDtoIEnumerablePaginateableRead = {
+  data?: ProductStandardTestProcedureDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateRequisitionItemRequest = {
   materialId?: string;
   quantity?: number;
@@ -16280,6 +16587,73 @@ export type CreateShiftTypeRequest = {
 };
 export type ShiftTypeDtoIEnumerablePaginateable = {
   data?: ShiftTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type BudgetStatus = 0 | 1;
+export type AppointmentType = 0 | 1;
+export type CreateStaffRequisitionRequest = {
+  budgetStatus: BudgetStatus;
+  staffRequired: number;
+  educationalQualification: string;
+  qualification: string;
+  designationId: string;
+  additionalRequests?: string | null;
+  appointmentType: AppointmentType;
+  requestUrgency: string;
+  justification?: string | null;
+  additionalRequirements?: string | null;
+};
+export type StaffRequisitionStatus = 0 | 1 | 2 | 3 | 4;
+export type StaffRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  budgetStatus?: BudgetStatus;
+  staffRequired?: number;
+  qualification?: string | null;
+  educationalQualification?: string | null;
+  additionalRequests?: string | null;
+  appointmentType?: AppointmentType;
+  staffRequisitionStatus?: StaffRequisitionStatus;
+  requestUrgency?: string;
+  justification?: string | null;
+  additionalRequirements?: string | null;
+  designationId?: string;
+  designation?: DesignationDto;
+};
+export type StaffRequisitionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  budgetStatus?: BudgetStatus;
+  staffRequired?: number;
+  qualification?: string | null;
+  educationalQualification?: string | null;
+  additionalRequests?: string | null;
+  appointmentType?: AppointmentType;
+  staffRequisitionStatus?: StaffRequisitionStatus;
+  requestUrgency?: string;
+  justification?: string | null;
+  additionalRequirements?: string | null;
+  designationId?: string;
+  designation?: DesignationDtoRead;
+};
+export type StaffRequisitionDtoIEnumerablePaginateable = {
+  data?: StaffRequisitionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type StaffRequisitionDtoIEnumerablePaginateableRead = {
+  data?: StaffRequisitionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -16845,6 +17219,8 @@ export const {
   useGetApiV1EmployeeQuery,
   useLazyGetApiV1EmployeeQuery,
   usePostApiV1EmployeeUserMutation,
+  useGetApiV1EmployeeDepartmentsByIdQuery,
+  useLazyGetApiV1EmployeeDepartmentsByIdQuery,
   useGetApiV1EmployeeByIdQuery,
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
@@ -16955,6 +17331,8 @@ export const {
   useLazyGetApiV1MaterialDepartmentNotLinkedQuery,
   useGetApiV1MaterialByMaterialIdUomQuery,
   useLazyGetApiV1MaterialByMaterialIdUomQuery,
+  useGetApiV1MaterialHoldingQuery,
+  useLazyGetApiV1MaterialHoldingQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -17204,6 +17582,13 @@ export const {
   useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
+  usePostApiV1ProductStpsMutation,
+  useGetApiV1ProductStpsQuery,
+  useLazyGetApiV1ProductStpsQuery,
+  useGetApiV1ProductStpsByIdQuery,
+  useLazyGetApiV1ProductStpsByIdQuery,
+  usePutApiV1ProductStpsByIdMutation,
+  useDeleteApiV1ProductStpsByIdMutation,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
@@ -17263,6 +17648,12 @@ export const {
   useGetApiV1ShiftTypeByIdQuery,
   useLazyGetApiV1ShiftTypeByIdQuery,
   useDeleteApiV1ShiftTypeByIdMutation,
+  usePostApiV1StaffRequisitionsMutation,
+  useGetApiV1StaffRequisitionsQuery,
+  useLazyGetApiV1StaffRequisitionsQuery,
+  useGetApiV1StaffRequisitionsByIdQuery,
+  useLazyGetApiV1StaffRequisitionsByIdQuery,
+  useDeleteApiV1StaffRequisitionsByIdMutation,
   usePostApiV1UserMutation,
   useGetApiV1UserQuery,
   useLazyGetApiV1UserQuery,

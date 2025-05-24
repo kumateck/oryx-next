@@ -154,6 +154,7 @@ export enum QuestionType {
   FileUpload = 7,
   Signature = 8,
   Reference = 9,
+  Formular = 10,
 }
 
 export enum ExtraPackingStatus {
@@ -193,6 +194,7 @@ export enum InputTypes {
   SUBMIT = "submit",
   COLOR = "color",
   SPECIAL_SELECT = "special-select",
+  FORMULAR = "formular",
 }
 
 export enum Status {
