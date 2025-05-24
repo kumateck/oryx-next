@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { Icon } from "@/components/ui";
 import { fullname } from "@/lib";
@@ -13,6 +13,9 @@ import TheAduseiFormular from "@/components/ui/formular";
 
 const Page = () => {
   const { user, isLoading } = useCurrentUser();
+  const [formulaData, setFormulaData] = useState("");
+
+  console.log(formulaData);
 
   return (
     <BgWrapper>
@@ -35,7 +38,13 @@ const Page = () => {
       </ScrollablePageWrapper> */}
       {/* <WeeklyFullCalendar /> */}
       {/* <TestTemplateBuilder /> */}
-      <TheAduseiFormular />
+      <TheAduseiFormular
+        value={formulaData}
+        onChange={(jsonString) => {
+          setFormulaData(jsonString);
+          console.log("Formula updated:", JSON.parse(jsonString));
+        }}
+      />
     </BgWrapper>
   );
 };

@@ -7,8 +7,8 @@ import PageTitle from "@/shared/title";
 
 import { ServerDatatable } from "@/shared/datatable";
 import {
-  useLazyGetApiV1ShiftTypeQuery,
-  useGetApiV1ShiftTypeQuery,
+  useLazyGetApiV1ShiftSchedulesQuery,
+  useGetApiV1ShiftSchedulesQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
 // import { useRouter } from "next/navigation";
@@ -17,18 +17,20 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
 import Create from "./create";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1ShiftTypeQuery({
+  const { data: result, isLoading } = useGetApiV1ShiftSchedulesQuery({
     page,
     pageSize,
   });
-  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1ShiftTypeQuery();
+  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1ShiftSchedulesQuery();
   // const router = useRouter();
   useEffect(() => {
     loadLeaveTypes({
@@ -44,19 +46,23 @@ const Page = () => {
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
-      {isOpen && (
-        <Create
-          onClose={() => setIsOpen(false)}
-          isOpen={isOpen}
-          clear={() => {}}
-        />
-      )}
+      {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
 
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Shift Type Configuration" />
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Shift Schedule"} />
+        </div>
         <div className="flex items-center justify-end gap-2">
           <Button onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> Add Shift
+            <Icon name="Plus" className="h-4 w-4" /> Add Shift Schedule
           </Button>
         </div>
       </div>

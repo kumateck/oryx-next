@@ -23,8 +23,10 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { usePostApiV1WorkingDaysMutation } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import { ErrorResponse, isErrorResponse } from "@/lib";
+import { useRouter } from "next/navigation";
 
 function Page() {
+  const router = useRouter();
   const [workingDays, setWorkingDays] = useState<DaysOfWeekTypes[]>([]);
   const [saveMutation, { isLoading }] = usePostApiV1WorkingDaysMutation();
 
@@ -73,7 +75,17 @@ function Page() {
 
   return (
     <PageWrapper>
-      <PageTitle title="Working Day Configuration" />
+      <div className="flex items-center gap-2 ">
+        <Icon
+          name="ArrowLeft"
+          className="h-5 w-5 text-black hover:cursor-pointer"
+          onClick={() => {
+            router.back();
+          }}
+        />
+
+        <PageTitle title={"Working Days"} />
+      </div>
       <ScrollableWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card className="mt-6">

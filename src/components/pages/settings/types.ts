@@ -133,6 +133,17 @@ export const settingCategories: SettingCategory[] = [
     items: [
       { name: "Departments", path: "/settings/departments", icon: "Building" },
       { name: "Working Days", path: "/settings/working-days", icon: "Clock" },
+      { name: "Holidays", path: "/settings/holidays", icon: "Calendar" },
+      {
+        name: "Shifts Type",
+        path: "/settings/shift-types",
+        icon: "CalendarCheck2",
+      },
+      {
+        name: "Shifts Schedule",
+        path: "/settings/shift-schedule",
+        icon: "CalendarCheck",
+      },
     ],
   },
 ];

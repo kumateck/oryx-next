@@ -194,6 +194,7 @@ export enum InputTypes {
   SUBMIT = "submit",
   COLOR = "color",
   SPECIAL_SELECT = "special-select",
+  FORMULAR = "formular",
 }
 
 export enum Status {
