@@ -1,19 +1,24 @@
-// useExpressionBuilder.ts
-
 // TheAduseiFormular.tsx
 import React, { useEffect } from "react";
-import { Input } from "../input";
-import { Label } from "../label";
-import { Button } from "../button";
-import { Icon } from "../icon";
-import { cn } from "@/lib";
-import { useExpressionBuilder } from "./use-expression";
 
-interface Props {
-  value?: string;
-  onChange?: (value: string) => void;
+import { cn } from "@/lib";
+import { useExpressionBuilder } from "./use-express";
+import { Input } from "../../input";
+import { Button } from "../../button";
+import { Icon } from "../../icon";
+import { Label } from "../../label";
+
+interface TheAduseiFormularProps {
+  value?: string; // JSON string containing expression and fields
+  onChange?: (value: string) => void; // Callback with JSON string
+  disabled?: boolean;
 }
-const TheAduseiFormular = ({ onChange }: Props) => {
+
+const TheAduseiFormular: React.FC<TheAduseiFormularProps> = ({
+  value = "",
+  onChange,
+  disabled = false,
+}) => {
   const {
     inputKey,
     inputValue,
@@ -22,6 +27,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
     preview,
     result,
     isSqrtActive,
+    generatedFields,
     setInputKey,
     setInputValue,
     setInputLabel,
@@ -31,23 +37,22 @@ const TheAduseiFormular = ({ onChange }: Props) => {
     toggleSqrt,
     resetBuilder,
     removeLastPart,
-    // loadFromJson,
+    loadFromJson,
     operators,
     parentheses,
-    generatedFields,
   } = useExpressionBuilder();
 
-  // // Load initial value when component mounts or value prop changes
-  // useEffect(() => {
-  //   if (value && value.trim() !== "") {
-  //     try {
-  //       const parsed = JSON.parse(value);
-  //       loadFromJson(parsed);
-  //     } catch (error) {
-  //       console.error("Failed to parse initial value:", error);
-  //     }
-  //   }
-  // }, [value, loadFromJson]);
+  // Load initial value when component mounts or value prop changes
+  useEffect(() => {
+    if (value && value.trim() !== "") {
+      try {
+        const parsed = JSON.parse(value);
+        loadFromJson(parsed);
+      } catch (error) {
+        console.error("Failed to parse initial value:", error);
+      }
+    }
+  }, [value, loadFromJson]);
 
   // Call onChange whenever expression or fields change
   useEffect(() => {
@@ -71,6 +76,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
             placeholder="Enter the label"
             value={inputLabel}
             onChange={(e) => setInputLabel(e.target.value)}
+            disabled={disabled}
           />
         </div>
         <div>
@@ -81,6 +87,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
             placeholder="Key"
             value={inputKey}
             onChange={(e) => setInputKey(e.target.value)}
+            disabled={disabled}
           />
         </div>
         <div>
@@ -89,11 +96,17 @@ const TheAduseiFormular = ({ onChange }: Props) => {
             placeholder="Value"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            disabled={disabled}
           />
         </div>
         <div className="">
           <span>.</span>
-          <Button size={"sm"} onClick={addOperand} className="w-full">
+          <Button
+            size={"sm"}
+            onClick={addOperand}
+            className="w-full"
+            disabled={disabled}
+          >
             <Icon name="Plus" />
             <span>Add</span>
           </Button>
@@ -110,6 +123,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
               size="sm"
               onClick={() => addOperator(op)}
               className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
+              disabled={disabled}
             >
               {op}
             </Button>
@@ -122,6 +136,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
               size="sm"
               onClick={() => addParenthesis(p)}
               className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
+              disabled={disabled}
             >
               {p}
             </Button>
@@ -136,6 +151,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
                 "border-primary-default": isSqrtActive,
               },
             )}
+            disabled={disabled}
           >
             sqrt {isSqrtActive ? "(close)" : ""}
           </Button>
@@ -167,6 +183,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
           size={"sm"}
           onClick={removeLastPart}
           className="bg-neutral-default text-white hover:text-neutral-dark"
+          disabled={disabled}
         >
           <Icon name="Delete" />
           <span>Delete Last</span>
@@ -176,6 +193,7 @@ const TheAduseiFormular = ({ onChange }: Props) => {
           size={"sm"}
           onClick={resetBuilder}
           className="bg-red-500 text-white hover:bg-red-600"
+          disabled={disabled}
         >
           <Icon name="Trash2" />
           <span>Clear</span>

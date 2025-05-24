@@ -27,10 +27,12 @@ import { FormTextInput } from "./text-input";
 import { FormTextareaInput } from "./textarea-input";
 import { FormClockInput } from "./time-input";
 import FormImageInput from "./image-input";
+import { ExpressionInput } from "./expression-input";
 
 interface SpaceProps {
   type: InputTypes.SPACE;
 }
+
 interface LabelProps {
   type: InputTypes.LABEL;
   title: string;
@@ -78,6 +80,11 @@ interface SwitchInputProps extends BaseInputProps<FieldValues> {
   name: string;
 }
 
+interface ExpressionInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.FORMULAR;
+  control: Control<FieldValues>;
+  name: string;
+}
 interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.DRAGNDROP;
   control: Control<FieldValues>;
@@ -216,6 +223,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | ButtonProps
   | SpaceProps
   | SwitchInputProps
+  | ExpressionInputProps
   | LabelProps
   | null
   | undefined;
@@ -283,7 +291,23 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           )}
         />
       );
-
+    case InputTypes.FORMULAR:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => (
+            <ExpressionInput
+              label={formInput.label}
+              required={formInput.required}
+              errors={formInput.errors}
+              value={value}
+              onChange={onChange}
+              name={formInput.name}
+            />
+          )}
+        />
+      );
     case InputTypes.MULTI:
       return (
         <Controller
