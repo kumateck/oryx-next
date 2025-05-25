@@ -1,21 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-
 import { Icon } from "@/components/ui";
 import { fullname } from "@/lib";
 import BgWrapper from "@/shared/bg-wrapper";
 
-// import WeeklyFullCalendar from "@/shared/calendar/weekly";
-// import TestTemplateBuilder from "@/components/formular";
 import useCurrentUser from "@/hooks/use-current";
-import TheAduseiFormular from "@/components/ui/formular";
 
 const Page = () => {
   const { user, isLoading } = useCurrentUser();
-  const [formulaData, setFormulaData] = useState("");
-
-  console.log(formulaData);
 
   return (
     <BgWrapper>
@@ -32,19 +24,6 @@ const Page = () => {
           Work smarter with Oryx and skip the back and forth.
         </span>
       </div>
-      {/* <ScrollablePageWrapper>
-        <div>
-        </div>
-      </ScrollablePageWrapper> */}
-      {/* <WeeklyFullCalendar /> */}
-      {/* <TestTemplateBuilder /> */}
-      <TheAduseiFormular
-        value={formulaData}
-        onChange={(jsonString) => {
-          setFormulaData(jsonString);
-          console.log("Formula updated:", JSON.parse(jsonString));
-        }}
-      />
     </BgWrapper>
   );
 };

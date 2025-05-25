@@ -15,12 +15,13 @@ import {
 import { FORM_BUILDER_CONFIG, PermissionKeys } from "@/lib";
 
 import QuestionCards from "./questions";
-import CreateQuestionTypes from "./questions/question-types";
+
 import TemplateCards from "./templates";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import PageTitle from "@/shared/title";
 import { useRouter } from "next/navigation";
+import LoadQuestionTypes from "./questions/question-types/types-loader";
 
 const FormBuilder = () => {
   const router = useRouter();
@@ -139,7 +140,7 @@ const FormBuilder = () => {
         </TabsContent>
       </Tabs>
       {isOpenQuestion && (
-        <CreateQuestionTypes
+        <LoadQuestionTypes
           isOpen={isOpenQuestion}
           onClose={() => setIsOpenQuestion(false)}
         />
