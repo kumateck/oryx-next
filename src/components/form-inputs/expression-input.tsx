@@ -39,11 +39,7 @@ export const ExpressionInput = ({
           {required && <span className="text-red-500"> * </span>}
         </Label>
       )}
-      <TheAduseiFormular
-        {...rest}
-        value={effectiveValue}
-        onChange={(value) => onChange(value)}
-      />
+      <TheAduseiFormular {...rest} value={effectiveValue} onChange={onChange} />
 
       <FormError errors={errors} fieldName={rest.name} />
     </div>
