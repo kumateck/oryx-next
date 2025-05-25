@@ -1,7 +1,7 @@
 // useExpressionBuilder.ts
 
 // TheAduseiFormular.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import { Input } from "../input";
 import { Label } from "../label";
 import { Button } from "../button";
@@ -31,37 +31,48 @@ const TheAduseiFormular = ({ onChange }: Props) => {
     toggleSqrt,
     resetBuilder,
     removeLastPart,
-    // loadFromJson,
     operators,
     parentheses,
-    generatedFields,
+    exportJson,
+    isValidForEvaluation,
   } = useExpressionBuilder();
 
-  // // Load initial value when component mounts or value prop changes
-  // useEffect(() => {
-  //   if (value && value.trim() !== "") {
-  //     try {
-  //       const parsed = JSON.parse(value);
-  //       loadFromJson(parsed);
-  //     } catch (error) {
-  //       console.error("Failed to parse initial value:", error);
-  //     }
-  //   }
-  // }, [value, loadFromJson]);
-
-  // Call onChange whenever expression or fields change
-  useEffect(() => {
-    if (onChange) {
-      const outputValue = JSON.stringify({
-        expression: rawExpression,
-        fields: generatedFields,
-      });
-      onChange(outputValue);
+  const syncToForm = () => {
+    if (onChange && isValidForEvaluation()) {
+      const newValue = exportJson();
+      onChange(newValue);
     }
-  }, [rawExpression, generatedFields, onChange]);
+  };
 
+  const handleAddOperator = (operator: string) => {
+    addOperator(operator);
+    syncToForm();
+  };
+  const handleAddOperand = () => {
+    addOperand();
+    syncToForm();
+  };
+  const handleAddParenthesis = (paren: string) => {
+    addParenthesis(paren);
+    syncToForm();
+  };
+
+  const handleRemoveLastPart = () => {
+    removeLastPart();
+    syncToForm();
+  };
+
+  const handleToggleSqrt = () => {
+    toggleSqrt();
+    syncToForm();
+  };
+
+  const handleResetBuilder = () => {
+    resetBuilder();
+    syncToForm();
+  };
   return (
-    <div className="space-y-3 py-5">
+    <div className="space-y-3 pb-5">
       <div className="grid grid-cols-5 gap-2 align-center">
         <div className="col-span-2">
           <span className="text-sm">
@@ -93,7 +104,12 @@ const TheAduseiFormular = ({ onChange }: Props) => {
         </div>
         <div className="">
           <span>.</span>
-          <Button size={"sm"} onClick={addOperand} className="w-full">
+          <Button
+            type="button"
+            size={"sm"}
+            onClick={handleAddOperand}
+            className="w-full"
+          >
             <Icon name="Plus" />
             <span>Add</span>
           </Button>
@@ -105,10 +121,11 @@ const TheAduseiFormular = ({ onChange }: Props) => {
         <div className="flex gap-2">
           {operators.map((op, idx) => (
             <Button
+              type="button"
               key={idx}
               variant={"ghost"}
               size="sm"
-              onClick={() => addOperator(op)}
+              onClick={() => handleAddOperator(op)}
               className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
             >
               {op}
@@ -117,19 +134,21 @@ const TheAduseiFormular = ({ onChange }: Props) => {
 
           {parentheses.map((p, idx) => (
             <Button
+              type="button"
               key={idx}
               variant={"ghost"}
               size="sm"
-              onClick={() => addParenthesis(p)}
+              onClick={() => handleAddParenthesis(p)}
               className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
             >
               {p}
             </Button>
           ))}
           <Button
+            type="button"
             variant={"ghost"}
             size="sm"
-            onClick={toggleSqrt}
+            onClick={handleToggleSqrt}
             className={cn(
               "border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed",
               {
@@ -163,18 +182,20 @@ const TheAduseiFormular = ({ onChange }: Props) => {
       {/* Buttons to remove last part or reset */}
       <div className="flex gap-2 mt-4">
         <Button
+          type="button"
           variant={"secondary"}
           size={"sm"}
-          onClick={removeLastPart}
+          onClick={handleRemoveLastPart}
           className="bg-neutral-default text-white hover:text-neutral-dark"
         >
           <Icon name="Delete" />
           <span>Delete Last</span>
         </Button>
         <Button
+          type="button"
           variant={"destructive"}
           size={"sm"}
-          onClick={resetBuilder}
+          onClick={handleResetBuilder}
           className="bg-red-500 text-white hover:bg-red-600"
         >
           <Icon name="Trash2" />

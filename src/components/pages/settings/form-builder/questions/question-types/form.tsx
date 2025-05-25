@@ -12,7 +12,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button } from "@/components/ui";
-import { InputTypes, QuestionTypeOptions } from "@/lib";
+import { cn, InputTypes, QuestionTypeOptions } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -33,7 +33,7 @@ const QuestionForm = <TFieldValues extends FieldValues, TContext>({
   append,
   remove,
   showOptions,
-  // showFormular,
+  showFormular,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -60,35 +60,88 @@ const QuestionForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+
+      {/* <div className="py-5">
+        {fields.map((field, index) => {
+          return (
+            <div key={field.id} className="">
+              <FormWizard
+                config={[
+                  {
+                    control: control as Control,
+                    name: `options.${index}.name` as const,
+                    label: "Generate Expression",
+                    placeholder: "Enter your question",
+                    type: InputTypes.FORMULAR,
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+          );
+        })}
+      </div> */}
+
       {showOptions && (
         <div>
-          <div className="flex justify-between px-2 py-5">
-            <span className="font-medium">Options</span>
-            <Button type="button" onClick={() => append({ name: "" } as any)}>
-              Add Option
-            </Button>
-          </div>
-          <div className="grid w-full grid-cols-3 gap-2 overflow-y-auto">
+          {!showFormular && (
+            <div className="flex justify-between px-2 py-5">
+              <span className="font-medium">Options</span>
+              <Button type="button" onClick={() => append({ name: "" } as any)}>
+                Add Option
+              </Button>
+            </div>
+          )}
+          <div
+            className={cn("grid w-full grid-cols-3 gap-2 overflow-y-auto", {
+              "grid-cols-1": showFormular,
+            })}
+          >
             {fields.map((field, index) => {
               return (
                 <div key={field.id} className="relative">
-                  <FormWizard
-                    config={[
-                      {
-                        register: register(
+                  {showFormular ? (
+                    <>
+                      <input
+                        className="w-full"
+                        {...register(
                           `options.${index}.name` as Path<TFieldValues>,
-                        ),
-                        label: "",
-                        placeholder: `Option ${index + 1}`,
-                        type: InputTypes.TEXT,
-                        required: true,
-                        errors,
-                        suffix: "CircleX",
-                        onSuffixClick: () => remove(index),
-                        suffixClass: "text-danger-default ",
-                      },
-                    ]}
-                  />
+                        )}
+                      />
+                      <FormWizard
+                        config={[
+                          {
+                            control: control as Control,
+                            name: `options.${index}.name` as const,
+                            label: "Generate Expression",
+                            placeholder: "Enter your question",
+                            type: InputTypes.FORMULAR,
+                            required: true,
+                            errors,
+                          },
+                        ]}
+                      />
+                    </>
+                  ) : (
+                    <FormWizard
+                      config={[
+                        {
+                          register: register(
+                            `options.${index}.name` as Path<TFieldValues>,
+                          ),
+                          label: "",
+                          placeholder: `Option ${index + 1}`,
+                          type: InputTypes.TEXT,
+                          required: true,
+                          errors,
+                          suffix: "CircleX",
+                          onSuffixClick: () => remove(index),
+                          suffixClass: "text-danger-default ",
+                        },
+                      ]}
+                    />
+                  )}
                 </div>
               );
             })}

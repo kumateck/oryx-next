@@ -3,6 +3,17 @@ import { z } from "zod";
 
 import { QuestionType } from "@/lib";
 
+export const ExpressionQuestionFormSchema = z.object({
+  id: z.string().optional(),
+  label: z.string().min(1, { message: "Question is required" }),
+  options: z
+    .array(
+      z.object({
+        name: z.string().min(1, { message: "Option cannot be empty" }),
+      }),
+    )
+    .length(1, { message: "At least one option is required" }),
+});
 export const QuestRequestSchema = z.object({
   id: z.string().optional(),
   label: z.string().min(1, "Question is required"),
@@ -45,3 +56,8 @@ const QuestionSchema = QuestRequestSchema.superRefine((data, ctx) => {
 
 export type QuestionRequestDto = z.infer<typeof QuestRequestSchema>;
 export const CreateQuestionValidator = zodResolver(QuestionSchema);
+
+export type ExpressionRequestDto = z.infer<typeof ExpressionQuestionFormSchema>;
+export const CreateExpressionValidator = zodResolver(
+  ExpressionQuestionFormSchema,
+);

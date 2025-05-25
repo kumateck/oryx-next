@@ -296,16 +296,18 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
         <Controller
           control={formInput.control}
           name={formInput.name}
-          render={({ field: { onChange, value } }) => (
-            <ExpressionInput
-              label={formInput.label}
-              required={formInput.required}
-              errors={formInput.errors}
-              value={value}
-              onChange={onChange}
-              name={formInput.name}
-            />
-          )}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <ExpressionInput
+                label={formInput.label}
+                required={formInput.required}
+                errors={formInput.errors}
+                value={value}
+                onChange={onChange}
+                name={formInput.name}
+              />
+            );
+          }}
         />
       );
     case InputTypes.MULTI:
