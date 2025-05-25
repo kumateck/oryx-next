@@ -3,6 +3,7 @@ import {
   Control,
   FieldErrors,
   FieldValues,
+  Path,
   UseFormRegister,
 } from "react-hook-form";
 
@@ -19,6 +20,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 }
 const OvertimeForm = <TFieldValues extends FieldValues, TContext>({
   control,
+  register,
   errors,
   defaultValues,
   departmentOptions,
@@ -29,6 +31,20 @@ const OvertimeForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         className="w-full space-y-5"
         config={[
+          {
+            register: register("code" as Path<TFieldValues>),
+            label: "Overtime Request ID",
+            placeholder: "Overtime request id will be generated",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            required: true,
+            description: (
+              <span className="text-neutral-seondary text-sm">
+                You can’t change the overtime request id
+              </span>
+            ),
+            errors,
+          },
           {
             label: "Overtime Date",
             control: control as Control,

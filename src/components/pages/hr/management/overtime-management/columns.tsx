@@ -81,7 +81,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
       </TableMenuAction> */}
       <Icon
         name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
+        className="h-5 w-5 cursor-pointer"
         onClick={() => {
           setDetails(row.original);
           setIsOpen(true);
@@ -96,7 +96,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
         }}
       />
 
-      {details.name && isOpen && (
+      {details.id && isOpen && (
         <Edit
           details={details}
           isOpen={isOpen}
@@ -128,7 +128,7 @@ export const columns: ColumnDef<OvertimeRequestDtoRead>[] = [
   {
     accessorKey: "code",
     header: "Overtime Request ID",
-    cell: ({ row }) => <div>{row.original.id}</div>,
+    cell: ({ row }) => <div>{row.original.code}</div>,
   },
   {
     accessorKey: "department",
@@ -147,28 +147,12 @@ export const columns: ColumnDef<OvertimeRequestDtoRead>[] = [
     ),
   },
   {
-    accessorKey: "startDateAndTime",
-    header: "Start Date & Time",
+    accessorKey: "startTimeAndEndTime",
+    header: "Start Time & End Time",
     cell: ({ row }) => (
       // { row }
       <div>
-        {row.original.startDate
-          ? format(row.original.startDate, "MMM dd, yyyy")
-          : "-"}{" "}
-        @ {row.original.startTime}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "endDateAndTime",
-    header: "End Date & Time",
-    cell: ({ row }) => (
-      // { row }
-      <div>
-        {row.original.endDate
-          ? format(row.original.endDate, "MMM dd, yyyy")
-          : "-"}{" "}
-        @ {row.original.endTime}
+        {row.original.startTime} - {row.original.endTime}
       </div>
     ),
   },

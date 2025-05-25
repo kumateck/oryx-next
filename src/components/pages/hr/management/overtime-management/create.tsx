@@ -12,16 +12,27 @@ import {
 } from "@/components/ui";
 import {
   CreateOvertimeRequest,
+  NamingType,
+  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useGetApiV1DepartmentQuery,
-  useGetApiV1EmployeeQuery,
-  useLazyGetApiV1WarehouseRackQuery,
+  useGetApiV1EmployeeDepartmentsByIdQuery,
+  useLazyGetApiV1OvertimeRequestsQuery,
   usePostApiV1OvertimeRequestsMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
+import {
+  ErrorResponse,
+  GenerateCodeOptions,
+  cn,
+  generateCode,
+  isErrorResponse,
+} from "@/lib/utils";
 
 import { CreateOvertimeValidator, OvertimeRequestDto } from "./types";
 import OvertimeForm from "./form";
-import { Option } from "@/lib";
+import { CODE_SETTINGS, Option } from "@/lib";
+import { useEffect } from "react";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 // import "./types";
 
@@ -30,7 +41,9 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const dispatch = useDispatch();
+  const [loadOvertimeRequests, { isFetching }] =
+    useLazyGetApiV1OvertimeRequestsQuery();
   const [createOvertimeRequest, { isLoading }] =
     usePostApiV1OvertimeRequestsMutation();
 
@@ -42,21 +55,12 @@ const Create = ({ isOpen, onClose }: Props) => {
     pageSize,
   });
 
+  const [loadDataforCodes] = useLazyGetApiV1OvertimeRequestsQuery();
+
   const departments = departmentResults?.data ?? [];
   const departmentOptions = departments?.map((department) => ({
     label: department?.name,
     value: department.id,
-  })) as Option[];
-
-  const { data: employeeResults } = useGetApiV1EmployeeQuery({
-    page,
-    pageSize,
-  });
-
-  const employees = employeeResults?.data ?? [];
-  const employeeOptions = employees?.map((employee) => ({
-    label: employee?.firstName + " " + employee?.lastName,
-    value: employee.id,
   })) as Option[];
 
   const {
@@ -65,17 +69,66 @@ const Create = ({ isOpen, onClose }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
+    setValue,
+    watch,
   } = useForm<OvertimeRequestDto>({
     resolver: CreateOvertimeValidator,
     mode: "all",
   });
 
+  const selectedDepartmentId = watch("departmentId")?.value;
+
+  // const { data: employeeResults } = useGetApiV1EmployeeQuery({
+  //   page,
+  //   pageSize,
+  //   department: selectedDepartmentId,
+  // });
+
+  const { data: employeeResultsById } = useGetApiV1EmployeeDepartmentsByIdQuery(
+    {
+      id: selectedDepartmentId,
+    },
+  );
+
+  const employeeOptions = employeeResultsById?.map((employee) => ({
+    label: employee?.firstName + " " + employee?.lastName,
+    value: employee.id,
+  })) as Option[];
+
+  const { data: codeConfig } =
+    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
+      modelType: CODE_SETTINGS.modelTypes.Overtime,
+    });
+
+  useEffect(() => {
+    loadCodes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [codeConfig]);
+  const loadCodes = async () => {
+    //loadDataforCodes
+    const generatePayload: GenerateCodeOptions = {
+      maxlength: Number(codeConfig?.maximumNameLength),
+      minlength: Number(codeConfig?.minimumNameLength),
+      prefix: codeConfig?.prefix as string,
+      type: codeConfig?.namingType as NamingType,
+    };
+    const productsResponse = await loadDataforCodes({
+      page: 1,
+      pageSize: 1,
+    }).unwrap();
+
+    const products = productsResponse?.totalRecordCount ?? 0;
+
+    generatePayload.seriesCounter = products + 1;
+    const code = await generateCode(generatePayload);
+    setValue("code", code);
+  };
+
   const onSubmit = async (data: OvertimeRequestDto) => {
     try {
       const payload = {
-        startDate: data.overtimeDate.toISOString(),
+        code: data.code as string,
         overtimeDate: data.overtimeDate.toISOString(),
-        endDate: data.overtimeDate.toISOString(),
         startTime: data.startTime,
         endTime: data.endTime,
         departmentId: data.departmentId.value,
@@ -87,9 +140,10 @@ const Create = ({ isOpen, onClose }: Props) => {
         createOvertimeRequest: {
           ...payload,
         },
-      });
+      }).unwrap();
       toast.success("Overtime request created successfully");
-      loadWarehouseLocationRacks({
+      dispatch(commonActions.setTriggerReload());
+      loadOvertimeRequests({
         page: 1,
         pageSize: 10,
       });
@@ -120,11 +174,15 @@ const Create = ({ isOpen, onClose }: Props) => {
               Cancel
             </Button>
 
-            <Button variant={"default"} className="flex items-center gap-2">
+            <Button
+              variant={"default"}
+              className="flex items-center gap-2"
+              disabled={isLoading || isFetching}
+            >
               <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": isLoading,
+                  "animate-spin": isLoading || isFetching,
                 })}
               />
               <span>Save</span>{" "}

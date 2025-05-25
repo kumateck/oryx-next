@@ -15,7 +15,7 @@ import {
   CreateOvertimeRequest,
   OvertimeRequestDtoRead,
   useGetApiV1DepartmentQuery,
-  useGetApiV1EmployeeQuery,
+  useGetApiV1EmployeeDepartmentsByIdQuery,
   useLazyGetApiV1OvertimeRequestsQuery,
   usePutApiV1OvertimeRequestsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -23,6 +23,8 @@ import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { CreateOvertimeValidator, OvertimeRequestDto } from "./types";
 import OvertimeForm from "./form";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 // import "./types";
 
@@ -32,6 +34,34 @@ interface Props {
   details: OvertimeRequestDtoRead;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
+  const dispatch = useDispatch();
+  const defaultDepartment = {
+    label: details?.department?.name as string,
+    value: details?.department?.id as string,
+  };
+
+  const {
+    register,
+    control,
+    formState: { errors },
+    reset,
+    handleSubmit,
+    watch,
+  } = useForm<OvertimeRequestDto>({
+    resolver: CreateOvertimeValidator,
+    mode: "all",
+    defaultValues: {
+      code: details.code as string,
+      overtimeDate: new Date(details.overtimeDate as string),
+      departmentId: defaultDepartment,
+      startTime: details.startTime as string,
+      endTime: details.endTime as string,
+      employeeIds: details.employees?.map((employee) => ({
+        value: employee.id as string,
+        label: employee.firstName + " " + employee.lastName,
+      })),
+    },
+  });
   const [loadOvertimeRequest] = useLazyGetApiV1OvertimeRequestsQuery();
 
   const [editOvertimeRequest, { isLoading }] =
@@ -43,10 +73,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   //     value: dept.id,
   //   })) || [];
 
-  const defaultDepartment = {
-    label: details?.department?.name as string,
-    value: details?.department?.id as string,
-  };
   const pageSize = 30;
   const page = 1;
 
@@ -61,44 +87,24 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     value: department.id,
   })) as Option[];
 
-  const { data: employeeResults } = useGetApiV1EmployeeQuery({
-    page,
-    pageSize,
-  });
+  const selectedDepartmentId = watch("departmentId")?.value;
 
-  const employees = employeeResults?.data ?? [];
-  const employeeOptions = employees?.map((employee) => ({
+  const { data: employeeResultsById } = useGetApiV1EmployeeDepartmentsByIdQuery(
+    {
+      id: selectedDepartmentId,
+    },
+  );
+
+  const employeeOptions = employeeResultsById?.map((employee) => ({
     label: employee?.firstName + " " + employee?.lastName,
     value: employee.id,
   })) as Option[];
 
-  const {
-    register,
-    control,
-    formState: { errors },
-    reset,
-    handleSubmit,
-  } = useForm<OvertimeRequestDto>({
-    resolver: CreateOvertimeValidator,
-    mode: "all",
-    defaultValues: {
-      overtimeDate: new Date(details.overtimeDate as string),
-      departmentId: defaultDepartment,
-      startTime: details.startTime as string,
-      endTime: details.endTime as string,
-      employeeIds: details.employees?.map((employee) => ({
-        value: employee.id as string,
-        label: employee.firstName + " " + employee.lastName,
-      })),
-    },
-  });
-
   const onSubmit = async (data: OvertimeRequestDto) => {
     try {
       const payload = {
-        startDate: data.overtimeDate.toISOString(),
+        code: data.code as string,
         overtimeDate: data.overtimeDate.toISOString(),
-        endDate: data.overtimeDate.toISOString(),
         startTime: data.startTime,
         endTime: data.endTime,
         departmentId: data.departmentId.value,
@@ -111,8 +117,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         createOvertimeRequest: {
           ...payload,
         },
-      });
+      }).unwrap();
       toast.success("Overtime request updated successfully");
+      dispatch(commonActions.setTriggerReload());
       loadOvertimeRequest({
         page: 1,
         pageSize: 10,

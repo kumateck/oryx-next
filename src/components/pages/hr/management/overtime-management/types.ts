@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const CreateOvertimeSchema = z.object({
+  code: z.string().optional(),
   overtimeDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
