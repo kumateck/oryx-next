@@ -81,7 +81,7 @@ const FormBuilder = () => {
             }}
           />
 
-          <PageTitle title={"Worfkflow Builder"} />
+          <PageTitle title={"Workflow Builder"} />
         </div>
       </div>
       <Tabs defaultValue={activeTab}>

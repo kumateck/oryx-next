@@ -92,14 +92,14 @@ export const settingCategories: SettingCategory[] = [
       },
       { name: "Code Settings", path: "/settings/code-settings", icon: "Code" },
       {
-        name: "Form Builder",
-        path: "/settings/form-builder",
+        name: "Workflow Builder",
+        path: "/settings/workflow-config",
         icon: "FileText",
       },
     ],
   },
   {
-    title: "User & Access",
+    title: "User Account Management",
     icon: "User",
     items: [
       { name: "Approvals", path: "/settings/approvals", icon: "ClipboardList" },
@@ -128,7 +128,7 @@ export const settingCategories: SettingCategory[] = [
     ],
   },
   {
-    title: "Organization Structure",
+    title: "Organizational Structure",
     icon: "Building2",
     items: [
       { name: "Departments", path: "/settings/departments", icon: "Building" },

@@ -69,7 +69,7 @@ const Page = () => {
 
       <ServerDatatable
         // onRowClick={(row) => {
-        //   router.push(`/hr/leave-management/${row.id}/details`);
+        //   router.push(`/settings/shift-schedule/${row.id}/calendar`);
         // }}
         data={data}
         columns={columns}
