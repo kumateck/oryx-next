@@ -13,12 +13,15 @@ import {
 import {
   OvertimeRequestDtoRead,
   WarehouseLocationRackDto,
-  useDeleteApiV1WarehouseRackByRackIdMutation,
-  useLazyGetApiV1WarehouseRackQuery,
+  useDeleteApiV1OvertimeRequestsByIdMutation,
+  useLazyGetApiV1OvertimeRequestsQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
 import { format } from "date-fns";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
+
 // import { useUserPermissions } from "@/hooks/use-permission";
 
 const batchStatusColors: Record<OvertimeStatus, string> = {
@@ -33,14 +36,14 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1WarehouseRackByRackIdMutation();
+  const [deleteMutation] = useDeleteApiV1OvertimeRequestsByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<WarehouseLocationRackDto>(
     {} as WarehouseLocationRackDto,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
-
+  const [loadOvertimeRequests] = useLazyGetApiV1OvertimeRequestsQuery();
+  const dispatch = useDispatch();
   // check permissions here
   // const { hasPermissionAccess } = useUserPermissions();
   return (
@@ -109,10 +112,11 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              rackId: details.id as string,
+              id: details.id as string,
             }).unwrap();
             toast.success("Overtime request deleted successfully");
-            loadWarehouseLocationRacks({
+            dispatch(commonActions.setTriggerReload());
+            loadOvertimeRequests({
               pageSize: 30,
             });
           } catch (error) {
