@@ -317,6 +317,14 @@ export const ROUTES: Route[] = [
             title: "Overtime Management",
             url: "/hr/overtime-management",
           },
+          {
+            title: "Standard Test Procedures",
+            url: "/hr/standard-test-procedures",
+          },
+          {
+            title: "Attendance Report",
+            url: "/hr/attendance-report",
+          },
           // {
           //   title: "Shift Schedule",
           //   url: "/hr/shift-schedule",
