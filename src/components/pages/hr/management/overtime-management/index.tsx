@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import {
-  useGetApiV1WarehouseRackQuery,
-  useLazyGetApiV1WarehouseRackQuery,
+  useGetApiV1OvertimeRequestsQuery,
+  useLazyGetApiV1OvertimeRequestsQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -14,38 +14,48 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
-import { PermissionKeys } from "@/lib";
-import NoAccess from "@/shared/no-access";
-import { useUserPermissions } from "@/hooks/use-permission";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
+import { useSelector } from "@/lib/redux/store";
+// import { PermissionKeys } from "@/lib";
+// import NoAccess from "@/shared/no-access";
+// import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1WarehouseRackQuery({
+  const { data: result, isLoading } = useGetApiV1OvertimeRequestsQuery({
     page,
     pageSize,
   });
-  const [loadRacks, { isFetching }] = useLazyGetApiV1WarehouseRackQuery();
+  const [loadOvertimeRequests, { isFetching }] =
+    useLazyGetApiV1OvertimeRequestsQuery();
 
   useEffect(() => {
-    loadRacks({
+    loadOvertimeRequests({
       page,
       pageSize,
     });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
   //Check Permision
-  const { hasPermissionAccess } = useUserPermissions();
-  const hasAccess = hasPermissionAccess(PermissionKeys.warehouse.viewRacks);
+  // const { hasPermissionAccess } = useUserPermissions();
+  // const hasAccess = hasPermissionAccess(
+  //   PermissionKeys.humanResources.viewOvertimeRequests,
+  // );
 
-  if (!hasAccess) {
-    //redirect to no access
-    return <NoAccess />;
-  }
+  // if (!hasAccess) {
+  //   //redirect to no access
+  //   return <NoAccess />;
+  // }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

@@ -61,6 +61,7 @@ export const CODE_SETTINGS = {
     BillingSheet: "BillingSheet",
     Employee: "Employee",
     LeaveRequest: "LeaveRequest",
+    Overtime: "Overtime",
   },
   nameTypes: {
     Time: 2,
