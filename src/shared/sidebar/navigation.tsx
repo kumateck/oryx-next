@@ -39,6 +39,12 @@ export const ROUTES: Route[] = [
         icon: "SquareDashedKanban",
         isActive: false,
       },
+      {
+        title: "Plan Shift",
+        url: "/plan-shift",
+        icon: "SquareDashedKanban",
+        isActive: false,
+      },
     ],
   },
   {
@@ -379,6 +385,17 @@ export const ROUTES: Route[] = [
         title: "Pending Approvals",
         url: "/qa/pending-approvals",
         icon: "CircleDotDashed",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Quality Control",
+    menu: [
+      {
+        title: "Standard Test Procedures",
+        url: "/qc/stp",
+        icon: "BookUser",
         isActive: false,
       },
     ],

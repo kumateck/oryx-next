@@ -40,11 +40,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     value: details?.department?.id as string,
   };
 
-  const defaultEmployees =
-    details.employees?.map((emp) => ({
-      label: emp.firstName + " " + emp.lastName,
-      value: emp.id,
-    })) || [];
+  // const defaultEmployees =
+  //   details.employees?.map((emp) => ({
+  //     label: emp.firstName + " " + emp.lastName,
+  //     value: emp.id,
+  //   })) || [];
 
   const {
     register,
@@ -62,7 +62,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       departmentId: defaultDepartment,
       startTime: details.startTime as string,
       endTime: details.endTime as string,
-      employeeIds: defaultEmployees,
+      // employeeIds: defaultEmployees,
     },
   });
   const [loadOvertimeRequest] = useLazyGetApiV1OvertimeRequestsQuery();
