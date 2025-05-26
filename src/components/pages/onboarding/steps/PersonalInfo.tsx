@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Control,
   FieldErrors,
@@ -8,18 +7,8 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import {
-  COLLECTION_TYPES,
-  Gender,
-  InputTypes,
-  MaritalStatus,
-  Option,
-  Religions,
-} from "@/lib";
-import {
-  PostApiV1CollectionApiArg,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { Gender, InputTypes, MaritalStatus, Option, Religions } from "@/lib";
+import { useGetApiV1CountriesQuery } from "@/lib/redux/api/openapi.generated";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -32,23 +21,12 @@ const PersonalInfoStep = <TFieldValues extends FieldValues, TContext>({
   control,
   errors,
 }: Props<TFieldValues, TContext>) => {
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
+  const { data: countriesData } = useGetApiV1CountriesQuery({});
 
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.Country],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
+  const countryOptions = countriesData?.map((uom) => ({
+    label: uom.name,
+    value: uom.id,
+  })) as Option[];
 
   const maritalStatusOptions = Object.entries(MaritalStatus)
     .filter(([key]) => isNaN(Number(key)))
