@@ -3,13 +3,15 @@ name: Build and Deploy Docker Image
 on:
   push:
     branches:
-      - staging
+      - main
 
 env:
-  DOCKER_IMAGE_NAME: kumateck/staging-oryx-erp-web
-  CONTAINER_NAME: staging-oryx-erp-web
+  DOCKER_IMAGE_NAME: kumateck/test-oryx-erp-web
+  CONTAINER_NAME: test-oryx-erp-web
   HOST_PORT: 3007
-  CONTAINER_PORT: 3007
+  CONTAINER_PORT: 3000
+  NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8087/
+
 
 jobs:
   build:
@@ -32,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          file: staging.Dockerfile  
+          file: test.Dockerfile  
           tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
           no-cache: true  
 
