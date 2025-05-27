@@ -34,11 +34,11 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  detailts: CreateStandardTestProcedureDto;
+  details: CreateStandardTestProcedureDto;
   id: string;
 };
 
-export const Edit = ({ isOpen, id, onClose, detailts }: Props) => {
+export const Edit = ({ isOpen, id, onClose, details }: Props) => {
   const [updatetMaterialSTPMutation, { isLoading }] =
     usePutApiV1MaterialStpsByIdMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
@@ -54,9 +54,9 @@ export const Edit = ({ isOpen, id, onClose, detailts }: Props) => {
     resolver: StandardTestProcedureValidator,
     mode: "all",
     defaultValues: {
-      stpNumber: detailts.stpNumber,
-      materialId: detailts.materialId,
-      description: detailts.description,
+      stpNumber: details.stpNumber,
+      materialId: details.materialId,
+      description: details.description,
     },
   });
 

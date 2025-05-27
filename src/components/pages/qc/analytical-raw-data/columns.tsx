@@ -1,8 +1,8 @@
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  MaterialStandardTestProcedureDto,
-  useDeleteApiV1MaterialStpsByIdMutation,
+  MaterialAnalyticalRawDataDto,
+  useDeleteApiV1MaterialArdByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -10,19 +10,20 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Edit } from "./edit";
+import { MaterialArdSchemaType } from "./types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 export function DataTableRowActions<
-  TData extends MaterialStandardTestProcedureDto,
+  TData extends MaterialAnalyticalRawDataDto,
 >({ row }: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [details, setDetails] = useState<MaterialStandardTestProcedureDto>(
-    {} as MaterialStandardTestProcedureDto,
+  const [details, setDetails] = useState<MaterialAnalyticalRawDataDto>(
+    {} as MaterialAnalyticalRawDataDto,
   );
-  const [deleteMaterialSTPMutation] = useDeleteApiV1MaterialStpsByIdMutation();
+  const [deleteMaterialARDMutation] = useDeleteApiV1MaterialArdByIdMutation();
   const dispatch = useDispatch();
 
   return (
@@ -53,14 +54,20 @@ export function DataTableRowActions<
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
           id={details.id as string}
-          details={{
-            stpNumber: details.stpNumber as string,
-            materialId: {
-              value: details.materialId as string,
-              label: details.material?.name as string,
-            },
-            description: details.description as string,
-          }}
+          details={
+            {
+              description: details?.description,
+              stpId: {
+                value: details.stpId as string,
+                label: details.stpId as string,
+              },
+              formId: {
+                value: details.formId as string,
+                label: details.formId as string,
+              },
+              specNumber: details.specNumber as string,
+            } as MaterialArdSchemaType
+          }
         />
       )}
 
@@ -70,12 +77,12 @@ export function DataTableRowActions<
         onConfirm={async () => {
           if (!details.id) return;
           try {
-            await deleteMaterialSTPMutation({
+            await deleteMaterialARDMutation({
               id: details.id,
-              module: AuditModules.settings.name,
-              subModule: AuditModules.settings.standardTestProcedure,
+              module: AuditModules.qualityAssurance.name,
+              subModule: AuditModules.qualityAssurance.analyticalRawData,
             }).unwrap();
-            toast.success("Standart test procedure deleted successfully");
+            toast.success("Material ARD deleted successfully");
             dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -86,16 +93,16 @@ export function DataTableRowActions<
   );
 }
 
-export const columns: ColumnDef<MaterialStandardTestProcedureDto>[] = [
+export const columns: ColumnDef<MaterialAnalyticalRawDataDto>[] = [
+  {
+    accessorKey: "Name",
+    header: "Material Name",
+    cell: ({ row }) => <div>{row.original.id}</div>,
+  },
   {
     accessorKey: "stpNumber",
     header: "STP Number",
-    cell: ({ row }) => <div>{row.original.stpNumber}</div>,
-  },
-  {
-    accessorKey: "materialId",
-    header: "Material Number",
-    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
+    cell: ({ row }) => <div>{row.original?.stpNumber}</div>,
   },
   {
     id: "actions",

@@ -402,6 +402,12 @@ export const ROUTES: Route[] = [
         icon: "BookUser",
         isActive: false,
       },
+      {
+        title: "Analytical Raw Data",
+        url: "/qc/analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
     ],
   },
   {
