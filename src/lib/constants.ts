@@ -627,6 +627,7 @@ export const AuditModules = {
     leaveManagement: "Leave Request",
     leaveTypeConfiguration: "Leave Type",
     overTimeMangement: "Over Time",
+    staffRequisition: "Staff Requisition",
   },
 
   accessManagement: {

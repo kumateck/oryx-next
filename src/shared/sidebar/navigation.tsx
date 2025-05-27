@@ -323,6 +323,10 @@ export const ROUTES: Route[] = [
             title: "Overtime Management",
             url: "/hr/overtime-management",
           },
+          {
+            title: "Staff Requisition",
+            url: "/hr/staff-requisition",
+          },
           // {
           //   title: "Shift Schedule",
           //   url: "/hr/shift-schedule",
