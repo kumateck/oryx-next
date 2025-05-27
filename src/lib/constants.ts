@@ -644,6 +644,7 @@ export const AuditModules = {
     name: "Quality Assurance",
     issueBMR: "Issue BMR",
     pendingApprovals: "Pending Approvals",
+    analyticalRawData: "Analytical Raw Data",
   },
 
   settings: {
