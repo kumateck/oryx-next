@@ -422,3 +422,13 @@ export enum OvertimeStatus {
   Approved = 1,
   Rejected = 2,
 }
+
+export enum StaffRequisitionType {
+  Budgeted = 0,
+  Unbudgeted = 1,
+}
+
+export enum AppointmentType {
+  Budgeted = 0,
+  Unbudgeted = 1,
+}
