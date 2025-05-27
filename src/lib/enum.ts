@@ -429,6 +429,6 @@ export enum StaffRequisitionType {
 }
 
 export enum AppointmentType {
-  Budgeted = 0,
-  Unbudgeted = 1,
+  New = 0,
+  Replacement = 1,
 }

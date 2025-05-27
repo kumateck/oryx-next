@@ -3,14 +3,19 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  AppointmentType,
+  AuditModules,
+  ErrorResponse,
+  isErrorResponse,
+  splitWords,
+} from "@/lib";
 import {
   StaffRequisitionDtoRead,
   useDeleteApiV1StaffRequisitionsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
-// import { TableMenuAction } from "@/shared/table-menu";
-// import Edit from "./edit";
+import Edit from "./edit";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { format } from "date-fns";
@@ -23,7 +28,7 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
   const [deleteMutation] = useDeleteApiV1StaffRequisitionsByIdMutation();
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<StaffRequisitionDtoRead>(
     {} as StaffRequisitionDtoRead,
   );
@@ -31,14 +36,14 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {/* <Icon
+      <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
           setDetails(row.original);
           setIsOpen(true);
         }}
-      /> */}
+      />
       <Icon
         name="Trash2"
         className="text-red-500 h-5 w-5 cursor-pointer"
@@ -48,13 +53,13 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
         }}
       />
 
-      {/* {details.id && isOpen && (
+      {details.id && isOpen && (
         <Edit
           details={details}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
         />
-      )} */}
+      )}
 
       <ConfirmDeleteDialog
         open={isDeleteOpen}
@@ -101,7 +106,13 @@ export const columns: ColumnDef<StaffRequisitionDtoRead>[] = [
   {
     accessorKey: "appointmentId",
     header: "Appointment Type",
-    cell: ({ row }) => <div>{row.original.appointmentType}</div>,
+    cell: ({ row }) => (
+      <div>
+        {splitWords(
+          AppointmentType[row.original.appointmentType as AppointmentType],
+        )}
+      </div>
+    ),
   },
   {
     accessorKey: "requestUrgency",

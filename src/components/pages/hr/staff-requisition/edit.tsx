@@ -15,16 +15,18 @@ import {
   AppointmentType as AppointmentTypeEnum,
   AuditModules,
   Option,
+  StaffRequisitionType,
 } from "@/lib";
 import {
   AppointmentType,
   BudgetStatus,
   StaffRequisitionDtoRead,
   useGetApiV1DesignationQuery,
+  usePutApiV1StaffRequisitionsByIdMutation,
   //   usePutApiV1LeaveTypeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import { ErrorResponse, isErrorResponse } from "@/lib/utils";
+import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import {
   CreateStaffRequisitionValidator,
@@ -39,6 +41,8 @@ interface Props {
   details: StaffRequisitionDtoRead;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
+  const [editStaffRequisition, { isLoading }] =
+    usePutApiV1StaffRequisitionsByIdMutation();
   const defaultDesignations = {
     label: details.designation?.name ?? "",
     value: details.designation?.id,
@@ -68,16 +72,18 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       numberOfStaff: details.staffRequired,
       designationId: defaultDesignations,
-      qualification: details.qualification as string,
+      qualification: (details.qualification as string) || "",
       appointmentType: {
         value: details.appointmentType?.toString() as string,
         label: AppointmentTypeEnum[details.appointmentType ?? 0] || "",
       },
       requestUrgency: new Date(details.requestUrgency as string),
-      budgeted: details.budgetStatus,
-      educationQualification: details.educationalQualification as string,
-      justification: details.justification as string,
-      additionalRequirements: details.additionalRequests as string,
+      budgeted:
+        details.budgetStatus?.toString() as unknown as StaffRequisitionType,
+      educationQualification:
+        (details.educationalQualification as string) || "",
+      justification: (details.justification as string) || "",
+      additionalRequirements: (details.additionalRequests as string) || "",
     },
   });
 
@@ -129,12 +135,12 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         additionalRequirements: data.additionalRequirements || "",
       };
       console.log(payload);
-      //   await editLeaveType({
-      //     id: details.id as string,
-      //     createLeaveTypeRequest: payload,
-      //     module: AuditModules.management.name,
-      //     subModule: AuditModules.management.staffRequisition,
-      //   });
+      await editStaffRequisition({
+        id: details.id as string,
+        createStaffRequisitionRequest: payload,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.staffRequisition,
+      });
       toast.success("Staff request updated successfully");
       dispatch(commonActions.setTriggerReload());
       reset();
@@ -197,16 +203,15 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
                 variant={"default"}
                 type="submit"
                 className="flex items-center gap-2"
-                // disabled={isLoading}
+                disabled={isLoading}
               >
-                {/* <Icon
-                  name={isLoading ? "LoaderCircle" : "Plus"}
+                <Icon
+                  name={isLoading ? "LoaderCircle" : "Save"}
                   className={cn("h-4 w-4", {
                     "animate-spin": isLoading,
                   })}
-                /> */}
-                <Icon name={"Plus"} className="h-4 w-4" />
-                <span>Create</span>
+                />
+                <span>Update</span>
               </Button>
             )}
           </DialogFooter>
