@@ -17100,6 +17100,7 @@ export type StaffRequisitionDto = {
   qualification?: string | null;
   educationalQualification?: string | null;
   additionalRequests?: string | null;
+  departmentName?: string | null;
   appointmentType?: AppointmentType;
   staffRequisitionStatus?: StaffRequisitionStatus;
   requestUrgency?: string;
@@ -17117,6 +17118,7 @@ export type StaffRequisitionDtoRead = {
   qualification?: string | null;
   educationalQualification?: string | null;
   additionalRequests?: string | null;
+  departmentName?: string | null;
   appointmentType?: AppointmentType;
   staffRequisitionStatus?: StaffRequisitionStatus;
   requestUrgency?: string;
