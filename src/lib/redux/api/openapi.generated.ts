@@ -1871,6 +1871,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1MaterialHoldingMoveByHoldingMaterialId: build.mutation<
+      PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiResponse,
+      PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/holding/move/${queryArg.holdingMaterialId}`,
+        method: "POST",
+        body: queryArg.moveShelfMaterialBatchRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1MaterialArd: build.mutation<
       PostApiV1MaterialArdApiResponse,
       PostApiV1MaterialArdApiArg
@@ -4985,6 +4999,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1StaffRequisitionsById: build.mutation<
+      PutApiV1StaffRequisitionsByIdApiResponse,
+      PutApiV1StaffRequisitionsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/staff-requisitions/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createStaffRequisitionRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     deleteApiV1StaffRequisitionsById: build.mutation<
       DeleteApiV1StaffRequisitionsByIdApiResponse,
       DeleteApiV1StaffRequisitionsByIdApiArg
@@ -7358,6 +7386,18 @@ export type GetApiV1MaterialHoldingApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiResponse =
+  unknown;
+export type PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiArg = {
+  /** The holding material for which the items are to be moved */
+  holdingMaterialId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  /** The MoveShelfMaterialBatchRequest object. */
+  moveShelfMaterialBatchRequest: MoveShelfMaterialBatchRequest;
+};
 export type PostApiV1MaterialArdApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialArdApiArg = {
   /** The module this request falls under */
@@ -7367,7 +7407,7 @@ export type PostApiV1MaterialArdApiArg = {
   createMaterialAnalyticalRawDataRequest: CreateMaterialAnalyticalRawDataRequest;
 };
 export type GetApiV1MaterialArdApiResponse =
-  /** status 200 OK */ MaterialAnalyticalRawDataDtoIEnumerablePaginateable;
+  /** status 200 OK */ MaterialAnalyticalRawDataDtoIEnumerablePaginateableRead;
 export type GetApiV1MaterialArdApiArg = {
   page?: number;
   pageSize?: number;
@@ -7378,7 +7418,7 @@ export type GetApiV1MaterialArdApiArg = {
   subModule?: any;
 };
 export type GetApiV1MaterialArdByIdApiResponse =
-  /** status 200 OK */ MaterialAnalyticalRawDataDto;
+  /** status 200 OK */ MaterialAnalyticalRawDataDtoRead;
 export type GetApiV1MaterialArdByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -7387,7 +7427,7 @@ export type GetApiV1MaterialArdByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1MaterialArdByIdApiResponse =
-  /** status 204 No Content */ MaterialAnalyticalRawDataDto;
+  /** status 204 No Content */ MaterialAnalyticalRawDataDtoRead;
 export type PutApiV1MaterialArdByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -9693,6 +9733,16 @@ export type GetApiV1StaffRequisitionsByIdApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
+};
+export type PutApiV1StaffRequisitionsByIdApiResponse =
+  /** status 204 No Content */ StaffRequisitionDtoRead;
+export type PutApiV1StaffRequisitionsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createStaffRequisitionRequest: CreateStaffRequisitionRequest;
 };
 export type DeleteApiV1StaffRequisitionsByIdApiResponse = unknown;
 export type DeleteApiV1StaffRequisitionsByIdApiArg = {
@@ -14999,6 +15049,38 @@ export type CreateMaterialAnalyticalRawDataRequest = {
   stpId: string;
   formId: string;
 };
+export type MaterialStandardTestProcedure = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  stpNumber?: string | null;
+  materialId?: string;
+  material?: Material;
+  description?: string | null;
+};
+export type MaterialStandardTestProcedureRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  stpNumber?: string | null;
+  materialId?: string;
+  material?: MaterialRead;
+  description?: string | null;
+};
 export type MaterialAnalyticalRawDataDto = {
   id?: string;
   createdBy?: UserDto;
@@ -15008,9 +15090,30 @@ export type MaterialAnalyticalRawDataDto = {
   description?: string | null;
   stpId?: string;
   formId?: string;
+  materialStandardTestProcedure?: MaterialStandardTestProcedure;
+};
+export type MaterialAnalyticalRawDataDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  stpNumber?: string | null;
+  specNumber?: string | null;
+  description?: string | null;
+  stpId?: string;
+  formId?: string;
+  materialStandardTestProcedure?: MaterialStandardTestProcedureRead;
 };
 export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: MaterialAnalyticalRawDataDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type MaterialAnalyticalRawDataDtoIEnumerablePaginateableRead = {
+  data?: MaterialAnalyticalRawDataDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -15024,20 +15127,20 @@ export type CreateMaterialStandardTestProcedureRequest = {
   description?: string | null;
 };
 export type MaterialStandardTestProcedureDto = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   stpNumber?: string | null;
   materialId?: string;
   material?: Material;
   description?: string | null;
 };
 export type MaterialStandardTestProcedureDtoRead = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   stpNumber?: string | null;
   materialId?: string;
   material?: MaterialRead;
@@ -16701,19 +16804,19 @@ export type CreateProductStandardTestProcedureRequest = {
   productId: string;
 };
 export type ProductStandardTestProcedureDto = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   stpNumber?: string | null;
   productId?: string;
   product?: Product;
 };
 export type ProductStandardTestProcedureDtoRead = {
+  id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  id?: string;
   stpNumber?: string | null;
   productId?: string;
   product?: ProductRead;
@@ -16997,6 +17100,7 @@ export type StaffRequisitionDto = {
   qualification?: string | null;
   educationalQualification?: string | null;
   additionalRequests?: string | null;
+  departmentName?: string | null;
   appointmentType?: AppointmentType;
   staffRequisitionStatus?: StaffRequisitionStatus;
   requestUrgency?: string;
@@ -17014,6 +17118,7 @@ export type StaffRequisitionDtoRead = {
   qualification?: string | null;
   educationalQualification?: string | null;
   additionalRequests?: string | null;
+  departmentName?: string | null;
   appointmentType?: AppointmentType;
   staffRequisitionStatus?: StaffRequisitionStatus;
   requestUrgency?: string;
@@ -17712,6 +17817,7 @@ export const {
   useLazyGetApiV1MaterialByMaterialIdUomQuery,
   useGetApiV1MaterialHoldingQuery,
   useLazyGetApiV1MaterialHoldingQuery,
+  usePostApiV1MaterialHoldingMoveByHoldingMaterialIdMutation,
   usePostApiV1MaterialArdMutation,
   useGetApiV1MaterialArdQuery,
   useLazyGetApiV1MaterialArdQuery,
@@ -18046,6 +18152,7 @@ export const {
   useLazyGetApiV1StaffRequisitionsQuery,
   useGetApiV1StaffRequisitionsByIdQuery,
   useLazyGetApiV1StaffRequisitionsByIdQuery,
+  usePutApiV1StaffRequisitionsByIdMutation,
   useDeleteApiV1StaffRequisitionsByIdMutation,
   usePostApiV1UserMutation,
   useGetApiV1UserQuery,

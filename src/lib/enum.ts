@@ -196,6 +196,31 @@ export enum InputTypes {
   SPECIAL_SELECT = "special-select",
   FORMULAR = "formular",
 }
+export enum CollectionTypes {
+  ProductCategory = "ProductCategory",
+  MaterialCategory = "MaterialCategory",
+  PackageCategory = "PackageCategory",
+  PackageType = "PackageType",
+  Resource = "Resource",
+  UnitOfMeasure = "UnitOfMeasure",
+  Material = "Material",
+  MaterialType = "MaterialType",
+  Warehouse = "Warehouse",
+  WarehouseLocation = "WarehouseLocation",
+  WarehouseLocationRack = "WarehouseLocationRack",
+  Product = "Product",
+  WorkCenter = "WorkCenter",
+  Operation = "Operation",
+  Role = "Role",
+  User = "User",
+  Country = "Country",
+  Currency = "Currency",
+  PackageStyle = "PackageStyle",
+  Charge = "Charge",
+  TermsOfPayment = "TermsOfPayment",
+  DeliveryMode = "DeliveryMode",
+  ShiftCategory = "ShiftCategory",
+}
 
 export enum Status {
   Open = "Open",
