@@ -38,6 +38,7 @@ export const COLLECTION_TYPES = {
   Charge: "Charge",
   TermsOfPayment: "TermsOfPayment",
   DeliveryMode: "DeliveryMode",
+  ShiftCategory: "ShiftCategory",
 };
 
 export const CODE_SETTINGS = {
