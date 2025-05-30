@@ -408,6 +408,12 @@ export const ROUTES: Route[] = [
         icon: "BookUser",
         isActive: false,
       },
+      {
+        title: "Goods Receipt Note",
+        url: "/qc/goods-receipt-note",
+        icon: "BookUser",
+        isActive: false,
+      },
     ],
   },
   {
