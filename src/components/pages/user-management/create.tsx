@@ -47,7 +47,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       console.log(data);
       const payload = {
         employeeId: data.employeeId.value,
-        roleName: data.roleId.value,
+        roleId: data.roleId.value,
       };
       await createUser({
         employeeUserDto: payload,
