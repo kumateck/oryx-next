@@ -44,8 +44,8 @@ function Page() {
 
   useEffect(() => {
     loadAnalyticalRawData({
-      page: 1,
-      pageSize: 30,
+      page: page,
+      pageSize: pageSize,
       searchQuery: searchValue,
     });
     if (triggerReload) {

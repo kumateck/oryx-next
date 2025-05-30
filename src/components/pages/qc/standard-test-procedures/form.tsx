@@ -26,12 +26,12 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
         className="py-3"
         config={[
           {
-            label: "Selete Material",
+            label: "Select Material",
             control: control as Control,
             type: InputTypes.SELECT,
             name: "materialId",
             required: true,
-            placeholder: "Selete Material",
+            placeholder: "Select Material",
             options: materialsOptions,
             errors,
           },
@@ -52,10 +52,10 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
-            label: "STP DescriptionS",
+            label: "STP Description",
             register: register("description" as Path<TFieldValues>),
             type: InputTypes.TEXT,
-            required: true,
+            required: false,
             placeholder: "STP description",
             errors,
           },

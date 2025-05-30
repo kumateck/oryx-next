@@ -58,7 +58,7 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             label: "Description",
             register: register("description" as Path<TFieldValues>),
             type: InputTypes.TEXTAREA,
-            required: true,
+            required: false,
             placeholder: "Description",
             errors,
           },
