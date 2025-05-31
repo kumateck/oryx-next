@@ -1,7 +1,7 @@
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { useState } from "react";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { GRNStatus, PermissionKeys } from "@/lib";
+import { PermissionKeys } from "@/lib";
 import { format } from "date-fns";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useUserPermissions } from "@/hooks/use-permission";
@@ -9,7 +9,12 @@ import { useUserPermissions } from "@/hooks/use-permission";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-
+export type GRNSItemStatus =
+  | "Approved"
+  | "Quarantine"
+  | "Under Test"
+  | "Test Complete"
+  | "Rejected";
 export type SampleData = {
   id: string;
   batchNumber: string;
@@ -20,20 +25,26 @@ export type SampleData = {
   resetDate: Date;
   invoiceNumber: string;
   quantity: number;
-  createdAt: Date;
-  status: GRNStatus;
+  status: GRNSItemStatus;
 };
 
-// const batchStatusColors: Record<GRNStatus, string> = {
-//   [GRNStatus.Pending]: "bg-gray-500 text-white",
-//   [GRNStatus.IN_PROGRESS]: "bg-green-100 text-green-800",
-//   [GRNStatus.Completed]: "bg-red-100 text-red-800",
-// };
+const batchStatusColors = (status: GRNSItemStatus) => {
+  switch (status) {
+    case "Approved":
+      return "bg-green-100 text-green-800";
+    case "Under Test":
+      return "bg-yellow-100 text-yellow-800";
+    case "Quarantine":
+      return "bg-red-100 text-red-800";
+    case "Test Complete":
+      return "bg-orange-100 text-orange-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
 export function DataTableRowActions<
   TData extends SampleData,
 >({}: DataTableRowActionsProps<TData>) {
-  // const [details, setDetails] = useState<LeaveRequestDto>();
-  // const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // const [isRecallOpen, setIsRecallOpen] = useState(false);
 
@@ -42,18 +53,6 @@ export function DataTableRowActions<
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {}}
-          >
-            <Icon
-              name="RefreshCcw"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Recall</span>
-          </div>
-        </DropdownMenuItem>
         <DropdownMenuItem className="group">
           {hasPermissionAccess(
             PermissionKeys.humanResources.editLeaveRequest,
@@ -156,20 +155,15 @@ export const columns: ColumnDef<SampleData>[] = [
     ),
   },
   {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => (
-      <div>
-        {row.original.createdAt
-          ? format(row.original?.createdAt, "MMMM dd, yyyy")
-          : "-"}
-      </div>
-    ),
-  },
-  {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <div>{row.original.status}</div>,
+    cell: ({ row }) => (
+      <div
+        className={`${batchStatusColors(row.original.status)} rounded-full px-2 py-1 text-xs font-medium`}
+      >
+        {row.original.status}
+      </div>
+    ),
   },
   {
     id: "actions",

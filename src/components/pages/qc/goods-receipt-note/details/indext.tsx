@@ -1,17 +1,17 @@
 "use client";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { Icon } from "@/components/ui";
-import { GRNStatus } from "@/lib";
+import { Button, Icon } from "@/components/ui";
 import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { ServerDatatable } from "@/shared/datatable";
+import { ListsTable } from "@/shared/datatable";
 import { columns, SampleData } from "./columns";
+import { CreateSampleMaterial } from "./create-sample";
 
 function Page() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(30);
+  const [isCreate, setIsCreate] = useState(false);
+
   const router = useRouter();
   const { id } = useParams();
   const isLoading = false;
@@ -21,13 +21,12 @@ function Page() {
     {
       id: "someid",
       expiryDate: new Date(),
-      invoiceNumber: "this is looking good",
-      createdAt: new Date(),
+      invoiceNumber: "200kg",
       batchNumber: "This is god",
-      status: GRNStatus.Completed,
+      status: "Approved",
       manufacturerName: "name",
       manufacturingDate: new Date(),
-      materialName: "this is material name",
+      materialName: "Material One",
       quantity: 40,
       resetDate: new Date(),
     },
@@ -35,6 +34,12 @@ function Page() {
   console.log(id);
   return (
     <PageWrapper>
+      {isCreate && (
+        <CreateSampleMaterial
+          isOpen={isCreate}
+          onClose={() => setIsCreate(false)}
+        />
+      )}
       <div
         className="group mb-2 flex items-center gap-1 hover:cursor-pointer"
         onClick={() => {
@@ -46,25 +51,16 @@ function Page() {
           <PageTitle title={"Receiving Area"} />
         </div>
       </div>
-      <ServerDatatable
-        onRowClick={(row) => {
-          router.push(`/qc/goods-receipt-note/${row.id}`);
-        }}
-        data={data}
-        columns={columns}
-        isLoading={isLoading || isFetching}
-        setPage={setPage}
-        setPageSize={setPageSize}
-        meta={{
-          pageIndex: page,
-          pageCount: page,
-          totalRecordCount: page,
-          numberOfPagesToShow: page,
-          startPageIndex: page,
-          stopPageIndex: page,
-          pageSize,
-        }}
-      />
+      <div className="flex flex-col w-full gap-4">
+        <ListsTable
+          data={data}
+          columns={columns}
+          isLoading={isLoading || isFetching}
+        />
+        <Button onClick={() => setIsCreate(true)} className=" ml-auto">
+          Sample Material
+        </Button>
+      </div>
     </PageWrapper>
   );
 }

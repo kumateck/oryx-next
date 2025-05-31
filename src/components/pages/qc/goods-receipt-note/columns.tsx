@@ -1,12 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ApprovalStatus, GRNStatus, splitWords } from "@/lib";
 import { format } from "date-fns";
 import { SampleData } from ".";
 
-const batchStatusColors: Record<GRNStatus, string> = {
-  [GRNStatus.Pending]: "bg-gray-500 text-white",
-  [GRNStatus.IN_PROGRESS]: "bg-green-100 text-green-800",
-  [GRNStatus.Completed]: "bg-red-100 text-red-800",
+const batchStatusColors = (status: string) => {
+  switch (status) {
+    case "Pending":
+      return "bg-grey-100 text-gray-800";
+    case "Approved":
+      return "bg-green-100 text-green-800";
+    case "In Progress":
+      return "bg-blue-100 text-blue-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
 };
 
 export const columns: ColumnDef<SampleData>[] = [
@@ -32,18 +38,14 @@ export const columns: ColumnDef<SampleData>[] = [
     ),
   },
   {
-    accessorKey: "action",
+    id: "status",
     header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.status as ApprovalStatus;
-      const formattedStatus = splitWords(ApprovalStatus[status]);
-      return (
-        <div
-          className={`inline-block rounded-full ml-auto px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-        >
-          {formattedStatus}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div
+        className={`${batchStatusColors(row.original.status.toLocaleString())} rounded-full px-2 py-1 w-fit text-center`}
+      >
+        {row.original.status}
+      </div>
+    ),
   },
 ];

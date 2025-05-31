@@ -4,14 +4,13 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import { useState } from "react";
-import { ApprovalStatus } from "@/lib";
 import { useRouter } from "next/navigation";
 
 export type SampleData = {
   id: string;
   createdAt: Date;
   items: number;
-  status: ApprovalStatus;
+  status: "Approved" | "In Progress" | "Pending";
 };
 
 function Page() {
@@ -26,13 +25,13 @@ function Page() {
       id: "someid",
       createdAt: new Date(),
       items: 40,
-      status: ApprovalStatus.Approved,
+      status: "Approved",
     },
     {
       id: "someid1",
       createdAt: new Date(),
       items: 20,
-      status: ApprovalStatus.Pending,
+      status: "In Progress",
     },
   ];
   return (
