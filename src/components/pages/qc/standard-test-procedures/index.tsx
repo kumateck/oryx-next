@@ -51,6 +51,7 @@ function Page() {
       page,
       pageSize,
       searchQuery: searchValue,
+      materialKind: kind || EMaterialKind.Raw,
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.standardTestProcedure,
     });
