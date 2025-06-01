@@ -91,7 +91,7 @@ export const columns: ColumnDef<StaffRequisitionDtoRead>[] = [
   {
     accessorKey: "department",
     header: "Department",
-    cell: ({ row }) => <div>{row.original.createdBy?.department?.name}</div>,
+    cell: ({ row }) => <div>{row.original.department?.name ?? "-"}</div>,
   },
   {
     accessorKey: "designation",

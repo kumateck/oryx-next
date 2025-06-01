@@ -21,8 +21,9 @@ import Link from "next/link";
 
 const statusColors: Record<LeaveStatus, string> = {
   [LeaveStatus.Pending]: "bg-gray-500 text-white",
-  [LeaveStatus.Approved]: "bg-green-500 text-white",
-  [LeaveStatus.Rejected]: "bg-red-500 text-white",
+  [LeaveStatus.Approved]: "bg-green-100 text-green-800",
+  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+  [LeaveStatus.Expired]: "bg-red-100 text-red-800",
 };
 
 function LeaveDetails() {

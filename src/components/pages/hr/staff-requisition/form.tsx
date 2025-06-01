@@ -17,6 +17,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   designationsOptions: Option[];
   appointmentOptions: Option[];
   defaultValues?: TFieldValues;
+  departmentOptions: Option[];
 }
 
 export const PositionDetailsForm = <
@@ -29,6 +30,7 @@ export const PositionDetailsForm = <
   designationsOptions,
   appointmentOptions,
   defaultValues,
+  departmentOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -44,6 +46,16 @@ export const PositionDetailsForm = <
             placeholder: "Enter number of staff",
             type: InputTypes.TEXT,
             required: true,
+            errors,
+          },
+          {
+            label: "Request Department",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: `departmentId` as Path<TFieldValues>,
+            required: true,
+            placeholder: "Select Department",
+            options: departmentOptions,
             errors,
           },
           {
@@ -110,7 +122,7 @@ export const BackgroundDetailsForm = <
   errors,
 }: Omit<
   Props<TFieldValues, TContext>,
-  "designationsOptions" | "appointmentOptions"
+  "designationsOptions" | "appointmentOptions" | "departmentOptions"
 >) => {
   return (
     <div className="w-full">
