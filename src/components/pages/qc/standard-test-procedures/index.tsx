@@ -12,8 +12,10 @@ import { Create } from "./create";
 import AccessTabs from "@/shared/access";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+// import { useDispatch } from "react-redux";
 
 function Page() {
+  // const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
@@ -52,21 +54,20 @@ function Page() {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
 
-
-  useEffect(() => {
-    loadStandardTest({
-      page,
-      pageSize,
-      searchQuery: searchValue,
-      materialKind: kind || EMaterialKind.Raw,
-      module: AuditModules.settings.name,
-      subModule: AuditModules.settings.standardTestProcedure,
-    });
-    if (triggerReload) {
-      dispatch(commonActions.unSetTriggerReload());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
+  // useEffect(() => {
+  //   loadStandardTest({
+  //     page,
+  //     pageSize,
+  //     searchQuery: searchValue,
+  //     materialKind: kind || EMaterialKind.Raw,
+  //     module: AuditModules.settings.name,
+  //     subModule: AuditModules.settings.standardTestProcedure,
+  //   });
+  //   if (triggerReload) {
+  //     dispatch(commonActions.unSetTriggerReload());
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
 
   const data = result?.data || [];
   return (
