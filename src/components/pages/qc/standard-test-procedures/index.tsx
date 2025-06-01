@@ -51,6 +51,23 @@ function Page() {
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
+
+
+  useEffect(() => {
+    loadStandardTest({
+      page,
+      pageSize,
+      searchQuery: searchValue,
+      materialKind: kind || EMaterialKind.Raw,
+      module: AuditModules.settings.name,
+      subModule: AuditModules.settings.standardTestProcedure,
+    });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
+
   const data = result?.data || [];
   return (
     <PageWrapper>

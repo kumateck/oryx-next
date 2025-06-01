@@ -38,6 +38,7 @@ export const COLLECTION_TYPES = {
   Charge: "Charge",
   TermsOfPayment: "TermsOfPayment",
   DeliveryMode: "DeliveryMode",
+  ShiftCategory: "ShiftCategory",
 };
 
 export const CODE_SETTINGS = {
@@ -627,6 +628,7 @@ export const AuditModules = {
     leaveManagement: "Leave Request",
     leaveTypeConfiguration: "Leave Type",
     overTimeMangement: "Over Time",
+    staffRequisition: "Staff Requisition",
   },
 
   accessManagement: {

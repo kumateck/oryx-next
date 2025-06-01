@@ -166,32 +166,42 @@ const siblingSchema = z.object({
   ),
 });
 
-const educationItemSchema = z.object({
-  schoolName: z.string().min(1, "School name is required"),
-  startDate: z.date({
-    required_error: "Start date is required",
-    invalid_type_error: "Invalid start date",
-  }),
-  endDate: z.date({
-    required_error: "End date is required",
-    invalid_type_error: "Invalid end date",
-  }),
-  major: z.string().min(1, "Major is required"),
-  qualification: z.string().min(1, "Qualification is required"),
-});
+const educationItemSchema = z
+  .object({
+    schoolName: z.string().min(1, "School name is required"),
+    startDate: z.date({
+      required_error: "Start date is required",
+      invalid_type_error: "Invalid start date",
+    }),
+    endDate: z.date({
+      required_error: "End date is required",
+      invalid_type_error: "Invalid end date",
+    }),
+    major: z.string().min(1, "Major is required"),
+    qualification: z.string().min(1, "Qualification is required"),
+  })
+  .refine((data) => data.startDate < data.endDate, {
+    message: "Start date must be before end date",
+    path: ["startDate"],
+  });
 
-const employmentItemSchema = z.object({
-  companyName: z.string().min(1, "Company name is required"),
-  position: z.string().min(1, "Position is required"),
-  startDate: z.date({
-    required_error: "Start date is required",
-    invalid_type_error: "Invalid start date",
-  }),
-  endDate: z.date({
-    required_error: "End date is required",
-    invalid_type_error: "Invalid end date",
-  }),
-});
+const employmentItemSchema = z
+  .object({
+    companyName: z.string().min(1, "Company name is required"),
+    position: z.string().min(1, "Position is required"),
+    startDate: z.date({
+      required_error: "Start date is required",
+      invalid_type_error: "Invalid start date",
+    }),
+    endDate: z.date({
+      required_error: "End date is required",
+      invalid_type_error: "Invalid end date",
+    }),
+  })
+  .refine((data) => data.startDate < data.endDate, {
+    message: "Start date must be before end date",
+    path: ["startDate"],
+  });
 
 const educationSchema = z.object({
   education: z.array(educationItemSchema).optional(),

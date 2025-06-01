@@ -34,10 +34,10 @@ export interface ModuleGroup {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props} className="z-20">
-      <SidebarHeader>
+      <SidebarHeader className="flex items-center justity-center">
         <SideLogo />
       </SidebarHeader>
-      <SidebarContent className="-mt-8 overflow-y-auto pb-24">
+      <SidebarContent className="-mt-8 hid-scrollbar overflow-y-auto pb-24">
         {ROUTES?.map((group, idx) => <NavMain group={group} key={idx} />)}
       </SidebarContent>
 

@@ -47,6 +47,7 @@ function Page() {
       page: page,
       pageSize: pageSize,
       searchQuery: searchValue,
+      materialKind: type || EMaterialKind.Raw,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());

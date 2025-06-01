@@ -1913,6 +1913,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -7280,6 +7281,7 @@ export type GetApiV1MaterialArdApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  materialKind?: number;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */

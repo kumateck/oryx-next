@@ -196,6 +196,31 @@ export enum InputTypes {
   SPECIAL_SELECT = "special-select",
   FORMULAR = "formular",
 }
+export enum CollectionTypes {
+  ProductCategory = "ProductCategory",
+  MaterialCategory = "MaterialCategory",
+  PackageCategory = "PackageCategory",
+  PackageType = "PackageType",
+  Resource = "Resource",
+  UnitOfMeasure = "UnitOfMeasure",
+  Material = "Material",
+  MaterialType = "MaterialType",
+  Warehouse = "Warehouse",
+  WarehouseLocation = "WarehouseLocation",
+  WarehouseLocationRack = "WarehouseLocationRack",
+  Product = "Product",
+  WorkCenter = "WorkCenter",
+  Operation = "Operation",
+  Role = "Role",
+  User = "User",
+  Country = "Country",
+  Currency = "Currency",
+  PackageStyle = "PackageStyle",
+  Charge = "Charge",
+  TermsOfPayment = "TermsOfPayment",
+  DeliveryMode = "DeliveryMode",
+  ShiftCategory = "ShiftCategory",
+}
 
 export enum Status {
   Open = "Open",
@@ -367,6 +392,11 @@ export enum ApprovalStatus {
   Approved = 1,
   Rejected = 2,
 }
+export enum GRNStatus {
+  Pending = 0,
+  IN_PROGRESS = 1,
+  Completed = 2,
+}
 
 export enum ShiftFrequency {
   Daily = 0,
@@ -421,4 +451,14 @@ export enum OvertimeStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,
+}
+
+export enum StaffRequisitionType {
+  Budgeted = 0,
+  Unbudgeted = 1,
+}
+
+export enum AppointmentType {
+  New = 0,
+  Replacement = 1,
 }
