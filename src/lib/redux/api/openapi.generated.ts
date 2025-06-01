@@ -10972,7 +10972,7 @@ export type LeaveTypeDtoRead = {
   isActive?: boolean;
   designations?: DesignationDtoRead[] | null;
 };
-export type LeaveStatus = 0 | 1 | 2 | 3 | 4;
+export type LeaveStatus = 0 | 1 | 2 | 3;
 export type LeaveRequestDto = {
   id?: string;
   createdBy?: UserDto;
@@ -16929,6 +16929,8 @@ export type ShiftScheduleDtoIEnumerablePaginateableRead = {
 export type AssignShiftRequest = {
   employeeIds: string[];
   shiftScheduleId: string;
+  shiftCategoryId: string;
+  scheduleDate: string;
   shiftName: string;
 };
 export type CreateShiftTypeRequest = {
@@ -16955,11 +16957,13 @@ export type CreateStaffRequisitionRequest = {
   educationalQualification: string;
   qualification: string;
   designationId: string;
+  departmentId: string;
   additionalRequests?: string | null;
   appointmentType: AppointmentType;
   requestUrgency: string;
   justification?: string | null;
   additionalRequirements?: string | null;
+  departmentName?: string | null;
 };
 export type StaffRequisitionStatus = 0 | 1 | 2 | 3 | 4;
 export type StaffRequisitionDto = {
@@ -16979,6 +16983,8 @@ export type StaffRequisitionDto = {
   additionalRequirements?: string | null;
   designationId?: string;
   designation?: DesignationDto;
+  departmentId?: string;
+  department?: DepartmentDto;
 };
 export type StaffRequisitionDtoRead = {
   id?: string;
@@ -16997,6 +17003,8 @@ export type StaffRequisitionDtoRead = {
   additionalRequirements?: string | null;
   designationId?: string;
   designation?: DesignationDtoRead;
+  departmentId?: string;
+  department?: DepartmentDtoRead;
 };
 export type StaffRequisitionDtoIEnumerablePaginateable = {
   data?: StaffRequisitionDto[] | null;

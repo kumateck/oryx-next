@@ -56,6 +56,22 @@ const Recall = ({ isOpen, onClose, details }: Props) => {
 
   const onSubmit = async (data: RecallRequestDto) => {
     try {
+      // Check if leave is currently active
+      const today = new Date();
+      const startDate = new Date(details.startDate as string);
+      const endDate = new Date(details.endDate as string);
+
+      // Check if today is between start date and end date
+      if (today < startDate) {
+        toast.error("Cannot recall leave that hasn't started yet");
+        return;
+      }
+
+      if (today > endDate) {
+        toast.error("Cannot recall leave that has already ended");
+        return;
+      }
+
       const payload = {
         employeeId: details.employee?.id as string,
         recallDate: data.returnDate.toISOString(),

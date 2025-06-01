@@ -12,6 +12,15 @@ export const CreateStaffRequisitionSchema = z.object({
       message: "Job title is required",
     },
   ),
+  departmentId: z.object(
+    {
+      value: z.string().min(1, { message: "Department is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Department is required",
+    },
+  ),
   qualification: z.string().min(1, { message: "Qualification is required" }),
   appointmentType: z.object(
     {
