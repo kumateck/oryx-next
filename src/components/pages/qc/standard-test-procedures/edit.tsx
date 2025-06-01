@@ -64,6 +64,7 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
   const { data: materials } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 1000,
+    kind: 0,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });

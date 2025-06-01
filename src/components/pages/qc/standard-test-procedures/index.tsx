@@ -2,13 +2,11 @@
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import { AuditModules, EMaterialKind } from "@/lib";
-import { useLazyGetApiV1MaterialStpsQuery } from "@/lib/redux/api/openapi.generated";
-import { commonActions } from "@/lib/redux/slices/common";
+import { useGetApiV1MaterialStpsQuery } from "@/lib/redux/api/openapi.generated";
 import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCallback, useState } from "react";
 import { columns } from "./columns";
 import { Create } from "./create";
 import AccessTabs from "@/shared/access";
@@ -21,18 +19,26 @@ function Page() {
   const [pageSize, setPageSize] = useState(30);
   const searchValue = useSelector((state) => state.common.searchInput);
 
-  const dispatch = useDispatch();
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const [loadStandardTest, { isLoading, data: result, isFetching }] =
-    useLazyGetApiV1MaterialStpsQuery();
-  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const kind = searchParams.get("kind") as unknown as EMaterialKind;
 
-  // searchParams with a provided key/value pair
-  const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
+  const {
+    data: result,
+    isLoading,
+    isFetching,
+  } = useGetApiV1MaterialStpsQuery({
+    page,
+    pageSize,
+    searchQuery: searchValue,
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.standardTestProcedure,
+    materialKind: kind || EMaterialKind.Raw,
+  });
+
+  // Extracts 'type' from URL
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -45,6 +51,7 @@ function Page() {
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
+
 
   useEffect(() => {
     loadStandardTest({

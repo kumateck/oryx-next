@@ -57,14 +57,14 @@ export function DataTableRowActions<
           details={
             {
               description: details?.description,
-              stpId: {
-                value: details.stpId as string,
-                label: details.materialStandardTestProcedure
-                  ?.stpNumber as string,
-              },
               formId: {
                 value: details.formId as string,
                 label: details.formId as string,
+              },
+              stpId: {
+                label: details.materialStandardTestProcedure
+                  ?.stpNumber as string,
+                value: details.stpId as string,
               },
               specNumber: details.specNumber as string,
             } as MaterialArdSchemaType
