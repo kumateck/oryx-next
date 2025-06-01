@@ -392,6 +392,11 @@ export enum ApprovalStatus {
   Approved = 1,
   Rejected = 2,
 }
+export enum GRNStatus {
+  Pending = 0,
+  IN_PROGRESS = 1,
+  Completed = 2,
+}
 
 export enum ShiftFrequency {
   Daily = 0,
