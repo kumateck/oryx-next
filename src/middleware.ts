@@ -50,6 +50,7 @@ export function middleware(request: NextRequest) {
 
     const redirectUrl = new URL(routes.signin(), request.url);
     redirectUrl.searchParams.set("from", pathname);
+
     return NextResponse.redirect(redirectUrl);
   }
 

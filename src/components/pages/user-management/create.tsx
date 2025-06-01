@@ -14,7 +14,7 @@ import { Option } from "@/lib";
 import {
   useGetApiV1EmployeeQuery,
   useGetApiV1RoleQuery,
-  useLazyGetApiV1UserQuery,
+  // useLazyGetApiV1UserQuery,
   usePostApiV1EmployeeUserMutation, // CreateUserRequest,
   // usePostApiV1UserMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -22,13 +22,15 @@ import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import { CreateUserValidator, UserRequestDto } from "./types";
 import UserForm from "./form";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadUsers] = useLazyGetApiV1UserQuery();
+  const dispatch = useDispatch();
   const [createUser, { isLoading }] = usePostApiV1EmployeeUserMutation();
 
   const {
@@ -47,16 +49,13 @@ const Create = ({ isOpen, onClose }: Props) => {
       console.log(data);
       const payload = {
         employeeId: data.employeeId.value,
-        roleName: data.roleId.value,
+        roleId: data.roleId.value,
       };
       await createUser({
         employeeUserDto: payload,
       }).unwrap();
       toast.success("User created successfully");
-      loadUsers({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -82,7 +81,7 @@ const Create = ({ isOpen, onClose }: Props) => {
   const roleOptions = rolesResponse?.map((item) => {
     return {
       label: item.displayName,
-      value: item?.name,
+      value: item?.id,
     };
   }) as Option[];
 

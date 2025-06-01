@@ -14209,7 +14209,7 @@ export type EmployeeDtoIEnumerablePaginateableRead = {
 };
 export type EmployeeUserDto = {
   employeeId: string;
-  roleName: string;
+  roleId: string;
 };
 export type AssignEmployeeDto = {
   designationId: string;
