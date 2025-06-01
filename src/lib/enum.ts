@@ -392,6 +392,11 @@ export enum ApprovalStatus {
   Approved = 1,
   Rejected = 2,
 }
+export enum GRNStatus {
+  Pending = 0,
+  IN_PROGRESS = 1,
+  Completed = 2,
+}
 
 export enum ShiftFrequency {
   Daily = 0,
@@ -446,4 +451,14 @@ export enum OvertimeStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,
+}
+
+export enum StaffRequisitionType {
+  Budgeted = 0,
+  Unbudgeted = 1,
+}
+
+export enum AppointmentType {
+  New = 0,
+  Replacement = 1,
 }

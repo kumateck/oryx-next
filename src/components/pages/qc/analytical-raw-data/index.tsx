@@ -1,44 +1,37 @@
 "use client";
+
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, EMaterialKind } from "@/lib";
-import { useGetApiV1MaterialStpsQuery } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
-import { ServerDatatable } from "@/shared/datatable";
+import { EMaterialKind } from "@/lib";
+import AccessTabs from "@/shared/access";
 import PageTitle from "@/shared/title";
-import { useCallback, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useLazyGetApiV1MaterialArdQuery } from "@/lib/redux/api/openapi.generated";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+import { ServerDatatable } from "@/shared/datatable";
 import { columns } from "./columns";
 import { Create } from "./create";
-import AccessTabs from "@/shared/access";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 
+// usePostApiV1MaterialArdMutation
 function Page() {
-  const [page, setPage] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
-  const [pageSize, setPageSize] = useState(30);
-  const searchValue = useSelector((state) => state.common.searchInput);
-
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(30);
   const pathname = usePathname();
+  const type = searchParams.get("type") as unknown as EMaterialKind;
 
-  const kind = searchParams.get("kind") as unknown as EMaterialKind;
+  const [loadAnalyticalRawData, { isLoading, data: result, isFetching }] =
+    useLazyGetApiV1MaterialArdQuery();
 
-  const {
-    data: result,
-    isLoading,
-    isFetching,
-  } = useGetApiV1MaterialStpsQuery({
-    page,
-    pageSize,
-    searchQuery: searchValue,
-    module: AuditModules.settings.name,
-    subModule: AuditModules.settings.standardTestProcedure,
-    materialKind: kind || EMaterialKind.Raw,
-  });
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const dispatch = useDispatch();
+  const searchValue = useSelector((state) => state.common.searchInput);
 
-  // Extracts 'type' from URL
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -48,35 +41,34 @@ function Page() {
     },
     [searchParams],
   );
-  const handleTabClick = (tabType: EMaterialKind) => {
-    router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
-  };
-
 
   useEffect(() => {
-    loadStandardTest({
-      page,
-      pageSize,
+    loadAnalyticalRawData({
+      page: page,
+      pageSize: pageSize,
       searchQuery: searchValue,
-      materialKind: kind || EMaterialKind.Raw,
-      module: AuditModules.settings.name,
-      subModule: AuditModules.settings.standardTestProcedure,
+      materialKind: type || EMaterialKind.Raw,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
+  }, [searchParams, page, pageSize, type, searchValue, triggerReload]);
+
+  const handleTabClick = (tabType: EMaterialKind) => {
+    router.push(pathname + "?" + createQueryString("type", tabType.toString()));
+  };
 
   const data = result?.data || [];
   return (
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
-      <PageTitle title="Standard Test Procedure" />
+      <PageTitle title="Analytical Raw Data" />
       <div className="flex w-full justify-between items-center">
         <AccessTabs
           handleTabClick={handleTabClick}
-          type={kind}
+          containerClassName="w-60"
+          type={type}
           tabs={[
             {
               label: EMaterialKind[EMaterialKind.Raw],
@@ -88,12 +80,10 @@ function Page() {
             },
           ]}
         />
-        <div className="w-fit flex items-center justify-center gap-4">
-          <Button onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" />
-            <span>Add Standard Test</span>
-          </Button>
-        </div>
+        <Button onClick={() => setIsOpen(true)} className="flex items-center">
+          <Icon name="Plus" />
+          <span>Add ARD</span>
+        </Button>
       </div>
       <ScrollablePageWrapper>
         <ServerDatatable

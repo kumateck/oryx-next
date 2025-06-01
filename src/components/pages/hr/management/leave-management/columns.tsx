@@ -22,6 +22,7 @@ import { TableMenuAction } from "@/shared/table-menu";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
+import Recall from "./leave-request/recall";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -43,12 +44,29 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isRecallOpen, setIsRecallOpen] = useState(false);
 
   const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetails(row.original);
+              setIsRecallOpen(true);
+            }}
+          >
+            <Icon
+              name="RefreshCcw"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Recall</span>
+          </div>
+        </DropdownMenuItem>
         <DropdownMenuItem className="group">
           {hasPermissionAccess(
             PermissionKeys.humanResources.editLeaveRequest,
@@ -91,6 +109,16 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         </DropdownMenuItem>
       </TableMenuAction>
 
+      {/* Recall */}
+      {details.id && isRecallOpen && (
+        <Recall
+          details={details}
+          isOpen={isRecallOpen}
+          onClose={() => setIsRecallOpen(false)}
+        />
+      )}
+
+      {/* Edit */}
       {details.id && isOpen && (
         <Edit
           details={details}
@@ -189,9 +217,6 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      if (row.original.leaveStatus !== ApprovalStatus.Pending) {
-        return null;
-      }
       return <DataTableRowActions row={row} />;
     },
   },

@@ -169,7 +169,7 @@ export const ROUTES: Route[] = [
       {
         title: "Procurement",
         // url: "string",
-        icon: "Microchip",
+        icon: "ShoppingCart",
         //    isActive: false,
         items: [
           // {
@@ -228,7 +228,7 @@ export const ROUTES: Route[] = [
       {
         title: "Requisition",
         // url: "",
-        icon: "Notebook",
+        icon: "ClipboardList",
         //    isActive: false,
         items: [
           {
@@ -268,7 +268,7 @@ export const ROUTES: Route[] = [
       {
         title: "Planning",
         url: "/production/plannings",
-        icon: "FolderKanban",
+        icon: "Check",
         //    isActive: false,
       },
       {
@@ -285,9 +285,21 @@ export const ROUTES: Route[] = [
       {
         title: "Product Schedule",
         url: "/production/schedules",
-        icon: "SwatchBook",
+        icon: "Calendar",
         isActive: false,
       },
+      // {
+      //   title: "Production Board",
+      //   url: "/production/schedules",
+      //   icon: "LayoutList",
+      //   isActive: false,
+      // },
+      // {
+      //   title: "Available Stock",
+      //   url: "/production/schedules",
+      //   icon: "TrendingUp",
+      //   isActive: false,
+      // },
       // {
       //   title: "Master Schedule",
       //   url: "/production/master-schedule",
@@ -322,6 +334,10 @@ export const ROUTES: Route[] = [
           {
             title: "Overtime Management",
             url: "/hr/overtime-management",
+          },
+          {
+            title: "Staff Requisition",
+            url: "/hr/staff-requisition",
           },
           // {
           //   title: "Shift Schedule",
@@ -374,7 +390,7 @@ export const ROUTES: Route[] = [
       {
         title: "Issue BMR",
         url: "/qa/issue-bmr",
-        icon: "BookUser",
+        icon: "ShieldCheck",
         isActive: false,
         // items: [{
         //   title: "string",
@@ -395,6 +411,18 @@ export const ROUTES: Route[] = [
       {
         title: "Standard Test Procedures",
         url: "/qc/stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Analytical Raw Data",
+        url: "/qc/analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Goods Receipt Note",
+        url: "/qc/goods-receipt-note",
         icon: "BookUser",
         isActive: false,
       },

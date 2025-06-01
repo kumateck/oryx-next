@@ -628,6 +628,7 @@ export const AuditModules = {
     leaveManagement: "Leave Request",
     leaveTypeConfiguration: "Leave Type",
     overTimeMangement: "Over Time",
+    staffRequisition: "Staff Requisition",
   },
 
   accessManagement: {
@@ -645,6 +646,7 @@ export const AuditModules = {
     name: "Quality Assurance",
     issueBMR: "Issue BMR",
     pendingApprovals: "Pending Approvals",
+    analyticalRawData: "Analytical Raw Data",
   },
 
   settings: {

@@ -119,11 +119,18 @@ export function NavMain({ group }: NavMainProps) {
                           return (
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
-                                className={cn(`rounded-2xl`, {
-                                  "hover:bg-white hover:text-black":
-                                    isSubtActive,
-                                })}
-                                isActive={isSubtActive}
+                                // className={cn(`rounded-2xl`, {
+                                //   "hover:bg-white hover:text-black":
+                                //     isSubtActive,
+                                // })}
+                                className={cn(
+                                  "w-full rounded-2xl transition-colors",
+                                  isSubtActive &&
+                                    "bg-primary-default text-white",
+                                  isSubtActive &&
+                                    "hover:bg-primary-default hover:text-white divide-purple-300",
+                                )}
+                                // isActive={isSubtActive}
                                 asChild
                               >
                                 <Link
@@ -131,7 +138,12 @@ export function NavMain({ group }: NavMainProps) {
                                   className="py-5"
                                 >
                                   {subItem.icon && (
-                                    <Icon name={subItem.icon} className="" />
+                                    <Icon
+                                      name={subItem.icon}
+                                      className={cn({
+                                        "text-white": isSubtActive,
+                                      })}
+                                    />
                                   )}
                                   <span
                                     className={cn(
@@ -162,16 +174,19 @@ export function NavMain({ group }: NavMainProps) {
               >
                 <SidebarMenuButton
                   asChild
-                  isActive={isActive}
+                  // isActive={isActive}
                   className={cn(
-                    `w-full rounded-2xl ${isActive ? "hover:bg-white hover:text-black" : null}`,
+                    "w-full rounded-2xl transition-colors",
+                    isActive && "bg-primary-default text-white",
+                    isActive &&
+                      "hover:bg-primary-default hover:text-white divide-purple-300",
                   )}
                 >
                   <Link href={item.url as string} className="py-5">
                     <Icon
                       name={item.icon}
                       className={cn({
-                        "text-black": isMobile || isActive,
+                        "text-white": isMobile || isActive,
                         "text-neutral-dark":
                           (!isMobile && !isActive && state === "expanded") ||
                           (!isMobile && !isActive && state === "collapsed"),

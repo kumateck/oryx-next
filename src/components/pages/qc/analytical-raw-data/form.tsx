@@ -12,13 +12,16 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
-  materialsOptions: Option[];
+  formOptions: Option[];
+  stpOptions: Option[];
 }
-export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
+
+export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
-  materialsOptions,
+  formOptions,
   control,
+  stpOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-6">
@@ -26,13 +29,13 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
         className="py-3"
         config={[
           {
-            label: "Select Material",
+            label: "Stp Number",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "materialId",
+            name: "stpId",
             required: true,
-            placeholder: "Select Material",
-            options: materialsOptions,
+            placeholder: "Select stp number",
+            options: stpOptions,
             errors,
           },
         ]}
@@ -40,11 +43,11 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
-            label: "STP Number",
-            register: register("stpNumber" as Path<TFieldValues>),
+            label: "Spec Number",
+            register: register("specNumber" as Path<TFieldValues>),
             type: InputTypes.TEXT,
             required: true,
-            placeholder: "STP123557",
+            placeholder: "NMP/B/SPC/001",
             errors,
           },
         ]}
@@ -52,11 +55,11 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
-            label: "STP Description",
+            label: "Description",
             register: register("description" as Path<TFieldValues>),
-            type: InputTypes.TEXT,
+            type: InputTypes.TEXTAREA,
             required: false,
-            placeholder: "STP description",
+            placeholder: "Description",
             errors,
           },
         ]}
@@ -65,12 +68,13 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
         className="w-full space-y-5 my-5"
         config={[
           {
-            type: InputTypes.DRAGNDROP,
-            label: "Attach Documents",
-            name: `attachments`,
-            defaultValue: null,
-            single: true,
+            label: "Template",
             control: control as Control,
+            type: InputTypes.SELECT,
+            name: "formId",
+            required: true,
+            placeholder: "Select Template",
+            options: formOptions,
             errors,
           },
         ]}
