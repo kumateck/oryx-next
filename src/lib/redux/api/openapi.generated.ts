@@ -10972,7 +10972,7 @@ export type LeaveTypeDtoRead = {
   isActive?: boolean;
   designations?: DesignationDtoRead[] | null;
 };
-export type LeaveStatus = 0 | 1 | 2 | 3;
+export type LeaveStatus = 0 | 1 | 2 | 3 | 4;
 export type LeaveRequestDto = {
   id?: string;
   createdBy?: UserDto;
@@ -10984,6 +10984,7 @@ export type LeaveRequestDto = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  recallDate?: string;
   justification?: string | null;
   requestCategory?: RequestCategory;
   leaveStatus?: LeaveStatus;
@@ -11003,6 +11004,7 @@ export type LeaveRequestDtoRead = {
   endDate?: string;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  recallDate?: string;
   justification?: string | null;
   requestCategory?: RequestCategory;
   leaveStatus?: LeaveStatus;

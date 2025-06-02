@@ -6,13 +6,6 @@ import { LeaveStatus } from "@/lib";
 
 export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
-    id: "entitledDays",
-    header: "Leave Days Entitled",
-    cell: ({ row }) => {
-      return row.original.employee?.designation?.maximumLeaveDays || 0;
-    },
-  },
-  {
     id: "daysRequested",
     header: "Days Requested",
     cell: ({ row }) => {
@@ -20,7 +13,7 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
       const diff =
         new Date(row.original.endDate).getTime() -
         new Date(row.original.startDate).getTime();
-      return Math.ceil(diff / (1000 * 3600 * 24)) + 1; // Add 1 to include both start and end dates
+      return Math.ceil(diff / (1000 * 3600 * 24)) + 1;
     },
   },
   {

@@ -386,6 +386,7 @@ export enum LeaveStatus {
   Approved = 1,
   Rejected = 2,
   Expired = 3,
+  Recalled = 4,
 }
 
 export enum ApprovalStatus {
