@@ -21,6 +21,74 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1Alert: build.mutation<
+      PostApiV1AlertApiResponse,
+      PostApiV1AlertApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert`,
+        method: "POST",
+        body: queryArg.createAlertRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1Alert: build.query<GetApiV1AlertApiResponse, GetApiV1AlertApiArg>({
+      query: (queryArg) => ({
+        url: `/api/v1/alert`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          withDisabled: queryArg.withDisabled,
+        },
+      }),
+    }),
+    getApiV1AlertByAlertId: build.query<
+      GetApiV1AlertByAlertIdApiResponse,
+      GetApiV1AlertByAlertIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert/${queryArg.alertId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1AlertByAlertId: build.mutation<
+      PutApiV1AlertByAlertIdApiResponse,
+      PutApiV1AlertByAlertIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert/${queryArg.alertId}`,
+        method: "PUT",
+        body: queryArg.createAlertRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    patchApiV1AlertByIdToggleDisable: build.mutation<
+      PatchApiV1AlertByIdToggleDisableApiResponse,
+      PatchApiV1AlertByIdToggleDisableApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert/${queryArg.id}/toggle-disable`,
+        method: "PATCH",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Approval: build.mutation<
       PostApiV1ApprovalApiResponse,
       PostApiV1ApprovalApiArg
@@ -4886,6 +4954,36 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ShiftSchedulesByScheduleIdView: build.query<
+      GetApiV1ShiftSchedulesByScheduleIdViewApiResponse,
+      GetApiV1ShiftSchedulesByScheduleIdViewApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/${queryArg.scheduleId}/view`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+        },
+      }),
+    }),
+    putApiV1ShiftSchedulesByIdUpdateSchedule: build.mutation<
+      PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse,
+      PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/${queryArg.id}/update-schedule`,
+        method: "PUT",
+        body: queryArg.updateShiftAssignment,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ShiftType: build.mutation<
       PostApiV1ShiftTypeApiResponse,
       PostApiV1ShiftTypeApiArg
@@ -5898,6 +5996,51 @@ export type GetApiV1ActivityLogApiArg = {
   page?: number;
   sortLabel?: string;
   sortDirection?: SortDirection;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1AlertApiResponse = unknown;
+export type PostApiV1AlertApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createAlertRequest: CreateAlertRequest;
+};
+export type GetApiV1AlertApiResponse =
+  /** status 200 OK */ AlertDtoIEnumerablePaginateable;
+export type GetApiV1AlertApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  withDisabled?: boolean;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1AlertByAlertIdApiResponse = /** status 200 OK */ AlertDto;
+export type GetApiV1AlertByAlertIdApiArg = {
+  alertId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1AlertByAlertIdApiResponse = unknown;
+export type PutApiV1AlertByAlertIdApiArg = {
+  alertId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createAlertRequest: CreateAlertRequest;
+};
+export type PatchApiV1AlertByIdToggleDisableApiResponse = unknown;
+export type PatchApiV1AlertByIdToggleDisableApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -9529,6 +9672,26 @@ export type DeleteApiV1ShiftSchedulesByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ShiftSchedulesByScheduleIdViewApiResponse =
+  /** status 200 OK */ ShiftScheduleDtoRead[];
+export type GetApiV1ShiftSchedulesByScheduleIdViewApiArg = {
+  scheduleId: string;
+  startDate?: string;
+  endDate?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse = unknown;
+export type PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  updateShiftAssignment: UpdateShiftAssignment;
+};
 export type PostApiV1ShiftTypeApiResponse = /** status 200 OK */ string;
 export type PostApiV1ShiftTypeApiArg = {
   /** The module this request falls under */
@@ -10241,6 +10404,51 @@ export type ProblemDetails = {
   instance?: string | null;
   [key: string]: any;
 };
+export type AlertType = 0 | 1 | 2;
+export type CreateAlertRequest = {
+  title?: string | null;
+  modelType?: string | null;
+  alertType?: AlertType;
+  timeFrame?: string;
+  isDisabled?: boolean;
+};
+export type CollectionItemDto = {
+  id?: string | null;
+  name?: string | null;
+  code?: string | null;
+  description?: string | null;
+  symbol?: string | null;
+};
+export type UserDto = {
+  id?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  isDisabled?: boolean;
+  avatar?: string | null;
+  createdAt?: string;
+  signature?: string | null;
+  department?: CollectionItemDto;
+};
+export type AlertDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  title?: string | null;
+  modelType?: string | null;
+  alertType?: AlertType;
+  timeFrame?: string;
+  isDisabled?: boolean;
+};
+export type AlertDtoIEnumerablePaginateable = {
+  data?: AlertDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateApprovalStageRequest = {
   userId?: string | null;
   roleId?: string | null;
@@ -10251,13 +10459,6 @@ export type CreateApprovalRequest = {
   itemType?: string | null;
   escalationDuration?: string;
   approvalStages?: CreateApprovalStageRequest[] | null;
-};
-export type CollectionItemDto = {
-  id?: string | null;
-  name?: string | null;
-  code?: string | null;
-  description?: string | null;
-  symbol?: string | null;
 };
 export type ApprovalStageDto = {
   user?: CollectionItemDto;
@@ -10281,17 +10482,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type UserDto = {
-  id?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  email?: string | null;
-  isDisabled?: boolean;
-  avatar?: string | null;
-  createdAt?: string;
-  signature?: string | null;
-  department?: CollectionItemDto;
 };
 export type DepartmentType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
@@ -10584,9 +10774,8 @@ export type DesignationDtoIEnumerablePaginateableRead = {
 };
 export type EmployeeType = 0 | 1;
 export type EmployeeInviteDto = {
-  email?: string | null;
-  employeeType?: EmployeeType;
-  staffNumber?: string | null;
+  email: string;
+  employeeType: EmployeeType;
 };
 export type OnboardEmployeeDto = {
   emailList: EmployeeInviteDto[];
@@ -16932,8 +17121,14 @@ export type AssignShiftRequest = {
   employeeIds: string[];
   shiftScheduleId: string;
   shiftCategoryId: string;
+  shiftTypeId: string;
   scheduleDate: string;
-  shiftName: string;
+};
+export type UpdateShiftAssignment = {
+  shiftCategoryId: string;
+  scheduleDate: string;
+  addEmployeeIds?: string[] | null;
+  removeEmployeeIds?: string[] | null;
 };
 export type CreateShiftTypeRequest = {
   shiftName: string;
@@ -17503,6 +17698,13 @@ export type UpdateWorkOrderRequest = {
 export const {
   useGetApiV1ActivityLogQuery,
   useLazyGetApiV1ActivityLogQuery,
+  usePostApiV1AlertMutation,
+  useGetApiV1AlertQuery,
+  useLazyGetApiV1AlertQuery,
+  useGetApiV1AlertByAlertIdQuery,
+  useLazyGetApiV1AlertByAlertIdQuery,
+  usePutApiV1AlertByAlertIdMutation,
+  usePatchApiV1AlertByIdToggleDisableMutation,
   usePostApiV1ApprovalMutation,
   useGetApiV1ApprovalQuery,
   useLazyGetApiV1ApprovalQuery,
@@ -18021,6 +18223,9 @@ export const {
   useLazyGetApiV1ShiftSchedulesByIdQuery,
   usePutApiV1ShiftSchedulesByIdMutation,
   useDeleteApiV1ShiftSchedulesByIdMutation,
+  useGetApiV1ShiftSchedulesByScheduleIdViewQuery,
+  useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery,
+  usePutApiV1ShiftSchedulesByIdUpdateScheduleMutation,
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
   useLazyGetApiV1ShiftTypeQuery,
