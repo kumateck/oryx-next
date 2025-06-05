@@ -175,6 +175,7 @@ export enum InputTypes {
   PHONE = "phone",
   SELECT = "select",
   ASYNC_SELECT = "async-select",
+  ASYNC_MULTI = "async-multi",
   SPACE = "space",
   PAGINATED_SELECT = "paginated-select",
   MULTI = "multi",

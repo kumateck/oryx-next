@@ -19,6 +19,7 @@ import {
   templateQuestions,
 } from "./type";
 import PageTitle from "@/shared/title";
+import ThrowErrorMessage from "@/lib/throw-error";
 
 const CreateTemplate = () => {
   const router = useRouter();
@@ -62,6 +63,7 @@ const CreateTemplate = () => {
       router.back();
     } catch (error) {
       console.log(error);
+      ThrowErrorMessage(error);
       // toast.error("Something went wrong");
     }
   };

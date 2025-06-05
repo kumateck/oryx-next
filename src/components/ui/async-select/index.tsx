@@ -18,6 +18,7 @@ export interface FetchOptionsResult {
   hasNext: boolean;
   hasPrevious: boolean;
 }
+
 export type SearchableDropdownProps = {
   isLoading: boolean;
   className?: string;
