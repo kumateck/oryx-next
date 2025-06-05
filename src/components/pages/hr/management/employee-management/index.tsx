@@ -14,21 +14,32 @@ import Create from "./create";
 import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 const EmployeeManagement = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+
+  const dispatch = useDispatch();
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const triggerReload = useSelector(state => state.common.triggerReload);
 
   const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1EmployeeQuery();
 
   useEffect(() => {
     loadData({
+      searchQuery: searchValue,
       page,
       pageSize,
     });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchValue]);
 
   const data = result?.data || [];
   const router = useRouter();
