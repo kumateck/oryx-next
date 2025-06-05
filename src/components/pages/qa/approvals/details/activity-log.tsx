@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui";
 import { format } from "date-fns";
 import { ApprovalStatus } from "@/lib"; // Import your enum
 import { ApprovalLog } from "@/lib/redux/api/openapi.generated";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 interface ActivityLogProps {
   approvalLogs?: ApprovalLog[] | null | undefined;
@@ -64,7 +65,8 @@ export default function ActivityLog({ approvalLogs = [] }: ActivityLogProps) {
                   </div>
 
                   <div className="mt-1 text-sm text-gray-600">
-                    Comments: {log.comments ?? "-"}
+                    Comments:{" "}
+                    <TheAduseiEditorViewer content={log.comments || "-"} />
                   </div>
                 </div>
               );

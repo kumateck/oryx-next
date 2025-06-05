@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
-import { useGetApiV1LeaveRequestByIdQuery } from "@/lib/redux/api/openapi.generated";
+import { Card, CardContent, CardHeader, Icon } from "@/components/ui";
+import {
+  useGetApiV1ApprovalByModelTypeAndModelIdQuery,
+  useGetApiV1LeaveRequestByIdQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { columns } from "./columns";
@@ -17,51 +19,42 @@ import {
 } from "@/lib";
 import { format } from "date-fns";
 import Link from "next/link";
+import ActivityLog from "@/components/pages/qa/approvals/details/activity-log";
+
 // import Link from "next/link";
 
 const statusColors: Record<LeaveStatus, string> = {
   [LeaveStatus.Pending]: "bg-gray-500 text-white",
-  [LeaveStatus.Approved]: "bg-green-500 text-white",
-  [LeaveStatus.Rejected]: "bg-red-500 text-white",
+  [LeaveStatus.Approved]: "bg-green-100 text-green-800",
+  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+  [LeaveStatus.Expired]: "bg-red-100 text-red-800",
+  [LeaveStatus.Recalled]: "bg-yellow-100 text-yellow-800",
 };
 
 function LeaveDetails() {
   const { id } = useParams();
+  const type = "LeaveRequest";
   const leaveRequestId = id as string;
-  const router = useRouter();
   const { data } = useGetApiV1LeaveRequestByIdQuery({
     id: leaveRequestId,
     module: AuditModules.management.name,
     subModule: AuditModules.management.leaveManagement,
   });
+
+  const { data: approvalData } = useGetApiV1ApprovalByModelTypeAndModelIdQuery({
+    modelId: id as string,
+    modelType: type as string,
+  });
+  const router = useRouter();
   return (
     <ScrollablePageWrapper className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div
-          className="group mb-2 flex items-center gap-1 hover:cursor-pointer"
-          onClick={() => {
-            router.back();
-          }}
-        >
-          <Icon name="ArrowLeft" className="h-5 w-5" />
-          <div className="group-hover:underline">
-            <PageTitle title={"Leave Request List"} />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button variant={"success"}>Approve</Button>
-          <Button variant={"destructive"}>Reject</Button>
-        </div>
-      </div>
-
-      <div className="mt-3">
-        <h2 className="font-semibold">
-          {splitWords(
-            LeaveCategories[data?.requestCategory as LeaveCategories],
-          )}{" "}
-          Approval
-        </h2>
+      <div className="mt-3 flex items-center">
+        <Icon
+          onClick={() => router.back()}
+          name="ArrowLeft"
+          className="h-5 w-5 hover:cursor-pointer"
+        />
+        <h2 className="font-semibold">Leave Requests List</h2>
       </div>
 
       <Card>
@@ -163,6 +156,14 @@ function LeaveDetails() {
               <span>Contact Person Number:</span>
               <span className="font-semibold">{data?.contactPersonNumber}</span>
             </div>
+            <div className="flex gap-2 items-center">
+              <span>Recall Date:</span>
+              <span className="font-semibold">
+                {data?.recallDate
+                  ? format(data?.recallDate, "MMM dd, yyyy")
+                  : "N/A"}
+              </span>
+            </div>
           </div>
 
           <div className="my-10">
@@ -237,12 +238,7 @@ function LeaveDetails() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>Approval Log</CardHeader>
-        <CardContent>
-          <span className="">Activity Log</span>
-        </CardContent>
-      </Card>
+      <ActivityLog approvalLogs={approvalData?.approvalLogs} />
     </ScrollablePageWrapper>
   );
 }

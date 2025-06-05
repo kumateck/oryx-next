@@ -22,6 +22,7 @@ import {
   BudgetStatus,
   StaffRequisitionDtoRead,
   useGetApiV1DesignationQuery,
+  useGetApiV1DepartmentQuery,
   usePutApiV1StaffRequisitionsByIdMutation,
   //   usePutApiV1LeaveTypeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -47,6 +48,22 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     label: details.designation?.name ?? "",
     value: details.designation?.id,
   };
+
+  const defaultDepartments = {
+    label: details.department?.name ?? "",
+    value: details.department?.id,
+  };
+
+  const { data: departmentResults } = useGetApiV1DepartmentQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+
+  const departmentOptions = departmentResults?.data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  })) as Option[];
+
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
 
@@ -84,6 +101,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         (details.educationalQualification as string) || "",
       justification: (details.justification as string) || "",
       additionalRequirements: (details.additionalRequests as string) || "",
+      departmentId: defaultDepartments,
     },
   });
 
@@ -126,6 +144,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         educationalQualification: data.educationQualification,
         qualification: data.qualification,
         designationId: data.designationId.value,
+        departmentId: data.departmentId.value,
         additionalRequests: data.additionalRequirements || "",
         appointmentType: parseInt(
           data.appointmentType.value,
@@ -165,6 +184,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
               errors={errors}
               appointmentOptions={appointmentOptions}
               designationsOptions={designationsOptions}
+              departmentOptions={departmentOptions}
             />
           ) : (
             <BackgroundDetailsForm

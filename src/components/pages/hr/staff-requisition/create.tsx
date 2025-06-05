@@ -20,6 +20,7 @@ import {
   AppointmentType,
   BudgetStatus,
   CreateStaffRequisitionRequest,
+  useGetApiV1DepartmentQuery,
   useGetApiV1DesignationQuery,
   usePostApiV1StaffRequisitionsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -97,12 +98,24 @@ const Create = ({ isOpen, onClose }: Props) => {
   };
 
   const handleBack = () => setStep(1);
+  const pageSize = 30;
+  const page = 1;
+  const { data: departmentResults } = useGetApiV1DepartmentQuery({
+    page,
+    pageSize,
+  });
+  const departments = departmentResults?.data ?? [];
+  const departmentOptions = departments?.map((department) => ({
+    label: department?.name,
+    value: department.id,
+  })) as Option[];
 
   const onSubmit = async (data: StaffRequisitionRequestDto) => {
     try {
       const payload: CreateStaffRequisitionRequest = {
         budgetStatus: data.budgeted as BudgetStatus,
         staffRequired: data.numberOfStaff,
+        departmentId: data.departmentId.value,
         educationalQualification: data.educationQualification,
         qualification: data.qualification,
         designationId: data.designationId.value,
@@ -152,6 +165,7 @@ const Create = ({ isOpen, onClose }: Props) => {
               errors={errors}
               appointmentOptions={appointmentOptions}
               designationsOptions={designationsOptions}
+              departmentOptions={departmentOptions}
             />
           ) : (
             <BackgroundDetailsForm

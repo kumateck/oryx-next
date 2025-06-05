@@ -1,6 +1,5 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
-  ApprovalStatus,
   AuditModules,
   ErrorResponse,
   isErrorResponse,
@@ -23,20 +22,49 @@ import { useUserPermissions } from "@/hooks/use-permission";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import Recall from "./leave-request/recall";
+import { useRouter } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-const batchStatusColors: Record<ApprovalStatus, string> = {
-  [ApprovalStatus.Pending]: "bg-gray-500 text-white",
-  [ApprovalStatus.Approved]: "bg-green-100 text-green-800",
-  [ApprovalStatus.Rejected]: "bg-red-100 text-red-800",
+const batchStatusColors: Record<LeaveStatus, string> = {
+  [LeaveStatus.Pending]: "bg-gray-500 text-white",
+  [LeaveStatus.Approved]: "bg-green-100 text-green-800",
+  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+  [LeaveStatus.Expired]: "bg-red-100 text-red-800",
+  [LeaveStatus.Recalled]: "bg-yellow-100 text-yellow-800",
 };
+
+const shouldShowRecall = (row: LeaveRequestDto): boolean => {
+  const today = new Date();
+  const startDate = new Date(row.startDate as string);
+  const endDate = new Date(row.endDate as string);
+
+  if (row.requestCategory === LeaveCategories.AbsenceRequest) {
+    return false;
+  }
+
+  if (row.requestCategory === LeaveCategories.ExitPassRequest) {
+    return false;
+  }
+
+  if (today < startDate || today > endDate) {
+    return false;
+  }
+
+  if (row.leaveStatus !== LeaveStatus.Approved) {
+    return false;
+  }
+
+  return true;
+};
+
 export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [deleteMutation] = useDeleteApiV1LeaveRequestByIdMutation();
 
   const [details, setDetails] = useState<LeaveRequestDto>(
@@ -56,21 +84,38 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
             className="flex cursor-pointer items-center justify-start gap-2"
             onClick={(e) => {
               e.stopPropagation();
-              setDetails(row.original);
-              setIsRecallOpen(true);
+              router.push(`/hr/leave-management/${row.original.id}/details`);
             }}
           >
             <Icon
-              name="RefreshCcw"
+              name="Eye"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
-            <span>Recall</span>
+            <span>View Details</span>
           </div>
         </DropdownMenuItem>
-        <DropdownMenuItem className="group">
-          {hasPermissionAccess(
-            PermissionKeys.humanResources.editLeaveRequest,
-          ) && (
+        {shouldShowRecall(row.original) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetails(row.original);
+                setIsRecallOpen(true);
+              }}
+            >
+              <Icon
+                name="RefreshCcw"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Recall</span>
+            </div>
+          </DropdownMenuItem>
+        )}
+        {hasPermissionAccess(
+          PermissionKeys.humanResources.editLeaveRequest,
+        ) && (
+          <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"
               onClick={(e) => {
@@ -85,8 +130,8 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
               />
               <span>Edit</span>
             </div>
-          )}
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem className="group">
           {hasPermissionAccess(
             PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
@@ -204,7 +249,7 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
     accessorKey: "leaveStatus",
     header: "Leave Status",
     cell: ({ row }) => {
-      const status = row.original.leaveStatus as ApprovalStatus;
+      const status = row.original.leaveStatus as LeaveStatus;
       return (
         <div
           className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
