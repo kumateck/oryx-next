@@ -89,6 +89,76 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1QaAnalyticalTests: build.mutation<
+      PostApiV1QaAnalyticalTestsApiResponse,
+      PostApiV1QaAnalyticalTestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests`,
+        method: "POST",
+        body: queryArg.createAnalyticalTestRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1QaAnalyticalTests: build.query<
+      GetApiV1QaAnalyticalTestsApiResponse,
+      GetApiV1QaAnalyticalTestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1QaAnalyticalTestsById: build.query<
+      GetApiV1QaAnalyticalTestsByIdApiResponse,
+      GetApiV1QaAnalyticalTestsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1QaAnalyticalTestsById: build.mutation<
+      PutApiV1QaAnalyticalTestsByIdApiResponse,
+      PutApiV1QaAnalyticalTestsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createAnalyticalTestRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1QaAnalyticalTestsById: build.mutation<
+      DeleteApiV1QaAnalyticalTestsByIdApiResponse,
+      DeleteApiV1QaAnalyticalTestsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Approval: build.mutation<
       PostApiV1ApprovalApiResponse,
       PostApiV1ApprovalApiArg
@@ -6046,6 +6116,52 @@ export type PatchApiV1AlertByIdToggleDisableApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1QaAnalyticalTestsApiResponse = /** status 200 OK */ string;
+export type PostApiV1QaAnalyticalTestsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createAnalyticalTestRequest: CreateAnalyticalTestRequest;
+};
+export type GetApiV1QaAnalyticalTestsApiResponse =
+  /** status 200 OK */ AnalyticalTestRequestDtoIEnumerablePaginateable;
+export type GetApiV1QaAnalyticalTestsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1QaAnalyticalTestsByIdApiResponse =
+  /** status 200 OK */ AnalyticalTestRequestDto;
+export type GetApiV1QaAnalyticalTestsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1QaAnalyticalTestsByIdApiResponse =
+  /** status 204 No Content */ AnalyticalTestRequestDto;
+export type PutApiV1QaAnalyticalTestsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createAnalyticalTestRequest: CreateAnalyticalTestRequest;
+};
+export type DeleteApiV1QaAnalyticalTestsByIdApiResponse = unknown;
+export type DeleteApiV1QaAnalyticalTestsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ApprovalApiResponse = /** status 201 Created */ string;
 export type PostApiV1ApprovalApiArg = {
   /** The module this request falls under */
@@ -6139,7 +6255,8 @@ export type PostApiV1AttendanceRecordsUploadApiArg = {
     attendance: Blob;
   };
 };
-export type GetApiV1AttendanceRecordsDailySummaryApiResponse = unknown;
+export type GetApiV1AttendanceRecordsDailySummaryApiResponse =
+  /** status 200 OK */ AttendanceRecordDepartmentDto[];
 export type GetApiV1AttendanceRecordsDailySummaryApiArg = {
   departmentName?: string;
   date?: string;
@@ -6148,7 +6265,8 @@ export type GetApiV1AttendanceRecordsDailySummaryApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1AttendanceRecordsGeneralSummaryApiResponse = unknown;
+export type GetApiV1AttendanceRecordsGeneralSummaryApiResponse =
+  /** status 200 OK */ GeneralAttendanceReportDtoRead;
 export type GetApiV1AttendanceRecordsGeneralSummaryApiArg = {
   date?: string;
   /** The module this request falls under */
@@ -9673,7 +9791,7 @@ export type DeleteApiV1ShiftSchedulesByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1ShiftSchedulesByScheduleIdViewApiResponse =
-  /** status 200 OK */ ShiftScheduleDtoRead[];
+  /** status 200 OK */ ShiftAssignmentDto[];
 export type GetApiV1ShiftSchedulesByScheduleIdViewApiArg = {
   scheduleId: string;
   startDate?: string;
@@ -10449,6 +10567,51 @@ export type AlertDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type TestStage = 0 | 1 | 2;
+export type Category = 0 | 1 | 2 | 3 | 4 | 5;
+export type Status = 0 | 1 | 2;
+export type CreateAnalyticalTestRequest = {
+  batchNumber: string;
+  productName: string;
+  productSchedule: string;
+  sampledQuantity: string;
+  manufacturingDate: string;
+  expiryDate: string;
+  releasedAt: string;
+  releaseDate: string;
+  qcManagerSignature: string;
+  qaManagerSignature: string;
+  stage: TestStage;
+  category: Category;
+  status: Status;
+};
+export type AnalyticalTestRequestDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  batchNumber?: string | null;
+  productName?: string | null;
+  productSchedule?: string | null;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  releasedAt?: string | null;
+  releaseDate?: string;
+  qcManagerSignature?: string | null;
+  sampledQuantity?: string | null;
+  qaManagerSignature?: string | null;
+  stage?: TestStage;
+  category?: Category;
+  status?: Status;
+};
+export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
+  data?: AnalyticalTestRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateApprovalStageRequest = {
   userId?: string | null;
   roleId?: string | null;
@@ -10540,6 +10703,37 @@ export type ApprovalEntityRead = {
 };
 export type ApprovalRequestBody = {
   comments?: string | null;
+};
+export type AttendanceRecordDepartmentDto = {
+  staffName?: string | null;
+  employeeId?: string | null;
+  shiftName?: string | null;
+  clockInTime?: string | null;
+  clockOutTime?: string | null;
+  workHours?: number;
+};
+export type GeneralAttendanceReportDto = {
+  departmentName?: string | null;
+  permanentStaff?: number;
+  casualStaff?: number;
+  permanentMorning?: number;
+  permanentAfternoon?: number;
+  permanentNight?: number;
+  casualMorning?: number;
+  casualAfternoon?: number;
+  casualNight?: number;
+};
+export type GeneralAttendanceReportDtoRead = {
+  departmentName?: string | null;
+  permanentStaff?: number;
+  casualStaff?: number;
+  totalStaff?: number;
+  permanentMorning?: number;
+  permanentAfternoon?: number;
+  permanentNight?: number;
+  casualMorning?: number;
+  casualAfternoon?: number;
+  casualNight?: number;
 };
 export type LoginResponse = {
   userId?: string | null;
@@ -17124,6 +17318,34 @@ export type AssignShiftRequest = {
   shiftTypeId: string;
   scheduleDate: string;
 };
+export type MinimalEmployeeInfoDto = {
+  employeeId?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  staffNumber?: string | null;
+  type?: string | null;
+  department?: string | null;
+  designation?: string | null;
+};
+export type ShiftCategoryDto = {
+  id?: string;
+  name?: string | null;
+};
+export type MinimalShiftTypeDto = {
+  shiftTypeId?: string;
+  shiftName?: string | null;
+};
+export type MinimalShiftScheduleDto = {
+  scheduleId?: string;
+  scheduleName?: string | null;
+};
+export type ShiftAssignmentDto = {
+  employees?: MinimalEmployeeInfoDto[] | null;
+  scheduleDate?: string;
+  shiftCategory?: ShiftCategoryDto;
+  shiftType?: MinimalShiftTypeDto;
+  shiftSchedule?: MinimalShiftScheduleDto;
+};
 export type UpdateShiftAssignment = {
   shiftCategoryId: string;
   scheduleDate: string;
@@ -17705,6 +17927,13 @@ export const {
   useLazyGetApiV1AlertByAlertIdQuery,
   usePutApiV1AlertByAlertIdMutation,
   usePatchApiV1AlertByIdToggleDisableMutation,
+  usePostApiV1QaAnalyticalTestsMutation,
+  useGetApiV1QaAnalyticalTestsQuery,
+  useLazyGetApiV1QaAnalyticalTestsQuery,
+  useGetApiV1QaAnalyticalTestsByIdQuery,
+  useLazyGetApiV1QaAnalyticalTestsByIdQuery,
+  usePutApiV1QaAnalyticalTestsByIdMutation,
+  useDeleteApiV1QaAnalyticalTestsByIdMutation,
   usePostApiV1ApprovalMutation,
   useGetApiV1ApprovalQuery,
   useLazyGetApiV1ApprovalQuery,
