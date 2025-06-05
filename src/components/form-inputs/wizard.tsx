@@ -22,12 +22,13 @@ import { FormRadioInput } from "./radio-input";
 import FormRichTextInput from "./rich-input";
 import { FormSpecialAddSelect } from "./special-add-input";
 import { FormSpecialSelect } from "./special-input";
-import { FormSpecialMultiSelect } from "./special-multi-input";
+import { FormAsyncMultiSelect } from "./async-multi-input";
 import { FormTextInput } from "./text-input";
 import { FormTextareaInput } from "./textarea-input";
 import { FormClockInput } from "./time-input";
 import FormImageInput from "./image-input";
 import { ExpressionInput } from "./expression-input";
+import { FormSpecialMultiSelect } from "./special-multi-input";
 
 interface SpaceProps {
   type: InputTypes.SPACE;
@@ -181,8 +182,15 @@ interface MultiInputProps<TFieldValues extends FieldValues, TContext>
   options: Option[];
   defaultValue?: Option[];
   values?: Option[];
+  searchPlaceholder?: string;
 }
-
+interface AsyncMultiInputProps
+  extends Omit<MultiInputProps<FieldValues, any>, "options" | "type"> {
+  type: InputTypes.ASYNC_MULTI;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
+  isLoading: boolean;
+  onChange?: (...event: any[]) => void;
+}
 interface RadioInputProps extends BaseInputProps<FieldValues> {
   control?: Control<FieldValues>;
   name: string;
@@ -211,6 +219,7 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | SelectInputProps
   | AsyncSelectInputProps
   | MultiInputProps<TFieldValues, TContext>
+  | AsyncMultiInputProps
   | FileInputProps
   | FilesUploadInputProps
   | ImageUploadInputProps
@@ -353,6 +362,34 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
             }
             return (
               <FormAsyncSelect
+                value={value || formInput.defaultValue}
+                defaultValue={formInput.defaultValue || value}
+                label={formInput.label}
+                required={formInput.required}
+                onChange={onChange}
+                errors={formInput.errors}
+                name={formInput.name}
+                fetchOptions={formInput.fetchOptions}
+                isLoading={formInput.isLoading}
+                autoFocus={formInput.autoFocus}
+                placeholder={formInput.placeholder}
+                searchPlaceholder={formInput.searchPlaceholder}
+              />
+            );
+          }}
+        />
+      );
+    case InputTypes.ASYNC_MULTI:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => {
+            if (formInput.onChange) {
+              formInput.onChange(value);
+            }
+            return (
+              <FormAsyncMultiSelect
                 value={value || formInput.defaultValue}
                 defaultValue={formInput.defaultValue || value}
                 label={formInput.label}

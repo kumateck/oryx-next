@@ -563,6 +563,7 @@ export const AuditModules = {
     name: "General",
     fileUpload: "File Upload",
     collection: "Collection",
+    AssignShift: "Assign Shift",
   },
   logistics: {
     name: "Logistics",
