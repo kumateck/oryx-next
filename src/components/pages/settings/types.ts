@@ -96,6 +96,11 @@ export const settingCategories: SettingCategory[] = [
         path: "/settings/workflow-config",
         icon: "FileText",
       },
+      {
+        name: "Alert & Notifications",
+        path: "/settings/alert",
+        icon: "AlarmClock",
+      },
     ],
   },
   {

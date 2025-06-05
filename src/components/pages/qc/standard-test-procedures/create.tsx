@@ -127,25 +127,23 @@ export const Create = ({ isOpen, onClose }: Props) => {
             control={control}
             materialsOptions={materialOptions}
           />
-          <DialogFooter>
-            <DialogFooter className="justify-end gap-4 py-6">
-              <Button type="button" variant="secondary" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                variant={"default"}
-                type="submit"
-                className="flex items-center gap-2"
-              >
-                <Icon
-                  name={isLoading ? "LoaderCircle" : "Plus"}
-                  className={cn("h-4 w-4", {
-                    "animate-spin": isLoading,
-                  })}
-                />
-                <span>Save</span>
-              </Button>
-            </DialogFooter>
+          <DialogFooter className="justify-end gap-4 py-6">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              variant={"default"}
+              type="submit"
+              className="flex items-center gap-2"
+            >
+              <Icon
+                name={isLoading ? "LoaderCircle" : "Plus"}
+                className={cn("h-4 w-4", {
+                  "animate-spin": isLoading,
+                })}
+              />
+              <span>Save</span>
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
