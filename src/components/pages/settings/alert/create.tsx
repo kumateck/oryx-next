@@ -23,7 +23,7 @@ export function CreateAlert() {
     handleSubmit,
     control,
     register,
-    formState: { errors, isLoading: formLoading },
+    formState: { errors },
   } = useForm<AlertDto>({
     resolver: CreateAlertDtoValidator,
   });
