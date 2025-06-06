@@ -37,6 +37,8 @@ jobs:
           file: test.Dockerfile  
           tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
           no-cache: true  
+          build-args: |
+            NEXT_PUBLIC_BASE_URL=${{ env.NEXT_PUBLIC_BASE_URL }} 
 
   deploy:
     runs-on: ubuntu-latest

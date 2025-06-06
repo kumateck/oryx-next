@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
@@ -17,7 +18,7 @@ import StepWrapper from "@/shared/wrapper";
 
 import Create from "./create";
 import TableForData from "./table";
-import { BomRequestDto } from "./types";
+import { BomFormData, BomFormValidator, BomRequestDto } from "./types";
 
 const BOM = () => {
   const { id } = useParams();
@@ -25,12 +26,26 @@ const BOM = () => {
   const router = useRouter();
 
   const [loadBom] = useLazyGetApiV1ProductByProductIdBomQuery();
-
   const [saveBom, { isLoading }] = usePostApiV1BomMutation();
   const [archiveBom, { isLoading: archiveLoading }] =
     usePutApiV1ProductByProductIdBomArchiveMutation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [itemLists, setItemLists] = useState<BomRequestDto[]>([]);
+
+  // Main form with useFieldArray
+  const form = useForm<BomFormData>({
+    resolver: BomFormValidator,
+    defaultValues: {
+      items: [],
+    },
+  });
+
+  const { control, handleSubmit, setValue, watch } = form;
+
+  const { append, remove, update } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  const watchedItems = watch("items");
 
   useEffect(() => {
     if (productId) {
@@ -42,43 +57,52 @@ const BOM = () => {
 
   const handleLoadBom = async (productId: string) => {
     try {
-      const bomReponse = await loadBom({
+      const bomResponse = await loadBom({
         productId,
         module: AuditModules.production.name,
         subModule: AuditModules.production.bom,
       }).unwrap();
-      const defaultBillOfMaterials = bomReponse?.billOfMaterial?.items?.map(
-        (bom, idx) => ({
-          ...bom,
-          idIndex: (idx + 1).toString(),
-          materialId: {
-            label: bom.material?.name as string,
-            value: bom.material?.id as string,
-          },
-          materialTypeId: {
-            label: bom.materialType?.name as string,
-            value: bom.materialType?.id as string,
-          },
-          baseUoMId: {
-            label: bom.baseUoM?.symbol as string,
-            value: bom.baseUoM?.id as string,
-          },
-        }),
-      ) as BomRequestDto[];
-      setItemLists(defaultBillOfMaterials);
+
+      if (bomResponse?.billOfMaterial?.items) {
+        const defaultBillOfMaterials = bomResponse.billOfMaterial.items.map(
+          (bom, idx) => ({
+            ...bom,
+            order: idx + 1,
+            materialId: {
+              label: bom.material?.name as string,
+              value: bom.material?.id as string,
+            },
+            materialTypeId: {
+              label: bom.materialType?.name as string,
+              value: bom.materialType?.id as string,
+            },
+            baseUoMId: {
+              label: bom.baseUoM?.symbol as string,
+              value: bom.baseUoM?.id as string,
+            },
+          }),
+        ) as BomRequestDto[];
+
+        setValue("items", defaultBillOfMaterials);
+      }
     } catch (error) {
       console.log(error);
-      // toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-  const handleSave = async () => {
+
+  const handleSave = async (data: BomFormData) => {
     try {
+      if (!data.items.length) {
+        toast.error("Please add BOM items");
+        return;
+      }
+
       await saveBom({
         module: AuditModules.production.name,
         subModule: AuditModules.production.bom,
         createBillOfMaterialRequest: {
           productId,
-          items: itemLists?.map((item) => ({
+          items: data.items.map((item, index) => ({
             materialId: item.materialId.value,
             materialTypeId: item.materialTypeId.value,
             baseUoMId: item.baseUoMId.value,
@@ -87,10 +111,11 @@ const BOM = () => {
             function: item.function,
             grade: item.grade,
             isSubstitutable: item.isSubstitutable,
-            order: item.order,
+            order: index + 1,
           })),
         },
       }).unwrap();
+
       toast.success("BOM Saved Successfully");
       handleLoadBom(productId);
       router.push(routes.editPlanningPackaging());
@@ -107,10 +132,56 @@ const BOM = () => {
         subModule: AuditModules.production.bom,
       }).unwrap();
       toast.success("BOM Archived");
-      setItemLists([]);
+      setValue("items", []);
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
+  };
+
+  const handleAddItem = (newItem: BomRequestDto) => {
+    // Check for duplicates
+    const isDuplicate = watchedItems.some(
+      (item) => item.materialId?.value === newItem.materialId?.value,
+    );
+
+    if (isDuplicate) {
+      toast.error("This material is already added to the BOM");
+      return false;
+    }
+
+    append({
+      ...newItem,
+      order: watchedItems.length + 1,
+    });
+
+    return true;
+  };
+
+  const handleUpdateItem = (index: number, updatedItem: BomRequestDto) => {
+    // Check for duplicates (excluding current item)
+    const isDuplicate = watchedItems.some(
+      (item, idx) =>
+        idx !== index &&
+        item.materialId?.value === updatedItem.materialId?.value,
+    );
+
+    if (isDuplicate) {
+      toast.error("This material is already added to the BOM");
+      return false;
+    }
+
+    update(index, updatedItem);
+    return true;
+  };
+
+  const handleRemoveItem = (index: number) => {
+    remove(index);
+    // Update order for remaining items
+    const updatedItems = watchedItems
+      .filter((_, idx) => idx !== index)
+      .map((item, idx) => ({ ...item, order: idx + 1 }));
+
+    setValue("items", updatedItems);
   };
 
   return (
@@ -143,65 +214,51 @@ const BOM = () => {
           </Link>
         </div>
       </div>
-      <StepWrapper className="w-full pb-3">
-        <div className="flex w-full justify-between">
-          <PageTitle title="BOM List" />
-          <div className="flex gap-2">
-            <Button
-              onClick={handleArchiveBom}
-              type="button"
-              variant={"outline"}
-              className="flex items-center gap-2"
-            >
-              {archiveLoading ? (
-                <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-              ) : (
-                <Icon name="Recycle" className="h-4 w-4" />
-              )}
-              <span>Archive BOM</span>{" "}
-            </Button>
-            <Button
-              onClick={() => {
-                if (itemLists?.length < 1) {
-                  toast.error("Please add BOM items");
-                  return;
-                }
-                handleSave();
-              }}
-              type="button"
-              className="flex items-center gap-2"
-            >
-              {isLoading ? (
-                <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-              ) : (
-                <Icon name="Save" className="h-4 w-4" />
-              )}
-              <span>Save Changes</span>{" "}
-            </Button>
-            <Button
-              onClick={() => {
-                setIsOpen(true);
-              }}
-              type="button"
-              variant={"secondary"}
-              className="flex items-center gap-2"
-            >
-              <Icon name="Plus" className="h-4 w-4" />
-              <span>Add New</span>{" "}
-            </Button>
-          </div>
-        </div>
-        <Create
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          setItemLists={setItemLists}
-          itemLists={itemLists}
-        />
 
-        <div className="w-full py-6">
-          <TableForData lists={itemLists} setItems={setItemLists} />
-        </div>
-      </StepWrapper>
+      <form onSubmit={handleSubmit(handleSave)}>
+        <StepWrapper className="w-full pb-3">
+          <div className="flex w-full justify-between">
+            <PageTitle title="BOM List" />
+            <div className="flex gap-2">
+              <Button
+                onClick={handleArchiveBom}
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                {archiveLoading ? (
+                  <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Icon name="Recycle" className="h-4 w-4" />
+                )}
+                <span>Archive BOM</span>
+              </Button>
+              <Button
+                type="submit"
+                className="flex items-center gap-2"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Icon name="Save" className="h-4 w-4" />
+                )}
+                <span>Save Changes</span>
+              </Button>
+              <Create onAddItem={handleAddItem} existingItems={watchedItems} />
+            </div>
+          </div>
+
+          <div className="w-full py-6">
+            <TableForData
+              items={watchedItems}
+              onUpdateItem={handleUpdateItem}
+              onRemoveItem={handleRemoveItem}
+              existingItems={watchedItems}
+            />
+          </div>
+        </StepWrapper>
+      </form>
     </div>
   );
 };

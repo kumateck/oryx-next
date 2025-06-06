@@ -64,13 +64,6 @@ export const CreateBomSchema = z.object({
   //     },
   //   ),
 });
-export const BomFormSchema = z.object({
-  items: z.array(CreateBomSchema),
-});
-export type BomFormData = z.infer<typeof BomFormSchema>;
-
-export const BomFormValidator = zodResolver(BomFormSchema);
 
 export type BomRequestDto = z.infer<typeof CreateBomSchema>;
 export const CreateBomValidator = zodResolver(CreateBomSchema);
- 
