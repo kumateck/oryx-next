@@ -46,7 +46,7 @@ function ForgotPassword() {
         },
       } satisfies PostApiV1AuthForgotPasswordApiArg;
 
-      await forgotPassword(payload);
+      await forgotPassword(payload).unwrap();
 
       toast.success("Password reset link sent successfully", {
         duration: 2000,
