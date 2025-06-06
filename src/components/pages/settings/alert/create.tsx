@@ -10,12 +10,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AlertForm from "./form";
-
+import {
+  AlertDto,
+  usePostApiV1AlertMutation,
+} from "@/lib/redux/api/openapi.generated";
+import { useForm } from "react-hook-form";
+import { CreateAlertDtoValidator } from "./types";
 
 export function CreateAlert() {
+  const [createAlert, { isLoading }] = usePostApiV1AlertMutation();
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { errors, isLoading: formLoading },
+  } = useForm<AlertDto>({
+    resolver: CreateAlertDtoValidator,
+  });
+  const onSubmit = async (data: AlertDto) => {
+    await createAlert({
+      createAlertRequest: data,
+    });
+  };
   return (
     <Dialog>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTrigger asChild>
           <Button>
             <Icon name="Plus" />
@@ -24,9 +43,9 @@ export function CreateAlert() {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>New Alert</DialogTitle>
           </DialogHeader>
-          <AlertForm />
+          <AlertForm errors={errors} register={register} control={control} />
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>

@@ -26,6 +26,7 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   const { data: result, isLoading } = useGetApiV1DesignationQuery({
     page,
@@ -35,6 +36,7 @@ const Page = () => {
 
   useEffect(() => {
     loadDesignations({
+      searchQuery: searchValue,
       page,
       pageSize,
     });
@@ -42,7 +44,7 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize, triggerReload, searchValue]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 
