@@ -2,7 +2,7 @@
 import PageTitle from "@/shared/title";
 import { AlertItem } from "./alertItem";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CreateAlert } from "./create";
 import PageWrapper from "@/components/layout/wrapper";
 import { useLazyGetApiV1AlertQuery } from "@/lib/redux/api/openapi.generated";

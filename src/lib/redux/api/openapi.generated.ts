@@ -6071,7 +6071,7 @@ export type GetApiV1ActivityLogApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1AlertApiResponse = unknown;
+export type PostApiV1AlertApiResponse = /** status 200 OK */ string;
 export type PostApiV1AlertApiArg = {
   /** The module this request falls under */
   module?: any;
@@ -10522,13 +10522,28 @@ export type ProblemDetails = {
   instance?: string | null;
   [key: string]: any;
 };
+export type NotificationType =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14;
 export type AlertType = 0 | 1 | 2;
 export type CreateAlertRequest = {
   title?: string | null;
-  modelType?: string | null;
+  notificationType?: NotificationType;
   alertType?: AlertType;
   timeFrame?: string;
-  isDisabled?: boolean;
 };
 export type CollectionItemDto = {
   id?: string | null;
@@ -11191,6 +11206,7 @@ export type QuestionDto = {
   validation?: QuestionValidationType;
   isMultiSelect?: boolean;
   reference?: string | null;
+  description?: string | null;
   options?: QuestionOptionDto[] | null;
 };
 export type FormFieldDto = {
@@ -11276,6 +11292,7 @@ export type CreateQuestionRequest = {
   isMultiSelect?: boolean;
   validation?: QuestionValidationType;
   options?: CreateQuestionOptionsRequest[] | null;
+  description?: string | null;
   reference?: string | null;
   formula?: FormulaDto;
 };
@@ -12503,6 +12520,7 @@ export type Question = {
   options?: QuestionOption[] | null;
   isMultiSelect?: boolean;
   reference?: string | null;
+  description?: string | null;
 };
 export type QuestionRead = {
   id?: string;
@@ -12521,6 +12539,7 @@ export type QuestionRead = {
   options?: QuestionOptionRead[] | null;
   isMultiSelect?: boolean;
   reference?: string | null;
+  description?: string | null;
 };
 export type FormField = {
   id?: string;
@@ -12834,6 +12853,7 @@ export type Role = {
   lastUpdatedById?: string | null;
   deletedAt?: string | null;
   lastDeletedById?: string | null;
+  type?: DepartmentType;
 };
 export type RouteResponsibleRole = {
   id?: string;
@@ -17228,6 +17248,7 @@ export type ProcessQuotation = {
 };
 export type CreateRoleRequest = {
   name: string;
+  type?: DepartmentType;
   permissions?: PermissionModuleDto[] | null;
 };
 export type RolePermissionDto = {

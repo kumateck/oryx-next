@@ -2,7 +2,6 @@ import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
 import {
   Control,
-  ErrorOption,
   FieldErrors,
   FieldValues,
   Path,
@@ -63,7 +62,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
                 value: value.toString(), // 0 or 1
               })),
             errors,
-          }
+          },
         ]}
       />
     </div>
