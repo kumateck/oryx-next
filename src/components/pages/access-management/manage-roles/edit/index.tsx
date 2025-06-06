@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Control, useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 
-import { InputTypes, PermissionType } from "@/lib";
+import { InputTypes, PermissionType, RoleType, splitWords } from "@/lib";
 
 import {
   Section,
@@ -40,6 +40,7 @@ const Page = () => {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<RoleRequestDto>({
     resolver: CreateRoleValidator,
@@ -64,6 +65,10 @@ const Page = () => {
       }).unwrap();
 
       setValue("name", role.name as string);
+      setValue("type", {
+        value: "",
+        label: "",
+      });
       const rolePermissionsData = await loadRolePermissions({
         roleId,
       }).unwrap();
@@ -138,9 +143,18 @@ const Page = () => {
       }),
     );
   };
+
+  const roleTypeOptions = Object.entries(RoleType)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+
   const onSubmit = async (data: RoleRequestDto) => {
     const payload = {
       name: data.name,
+      type: data.type.value,
       permissions: removeDuplicateTypes(permissions),
       displayName: data.name,
     };
@@ -198,18 +212,36 @@ const Page = () => {
       </PageWrapper>
       <ScrollablePageWrapper className="space-y-5">
         <StepWrapper>
-          <div className="w-full">
-            <FormWizard
-              config={[
-                {
-                  register: register("name"),
-                  label: "Name",
-                  placeholder: "Enter name of role",
-                  type: InputTypes.TEXT,
-                  errors,
-                },
-              ]}
-            />
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    register: register("name"),
+                    label: "Name",
+                    placeholder: "Enter name of role",
+                    type: InputTypes.TEXT,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    name: `type`,
+                    label: "Role Type",
+                    type: InputTypes.SELECT,
+                    placeholder: "Select role type",
+                    control: control as unknown as Control,
+                    required: true,
+                    options: roleTypeOptions,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
           </div>
         </StepWrapper>
         <div className="pb-20">
