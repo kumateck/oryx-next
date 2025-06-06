@@ -20,6 +20,7 @@ const ManageRoles = () => {
   const dispatch = useDispatch();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   const [loadRoles, { data, isLoading, isFetching }] =
     useLazyGetApiV1RoleQuery();
@@ -77,7 +78,11 @@ const ManageRoles = () => {
         <ClientDatatable
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
-          data={roles}
+          data={roles.filter(role=>{
+            if(!searchValue) return true;
+            return role?.displayName?.toLowerCase().includes(searchValue.toLowerCase())
+            || role?.name?.toLowerCase().includes(searchValue.toLowerCase());
+          })}
           columns={columns}
           isLoading={isLoading || isFetching}
         />

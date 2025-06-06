@@ -2,7 +2,7 @@
 import PageTitle from "@/shared/title";
 import { AlertItem } from "./alertItem";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CreateAlert } from "./create";
 import PageWrapper from "@/components/layout/wrapper";
 import { useLazyGetApiV1AlertQuery } from "@/lib/redux/api/openapi.generated";
@@ -25,7 +25,7 @@ function Page() {
   return (
     <PageWrapper className="w-full">
       <div className="flex w-full items-center justify-between">
-        <div className="flex flex-col">
+        <div className="flex flex-col mr-auto">
           <PageTitle title="Alerts & Notifications " />
           <span className="text-sm">
             Create, edit and delete alerts & notifications

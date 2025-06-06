@@ -24,6 +24,7 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector(state=>state.common.searchInput)
   const [page, setPage] = useState(1);
 
   const [loadLeaveRequests, { data: result, isLoading, isFetching }] =
@@ -33,6 +34,7 @@ const Page = () => {
     loadLeaveRequests({
       page,
       pageSize,
+      searchQuery: searchValue,
       module: AuditModules.management.name,
       subModule: AuditModules.management.leaveManagement,
     });
@@ -40,7 +42,7 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize, searchValue, triggerReload]);
   const data = result?.data || [];
 
   //Check Permision
