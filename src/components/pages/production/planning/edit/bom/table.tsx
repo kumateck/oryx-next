@@ -1,32 +1,43 @@
-"use client";
-
 import { DraggableTable } from "@/shared/datatable";
 
 import { getColumns } from "./columns";
 import { BomRequestDto } from "./types";
+import React from "react";
 
 interface Props {
-  lists: BomRequestDto[];
-  setItems: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
+  items: BomRequestDto[];
+  onUpdateItem: (index: number, updatedItem: BomRequestDto) => boolean;
+  onRemoveItem: (index: number) => void;
+  existingItems: BomRequestDto[];
 }
-const TableForData = ({ lists, setItems }: Props) => {
-  const columns = getColumns(setItems, lists);
+
+const TableForData = ({
+  items,
+  onUpdateItem,
+  onRemoveItem,
+  existingItems,
+}: Props) => {
+  const columns = getColumns(onUpdateItem, onRemoveItem, existingItems);
+  const [oldItems, setItems] = React.useState<BomRequestDto[]>(items);
+  const tableData = items.map((item, idx) => ({
+    ...item,
+    order: idx + 1,
+    id: (idx + 1).toString(),
+    index: idx,
+  }));
+
+  console.log(oldItems);
+
+  // const handleReorder = (
+  //   reorderedItems: (BomRequestDto & { index: number })[],
+  // ) => {
+  //   // Handle reordering if needed
+  //   // You might need to update the parent form state here
+  // };
 
   return (
     <div className="flex justify-center">
-      <DraggableTable
-        columns={columns}
-        data={
-          lists?.map((item, idx) => {
-            return {
-              ...item,
-              order: idx + 1,
-              id: (idx + 1).toString(),
-            };
-          }) || []
-        }
-        setItems={setItems}
-      />
+      <DraggableTable columns={columns} data={tableData} setItems={setItems} />
     </div>
   );
 };

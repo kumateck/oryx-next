@@ -9,50 +9,68 @@ import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
 import { BomRequestDto } from "./types";
 
-interface DataTableRowActionsProps {
-  row: Row<BomRequestDto>;
-  onUpdateItem: (index: number, updatedItem: BomRequestDto) => boolean;
-  onRemoveItem: (index: number) => void;
-  existingItems: BomRequestDto[];
-  index: number;
+interface DataTableRowActionsProps<TData> {
+  row: Row<TData>;
+  setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
+  itemLists: BomRequestDto[];
 }
-
-export function DataTableRowActions({
+export function DataTableRowActions<TData extends BomRequestDto>({
   row,
-  onUpdateItem,
-  onRemoveItem,
-  existingItems,
-  index,
-}: DataTableRowActionsProps) {
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  setItemLists,
+  itemLists,
+}: DataTableRowActionsProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const [details, setDetails] = useState<BomRequestDto>({} as BomRequestDto);
   const handleDelete = () => {
-    onRemoveItem(index);
-    setIsDeleteOpen(false);
-  };
-
-  const handleUpdate = (updatedItem: BomRequestDto) => {
-    return onUpdateItem(index, updatedItem);
+    if (details) {
+      setItemLists((prev) =>
+        prev.filter((item) => item.idIndex !== details.idIndex),
+      );
+      setIsDeleteOpen(false);
+    }
   };
 
   return (
     <section className="flex items-center justify-end gap-2">
+      {/* <Icon
+        name="Pencil"
+        className="h-5 w-5 cursor-pointer text-neutral-500"
+        onClick={() => {
+          setDetails(row.original);
+          setIsOpen(true);
+        }}
+      />
+      <Icon
+        name="Trash2"
+        className="text-danger-500 h-5 w-5 cursor-pointer"
+        onClick={() => {
+          setDetails(row.original);
+          setIsDeleteOpen(true);
+        }}
+      /> */}
       <TableMenuAction>
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => setIsEditOpen(true)}
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
           >
             <span className="text-black">
               <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
             </span>
             <span>Edit</span>
           </div>
-        </DropdownMenuItem>
+        </DropdownMenuItem>{" "}
         <DropdownMenuItem className="group">
           <div
-            onClick={() => setIsDeleteOpen(true)}
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
             className="flex cursor-pointer items-center justify-start gap-2"
           >
             <span className="text-black">
@@ -62,18 +80,15 @@ export function DataTableRowActions({
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
-
-      {isEditOpen && (
+      {details && isOpen && (
         <Edit
-          isOpen={isEditOpen}
-          onClose={() => setIsEditOpen(false)}
-          details={row.original}
-          onUpdateItem={handleUpdate}
-          existingItems={existingItems}
-          currentIndex={index}
+          setItemLists={setItemLists}
+          details={details}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          itemLists={itemLists}
         />
       )}
-
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -84,10 +99,9 @@ export function DataTableRowActions({
 }
 
 export const getColumns = (
-  onUpdateItem: (index: number, updatedItem: BomRequestDto) => boolean,
-  onRemoveItem: (index: number) => void,
-  existingItems: BomRequestDto[]
-): ColumnDef<BomRequestDto & { index: number }>[] => [
+  setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>,
+  itemLists: BomRequestDto[],
+): ColumnDef<BomRequestDto>[] => [
   {
     accessorKey: "order",
     header: "Order",
@@ -97,7 +111,7 @@ export const getColumns = (
     accessorKey: "materialTypeId",
     header: "Material Type",
     cell: ({ row }) => (
-      <div>{row.original.materialTypeId?.label}</div>
+      <div className="">{row.original.materialTypeId?.label}</div>
     ),
   },
   {
@@ -105,6 +119,7 @@ export const getColumns = (
     header: "Component Material",
     cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
   },
+
   {
     accessorKey: "quantity",
     header: "Quantity",
@@ -135,10 +150,8 @@ export const getColumns = (
     cell: ({ row }) => (
       <DataTableRowActions
         row={row}
-        onUpdateItem={onUpdateItem}
-        onRemoveItem={onRemoveItem}
-        existingItems={existingItems}
-        index={row.original.index}
+        setItemLists={setItemLists}
+        itemLists={itemLists}
       />
     ),
   },
