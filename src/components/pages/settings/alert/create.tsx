@@ -50,7 +50,10 @@ export function CreateAlert() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">
+              {isLoading && <Icon name="LoaderCircle" />}{" "}
+              <span>Save changes</span>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
