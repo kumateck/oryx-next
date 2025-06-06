@@ -465,3 +465,8 @@ export enum AppointmentType {
   New = 0,
   Replacement = 1,
 }
+
+export enum RoleType {
+  Production = 0,
+  NonProduction = 1,
+}
