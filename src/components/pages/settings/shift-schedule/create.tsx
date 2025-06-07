@@ -98,7 +98,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         scheduleName: data.scheduleName,
         //change the value to an integer, and then convert it to the ShiftFrequency enum
         frequency: parseInt(data.frequency.value) as unknown as ShiftFrequency,
-        startTime: data.startTime,
+
         startDate: parseInt(data.startDay.value) as unknown as StartDay,
         shiftTypeIds: data.shiftTypeIds.map((shiftType) => shiftType.value),
         departmentId: data.departmentId.value,

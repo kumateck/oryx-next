@@ -144,10 +144,7 @@ export const Card: FC<CardProps> = ({
       >
         {highlightedQuestion?.id === question.id && (
           <div className="absolute left-1/2 top-0 translate-x-1 translate-y-1/2 transform">
-            <Icon
-              name="GripHorizontal"
-              className="h-6 w-8 text-neutral-input"
-            />
+            <Icon name="GripHorizontal" className="h-6 w-8 text-neutral-dark" />
           </div>
         )}
         <div className="flex items-center justify-between gap-6">
@@ -236,7 +233,7 @@ export const Card: FC<CardProps> = ({
           {highlightedQuestion?.id === question.id && (
             <Icon
               name="Trash2"
-              className="h-5 w-5 text-neutral-400"
+              className="h-5 w-5 text-danger-default"
               onClick={() => onDeleteQuestion(question.id as string)}
             />
           )}

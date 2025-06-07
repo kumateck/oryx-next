@@ -22,7 +22,7 @@ export const CreateShiftScheduleSchema = z.object({
     },
   ),
   scheduleName: z.string().min(1, { message: "Schedule name is required" }),
-  startTime: z.string().min(1, { message: "Start time is required" }),
+  // startTime: z.string().min(1, { message: "Start time is required" }),
   departmentId: z.object(
     {
       value: z.string().min(1, { message: "Department is required" }),

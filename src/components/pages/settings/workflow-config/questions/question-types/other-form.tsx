@@ -68,6 +68,7 @@ const OtherForm = ({
   const onSubmit = async (data: QuestionRequestDto) => {
     const createQuestionRequest = {
       label: data.label,
+      description: data.description,
       type: Number(data.type.value) as QuestionType,
       isMultiSelect: data.isMultiSelect,
       options: data.options,

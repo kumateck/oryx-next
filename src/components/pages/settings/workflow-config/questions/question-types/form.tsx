@@ -48,6 +48,13 @@ const QuestionForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("description" as Path<TFieldValues>),
+            label: "Description (Specification)",
+            placeholder: "Enter your description",
+            type: InputTypes.TEXT,
+            errors,
+          },
+          {
             label: "Answer Type",
             control: control as Control,
             type: InputTypes.SELECT,

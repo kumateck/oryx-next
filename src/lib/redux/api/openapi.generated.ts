@@ -10568,8 +10568,8 @@ export type AlertDto = {
   createdBy?: UserDto;
   createdAt?: string;
   title?: string | null;
-  modelType?: string | null;
-  alertType?: AlertType;
+  notificationType?: NotificationType;
+  alertTypes?: AlertType[] | null;
   timeFrame?: string;
   isDisabled?: boolean;
 };
@@ -16968,6 +16968,7 @@ export type FinalPackingDtoIEnumerablePaginateable = {
 export type RoleDto = {
   id?: string;
   name?: string | null;
+  type?: DepartmentType;
   displayName?: string | null;
 };
 export type RequisitionApprovalDto = {
@@ -17255,6 +17256,7 @@ export type RolePermissionDto = {
   id?: string;
   displayName?: string | null;
   name?: string | null;
+  type?: DepartmentType;
   permissions?: PermissionModuleDto[] | null;
 };
 export type RolePermissionDtoIEnumerablePaginateable = {
@@ -17269,12 +17271,12 @@ export type RolePermissionDtoIEnumerablePaginateable = {
 export type UpdateRoleRequest = {
   name: string;
   displayName: string;
+  type?: DepartmentType;
 };
 export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4;
 export type CreateShiftScheduleRequest = {
   scheduleName: string;
   frequency: ScheduleFrequency;
-  startTime: string;
   startDate?: DayOfWeek;
   shiftTypeIds: string[];
   departmentId: string;
@@ -17295,7 +17297,6 @@ export type ShiftScheduleDto = {
   createdBy?: UserDto;
   createdAt?: string;
   scheduleName?: string | null;
-  startTime?: string | null;
   startDate?: DayOfWeek;
   frequency?: ScheduleFrequency;
   shiftType?: ShiftTypeDto[] | null;
@@ -17307,7 +17308,6 @@ export type ShiftScheduleDtoRead = {
   createdBy?: UserDto;
   createdAt?: string;
   scheduleName?: string | null;
-  startTime?: string | null;
   startDate?: DayOfWeek;
   frequency?: ScheduleFrequency;
   shiftType?: ShiftTypeDto[] | null;

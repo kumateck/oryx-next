@@ -53,10 +53,7 @@ export const columns: ColumnDef<ShiftScheduleDtoRead>[] = [
     accessorKey: "startDay",
     header: "Start Day & Time",
     cell: ({ row }) => (
-      <div>
-        {StartDay[row.original.startDate as StartDay]} @-{" "}
-        {row.original.startTime}
-      </div>
+      <div>{StartDay[row.original.startDate as StartDay]} @- </div>
     ),
   },
 

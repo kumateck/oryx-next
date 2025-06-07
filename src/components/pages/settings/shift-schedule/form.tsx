@@ -55,42 +55,16 @@ const ShiftScheduleForm = <TFieldValues extends FieldValues, TContext>({
             options: frequencyOptions,
             errors,
           },
-        ]}
-      />
-
-      <div className="w-full my-5 gap-4 grid grid-cols-2">
-        <FormWizard
-          config={[
-            {
-              label: "Start Day",
-              control: control as Control,
-              type: InputTypes.SELECT,
-              name: "startDay",
-              required: true,
-              placeholder: "Select start date",
-              options: startDayOptions,
-              errors,
-            },
-          ]}
-        />
-        <FormWizard
-          config={[
-            {
-              label: "Start time",
-              control: control as Control,
-              type: InputTypes.CLOCK,
-              name: "startTime",
-              required: true,
-              placeholder: "Select start time",
-              errors,
-            },
-          ]}
-        />
-      </div>
-
-      <FormWizard
-        className="w-full space-y-5"
-        config={[
+          {
+            label: "Start Day",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "startDay",
+            required: true,
+            placeholder: "Select start date",
+            options: startDayOptions,
+            errors,
+          },
           {
             label: "Shift Types",
             control: control as Control,
