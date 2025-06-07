@@ -43,7 +43,10 @@ const QuestionCards = () => {
   const fetchQuestions = async () => {
     try {
       // Assuming your query accepts a page parameter (adjust if necessary)
-      const response = await loadQuestions({ page }).unwrap();
+      const response = await loadQuestions({
+        page,
+        pageSize: PAGE_SIZE,
+      }).unwrap();
       const loadedQuestions = response.data || [];
 
       // Append new questions to the existing list
@@ -105,8 +108,17 @@ const QuestionCards = () => {
     }
   };
   return (
-    <div>
+    <div
+      className="w-full"
+      id="scrollableDiv"
+      style={{
+        height: "calc(100vh - 150px)",
+        overflow: "auto",
+      }}
+    >
       <InfiniteScroll
+        scrollableTarget="scrollableDiv"
+        className="h-full w-full space-y-2 pb-20"
         dataLength={questions.length}
         next={fetchQuestions}
         hasMore={hasMore}

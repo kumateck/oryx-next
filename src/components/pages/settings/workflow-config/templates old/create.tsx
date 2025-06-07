@@ -16,28 +16,20 @@ import QuestionForm from "./form";
 import {
   CreateTemplateValidator,
   TemplateRequestDto,
-  TemplateSection,
+  templateQuestions,
 } from "./type";
 import PageTitle from "@/shared/title";
 import ThrowErrorMessage from "@/lib/throw-error";
 
 const CreateTemplate = () => {
   const router = useRouter();
-  const [sections, setSections] = useState<TemplateSection[]>([
-    {
-      id: `section-${Date.now()}`,
-      name: "",
-      questions: [],
-    },
-  ]);
-  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const [isAddQuestionsOpen, setIsAddQuestionsOpen] = useState(false);
+  const [questions, setQuestions] = useState<templateQuestions[]>([]);
   const [highlightedQuestion, setHighlightedQuestion] = useState<QuestionDto>();
-
   const [mutation, { isLoading }] = usePostApiV1FormMutation();
-
   const {
     register,
+    // control,
     handleSubmit,
     formState: { errors },
   } = useForm<TemplateRequestDto>({
@@ -45,37 +37,26 @@ const CreateTemplate = () => {
     mode: "onSubmit",
   });
 
+  // Function to handle the drag and drop event
+
   const onSubmit = async (data: TemplateRequestDto) => {
-    // Validate sections
-    const validSections = sections.filter((s) => s.name.trim() !== "");
-
-    if (validSections.length === 0) {
-      toast.warning("Please add at least one section with a name");
+    if (questions.length === 0) {
+      toast.warning("Please add at least one question");
       return;
     }
-
-    const sectionsWithQuestions = validSections.filter(
-      (s) => s.questions.length > 0,
-    );
-
-    if (sectionsWithQuestions.length === 0) {
-      toast.warning("Please add at least one question to any section");
-      return;
-    }
-
     const payload = {
       createFormRequest: {
         name: data.name,
-        sections: validSections.map((section) => ({
-          name: section.name,
-          fields: section.questions.map((item) => ({
-            questionId: item.id,
-            required: item.required || false,
-          })),
-        })),
+        sections: [
+          {
+            fields: questions?.map((item) => ({
+              questionId: item.id,
+              required: item.required,
+            })),
+          },
+        ],
       },
     } satisfies PostApiV1FormApiArg;
-
     try {
       await mutation(payload).unwrap();
       toast.success("Template created successfully");
@@ -83,7 +64,12 @@ const CreateTemplate = () => {
     } catch (error) {
       console.log(error);
       ThrowErrorMessage(error);
+      // toast.error("Something went wrong");
     }
+  };
+
+  const onDeleteQuestion = (questionId: string) => {
+    setQuestions((prev) => prev.filter((item) => item.id !== questionId));
   };
 
   return (
@@ -112,16 +98,14 @@ const CreateTemplate = () => {
             <span>Create Template</span>
           </Button>
         </div>
-
         <QuestionForm
-          sections={sections}
-          setSections={setSections}
-          currentSectionId={currentSectionId}
-          setCurrentSectionId={setCurrentSectionId}
-          isAddQuestionsOpen={isAddQuestionsOpen}
-          setIsAddQuestionsOpen={setIsAddQuestionsOpen}
+          setQuestions={setQuestions}
+          questions={questions}
           highlightedQuestion={highlightedQuestion}
           setHighlightedQuestion={setHighlightedQuestion}
+          onDeleteQuestion={onDeleteQuestion}
+          isAddQuestionsOpen={isAddQuestionsOpen}
+          setIsAddQuestionsOpen={setIsAddQuestionsOpen}
           register={register}
           errors={errors}
         />

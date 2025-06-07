@@ -5,6 +5,7 @@ import { QuestionType } from "@/lib";
 
 export const ExpressionQuestionFormSchema = z.object({
   id: z.string().optional(),
+  description: z.string().optional(),
   label: z.string().min(1, { message: "Question is required" }),
   options: z
     .array(
@@ -16,6 +17,7 @@ export const ExpressionQuestionFormSchema = z.object({
 });
 export const QuestRequestSchema = z.object({
   id: z.string().optional(),
+  description: z.string().optional(),
   label: z.string().min(1, "Question is required"),
   type: z.object({
     value: z.string().min(1, "Type is required"),

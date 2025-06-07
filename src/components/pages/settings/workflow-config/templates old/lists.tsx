@@ -116,6 +116,28 @@ const TemplateCards = () => {
   };
   return (
     <div className="space-y-5">
+      {/* {selectedFormType && (
+        <div className="flex items-center gap-5">
+          <p className="font-Medium text-sm font-bold">
+            All Results ({state?.data.length})
+          </p>
+          <p className="text-sm font-normal">Filtered by:</p>
+          {selectedFormType &&
+            selectedFormType.split(",").map((type: string, index: number) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 rounded-3xl border border-neutral-300 px-2 py-1 text-sm font-normal text-neutral-700"
+              >
+                <span>{type}</span>
+                <Icon
+                  className="h-4 w-4 cursor-pointer text-neutral-500"
+                  name="X"
+                  onClick={() => handleRemoveType(type)}
+                />
+              </div>
+            ))}
+        </div>
+      )} */}
       <div
         id="scrollableDiv"
         className="scrollbar-grey-red-600 scrollbar-track-grey-300 scrollbar-thin h-64 overflow-y-auto p-4 pb-20"

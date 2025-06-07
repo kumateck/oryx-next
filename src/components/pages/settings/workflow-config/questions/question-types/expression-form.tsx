@@ -51,6 +51,7 @@ const ExpressionQuestionForm = ({
   const onSubmit = async (data: ExpressionRequestDto) => {
     const createQuestionRequest = {
       label: data.label,
+      description: data.description,
       type: Number(selectedQType.value) as QuestionType,
       isMultiSelect: false,
       options: data.options,
@@ -84,6 +85,13 @@ const ExpressionQuestionForm = ({
                 placeholder: "Enter your question",
                 type: InputTypes.TEXT,
                 required: true,
+                errors,
+              },
+              {
+                register: register("description"),
+                label: "Description (Specification)",
+                placeholder: "Enter your description",
+                type: InputTypes.TEXT,
                 errors,
               },
             ]}

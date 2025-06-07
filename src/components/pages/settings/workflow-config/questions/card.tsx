@@ -30,12 +30,15 @@ const QuestionCard = ({
       <div className="rounded-2xl border border-neutral-200 bg-white px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="text-left">
-            <div className="text-primary-500 flex flex-1 gap-1 text-sm">
-              <span>{number}.</span>
+            <div className="text-neutral-dark flex flex-1 gap-1 text-base">
+              <span className="text-black">{number}.</span>
               <span>{capitalizeFirstWord(question?.label as string)}</span>
             </div>
+            <div className="text-xs text-neutral-secondary">
+              {question.description}
+            </div>
             <div>
-              <span className="text-sm text-neutral-400">
+              <span className="text-sm text-primary-default">
                 {splitWords(QuestionType[Number(question?.type)])}
               </span>
             </div>

@@ -23,7 +23,6 @@ import QuestionForm from "./form";
 import {
   CreateTemplateValidator,
   TemplateRequestDto,
-  TemplateSection,
   templateQuestions,
 } from "./type";
 import { useUserPermissions } from "@/hooks/use-permission";
@@ -31,20 +30,21 @@ import NoAccess from "@/shared/no-access";
 
 const EditTemplate = () => {
   const { id } = useParams();
-  const formId = id as string;
-  const router = useRouter();
 
-  const [sections, setSections] = useState<TemplateSection[]>([]);
-  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
+  const formId = id as string;
+
+  const router = useRouter();
   const [isAddQuestionsOpen, setIsAddQuestionsOpen] = useState(false);
+  const [questions, setQuestions] = useState<templateQuestions[]>([]);
   const [highlightedQuestion, setHighlightedQuestion] = useState<QuestionDto>();
 
   const [loadFormbyId] = useLazyGetApiV1FormByFormIdQuery();
+
   const [updateMutation, { isLoading: updateLoading }] =
     usePutApiV1FormByFormIdMutation();
-
   const {
     register,
+    // control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -58,78 +58,45 @@ const EditTemplate = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formId]);
-
   const loadFormHandler = async (formId: string) => {
-    try {
-      const response = await loadFormbyId({ formId }).unwrap();
-      setValue("name", response.name as string);
-
-      // Transform API response to our section structure
-      const apiSections = response?.sections || [];
-      const transformedSections: TemplateSection[] = apiSections.map(
-        (apiSection, index) => ({
-          id: `section-${index}-${Date.now()}`,
-          name: apiSection.name || `Section ${index + 1}`,
-          questions: (apiSection.fields || []).map((field) => ({
-            id: field?.question?.id as string,
-            required: field.required || false,
-            label: field?.question?.label as string,
-            type: field?.question?.type as QuestionType,
-            options: (field?.question?.options || []).map((opt) => ({
-              name: opt.name as string,
-            })),
-          })) as templateQuestions[],
-        }),
-      );
-
-      // Ensure at least one section exists
-      if (transformedSections.length === 0) {
-        transformedSections.push({
-          id: `section-${Date.now()}`,
-          name: "",
-          questions: [],
-        });
-      }
-
-      setSections(transformedSections);
-    } catch (error) {
-      console.error("Error loading form:", error);
-      toast.error("Error loading template data");
-    }
+    const response = await loadFormbyId({
+      formId,
+    }).unwrap();
+    setValue("name", response.name as string);
+    const section = response?.sections?.[0];
+    const formFields = section?.fields;
+    const questions = formFields?.map((item) => ({
+      id: item?.question?.id as string,
+      required: item.required,
+      label: item?.question?.label as string,
+      type: item?.question?.type as QuestionType,
+      options: item?.question?.options?.map((opt) => ({
+        name: opt.name as string,
+      })) as { name: string }[],
+    })) as templateQuestions[];
+    setQuestions(questions);
   };
 
   const onSubmit = async (data: TemplateRequestDto) => {
-    // Validate sections
-    const validSections = sections.filter((s) => s.name.trim() !== "");
-
-    if (validSections.length === 0) {
-      toast.warning("Please add at least one section with a name");
+    // console.log(data);
+    if (questions.length === 0) {
+      toast.warning("Please add at least one question");
       return;
     }
-
-    const sectionsWithQuestions = validSections.filter(
-      (s) => s.questions.length > 0,
-    );
-
-    if (sectionsWithQuestions.length === 0) {
-      toast.warning("Please add at least one question to any section");
-      return;
-    }
-
     const payload = {
       formId: id as string,
       createFormRequest: {
         name: data.name,
-        sections: validSections.map((section) => ({
-          name: section.name,
-          fields: section.questions.map((item) => ({
-            questionId: item.id,
-            required: item.required || false,
-          })),
-        })),
+        sections: [
+          {
+            fields: questions?.map((item) => ({
+              questionId: item.id,
+              required: item.required,
+            })),
+          },
+        ],
       },
     } satisfies PutApiV1FormByFormIdApiArg;
-
     try {
       await updateMutation(payload).unwrap();
       toast.success("Template updated successfully");
@@ -140,16 +107,21 @@ const EditTemplate = () => {
     }
   };
 
-  // Check Permissions
+  const onDeleteQuestion = (questionId: string) => {
+    setQuestions((prev) => prev.filter((item) => item.id !== questionId));
+  };
+
+  //Check Permision
   const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
   const hasAccessToWorkFlowFormQuestions = hasPermissionAccess(
     PermissionKeys.workflowForms.questions.view,
   );
   const hasAccessToWorkFlowFormTemplate = hasPermissionAccess(
     PermissionKeys.workflowForms.templates.view,
   );
-
   if (!hasAccessToWorkFlowFormQuestions && !hasAccessToWorkFlowFormTemplate) {
+    //redirect to no access
     return <NoAccess />;
   }
 
@@ -183,14 +155,13 @@ const EditTemplate = () => {
         </div>
 
         <QuestionForm
-          sections={sections}
-          setSections={setSections}
-          currentSectionId={currentSectionId}
-          setCurrentSectionId={setCurrentSectionId}
-          isAddQuestionsOpen={isAddQuestionsOpen}
-          setIsAddQuestionsOpen={setIsAddQuestionsOpen}
+          setQuestions={setQuestions}
+          questions={questions}
           highlightedQuestion={highlightedQuestion}
           setHighlightedQuestion={setHighlightedQuestion}
+          onDeleteQuestion={onDeleteQuestion}
+          isAddQuestionsOpen={isAddQuestionsOpen}
+          setIsAddQuestionsOpen={setIsAddQuestionsOpen}
           register={register}
           errors={errors}
         />
