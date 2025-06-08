@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import ToolCell from "./tool-cell";
 
 import { RoleDto } from "@/lib/redux/api/openapi.generated";
+import { RoleType, splitWords } from "@/lib";
 
 export const columns: ColumnDef<RoleDto>[] = [
   {
@@ -15,7 +16,13 @@ export const columns: ColumnDef<RoleDto>[] = [
     header: "Display Name",
     cell: ({ row }) => <div>{row.original.displayName}</div>,
   },*/
-
+  {
+    accessorKey: "type",
+    header: "Role Type",
+    cell: ({ row }) => (
+      <div>{splitWords(RoleType[row.original.type as RoleType])}</div>
+    ),
+  },
   {
     id: "tools",
     header: "Action",
