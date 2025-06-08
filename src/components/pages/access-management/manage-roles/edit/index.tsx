@@ -19,6 +19,7 @@ import LoadingSkeleton from "../../skeleton";
 import { CreateRoleValidator, RoleRequestDto } from "./type";
 import { useParams, useRouter } from "next/navigation";
 import {
+  DepartmentType,
   useLazyGetApiV1PermissionRoleByRoleIdQuery,
   useLazyGetApiV1RoleByIdQuery,
   usePutApiV1RoleByIdMutation,
@@ -66,8 +67,8 @@ const Page = () => {
 
       setValue("name", role.name as string);
       setValue("type", {
-        value: "",
-        label: "",
+        value: role.type?.toString() ?? "",
+        label: RoleType[role.type as RoleType],
       });
       const rolePermissionsData = await loadRolePermissions({
         roleId,
@@ -160,7 +161,10 @@ const Page = () => {
     };
     try {
       await saveRole({
-        updateRoleRequest: payload,
+        updateRoleRequest: {
+          ...payload,
+          type: parseInt(data.type.value) as DepartmentType,
+        },
         id: roleId,
       }).unwrap();
       toast.success("Role updated successfully");
