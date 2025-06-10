@@ -63,6 +63,7 @@ export const CODE_SETTINGS = {
     Employee: "Employee",
     LeaveRequest: "LeaveRequest",
     Overtime: "Overtime",
+    MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
   },
   nameTypes: {
     Time: 2,

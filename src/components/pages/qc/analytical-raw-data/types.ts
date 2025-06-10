@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { imageValidationSchema } from "./type";
 
 const MaterialArdSchema = z.object({
   stpId: z.object(
@@ -24,6 +25,7 @@ const MaterialArdSchema = z.object({
   specNumber: z
     .string()
     .min(1, { message: "Specification number is required" }),
+  attachments: imageValidationSchema.optional(),
 });
 
 export type MaterialArdSchemaType = z.infer<typeof MaterialArdSchema>;

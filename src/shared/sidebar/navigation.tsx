@@ -312,7 +312,7 @@ export const ROUTES: Route[] = [
     title: "Human Resource",
     menu: [
       {
-        title: "Management",
+        title: " HR Management",
         icon: "Folder",
         items: [
           {
