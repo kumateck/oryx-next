@@ -1,8 +1,15 @@
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import {
+  ConfirmDeleteDialog,
+  Icon,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  MaterialStandardTestProcedureDto,
-  useDeleteApiV1MaterialStpsByIdMutation,
+  ProductStandardTestProcedureDto,
+  ProductStandardTestProcedureDtoRead,
+  useDeleteApiV1ProductStpsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -15,15 +22,23 @@ interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 export function DataTableRowActions<
-  TData extends MaterialStandardTestProcedureDto,
+  TData extends ProductStandardTestProcedureDtoRead,
 >({ row }: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [details, setDetails] = useState<MaterialStandardTestProcedureDto>(
-    {} as MaterialStandardTestProcedureDto,
-  );
-  const [deleteMaterialSTPMutation] = useDeleteApiV1MaterialStpsByIdMutation();
+  const [details, setDetails] = useState<
+    ProductStandardTestProcedureDto & {
+      productName: string;
+    }
+  >({
+    productName: "",
+  } as ProductStandardTestProcedureDto & {
+    productName: string;
+  });
+  const [deleteProductSTPMutation] = useDeleteApiV1ProductStpsByIdMutation();
   const dispatch = useDispatch();
+
+  const isConnected = false;
 
   return (
     <div className="flex items-center justify-end gap-2">
@@ -35,18 +50,40 @@ export function DataTableRowActions<
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
         onClick={() => {
-          setDetails(row.original);
+          console.log("row", row);
+          setDetails({
+            ...(row.original as ProductStandardTestProcedureDto),
+            productName: (row.original as any)?.productName ?? "",
+          });
           setIsEdit(true);
         }}
       />
-      <Icon
-        name="Trash"
-        className="text-red-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+      <div className="size-fit">
+        {/* add a tooltip if stp is active using shadcn ui */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Icon
+              name="Trash"
+              className="text-red-500 h-5 w-5 cursor-pointer"
+              onClick={() => {
+                setDetails({
+                  ...(row.original as ProductStandardTestProcedureDto),
+                  productName: ((row.original as any)?.productName ??
+                    "") as string,
+                });
+                setIsDeleteOpen(true);
+              }}
+            />
+          </TooltipTrigger>
+          {isConnected && (
+            <TooltipContent>
+              <span>
+                This STP cannot be deleted because it is currently assigned.
+              </span>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </div>
 
       {isEdit && (
         <Edit
@@ -55,11 +92,10 @@ export function DataTableRowActions<
           id={details.id as string}
           details={{
             stpNumber: details.stpNumber as string,
-            materialId: {
-              value: details.materialId as string,
-              label: details.material?.name as string,
+            productId: {
+              value: details.productId as string,
+              label: details.productName as string,
             },
-            description: details.description as string,
           }}
         />
       )}
@@ -70,7 +106,7 @@ export function DataTableRowActions<
         onConfirm={async () => {
           if (!details.id) return;
           try {
-            await deleteMaterialSTPMutation({
+            await deleteProductSTPMutation({
               id: details.id,
               module: AuditModules.settings.name,
               subModule: AuditModules.settings.standardTestProcedure,
@@ -86,19 +122,20 @@ export function DataTableRowActions<
   );
 }
 
-export const columns: ColumnDef<MaterialStandardTestProcedureDto>[] = [
+export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
   {
     accessorKey: "stpNumber",
     header: "STP Number",
     cell: ({ row }) => <div>{row.original.stpNumber}</div>,
   },
   {
-    accessorKey: "materialId",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
+    accessorKey: "productId",
+    header: "Product Name",
+    cell: ({ row }) => <div>{row.original?.product?.name}</div>,
   },
   {
     id: "actions",
+    accessorFn: (row) => row,
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
