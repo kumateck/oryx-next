@@ -419,6 +419,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "Product Standard Test Procedures",
+        url: "/qc/products-stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
         title: "Analytical Raw Data",
         url: "/qc/analytical-raw-data",
         icon: "BookUser",

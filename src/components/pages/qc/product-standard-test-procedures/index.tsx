@@ -1,19 +1,17 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, EMaterialKind } from "@/lib";
-import { useLazyGetApiV1MaterialStpsQuery } from "@/lib/redux/api/openapi.generated";
+import { AuditModules } from "@/lib";
+import { useLazyGetApiV1ProductStpsQuery } from "@/lib/redux/api/openapi.generated";
 import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { Create } from "./create";
-import AccessTabs from "@/shared/access";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 function Page() {
   const dispatch = useDispatch();
@@ -23,35 +21,13 @@ function Page() {
   const searchValue = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  const kind = searchParams.get("kind") as unknown as EMaterialKind;
-
-  const [LoadData, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1MaterialStpsQuery();
-
-  // Extracts 'type' from URL
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams],
-  );
-  const handleTabClick = (tabType: EMaterialKind) => {
-    router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
-  };
-
+  const [loadProductStp, { data: result, isLoading, isFetching }] =
+    useLazyGetApiV1ProductStpsQuery();
   useEffect(() => {
-    LoadData({
+    loadProductStp({
       page,
       pageSize,
       searchQuery: searchValue,
-      materialKind: kind || EMaterialKind.Raw,
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.standardTestProcedure,
     });
@@ -59,32 +35,18 @@ function Page() {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, kind, searchValue, searchParams, pageSize, triggerReload]);
+  }, [searchValue, page, pageSize, triggerReload]);
 
   const data = result?.data || [];
   return (
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
-      <PageTitle title="Standard Test Procedure" />
       <div className="flex w-full justify-between items-center">
-        <AccessTabs
-          handleTabClick={handleTabClick}
-          type={kind}
-          tabs={[
-            {
-              label: EMaterialKind[EMaterialKind.Raw],
-              value: EMaterialKind.Raw.toString(),
-            },
-            {
-              label: EMaterialKind[EMaterialKind.Packing],
-              value: EMaterialKind.Packing.toString(),
-            },
-          ]}
-        />
+        <PageTitle title="Product Standard Test Procedure" />
         <div className="w-fit flex items-center justify-center gap-4">
           <Button onClick={() => setIsOpen(true)}>
             <Icon name="Plus" />
-            <span>Add Standard Test</span>
+            <span>Add Product Standard Test</span>
           </Button>
         </div>
       </div>

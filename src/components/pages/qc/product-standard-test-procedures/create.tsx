@@ -19,12 +19,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
 import {
-  CreateMaterialStandardTestProcedureRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
-  useGetApiV1MaterialQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
-  usePostApiV1MaterialStpsMutation,
-  PostApiV1MaterialStpsApiArg,
+  PostApiV1ProductStpsApiArg,
+  CreateProductStandardTestProcedureRequest,
+  usePostApiV1ProductStpsMutation,
+  useGetApiV1ProductQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   CreateStandardTestProcedureDto,
@@ -51,16 +51,15 @@ export const Create = ({ isOpen, onClose }: Props) => {
     resolver: StandardTestProcedureValidator,
   });
 
-  //get materials
-  const { data: materials } = useGetApiV1MaterialQuery({
+  //get products
+  const { data: products } = useGetApiV1ProductQuery({
     page: 1,
     pageSize: 1000,
-    kind: 0,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
   const [createStandardTestProcedure, { isLoading }] =
-    usePostApiV1MaterialStpsMutation();
+    usePostApiV1ProductStpsMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
 
   //fuction fro creating standard test procedure
@@ -68,15 +67,14 @@ export const Create = ({ isOpen, onClose }: Props) => {
     try {
       const payload = {
         stpNumber: data.stpNumber,
-        materialId: data.materialId.value,
-        description: data?.description,
-      } as CreateMaterialStandardTestProcedureRequest;
+        productId: data.productId.value,
+      } as CreateProductStandardTestProcedureRequest;
       // 1. Create the standard test procedure
       const standardTestProcedureId = await createStandardTestProcedure({
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
-        createMaterialStandardTestProcedureRequest: payload,
-      } as PostApiV1MaterialStpsApiArg).unwrap();
+        createProductStandardTestProcedureRequest: payload,
+      } as PostApiV1ProductStpsApiArg).unwrap();
       //upload attachment if any
       if (standardTestProcedureId && data?.attachments?.length > 0) {
         const files = Array.isArray(data.attachments)
@@ -86,31 +84,34 @@ export const Create = ({ isOpen, onClose }: Props) => {
         files.forEach((file) => {
           formData.append("files", file, file.name);
         });
-        // Upload the files
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
-          modelId: standardTestProcedureId,
-          module: AuditModules.settings.name,
-          subModule: AuditModules.settings.standardTestProcedure,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+        if (files.length) {
+          // Upload the files
+          await uploadAttachment({
+            modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
+            modelId: standardTestProcedureId,
+            module: AuditModules.settings.name,
+            subModule: AuditModules.settings.standardTestProcedure,
+            body: formData,
+          } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+        }
       }
       toast.success("STP created successfully");
       dispatch(commonActions.setTriggerReload());
       onClose();
       reset();
     } catch (error) {
+      console.error("Error creating STP:", error);
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
           "Failed to create STP",
       );
     }
   };
-  const data = materials?.data;
-  const materialOptions = data?.map((material) => {
+  const data = products?.data;
+  const productOptions = data?.map((product) => {
     return {
-      label: material.name,
-      value: material.id,
+      label: product.name,
+      value: product.id,
     };
   }) as Option[];
 
@@ -125,7 +126,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
             errors={errors}
             register={register}
             control={control}
-            materialsOptions={materialOptions}
+            productsOptions={productOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

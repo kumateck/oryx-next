@@ -947,6 +947,21 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1EmployeeAvailable: build.query<
+      GetApiV1EmployeeAvailableApiResponse,
+      GetApiV1EmployeeAvailableApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/available`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          date: queryArg.date,
+        },
+      }),
+    }),
     getApiV1EmployeeById: build.query<
       GetApiV1EmployeeByIdApiResponse,
       GetApiV1EmployeeByIdApiArg
@@ -5040,6 +5055,21 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ShiftSchedulesByScheduleIdDay: build.query<
+      GetApiV1ShiftSchedulesByScheduleIdDayApiResponse,
+      GetApiV1ShiftSchedulesByScheduleIdDayApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/${queryArg.scheduleId}/day`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          date: queryArg.date,
+        },
+      }),
+    }),
     putApiV1ShiftSchedulesByIdUpdateSchedule: build.mutation<
       PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse,
       PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg
@@ -6717,6 +6747,15 @@ export type GetApiV1EmployeeDepartmentsByIdApiResponse =
   /** status 200 OK */ EmployeeDtoRead[];
 export type GetApiV1EmployeeDepartmentsByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1EmployeeAvailableApiResponse =
+  /** status 200 OK */ MinimalEmployeeInfoDto[];
+export type GetApiV1EmployeeAvailableApiArg = {
+  date?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -9801,6 +9840,16 @@ export type GetApiV1ShiftSchedulesByScheduleIdViewApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ShiftSchedulesByScheduleIdDayApiResponse =
+  /** status 200 OK */ ShiftAssignmentDto[];
+export type GetApiV1ShiftSchedulesByScheduleIdDayApiArg = {
+  scheduleId: string;
+  date?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse = unknown;
 export type PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg = {
   id: string;
@@ -10844,8 +10893,8 @@ export type CompanyWorkingDaysDto = {
   createdAt?: string;
   day?: DayOfWeek;
   isWorkingDay?: boolean;
-  startTime?: string;
-  endTime?: string;
+  startTime?: string | null;
+  endTime?: string | null;
 };
 export type CompanyWorkingDaysDtoIEnumerablePaginateable = {
   data?: CompanyWorkingDaysDto[] | null;
@@ -11156,6 +11205,15 @@ export type EmployeeDtoIEnumerablePaginateableRead = {
 export type EmployeeUserDto = {
   employeeId: string;
   roleId: string;
+};
+export type MinimalEmployeeInfoDto = {
+  employeeId?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  staffNumber?: string | null;
+  type?: string | null;
+  department?: string | null;
+  designation?: string | null;
 };
 export type AssignEmployeeDto = {
   designationId: string;
@@ -17339,15 +17397,6 @@ export type AssignShiftRequest = {
   shiftTypeId: string;
   scheduleDate: string;
 };
-export type MinimalEmployeeInfoDto = {
-  employeeId?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  staffNumber?: string | null;
-  type?: string | null;
-  department?: string | null;
-  designation?: string | null;
-};
 export type ShiftCategoryDto = {
   id?: string;
   name?: string | null;
@@ -18038,6 +18087,8 @@ export const {
   usePostApiV1EmployeeUserMutation,
   useGetApiV1EmployeeDepartmentsByIdQuery,
   useLazyGetApiV1EmployeeDepartmentsByIdQuery,
+  useGetApiV1EmployeeAvailableQuery,
+  useLazyGetApiV1EmployeeAvailableQuery,
   useGetApiV1EmployeeByIdQuery,
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
@@ -18475,6 +18526,8 @@ export const {
   useDeleteApiV1ShiftSchedulesByIdMutation,
   useGetApiV1ShiftSchedulesByScheduleIdViewQuery,
   useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery,
+  useGetApiV1ShiftSchedulesByScheduleIdDayQuery,
+  useLazyGetApiV1ShiftSchedulesByScheduleIdDayQuery,
   usePutApiV1ShiftSchedulesByIdUpdateScheduleMutation,
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
