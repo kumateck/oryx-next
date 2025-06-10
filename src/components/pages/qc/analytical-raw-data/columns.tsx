@@ -56,7 +56,9 @@ export function DataTableRowActions<
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
           id={details.id as string}
+
           details={details}
+
         />
       )}
 
