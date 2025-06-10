@@ -8,7 +8,6 @@ import {
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
   ProductStandardTestProcedureDto,
-  ProductStandardTestProcedureDtoRead,
   useDeleteApiV1ProductStpsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -22,7 +21,7 @@ interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 export function DataTableRowActions<
-  TData extends ProductStandardTestProcedureDtoRead,
+  TData extends ProductStandardTestProcedureDto,
 >({ row }: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -131,7 +130,7 @@ export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
   {
     accessorKey: "productId",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original?.product?.name}</div>,
+    cell: ({ row }) => <div>{row.original?.productName}</div>,
   },
   {
     id: "actions",
