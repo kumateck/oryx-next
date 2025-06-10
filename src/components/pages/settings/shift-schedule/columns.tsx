@@ -1,11 +1,6 @@
 "use client";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import {
-  ErrorResponse,
-  isErrorResponse,
-  ShiftFrequency,
-  StartDay,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, ShiftFrequency } from "@/lib";
 import {
   ShiftScheduleDtoRead,
   useDeleteApiV1DesignationByIdMutation,
@@ -16,6 +11,7 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { toast } from "sonner";
 import { useState } from "react";
 import Link from "next/link";
+import { format } from "date-fns";
 // import Edit from "./leave-request/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -125,13 +121,27 @@ export const columns: ColumnDef<ShiftScheduleDtoRead>[] = [
   },
 
   {
-    accessorKey: "startDay",
-    header: "Start Day & Time",
+    accessorKey: "startDate",
+    header: "Start Date",
     cell: ({ row }) => (
-      <div>{StartDay[row.original.startDate as StartDay]} @- </div>
+      <div>
+        {row.original.startDate
+          ? format(row.original.startDate, "MMMM dd, yyyy")
+          : ""}{" "}
+      </div>
     ),
   },
-
+  {
+    accessorKey: "endDate",
+    header: "End Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original.endDate
+          ? format(row.original.endDate, "MMMM dd, yyyy")
+          : ""}{" "}
+      </div>
+    ),
+  },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

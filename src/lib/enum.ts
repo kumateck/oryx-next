@@ -402,11 +402,12 @@ export enum GRNStatus {
 }
 
 export enum ShiftFrequency {
-  Daily = 0,
-  Weekly = 1,
-  BiWeekly = 2,
-  Monthly = 3,
-  Yearly = 4,
+  Week = 0,
+  BiWeek = 1,
+  Month = 2,
+  Quarter = 3,
+  Half = 4,
+  Year = 5,
 }
 
 export enum StartDay {
@@ -424,24 +425,14 @@ export enum rotationType {
   Fixed = 1,
 }
 
-export enum applicableDays {
-  Monday = 0,
-  Tuesday = 1,
-  Wednesday = 2,
-  Thursday = 3,
-  Friday = 4,
-  Saturday = 5,
-  Sunday = 6,
-}
-
 export enum DayOfWeek {
-  Monday = 0,
-  Tuesday = 1,
-  Wednesday = 2,
-  Thursday = 3,
-  Friday = 4,
-  Saturday = 5,
-  Sunday = 6,
+  Sunday = 0,
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6,
 }
 
 export enum MaterialReturnsStatus {

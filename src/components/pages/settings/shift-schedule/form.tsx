@@ -18,7 +18,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   frequencyOptions: Option[];
   shiftTypesOptions: Option[];
   departmentOptions: Option[];
-  startDayOptions: Option[];
   defaultValues?: TFieldValues;
 }
 
@@ -29,7 +28,6 @@ const ShiftScheduleForm = <TFieldValues extends FieldValues, TContext>({
   frequencyOptions,
   shiftTypesOptions,
   departmentOptions,
-  startDayOptions,
   defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -56,13 +54,12 @@ const ShiftScheduleForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Start Day",
+            label: "Start Date",
             control: control as Control,
-            type: InputTypes.SELECT,
-            name: "startDay",
+            type: InputTypes.DATE,
+            name: "startDate",
             required: true,
             placeholder: "Select start date",
-            options: startDayOptions,
             errors,
           },
           {

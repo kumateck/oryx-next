@@ -9,6 +9,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
   categoryOptions: Option[];
+  shiftTypeOptions: Option[];
   defaultValues?: TFieldValues;
   fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
   isLoading: boolean;
@@ -18,6 +19,7 @@ const AssignForm = <TFieldValues extends FieldValues, TContext>({
   control,
   errors,
   categoryOptions,
+  shiftTypeOptions,
   defaultValues,
   fetchOptions,
   isLoading,
@@ -27,6 +29,17 @@ const AssignForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         className="w-full space-y-5"
         config={[
+          {
+            label: "ShiftType",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "type",
+            required: true,
+            defaultValue: defaultValues?.type,
+            placeholder: "Select type",
+            options: shiftTypeOptions,
+            errors,
+          },
           {
             label: "Category",
             control: control as Control,
