@@ -10,6 +10,7 @@ import {
 import {
   AuditModules,
   cn,
+  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -21,6 +22,9 @@ import {
   useGetApiV1MaterialStpsQuery,
   usePostApiV1MaterialArdMutation,
   useGetApiV1FormQuery,
+  PostApiV1MaterialArdApiArg,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
 } from "@/lib/redux/api/openapi.generated";
 import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
 import { toast } from "sonner";
@@ -62,6 +66,9 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const [createMaterialArdMutation, { isLoading }] =
     usePostApiV1MaterialArdMutation();
 
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
+
   //fuction fro creating material analytical raw data
   const onSubmit = async (data: MaterialArdSchemaType) => {
     const materialStp = materialStps?.data?.find(
@@ -83,11 +90,29 @@ export const Create = ({ isOpen, onClose }: Props) => {
       };
       console.log("this is payload", payload);
       // 1. Create the material analytical raw data
-      await createMaterialArdMutation({
+      const ardId = await createMaterialArdMutation({
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.materials,
         createMaterialAnalyticalRawDataRequest: payload,
-      }).unwrap();
+      } as PostApiV1MaterialArdApiArg).unwrap();
+
+      if (ardId) {
+        const formData = new FormData();
+        // Ensure attachments are an array
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
+          modelId: ardId,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
 
       toast.success("Material ARD created successfully");
       dispatch(commonActions.setTriggerReload());
@@ -142,7 +167,9 @@ export const Create = ({ isOpen, onClose }: Props) => {
                 className="flex items-center gap-2"
               >
                 <Icon
-                  name={isLoading ? "LoaderCircle" : "Plus"}
+                  name={
+                    isLoading || isUploadingAttachment ? "LoaderCircle" : "Plus"
+                  }
                   className={cn("h-4 w-4", {
                     "animate-spin": isLoading,
                   })}

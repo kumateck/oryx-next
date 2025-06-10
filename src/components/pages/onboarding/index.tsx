@@ -89,7 +89,7 @@ export default function OnboardingForm() {
 
   const { type } = useParams();
   const etype = type as string;
-
+  console.log("Employee Type", etype);
   const {
     register,
     handleSubmit,

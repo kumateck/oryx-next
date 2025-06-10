@@ -1,17 +1,20 @@
 import { z } from "zod";
 
 const personalInfoSchema = z.object({
-  passportPhoto: z.any().refine(
-    (image: File | string | undefined) => {
-      if (typeof image === "string") {
-        return z.string().min(3).safeParse(image).success;
-      }
-      return z.string().startsWith("image/").safeParse(image?.type).success;
-    },
-    {
-      message: "Passport photo is required. Upload a valid image",
-    },
-  ),
+  passportPhoto: z
+    .any()
+    .refine(
+      (image: File | string | undefined) => {
+        if (typeof image === "string") {
+          return z.string().min(3).safeParse(image).success;
+        }
+        return z.string().startsWith("image/").safeParse(image?.type).success;
+      },
+      {
+        message: "Passport photo is required. Upload a valid image",
+      },
+    )
+    .optional(),
   firstName: z.string().min(2, "First name is required"),
   lastName: z.string().min(2, "Last name is required"),
   dob: z.preprocess(
