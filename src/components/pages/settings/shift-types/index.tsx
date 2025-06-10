@@ -6,10 +6,7 @@ import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 
 import { ServerDatatable } from "@/shared/datatable";
-import {
-  useLazyGetApiV1ShiftTypeQuery,
-  useGetApiV1ShiftTypeQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ShiftTypeQuery } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
 // import { useRouter } from "next/navigation";
 import { Button, Icon } from "@/components/ui";
@@ -26,11 +23,9 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1ShiftTypeQuery({
-    page,
-    pageSize,
-  });
-  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1ShiftTypeQuery();
+
+  const [loadLeaveTypes, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1ShiftTypeQuery();
   // const router = useRouter();
   useEffect(() => {
     loadLeaveTypes({
