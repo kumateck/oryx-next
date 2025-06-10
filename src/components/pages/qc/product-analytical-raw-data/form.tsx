@@ -7,6 +7,7 @@ import {
   FieldValues,
   UseFormRegister,
 } from "react-hook-form";
+import { Stage } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
@@ -62,9 +63,12 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Select Stage",
             required: true,
             options: [
-              { value: "intimidate", label: "Intimidate" },
-              { value: "bulk", label: "Bulk" },
-              { value: "finished", label: "Finished" },
+              {
+                value: Stage.intimidate as unknown as string,
+                label: "Intimidate",
+              },
+              { value: Stage.bulk as unknown as string, label: "Bulk" },
+              { value: Stage.finished as unknown as string, label: "Finished" },
             ],
             errors,
           },

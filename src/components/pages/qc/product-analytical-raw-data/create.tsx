@@ -20,15 +20,10 @@ import { MaterialArdForm } from "./form";
 import {
   Stage,
   useGetApiV1FormQuery,
-  useGetApiV1ProductArdQuery,
+  useGetApiV1ProductStpsQuery,
   usePostApiV1ProductArdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import {
-  ProductArdSchemaType,
-  ProductArdSchemaResolver,
-  ProductArdSchema,
-  stageValues,
-} from "./types";
+import { ProductArdSchemaType, ProductArdSchemaResolver } from "./types";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
@@ -52,7 +47,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   });
 
   //get stp
-  const { data: productStps } = useGetApiV1ProductArdQuery({
+  const { data: productStps } = useGetApiV1ProductStpsQuery({
     page: 1,
     pageSize: 1000,
     module: AuditModules.warehouse.name,
@@ -71,10 +66,8 @@ export const Create = ({ isOpen, onClose }: Props) => {
   //fuction for creating product analytical raw data
   const onSubmit = async (data: ProductArdSchemaType) => {
     const productStp = productStps?.data?.find(
-      (stp) => stp.stpId === data.stpId.value,
+      (stp) => stp.id === data.stpId.value,
     );
-    const parsed = ProductArdSchema.parse(data);
-    const stage: Stage = stageValues[parsed.stage];
     if (!productStp || !productStp.stpNumber) {
       toast.error("Product STP not found. Please select a valid STP.");
       return;
@@ -84,10 +77,11 @@ export const Create = ({ isOpen, onClose }: Props) => {
         stpNumber: productStp?.stpNumber,
         specNumber: data.specNumber,
         description: data?.description,
-        stage: stage,
+        stage: data.stage.value as Stage,
         stpId: data.stpId.value,
         formId: data.formId.value,
       };
+      console.log("Creating Product ARD with payload:", payload);
       // 1. Create the product analytical raw data
       await createProductArdMutation({
         module: AuditModules.warehouse.name,
@@ -111,7 +105,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const productStpOptions = StpData?.map((stp) => {
     return {
       label: stp.stpNumber,
-      value: stp.specNumber,
+      value: stp.id,
     };
   }) as Option[];
 
@@ -122,6 +116,10 @@ export const Create = ({ isOpen, onClose }: Props) => {
       value: form.id,
     };
   }) as Option[];
+
+  if (errors) {
+    console.error("Form errors:", errors);
+  }
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
