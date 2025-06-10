@@ -12,15 +12,9 @@ export const CreateShiftScheduleSchema = z.object({
       message: "Frequency is required",
     },
   ),
-  startDay: z.object(
-    {
-      value: z.string().min(1, { message: "Start Day is required" }),
-      label: z.string(),
-    },
-    {
-      message: "Start Day is required",
-    },
-  ),
+
+  startDate: z.date({ required_error: "Start Date is required" }),
+
   scheduleName: z.string().min(1, { message: "Schedule name is required" }),
   // startTime: z.string().min(1, { message: "Start time is required" }),
   departmentId: z.object(

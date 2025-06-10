@@ -197,7 +197,7 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
-    employeeType: parseInt(etype) as unknown as EmployeeType,
+    type: parseInt(etype) as unknown as EmployeeType,
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),

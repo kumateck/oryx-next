@@ -96,7 +96,7 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
             name: "applicableDays",
             defaultValue: defaultValues?.applicableDays,
             required: true,
-            placeholder: "Sunday +3",
+            placeholder: "Select applicable days",
             options: applicableDaysOptions,
             errors,
           },

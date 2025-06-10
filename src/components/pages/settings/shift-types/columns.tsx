@@ -1,12 +1,7 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import {
-  ErrorResponse,
-  isErrorResponse,
-  rotationType,
-  applicableDays,
-} from "@/lib";
+import { ErrorResponse, isErrorResponse, rotationType, DayOfWeek } from "@/lib";
 import {
   ShiftTypeDto,
   useDeleteApiV1DesignationByIdMutation,
@@ -121,8 +116,8 @@ export const columns: ColumnDef<ShiftTypeDto>[] = [
       return (
         <div>
           {Array.isArray(days)
-            ? days.map((day) => applicableDays[day]).join(", ")
-            : days && applicableDays[days]}
+            ? days.map((day) => DayOfWeek[day]).join(", ")
+            : days && DayOfWeek[days]}
         </div>
       );
     },

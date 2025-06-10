@@ -57,7 +57,7 @@ export function DataTableRowActions<
             stpNumber: details.stpNumber as string,
             materialId: {
               value: details.materialId as string,
-              label: details.material?.name as string,
+              label: details.materialName as string,
             },
             description: details.description as string,
           }}
@@ -94,8 +94,8 @@ export const columns: ColumnDef<MaterialStandardTestProcedureDto>[] = [
   },
   {
     accessorKey: "materialId",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original?.material?.name}</div>,
+    header: "Material Number",
+    cell: ({ row }) => <div>{row.original?.materialName}</div>,
   },
   {
     id: "actions",

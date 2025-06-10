@@ -4,51 +4,19 @@ import dayjs, { Dayjs } from "dayjs";
 import WeekPicker from "../week-picker";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
 import { cn, fullname } from "@/lib";
-import { Icon, ToolTipLists } from "@/components/ui";
-import AssignShiftSchedule from "./add";
-import { ShiftDefault } from "./add/types";
+import { ToolTipLists } from "@/components/ui";
+
 import {
   ShiftAssignmentDto,
   ShiftScheduleDtoRead,
-  ShiftTypeDto,
   useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { eachDayOfInterval, endOfWeek, startOfWeek } from "date-fns";
-
-// type ShiftType = "Morning Shift" | "Afternoon Shift" | "Night Shift";
-
-// const shifts: ShiftType[] = ["Morning Shift", "Afternoon Shift", "Night Shift"];
-
-// const defaultTasks: string[] = [
-//   "Filling",
-//   "Preparation",
-//   "Sealing",
-//   "Packaging - Factory Hands",
-//   "Re-Work",
-//   "Dispensing",
-// ];
-
-// const getColor = (task: string): string => {
-//   const map: Record<string, string> = {
-//     Filling: "bg-primary-default",
-//     Preparation: "bg-gold-default",
-//     Sealing: "bg-success-default",
-//     "Packaging - Factory Hands": "bg-warning-default",
-//     "Re-Work": "bg-danger-default",
-//     Dispensing: "bg-platinum-default text-black",
-//   };
-//   return map[task] || "bg-neutral-default";
-// };
 
 interface CalendarGridProps {
   scheduleId: string;
   schedule?: ShiftScheduleDtoRead; // Replace with actual type if available
 }
-
-// interface CalendarGridProps {
-//   scheduleId: string;
-//   schedule?: ShiftScheduleDtoRead;
-// }
 
 const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
   scheduleId,
@@ -61,9 +29,6 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
     selectedWeekScheduleAssignmentView,
     setSelectedWeekScheduleAssignmentView,
   ] = useState<ShiftAssignmentDto[] | undefined>(undefined);
-  const [selectedShift, setSelectedShift] = useState<ShiftDefault | undefined>(
-    undefined,
-  );
 
   const [loadScheduleView] =
     useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery();
@@ -93,7 +58,7 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
       start: startOfWeek(selectedDate, { weekStartsOn: 1 }),
       end: endOfWeek(selectedDate, { weekStartsOn: 1 }),
     });
-    console.log(weekRange, "Week Range");
+
     try {
       const response = await loadScheduleView({
         scheduleId,
@@ -112,37 +77,13 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
     setSelectedDate(date);
   };
 
-  const handleAddTask = (date: Dayjs, shift: ShiftTypeDto) => {
-    const payload = {
-      schedule: {
-        label: schedule?.scheduleName as string,
-        value: scheduleId,
-      },
-      type: {
-        label: shift.shiftName as string,
-        value: shift.id as string,
-      },
-      scheduleDate: date.toDate().toISOString(), // Convert Dayjs to native Date and then to ISO string
-    };
-    setSelectedShift(() => payload);
-    setIsOpen(true);
-    // console.log(payload, "payload");
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="p-4">
       <WeekPicker
         selectedDate={selectedDate}
         setSelectedDate={handleDateSelect}
       />
-      {isOpen && (
-        <AssignShiftSchedule
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          defaultValues={selectedShift}
-        />
-      )}
+
       <ScrollableWrapper>
         <div
           className="grid border border-neutral-input text-sm rounded-md"
@@ -182,6 +123,7 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
                 // dayjs day() returns 0 (Sunday) to 6 (Saturday)
                 const dayIndex = date.day();
                 const isApplicable = shift?.applicableDays?.includes(dayIndex);
+
                 if (!isApplicable) {
                   return (
                     <div
@@ -198,7 +140,7 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
                     key={`${shift.id}-${date.toString()}`}
                     className="border relative border-neutral-input p-2 min-h-[100px] bg-white"
                   >
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-between">
                       <div className="space-y-2">
                         {selectedWeekScheduleAssignmentView?.map(
                           (task, tid) => {
@@ -240,14 +182,6 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
                             return null;
                           },
                         )}
-                      </div>
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => handleAddTask(date, shift)}
-                        >
-                          <Icon name="Plus" />
-                        </button>
                       </div>
                     </div>
                   </div>
