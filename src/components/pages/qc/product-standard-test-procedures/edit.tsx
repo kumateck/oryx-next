@@ -8,6 +8,18 @@ import {
   Icon,
 } from "@/components/ui";
 import {
+  PostApiV1FileByModelTypeAndModelIdApiArg,
+  useGetApiV1ProductQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
+  usePutApiV1ProductStpsByIdMutation,
+} from "@/lib/redux/api/openapi.generated";
+import { useForm } from "react-hook-form";
+import {
+  CreateStandardTestProcedureDto,
+  StandardTestProcedureValidator,
+} from "./types";
+import { StandardTestForm } from "./form";
+import {
   AuditModules,
   cn,
   CODE_SETTINGS,
@@ -15,21 +27,6 @@ import {
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { StandardTestForm } from "./form";
-import {
-  CreateMaterialStandardTestProcedureRequest,
-  PostApiV1FileByModelTypeAndModelIdApiArg,
-  useGetApiV1MaterialQuery,
-  usePostApiV1FileByModelTypeAndModelIdMutation,
-  usePostApiV1MaterialStpsMutation,
-  PostApiV1MaterialStpsApiArg,
-} from "@/lib/redux/api/openapi.generated";
-import {
-  CreateStandardTestProcedureDto,
-  StandardTestProcedureValidator,
-} from "./types";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
@@ -37,48 +34,67 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  details: CreateStandardTestProcedureDto;
+  id: string;
 };
 
-export const Create = ({ isOpen, onClose }: Props) => {
+export const Edit = ({ isOpen, id, onClose, details }: Props) => {
+  const [updateProductSTPMutation, { isLoading }] =
+    usePutApiV1ProductStpsByIdMutation();
+  const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
   const dispatch = useDispatch();
+
+  //useForm hook
+  console.log("details", details);
   const {
-    handleSubmit,
     register,
     control,
-    reset,
+    handleSubmit,
     formState: { errors },
   } = useForm<CreateStandardTestProcedureDto>({
     resolver: StandardTestProcedureValidator,
+    mode: "all",
+    defaultValues: {
+      stpNumber: details.stpNumber,
+      productId: details.productId,
+    },
   });
 
-  //get materials
-  const { data: materials } = useGetApiV1MaterialQuery({
+  //get products
+  const { data: products } = useGetApiV1ProductQuery({
     page: 1,
     pageSize: 1000,
-    kind: 0,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
-  const [createStandardTestProcedure, { isLoading }] =
-    usePostApiV1MaterialStpsMutation();
-  const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
+  //format to match the select component options
+  const data = products?.data;
+  const productOptions = data?.map((product) => {
+    return {
+      label: product.name,
+      value: product.id,
+    };
+  }) as Option[];
 
-  //fuction fro creating standard test procedure
+  //function for editing standard test procedure
   const onSubmit = async (data: CreateStandardTestProcedureDto) => {
     try {
       const payload = {
         stpNumber: data.stpNumber,
-        materialId: data.materialId.value,
-        description: data?.description,
-      } as CreateMaterialStandardTestProcedureRequest;
-      // 1. Create the standard test procedure
-      const standardTestProcedureId = await createStandardTestProcedure({
+        productId: data.productId.value,
+      };
+      //call api to save changes
+      await updateProductSTPMutation({
+        id,
+        createProductStandardTestProcedureRequest: payload,
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
-        createMaterialStandardTestProcedureRequest: payload,
-      } as PostApiV1MaterialStpsApiArg).unwrap();
-      //upload attachment if any
-      if (standardTestProcedureId && data?.attachments?.length > 0) {
+      }).unwrap();
+      toast.success("Standard test procedure updated successfully");
+      dispatch(commonActions.setTriggerReload());
+      onClose();
+      if (id && data?.attachments) {
+        //upload attachment if any
         const files = Array.isArray(data.attachments)
           ? data.attachments
           : Array.from(data.attachments);
@@ -89,61 +105,48 @@ export const Create = ({ isOpen, onClose }: Props) => {
         // Upload the files
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
-          modelId: standardTestProcedureId,
+          modelId: id,
           module: AuditModules.settings.name,
           subModule: AuditModules.settings.standardTestProcedure,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("STP created successfully");
-      dispatch(commonActions.setTriggerReload());
-      onClose();
-      reset();
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
-          "Failed to create STP",
+          "Failed to update STP",
       );
     }
   };
-  const data = materials?.data;
-  const materialOptions = data?.map((material) => {
-    return {
-      label: material.name,
-      value: material.id,
-    };
-  }) as Option[];
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Standard Test</DialogTitle>
+          <DialogTitle>Edit Standard Test Procedure</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <StandardTestForm
-            errors={errors}
             register={register}
             control={control}
-            materialsOptions={materialOptions}
+            errors={errors}
+            productsOptions={productOptions}
           />
-          <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="mr-2"
+            >
               Cancel
             </Button>
-            <Button
-              variant={"default"}
-              type="submit"
-              disabled={isLoading}
-              className="flex items-center gap-2"
-            >
+            <Button type="submit" disabled={isLoading}>
               <Icon
-                name={isLoading ? "LoaderCircle" : "Plus"}
-                className={cn("h-4 w-4", {
-                  "animate-spin": isLoading,
-                })}
+                name={isLoading ? "Loader" : "Plus"}
+                className={cn("mr-2", { isLoading: "animate-spin" })}
               />
-              <span>Save</span>
+              Save changes
             </Button>
           </DialogFooter>
         </form>
