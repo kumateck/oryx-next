@@ -23,7 +23,11 @@ import {
   useGetApiV1ProductStpsQuery,
   usePostApiV1ProductArdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ProductArdSchemaType, ProductArdSchemaResolver } from "./types";
+import {
+  ProductArdSchemaType,
+  ProductArdSchemaResolver,
+  stageOptions,
+} from "./types";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
@@ -117,10 +121,6 @@ export const Create = ({ isOpen, onClose }: Props) => {
     };
   }) as Option[];
 
-  if (errors) {
-    console.error("Form errors:", errors);
-  }
-
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
@@ -131,6 +131,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
           <MaterialArdForm
             errors={errors}
             register={register}
+            stageOptions={stageOptions}
             control={control}
             stpOptions={productStpOptions}
             formOptions={formOptions}

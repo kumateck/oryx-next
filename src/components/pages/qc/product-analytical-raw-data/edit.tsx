@@ -11,8 +11,7 @@ import React from "react";
 import {
   ProductArdSchemaType,
   ProductArdSchemaResolver,
-  ProductArdSchema,
-  stageValues,
+  stageOptions,
 } from "./types";
 import { useForm } from "react-hook-form";
 import {
@@ -66,7 +65,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     subModule: AuditModules.warehouse.materials,
   });
 
-  //loead forms template
+  //load forms template
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
@@ -94,18 +93,14 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       );
 
       if (!productStp || !productStp.stpNumber) {
-        console.log("Product STP not found");
         toast.error("Product STP not found. Please select a valid STP.");
         return;
       }
-      // Handle form submission
-      const perse = ProductArdSchema.parse(data);
-      const stage = stageValues[perse.stage];
       const payload = {
         stpNumber: productStp?.stpNumber,
         specNumber: data.specNumber,
         description: data?.description,
-        stage,
+        stage: data.stage.value,
         stpId: data.stpId.value,
         formId: data.formId.value,
       };
@@ -122,7 +117,6 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       onClose();
       reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
           "Failed to update Product ARD. Please try again.",
@@ -140,6 +134,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
           <MaterialArdForm
             errors={errors}
             register={register}
+            stageOptions={stageOptions}
             control={control}
             stpOptions={productStpOptions}
             formOptions={formOptions}

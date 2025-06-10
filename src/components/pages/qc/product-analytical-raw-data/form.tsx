@@ -7,13 +7,13 @@ import {
   FieldValues,
   UseFormRegister,
 } from "react-hook-form";
-import { Stage } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
   formOptions: Option[];
+  stageOptions: Option[];
   stpOptions: Option[];
 }
 
@@ -23,6 +23,7 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
   formOptions,
   control,
   stpOptions,
+  stageOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-3">
@@ -62,14 +63,7 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             name: "stage",
             placeholder: "Select Stage",
             required: true,
-            options: [
-              {
-                value: Stage.intimidate as unknown as string,
-                label: "Intimidate",
-              },
-              { value: Stage.bulk as unknown as string, label: "Bulk" },
-              { value: Stage.finished as unknown as string, label: "Finished" },
-            ],
+            options: stageOptions,
             errors,
           },
         ]}

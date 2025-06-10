@@ -8,9 +8,9 @@ export enum Stage {
 }
 
 export const stageLabels = {
-  [Stage.intimidate]: "intimidate",
-  [Stage.bulk]: "bulk",
-  [Stage.finished]: "finished",
+  [Stage.intimidate]: "Intimidate",
+  [Stage.bulk]: "Bulk",
+  [Stage.finished]: "Finished",
 } as const;
 
 export const stageValues = {
@@ -59,3 +59,12 @@ export const ProductArdSchema = z.object({
 
 export type ProductArdSchemaType = z.infer<typeof ProductArdSchema>;
 export const ProductArdSchemaResolver = zodResolver(ProductArdSchema);
+
+export const stageOptions = [
+  {
+    value: Stage.intimidate as unknown as string,
+    label: "Intimidate",
+  },
+  { value: Stage.bulk as unknown as string, label: "Bulk" },
+  { value: Stage.finished as unknown as string, label: "Finished" },
+];
