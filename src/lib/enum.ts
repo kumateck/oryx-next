@@ -470,3 +470,27 @@ export enum RoleType {
   Production = 0,
   NonProduction = 1,
 }
+
+export enum NotificationType {
+  ProductionStageChanged = 0,
+  ShiftAssigned = 1,
+  ShipmentArrived = 2,
+  MaterialAboveMaxStock = 3,
+  MaterialBelowMinStock = 4,
+  MaterialReachedReorderLevel = 5,
+  StockRequisitionCreated = 6,
+  PartialRequisitionCreated = 7,
+  PartialRequestProduction = 8,
+  OvertimeRequest = 9,
+  LeaveRequest = 10,
+  StaffRequest = 11,
+  AuditLogEvent = 12,
+  BmrBprRequested = 13,
+  BmrBprApproved = 14,
+}
+
+export enum AlertType {
+  Email = 0,
+  InApp = 1,
+  Sms = 2,
+}
