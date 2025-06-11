@@ -16,14 +16,16 @@ import {
   CreateShiftScheduleRequest,
   useGetApiV1DepartmentQuery,
   useGetApiV1ShiftTypeQuery,
-  useLazyGetApiV1ShiftSchedulesQuery,
   usePostApiV1ShiftSchedulesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { ShiftScheduleRequestDto, CreateShiftScheduleValidator } from "./types";
 import ShiftScheduleForm from "./form";
-import { Option, ShiftFrequency, StartDay } from "@/lib";
+import { Option, ShiftFrequency } from "@/lib";
+
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import "./types";
 
@@ -32,7 +34,8 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadShiftSchedules] = useLazyGetApiV1ShiftSchedulesQuery();
+  const dispatch = useDispatch();
+
   const [createShiftSchedule, { isLoading }] =
     usePostApiV1ShiftSchedulesMutation();
 
@@ -84,22 +87,13 @@ const Create = ({ isOpen, onClose }: Props) => {
       value: String(value),
     }));
 
-  //this converts an enum to a label/value pair which is needed for the SELECT input
-  const startDayOptions = Object.entries(StartDay)
-    .filter(([key]) => isNaN(Number(key)))
-    .map(([key, value]) => ({
-      label: key,
-      value: String(value),
-    }));
-
   const onSubmit = async (data: ShiftScheduleRequestDto) => {
     try {
       const payload = {
         scheduleName: data.scheduleName,
         //change the value to an integer, and then convert it to the ShiftFrequency enum
         frequency: parseInt(data.frequency.value) as unknown as ShiftFrequency,
-
-        startDate: parseInt(data.startDay.value) as unknown as StartDay,
+        startDate: data.startDate.toISOString(),
         shiftTypeIds: data.shiftTypeIds.map((shiftType) => shiftType.value),
         departmentId: data.departmentId.value,
       } satisfies CreateShiftScheduleRequest;
@@ -107,10 +101,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         createShiftScheduleRequest: payload,
       }).unwrap();
       toast.success("Shift Schedule created successfully");
-      loadShiftSchedules({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -124,7 +115,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         <DialogHeader>
           <DialogTitle>Add Shift Schedule</DialogTitle>
         </DialogHeader>
-
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <ShiftScheduleForm
             register={register}
@@ -133,7 +123,6 @@ const Create = ({ isOpen, onClose }: Props) => {
             frequencyOptions={frequencyOptions}
             shiftTypesOptions={shiftTypesOptions}
             departmentOptions={departmentOptions}
-            startDayOptions={startDayOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

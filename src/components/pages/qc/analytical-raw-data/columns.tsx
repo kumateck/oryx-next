@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Edit } from "./edit";
-import { MaterialArdSchemaType } from "./types";
+import Link from "next/link";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,10 +28,12 @@ export function DataTableRowActions<
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Icon
-        name="Download"
-        className="h-5 w-5 cursor-pointer text-neutral-700"
-      />
+      <Link href={`${row.original.attachments?.[0]?.link}`} target="_blank">
+        <Icon
+          name="Download"
+          className="h-5 w-5 cursor-pointer text-neutral-700"
+        />
+      </Link>
       <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
@@ -54,21 +56,7 @@ export function DataTableRowActions<
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
           id={details.id as string}
-          details={
-            {
-              description: details?.description,
-              formId: {
-                value: details.formId as string,
-                label: details.formId as string,
-              },
-              stpId: {
-                label: details.materialStandardTestProcedure
-                  ?.stpNumber as string,
-                value: details.stpId as string,
-              },
-              specNumber: details.specNumber as string,
-            } as MaterialArdSchemaType
-          }
+          details={details}
         />
       )}
 
@@ -98,9 +86,7 @@ export const columns: ColumnDef<MaterialAnalyticalRawDataDto>[] = [
   {
     accessorKey: "Name",
     header: "Material Name",
-    cell: ({ row }) => (
-      <div>{row.original?.materialStandardTestProcedure?.material?.name}</div>
-    ),
+    cell: ({ row }) => <div>{row.original?.materialName}</div>,
   },
   {
     accessorKey: "stpNumber",

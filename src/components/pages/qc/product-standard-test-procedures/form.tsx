@@ -12,16 +12,13 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
-  formOptions: Option[];
-  stpOptions: Option[];
+  productsOptions: Option[];
 }
-
-export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
+export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
-  formOptions,
+  productsOptions,
   control,
-  stpOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-6">
@@ -29,13 +26,13 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
         className="py-3"
         config={[
           {
-            label: "Stp Number",
+            label: "Select Product",
             control: control as Control,
             type: InputTypes.SELECT,
-            name: "stpId",
+            name: "productId",
             required: true,
-            placeholder: "Select stp number",
-            options: stpOptions,
+            placeholder: "Select Product",
+            options: productsOptions,
             errors,
           },
         ]}
@@ -43,23 +40,11 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
-            label: "Spec Number",
-            register: register("specNumber" as Path<TFieldValues>),
+            label: "STP Number",
+            register: register("stpNumber" as Path<TFieldValues>),
             type: InputTypes.TEXT,
             required: true,
-            placeholder: "NMP/B/SPC/001",
-            errors,
-          },
-        ]}
-      />
-      <FormWizard
-        config={[
-          {
-            label: "Description",
-            register: register("description" as Path<TFieldValues>),
-            type: InputTypes.TEXTAREA,
-            required: false,
-            placeholder: "Description",
+            placeholder: "STP123557",
             errors,
           },
         ]}
@@ -68,24 +53,11 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
         className="w-full space-y-5 my-5"
         config={[
           {
-            label: "Template",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "formId",
-            required: true,
-            placeholder: "Select Template",
-            options: formOptions,
-            errors,
-          },
-        ]}
-      />
-      <FormWizard
-        config={[
-          {
             type: InputTypes.DRAGNDROP,
             label: "Attach Documents",
             name: `attachments`,
             defaultValue: null,
+            single: true,
             control: control as Control,
             errors,
           },

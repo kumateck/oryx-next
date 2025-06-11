@@ -265,7 +265,7 @@ export default function EditEmployeeForm() {
   const onSubmit = async (data: OnboardingFormValues) => {
     try {
       const payload: CreateEmployeeRequest = {
-        employeeType: parseInt(etype) as unknown as EmployeeType,
+        type: parseInt(etype) as unknown as EmployeeType,
         firstName: data.firstName,
         lastName: data.lastName,
         dateOfBirth: data.dob.toISOString(),

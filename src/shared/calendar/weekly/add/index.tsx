@@ -12,9 +12,10 @@ import {
   Icon,
   Label,
 } from "@/components/ui";
-import { AuditModules, CollectionTypes, Option } from "@/lib";
+import { AuditModules, CollectionTypes, Option, ShiftFrequency } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
+  ShiftScheduleDtoRead,
   useLazyGetApiV1EmployeeQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ShiftSchedulesAssignMutation,
@@ -23,7 +24,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { cn } from "@/lib/utils";
 
 import AssignForm from "./form";
-import { AssignRequestDto, CreateAssignValidator, ShiftDefault } from "./types";
+import { AssignRequestDto, CreateAssignValidator } from "./types";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { useEffect } from "react";
 import { format } from "date-fns";
@@ -31,7 +32,7 @@ import { format } from "date-fns";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  defaultValues?: ShiftDefault;
+  defaultValues?: ShiftScheduleDtoRead;
 }
 
 const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
@@ -72,10 +73,9 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
 
       const payload = {
         employeeIds: data?.employeeIds?.map((item) => item.value) || [],
-        shiftScheduleId: defaultValues?.schedule?.value || "",
+        shiftScheduleId: defaultValues?.id || "",
         shiftCategoryId: data?.scheduleCategory?.value || "",
-        shiftTypeId: defaultValues?.type?.value || "",
-        scheduleDate: defaultValues?.scheduleDate || "",
+        shiftTypeId: data?.type?.value || "",
       };
 
       await createAssigned({
@@ -121,6 +121,11 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
     };
     return response;
   };
+
+  const shiftTypeOptions = defaultValues?.shiftType?.map((opt) => ({
+    label: opt.shiftName as string,
+    value: opt.id as string,
+  })) as Option[];
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -133,20 +138,32 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
             <li>
               <Label>Schedule Name</Label>
               <div className="border rounded-2xl px-4 py-2">
-                {defaultValues?.schedule?.label}
+                {defaultValues?.scheduleName}
               </div>
             </li>
             <li>
-              <Label>Schedule Type</Label>
+              <Label>Schedule Duration</Label>
               <div className="border rounded-2xl px-4 py-2">
-                {defaultValues?.type?.label}
+                {
+                  ShiftFrequency[
+                    Number(defaultValues?.frequency) as ShiftFrequency
+                  ]
+                }
               </div>
-            </li>{" "}
+            </li>
             <li>
-              <Label>Schedule Date</Label>
+              <Label>Schedule Start Date</Label>
               <div className="border rounded-2xl px-4 py-2">
-                {defaultValues?.scheduleDate
-                  ? format(new Date(defaultValues.scheduleDate), "dd MMMM yyyy")
+                {defaultValues?.startDate
+                  ? format(new Date(defaultValues.startDate), "dd MMMM yyyy")
+                  : "No date available"}
+              </div>
+            </li>
+            <li>
+              <Label>Schedule End Date</Label>
+              <div className="border rounded-2xl px-4 py-2">
+                {defaultValues?.endDate
+                  ? format(new Date(defaultValues.endDate), "dd MMMM yyyy")
                   : "No date available"}
               </div>
             </li>
@@ -159,6 +176,7 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
             categoryOptions={categoryOptions}
             fetchOptions={loadDataOrSearch}
             isLoading={loadingEmployee || fetchingEmployees}
+            shiftTypeOptions={shiftTypeOptions}
           />
 
           <DialogFooter className="justify-end gap-4 py-6">

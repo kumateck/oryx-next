@@ -20,6 +20,13 @@ export const CreateAssignSchema = z.object({
     },
     { required_error: "Shift Category is required" },
   ),
+  type: z.object(
+    {
+      value: z.string().min(1, { message: "Shift Type is required" }),
+      label: z.string(),
+    },
+    { required_error: "Shift Type is required" },
+  ),
 });
 
 export type AssignRequestDto = z.infer<typeof CreateAssignSchema>;
