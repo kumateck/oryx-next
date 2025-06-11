@@ -1,8 +1,8 @@
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  MaterialAnalyticalRawDataDto,
-  useDeleteApiV1MaterialArdByIdMutation,
+  ProductAnalyticalRawDataDto,
+  useDeleteApiV1ProductArdByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -10,30 +10,28 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Edit } from "./edit";
-import Link from "next/link";
+import { ProductArdSchemaType, stageLabels } from "./types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<
-  TData extends MaterialAnalyticalRawDataDto,
->({ row }: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [details, setDetails] = useState<MaterialAnalyticalRawDataDto>(
-    {} as MaterialAnalyticalRawDataDto,
+  const [details, setDetails] = useState<ProductAnalyticalRawDataDto>(
+    {} as ProductAnalyticalRawDataDto,
   );
-  const [deleteMaterialARDMutation] = useDeleteApiV1MaterialArdByIdMutation();
+  const [deleteProductARDMutation] = useDeleteApiV1ProductArdByIdMutation();
   const dispatch = useDispatch();
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Link href={`${row.original.attachments?.[0]?.link}`} target="_blank">
-        <Icon
-          name="Download"
-          className="h-5 w-5 cursor-pointer text-neutral-700"
-        />
-      </Link>
+      <Icon
+        name="Download"
+        className="h-5 w-5 cursor-pointer text-neutral-700"
+      />
       <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
@@ -55,8 +53,21 @@ export function DataTableRowActions<
         <Edit
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
-          id={details.id as string}
-          details={details}
+          id={details.specNumber as string}
+          details={
+            {
+              description: details?.description,
+              formId: {
+                value: details.formId as string,
+                label: details.formId as string,
+              },
+              stpId: {
+                label: details.stpNumber as string,
+                value: details.stpId as string,
+              },
+              specNumber: details.specNumber as string,
+            } as ProductArdSchemaType
+          }
         />
       )}
 
@@ -64,14 +75,14 @@ export function DataTableRowActions<
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
-          if (!details.id) return;
+          if (!details.stpId) return;
           try {
-            await deleteMaterialARDMutation({
-              id: details.id,
+            await deleteProductARDMutation({
+              id: details.stpId,
               module: AuditModules.qualityAssurance.name,
               subModule: AuditModules.qualityAssurance.analyticalRawData,
             }).unwrap();
-            toast.success("Material ARD deleted successfully");
+            toast.success("Product ARD deleted successfully");
             dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -82,16 +93,29 @@ export function DataTableRowActions<
   );
 }
 
-export const columns: ColumnDef<MaterialAnalyticalRawDataDto>[] = [
+export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
   {
     accessorKey: "Name",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original?.materialName}</div>,
+    header: "Product Name",
+    cell: ({ row }) => <div>{row.original?.stage}</div>,
   },
+
   {
     accessorKey: "stpNumber",
     header: "STP Number",
     cell: ({ row }) => <div>{row.original?.stpNumber}</div>,
+  },
+  {
+    accessorKey: "stage",
+    header: "Stage",
+    cell: ({ row }) => (
+      <div>{row.original.stage && stageLabels[row.original?.stage]}</div>
+    ),
+  },
+  {
+    accessorKey: "specNumber",
+    header: "Spec Number",
+    cell: ({ row }) => <div>{row.original?.specNumber}</div>,
   },
   {
     id: "actions",
