@@ -413,25 +413,25 @@ export const ROUTES: Route[] = [
     title: "Quality Control",
     menu: [
       {
-        title: "Standard Test Procedures",
+        title: "Material STP",
         url: "/qc/stp",
         icon: "BookUser",
         isActive: false,
       },
       {
-        title: "Product Standard Test Procedures",
+        title: "Product STP",
         url: "/qc/products-stp",
         icon: "BookUser",
         isActive: false,
       },
       {
-        title: "Analytical Raw Data",
+        title: "Material ARD",
         url: "/qc/analytical-raw-data",
         icon: "BookUser",
         isActive: false,
       },
       {
-        title: "Product Analytical Raw Data",
+        title: "Product ARD",
         url: "/qc/product-analytical-raw-data",
         icon: "BookUser",
         isActive: false,
