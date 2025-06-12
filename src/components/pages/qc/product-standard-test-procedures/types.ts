@@ -50,7 +50,7 @@ const imageValidationSchema = z.any().refine(
 );
 
 const StandardTestProcedureSchema = z.object({
-  stpNumber: z.string().min(1, { message: "stp numbeer is required" }),
+  stpNumber: z.string().min(1, { message: "stp number is required" }),
   productId: z.object(
     {
       value: z.string().min(1, { message: "Product is required" }),

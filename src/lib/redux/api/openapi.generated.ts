@@ -396,6 +396,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1AuthUserResetPassword: build.mutation<
+      PostApiV1AuthUserResetPasswordApiResponse,
+      PostApiV1AuthUserResetPasswordApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/auth/user-reset-password`,
+        method: "POST",
+        body: queryArg.userPasswordChangeRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Bom: build.mutation<PostApiV1BomApiResponse, PostApiV1BomApiArg>({
       query: (queryArg) => ({
         url: `/api/v1/bom`,
@@ -6347,6 +6361,15 @@ export type PostApiV1AuthForgotPasswordApiArg = {
   subModule?: any;
   forgotPasswordRequest: ForgotPasswordRequest;
 };
+export type PostApiV1AuthUserResetPasswordApiResponse =
+  /** status 200 OK */ PasswordChangeResponse;
+export type PostApiV1AuthUserResetPasswordApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  userPasswordChangeRequest: UserPasswordChangeRequest;
+};
 export type PostApiV1BomApiResponse = /** status 201 Created */ string;
 export type PostApiV1BomApiArg = {
   /** The module this request falls under */
@@ -10835,6 +10858,11 @@ export type ChangePasswordRequest = {
 export type ForgotPasswordRequest = {
   clientId?: string | null;
   email?: string | null;
+};
+export type UserPasswordChangeRequest = {
+  currentPassword?: string | null;
+  newPassword?: string | null;
+  confirmNewPassword?: string | null;
 };
 export type CreateBoMItemsRequest = {
   materialId?: string;
@@ -15998,12 +16026,18 @@ export type CreateProductAnalyticalRawDataRequest = {
   formId: string;
 };
 export type ProductAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   stpNumber?: string | null;
   specNumber?: string | null;
   stage?: Stage;
   description?: string | null;
   stpId?: string;
   formId?: string;
+  formName?: string | null;
+  productName?: string | null;
 };
 export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: ProductAnalyticalRawDataDto[] | null;
@@ -16877,7 +16911,6 @@ export type AssignShiftRequest = {
   shiftScheduleId: string;
   shiftCategoryId: string;
   shiftTypeId: string;
-  scheduleDate: string;
 };
 export type ShiftCategoryDto = {
   id?: string;
@@ -17513,6 +17546,7 @@ export const {
   usePostApiV1AuthSetPasswordMutation,
   usePostApiV1AuthChangePasswordMutation,
   usePostApiV1AuthForgotPasswordMutation,
+  usePostApiV1AuthUserResetPasswordMutation,
   usePostApiV1BomMutation,
   useGetApiV1BomQuery,
   useLazyGetApiV1BomQuery,
