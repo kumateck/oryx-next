@@ -312,7 +312,7 @@ export const ROUTES: Route[] = [
     title: "Human Resource",
     menu: [
       {
-        title: "Management",
+        title: " HR Management",
         icon: "Folder",
         items: [
           {
@@ -427,6 +427,12 @@ export const ROUTES: Route[] = [
       {
         title: "Analytical Raw Data",
         url: "/qc/analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Product Analytical Raw Data",
+        url: "/qc/product-analytical-raw-data",
         icon: "BookUser",
         isActive: false,
       },

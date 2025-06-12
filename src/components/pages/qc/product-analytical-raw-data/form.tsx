@@ -13,6 +13,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
   formOptions: Option[];
+  stageOptions: Option[];
   stpOptions: Option[];
 }
 
@@ -22,9 +23,10 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
   formOptions,
   control,
   stpOptions,
+  stageOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-3">
       <FormWizard
         className="py-3"
         config={[
@@ -55,6 +57,20 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         config={[
           {
+            label: "Stage",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "stage",
+            placeholder: "Select Stage",
+            required: true,
+            options: stageOptions,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        config={[
+          {
             label: "Description",
             register: register("description" as Path<TFieldValues>),
             type: InputTypes.TEXTAREA,
@@ -75,18 +91,6 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             placeholder: "Select Template",
             options: formOptions,
-            errors,
-          },
-        ]}
-      />
-      <FormWizard
-        config={[
-          {
-            type: InputTypes.DRAGNDROP,
-            label: "Attach Documents",
-            name: `attachments`,
-            defaultValue: null,
-            control: control as Control,
             errors,
           },
         ]}

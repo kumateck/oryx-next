@@ -7,17 +7,22 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import React from "react";
+import React, { useEffect } from "react";
 import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
 import { useForm } from "react-hook-form";
 import {
+  MaterialAnalyticalRawDataDto,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
+  PutApiV1MaterialArdByIdApiArg,
   useGetApiV1FormQuery,
   useGetApiV1MaterialStpsQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialArdByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
   cn,
+  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -31,10 +36,23 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   id: string;
-  details: MaterialArdSchemaType;
+  details: MaterialAnalyticalRawDataDto;
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
+  // const defaultFormId = {
+  //   value: details.formId?.value,
+  //   label: details.formId?.label,
+  // };
+  const defaultFormId = {
+    value: details.formId as string,
+    label: details.formName as string,
+  };
+
+  const defaultStpId = {
+    value: details.stpId as string,
+    label: details.stpNumber as string,
+  };
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -46,12 +64,15 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     resolver: MaterialArdSchemaResolver,
     mode: "all",
     defaultValues: {
-      description: details.description,
-      stpId: details.stpId,
-      formId: details.formId,
-      specNumber: details.specNumber,
+      description: details.description as string,
+      stpId: defaultStpId,
+      formId: defaultFormId,
+      specNumber: details.specNumber as string,
     },
   });
+
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
 
   //get stp
   const { data: materialStps } = useGetApiV1MaterialStpsQuery({
@@ -60,8 +81,35 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
+  useEffect(() => {
+    if (isOpen && details) {
+      // Compute stpId option
+      const stpOption = materialData.find((stp) => stp.id === details.stpId);
+      const defaultStpId = {
+        value: details.stpId,
+        label: stpOption?.stpNumber || details.stpNumber || "",
+      };
 
-  //loead forms template
+      // Compute formId option
+      const formOption = formOptionsData.find(
+        (form) => form.id === details.formId,
+      );
+      const defaultFormId = {
+        value: details.formId,
+        label: formOption?.name || details.formName || "",
+      };
+
+      reset({
+        description: details.description || "",
+        stpId: defaultStpId,
+        formId: defaultFormId,
+        specNumber: details.specNumber || "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, details, reset]);
+
+  //load forms template
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
@@ -102,12 +150,30 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
         formId: data.formId.value,
       };
       // Create the material analytical raw data
-      await updateMaterialArdMutation({
+      const ardId = await updateMaterialArdMutation({
         id,
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.materials,
         createMaterialAnalyticalRawDataRequest: payload,
-      }).unwrap();
+      } as PutApiV1MaterialArdByIdApiArg).unwrap();
+
+      if (ardId) {
+        const formData = new FormData();
+        // Ensure attachments are an array
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
+          modelId: ardId as string,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
 
       toast.success("Material ARD updated successfully");
       dispatch(commonActions.setTriggerReload());
@@ -147,7 +213,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
             </Button>
             <Button type="submit" disabled={isLoading}>
               <Icon
-                name={isLoading ? "Loader" : "Plus"}
+                name={isLoading || isUploadingAttachment ? "Loader" : "Plus"}
                 className={cn("mr-2", { isLoading: "animate-spin" })}
               />
               Save changes

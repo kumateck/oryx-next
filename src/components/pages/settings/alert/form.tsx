@@ -1,5 +1,5 @@
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes } from "@/lib";
+import { AlertType, InputTypes } from "@/lib";
 import {
   Control,
   FieldErrors,
@@ -7,7 +7,6 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
-import { modelTypes } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -28,7 +27,6 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             label: "Department Code",
             placeholder: "Enter name",
             type: InputTypes.TEXT,
-
             readOnly: true,
             required: true,
             description: (
@@ -36,7 +34,6 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
                 You can’t change the department code
               </span>
             ),
-
             errors,
           },
           {
@@ -44,9 +41,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             label: "Name",
             placeholder: "Enter name",
             type: InputTypes.TEXT,
-
             required: true,
-
             errors,
           },
           {
@@ -55,11 +50,11 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.RADIO,
             name: "type",
             required: true,
-            options: Object.entries(modelTypes)
+            options: Object.entries(AlertType)
               .filter(([, value]) => typeof value === "number")
               .map(([key, value]) => ({
-                label: key, // "Raw" or "Package"
-                value: value.toString(), // 0 or 1
+                label: key,
+                value: value.toString(),
               })),
             errors,
           },

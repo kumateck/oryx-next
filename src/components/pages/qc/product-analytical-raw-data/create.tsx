@@ -10,7 +10,6 @@ import {
 import {
   AuditModules,
   cn,
-  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -19,14 +18,16 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
-  useGetApiV1MaterialStpsQuery,
-  usePostApiV1MaterialArdMutation,
+  Stage,
   useGetApiV1FormQuery,
-  PostApiV1MaterialArdApiArg,
-  usePostApiV1FileByModelTypeAndModelIdMutation,
-  PostApiV1FileByModelTypeAndModelIdApiArg,
+  useGetApiV1ProductStpsQuery,
+  usePostApiV1ProductArdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
+import {
+  ProductArdSchemaType,
+  ProductArdSchemaResolver,
+  stageOptions,
+} from "./types";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
@@ -45,12 +46,12 @@ export const Create = ({ isOpen, onClose }: Props) => {
     control,
     reset,
     formState: { errors },
-  } = useForm<MaterialArdSchemaType>({
-    resolver: MaterialArdSchemaResolver,
+  } = useForm<ProductArdSchemaType>({
+    resolver: ProductArdSchemaResolver,
   });
 
   //get stp
-  const { data: materialStps } = useGetApiV1MaterialStpsQuery({
+  const { data: productStps } = useGetApiV1ProductStpsQuery({
     page: 1,
     pageSize: 1000,
     module: AuditModules.warehouse.name,
@@ -63,71 +64,49 @@ export const Create = ({ isOpen, onClose }: Props) => {
     pageSize: 1000,
   });
 
-  const [createMaterialArdMutation, { isLoading }] =
-    usePostApiV1MaterialArdMutation();
+  const [createProductArdMutation, { isLoading }] =
+    usePostApiV1ProductArdMutation();
 
-  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
-    usePostApiV1FileByModelTypeAndModelIdMutation();
-
-  //fuction fro creating material analytical raw data
-  const onSubmit = async (data: MaterialArdSchemaType) => {
-    const materialStp = materialStps?.data?.find(
+  //fuction for creating product analytical raw data
+  const onSubmit = async (data: ProductArdSchemaType) => {
+    const productStp = productStps?.data?.find(
       (stp) => stp.id === data.stpId.value,
     );
-
-    if (!materialStp || !materialStp.stpNumber) {
-      console.log("Material STP not found");
-      toast.error("Material STP not found. Please select a valid STP.");
+    if (!productStp || !productStp.stpNumber) {
+      toast.error("Product STP not found. Please select a valid STP.");
       return;
     }
     try {
       const payload = {
-        stpNumber: materialStp?.stpNumber,
+        stpNumber: productStp?.stpNumber,
         specNumber: data.specNumber,
         description: data?.description,
+        stage: data.stage.value as Stage,
         stpId: data.stpId.value,
         formId: data.formId.value,
       };
-      console.log("this is payload", payload);
-      // 1. Create the material analytical raw data
-      const ardId = await createMaterialArdMutation({
+      console.log("Creating Product ARD with payload:", payload);
+      // 1. Create the product analytical raw data
+      await createProductArdMutation({
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.materials,
-        createMaterialAnalyticalRawDataRequest: payload,
-      } as PostApiV1MaterialArdApiArg).unwrap();
+        createProductAnalyticalRawDataRequest: payload,
+      }).unwrap();
 
-      if (ardId) {
-        const formData = new FormData();
-        // Ensure attachments are an array
-        const attachmentsArray = Array.isArray(data.attachments)
-          ? data.attachments
-          : Array.from(data.attachments); // Convert FileList to an array
-
-        attachmentsArray.forEach((attachment: File) => {
-          formData.append("files", attachment, attachment.name);
-        });
-
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
-          modelId: ardId,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-      }
-
-      toast.success("Material ARD created successfully");
+      toast.success("Product ARD created successfully");
       dispatch(commonActions.setTriggerReload());
       onClose();
       reset();
     } catch (error) {
-      console.log("Error creating Material ARD:", error);
+      console.log("Error creating Product ARD:", error);
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
-          "Failed to create Material ARD. Please try again.",
+          "Failed to create Product ARD. Please try again.",
       );
     }
   };
-  const StpData = materialStps?.data;
-  const materialStpOptions = StpData?.map((stp) => {
+  const StpData = productStps?.data;
+  const productStpOptions = StpData?.map((stp) => {
     return {
       label: stp.stpNumber,
       value: stp.id,
@@ -152,8 +131,9 @@ export const Create = ({ isOpen, onClose }: Props) => {
           <MaterialArdForm
             errors={errors}
             register={register}
+            stageOptions={stageOptions}
             control={control}
-            stpOptions={materialStpOptions}
+            stpOptions={productStpOptions}
             formOptions={formOptions}
           />
           <DialogFooter>
@@ -167,9 +147,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
                 className="flex items-center gap-2"
               >
                 <Icon
-                  name={
-                    isLoading || isUploadingAttachment ? "LoaderCircle" : "Plus"
-                  }
+                  name={isLoading ? "LoaderCircle" : "Plus"}
                   className={cn("h-4 w-4", {
                     "animate-spin": isLoading,
                   })}
