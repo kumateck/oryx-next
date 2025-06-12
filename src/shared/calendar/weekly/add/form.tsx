@@ -3,7 +3,6 @@ import { Control, FieldErrors, FieldValues } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
-import { FetchOptionsResult } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -11,8 +10,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   categoryOptions: Option[];
   shiftTypeOptions: Option[];
   defaultValues?: TFieldValues;
-  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
-  isLoading: boolean;
+
+  employeeOptions: Option[];
 }
 
 const AssignForm = <TFieldValues extends FieldValues, TContext>({
@@ -21,8 +20,8 @@ const AssignForm = <TFieldValues extends FieldValues, TContext>({
   categoryOptions,
   shiftTypeOptions,
   defaultValues,
-  fetchOptions,
-  isLoading,
+
+  employeeOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -54,12 +53,12 @@ const AssignForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Employee(s)",
             control: control as Control,
-            type: InputTypes.ASYNC_MULTI,
+            type: InputTypes.MULTI,
             name: "employeeIds",
             required: true,
+            defaultValue: defaultValues?.employeeIds,
             placeholder: "Select Employee",
-            fetchOptions: fetchOptions,
-            isLoading: isLoading,
+            options: employeeOptions,
             errors,
           },
         ]}

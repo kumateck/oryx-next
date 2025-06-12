@@ -16,7 +16,7 @@ import { AuditModules, CollectionTypes, Option, ShiftFrequency } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
   ShiftScheduleDtoRead,
-  useLazyGetApiV1EmployeeQuery,
+  useGetApiV1EmployeeByShiftScheduleIdAvailableQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1ShiftSchedulesAssignMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -37,7 +37,12 @@ interface Props {
 
 const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
   const dispatch = useDispatch();
+  const { data: employeesData } =
+    useGetApiV1EmployeeByShiftScheduleIdAvailableQuery({
+      shiftScheduleId: defaultValues?.id as string,
+    });
 
+  console.log(employeesData, "employeesData");
   const [createAssigned, { isLoading: creating }] =
     usePostApiV1ShiftSchedulesAssignMutation();
 
@@ -66,6 +71,11 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
   ]?.map((opt) => ({
     label: opt.name,
     value: opt.id,
+  })) as Option[];
+
+  const employeeOptions = employeesData?.map((emp) => ({
+    label: `${emp.firstName} ${emp.lastName}`,
+    value: emp.employeeId as string,
   })) as Option[];
   const onSubmit = async (data: AssignRequestDto) => {
     try {
@@ -99,29 +109,6 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
     }
   };
 
-  const [
-    loadEmployee,
-    { isLoading: loadingEmployee, isFetching: fetchingEmployees },
-  ] = useLazyGetApiV1EmployeeQuery();
-
-  const loadDataOrSearch = async (searchQuery: string, page = 1) => {
-    const res = await loadEmployee({
-      searchQuery,
-      page,
-      pageSize: 10,
-    }).unwrap();
-    const options = res?.data?.map((item) => ({
-      label: `${item.firstName} ${item.lastName}`,
-      value: item.id,
-    })) as Option[];
-    const response = {
-      options: options as Option[],
-      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
-      hasPrevious: (res?.pageIndex as number) > 1,
-    };
-    return response;
-  };
-
   const shiftTypeOptions = defaultValues?.shiftType?.map((opt) => ({
     label: opt.shiftName as string,
     value: opt.id as string,
@@ -132,7 +119,6 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
         <DialogHeader>
           <DialogTitle>Assign Employee(s) to Shift Schedule</DialogTitle>
         </DialogHeader>
-
         <div>
           <ul className="space-y-3">
             <li>
@@ -174,8 +160,7 @@ const AssignShiftSchedule = ({ isOpen, onClose, defaultValues }: Props) => {
             control={control}
             errors={errors}
             categoryOptions={categoryOptions}
-            fetchOptions={loadDataOrSearch}
-            isLoading={loadingEmployee || fetchingEmployees}
+            employeeOptions={employeeOptions}
             shiftTypeOptions={shiftTypeOptions}
           />
 

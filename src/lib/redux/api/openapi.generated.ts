@@ -396,6 +396,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1AuthUserResetPassword: build.mutation<
+      PostApiV1AuthUserResetPasswordApiResponse,
+      PostApiV1AuthUserResetPasswordApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/auth/user-reset-password`,
+        method: "POST",
+        body: queryArg.userPasswordChangeRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Bom: build.mutation<PostApiV1BomApiResponse, PostApiV1BomApiArg>({
       query: (queryArg) => ({
         url: `/api/v1/bom`,
@@ -947,12 +961,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1EmployeeAvailable: build.query<
-      GetApiV1EmployeeAvailableApiResponse,
-      GetApiV1EmployeeAvailableApiArg
+    getApiV1EmployeeByShiftScheduleIdAvailable: build.query<
+      GetApiV1EmployeeByShiftScheduleIdAvailableApiResponse,
+      GetApiV1EmployeeByShiftScheduleIdAvailableApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/employee/available`,
+        url: `/api/v1/employee/${queryArg.shiftScheduleId}/available`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6347,6 +6361,15 @@ export type PostApiV1AuthForgotPasswordApiArg = {
   subModule?: any;
   forgotPasswordRequest: ForgotPasswordRequest;
 };
+export type PostApiV1AuthUserResetPasswordApiResponse =
+  /** status 200 OK */ PasswordChangeResponse;
+export type PostApiV1AuthUserResetPasswordApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  userPasswordChangeRequest: UserPasswordChangeRequest;
+};
 export type PostApiV1BomApiResponse = /** status 201 Created */ string;
 export type PostApiV1BomApiArg = {
   /** The module this request falls under */
@@ -6752,9 +6775,10 @@ export type GetApiV1EmployeeDepartmentsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1EmployeeAvailableApiResponse =
+export type GetApiV1EmployeeByShiftScheduleIdAvailableApiResponse =
   /** status 200 OK */ MinimalEmployeeInfoDto[];
-export type GetApiV1EmployeeAvailableApiArg = {
+export type GetApiV1EmployeeByShiftScheduleIdAvailableApiArg = {
+  shiftScheduleId: string;
   date?: string;
   /** The module this request falls under */
   module?: any;
@@ -10634,7 +10658,7 @@ export type AlertDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type TestStage = 0 | 1 | 2;
-export type Category = 0 | 1 | 2 | 3 | 4 | 5;
+export type State = 0 | 1 | 2 | 3 | 4 | 5;
 export type Status = 0 | 1 | 2;
 export type CreateAnalyticalTestRequest = {
   batchNumber: string;
@@ -10648,7 +10672,7 @@ export type CreateAnalyticalTestRequest = {
   qcManagerSignature: string;
   qaManagerSignature: string;
   stage: TestStage;
-  category: Category;
+  state: State;
   status: Status;
 };
 export type AnalyticalTestRequestDto = {
@@ -10661,12 +10685,13 @@ export type AnalyticalTestRequestDto = {
   manufacturingDate?: string;
   expiryDate?: string;
   releasedAt?: string | null;
+  filled?: string | null;
   releaseDate?: string;
   qcManagerSignature?: string | null;
   sampledQuantity?: string | null;
   qaManagerSignature?: string | null;
   stage?: TestStage;
-  category?: Category;
+  state?: State;
   status?: Status;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
@@ -10833,6 +10858,11 @@ export type ChangePasswordRequest = {
 export type ForgotPasswordRequest = {
   clientId?: string | null;
   email?: string | null;
+};
+export type UserPasswordChangeRequest = {
+  currentPassword?: string | null;
+  newPassword?: string | null;
+  confirmNewPassword?: string | null;
 };
 export type CreateBoMItemsRequest = {
   materialId?: string;
@@ -12072,9 +12102,10 @@ export type CreateMaterialAnalyticalRawDataRequest = {
   formId: string;
 };
 export type MaterialAnalyticalRawDataDto = {
-  createdBy?: UserDto;
-  attachments?: AttachmentDto[] | null;
   id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   stpNumber?: string | null;
   specNumber?: string | null;
   description?: string | null;
@@ -12082,7 +12113,6 @@ export type MaterialAnalyticalRawDataDto = {
   stpId?: string;
   formId?: string;
   formName?: string | null;
-  createdAt?: string;
 };
 export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: MaterialAnalyticalRawDataDto[] | null;
@@ -15996,12 +16026,18 @@ export type CreateProductAnalyticalRawDataRequest = {
   formId: string;
 };
 export type ProductAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   stpNumber?: string | null;
   specNumber?: string | null;
   stage?: Stage;
   description?: string | null;
   stpId?: string;
   formId?: string;
+  formName?: string | null;
+  productName?: string | null;
 };
 export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: ProductAnalyticalRawDataDto[] | null;
@@ -16887,10 +16923,14 @@ export type MinimalShiftTypeDto = {
 export type MinimalShiftScheduleDto = {
   scheduleId?: string;
   scheduleName?: string | null;
+  startDate?: string;
+  endDate?: string;
 };
 export type ShiftAssignmentDto = {
   employees?: MinimalEmployeeInfoDto[] | null;
   scheduleDate?: string;
+  startDate?: string;
+  endDate?: string;
   shiftCategory?: ShiftCategoryDto;
   shiftType?: MinimalShiftTypeDto;
   shiftSchedule?: MinimalShiftScheduleDto;
@@ -17506,6 +17546,7 @@ export const {
   usePostApiV1AuthSetPasswordMutation,
   usePostApiV1AuthChangePasswordMutation,
   usePostApiV1AuthForgotPasswordMutation,
+  usePostApiV1AuthUserResetPasswordMutation,
   usePostApiV1BomMutation,
   useGetApiV1BomQuery,
   useLazyGetApiV1BomQuery,
@@ -17566,8 +17607,8 @@ export const {
   usePostApiV1EmployeeUserMutation,
   useGetApiV1EmployeeDepartmentsByIdQuery,
   useLazyGetApiV1EmployeeDepartmentsByIdQuery,
-  useGetApiV1EmployeeAvailableQuery,
-  useLazyGetApiV1EmployeeAvailableQuery,
+  useGetApiV1EmployeeByShiftScheduleIdAvailableQuery,
+  useLazyGetApiV1EmployeeByShiftScheduleIdAvailableQuery,
   useGetApiV1EmployeeByIdQuery,
   useLazyGetApiV1EmployeeByIdQuery,
   usePutApiV1EmployeeByIdMutation,
