@@ -16911,7 +16911,6 @@ export type AssignShiftRequest = {
   shiftScheduleId: string;
   shiftCategoryId: string;
   shiftTypeId: string;
-  scheduleDate: string;
 };
 export type ShiftCategoryDto = {
   id?: string;
