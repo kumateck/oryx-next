@@ -11,6 +11,9 @@ import {
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { toast } from "sonner";
 import { useState } from "react";
+import EditShiftTypes from "./edit";
+import { ShiftTypeRequestDto } from "./types";
+import { daysOfWeek } from "../working-days/types";
 // import Edit from "./leave-request/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -21,8 +24,11 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const [open, setOpen] = useState(false);
+  const [details, setDetails] = useState<ShiftTypeRequestDto>(
+    {} as ShiftTypeRequestDto,
+  );
 
-  const [details, setDetails] = useState<ShiftTypeDto>({} as ShiftTypeDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
@@ -30,9 +36,28 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
     <section className="flex items-center justify-end gap-2">
       <div
         className="flex cursor-pointer items-center justify-start gap-2"
-        onClick={(e) => {
-          e.stopPropagation();
-          setDetails(row.original);
+        onClick={() => {
+          if (!row.original) return;
+          const details: ShiftTypeRequestDto = {
+            shiftName: row.original?.shiftName as string,
+            applicableDays: row.original?.applicableDays
+              ? row.original.applicableDays.map((day) => ({
+                  label: daysOfWeek[day],
+                  value: daysOfWeek[day],
+                  uom: daysOfWeek[day],
+                }))
+              : [],
+            rotationType: {
+              label: rotationType[row.original?.rotationType as number],
+              value: rotationType[row.original?.rotationType as number],
+            },
+            startTime: row.original?.startTime as string,
+            endTime: row.original?.endTime as string,
+          };
+          setDetails(details);
+
+          console.log("Row details:", row.original);
+          setOpen(true);
         }}
       >
         <Icon
@@ -45,21 +70,19 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
         className="flex cursor-pointer items-center justify-start gap-2"
         onClick={(e) => {
           e.stopPropagation();
-          setDetails(row.original);
           setIsDeleteOpen(true);
         }}
       >
         <Icon name="Trash2" className="text-red-500 h-5 w-5 cursor-pointer" />
       </div>
-      {/* <Edit
-        isOpen={isOpen}
+      <EditShiftTypes
+        isOpen={open}
         onClose={() => {
-          setIsOpen(false);
-          setDetails({} as LeaveRequestDto);
+          setOpen(false);
         }}
-        details={details}
-        loadDesignations={loadDesignations}
-      /> */}
+        details={details as ShiftTypeRequestDto}
+        id={row.original.id as string}
+      />
 
       <ConfirmDeleteDialog
         open={isDeleteOpen}
@@ -67,7 +90,7 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              id: details.id as string,
+              id: row.original.id as string,
             }).unwrap();
             toast.success("Schedule deleted successfully");
             loadDesignations({ page: 1, pageSize: 10 });
