@@ -152,12 +152,5 @@
     "**/*.{html,json,css,scss,md,mdx}": [
       "prettier -w"
     ]
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ]
   }
 }
