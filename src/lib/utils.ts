@@ -130,6 +130,7 @@ export interface ErrorResponse {
   errors: ErrorDetail[];
 }
 export const isErrorResponse = (error: ErrorResponse) => {
+  console.log("error", error);
   const err = error.errors ?? error?.data?.errors;
   const errorResponse = err[0];
   console.log("Error message", errorResponse.description);

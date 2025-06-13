@@ -291,6 +291,7 @@ export default function OnboardingForm() {
         subModule: AuditModules.management.employeeManagement,
       } as PostApiV1EmployeeApiArg).unwrap();
 
+      console.log(employeeId, "employeeIId");
       // const employeeId = await createEmployee(payload).unwrap();
 
       //only after successful submission
@@ -301,17 +302,19 @@ export default function OnboardingForm() {
         //   ? data.passportPhoto
         //   : Array.from(data.passportPhoto); // Convert FileList to an array
 
-        formData.append("files", data.passportPhoto, data.passportPhoto.name);
+        if (data.passportPhoto) {
+          formData.append("files", data.passportPhoto, data.passportPhoto.name);
+          const imagesRes = await uploadAttachment({
+            modelType: CODE_SETTINGS.modelTypes.Employee,
+            modelId: employeeId,
+            body: formData,
+            module: AuditModules.general.name,
+            subModule: AuditModules.general.fileUpload,
+          } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+          console.log(imagesRes, "res");
+        }
         // attachmentsArray.forEach((attachment: File) => {
         // });
-
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.Employee,
-          modelId: employeeId,
-          body: formData,
-          module: AuditModules.general.name,
-          subModule: AuditModules.general.fileUpload,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
 
       toast.success("Form sent successfully");
