@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Edit } from "./edit";
-import Link from "next/link";
+import { DownloadAttachmentButton } from "../attechment-download";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,12 +28,14 @@ export function DataTableRowActions<
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Link href={`${row.original.attachments?.[0]?.link}`} target="_blank">
-        <Icon
-          name="Download"
-          className="h-5 w-5 cursor-pointer text-neutral-700"
-        />
-      </Link>
+      <DownloadAttachmentButton
+        attachments={
+          row.original.attachments?.map((atta) => ({
+            url: atta.link as string,
+            fileName: atta.name as string,
+          })) || []
+        }
+      />
       <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
