@@ -2,19 +2,19 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export enum Stage {
-  intimidate = 0,
+  intermediate = 0,
   bulk = 1,
   finished = 2,
 }
 
 export const stageLabels = {
-  [Stage.intimidate]: "Intimidate",
+  [Stage.intermediate]: "Intermediate",
   [Stage.bulk]: "Bulk",
   [Stage.finished]: "Finished",
 } as const;
 
 export const stageValues = {
-  intimidate: 0,
+  intermediate: 0,
   bulk: 1,
   finished: 2,
 } as const;
@@ -62,8 +62,8 @@ export const ProductArdSchemaResolver = zodResolver(ProductArdSchema);
 
 export const stageOptions = [
   {
-    value: Stage.intimidate as unknown as string,
-    label: "Intimidate",
+    value: Stage.intermediate as unknown as string,
+    label: "Intermediate",
   },
   { value: Stage.bulk as unknown as string, label: "Bulk" },
   { value: Stage.finished as unknown as string, label: "Finished" },
