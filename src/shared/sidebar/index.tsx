@@ -40,7 +40,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="-mt-8 hid-scrollbar overflow-y-auto pb-24">
         {ROUTES?.map((group, idx) => <NavMain group={group} key={idx} />)}
       </SidebarContent>
-
       <SidebarRail />
     </Sidebar>
   );
