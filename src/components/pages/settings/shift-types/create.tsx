@@ -100,7 +100,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       await createShiftType({
         createShiftTypeRequest: payload,
       }).unwrap();
-      toast.success("Shift Schedule created successfully");
+      toast.success("Shift Type Created Successfully.");
       loadShiftTypes({
         page: 1,
         pageSize: 10,

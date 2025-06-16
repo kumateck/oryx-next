@@ -1,22 +1,27 @@
 "use client";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
 import PageWrapper from "@/components/layout/wrapper";
+import { PermissionKeys } from "@/lib";
 import { useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery } from "@/lib/redux/api/openapi.generated";
-import { commonActions } from "@/lib/redux/slices/common";
-import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { columns } from "./columns";
-import { useRouter } from "next/navigation";
 
-function Page() {
+import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+
+const Page = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(30);
   const [loadFisnishedProducts, { data: result, isLoading, isFetching }] =
     useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery();
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const triggerReload = useSelector((state) => state.common.triggerReload);
@@ -34,15 +39,26 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, searchValue, triggerReload]);
   const data = result?.data || [];
-  console.log(data);
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.warehouse.viewApprovedRawMaterials,
+  );
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
-    <PageWrapper>
-      <PageTitle title="Finished Products" />
+    <PageWrapper className="w-full space-y-2 py-1">
+      <PageTitle title="Approved Products" />
       <ServerDatatable
-        data={data}
         onRowClick={(row) => {
-          router.push(`/supply-chain/warehouse/finished-products/${row.id}`);
+          router.push(
+            `/warehouse/approved-products/${row?.product?.id}/details`,
+          );
         }}
+        data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}
@@ -59,6 +75,6 @@ function Page() {
       />
     </PageWrapper>
   );
-}
+};
 
 export default Page;
