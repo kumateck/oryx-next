@@ -1496,6 +1496,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1LeaveRequestByLeaveRequestIdReapply: build.mutation<
+      PutApiV1LeaveRequestByLeaveRequestIdReapplyApiResponse,
+      PutApiV1LeaveRequestByLeaveRequestIdReapplyApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/leave-request/${queryArg.leaveRequestId}/reapply`,
+        method: "PUT",
+        body: queryArg.reapplyLeaveRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1LeaveType: build.mutation<
       PostApiV1LeaveTypeApiResponse,
       PostApiV1LeaveTypeApiArg
@@ -2117,6 +2131,32 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material-ard/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1MaterialSamplings: build.mutation<
+      PostApiV1MaterialSamplingsApiResponse,
+      PostApiV1MaterialSamplingsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-samplings`,
+        method: "POST",
+        body: queryArg.createMaterialSamplingRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialSamplingsById: build.query<
+      GetApiV1MaterialSamplingsByIdApiResponse,
+      GetApiV1MaterialSamplingsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-samplings/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -4489,6 +4529,32 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    postApiV1ProductSamplings: build.mutation<
+      PostApiV1ProductSamplingsApiResponse,
+      PostApiV1ProductSamplingsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-samplings`,
+        method: "POST",
+        body: queryArg.createProductSamplingRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductSamplingsById: build.query<
+      GetApiV1ProductSamplingsByIdApiResponse,
+      GetApiV1ProductSamplingsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-samplings/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ProductStps: build.mutation<
       PostApiV1ProductStpsApiResponse,
       PostApiV1ProductStpsApiArg
@@ -7164,6 +7230,16 @@ export type PutApiV1LeaveRequestRecallApiArg = {
   subModule?: any;
   createLeaveRecallRequest: CreateLeaveRecallRequest;
 };
+export type PutApiV1LeaveRequestByLeaveRequestIdReapplyApiResponse =
+  /** status 204 No Content */ LeaveRequestDtoRead;
+export type PutApiV1LeaveRequestByLeaveRequestIdReapplyApiArg = {
+  leaveRequestId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  reapplyLeaveRequest: ReapplyLeaveRequest;
+};
 export type PostApiV1LeaveTypeApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveTypeApiArg = {
   /** The module this request falls under */
@@ -7632,6 +7708,23 @@ export type PutApiV1MaterialArdByIdApiArg = {
 };
 export type DeleteApiV1MaterialArdByIdApiResponse = unknown;
 export type DeleteApiV1MaterialArdByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1MaterialSamplingsApiResponse = /** status 200 OK */ string;
+export type PostApiV1MaterialSamplingsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createMaterialSamplingRequest: CreateMaterialSamplingRequest;
+};
+export type GetApiV1MaterialSamplingsByIdApiResponse =
+  /** status 200 OK */ MaterialSamplingDtoRead;
+export type GetApiV1MaterialSamplingsByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -9433,6 +9526,23 @@ export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPacki
     /** The list of batches for approval. */
     body: BatchTransferRequest[];
   };
+export type PostApiV1ProductSamplingsApiResponse = /** status 200 OK */ string;
+export type PostApiV1ProductSamplingsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createProductSamplingRequest: CreateProductSamplingRequest;
+};
+export type GetApiV1ProductSamplingsByIdApiResponse =
+  /** status 200 OK */ ProductSamplingDto;
+export type GetApiV1ProductSamplingsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ProductStpsApiResponse = /** status 200 OK */ string;
 export type PostApiV1ProductStpsApiArg = {
   /** The module this request falls under */
@@ -10659,7 +10769,7 @@ export type AlertDtoIEnumerablePaginateable = {
 };
 export type TestStage = 0 | 1 | 2;
 export type State = 0 | 1 | 2 | 3 | 4 | 5;
-export type Status = 0 | 1 | 2;
+export type Status = 0 | 1 | 2 | 3;
 export type CreateAnalyticalTestRequest = {
   batchNumber: string;
   productName: string;
@@ -11462,7 +11572,7 @@ export type LeaveTypeDtoRead = {
   isActive?: boolean;
   designations?: DesignationDtoRead[] | null;
 };
-export type LeaveStatus = 0 | 1 | 2 | 3 | 4;
+export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type LeaveRequestDto = {
   id?: string;
   createdBy?: UserDto;
@@ -11525,6 +11635,12 @@ export type CreateLeaveRecallRequest = {
   employeeId: string;
   recallDate: string;
   recallReason?: string | null;
+};
+export type ReapplyLeaveRequest = {
+  leaveRequestId?: string;
+  newStartDate?: string;
+  newEndDate?: string;
+  justification?: string | null;
 };
 export type CreateLeaveTypeRequest = {
   name: string;
@@ -12123,6 +12239,43 @@ export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type CreateMaterialSamplingRequest = {
+  grnId: string;
+  arNumber: string;
+  sampleQuantity: string;
+};
+export type GrnDto = {
+  id?: string;
+  createdAt?: string;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: MaterialBatchDto[] | null;
+};
+export type GrnDtoRead = {
+  id?: string;
+  createdAt?: string;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: MaterialBatchDtoRead[] | null;
+};
+export type MaterialSamplingDto = {
+  grnDto?: GrnDto;
+  arNumber?: string | null;
+  grnId?: string;
+  sampleQuantity?: string | null;
+  sampleDate?: string;
+};
+export type MaterialSamplingDtoRead = {
+  grnDto?: GrnDtoRead;
+  arNumber?: string | null;
+  grnId?: string;
+  sampleQuantity?: string | null;
+  sampleDate?: string;
+};
 export type CreateMaterialStandardTestProcedureRequest = {
   stpNumber: string;
   materialId: string;
@@ -12590,7 +12743,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12775,6 +12928,12 @@ export type RouteResource = {
   resourceId?: string;
   resource?: Resource;
 };
+export type RouteOperationAction = {
+  id?: string;
+  formId?: string | null;
+  form?: Form;
+  action?: OperationAction;
+};
 export type RouteResponsibleUser = {
   id?: string;
   createdAt?: string;
@@ -12790,6 +12949,7 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type Role = {
   id?: string;
@@ -12820,6 +12980,7 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
+  actions?: RouteOperationAction[] | null;
 };
 export type WorkCenter = {
   id?: string;
@@ -13206,6 +13367,7 @@ export type ProductionActivityStepUser = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStepUserRead = {
   id?: string;
@@ -13222,6 +13384,7 @@ export type ProductionActivityStepUserRead = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: UserRead;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStep = {
   id?: string;
@@ -15835,11 +15998,17 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
+export type RouteOperationActionDto = {
+  form?: CollectionItemDto;
+  action?: OperationAction;
+};
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -15969,11 +16138,17 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
+export type CreateRouteOperationAction = {
+  formId?: string | null;
+  action?: OperationAction;
+};
 export type CreateRouteResponsibleUser = {
   userId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteResponsibleRole = {
   roleId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16173,6 +16348,7 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type ProductionActivityStepDto = {
   id?: string;
@@ -16665,6 +16841,19 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type CreateProductSamplingRequest = {
+  analyticalTestRequestId: string;
+  arNumber: string;
+  sampleQuantity: string;
+  containersSampled: number;
+};
+export type ProductSamplingDto = {
+  analyticalTestRequestId?: string;
+  sampleQuantity?: string | null;
+  containersSampled?: number;
+  sampleDate?: string;
+  analyticalTestRequest?: AnalyticalTestRequestDto;
 };
 export type CreateProductStandardTestProcedureRequest = {
   stpNumber: string;
@@ -17363,24 +17552,6 @@ export type CreateGrnRequest = {
   grnNumber?: string | null;
   materialBatchIds?: string[] | null;
 };
-export type GrnDto = {
-  id?: string;
-  createdAt?: string;
-  carrierName?: string | null;
-  vehicleNumber?: string | null;
-  remarks?: string | null;
-  grnNumber?: string | null;
-  materialBatches?: MaterialBatchDto[] | null;
-};
-export type GrnDtoRead = {
-  id?: string;
-  createdAt?: string;
-  carrierName?: string | null;
-  vehicleNumber?: string | null;
-  remarks?: string | null;
-  grnNumber?: string | null;
-  materialBatches?: MaterialBatchDtoRead[] | null;
-};
 export type GrnDtoIEnumerablePaginateable = {
   data?: GrnDto[] | null;
   pageIndex?: number;
@@ -17661,6 +17832,7 @@ export const {
   usePutApiV1LeaveRequestByIdMutation,
   useDeleteApiV1LeaveRequestByIdMutation,
   usePutApiV1LeaveRequestRecallMutation,
+  usePutApiV1LeaveRequestByLeaveRequestIdReapplyMutation,
   usePostApiV1LeaveTypeMutation,
   useGetApiV1LeaveTypeQuery,
   useLazyGetApiV1LeaveTypeQuery,
@@ -17729,6 +17901,9 @@ export const {
   useLazyGetApiV1MaterialArdByIdQuery,
   usePutApiV1MaterialArdByIdMutation,
   useDeleteApiV1MaterialArdByIdMutation,
+  usePostApiV1MaterialSamplingsMutation,
+  useGetApiV1MaterialSamplingsByIdQuery,
+  useLazyGetApiV1MaterialSamplingsByIdQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -17985,6 +18160,9 @@ export const {
   useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
+  usePostApiV1ProductSamplingsMutation,
+  useGetApiV1ProductSamplingsByIdQuery,
+  useLazyGetApiV1ProductSamplingsByIdQuery,
   usePostApiV1ProductStpsMutation,
   useGetApiV1ProductStpsQuery,
   useLazyGetApiV1ProductStpsQuery,
