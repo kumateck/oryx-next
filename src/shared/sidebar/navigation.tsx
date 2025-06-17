@@ -97,6 +97,10 @@ export const ROUTES: Route[] = [
             url: "/warehouse/receiving-area",
           },
           {
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
+          },
+          {
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
