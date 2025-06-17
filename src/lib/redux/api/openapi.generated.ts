@@ -12743,7 +12743,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12928,6 +12928,12 @@ export type RouteResource = {
   resourceId?: string;
   resource?: Resource;
 };
+export type RouteOperationAction = {
+  id?: string;
+  formId?: string | null;
+  form?: Form;
+  action?: OperationAction;
+};
 export type RouteResponsibleUser = {
   id?: string;
   createdAt?: string;
@@ -12943,6 +12949,7 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type Role = {
   id?: string;
@@ -12973,6 +12980,7 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
+  actions?: RouteOperationAction[] | null;
 };
 export type WorkCenter = {
   id?: string;
@@ -13359,6 +13367,7 @@ export type ProductionActivityStepUser = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStepUserRead = {
   id?: string;
@@ -13375,6 +13384,7 @@ export type ProductionActivityStepUserRead = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: UserRead;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStep = {
   id?: string;
@@ -15988,11 +15998,17 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
+export type RouteOperationActionDto = {
+  form?: CollectionItemDto;
+  action?: OperationAction;
+};
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -16122,11 +16138,17 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
+export type CreateRouteOperationAction = {
+  formId?: string | null;
+  action?: OperationAction;
+};
 export type CreateRouteResponsibleUser = {
   userId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteResponsibleRole = {
   roleId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16326,6 +16348,7 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type ProductionActivityStepDto = {
   id?: string;

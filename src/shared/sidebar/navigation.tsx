@@ -97,10 +97,6 @@ export const ROUTES: Route[] = [
             url: "/warehouse/receiving-area",
           },
           {
-            title: "Approved Products",
-            url: "/warehouse/approved-products",
-          },
-          {
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
@@ -139,6 +135,11 @@ export const ROUTES: Route[] = [
           {
             title: "Approved Materials",
             url: "/warehouse/approved-materials",
+          },
+
+          {
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
           },
           // {
           //   title: "Available Stock",
@@ -404,6 +405,12 @@ export const ROUTES: Route[] = [
         //   title: "string",
         //   url: "string"
         // }]
+      },
+      {
+        title: "BMR/BPR Request",
+        url: "/qa/bmr-bpr",
+        icon: "ShieldCheck",
+        isActive: false,
       },
       {
         title: "Pending Approvals",
