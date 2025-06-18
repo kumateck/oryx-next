@@ -5195,26 +5195,26 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    putApiV1ShiftType: build.mutation<
-      PutApiV1ShiftTypeApiResponse,
-      PutApiV1ShiftTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type`,
-        method: "PUT",
-        body: queryArg.createShiftTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
     getApiV1ShiftTypeById: build.query<
       GetApiV1ShiftTypeByIdApiResponse,
       GetApiV1ShiftTypeByIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/shift-type/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ShiftTypeById: build.mutation<
+      PutApiV1ShiftTypeByIdApiResponse,
+      PutApiV1ShiftTypeByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createShiftTypeRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -10012,16 +10012,6 @@ export type GetApiV1ShiftTypeApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ShiftTypeApiResponse =
-  /** status 204 No Content */ ShiftTypeDto;
-export type PutApiV1ShiftTypeApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-  createShiftTypeRequest: CreateShiftTypeRequest;
-};
 export type GetApiV1ShiftTypeByIdApiResponse =
   /** status 200 OK */ ShiftTypeDto;
 export type GetApiV1ShiftTypeByIdApiArg = {
@@ -10030,6 +10020,16 @@ export type GetApiV1ShiftTypeByIdApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
+};
+export type PutApiV1ShiftTypeByIdApiResponse =
+  /** status 204 No Content */ ShiftTypeDto;
+export type PutApiV1ShiftTypeByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createShiftTypeRequest: CreateShiftTypeRequest;
 };
 export type DeleteApiV1ShiftTypeByIdApiResponse = unknown;
 export type DeleteApiV1ShiftTypeByIdApiArg = {
@@ -12743,7 +12743,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12928,6 +12928,12 @@ export type RouteResource = {
   resourceId?: string;
   resource?: Resource;
 };
+export type RouteOperationAction = {
+  id?: string;
+  formId?: string | null;
+  form?: Form;
+  action?: OperationAction;
+};
 export type RouteResponsibleUser = {
   id?: string;
   createdAt?: string;
@@ -12943,6 +12949,7 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type Role = {
   id?: string;
@@ -12973,6 +12980,7 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
+  actions?: RouteOperationAction[] | null;
 };
 export type WorkCenter = {
   id?: string;
@@ -13359,6 +13367,7 @@ export type ProductionActivityStepUser = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStepUserRead = {
   id?: string;
@@ -13375,6 +13384,7 @@ export type ProductionActivityStepUserRead = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: UserRead;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStep = {
   id?: string;
@@ -15988,11 +15998,17 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
+export type RouteOperationActionDto = {
+  form?: CollectionItemDto;
+  action?: OperationAction;
+};
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -16122,11 +16138,17 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
+export type CreateRouteOperationAction = {
+  formId?: string | null;
+  action?: OperationAction;
+};
 export type CreateRouteResponsibleUser = {
   userId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteResponsibleRole = {
   roleId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16326,6 +16348,7 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type ProductionActivityStepDto = {
   id?: string;
@@ -18207,9 +18230,9 @@ export const {
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
   useLazyGetApiV1ShiftTypeQuery,
-  usePutApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeByIdQuery,
   useLazyGetApiV1ShiftTypeByIdQuery,
+  usePutApiV1ShiftTypeByIdMutation,
   useDeleteApiV1ShiftTypeByIdMutation,
   usePostApiV1StaffRequisitionsMutation,
   useGetApiV1StaffRequisitionsQuery,

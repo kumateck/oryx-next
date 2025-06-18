@@ -14,7 +14,6 @@ import {
 
 import {
   CreateShiftTypeRequest,
-  useLazyGetApiV1ShiftTypeQuery,
   usePostApiV1ShiftTypeMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
@@ -23,39 +22,26 @@ import { ShiftTypeRequestDto, CreateShiftTypeValidator } from "./types";
 import ShiftScheduleForm from "./form";
 import { rotationType, StartDay } from "@/lib";
 import { DayOfWeek } from "@/lib/enum";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 // import "./types";
-
 interface Props {
   clear;
   isOpen: boolean;
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadShiftTypes] = useLazyGetApiV1ShiftTypeQuery();
   const [createShiftType, { isLoading }] = usePostApiV1ShiftTypeMutation();
+  const dispatch = useDispatch();
 
-  // const pageSize = 30;
-  // const page = 1;
-
-  //this gets the shift types from the API so we can display them in the SELECT input
-  {
-    /*const { data: applicableDaysResults } = useGetApiV1ShiftTypeQuery({
-    page,
-    pageSize,
-  });*/
-  }
-
-  // const applicableDays = applicableDaysResults?.data ?? [];
-
-  //this is the form that is used to create the shift schedule
   const {
-    register, //this is used to register the form fields
-    control, //this is used to control the form fields
-    formState: { errors }, //this is used to get the errors from the form
-    reset, //this is used to reset the form
-    handleSubmit, //this is used to handle the form submission
+    register,
+    control,
+    formState: { errors },
+    reset,
+    handleSubmit,
   } = useForm<ShiftTypeRequestDto>({
-    resolver: CreateShiftTypeValidator, //this is used to validate the form fields
+    resolver: CreateShiftTypeValidator,
     mode: "all",
   });
 
@@ -92,7 +78,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         ) as unknown as rotationType,
         startTime: data.startTime,
         endTime: data.endTime,
-        // applicableDays: data.applicableDays.map((applicableDays) => StartDay[applicableDays.value as keyof typeof StartDay]),
         applicableDays: data.applicableDays.map((day) =>
           parseInt(day.value),
         ) as DayOfWeek[],
@@ -101,12 +86,9 @@ const Create = ({ isOpen, onClose }: Props) => {
         createShiftTypeRequest: payload,
       }).unwrap();
       toast.success("Shift Type Created Successfully.");
-      loadShiftTypes({
-        page: 1,
-        pageSize: 10,
-      });
-      reset(); // Reset the form after submission
-      onClose(); // Close the form/modal if applicable
+      reset();
+      onClose();
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -133,7 +115,11 @@ const Create = ({ isOpen, onClose }: Props) => {
               Cancel
             </Button>
 
-            <Button variant={"default"} className="flex items-center gap-2">
+            <Button
+              disabled={isLoading}
+              variant={"default"}
+              className="flex items-center gap-2"
+            >
               <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
