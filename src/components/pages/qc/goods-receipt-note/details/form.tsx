@@ -16,15 +16,25 @@ function SampleForm<TFieldValues extends FieldValues>({
   errors,
 }: SampleFormProps<TFieldValues>) {
   return (
-    <div className="w-full space-y-4">
+    <div className="space-y-4">
       <FormWizard
         config={[
           {
             label: "Material Name",
+            readOnly: true,
             type: InputTypes.TEXT,
             register: register("materialName" as Path<TFieldValues>),
-            required: true,
-            placeholder: "Enter material name",
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        config={[
+          {
+            label: "Batch Number",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            register: register("batchNumber" as Path<TFieldValues>),
             errors,
           },
         ]}
@@ -35,8 +45,7 @@ function SampleForm<TFieldValues extends FieldValues>({
             label: "Quantity",
             type: InputTypes.NUMBER,
             register: register("quantity" as Path<TFieldValues>),
-            required: true,
-            placeholder: "Enter quantity",
+            readOnly: true,
             errors,
           },
         ]}
@@ -47,14 +56,12 @@ function SampleForm<TFieldValues extends FieldValues>({
             label: "AR Number",
             type: InputTypes.TEXT,
             register: register("arNumber" as Path<TFieldValues>),
-            required: true,
-            placeholder: "Enter AR number",
+            readOnly: true,
             errors,
           },
         ]}
       />
       <FormWizard
-        className="p-3"
         config={[
           {
             label: "Sample Quantity",
@@ -62,6 +69,7 @@ function SampleForm<TFieldValues extends FieldValues>({
             register: register("sampleQuantity" as Path<TFieldValues>),
             required: true,
             placeholder: "20KG",
+            prefixText: "KG",
             errors,
           },
         ]}

@@ -4022,6 +4022,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleManufacturingById: build.query<
       GetApiV1ProductionScheduleManufacturingByIdApiResponse,
       GetApiV1ProductionScheduleManufacturingByIdApiArg
@@ -5195,26 +5207,26 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    putApiV1ShiftType: build.mutation<
-      PutApiV1ShiftTypeApiResponse,
-      PutApiV1ShiftTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type`,
-        method: "PUT",
-        body: queryArg.createShiftTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
     getApiV1ShiftTypeById: build.query<
       GetApiV1ShiftTypeByIdApiResponse,
       GetApiV1ShiftTypeByIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/shift-type/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ShiftTypeById: build.mutation<
+      PutApiV1ShiftTypeByIdApiResponse,
+      PutApiV1ShiftTypeByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createShiftTypeRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -9134,6 +9146,15 @@ export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
   subModule?: any;
   createFinishedGoodsTransferNoteRequest: CreateFinishedGoodsTransferNoteRequest;
 };
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProductionScheduleManufacturingByIdApiResponse =
   /** status 200 OK */ BatchManufacturingRecordDtoRead;
 export type GetApiV1ProductionScheduleManufacturingByIdApiArg = {
@@ -10012,16 +10033,6 @@ export type GetApiV1ShiftTypeApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ShiftTypeApiResponse =
-  /** status 204 No Content */ ShiftTypeDto;
-export type PutApiV1ShiftTypeApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-  createShiftTypeRequest: CreateShiftTypeRequest;
-};
 export type GetApiV1ShiftTypeByIdApiResponse =
   /** status 200 OK */ ShiftTypeDto;
 export type GetApiV1ShiftTypeByIdApiArg = {
@@ -10030,6 +10041,16 @@ export type GetApiV1ShiftTypeByIdApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
+};
+export type PutApiV1ShiftTypeByIdApiResponse =
+  /** status 204 No Content */ ShiftTypeDto;
+export type PutApiV1ShiftTypeByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createShiftTypeRequest: CreateShiftTypeRequest;
 };
 export type DeleteApiV1ShiftTypeByIdApiResponse = unknown;
 export type DeleteApiV1ShiftTypeByIdApiArg = {
@@ -11637,7 +11658,6 @@ export type CreateLeaveRecallRequest = {
   recallReason?: string | null;
 };
 export type ReapplyLeaveRequest = {
-  leaveRequestId?: string;
   newStartDate?: string;
   newEndDate?: string;
   justification?: string | null;
@@ -12743,7 +12763,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12928,6 +12948,12 @@ export type RouteResource = {
   resourceId?: string;
   resource?: Resource;
 };
+export type RouteOperationAction = {
+  id?: string;
+  formId?: string | null;
+  form?: Form;
+  action?: OperationAction;
+};
 export type RouteResponsibleUser = {
   id?: string;
   createdAt?: string;
@@ -12943,6 +12969,7 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type Role = {
   id?: string;
@@ -12973,6 +13000,7 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
+  actions?: RouteOperationAction[] | null;
 };
 export type WorkCenter = {
   id?: string;
@@ -13077,7 +13105,7 @@ export type Product = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13120,7 +13148,7 @@ export type ProductRead = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13359,6 +13387,7 @@ export type ProductionActivityStepUser = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: User;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStepUserRead = {
   id?: string;
@@ -13375,6 +13404,7 @@ export type ProductionActivityStepUserRead = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: UserRead;
+  actions?: RouteOperationAction[] | null;
 };
 export type ProductionActivityStep = {
   id?: string;
@@ -13669,6 +13699,7 @@ export type FinishedGoodsTransferNote = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -13696,6 +13727,7 @@ export type FinishedGoodsTransferNoteRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -15988,11 +16020,17 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
+export type RouteOperationActionDto = {
+  form?: CollectionItemDto;
+  action?: OperationAction;
+};
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -16122,11 +16160,17 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
+export type CreateRouteOperationAction = {
+  formId?: string | null;
+  action?: OperationAction;
+};
 export type CreateRouteResponsibleUser = {
   userId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteResponsibleRole = {
   roleId?: string;
+  actions?: CreateRouteOperationAction[] | null;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16326,6 +16370,7 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
+  actions?: RouteOperationActionDto[] | null;
 };
 export type ProductionActivityStepDto = {
   id?: string;
@@ -16466,6 +16511,7 @@ export type BatchManufacturingRecordDtoIEnumerablePaginateableRead = {
   stopPageIndex?: number;
 };
 export type CreateFinishedGoodsTransferNoteRequest = {
+  transferNoteNumber?: string | null;
   batchManufacturingRecordId?: string;
   productionActivityStepId?: string | null;
   quantityPerPack?: number;
@@ -16473,6 +16519,36 @@ export type CreateFinishedGoodsTransferNoteRequest = {
   totalQuantity?: number;
   uoMId?: string | null;
   qarNumber?: string | null;
+};
+export type FinishedGoodsTransferNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
+  productionActivityStep?: ProductionActivityStepDto;
+};
+export type FinishedGoodsTransferNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  productionActivityStep?: ProductionActivityStepDto;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -17376,32 +17452,6 @@ export type WarehouseLocationShelfDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type FinishedGoodsTransferNoteDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDto;
-};
-export type FinishedGoodsTransferNoteDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
-};
 export type DistributedFinishedProductDto = {
   id?: string;
   product?: ProductDto;
@@ -18084,6 +18134,8 @@ export const {
   useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
   useGetApiV1ProductionScheduleManufacturingByIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
@@ -18207,9 +18259,9 @@ export const {
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
   useLazyGetApiV1ShiftTypeQuery,
-  usePutApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeByIdQuery,
   useLazyGetApiV1ShiftTypeByIdQuery,
+  usePutApiV1ShiftTypeByIdMutation,
   useDeleteApiV1ShiftTypeByIdMutation,
   usePostApiV1StaffRequisitionsMutation,
   useGetApiV1StaffRequisitionsQuery,
