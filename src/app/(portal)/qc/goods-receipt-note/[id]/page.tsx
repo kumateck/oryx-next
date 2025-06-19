@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/qc/goods-receipt-note/details/indext";
+export { default } from "@/components/pages/qc/goods-receipt-note/details";
