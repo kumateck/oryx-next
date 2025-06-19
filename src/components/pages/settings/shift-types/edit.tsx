@@ -35,7 +35,6 @@ interface Props {
 const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
   const [updateShiftType, { isLoading }] = usePutApiV1ShiftTypeByIdMutation();
   const dispatch = useDispatch();
-
   const {
     register,
     control,

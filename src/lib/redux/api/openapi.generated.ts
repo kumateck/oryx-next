@@ -4022,6 +4022,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleManufacturingById: build.query<
       GetApiV1ProductionScheduleManufacturingByIdApiResponse,
       GetApiV1ProductionScheduleManufacturingByIdApiArg
@@ -9134,6 +9146,15 @@ export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
   subModule?: any;
   createFinishedGoodsTransferNoteRequest: CreateFinishedGoodsTransferNoteRequest;
 };
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProductionScheduleManufacturingByIdApiResponse =
   /** status 200 OK */ BatchManufacturingRecordDtoRead;
 export type GetApiV1ProductionScheduleManufacturingByIdApiArg = {
@@ -11637,7 +11658,6 @@ export type CreateLeaveRecallRequest = {
   recallReason?: string | null;
 };
 export type ReapplyLeaveRequest = {
-  leaveRequestId?: string;
   newStartDate?: string;
   newEndDate?: string;
   justification?: string | null;
@@ -13085,7 +13105,7 @@ export type Product = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13128,7 +13148,7 @@ export type ProductRead = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13679,6 +13699,7 @@ export type FinishedGoodsTransferNote = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -13706,6 +13727,7 @@ export type FinishedGoodsTransferNoteRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -16489,6 +16511,7 @@ export type BatchManufacturingRecordDtoIEnumerablePaginateableRead = {
   stopPageIndex?: number;
 };
 export type CreateFinishedGoodsTransferNoteRequest = {
+  transferNoteNumber?: string | null;
   batchManufacturingRecordId?: string;
   productionActivityStepId?: string | null;
   quantityPerPack?: number;
@@ -16496,6 +16519,36 @@ export type CreateFinishedGoodsTransferNoteRequest = {
   totalQuantity?: number;
   uoMId?: string | null;
   qarNumber?: string | null;
+};
+export type FinishedGoodsTransferNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
+  productionActivityStep?: ProductionActivityStepDto;
+};
+export type FinishedGoodsTransferNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  productionActivityStep?: ProductionActivityStepDto;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -17399,32 +17452,6 @@ export type WarehouseLocationShelfDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type FinishedGoodsTransferNoteDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDto;
-};
-export type FinishedGoodsTransferNoteDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
-};
 export type DistributedFinishedProductDto = {
   id?: string;
   product?: ProductDto;
@@ -18107,6 +18134,8 @@ export const {
   useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
   useGetApiV1ProductionScheduleManufacturingByIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
