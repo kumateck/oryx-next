@@ -65,7 +65,7 @@ function Page() {
   return (
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
-      <PageTitle title="Standard Test Procedure" />
+      <PageTitle title="Standard Test Procedure - Material" />
       <div className="flex w-full justify-between items-center">
         <AccessTabs
           handleTabClick={handleTabClick}

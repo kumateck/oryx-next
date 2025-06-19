@@ -1,7 +1,7 @@
 "use client";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { useLazyGetApiV1ProductArdQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1QaAnalyticalTestsQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import React, { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ function Page() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [loadData, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1ProductArdQuery({});
+    useLazyGetApiV1QaAnalyticalTestsQuery({});
 
   const dispatch = useDispatch();
 

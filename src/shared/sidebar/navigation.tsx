@@ -425,7 +425,7 @@ export const ROUTES: Route[] = [
     menu: [
       {
         title: "Material STP",
-        url: "/qc/stp",
+        url: "/qc/material-stp",
         icon: "BookUser",
         isActive: false,
       },
