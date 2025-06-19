@@ -58,7 +58,6 @@ const Page = () => {
               router.back();
             }}
           />
-
           <PageTitle title={"Shift Types"} />
         </div>{" "}
         <div className="flex items-center justify-end gap-2">
@@ -69,9 +68,6 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        // onRowClick={(row) => {
-        //   router.push(`/hr/leave-management/${row.id}/details`);
-        // }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}

@@ -20,10 +20,11 @@ import {
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import { ShiftTypeRequestDto, CreateShiftTypeValidator } from "./types";
-import ShiftScheduleForm from "./form";
 import { rotationType, StartDay } from "@/lib";
 import { DayOfWeek } from "@/lib/enum";
-import { daysOfWeek } from "../working-days/types";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
+import ShiftTypeConfiguration from "./form";
 // import "./types";
 
 interface Props {
@@ -44,22 +45,7 @@ const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
     handleSubmit,
   } = useForm<ShiftTypeRequestDto>({
     resolver: CreateShiftTypeValidator,
-    defaultValues: {
-      shiftName: details?.shiftName,
-      rotationType: {
-        label: rotationType[details?.rotationType?.label],
-        value: rotationType[details?.rotationType?.value],
-      },
-      startTime: details?.startTime,
-      endTime: details?.endTime,
-      applicableDays: details?.applicableDays
-        ? details.applicableDays.map((day) => ({
-            label: daysOfWeek[day?.label],
-            value: daysOfWeek[day?.value],
-            uom: daysOfWeek[day?.uom as string],
-          }))
-        : undefined,
-    },
+    defaultValues: details,
   });
 
   const applicableDaysOptions = Object.entries(DayOfWeek)
@@ -97,16 +83,13 @@ const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
         ) as DayOfWeek[],
       } satisfies CreateShiftTypeRequest;
       await updateShiftType({
-        createShiftTypeRequest: payload,
         id: id,
+        createShiftTypeRequest: payload,
       }).unwrap();
-      toast.success("Shift Schedule edited successfully");
-      loadShiftTypes({
-        page: 1,
-        pageSize: 10,
-      });
-      reset(); // Reset the form after submission
-      onClose(); // Close the form/modal if applicable
+      reset();
+      onClose();
+      toast.success("Shift Type updated successfully");
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -116,10 +99,10 @@ const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Shift Type configuration </DialogTitle>
+          <DialogTitle>Edit Shift Type configuration </DialogTitle>
         </DialogHeader>
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-          <ShiftScheduleForm
+          <ShiftTypeConfiguration
             register={register}
             control={control}
             errors={errors}
@@ -134,6 +117,7 @@ const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
             </Button>
             <Button
               type="submit"
+              disabled={isLoading}
               variant={"default"}
               className="flex items-center gap-2"
             >

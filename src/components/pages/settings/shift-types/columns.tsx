@@ -4,8 +4,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { ErrorResponse, isErrorResponse, rotationType, DayOfWeek } from "@/lib";
 import {
   ShiftTypeDto,
-  useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
+  useDeleteApiV1ShiftTypeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
@@ -13,7 +12,8 @@ import { toast } from "sonner";
 import { useState } from "react";
 import EditShiftTypes from "./edit";
 import { ShiftTypeRequestDto } from "./types";
-import { daysOfWeek } from "../working-days/types";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "@/lib/redux/store";
 // import Edit from "./leave-request/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -23,14 +23,14 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends ShiftTypeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const [deleteMutation] = useDeleteApiV1ShiftTypeByIdMutation();
   const [open, setOpen] = useState(false);
   const [details, setDetails] = useState<ShiftTypeRequestDto>(
     {} as ShiftTypeRequestDto,
   );
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const dispatch = useDispatch();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -38,25 +38,23 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
         className="flex cursor-pointer items-center justify-start gap-2"
         onClick={() => {
           if (!row.original) return;
+          console.log("row.original", row.original);
           const details: ShiftTypeRequestDto = {
             shiftName: row.original?.shiftName as string,
             applicableDays: row.original?.applicableDays
               ? row.original.applicableDays.map((day) => ({
-                  label: daysOfWeek[day],
-                  value: daysOfWeek[day],
-                  uom: daysOfWeek[day],
+                  label: DayOfWeek[day],
+                  value: String(day),
                 }))
               : [],
             rotationType: {
               label: rotationType[row.original?.rotationType as number],
-              value: rotationType[row.original?.rotationType as number],
+              value: String(row.original.rotationType),
             },
             startTime: row.original?.startTime as string,
             endTime: row.original?.endTime as string,
           };
           setDetails(details);
-
-          console.log("Row details:", row.original);
           setOpen(true);
         }}
       >
@@ -65,7 +63,6 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
           className="h-5 w-5 cursor-pointer text-neutral-500"
         />
       </div>
-
       <div
         className="flex cursor-pointer items-center justify-start gap-2"
         onClick={(e) => {
@@ -75,14 +72,16 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
       >
         <Icon name="Trash2" className="text-red-500 h-5 w-5 cursor-pointer" />
       </div>
-      <EditShiftTypes
-        isOpen={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        details={details as ShiftTypeRequestDto}
-        id={row.original.id as string}
-      />
+      {open && (
+        <EditShiftTypes
+          isOpen={open}
+          onClose={() => {
+            setOpen(false);
+          }}
+          details={details as ShiftTypeRequestDto}
+          id={row.original.id as string}
+        />
+      )}
 
       <ConfirmDeleteDialog
         open={isDeleteOpen}
@@ -93,7 +92,7 @@ export function DataTableRowActions<TData extends ShiftTypeDto>({
               id: row.original.id as string,
             }).unwrap();
             toast.success("Schedule deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
