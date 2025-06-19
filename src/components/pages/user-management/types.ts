@@ -11,6 +11,8 @@ export const CreateUserSchema = z.object({
       message: "Employee is required",
     },
   ),
+  email: z.string(),
+  department: z.string(),
   roleId: z.object(
     {
       value: z.string().min(1, { message: "Role is required" }),
