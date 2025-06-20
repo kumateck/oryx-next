@@ -6,7 +6,10 @@ import React, { useState, useEffect } from "react";
 import { Create } from "./create";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
-import { useLazyGetApiV1HolidaysQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  HolidayDto,
+  useLazyGetApiV1HolidaysQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ServerDatatable } from "@/shared/datatable";
 import { columns } from "./columns";
@@ -20,6 +23,7 @@ function Page() {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   const [loadHolidays, { isLoading, data: result, isFetching }] =
     useLazyGetApiV1HolidaysQuery();
@@ -28,13 +32,14 @@ function Page() {
     loadHolidays({
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.holidays,
+      searchQuery: searchValue ?? "",
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, triggerReload]);
-  const data = result?.data || [];
+  const data = (result as HolidayDto[]) || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}

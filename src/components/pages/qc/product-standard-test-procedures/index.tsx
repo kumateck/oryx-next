@@ -42,7 +42,7 @@ function Page() {
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
       <div className="flex w-full justify-between items-center">
-        <PageTitle title="Product Standard Test Procedure" />
+        <PageTitle title="Standard Test Procedure - Product" />
         <div className="w-fit flex items-center justify-center gap-4">
           <Button onClick={() => setIsOpen(true)}>
             <Icon name="Plus" />

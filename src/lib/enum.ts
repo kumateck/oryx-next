@@ -485,3 +485,11 @@ export enum AlertType {
   InApp = 1,
   Sms = 2,
 }
+
+export enum AnalyticalTestStatus {
+  Approved = 0,
+  Quarantine = 1,
+  Under_Test = 2,
+  Rejected = 3,
+  Test_Completed = 4,
+}

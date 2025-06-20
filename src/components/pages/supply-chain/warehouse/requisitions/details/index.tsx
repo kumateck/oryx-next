@@ -53,8 +53,19 @@ const IssueStockRequistions = () => {
 
   return (
     <ScrollablePageWrapper>
-      <div className="space-y-3">
+      <div className="">
         <div className="flex items-center justify-between">
+          <div
+            className="group flex hover:underline items-center gap-1 hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            <Icon name="ArrowLeft" className="h-5 w-5" />
+            <span className="font-medium">Stock Requisitions</span>
+          </div>
+        </div>
+        <div className="flex mb-3 items-center justify-between">
           <PageTitle title="Issue Stock Requisition Voucher" />
           {(hasAccessToRawMaterialReQuests ||
             hasAccessToPackageMaterialRequests) && (
@@ -72,7 +83,7 @@ const IssueStockRequistions = () => {
             </Button>
           )}
         </div>
-        <Card>
+        <Card className="mb-3">
           <CardContent className="space-y-4 py-2">
             <div className="flex justify-start gap-4">
               <div className="w-full space-y-2">
