@@ -126,8 +126,6 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [openSample, setOpenSample] = useState(false);
-  // const [isRecallOpen, setIsRecallOpen] = useState(false);
-  console.log(row.original.material);
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -135,11 +133,11 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
         <DropdownMenuItem>
           <Button
             variant={
-              row.original.status === BatchStatusEnum.Available
+              row.original.status === BatchStatusEnum.Testing
                 ? "default"
                 : "ghost"
             }
-            disabled={row.original.status !== BatchStatusEnum.Available}
+            disabled={row.original.status !== BatchStatusEnum.Testing}
             className="flex w-full cursor-pointer items-center justify-start gap-2"
           >
             <Icon

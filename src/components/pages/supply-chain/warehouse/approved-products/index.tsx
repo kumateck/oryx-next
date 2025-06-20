@@ -54,9 +54,7 @@ const Page = () => {
       <PageTitle title="Approved Products" />
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(
-            `/warehouse/approved-products/${row?.product?.id}/details`,
-          );
+          router.push(`/warehouse/approved-products/${row?.product?.id}`);
         }}
         data={data}
         columns={columns}

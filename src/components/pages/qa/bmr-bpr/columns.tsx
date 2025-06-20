@@ -27,7 +27,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
         <DropdownMenuItem>
           <Button
             variant={
-              row.original.status === AnalyticalTestStatus.Approved
+              row.original.status === AnalyticalTestStatus.Under_Test
                 ? "default"
                 : "ghost"
             }
