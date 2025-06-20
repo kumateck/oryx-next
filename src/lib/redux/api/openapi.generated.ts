@@ -4034,6 +4034,35 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApprove:
+      build.mutation<
+        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse,
+        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}/approve`,
+          method: "PUT",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
+    putApiV1ProductionScheduleById: build.mutation<
+      PutApiV1ProductionScheduleByIdApiResponse,
+      PutApiV1ProductionScheduleByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createFinishedGoodsTransferNoteRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleManufacturingById: build.query<
       GetApiV1ProductionScheduleManufacturingByIdApiResponse,
       GetApiV1ProductionScheduleManufacturingByIdApiArg
@@ -9155,6 +9184,27 @@ export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg =
+  {
+    id: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+    body: number;
+  };
+export type PutApiV1ProductionScheduleByIdApiResponse =
+  /** status 204 No Content */ FinishedGoodsTransferDto;
+export type PutApiV1ProductionScheduleByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createFinishedGoodsTransferNoteRequest: CreateFinishedGoodsTransferNoteRequest;
+};
 export type GetApiV1ProductionScheduleManufacturingByIdApiResponse =
   /** status 200 OK */ BatchManufacturingRecordDtoRead;
 export type GetApiV1ProductionScheduleManufacturingByIdApiArg = {
@@ -11389,6 +11439,7 @@ export type CreateFormFieldRequest = {
   questionId?: string;
   required?: boolean;
   rank?: number;
+  description?: string | null;
   assigneeId?: string | null;
   reviewerId?: string | null;
 };
@@ -11437,7 +11488,7 @@ export type FormFieldDto = {
   formSection?: CollectionItemDto;
   question?: QuestionDto;
   required?: boolean;
-  response?: string | null;
+  description?: string | null;
   rank?: number;
   assignee?: CollectionItemDto;
   reviewer?: CollectionItemDto;
@@ -12763,7 +12814,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12830,7 +12881,7 @@ export type FormField = {
   questionId?: string;
   question?: Question;
   required?: boolean;
-  response?: string | null;
+  description?: string | null;
   rank?: number;
   assigneeId?: string | null;
   assignee?: User;
@@ -12984,6 +13035,7 @@ export type Role = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   type?: DepartmentType;
+  isManager?: boolean;
 };
 export type RouteResponsibleRole = {
   id?: string;
@@ -13709,6 +13761,7 @@ export type FinishedGoodsTransferNote = {
   packageStyle?: PackageStyle;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
+  isApproved?: boolean;
   totalQuantity?: number;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
@@ -13737,6 +13790,7 @@ export type FinishedGoodsTransferNoteRead = {
   packageStyle?: PackageStyle;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
+  isApproved?: boolean;
   totalQuantity?: number;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
@@ -16550,6 +16604,11 @@ export type FinishedGoodsTransferNoteDtoRead = {
   batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
   productionActivityStep?: ProductionActivityStepDto;
 };
+export type FinishedGoodsTransferDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+};
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
   manufacturingDate?: string | null;
@@ -16789,6 +16848,7 @@ export type RoleDto = {
   name?: string | null;
   type?: DepartmentType;
   displayName?: string | null;
+  isManager?: boolean;
 };
 export type RequisitionApprovalDto = {
   user?: CollectionItemDto;
@@ -18136,6 +18196,8 @@ export const {
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
   useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
   useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
+  usePutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveMutation,
+  usePutApiV1ProductionScheduleByIdMutation,
   useGetApiV1ProductionScheduleManufacturingByIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
