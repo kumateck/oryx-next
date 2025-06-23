@@ -1,15 +1,15 @@
 "use client";
 import { Card, CardContent, CardHeader, Icon } from "@/components/ui";
 import { ListsTable } from "@/shared/datatable";
-
 import { columns } from "./columns";
 import PageWrapper from "@/components/layout/wrapper";
 import { useParams, useRouter } from "next/navigation";
 import { useGetApiV1OvertimeRequestsByIdQuery } from "@/lib/redux/api/openapi.generated";
 import { AuditModules } from "@/lib";
+import { format } from "date-fns";
 // import Link from "next/link";
 
-function OvertimeRequestDetails() {
+function Page() {
   const { id } = useParams();
   const overTimeId = id as string;
   const { data } = useGetApiV1OvertimeRequestsByIdQuery({
@@ -28,70 +28,100 @@ function OvertimeRequestDetails() {
         >
           <Icon name="ArrowLeft" className="h-5 w-5" />
           <h1 className="font-Medium text-base text-primary-500">
-            Overtime List
+            Overtime Requests
           </h1>
         </div>
       </div>
       <Card>
+        <CardContent>
+          <h1 className="my-3">
+            <span className="font-semibold">Approval Details</span>
+          </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h1 className="">Approved Name:</h1>
+              <span className="font-semibold">{`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <h1 className="">Requested By:</h1>
+              <span className="font-semibold">{`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <h1 className="">Requested Date:</h1>
+              <span className="font-semibold">
+                {data?.createdAt
+                  ? format(data?.createdAt, "MMM dd, yyyy")
+                  : "-"}
+              </span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="mt-4">
         <CardHeader>
           <span className="font-semibold">Overtime Request Details</span>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-3 place-content-between mt-1 text-sm">
+          <div className="flex items-start justify-between gap-4">
             {/* Row 1 */}
-            <div className="flex gap-2 items-center">
-              <span>Start Date:</span>
-              <span className="font-semibold"></span>
+            <div>
+              <div className="flex gap-2 items-center">
+                <span>Start Date:</span>
+                <span className="font-semibold"></span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span>Start Time:</span>
+                <span className="font-semibold"></span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span>Department:</span>
+                <span className="font-semibold">
+                  {data?.department?.name || "Not Assigned"}
+                </span>
+              </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <span>Start Time:</span>
-              <span className="font-semibold"></span>
+            {/* Row 2 */}
+            <div>
+              <div className="flex gap-2 items-center">
+                <span>End Date:</span>
+                <span className="font-semibold">
+                  {/* {data?.endTime ? format(data?.endTime, "MMM dd, yyyy") : "-"} */}
+                </span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span>End Time:</span>
+                <span className="font-semibold">
+                  {/* {data?.endTime ? format(data?.endTime, "hh:mm a") : "-"} */}
+                </span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span>Overtime not to Exceed:</span>
+                <span className="font-semibold">{data?.totalHours}Hrs</span>
+              </div>
             </div>
+            {/* Row 3 */}
             <div className="flex gap-2 items-center">
               <span>Overtime Justification:</span>
               <span className="font-semibold">
-                {/* <TheAduseiEditorViewer
-                  content={data?.justification as string}
-                /> */}
-              </span>
-            </div>
-
-            {/* Row 2 */}
-            <div className="flex gap-2 items-center">
-              <span>End Date:</span>
-              <span className="font-semibold">
-                {/* {data?.endDate ? format(data?.endDate, "MMM dd, yyyy") : "-"} */}
-              </span>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span>End Time:</span>
-              {/* <span className="font-semibold">{data?.contactPerson}</span> */}
-            </div>
-            <div className="flex gap-2 items-center">
-              <span>Department:</span>
-              <span className="font-semibold">
-                {/* {data?.leaveType?.name} */}
-              </span>
-            </div>
-
-            {/* Row 3 */}
-            <div className="flex gap-2 items-center">
-              <span>Overtime not to Exceed:</span>
-              <span className="font-semibold">
-                {/* {data?.employee?.department?.name || "-"} */}
+                {data?.createdBy?.department?.name || "-"}
               </span>
             </div>
           </div>
 
           <div className="my-10">
             <p className="font-medium mt-2">Employee List</p>
-            <ListsTable data={[]} columns={columns} />
-            {/* <ListsTable data={data ? [data] : []} columns={columns} /> */}
+            {/* <ListsTable data={[]} columns={columns} /> */}
+            <ListsTable
+              data={data?.employees ? data.employees : []}
+              columns={columns}
+            />
           </div>
+
+          {/* Approve logs over here */}
         </CardContent>
       </Card>
     </PageWrapper>
   );
 }
 
-export default OvertimeRequestDetails;
+export default Page;

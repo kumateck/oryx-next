@@ -18,6 +18,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { AuditModules } from "@/lib";
+import { useRouter } from "next/navigation";
 // import { PermissionKeys } from "@/lib";
 // import NoAccess from "@/shared/no-access";
 // import { useUserPermissions } from "@/hooks/use-permission";
@@ -27,6 +28,7 @@ const Page = () => {
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const router = useRouter();
   const { data: result, isLoading } = useGetApiV1OvertimeRequestsQuery({
     page,
     pageSize,
@@ -48,8 +50,10 @@ const Page = () => {
   }, [page, pageSize, triggerReload]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
+  console.log("Overtime Management Page Rendered", data);
 
-  //Check Permision
+  //Check Permission
+
   // const { hasPermissionAccess } = useUserPermissions();
   // const hasAccess = hasPermissionAccess(
   //   PermissionKeys.humanResources.viewOvertimeRequests,
@@ -85,6 +89,9 @@ const Page = () => {
 
       <ServerDatatable
         data={data}
+        onRowClick={(row) =>
+          router.push(`/hr/overtime-management/${row.id}/details`)
+        }
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}
