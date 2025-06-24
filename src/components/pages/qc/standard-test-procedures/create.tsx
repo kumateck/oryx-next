@@ -18,6 +18,7 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
+import { EMaterialKind } from "@/lib";
 import {
   CreateMaterialStandardTestProcedureRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
@@ -37,9 +38,10 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  kind?: EMaterialKind;
 };
 
-export const Create = ({ isOpen, onClose }: Props) => {
+export const Create = ({ isOpen, kind, onClose }: Props) => {
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -55,7 +57,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: materials } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 1000,
-    kind: 0,
+    kind: kind || EMaterialKind.Raw,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });

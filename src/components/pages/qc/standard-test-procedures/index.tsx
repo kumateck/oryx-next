@@ -64,7 +64,9 @@ function Page() {
   const data = result?.data || [];
   return (
     <PageWrapper>
-      {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+      {isOpen && (
+        <Create kind={kind} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      )}
       <PageTitle title="Standard Test Procedure - Material" />
       <div className="flex w-full justify-between items-center">
         <AccessTabs

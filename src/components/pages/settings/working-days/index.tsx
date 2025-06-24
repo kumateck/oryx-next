@@ -112,7 +112,7 @@ function Page() {
           </Card>
           <div className="flex mt-4 w-fit ml-auto gap-2 items-center justify-center">
             <Button disabled={isLoading} type="button" variant="secondary">
-              Cancil
+              Cancel
             </Button>
             <Button disabled={isLoading}>
               {isLoading && (
