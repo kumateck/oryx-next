@@ -4074,6 +4074,11 @@ const injectedRtkApi = api.injectEndpoints({
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
         }),
       }),
     putApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApprove:
@@ -9246,10 +9251,13 @@ export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiResponse =
-  /** status 200 OK */ FinishedGoodsTransferNoteDtoRead;
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiArg =
   {
     productId: string;
+    page?: number;
+    pageSize?: number;
+    searchQuery?: string;
     /** The module this request falls under */
     module?: any;
     /** The sub module this request falls under */
@@ -10889,6 +10897,14 @@ export type UserDto = {
   signature?: string | null;
   department?: CollectionItemDto;
 };
+export type DepartmentType = 0 | 1;
+export type RoleDto = {
+  id?: string;
+  name?: string | null;
+  type?: DepartmentType;
+  displayName?: string | null;
+  isManager?: boolean;
+};
 export type AlertDto = {
   id?: string;
   createdBy?: UserDto;
@@ -10897,6 +10913,8 @@ export type AlertDto = {
   notificationType?: NotificationType;
   alertTypes?: AlertType[] | null;
   timeFrame?: string;
+  roles?: RoleDto[] | null;
+  users?: UserDto[] | null;
   isDisabled?: boolean;
 };
 export type AlertDtoIEnumerablePaginateable = {
@@ -10988,7 +11006,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type DepartmentType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
 export type WarehouseDto = {
   id?: string;
@@ -17195,13 +17212,6 @@ export type FinalPackingDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type RoleDto = {
-  id?: string;
-  name?: string | null;
-  type?: DepartmentType;
-  displayName?: string | null;
-  isManager?: boolean;
 };
 export type RequisitionApprovalDto = {
   user?: CollectionItemDto;
