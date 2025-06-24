@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/qc/material-analytical-raw-data";
+export { default } from "@/components/pages/qc/standard-test-procedures";

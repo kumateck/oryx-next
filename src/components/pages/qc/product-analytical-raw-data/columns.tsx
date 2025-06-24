@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Edit } from "./edit";
-import { ProductArdSchemaType, stageLabels } from "./types";
+import { ProductArdSchemaType, Stage, stageLabels } from "./types";
 import { DownloadAttachmentButton } from "../attechment-download";
 
 interface DataTableRowActionsProps<TData> {
@@ -102,7 +102,7 @@ export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
   {
     accessorKey: "Name",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original?.stage}</div>,
+    cell: ({ row }) => <div>{row.original?.productName}</div>,
   },
 
   {
@@ -114,7 +114,9 @@ export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
     accessorKey: "stage",
     header: "Stage",
     cell: ({ row }) => (
-      <div>{row.original.stage && stageLabels[row.original?.stage]}</div>
+      <div>
+        {row.original.stage && stageLabels[row.original?.stage as Stage]}
+      </div>
     ),
   },
   {

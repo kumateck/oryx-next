@@ -4022,6 +4022,23 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNote: build.query<
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/finished-goods-transfer-note`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
       GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
       GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
@@ -4042,7 +4059,7 @@ const injectedRtkApi = api.injectEndpoints({
         query: (queryArg) => ({
           url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}/approve`,
           method: "PUT",
-          body: queryArg.body,
+          body: queryArg.approveTransferNoteRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
@@ -9175,6 +9192,17 @@ export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
   subModule?: any;
   createFinishedGoodsTransferNoteRequest: CreateFinishedGoodsTransferNoteRequest;
 };
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse =
   /** status 200 OK */ FinishedGoodsTransferNoteDtoRead;
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
@@ -9193,10 +9221,9 @@ export type PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg
     module?: any;
     /** The sub module this request falls under */
     subModule?: any;
-    body: number;
+    approveTransferNoteRequest: ApproveTransferNoteRequest;
   };
-export type PutApiV1ProductionScheduleByIdApiResponse =
-  /** status 204 No Content */ FinishedGoodsTransferDto;
+export type PutApiV1ProductionScheduleByIdApiResponse = unknown;
 export type PutApiV1ProductionScheduleByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -16604,10 +16631,26 @@ export type FinishedGoodsTransferNoteDtoRead = {
   batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
   productionActivityStep?: ProductionActivityStepDto;
 };
-export type FinishedGoodsTransferDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
+export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
+  data?: FinishedGoodsTransferNoteDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead = {
+  data?: FinishedGoodsTransferNoteDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ApproveTransferNoteRequest = {
+  quantityReceived?: number;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -18194,6 +18237,8 @@ export const {
   useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery,
   useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
   useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
   usePutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveMutation,
