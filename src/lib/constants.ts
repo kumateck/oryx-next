@@ -591,6 +591,8 @@ export const AuditModules = {
     QaGrn: "Quality Assurance Goods Receipt Note",
     packingStock: "Packing Material Stock",
     rawStock: "Raw Material Stock ",
+    approvedProducts: "Approved Products",
+    attendanceReport: "Attendance Report",
   },
 
   procurement: {

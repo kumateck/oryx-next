@@ -345,6 +345,10 @@ export const ROUTES: Route[] = [
             url: "/hr/staff-requisition",
           },
           {
+            title: "Attendance Report Upload",
+            url: "/hr/attendance-report-upload",
+          },
+          {
             title: "Attendance Report Summary",
             url: "/hr/attendance-report-summary",
           },

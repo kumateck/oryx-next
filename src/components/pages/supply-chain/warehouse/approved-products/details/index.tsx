@@ -7,15 +7,16 @@ import {
   TabsTrigger,
 } from "@/components/ui";
 import {
-  useLazyGetApiV1ProductByProductIdQuery,
-  useLazyGetApiV1WarehouseBincardinformationByProductIdProductQuery,
+  useLazyGetApiV1WarehouseBincardinformationByProductIdProductQuery as fetchBincardData,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
-import PageTitle from "@/shared/title";
+// import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { bincardColumn, generalColumn } from "./columns";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import { AuditModules } from "@/lib";
 
 const tabs = [
   {
@@ -36,7 +37,9 @@ function Page() {
   const router = useRouter();
   const finishedProductId = id as string;
   const [loadFinishedProductDetails, { data, isLoading, isFetching }] =
-    useLazyGetApiV1ProductByProductIdQuery({});
+    useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery(
+      {},
+    );
 
   const [
     loadBincardData,
@@ -45,7 +48,8 @@ function Page() {
       isFetching: isBincardFetching,
       isLoading: isBincardLoading,
     },
-  ] = useLazyGetApiV1WarehouseBincardinformationByProductIdProductQuery({});
+  ] = fetchBincardData({});
+
   useEffect(() => {
     loadFinishedProductDetails({
       productId: finishedProductId,
@@ -55,13 +59,20 @@ function Page() {
       page,
       pageSize,
       searchQuery: "",
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.approvedProducts,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finishedProductId]);
-  const generalData = data?.finishedProducts || [];
+  }, [finishedProductId, activeTab, page, pageSize]);
+
+  const generalData = data?.data || [];
   const bincardData = bincardResult?.data || [];
-  console.log("Bincard Data:", bincardData);
-  console.log("General Data:", generalData);
+  console.log("Bincard Data:", bincardResult);
+  console.log(
+    "General Data:",
+    data,
+    "and this one should be worikng as far as I know it will work in my process",
+  );
   return (
     <ScrollablePageWrapper className="flex flex-col">
       <div
@@ -71,10 +82,7 @@ function Page() {
         <Icon name="ArrowLeft" className="size-4" />
         <span>Approved Product</span>
       </div>
-      <div className="flex flex-col my-4">
-        <span className="text-gray-500 text-sm">NL-012</span>
-        <PageTitle title={(data?.name as string) ?? "Product Name"} />
-      </div>
+
       <Tabs defaultValue={activeTab} className="">
         <TabsList className="mb-4 gap-x-6 rounded-none border-b border-b-neutral-input bg-transparent p-0 py-0">
           {tabs.map((tab, idx) => (

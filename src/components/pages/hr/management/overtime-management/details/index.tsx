@@ -6,7 +6,7 @@ import PageWrapper from "@/components/layout/wrapper";
 import { useParams, useRouter } from "next/navigation";
 import { useGetApiV1OvertimeRequestsByIdQuery } from "@/lib/redux/api/openapi.generated";
 import { AuditModules } from "@/lib";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 // import Link from "next/link";
 
 function Page() {
@@ -62,16 +62,20 @@ function Page() {
           <span className="font-semibold">Overtime Request Details</span>
         </CardHeader>
         <CardContent>
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex text-sm items-start justify-between gap-4">
             {/* Row 1 */}
             <div>
               <div className="flex gap-2 items-center">
                 <span>Start Date:</span>
-                <span className="font-semibold"></span>
+                <span className="font-semibold">
+                  {data?.overtimeDate
+                    ? format(data?.overtimeDate, "MMM dd, yyyy")
+                    : "-"}
+                </span>
               </div>
               <div className="flex gap-2 items-center">
                 <span>Start Time:</span>
-                <span className="font-semibold"></span>
+                <span className="font-semibold">{data?.startTime}</span>
               </div>
               <div className="flex gap-2 items-center">
                 <span>Department:</span>
@@ -85,14 +89,17 @@ function Page() {
               <div className="flex gap-2 items-center">
                 <span>End Date:</span>
                 <span className="font-semibold">
-                  {/* {data?.endTime ? format(data?.endTime, "MMM dd, yyyy") : "-"} */}
+                  {data?.overtimeDate && data?.totalHours
+                    ? format(
+                        addHours(new Date(data.overtimeDate), 54),
+                        "MMM dd, yyyy",
+                      )
+                    : "-"}
                 </span>
               </div>
               <div className="flex gap-2 items-center">
                 <span>End Time:</span>
-                <span className="font-semibold">
-                  {/* {data?.endTime ? format(data?.endTime, "hh:mm a") : "-"} */}
-                </span>
+                <span className="font-semibold">{data?.endTime}</span>
               </div>
               <div className="flex gap-2 items-center">
                 <span>Overtime not to Exceed:</span>

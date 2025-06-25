@@ -1,33 +1,47 @@
 import {
   BinCardInformationDtoRead,
-  ProductDtoRead,
+  FinishedGoodsTransferNoteDtoRead,
 } from "@/lib/redux/api/openapi.generated";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-export const generalColumn: ColumnDef<ProductDtoRead>[] = [
+export const generalColumn: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.fullBatchSize}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batchManufacturingRecord?.batchNumber}</div>
+    ),
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.basePackingQuantity}</div>,
+    cell: ({ row }) => <div>{row.original.totalQuantity}</div>,
   },
   {
     accessorKey: "manufactureData",
     header: "Manufacture Date",
-    cell: ({ row }) => <div>{row.original.basePackingQuantity}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.batchManufacturingRecord?.manufacturingDate
+          ? format(
+              row.original.batchManufacturingRecord?.manufacturingDate,
+              "MMM d, yyyy",
+            )
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {row.original?.createdAt &&
-          format(row.original.createdAt ?? "", "MMM d, yyyy")}
+        {row.original?.batchManufacturingRecord?.expiryDate &&
+          format(
+            row.original.batchManufacturingRecord?.expiryDate ?? "",
+            "MMM d, yyyy",
+          )}
       </div>
     ),
   },

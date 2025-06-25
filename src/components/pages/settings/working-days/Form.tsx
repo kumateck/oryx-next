@@ -31,7 +31,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="w-full ">
       <div className="mt-6 font-semibold text-gray-900">
-        Choose Working day time
+        Choose working day time
       </div>
       <hr />
       <div className="space-y-4 w-full max-w-3xl">

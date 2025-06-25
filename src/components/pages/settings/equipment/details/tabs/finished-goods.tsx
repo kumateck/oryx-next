@@ -1,8 +1,8 @@
-import { FinishedProductDto } from "@/lib/redux/api/openapi.generated";
+import { FinishedProduct } from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 
 interface IProps {
-  data: FinishedProductDto[];
+  data: FinishedProduct[];
 }
 
 export const FinishedGoods = ({ data }: IProps) => {

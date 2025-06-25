@@ -11,13 +11,12 @@ import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
 
 import { columns } from "./columns";
+import { Button, Icon } from "@/components/ui";
+import Link from "next/link";
 
 const Page = () => {
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
-
-  //   const [pageSize, setPageSize] = useState(30);
-  //   const [page, setPage] = useState(1);
 
   const [loadAttendanceReportSummary, { isLoading, data: result, isFetching }] =
     useLazyGetApiV1AttendanceRecordsGeneralSummaryQuery();
@@ -28,34 +27,26 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // page
-    // , pageSize,
-    triggerReload,
-  ]);
+  }, [triggerReload]);
 
   const data = result ?? [];
+  console.log("Attendance Report Summary Data:", data);
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Attendance Report Summary" />
+        <Button asChild>
+          <Link href="/hr/attendance-report-upload">
+            <Icon name="Upload" />
+            <span>Upload Attendance Report</span>
+          </Link>
+        </Button>
       </div>
       <ClientDatatable
         data={Array.isArray(data) ? data : []}
         columns={columns}
         isLoading={isLoading || isFetching}
-        // setPage={setPage}
-        // setPageSize={setPageSize}
-        // meta={{
-        //   pageIndex: result?.pageIndex as number,
-        //   pageCount: result?.pageCount as number,
-        //   totalRecordCount: result?.totalRecordCount as number,
-        //   numberOfPagesToShow: result?.numberOfPagesToShow as number,
-        //   startPageIndex: result?.startPageIndex as number,
-        //   stopPageIndex: result?.stopPageIndex as number,
-        //   pageSize,
-        // }}
       />
     </PageWrapper>
   );
