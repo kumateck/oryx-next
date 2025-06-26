@@ -139,7 +139,6 @@ export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
   },
   {
     id: "actions",
-    accessorFn: (row) => row,
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

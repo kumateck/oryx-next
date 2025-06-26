@@ -165,6 +165,10 @@ export const ROUTES: Route[] = [
             title: "Material Returns Note",
             url: "/warehouse/material-returns",
           },
+          {
+            title: "Finished Goods Transfer Note",
+            url: "/warehouse/finished-goods-transfer-notes",
+          },
           // {
           //   title: "Packaging Materials Receiving Area",
           //   url: "/warehouse/packaging-receiving-area",

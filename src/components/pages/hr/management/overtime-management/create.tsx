@@ -74,6 +74,10 @@ const Create = ({ isOpen, onClose }: Props) => {
   } = useForm<OvertimeRequestDto>({
     resolver: CreateOvertimeValidator,
     mode: "all",
+    defaultValues: {
+      startTime: "00:00 AM",
+      endTime: "00:00 AM",
+    },
   });
 
   const selectedDepartmentId = watch("departmentId")?.value;
