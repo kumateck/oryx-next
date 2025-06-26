@@ -30,11 +30,13 @@ const Page = () => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
     const formData = new FormData();
     files.forEach((file) => {
-      formData.append("Attendance", file, file.name);
+      formData.append("file", file, file.name);
     });
     try {
       await uploadAttendance({
-        body: { attendance: formData[0] },
+        body: {
+          attendance: formData[0],
+        },
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.attendanceReport,
       });

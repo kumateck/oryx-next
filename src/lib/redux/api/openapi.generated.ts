@@ -2200,10 +2200,10 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          materialKind: queryArg.materialKind,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
-          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -7838,10 +7838,10 @@ export type PostApiV1MaterialStpsApiArg = {
 export type GetApiV1MaterialStpsApiResponse =
   /** status 200 OK */ MaterialStandardTestProcedureDtoIEnumerablePaginateable;
 export type GetApiV1MaterialStpsApiArg = {
+  materialKind?: MaterialKind;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
-  materialKind?: number;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */

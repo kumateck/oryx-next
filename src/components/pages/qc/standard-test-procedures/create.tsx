@@ -79,6 +79,10 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
         subModule: AuditModules.settings.standardTestProcedure,
         createMaterialStandardTestProcedureRequest: payload,
       } as PostApiV1MaterialStpsApiArg).unwrap();
+      toast.success("STP created successfully");
+      dispatch(commonActions.setTriggerReload());
+      onClose();
+      reset();
       //upload attachment if any
       if (standardTestProcedureId && data?.attachments?.length > 0) {
         const files = Array.isArray(data.attachments)
@@ -92,15 +96,11 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
           modelId: standardTestProcedureId,
-          module: AuditModules.settings.name,
-          subModule: AuditModules.settings.standardTestProcedure,
+          module: "MaterialStandardTestProcedure",
+          subModule: "MaterialStandardTestProcedure",
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("STP created successfully");
-      dispatch(commonActions.setTriggerReload());
-      onClose();
-      reset();
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
