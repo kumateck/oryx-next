@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Button,
@@ -26,11 +27,11 @@ import { BomRequestDto, CreateBomValidator } from "./types";
 interface Props {
   onAddItem: (item: BomRequestDto) => boolean;
   existingItems: BomRequestDto[];
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const Create = ({ onAddItem, existingItems }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   const form = useForm<BomRequestDto>({
     resolver: CreateBomValidator,
     mode: "onChange",
@@ -40,6 +41,7 @@ const Create = ({ onAddItem, existingItems }: Props) => {
       grade: "",
       isSubstitutable: false,
       baseQuantity: 0,
+      rowId: uuidv4(),
     },
   });
 
@@ -51,6 +53,7 @@ const Create = ({ onAddItem, existingItems }: Props) => {
     handleSubmit,
   } = form;
 
+  console.log(errors, "errors");
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
@@ -114,31 +117,22 @@ const Create = ({ onAddItem, existingItems }: Props) => {
   }, [isOpen, loadCollection]);
 
   const onSubmit = (data: BomRequestDto) => {
+    console.log(data, "data");
     const success = onAddItem(data);
     if (success) {
       toast.success("BOM item added successfully");
       reset();
-      setIsOpen(false);
+      onClose();
     }
   };
 
   const handleClose = () => {
     reset();
-    setIsOpen(false);
+    onClose();
   };
 
   return (
     <>
-      <Button
-        onClick={() => setIsOpen(true)}
-        type="button"
-        variant="secondary"
-        className="flex items-center gap-2"
-      >
-        <Icon name="Plus" className="h-4 w-4" />
-        <span>Add New</span>
-      </Button>
-
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
