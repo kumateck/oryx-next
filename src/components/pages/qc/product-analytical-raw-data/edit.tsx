@@ -39,6 +39,7 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
+  console.log("details", details);
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -54,6 +55,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       stpId: details.stpId,
       formId: details.formId,
       specNumber: details.specNumber,
+      stage: details.stage,
     },
   });
 

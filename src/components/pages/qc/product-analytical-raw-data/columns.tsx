@@ -21,12 +21,8 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
 }: DataTableRowActionsProps<TData>) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [details, setDetails] = useState<ProductAnalyticalRawDataDto>(
-    {} as ProductAnalyticalRawDataDto,
-  );
   const [deleteProductARDMutation] = useDeleteApiV1ProductArdByIdMutation();
   const dispatch = useDispatch();
-
   return (
     <div className="flex items-center justify-end gap-2">
       <DownloadAttachmentButton
@@ -41,7 +37,6 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
         onClick={() => {
-          setDetails(row.original);
           setIsEdit(true);
         }}
       />
@@ -49,7 +44,6 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
         name="Trash"
         className="text-red-500 h-5 w-5 cursor-pointer"
         onClick={() => {
-          setDetails(row.original);
           setIsDeleteOpen(true);
         }}
       />
@@ -58,19 +52,24 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
         <Edit
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
-          id={details.specNumber as string}
+          id={row.original.id as string}
           details={
             {
-              description: details?.description,
+              description: row.original.description as string,
               formId: {
-                value: details.formId as string,
-                label: details.formId as string,
+                value: row.original.form?.id as string,
+                label: row.original.form?.name as string,
               },
               stpId: {
-                label: details.stpNumber as string,
-                value: details.stpId as string,
+                label: row.original.productStandardTestProcedure
+                  ?.stpNumber as string,
+                value: row.original.productStandardTestProcedure?.id as string,
               },
-              specNumber: details.specNumber as string,
+              specNumber: row.original.specNumber as string,
+              stage: {
+                value: row.original.stage as Stage,
+                label: stageLabels[row.original.stage as Stage],
+              },
             } as ProductArdSchemaType
           }
         />
@@ -80,10 +79,10 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
-          if (!details.stpId) return;
+          if (!row.original.productStandardTestProcedure?.id) return;
           try {
             await deleteProductARDMutation({
-              id: details.stpId,
+              id: row.original.productStandardTestProcedure?.id,
               module: AuditModules.qualityAssurance.name,
               subModule: AuditModules.qualityAssurance.analyticalRawData,
             }).unwrap();
@@ -102,22 +101,28 @@ export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
   {
     accessorKey: "Name",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original?.productName}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.productStandardTestProcedure?.product?.name}</div>
+    ),
   },
 
   {
     accessorKey: "stpNumber",
     header: "STP Number",
-    cell: ({ row }) => <div>{row.original?.stpNumber}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.productStandardTestProcedure?.stpNumber}</div>
+    ),
   },
   {
     accessorKey: "stage",
     header: "Stage",
-    cell: ({ row }) => (
-      <div>
-        {row.original.stage && stageLabels[row.original?.stage as Stage]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      console.log(
+        "row.original.stage",
+        stageLabels[row.original?.stage as Stage],
+      );
+      return <div>{stageLabels[row.original?.stage as Stage]}</div>;
+    },
   },
   {
     accessorKey: "specNumber",

@@ -111,7 +111,12 @@ function Page() {
             </CardContent>
           </Card>
           <div className="flex mt-4 w-fit ml-auto gap-2 items-center justify-center">
-            <Button disabled={isLoading} type="button" variant="secondary">
+            <Button
+              onClick={() => router.back()}
+              disabled={isLoading}
+              type="button"
+              variant="secondary"
+            >
               Cancel
             </Button>
             <Button disabled={isLoading}>

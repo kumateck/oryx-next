@@ -124,7 +124,9 @@ const Create = ({ isOpen, onClose }: Props) => {
     const products = productsResponse?.totalRecordCount ?? 0;
 
     generatePayload.seriesCounter = products + 1;
+    console.log(generatePayload.seriesCounter);
     const code = await generateCode(generatePayload);
+    console.log("Generated code:", code);
     setValue("code", code);
   };
 
