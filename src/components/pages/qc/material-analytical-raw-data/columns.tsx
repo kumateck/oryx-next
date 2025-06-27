@@ -88,12 +88,16 @@ export const columns: ColumnDef<MaterialAnalyticalRawDataDto>[] = [
   {
     accessorKey: "Name",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original?.materialName}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.materialStandardTestProcedure?.material?.name}</div>
+    ),
   },
   {
     accessorKey: "stpNumber",
     header: "STP Number",
-    cell: ({ row }) => <div>{row.original?.stpNumber}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.materialStandardTestProcedure?.stpNumber}</div>
+    ),
   },
   {
     id: "actions",

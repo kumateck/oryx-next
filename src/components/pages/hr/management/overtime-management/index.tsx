@@ -29,6 +29,9 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const router = useRouter();
+
+  const searchValue = useSelector((state) => state.common.searchInput);
+
   const { data: result, isLoading } = useGetApiV1OvertimeRequestsQuery({
     page,
     pageSize,
@@ -40,6 +43,7 @@ const Page = () => {
     loadOvertimeRequests({
       page,
       pageSize,
+      searchQuery: searchValue,
       module: AuditModules.management.name,
       subModule: AuditModules.management.overTimeMangement,
     });
@@ -47,7 +51,7 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize, triggerReload, searchValue]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
   console.log("Overtime Management Page Rendered", data);

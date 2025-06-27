@@ -101,7 +101,8 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     header: "Quantity Received",
     cell: ({ row }) => (
       <div className=" text-green-700 ">
-        {row.original.quantityReceived} Bottles
+        {row.original.quantityReceived}
+        {row.original.materialBatch?.uoM?.name}
       </div>
     ),
   },
@@ -110,14 +111,19 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     header: "Quantity Issued",
     cell: ({ row }) => (
       <div className="w-full text-red-700 ">
-        {row.original.quantityIssued} Bottles
+        {row.original.quantityIssued}
+        {row.original.materialBatch?.uoM?.name}
       </div>
     ),
   },
   {
     accessorKey: "balanceQuantity",
     header: "Balance Quantity",
-    cell: ({ row }) => <div>{row.original.balanceQuantity} Bottles</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.balanceQuantity} {row.original.materialBatch?.uoM?.name}
+      </div>
+    ),
   },
   {
     accessorKey: "productName",

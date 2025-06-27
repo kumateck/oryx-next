@@ -2091,10 +2091,10 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          materialKind: queryArg.materialKind,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
-          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -2131,6 +2131,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material-ard/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialArdMaterialByMaterialId: build.query<
+      GetApiV1MaterialArdMaterialByMaterialIdApiResponse,
+      GetApiV1MaterialArdMaterialByMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/material/${queryArg.materialId}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -3648,6 +3660,30 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/product-ard/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductArdProductByProductId: build.query<
+      GetApiV1ProductArdProductByProductIdApiResponse,
+      GetApiV1ProductArdProductByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-ard/product/${queryArg.productId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductArdStartTestByBatchManufacturingRecordId: build.query<
+      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
+      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -7766,10 +7802,10 @@ export type PostApiV1MaterialArdApiArg = {
 export type GetApiV1MaterialArdApiResponse =
   /** status 200 OK */ MaterialAnalyticalRawDataDtoIEnumerablePaginateable;
 export type GetApiV1MaterialArdApiArg = {
+  materialKind?: MaterialKind;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
-  materialKind?: number;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -7797,6 +7833,15 @@ export type PutApiV1MaterialArdByIdApiArg = {
 export type DeleteApiV1MaterialArdByIdApiResponse = unknown;
 export type DeleteApiV1MaterialArdByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialArdMaterialByMaterialIdApiResponse =
+  /** status 200 OK */ MaterialAnalyticalRawDataDto[];
+export type GetApiV1MaterialArdMaterialByMaterialIdApiArg = {
+  materialId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8924,6 +8969,24 @@ export type PutApiV1ProductArdByIdApiArg = {
 export type DeleteApiV1ProductArdByIdApiResponse = unknown;
 export type DeleteApiV1ProductArdByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductArdProductByProductIdApiResponse =
+  /** status 200 OK */ ProductAnalyticalRawDataDto[];
+export type GetApiV1ProductArdProductByProductIdApiArg = {
+  productId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse =
+  unknown;
+export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg = {
+  batchManufacturingRecordId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10928,18 +10991,16 @@ export type AlertDtoIEnumerablePaginateable = {
 };
 export type TestStage = 0 | 1 | 2;
 export type State = 0 | 1 | 2 | 3 | 4 | 5;
-export type Status = 0 | 1 | 2 | 3;
+export type Status = 0 | 1 | 2;
 export type CreateAnalyticalTestRequest = {
-  batchNumber: string;
-  productName: string;
-  productSchedule: string;
+  batchManufacturingRecordId?: string;
+  productId?: string;
+  productionScheduleId?: string;
   sampledQuantity: string;
   manufacturingDate: string;
   expiryDate: string;
   releasedAt: string;
   releaseDate: string;
-  qcManagerSignature: string;
-  qaManagerSignature: string;
   stage: TestStage;
   state: State;
   status: Status;
@@ -10948,19 +11009,17 @@ export type AnalyticalTestRequestDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  batchNumber?: string | null;
-  productName?: string | null;
-  productSchedule?: string | null;
+  batchManufacturingRecord?: CollectionItemDto;
+  product?: CollectionItemDto;
+  productionSchedule?: CollectionItemDto;
   manufacturingDate?: string;
   expiryDate?: string;
   releasedAt?: string | null;
   filled?: string | null;
   releaseDate?: string;
-  qcManagerSignature?: string | null;
   sampledQuantity?: string | null;
-  qaManagerSignature?: string | null;
   stage?: TestStage;
-  state?: State;
+  state?: CollectionItemDto;
   status?: Status;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
@@ -11518,7 +11577,7 @@ export type MinimalEmployeeInfoDto = {
 export type AssignEmployeeDto = {
   designationId: string;
   departmentId: string;
-  staffId?: string | null;
+  staffNumber?: string | null;
   startDate?: string;
   reportingManagerId: string;
 };
@@ -11636,7 +11695,8 @@ export type CreateFormResponseRequest = {
 };
 export type CreateResponseRequest = {
   formId?: string;
-  materialAnalyticalRawDataId?: string | null;
+  batchManufacturingRecordId?: string | null;
+  materialBatchId?: string | null;
   formResponses?: CreateFormResponseRequest[] | null;
 };
 export type CreateQuestionOptionsRequest = {
@@ -12370,25 +12430,30 @@ export type MaterialWithWarehouseStockDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateMaterialAnalyticalRawDataRequest = {
-  stpNumber: string;
   specNumber: string;
   description?: string | null;
   stpId: string;
   formId: string;
   materialBatchId?: string | null;
 };
-export type MaterialAnalyticalRawDataDto = {
+export type MaterialStandardTestProcedureDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   stpNumber?: string | null;
+  material?: CollectionItemDto;
+  description?: string | null;
+};
+export type MaterialAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
   specNumber?: string | null;
   description?: string | null;
-  materialName?: string | null;
-  stpId?: string;
-  formId?: string;
-  formName?: string | null;
+  materialStandardTestProcedure?: MaterialStandardTestProcedureDto;
+  form?: CollectionItemDto;
 };
 export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: MaterialAnalyticalRawDataDto[] | null;
@@ -12439,16 +12504,6 @@ export type MaterialSamplingDtoRead = {
 export type CreateMaterialStandardTestProcedureRequest = {
   stpNumber: string;
   materialId: string;
-  description?: string | null;
-};
-export type MaterialStandardTestProcedureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  materialId?: string;
-  materialName?: string | null;
   description?: string | null;
 };
 export type MaterialStandardTestProcedureDtoIEnumerablePaginateable = {
@@ -12994,7 +13049,91 @@ export type FormSection = {
   description?: string | null;
   fields?: FormField[] | null;
 };
-export type FormSectionRead = {
+export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
+export type BatchSize = 0 | 1;
+export type ProductionScheduleProduct = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  batchNumber?: string | null;
+  batchSize?: BatchSize;
+  quantity?: number;
+  cancelled?: boolean;
+  reasonForCancellation?: string | null;
+};
+export type ProductionScheduleProductRead = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  batchNumber?: string | null;
+  batchSize?: BatchSize;
+  quantity?: number;
+  cancelled?: boolean;
+  reasonForCancellation?: string | null;
+};
+export type ProductionSchedule = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  status?: ProductionStatus;
+  remarks?: string | null;
+  products?: ProductionScheduleProduct[] | null;
+};
+export type ProductionActivityLog = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  message?: string | null;
+  userId?: string | null;
+  user?: User;
+  timestamp?: string;
+};
+export type ProductionActivity = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLog[] | null;
+};
+export type ProductionActivityRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -13005,13 +13144,80 @@ export type FormSectionRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
-  formId?: string;
-  form?: Form;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLog[] | null;
+};
+export type Resource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  type?: string | null;
+  isAvailable?: boolean;
+};
+export type ProductionActivityStepResource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  resourceId?: string;
+  resource?: Resource;
+};
+export type WorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
   name?: string | null;
   description?: string | null;
-  fields?: FormField[] | null;
 };
-export type MaterialStandardTestProcedure = {
+export type ProductionActivityStepWorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  workCenterId?: string;
+  workCenter?: WorkCenter;
+};
+export type Stage = 0 | 1 | 2;
+export type ProductStandardTestProcedure = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -13023,11 +13229,10 @@ export type MaterialStandardTestProcedure = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   stpNumber?: string | null;
-  materialId?: string;
-  material?: Material;
-  description?: string | null;
+  productId?: string;
+  product?: Product;
 };
-export type MaterialStandardTestProcedureRead = {
+export type ProductStandardTestProcedureRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -13039,11 +13244,10 @@ export type MaterialStandardTestProcedureRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
   stpNumber?: string | null;
-  materialId?: string;
-  material?: MaterialRead;
-  description?: string | null;
+  productId?: string;
+  product?: Product;
 };
-export type MaterialAnalyticalRawData = {
+export type ProductAnalyticalRawData = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -13054,17 +13258,89 @@ export type MaterialAnalyticalRawData = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
-  stpNumber?: string | null;
   specNumber?: string | null;
   description?: string | null;
+  stage?: Stage;
   stpId?: string;
-  materialStandardTestProcedure?: MaterialStandardTestProcedure;
-  materialBatchId?: string | null;
-  materialBatch?: MaterialBatch;
+  productStandardTestProcedure?: ProductStandardTestProcedure;
   formId?: string;
   form?: Form;
 };
-export type MaterialAnalyticalRawDataRead = {
+export type RouteOperationAction = {
+  id?: string;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
+};
+export type ProductionActivityStepUser = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  userId?: string;
+  user?: User;
+  actions?: RouteOperationAction[] | null;
+};
+export type ProductionActivityStep = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  operationId?: string;
+  operation?: Operation;
+  workflowId?: string | null;
+  workFlow?: Form;
+  order?: number;
+  resources?: ProductionActivityStepResource[] | null;
+  workCenters?: ProductionActivityStepWorkCenter[] | null;
+  responsibleUsers?: ProductionActivityStepUser[] | null;
+  status?: ProductionStatus;
+  startedAt?: string | null;
+  completedAt?: string | null;
+};
+export type BatchManufacturingStatus = 0 | 1 | 2 | 3;
+export type BatchManufacturingRecord = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  issuedById?: string | null;
+  issuedBy?: User;
+};
+export type BatchManufacturingRecordRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -13075,15 +13351,19 @@ export type MaterialAnalyticalRawDataRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
-  stpNumber?: string | null;
-  specNumber?: string | null;
-  description?: string | null;
-  stpId?: string;
-  materialStandardTestProcedure?: MaterialStandardTestProcedureRead;
-  materialBatchId?: string | null;
-  materialBatch?: MaterialBatch;
-  formId?: string;
-  form?: Form;
+  productId?: string;
+  product?: Product;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  issuedById?: string | null;
+  issuedBy?: UserRead;
 };
 export type Role = {
   id?: string;
@@ -13147,27 +13427,6 @@ export type ResponseApproval = {
   approvalId?: string;
   approval?: Approval;
 };
-export type ResponseApprovalRead = {
-  userId?: string | null;
-  user?: UserRead;
-  roleId?: string | null;
-  role?: Role;
-  required?: boolean;
-  order?: number;
-  stageStartTime?: string | null;
-  status?: ApprovalStatus;
-  approvalTime?: string | null;
-  approvedById?: string | null;
-  approvedBy?: UserRead;
-  createdAt?: string;
-  activatedAt?: string | null;
-  comments?: string | null;
-  id?: string;
-  responseId?: string;
-  response?: Response;
-  approvalId?: string;
-  approval?: Approval;
-};
 export type Response = {
   id?: string;
   createdAt?: string;
@@ -13181,8 +13440,10 @@ export type Response = {
   lastDeletedBy?: User;
   formId?: string;
   form?: Form;
-  materialAnalyticalRawDataId?: string | null;
-  materialAnalyticalRawData?: MaterialAnalyticalRawData;
+  batchManufacturingRecordId?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecord;
+  materialBatchId?: string | null;
+  materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
   approved?: boolean;
@@ -13200,10 +13461,12 @@ export type ResponseRead = {
   lastDeletedBy?: UserRead;
   formId?: string;
   form?: Form;
-  materialAnalyticalRawDataId?: string | null;
-  materialAnalyticalRawData?: MaterialAnalyticalRawDataRead;
+  batchManufacturingRecordId?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordRead;
+  materialBatchId?: string | null;
+  materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
-  approvals?: ResponseApprovalRead[] | null;
+  approvals?: ResponseApproval[] | null;
   approved?: boolean;
 };
 export type FormResponse = {
@@ -13223,23 +13486,6 @@ export type FormResponse = {
   formField?: FormField;
   value?: string | null;
 };
-export type FormResponseRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  responseId?: string;
-  response?: ResponseRead;
-  formFieldId?: string;
-  formField?: FormField;
-  value?: string | null;
-};
 export type FormAssignee = {
   id?: string;
   formId?: string;
@@ -13247,26 +13493,12 @@ export type FormAssignee = {
   userId?: string;
   user?: User;
 };
-export type FormAssigneeRead = {
-  id?: string;
-  formId?: string;
-  form?: Form;
-  userId?: string;
-  user?: UserRead;
-};
 export type FormReviewer = {
   id?: string;
   formId?: string;
   form?: Form;
   userId?: string;
   user?: User;
-};
-export type FormReviewerRead = {
-  id?: string;
-  formId?: string;
-  form?: Form;
-  userId?: string;
-  user?: UserRead;
 };
 export type Form = {
   id?: string;
@@ -13285,38 +13517,6 @@ export type Form = {
   assignees?: FormAssignee[] | null;
   reviewers?: FormReviewer[] | null;
 };
-export type FormRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  name?: string | null;
-  sections?: FormSectionRead[] | null;
-  responses?: FormResponseRead[] | null;
-  assignees?: FormAssigneeRead[] | null;
-  reviewers?: FormReviewerRead[] | null;
-};
-export type Resource = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  type?: string | null;
-  isAvailable?: boolean;
-};
 export type RouteResource = {
   id?: string;
   createdAt?: string;
@@ -13332,34 +13532,6 @@ export type RouteResource = {
   route?: Route;
   resourceId?: string;
   resource?: Resource;
-};
-export type RouteResourceRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  routeId?: string;
-  route?: Route;
-  resourceId?: string;
-  resource?: Resource;
-};
-export type RouteOperationAction = {
-  id?: string;
-  formId?: string | null;
-  form?: Form;
-  action?: OperationAction;
-};
-export type RouteOperationActionRead = {
-  id?: string;
-  formId?: string | null;
-  form?: FormRead;
-  action?: OperationAction;
 };
 export type RouteResponsibleUser = {
   id?: string;
@@ -13378,23 +13550,6 @@ export type RouteResponsibleUser = {
   user?: User;
   actions?: RouteOperationAction[] | null;
 };
-export type RouteResponsibleUserRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  routeId?: string;
-  route?: Route;
-  userId?: string;
-  user?: UserRead;
-  actions?: RouteOperationActionRead[] | null;
-};
 export type RouteResponsibleRole = {
   id?: string;
   createdAt?: string;
@@ -13412,37 +13567,6 @@ export type RouteResponsibleRole = {
   role?: Role;
   actions?: RouteOperationAction[] | null;
 };
-export type RouteResponsibleRoleRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  routeId?: string;
-  route?: Route;
-  roleId?: string;
-  role?: Role;
-  actions?: RouteOperationActionRead[] | null;
-};
-export type WorkCenter = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  description?: string | null;
-};
 export type RouteWorkCenter = {
   id?: string;
   createdAt?: string;
@@ -13454,22 +13578,6 @@ export type RouteWorkCenter = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
-  routeId?: string;
-  route?: Route;
-  workCenterId?: string;
-  workCenter?: WorkCenter;
-};
-export type RouteWorkCenterRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
   routeId?: string;
   route?: Route;
   workCenterId?: string;
@@ -13516,12 +13624,12 @@ export type RouteRead = {
   operation?: Operation;
   estimatedTime?: string | null;
   workflowId?: string | null;
-  workFlow?: FormRead;
+  workFlow?: Form;
   order?: number;
-  resources?: RouteResourceRead[] | null;
-  responsibleUsers?: RouteResponsibleUserRead[] | null;
-  responsibleRoles?: RouteResponsibleRoleRead[] | null;
-  workCenters?: RouteWorkCenterRead[] | null;
+  resources?: RouteResource[] | null;
+  responsibleUsers?: RouteResponsibleUser[] | null;
+  responsibleRoles?: RouteResponsibleRole[] | null;
+  workCenters?: RouteWorkCenter[] | null;
 };
 export type Product = {
   id?: string;
@@ -13608,296 +13716,6 @@ export type ProductRead = {
   billOfMaterials?: ProductBillOfMaterialRead[] | null;
   packages?: ProductPackageRead[] | null;
   routes?: RouteRead[] | null;
-};
-export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
-export type BatchSize = 0 | 1;
-export type ProductionScheduleProduct = {
-  id?: string;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: Product;
-  batchNumber?: string | null;
-  batchSize?: BatchSize;
-  quantity?: number;
-  cancelled?: boolean;
-  reasonForCancellation?: string | null;
-};
-export type ProductionScheduleProductRead = {
-  id?: string;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: ProductRead;
-  batchNumber?: string | null;
-  batchSize?: BatchSize;
-  quantity?: number;
-  cancelled?: boolean;
-  reasonForCancellation?: string | null;
-};
-export type ProductionSchedule = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
-  status?: ProductionStatus;
-  remarks?: string | null;
-  products?: ProductionScheduleProduct[] | null;
-};
-export type ProductionScheduleRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  code?: string | null;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
-  status?: ProductionStatus;
-  remarks?: string | null;
-  products?: ProductionScheduleProductRead[] | null;
-};
-export type ProductionActivityLog = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  message?: string | null;
-  userId?: string | null;
-  user?: User;
-  timestamp?: string;
-};
-export type ProductionActivityLogRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  message?: string | null;
-  userId?: string | null;
-  user?: UserRead;
-  timestamp?: string;
-};
-export type ProductionActivity = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: Product;
-  steps?: ProductionActivityStep[] | null;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  activityLogs?: ProductionActivityLog[] | null;
-};
-export type ProductionActivityRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  code?: string | null;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
-  productId?: string;
-  product?: ProductRead;
-  steps?: ProductionActivityStep[] | null;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  activityLogs?: ProductionActivityLogRead[] | null;
-};
-export type ProductionActivityStepResource = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  resourceId?: string;
-  resource?: Resource;
-};
-export type ProductionActivityStepResourceRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  resourceId?: string;
-  resource?: Resource;
-};
-export type ProductionActivityStepWorkCenter = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  workCenterId?: string;
-  workCenter?: WorkCenter;
-};
-export type ProductionActivityStepWorkCenterRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  workCenterId?: string;
-  workCenter?: WorkCenter;
-};
-export type ProductionActivityStepUser = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  userId?: string;
-  user?: User;
-  actions?: RouteOperationAction[] | null;
-};
-export type ProductionActivityStepUserRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  userId?: string;
-  user?: UserRead;
-  actions?: RouteOperationActionRead[] | null;
-};
-export type ProductionActivityStep = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  operationId?: string;
-  operation?: Operation;
-  workflowId?: string | null;
-  workFlow?: Form;
-  order?: number;
-  resources?: ProductionActivityStepResource[] | null;
-  workCenters?: ProductionActivityStepWorkCenter[] | null;
-  responsibleUsers?: ProductionActivityStepUser[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
-};
-export type ProductionActivityStepRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivityRead;
-  operationId?: string;
-  operation?: Operation;
-  workflowId?: string | null;
-  workFlow?: FormRead;
-  order?: number;
-  resources?: ProductionActivityStepResourceRead[] | null;
-  workCenters?: ProductionActivityStepWorkCenterRead[] | null;
-  responsibleUsers?: ProductionActivityStepUserRead[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
 };
 export type RequisitionApproval = {
   userId?: string | null;
@@ -13994,9 +13812,9 @@ export type RequisitionRead = {
   productId?: string | null;
   product?: ProductRead;
   productionScheduleId?: string | null;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
   approvals?: RequisitionApprovalRead[] | null;
   items?: RequisitionItem[] | null;
   approved?: boolean;
@@ -14042,54 +13860,6 @@ export type RequisitionItemRead = {
   quantity?: number;
   quantityReceived?: number;
   status?: RequestStatus;
-};
-export type BatchManufacturingRecord = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productId?: string;
-  product?: Product;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  issuedById?: string | null;
-  issuedBy?: User;
-};
-export type BatchManufacturingRecordRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productId?: string;
-  product?: ProductRead;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStepRead;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  issuedById?: string | null;
-  issuedBy?: UserRead;
 };
 export type PackageStyle = {
   id?: string;
@@ -14161,7 +13931,7 @@ export type FinishedGoodsTransferNoteRead = {
   batchManufacturingRecordId?: string;
   batchManufacturingRecord?: BatchManufacturingRecordRead;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
 };
 export type DistributedFinishedProductStatus = 0 | 1;
 export type DistributedFinishedProduct = {
@@ -15071,9 +14841,9 @@ export type StockTransferRead = {
   productId?: string | null;
   product?: ProductRead;
   productionScheduleId?: string | null;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
   sources?: StockTransferSource[] | null;
 };
 export type StockTransferSource = {
@@ -15291,7 +15061,7 @@ export type MaterialBatchReservedQuantityRead = {
   warehouseId?: string;
   warehouse?: Warehouse;
   productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productId?: string;
   product?: ProductRead;
   uoMId?: string | null;
@@ -16430,8 +16200,27 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
+export type ProductStandardTestProcedureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  product?: CollectionItemDto;
+};
+export type ProductAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  specNumber?: string | null;
+  stage?: Stage;
+  description?: string | null;
+  form?: FormDto;
+  productStandardTestProcedure?: ProductStandardTestProcedureDto;
+};
 export type RouteOperationActionDto = {
-  form?: CollectionItemDto;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
   action?: OperationAction;
 };
 export type RouteResponsibleUserDto = {
@@ -16569,7 +16358,7 @@ export type CreateRouteResource = {
   resourceId?: string;
 };
 export type CreateRouteOperationAction = {
-  formId?: string | null;
+  productAnalyticalRawDataId?: string | null;
   action?: OperationAction;
 };
 export type CreateRouteResponsibleUser = {
@@ -16621,28 +16410,12 @@ export type EquipmentDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type Stage = 0 | 1 | 2;
 export type CreateProductAnalyticalRawDataRequest = {
-  stpNumber: string;
   specNumber: string;
   stage: Stage;
   description?: string | null;
   stpId: string;
   formId: string;
-};
-export type ProductAnalyticalRawDataDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  specNumber?: string | null;
-  stage?: Stage;
-  description?: string | null;
-  stpId?: string;
-  formId?: string;
-  formName?: string | null;
-  productName?: string | null;
 };
 export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: ProductAnalyticalRawDataDto[] | null;
@@ -16887,6 +16660,7 @@ export type BatchManufacturingRecordDto = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  status?: BatchManufacturingStatus;
 };
 export type BatchManufacturingRecordDtoRead = {
   id?: string;
@@ -16898,6 +16672,7 @@ export type BatchManufacturingRecordDtoRead = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  status?: BatchManufacturingStatus;
   expectedQuantity?: number;
 };
 export type BatchManufacturingRecordDtoIEnumerablePaginateable = {
@@ -17325,6 +17100,9 @@ export type CreateProductSamplingRequest = {
   containersSampled: number;
 };
 export type ProductSamplingDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   analyticalTestRequestId?: string;
   sampleQuantity?: string | null;
   containersSampled?: number;
@@ -17334,15 +17112,6 @@ export type ProductSamplingDto = {
 export type CreateProductStandardTestProcedureRequest = {
   stpNumber: string;
   productId: string;
-};
-export type ProductStandardTestProcedureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  productId?: string;
-  productName?: string | null;
 };
 export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
   data?: ProductStandardTestProcedureDto[] | null;
@@ -18351,6 +18120,8 @@ export const {
   useLazyGetApiV1MaterialArdByIdQuery,
   usePutApiV1MaterialArdByIdMutation,
   useDeleteApiV1MaterialArdByIdMutation,
+  useGetApiV1MaterialArdMaterialByMaterialIdQuery,
+  useLazyGetApiV1MaterialArdMaterialByMaterialIdQuery,
   useGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
   useLazyGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
   usePostApiV1MaterialSamplingsMutation,
@@ -18512,6 +18283,10 @@ export const {
   useLazyGetApiV1ProductArdByIdQuery,
   usePutApiV1ProductArdByIdMutation,
   useDeleteApiV1ProductArdByIdMutation,
+  useGetApiV1ProductArdProductByProductIdQuery,
+  useLazyGetApiV1ProductArdProductByProductIdQuery,
+  useGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,

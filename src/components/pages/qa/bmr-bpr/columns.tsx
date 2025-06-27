@@ -62,12 +62,12 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
   {
     accessorKey: "productName",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original.productName}</div>,
+    cell: ({ row }) => <div>{row.original.product?.name}</div>,
   },
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batchNumber}</div>,
+    cell: ({ row }) => <div>{row.original.batchManufacturingRecord?.code}</div>,
   },
   {
     accessorKey: "manufacturingDate",
