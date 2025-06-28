@@ -104,10 +104,8 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
         });
         // Upload the files
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.MaterialStandardTestProcedure,
           modelId: id,
-          module: AuditModules.settings.name,
-          subModule: AuditModules.settings.standardTestProcedure,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
