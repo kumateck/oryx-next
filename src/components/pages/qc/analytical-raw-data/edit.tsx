@@ -45,13 +45,13 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   //   label: details.formId?.label,
   // };
   const defaultFormId = {
-    value: details.formId as string,
-    label: details.formName as string,
+    value: details.form?.id as string,
+    label: details.form?.name as string,
   };
 
   const defaultStpId = {
-    value: details.stpId as string,
-    label: details.stpNumber as string,
+    value: details.materialStandardTestProcedure?.id as string,
+    label: details.materialStandardTestProcedure?.stpNumber as string,
   };
   const dispatch = useDispatch();
   const {
@@ -84,19 +84,24 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   useEffect(() => {
     if (isOpen && details) {
       // Compute stpId option
-      const stpOption = materialData.find((stp) => stp.id === details.stpId);
+      const stpOption = materialData.find(
+        (stp) => stp.id === details.materialStandardTestProcedure?.id,
+      );
       const defaultStpId = {
-        value: details.stpId,
-        label: stpOption?.stpNumber || details.stpNumber || "",
+        value: details.materialStandardTestProcedure?.id,
+        label:
+          stpOption?.stpNumber ||
+          details.materialStandardTestProcedure?.stpNumber ||
+          "",
       };
 
       // Compute formId option
       const formOption = formOptionsData.find(
-        (form) => form.id === details.formId,
+        (form) => form.id === details.form?.id,
       );
       const defaultFormId = {
-        value: details.formId,
-        label: formOption?.name || details.formName || "",
+        value: details.form?.id as string,
+        label: formOption?.name || details.form?.name || "",
       };
 
       reset({

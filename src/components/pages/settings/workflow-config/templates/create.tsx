@@ -27,6 +27,7 @@ const CreateTemplate = () => {
     {
       id: `section-${Date.now()}`,
       name: "",
+      description: "",
       questions: [],
     },
   ]);
@@ -68,9 +69,11 @@ const CreateTemplate = () => {
         name: data.name,
         sections: validSections.map((section) => ({
           name: section.name,
+          description: section.description,
           fields: section.questions.map((item) => ({
             questionId: item.id,
             required: item.required || false,
+            description: item.description,
           })),
         })),
       },

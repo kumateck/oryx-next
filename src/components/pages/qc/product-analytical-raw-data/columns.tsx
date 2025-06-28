@@ -63,12 +63,13 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
             {
               description: details?.description,
               formId: {
-                value: details.formId as string,
-                label: details.formId as string,
+                value: details.form?.id as string,
+                label: details.form?.name as string,
               },
               stpId: {
-                label: details.stpNumber as string,
-                value: details.stpId as string,
+                label: details.productStandardTestProcedure
+                  ?.stpNumber as string,
+                value: details.productStandardTestProcedure?.id as string,
               },
               specNumber: details.specNumber as string,
             } as ProductArdSchemaType
@@ -80,10 +81,10 @@ export function DataTableRowActions<TData extends ProductAnalyticalRawDataDto>({
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
-          if (!details.stpId) return;
+          if (!details.productStandardTestProcedure?.id) return;
           try {
             await deleteProductARDMutation({
-              id: details.stpId,
+              id: details.productStandardTestProcedure?.id as string,
               module: AuditModules.qualityAssurance.name,
               subModule: AuditModules.qualityAssurance.analyticalRawData,
             }).unwrap();
@@ -108,7 +109,9 @@ export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
   {
     accessorKey: "stpNumber",
     header: "STP Number",
-    cell: ({ row }) => <div>{row.original?.stpNumber}</div>,
+    cell: ({ row }) => (
+      <div>{row.original?.productStandardTestProcedure?.stpNumber}</div>
+    ),
   },
   {
     accessorKey: "stage",

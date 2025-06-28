@@ -157,6 +157,18 @@ export enum QuestionType {
   Formular = 10,
 }
 
+export enum OperationAction {
+  BmrAndBprRequisition = 0,
+  StockRequisition = 1,
+  FullReturn = 2,
+  AdditionalStockRequest = 3,
+  FinalPackingOrPartialReturn = 4,
+  FinishedGoodsTransferNote = 5,
+  Dispatch = 6,
+  Atr = 7,
+  Ard = 8,
+}
+
 export enum ExtraPackingStatus {
   Pending = 0,
   Approved = 1,

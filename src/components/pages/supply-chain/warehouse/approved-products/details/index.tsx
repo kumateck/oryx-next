@@ -58,10 +58,11 @@ function Page() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finishedProductId]);
-  const generalData = data?.finishedProducts || [];
+  // const generalData = data?. || [];
+  const generalData = [];
   const bincardData = bincardResult?.data || [];
   console.log("Bincard Data:", bincardData);
-  console.log("General Data:", generalData);
+  // console.log("General Data:", generalData);
   return (
     <ScrollablePageWrapper className="flex flex-col">
       <div

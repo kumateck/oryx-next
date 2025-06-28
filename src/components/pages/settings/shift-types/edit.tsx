@@ -15,7 +15,7 @@ import {
 import {
   CreateShiftTypeRequest,
   useLazyGetApiV1ShiftTypeQuery,
-  usePutApiV1ShiftTypeMutation,
+  usePutApiV1ShiftTypeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
@@ -34,7 +34,7 @@ interface Props {
 }
 const EditShiftTypes = ({ isOpen, onClose, details, id }: Props) => {
   const [loadShiftTypes] = useLazyGetApiV1ShiftTypeQuery();
-  const [updateShiftType, { isLoading }] = usePutApiV1ShiftTypeMutation();
+  const [updateShiftType, { isLoading }] = usePutApiV1ShiftTypeByIdMutation();
 
   const {
     register,

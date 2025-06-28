@@ -2091,10 +2091,10 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          materialKind: queryArg.materialKind,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
-          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -2131,6 +2131,30 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material-ard/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialArdMaterialByMaterialId: build.query<
+      GetApiV1MaterialArdMaterialByMaterialIdApiResponse,
+      GetApiV1MaterialArdMaterialByMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/material/${queryArg.materialId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialArdStartTestByMaterialBatchId: build.query<
+      GetApiV1MaterialArdStartTestByMaterialBatchIdApiResponse,
+      GetApiV1MaterialArdStartTestByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/start-test/${queryArg.materialBatchId}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -2188,10 +2212,10 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          materialKind: queryArg.materialKind,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
-          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -3642,6 +3666,30 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductArdProductByProductId: build.query<
+      GetApiV1ProductArdProductByProductIdApiResponse,
+      GetApiV1ProductArdProductByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-ard/product/${queryArg.productId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductArdStartTestByBatchManufacturingRecordId: build.query<
+      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
+      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ProductionSchedule: build.mutation<
       PostApiV1ProductionScheduleApiResponse,
       PostApiV1ProductionScheduleApiArg
@@ -4015,6 +4063,82 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/production-schedule/finished-goods-transfer-note`,
         method: "POST",
+        body: queryArg.createFinishedGoodsTransferNoteRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNote: build.query<
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/finished-goods-transfer-note`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
+      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProduct:
+      build.query<
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiResponse,
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.productId}/product`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+      }),
+    putApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApprove:
+      build.mutation<
+        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse,
+        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}/approve`,
+          method: "PUT",
+          body: queryArg.approveTransferNoteRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
+    putApiV1ProductionScheduleById: build.mutation<
+      PutApiV1ProductionScheduleByIdApiResponse,
+      PutApiV1ProductionScheduleByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/${queryArg.id}`,
+        method: "PUT",
         body: queryArg.createFinishedGoodsTransferNoteRequest,
         headers: {
           Module: queryArg["module"],
@@ -5195,26 +5319,26 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    putApiV1ShiftType: build.mutation<
-      PutApiV1ShiftTypeApiResponse,
-      PutApiV1ShiftTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type`,
-        method: "PUT",
-        body: queryArg.createShiftTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
     getApiV1ShiftTypeById: build.query<
       GetApiV1ShiftTypeByIdApiResponse,
       GetApiV1ShiftTypeByIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/shift-type/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ShiftTypeById: build.mutation<
+      PutApiV1ShiftTypeByIdApiResponse,
+      PutApiV1ShiftTypeByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-type/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createShiftTypeRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -7678,10 +7802,10 @@ export type PostApiV1MaterialArdApiArg = {
 export type GetApiV1MaterialArdApiResponse =
   /** status 200 OK */ MaterialAnalyticalRawDataDtoIEnumerablePaginateable;
 export type GetApiV1MaterialArdApiArg = {
+  materialKind?: MaterialKind;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
-  materialKind?: number;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -7709,6 +7833,23 @@ export type PutApiV1MaterialArdByIdApiArg = {
 export type DeleteApiV1MaterialArdByIdApiResponse = unknown;
 export type DeleteApiV1MaterialArdByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialArdMaterialByMaterialIdApiResponse =
+  /** status 200 OK */ MaterialAnalyticalRawDataDto[];
+export type GetApiV1MaterialArdMaterialByMaterialIdApiArg = {
+  materialId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialArdStartTestByMaterialBatchIdApiResponse = unknown;
+export type GetApiV1MaterialArdStartTestByMaterialBatchIdApiArg = {
+  materialBatchId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -7742,10 +7883,10 @@ export type PostApiV1MaterialStpsApiArg = {
 export type GetApiV1MaterialStpsApiResponse =
   /** status 200 OK */ MaterialStandardTestProcedureDtoIEnumerablePaginateable;
 export type GetApiV1MaterialStpsApiArg = {
+  materialKind?: MaterialKind;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
-  materialKind?: number;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8833,6 +8974,24 @@ export type DeleteApiV1ProductArdByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ProductArdProductByProductIdApiResponse =
+  /** status 200 OK */ ProductAnalyticalRawDataDto[];
+export type GetApiV1ProductArdProductByProductIdApiArg = {
+  productId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse =
+  unknown;
+export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg = {
+  batchManufacturingRecordId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ProductionScheduleApiResponse =
   /** status 201 Created */ string;
 export type PostApiV1ProductionScheduleApiArg = {
@@ -9128,6 +9287,59 @@ export type GetApiV1ProductionScheduleManufacturingByProductionIdAndProductionSc
 export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse =
   /** status 201 Created */ string;
 export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createFinishedGoodsTransferNoteRequest: CreateFinishedGoodsTransferNoteRequest;
+};
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiArg =
+  {
+    productId: string;
+    page?: number;
+    pageSize?: number;
+    searchQuery?: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
+export type PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse =
+  unknown;
+export type PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg =
+  {
+    id: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+    approveTransferNoteRequest: ApproveTransferNoteRequest;
+  };
+export type PutApiV1ProductionScheduleByIdApiResponse = unknown;
+export type PutApiV1ProductionScheduleByIdApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10012,16 +10224,6 @@ export type GetApiV1ShiftTypeApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ShiftTypeApiResponse =
-  /** status 204 No Content */ ShiftTypeDto;
-export type PutApiV1ShiftTypeApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-  createShiftTypeRequest: CreateShiftTypeRequest;
-};
 export type GetApiV1ShiftTypeByIdApiResponse =
   /** status 200 OK */ ShiftTypeDto;
 export type GetApiV1ShiftTypeByIdApiArg = {
@@ -10030,6 +10232,16 @@ export type GetApiV1ShiftTypeByIdApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
+};
+export type PutApiV1ShiftTypeByIdApiResponse =
+  /** status 204 No Content */ ShiftTypeDto;
+export type PutApiV1ShiftTypeByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createShiftTypeRequest: CreateShiftTypeRequest;
 };
 export type DeleteApiV1ShiftTypeByIdApiResponse = unknown;
 export type DeleteApiV1ShiftTypeByIdApiArg = {
@@ -10748,6 +10960,14 @@ export type UserDto = {
   signature?: string | null;
   department?: CollectionItemDto;
 };
+export type DepartmentType = 0 | 1;
+export type RoleDto = {
+  id?: string;
+  name?: string | null;
+  type?: DepartmentType;
+  displayName?: string | null;
+  isManager?: boolean;
+};
 export type AlertDto = {
   id?: string;
   createdBy?: UserDto;
@@ -10756,6 +10976,8 @@ export type AlertDto = {
   notificationType?: NotificationType;
   alertTypes?: AlertType[] | null;
   timeFrame?: string;
+  roles?: RoleDto[] | null;
+  users?: UserDto[] | null;
   isDisabled?: boolean;
 };
 export type AlertDtoIEnumerablePaginateable = {
@@ -10769,18 +10991,16 @@ export type AlertDtoIEnumerablePaginateable = {
 };
 export type TestStage = 0 | 1 | 2;
 export type State = 0 | 1 | 2 | 3 | 4 | 5;
-export type Status = 0 | 1 | 2 | 3;
+export type Status = 0 | 1 | 2;
 export type CreateAnalyticalTestRequest = {
-  batchNumber: string;
-  productName: string;
-  productSchedule: string;
+  batchManufacturingRecordId?: string;
+  productId?: string;
+  productionScheduleId?: string;
   sampledQuantity: string;
   manufacturingDate: string;
   expiryDate: string;
   releasedAt: string;
   releaseDate: string;
-  qcManagerSignature: string;
-  qaManagerSignature: string;
   stage: TestStage;
   state: State;
   status: Status;
@@ -10789,19 +11009,17 @@ export type AnalyticalTestRequestDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  batchNumber?: string | null;
-  productName?: string | null;
-  productSchedule?: string | null;
+  batchManufacturingRecord?: CollectionItemDto;
+  product?: CollectionItemDto;
+  productionSchedule?: CollectionItemDto;
   manufacturingDate?: string;
   expiryDate?: string;
   releasedAt?: string | null;
   filled?: string | null;
   releaseDate?: string;
-  qcManagerSignature?: string | null;
   sampledQuantity?: string | null;
-  qaManagerSignature?: string | null;
   stage?: TestStage;
-  state?: State;
+  state?: CollectionItemDto;
   status?: Status;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
@@ -10847,7 +11065,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type DepartmentType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
 export type WarehouseDto = {
   id?: string;
@@ -11360,7 +11577,7 @@ export type MinimalEmployeeInfoDto = {
 export type AssignEmployeeDto = {
   designationId: string;
   departmentId: string;
-  staffId?: string | null;
+  staffNumber?: string | null;
   startDate?: string;
   reportingManagerId: string;
 };
@@ -11368,6 +11585,7 @@ export type CreateFormFieldRequest = {
   questionId?: string;
   required?: boolean;
   rank?: number;
+  description?: string | null;
   assigneeId?: string | null;
   reviewerId?: string | null;
 };
@@ -11416,7 +11634,7 @@ export type FormFieldDto = {
   formSection?: CollectionItemDto;
   question?: QuestionDto;
   required?: boolean;
-  response?: string | null;
+  description?: string | null;
   rank?: number;
   assignee?: CollectionItemDto;
   reviewer?: CollectionItemDto;
@@ -11477,6 +11695,8 @@ export type CreateFormResponseRequest = {
 };
 export type CreateResponseRequest = {
   formId?: string;
+  batchManufacturingRecordId?: string | null;
+  materialBatchId?: string | null;
   formResponses?: CreateFormResponseRequest[] | null;
 };
 export type CreateQuestionOptionsRequest = {
@@ -11637,7 +11857,6 @@ export type CreateLeaveRecallRequest = {
   recallReason?: string | null;
 };
 export type ReapplyLeaveRequest = {
-  leaveRequestId?: string;
   newStartDate?: string;
   newEndDate?: string;
   justification?: string | null;
@@ -12211,24 +12430,30 @@ export type MaterialWithWarehouseStockDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateMaterialAnalyticalRawDataRequest = {
-  stpNumber: string;
   specNumber: string;
   description?: string | null;
   stpId: string;
   formId: string;
+  materialBatchId?: string | null;
+};
+export type MaterialStandardTestProcedureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  material?: CollectionItemDto;
+  description?: string | null;
 };
 export type MaterialAnalyticalRawDataDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
   specNumber?: string | null;
   description?: string | null;
-  materialName?: string | null;
-  stpId?: string;
-  formId?: string;
-  formName?: string | null;
+  materialStandardTestProcedure?: MaterialStandardTestProcedureDto;
+  form?: CollectionItemDto;
 };
 export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: MaterialAnalyticalRawDataDto[] | null;
@@ -12279,16 +12504,6 @@ export type MaterialSamplingDtoRead = {
 export type CreateMaterialStandardTestProcedureRequest = {
   stpNumber: string;
   materialId: string;
-  description?: string | null;
-};
-export type MaterialStandardTestProcedureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  materialId?: string;
-  materialName?: string | null;
   description?: string | null;
 };
 export type MaterialStandardTestProcedureDtoIEnumerablePaginateable = {
@@ -12743,7 +12958,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -12810,7 +13025,7 @@ export type FormField = {
   questionId?: string;
   question?: Question;
   required?: boolean;
-  response?: string | null;
+  description?: string | null;
   rank?: number;
   assigneeId?: string | null;
   assignee?: User;
@@ -12834,6 +13049,380 @@ export type FormSection = {
   description?: string | null;
   fields?: FormField[] | null;
 };
+export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
+export type BatchSize = 0 | 1;
+export type ProductionScheduleProduct = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  batchNumber?: string | null;
+  batchSize?: BatchSize;
+  quantity?: number;
+  cancelled?: boolean;
+  reasonForCancellation?: string | null;
+};
+export type ProductionScheduleProductRead = {
+  id?: string;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  batchNumber?: string | null;
+  batchSize?: BatchSize;
+  quantity?: number;
+  cancelled?: boolean;
+  reasonForCancellation?: string | null;
+};
+export type ProductionSchedule = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  scheduledStartTime?: string;
+  scheduledEndTime?: string;
+  status?: ProductionStatus;
+  remarks?: string | null;
+  products?: ProductionScheduleProduct[] | null;
+};
+export type ProductionActivityLog = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  message?: string | null;
+  userId?: string | null;
+  user?: User;
+  timestamp?: string;
+};
+export type ProductionActivity = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLog[] | null;
+};
+export type ProductionActivityRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  code?: string | null;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productId?: string;
+  product?: Product;
+  steps?: ProductionActivityStep[] | null;
+  status?: ProductionStatus;
+  startedAt?: string;
+  completedAt?: string | null;
+  activityLogs?: ProductionActivityLog[] | null;
+};
+export type Resource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  type?: string | null;
+  isAvailable?: boolean;
+};
+export type ProductionActivityStepResource = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  resourceId?: string;
+  resource?: Resource;
+};
+export type WorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type ProductionActivityStepWorkCenter = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  workCenterId?: string;
+  workCenter?: WorkCenter;
+};
+export type Stage = 0 | 1 | 2;
+export type ProductStandardTestProcedure = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  stpNumber?: string | null;
+  productId?: string;
+  product?: Product;
+};
+export type ProductStandardTestProcedureRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  stpNumber?: string | null;
+  productId?: string;
+  product?: Product;
+};
+export type ProductAnalyticalRawData = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  specNumber?: string | null;
+  description?: string | null;
+  stage?: Stage;
+  stpId?: string;
+  productStandardTestProcedure?: ProductStandardTestProcedure;
+  formId?: string;
+  form?: Form;
+};
+export type ProductionActivityStepUser = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  userId?: string;
+  user?: User;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
+};
+export type ProductionActivityStep = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productionActivityId?: string;
+  productionActivity?: ProductionActivity;
+  operationId?: string;
+  operation?: Operation;
+  workflowId?: string | null;
+  workFlow?: Form;
+  order?: number;
+  resources?: ProductionActivityStepResource[] | null;
+  workCenters?: ProductionActivityStepWorkCenter[] | null;
+  responsibleUsers?: ProductionActivityStepUser[] | null;
+  status?: ProductionStatus;
+  startedAt?: string | null;
+  completedAt?: string | null;
+};
+export type BatchManufacturingStatus = 0 | 1 | 2 | 3;
+export type BatchManufacturingRecord = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  issuedById?: string | null;
+  issuedBy?: User;
+};
+export type BatchManufacturingRecordRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  productId?: string;
+  product?: Product;
+  productionScheduleId?: string;
+  productionSchedule?: ProductionSchedule;
+  productionActivityStepId?: string;
+  productionActivityStep?: ProductionActivityStep;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  issuedById?: string | null;
+  issuedBy?: UserRead;
+};
+export type Role = {
+  id?: string;
+  name?: string | null;
+  normalizedName?: string | null;
+  concurrencyStamp?: string | null;
+  displayName?: string | null;
+  createdAt?: string;
+  createdById?: string | null;
+  updatedAt?: string | null;
+  lastUpdatedById?: string | null;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  type?: DepartmentType;
+  isManager?: boolean;
+};
+export type ApprovalStage = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  id?: string;
+  approvalId?: string;
+  approval?: Approval;
+  order?: number;
+  required?: boolean;
+};
+export type Approval = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  itemType?: string | null;
+  escalationDuration?: string;
+  approvalStages?: ApprovalStage[] | null;
+};
+export type ResponseApproval = {
+  userId?: string | null;
+  user?: User;
+  roleId?: string | null;
+  role?: Role;
+  required?: boolean;
+  order?: number;
+  stageStartTime?: string | null;
+  status?: ApprovalStatus;
+  approvalTime?: string | null;
+  approvedById?: string | null;
+  approvedBy?: User;
+  createdAt?: string;
+  activatedAt?: string | null;
+  comments?: string | null;
+  id?: string;
+  responseId?: string;
+  response?: Response;
+  approvalId?: string;
+  approval?: Approval;
+};
 export type Response = {
   id?: string;
   createdAt?: string;
@@ -12847,7 +13436,34 @@ export type Response = {
   lastDeletedBy?: User;
   formId?: string;
   form?: Form;
+  batchManufacturingRecordId?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecord;
+  materialBatchId?: string | null;
+  materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
+  approvals?: ResponseApproval[] | null;
+  approved?: boolean;
+};
+export type ResponseRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  formId?: string;
+  form?: Form;
+  batchManufacturingRecordId?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordRead;
+  materialBatchId?: string | null;
+  materialBatch?: MaterialBatch;
+  formResponses?: FormResponse[] | null;
+  approvals?: ResponseApproval[] | null;
+  approved?: boolean;
 };
 export type FormResponse = {
   id?: string;
@@ -12897,21 +13513,6 @@ export type Form = {
   assignees?: FormAssignee[] | null;
   reviewers?: FormReviewer[] | null;
 };
-export type Resource = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  type?: string | null;
-  isAvailable?: boolean;
-};
 export type RouteResource = {
   id?: string;
   createdAt?: string;
@@ -12928,12 +13529,6 @@ export type RouteResource = {
   resourceId?: string;
   resource?: Resource;
 };
-export type RouteOperationAction = {
-  id?: string;
-  formId?: string | null;
-  form?: Form;
-  action?: OperationAction;
-};
 export type RouteResponsibleUser = {
   id?: string;
   createdAt?: string;
@@ -12949,21 +13544,9 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
-  actions?: RouteOperationAction[] | null;
-};
-export type Role = {
-  id?: string;
-  name?: string | null;
-  normalizedName?: string | null;
-  concurrencyStamp?: string | null;
-  displayName?: string | null;
-  createdAt?: string;
-  createdById?: string | null;
-  updatedAt?: string | null;
-  lastUpdatedById?: string | null;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  type?: DepartmentType;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
 };
 export type RouteResponsibleRole = {
   id?: string;
@@ -12980,21 +13563,9 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
-  actions?: RouteOperationAction[] | null;
-};
-export type WorkCenter = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  description?: string | null;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
 };
 export type RouteWorkCenter = {
   id?: string;
@@ -13085,7 +13656,7 @@ export type Product = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13128,7 +13699,7 @@ export type ProductRead = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
-  categoryId?: string;
+  categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
   basePackingQuantity?: number;
@@ -13145,322 +13716,6 @@ export type ProductRead = {
   billOfMaterials?: ProductBillOfMaterialRead[] | null;
   packages?: ProductPackageRead[] | null;
   routes?: RouteRead[] | null;
-};
-export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
-export type BatchSize = 0 | 1;
-export type ProductionScheduleProduct = {
-  id?: string;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: Product;
-  batchNumber?: string | null;
-  batchSize?: BatchSize;
-  quantity?: number;
-  cancelled?: boolean;
-  reasonForCancellation?: string | null;
-};
-export type ProductionScheduleProductRead = {
-  id?: string;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: ProductRead;
-  batchNumber?: string | null;
-  batchSize?: BatchSize;
-  quantity?: number;
-  cancelled?: boolean;
-  reasonForCancellation?: string | null;
-};
-export type ProductionSchedule = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
-  status?: ProductionStatus;
-  remarks?: string | null;
-  products?: ProductionScheduleProduct[] | null;
-};
-export type ProductionScheduleRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  code?: string | null;
-  scheduledStartTime?: string;
-  scheduledEndTime?: string;
-  status?: ProductionStatus;
-  remarks?: string | null;
-  products?: ProductionScheduleProductRead[] | null;
-};
-export type ProductionActivityLog = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  message?: string | null;
-  userId?: string | null;
-  user?: User;
-  timestamp?: string;
-};
-export type ProductionActivityLogRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  message?: string | null;
-  userId?: string | null;
-  user?: UserRead;
-  timestamp?: string;
-};
-export type ProductionActivity = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productId?: string;
-  product?: Product;
-  steps?: ProductionActivityStep[] | null;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  activityLogs?: ProductionActivityLog[] | null;
-};
-export type ProductionActivityRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  code?: string | null;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
-  productId?: string;
-  product?: ProductRead;
-  steps?: ProductionActivityStep[] | null;
-  status?: ProductionStatus;
-  startedAt?: string;
-  completedAt?: string | null;
-  activityLogs?: ProductionActivityLogRead[] | null;
-};
-export type ProductionActivityStepResource = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  resourceId?: string;
-  resource?: Resource;
-};
-export type ProductionActivityStepResourceRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  resourceId?: string;
-  resource?: Resource;
-};
-export type ProductionActivityStepWorkCenter = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  workCenterId?: string;
-  workCenter?: WorkCenter;
-};
-export type ProductionActivityStepWorkCenterRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  workCenterId?: string;
-  workCenter?: WorkCenter;
-};
-export type ProductionActivityStepUser = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  userId?: string;
-  user?: User;
-  actions?: RouteOperationAction[] | null;
-};
-export type ProductionActivityStepUserRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  userId?: string;
-  user?: UserRead;
-  actions?: RouteOperationAction[] | null;
-};
-export type ProductionActivityStep = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivity;
-  operationId?: string;
-  operation?: Operation;
-  workflowId?: string | null;
-  workFlow?: Form;
-  order?: number;
-  resources?: ProductionActivityStepResource[] | null;
-  workCenters?: ProductionActivityStepWorkCenter[] | null;
-  responsibleUsers?: ProductionActivityStepUser[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
-};
-export type ProductionActivityStepRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productionActivityId?: string;
-  productionActivity?: ProductionActivityRead;
-  operationId?: string;
-  operation?: Operation;
-  workflowId?: string | null;
-  workFlow?: Form;
-  order?: number;
-  resources?: ProductionActivityStepResourceRead[] | null;
-  workCenters?: ProductionActivityStepWorkCenterRead[] | null;
-  responsibleUsers?: ProductionActivityStepUserRead[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
-};
-export type ApprovalStage = {
-  userId?: string | null;
-  user?: User;
-  roleId?: string | null;
-  role?: Role;
-  id?: string;
-  approvalId?: string;
-  approval?: Approval;
-  order?: number;
-  required?: boolean;
-};
-export type Approval = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  itemType?: string | null;
-  escalationDuration?: string;
-  approvalStages?: ApprovalStage[] | null;
 };
 export type RequisitionApproval = {
   userId?: string | null;
@@ -13557,9 +13812,9 @@ export type RequisitionRead = {
   productId?: string | null;
   product?: ProductRead;
   productionScheduleId?: string | null;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
   approvals?: RequisitionApprovalRead[] | null;
   items?: RequisitionItem[] | null;
   approved?: boolean;
@@ -13606,54 +13861,6 @@ export type RequisitionItemRead = {
   quantityReceived?: number;
   status?: RequestStatus;
 };
-export type BatchManufacturingRecord = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  productId?: string;
-  product?: Product;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionSchedule;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStep;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  issuedById?: string | null;
-  issuedBy?: User;
-};
-export type BatchManufacturingRecordRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  productId?: string;
-  product?: ProductRead;
-  productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
-  productionActivityStepId?: string;
-  productionActivityStep?: ProductionActivityStepRead;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  issuedById?: string | null;
-  issuedBy?: UserRead;
-};
 export type PackageStyle = {
   id?: string;
   createdAt?: string;
@@ -13679,6 +13886,7 @@ export type FinishedGoodsTransferNote = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -13688,6 +13896,7 @@ export type FinishedGoodsTransferNote = {
   packageStyle?: PackageStyle;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
+  isApproved?: boolean;
   totalQuantity?: number;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
@@ -13706,6 +13915,7 @@ export type FinishedGoodsTransferNoteRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: UserRead;
+  transferNoteNumber?: string | null;
   fromWarehouseId?: string | null;
   fromWarehouse?: Warehouse;
   toWarehouseId?: string | null;
@@ -13715,12 +13925,13 @@ export type FinishedGoodsTransferNoteRead = {
   packageStyle?: PackageStyle;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
+  isApproved?: boolean;
   totalQuantity?: number;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
   batchManufacturingRecord?: BatchManufacturingRecordRead;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
 };
 export type DistributedFinishedProductStatus = 0 | 1;
 export type DistributedFinishedProduct = {
@@ -14630,9 +14841,9 @@ export type StockTransferRead = {
   productId?: string | null;
   product?: ProductRead;
   productionScheduleId?: string | null;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productionActivityStepId?: string | null;
-  productionActivityStep?: ProductionActivityStepRead;
+  productionActivityStep?: ProductionActivityStep;
   sources?: StockTransferSource[] | null;
 };
 export type StockTransferSource = {
@@ -14850,7 +15061,7 @@ export type MaterialBatchReservedQuantityRead = {
   warehouseId?: string;
   warehouse?: Warehouse;
   productionScheduleId?: string;
-  productionSchedule?: ProductionScheduleRead;
+  productionSchedule?: ProductionSchedule;
   productId?: string;
   product?: ProductRead;
   uoMId?: string | null;
@@ -15952,15 +16163,6 @@ export type ProductListDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type FinishedProductDto = {
-  name?: string | null;
-  product?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  standardCost?: number;
-  sellingPrice?: number;
-  dosageForm?: string | null;
-  strength?: string | null;
-};
 export type BillOfMaterialItemDto = {
   id?: string;
   material?: CollectionItemDto;
@@ -15998,17 +16200,34 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
-export type RouteOperationActionDto = {
-  form?: CollectionItemDto;
-  action?: OperationAction;
+export type ProductStandardTestProcedureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  product?: CollectionItemDto;
+};
+export type ProductAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  specNumber?: string | null;
+  stage?: Stage;
+  description?: string | null;
+  form?: FormDto;
+  productStandardTestProcedure?: ProductStandardTestProcedureDto;
 };
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -16064,7 +16283,6 @@ export type ProductDto = {
   equipment?: EquipmentDto;
   department?: DepartmentDto;
   createdAt?: string;
-  finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -16097,7 +16315,6 @@ export type ProductDtoRead = {
   equipment?: EquipmentDto;
   department?: DepartmentDtoRead;
   createdAt?: string;
-  finishedProducts?: FinishedProductDto[] | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -16138,17 +16355,15 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
-export type CreateRouteOperationAction = {
-  formId?: string | null;
-  action?: OperationAction;
-};
 export type CreateRouteResponsibleUser = {
   userId?: string;
-  actions?: CreateRouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  action?: OperationAction;
 };
 export type CreateRouteResponsibleRole = {
   roleId?: string;
-  actions?: CreateRouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  action?: OperationAction;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16191,28 +16406,12 @@ export type EquipmentDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type Stage = 0 | 1 | 2;
 export type CreateProductAnalyticalRawDataRequest = {
-  stpNumber: string;
   specNumber: string;
   stage: Stage;
   description?: string | null;
   stpId: string;
   formId: string;
-};
-export type ProductAnalyticalRawDataDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  specNumber?: string | null;
-  stage?: Stage;
-  description?: string | null;
-  stpId?: string;
-  formId?: string;
-  formName?: string | null;
-  productName?: string | null;
 };
 export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: ProductAnalyticalRawDataDto[] | null;
@@ -16348,7 +16547,8 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type ProductionActivityStepDto = {
   id?: string;
@@ -16452,22 +16652,24 @@ export type BatchManufacturingRecordDto = {
   createdBy?: UserDto;
   createdAt?: string;
   productionSchedule?: CollectionItemDto;
-  product?: ProductDto;
+  product?: ProductListDto;
   batchNumber?: string | null;
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  status?: BatchManufacturingStatus;
 };
 export type BatchManufacturingRecordDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   productionSchedule?: CollectionItemDto;
-  product?: ProductDtoRead;
+  product?: ProductListDtoRead;
   batchNumber?: string | null;
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  status?: BatchManufacturingStatus;
   expectedQuantity?: number;
 };
 export type BatchManufacturingRecordDtoIEnumerablePaginateable = {
@@ -16489,6 +16691,7 @@ export type BatchManufacturingRecordDtoIEnumerablePaginateableRead = {
   stopPageIndex?: number;
 };
 export type CreateFinishedGoodsTransferNoteRequest = {
+  transferNoteNumber?: string | null;
   batchManufacturingRecordId?: string;
   productionActivityStepId?: string | null;
   quantityPerPack?: number;
@@ -16496,6 +16699,57 @@ export type CreateFinishedGoodsTransferNoteRequest = {
   totalQuantity?: number;
   uoMId?: string | null;
   qarNumber?: string | null;
+};
+export type FinishedGoodsTransferNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
+  productionActivityStep?: ProductionActivityStepDto;
+};
+export type FinishedGoodsTransferNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  productionActivityStep?: ProductionActivityStepDto;
+};
+export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
+  data?: FinishedGoodsTransferNoteDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead = {
+  data?: FinishedGoodsTransferNoteDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ApproveTransferNoteRequest = {
+  quantityReceived?: number;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -16731,12 +16985,6 @@ export type FinalPackingDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type RoleDto = {
-  id?: string;
-  name?: string | null;
-  type?: DepartmentType;
-  displayName?: string | null;
-};
 export type RequisitionApprovalDto = {
   user?: CollectionItemDto;
   role?: RoleDto;
@@ -16849,6 +17097,9 @@ export type CreateProductSamplingRequest = {
   containersSampled: number;
 };
 export type ProductSamplingDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
   analyticalTestRequestId?: string;
   sampleQuantity?: string | null;
   containersSampled?: number;
@@ -16858,15 +17109,6 @@ export type ProductSamplingDto = {
 export type CreateProductStandardTestProcedureRequest = {
   stpNumber: string;
   productId: string;
-};
-export type ProductStandardTestProcedureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  productId?: string;
-  productName?: string | null;
 };
 export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
   data?: ProductStandardTestProcedureDto[] | null;
@@ -17399,32 +17641,6 @@ export type WarehouseLocationShelfDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type FinishedGoodsTransferNoteDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDto;
-};
-export type FinishedGoodsTransferNoteDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
-};
 export type DistributedFinishedProductDto = {
   id?: string;
   product?: ProductDto;
@@ -17901,6 +18117,10 @@ export const {
   useLazyGetApiV1MaterialArdByIdQuery,
   usePutApiV1MaterialArdByIdMutation,
   useDeleteApiV1MaterialArdByIdMutation,
+  useGetApiV1MaterialArdMaterialByMaterialIdQuery,
+  useLazyGetApiV1MaterialArdMaterialByMaterialIdQuery,
+  useGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
+  useLazyGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
   usePostApiV1MaterialSamplingsMutation,
   useGetApiV1MaterialSamplingsByIdQuery,
   useLazyGetApiV1MaterialSamplingsByIdQuery,
@@ -18060,6 +18280,10 @@ export const {
   useLazyGetApiV1ProductArdByIdQuery,
   usePutApiV1ProductArdByIdMutation,
   useDeleteApiV1ProductArdByIdMutation,
+  useGetApiV1ProductArdProductByProductIdQuery,
+  useLazyGetApiV1ProductArdProductByProductIdQuery,
+  useGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -18107,6 +18331,14 @@ export const {
   useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdQuery,
+  useGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery,
+  useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery,
+  usePutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveMutation,
+  usePutApiV1ProductionScheduleByIdMutation,
   useGetApiV1ProductionScheduleManufacturingByIdQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
@@ -18230,9 +18462,9 @@ export const {
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
   useLazyGetApiV1ShiftTypeQuery,
-  usePutApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeByIdQuery,
   useLazyGetApiV1ShiftTypeByIdQuery,
+  usePutApiV1ShiftTypeByIdMutation,
   useDeleteApiV1ShiftTypeByIdMutation,
   usePostApiV1StaffRequisitionsMutation,
   useGetApiV1StaffRequisitionsQuery,

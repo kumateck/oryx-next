@@ -97,8 +97,8 @@ export function DataTableRowActions<
           details={{
             stpNumber: details.stpNumber as string,
             productId: {
-              value: details.productId as string,
-              label: details.productName as string,
+              value: details.product?.id as string,
+              label: details.product?.name as string,
             },
           }}
         />
@@ -135,7 +135,7 @@ export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
   {
     accessorKey: "productId",
     header: "Product Name",
-    cell: ({ row }) => <div>{row.original?.productName}</div>,
+    cell: ({ row }) => <div>{row.original?.product?.name}</div>,
   },
   {
     id: "actions",

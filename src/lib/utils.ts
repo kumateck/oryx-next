@@ -19,6 +19,7 @@ import {
   BatchStatus,
   FloorType,
   MaterialStatus,
+  OperationAction,
   PackLocationType,
   QuestionType,
   RawLocationType,
@@ -879,6 +880,19 @@ export const QuestionTypeOptions = Object.values(QuestionType)
   .map((enumValue) => {
     // Convert the numeric value back to the string enum key
     const enumKey = QuestionType[enumValue as QuestionType];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
+export const OperationActionOptions = Object.values(OperationAction)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = OperationAction[enumValue as OperationAction];
     return {
       label: splitWords(enumKey), // e.g., "Full"
       value: String(enumValue), // e.g., "0"
