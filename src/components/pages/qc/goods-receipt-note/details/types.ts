@@ -7,6 +7,7 @@ const CreateSampleSchema = z.object({
   batchNumber: z.string().optional(),
   arNumber: z.string(),
   baseUnit: z.string().optional(),
+  materialBatchId: z.string(),
   sampleQuantity: z.string().min(1, "Sample quantity must be greater than 0"),
 });
 

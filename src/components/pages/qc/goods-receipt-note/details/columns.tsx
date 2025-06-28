@@ -167,6 +167,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
       <CreateSampleMaterial
         isOpen={openSample}
         details={{
+          materialBatchId: row.original.id as string,
           materialName: row.original.material?.name ?? "",
           batchNumber: row.original.batchNumber ?? "",
           arNumber: row.original?.code ?? "",
