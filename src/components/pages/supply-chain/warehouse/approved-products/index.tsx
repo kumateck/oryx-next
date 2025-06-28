@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { PermissionKeys } from "@/lib";
+import { AuditModules, PermissionKeys } from "@/lib";
 import { useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -18,7 +18,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 const Page = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(30);
-  const [loadFisnishedProducts, { data: result, isLoading, isFetching }] =
+  const [loadFinishedProducts, { data: result, isLoading, isFetching }] =
     useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery();
 
   const dispatch = useDispatch();
@@ -28,9 +28,11 @@ const Page = () => {
   const searchValue = useSelector((state) => state.common.searchInput);
 
   useEffect(() => {
-    loadFisnishedProducts({
+    loadFinishedProducts({
       page,
       pageSize,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.approvedProducts,
       searchQuery: searchValue,
     });
     if (triggerReload) {
@@ -54,9 +56,7 @@ const Page = () => {
       <PageTitle title="Approved Products" />
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(
-            `/warehouse/approved-products/${row?.product?.id}/details`,
-          );
+          router.push(`/warehouse/approved-products/${row?.product?.id}`);
         }}
         data={data}
         columns={columns}

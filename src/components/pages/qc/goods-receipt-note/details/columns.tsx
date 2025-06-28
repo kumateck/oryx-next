@@ -1,136 +1,76 @@
-import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { useState } from "react";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { PermissionKeys } from "@/lib";
 import { format } from "date-fns";
+import { useState } from "react";
+import { Button, DropdownMenuItem, Icon } from "@/components/ui";
+import {
+  BatchStatus as BatchStatusEnum,
+  Units,
+  convertToLargestUnit,
+} from "@/lib";
+import {
+  BatchStatus,
+  MaterialBatchDto,
+} from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
-import { useUserPermissions } from "@/hooks/use-permission";
-
+import { CreateSampleMaterial } from "./create-sample";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export type GRNSItemStatus =
-  | "Approved"
-  | "Quarantine"
-  | "Under Test"
-  | "Test Complete"
-  | "Rejected";
-export type SampleData = {
-  id: string;
-  batchNumber: string;
-  materialName: string;
-  manufacturerName: string;
-  manufacturingDate: Date;
-  expiryDate: Date;
-  resetDate: Date;
-  invoiceNumber: string;
-  quantity: number;
-  status: GRNSItemStatus;
+const batchStatusColors: Record<BatchStatus, string> = {
+  [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
+  [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
+  [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
+  [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
+  [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
+  [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Reserved]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
 };
 
-const batchStatusColors = (status: GRNSItemStatus) => {
-  switch (status) {
-    case "Approved":
-      return "bg-green-100 text-green-800";
-    case "Under Test":
-      return "bg-yellow-100 text-yellow-800";
-    case "Quarantine":
-      return "bg-red-100 text-red-800";
-    case "Test Complete":
-      return "bg-orange-100 text-orange-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-export function DataTableRowActions<
-  TData extends SampleData,
->({}: DataTableRowActionsProps<TData>) {
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  // const [isRecallOpen, setIsRecallOpen] = useState(false);
-
-  const { hasPermissionAccess } = useUserPermissions();
-
-  return (
-    <section className="flex items-center justify-end gap-2">
-      <TableMenuAction>
-        <DropdownMenuItem className="group">
-          {hasPermissionAccess(
-            PermissionKeys.humanResources.editLeaveRequest,
-          ) && (
-            <div
-              className="flex cursor-pointer items-center justify-start gap-2"
-              onClick={() => {}}
-            >
-              <Icon
-                name="Pencil"
-                className="h-5 w-5 cursor-pointer text-neutral-500"
-              />
-              <span>Edit</span>
-            </div>
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuItem className="group">
-          {hasPermissionAccess(
-            PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
-          ) && (
-            <div
-              className="flex cursor-pointer items-center justify-start gap-2"
-              onClick={() => setIsDeleteOpen(true)}
-            >
-              <Icon
-                name="Trash2"
-                className="text-danger-500 h-5 w-5 cursor-pointer"
-              />
-              <span>Delete</span>
-            </div>
-          )}
-        </DropdownMenuItem>
-      </TableMenuAction>
-      <ConfirmDeleteDialog
-        open={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={async () => {}}
-      />
-    </section>
-  );
-}
-
-export const columns: ColumnDef<SampleData>[] = [
+export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.id}</div>,
+    cell: ({ row }) => <div>{row.original.batchNumber ?? "-"}</div>,
   },
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => <div>{row.original.materialName}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.material?.name ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "manufacturerName",
     header: "Manufacturer Name",
-    cell: ({ row }) => <div>{row.original.manufacturerName}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.checklist?.manufacturer?.name ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",
-    cell: ({ row }) => <div>{row.original.invoiceNumber}</div>,
-  },
-  {
-    accessorKey: "quantity",
-    header: "Quantity",
-    cell: ({ row }) => <div>{row.original.quantity}</div>,
-  },
-  {
-    accessorKey: "expiryDate",
-    header: "Expiry Date",
     cell: ({ row }) => (
-      <div>
-        {row.original.expiryDate
-          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
-          : "-"}
-      </div>
+      <div>{row.original.checklist?.shipmentInvoice?.code ?? "-"}</div>
     ),
+  },
+  {
+    accessorKey: "totalQuantity",
+    header: "Quantity",
+    cell: ({ row }) => {
+      const totqty = row.original.totalQuantity ?? 0;
+      const qty = convertToLargestUnit(
+        totqty,
+        row.original.uoM?.symbol as Units,
+      );
+      return (
+        <div>
+          {qty.value}
+          {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "manufacturingDate",
@@ -144,12 +84,23 @@ export const columns: ColumnDef<SampleData>[] = [
     ),
   },
   {
-    accessorKey: "resetDate",
-    header: "Reset Date",
+    accessorKey: "expiryDate",
+    header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {row.original.resetDate
-          ? format(row.original?.resetDate, "MMMM dd, yyyy")
+        {row.original.expiryDate
+          ? format(row.original?.expiryDate, "MMMM dd, yyyy")
+          : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "retestDate",
+    header: "Retest Date",
+    cell: ({ row }) => (
+      <div>
+        {row.original.retestDate
+          ? format(row.original?.retestDate, "MMMM dd, yyyy")
           : "-"}
       </div>
     ),
@@ -159,16 +110,69 @@ export const columns: ColumnDef<SampleData>[] = [
     header: "Status",
     cell: ({ row }) => (
       <div
-        className={`${batchStatusColors(row.original.status)} rounded-full px-2 py-1 text-xs font-medium`}
+        className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[String(row.original?.status)]}`}
       >
-        {row.original.status}
+        {BatchStatusEnum[row.original.status as BatchStatus]}
       </div>
     ),
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      return <DataTableRowActions row={row} />;
-    },
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
+
+export function DataTableRowActions<TData extends MaterialBatchDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const [openSample, setOpenSample] = useState(false);
+
+  return (
+    <section className="flex items-center justify-end gap-2">
+      <TableMenuAction>
+        <DropdownMenuItem>
+          <Button
+            variant={
+              row.original.status === BatchStatusEnum.Testing
+                ? "default"
+                : "ghost"
+            }
+            disabled={row.original.status !== BatchStatusEnum.Testing}
+            className="flex w-full cursor-pointer items-center justify-start gap-2"
+          >
+            <Icon
+              name="Target"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Start Test</span>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Button
+            variant="ghost"
+            className="flex cursor-pointer items-start justify-center gap-2"
+            onClick={() => setOpenSample(true)}
+          >
+            <Icon
+              name="CreativeCommons"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Sample Material</span>
+          </Button>
+        </DropdownMenuItem>
+      </TableMenuAction>
+      <CreateSampleMaterial
+        isOpen={openSample}
+        grnId={row.original.id as string}
+        details={{
+          materialName: row.original.material?.name ?? "",
+          batchNumber: row.original.batchNumber ?? "",
+          arNumber: row.original?.code ?? "",
+          quantity: row.original.totalQuantity as number,
+          sampleQuantity: "",
+        }}
+        onClose={() => setOpenSample(false)}
+      />
+    </section>
+  );
+}

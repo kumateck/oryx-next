@@ -30,11 +30,10 @@ const PersonnelSchema = z.object({
         path: ["type"],
       },
     ),
-  userId: IdSchema("User"),
+  userId: IdSchema("User").optional(),
+  roleId: IdSchema("Role").optional(),
   productAnalyticalRawDataId: IdSchema("Analytical Raw Data"),
   action: IdSchema("Action"),
-
-  roleId: IdSchema("Role"),
 });
 export const CreateRoutingSchema = z.object({
   estimatedTime: z.string().optional(),
@@ -59,6 +58,7 @@ export const RoutingFormSchema = z.object({
   items: z.array(CreateRoutingSchema),
 });
 export type RoutingFormData = z.infer<typeof RoutingFormSchema>;
+export type PersonnelType = z.infer<typeof PersonnelSchema>;
 
 export const RoutingFormValidator = zodResolver(RoutingFormSchema);
 

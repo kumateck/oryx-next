@@ -18,6 +18,7 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
+import { EMaterialKind } from "@/lib";
 import {
   CreateMaterialStandardTestProcedureRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
@@ -37,9 +38,10 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  kind?: EMaterialKind;
 };
 
-export const Create = ({ isOpen, onClose }: Props) => {
+export const Create = ({ isOpen, kind, onClose }: Props) => {
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -55,7 +57,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: materials } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 1000,
-    kind: 0,
+    kind: kind || EMaterialKind.Raw,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
@@ -77,6 +79,10 @@ export const Create = ({ isOpen, onClose }: Props) => {
         subModule: AuditModules.settings.standardTestProcedure,
         createMaterialStandardTestProcedureRequest: payload,
       } as PostApiV1MaterialStpsApiArg).unwrap();
+      toast.success("STP created successfully");
+      dispatch(commonActions.setTriggerReload());
+      onClose();
+      reset();
       //upload attachment if any
       if (standardTestProcedureId && data?.attachments?.length > 0) {
         const files = Array.isArray(data.attachments)
@@ -90,15 +96,11 @@ export const Create = ({ isOpen, onClose }: Props) => {
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
           modelId: standardTestProcedureId,
-          module: AuditModules.settings.name,
-          subModule: AuditModules.settings.standardTestProcedure,
+          module: "MaterialStandardTestProcedure",
+          subModule: "MaterialStandardTestProcedure",
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("STP created successfully");
-      dispatch(commonActions.setTriggerReload());
-      onClose();
-      reset();
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||

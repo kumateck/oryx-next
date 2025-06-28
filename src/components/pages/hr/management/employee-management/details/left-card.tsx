@@ -66,6 +66,7 @@ function LeftCard({ data }: Props) {
             label="Department"
             value={data?.department?.name ?? "N/A"}
           />
+          <InfoItem label="Staff Number" value={data?.staffNumber ?? "N/A"} />
           <InfoItem
             label="Employee Type"
             value={EmployeeType[data?.type as EmployeeType]}

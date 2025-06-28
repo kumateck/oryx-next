@@ -57,7 +57,7 @@ export function DataTableRowActions<
           console.log("row", row);
           setDetails({
             ...(row.original as ProductStandardTestProcedureDto),
-            productName: (row.original as any)?.productName ?? "",
+            productName: row.original.product?.name ?? "",
           });
           setIsEdit(true);
         }}
@@ -139,7 +139,6 @@ export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
   },
   {
     id: "actions",
-    accessorFn: (row) => row,
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

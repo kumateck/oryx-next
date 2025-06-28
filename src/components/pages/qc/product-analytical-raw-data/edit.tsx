@@ -7,17 +7,20 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ProductArdSchemaType,
   ProductArdSchemaResolver,
   stageOptions,
+  stageLabels,
+  Stage,
 } from "./types";
 import { useForm } from "react-hook-form";
 import {
   useGetApiV1FormQuery,
   useGetApiV1ProductStpsQuery,
   usePutApiV1ProductArdByIdMutation,
+  useGetApiV1ProductArdByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
@@ -39,6 +42,7 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
+  console.log("details", details);
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -54,6 +58,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       stpId: details.stpId,
       formId: details.formId,
       specNumber: details.specNumber,
+      stage: details.stage,
     },
   });
 
@@ -64,6 +69,34 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
+  const { data: productArd } = useGetApiV1ProductArdByIdQuery({
+    id: id,
+    module: AuditModules.warehouse.name,
+    subModule: AuditModules.warehouse.materials,
+  });
+
+  useEffect(() => {
+    console.log("product ard by ard id", productArd);
+    if (productArd) {
+      reset({
+        description: productArd?.description ?? "",
+        stpId: {
+          value: productArd?.productStandardTestProcedure?.id ?? "",
+          label: productArd?.productStandardTestProcedure?.stpNumber ?? "",
+        },
+        formId: {
+          value: productArd?.form?.id ?? "",
+          label: productArd?.form?.name ?? "",
+        },
+        specNumber: productArd?.specNumber ?? "",
+        stage: {
+          value: productArd?.stage,
+          label: stageLabels[productArd.stage as Stage],
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productArd]);
 
   //load forms template
   const { data: formTemplates } = useGetApiV1FormQuery({

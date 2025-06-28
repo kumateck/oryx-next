@@ -1,33 +1,24 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { LeaveRequestDto } from "@/lib/redux/api/openapi.generated";
+import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<LeaveRequestDto>[] = [
+export const columns: ColumnDef<EmployeeDto>[] = [
   {
     id: "name",
     header: "Employee Name",
-    cell: () =>
-      // { row }
-      {
-        // return row.original.employee?.designation?.maximumLeaveDays || 0;
-      },
+    cell: ({ row }) => (
+      <div>{`${row.original.firstName} ${row.original.lastName}`}</div>
+    ),
   },
   {
     id: "designation",
     header: "Designation",
-    cell: () => (
-      // { row }
-      <div>{/* {row.original.warehouseLocation?.name} */}</div>
+    cell: ({ row }) => (
+      <div>{`${row.original.designation?.name || "N/A"}`}</div>
     ),
   },
   {
     accessorKey: "staffNumber",
     header: "Staff Number",
-    cell: () =>
-      // { row }
-      {
-        // return row.original.startDate
-        //   ? format(row.original.startDate, "MMM d, yyyy")
-        //   : "N/A";
-      },
+    cell: ({ row }) => <div>{`${row.original.staffNumber || "N/A"}`}</div>,
   },
 ];

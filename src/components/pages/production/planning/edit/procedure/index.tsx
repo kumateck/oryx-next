@@ -17,6 +17,8 @@ import {
 } from "@/lib";
 import {
   CreateRouteRequest,
+  RouteResponsibleRoleDto,
+  RouteResponsibleUserDto,
   useLazyGetApiV1ProductByProductIdRoutesQuery,
   usePostApiV1ProductByProductIdRoutesMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -26,6 +28,8 @@ import StepWrapper from "@/shared/wrapper";
 import Create from "./create";
 
 import {
+  PersonnelType,
+  ProcedureType,
   RoutingFormData,
   RoutingFormValidator,
   RoutingRequestDto,
@@ -50,7 +54,7 @@ const Routing = () => {
     },
   });
 
-  const { control, handleSubmit, setValue, watch, getValues } = form;
+  const { control, setValue, watch, getValues } = form;
 
   const { append, remove, update } = useFieldArray({
     control,
@@ -68,42 +72,83 @@ const Routing = () => {
   }, [productId]);
 
   // console.log(watchedItems, "watchedItems");
+  // Type-safe personnel array creation
+  const createPersonnelArray = (
+    responsibleUsers?: RouteResponsibleUserDto[] | null,
+    responsibleRoles?: RouteResponsibleRoleDto[] | null,
+  ) => {
+    const personnel: PersonnelType[] = [];
+
+    // Process users
+    if (responsibleUsers?.length) {
+      for (const res of responsibleUsers) {
+        personnel.push({
+          type: ProcedureType.User,
+          action: {
+            value: res.action?.toString() as string,
+            label: OperationAction[Number(res.action)],
+          },
+          userId: {
+            value: res.user?.id as string,
+            label: res.user?.name as string,
+          },
+          productAnalyticalRawDataId: {
+            value: res?.productAnalyticalRawData?.id as string,
+            label: res?.productAnalyticalRawData?.productStandardTestProcedure
+              ?.stpNumber as string,
+          },
+        });
+      }
+    }
+
+    // Process roles
+    if (responsibleRoles?.length) {
+      for (const res of responsibleRoles) {
+        personnel.push({
+          type: ProcedureType.Role,
+          action: {
+            value: res.action?.toString() as string,
+            label: OperationAction[Number(res.action)],
+          },
+          roleId: {
+            value: res.role?.id as string,
+            label: res.role?.name as string,
+          },
+          productAnalyticalRawDataId: {
+            value: res?.productAnalyticalRawData?.id as string,
+            label: res?.productAnalyticalRawData?.productStandardTestProcedure
+              ?.stpNumber as string,
+          },
+        });
+      }
+    }
+
+    return personnel;
+  };
+
   const handleLoadProcedure = async (productId: string) => {
     try {
-      const procedureResponse = await loadProcedure({
-        productId,
-      }).unwrap();
+      const procedureResponse = await loadProcedure({ productId }).unwrap();
+
       const defaultRouting = procedureResponse?.map((r) => ({
         ...r,
         rowId: uuidv4(),
-        resources: r.resources?.map((res) => {
-          return {
-            label: res.resource?.name as string,
-            value: res.resource?.id as string,
-          };
-        }),
+        resources: r.resources?.map((res) => ({
+          label: res.resource?.name as string,
+          value: res.resource?.id as string,
+        })),
         operationId: {
           label: r.operation?.name as string,
           value: r.operation?.id as string,
         },
-        workCenters: r.workCenters?.map((res) => {
-          return {
-            label: res.workCenter?.name as string,
-            value: res.workCenter?.id as string,
-          };
-        }),
-        responsibleRoles: r.responsibleRoles?.map((res) => {
-          return {
-            label: res?.role?.name as string,
-            value: res?.role?.id as string,
-          };
-        }),
-        responsibleUsers: r.responsibleUsers?.map((res) => {
-          return {
-            label: res?.user?.name as string,
-            value: res.user?.id as string,
-          };
-        }),
+        workCenters: r.workCenters?.map((res) => ({
+          label: res.workCenter?.name as string,
+          value: res.workCenter?.id as string,
+        })),
+        personnels: createPersonnelArray(
+          r.responsibleUsers,
+          r.responsibleRoles,
+        ),
       })) as RoutingRequestDto[];
 
       setValue("items", defaultRouting);
@@ -111,7 +156,6 @@ const Routing = () => {
       console.log(error);
     }
   };
-
   const handleSave = async () => {
     const data = (await getValues()) as RoutingFormData;
     try {
@@ -128,20 +172,20 @@ const Routing = () => {
           estimatedTime: item.estimatedTime,
           order: idx + 1,
           operationId: item.operationId.value,
-          resourceIds: item.resources?.map((item) => ({
+          resources: item.resources?.map((item) => ({
             resourceId: item.value,
           })),
           responsibleUsers: item.personnels
-            ?.filter((item) => item.userId.value)
+            ?.filter((item) => item?.userId?.value)
             ?.map((item) => ({
-              userId: item.userId.value,
+              userId: item?.userId?.value,
               productAnalyticalRawDataId: item.productAnalyticalRawDataId.value,
               action: Number(item.action.value) as OperationAction,
             })),
           responsibleRoles: item.personnels
-            ?.filter((item) => item.roleId.value)
+            ?.filter((item) => item?.roleId?.value)
             ?.map((item) => ({
-              userId: item.roleId.value,
+              roleId: item?.roleId?.value,
               productAnalyticalRawDataId: item.productAnalyticalRawDataId.value,
               action: Number(item.action.value) as OperationAction,
             })),
@@ -262,7 +306,7 @@ const Routing = () => {
           <PageTitle title="Procedure List" />
           <div className="flex gap-2">
             <Button
-              onClick={handleSubmit(handleSave)}
+              onClick={handleSave}
               type="button"
               className="flex items-center gap-2"
               disabled={isLoading}

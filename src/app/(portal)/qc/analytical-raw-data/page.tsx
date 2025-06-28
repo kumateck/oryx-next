@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/qc/analytical-raw-data";
+export { default } from "@/components/pages/qc/material-analytical-raw-data";

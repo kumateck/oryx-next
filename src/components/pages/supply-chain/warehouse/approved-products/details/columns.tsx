@@ -1,33 +1,47 @@
 import {
   BinCardInformationDtoRead,
-  ProductDtoRead,
+  FinishedGoodsTransferNoteDtoRead,
 } from "@/lib/redux/api/openapi.generated";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-export const generalColumn: ColumnDef<ProductDtoRead>[] = [
+export const generalColumn: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.fullBatchSize}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batchManufacturingRecord?.batchNumber}</div>
+    ),
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.basePackingQuantity}</div>,
+    cell: ({ row }) => <div>{row.original.totalQuantity}</div>,
   },
   {
     accessorKey: "manufactureData",
     header: "Manufacture Date",
-    cell: ({ row }) => <div>{row.original.basePackingQuantity}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.batchManufacturingRecord?.manufacturingDate
+          ? format(
+              row.original.batchManufacturingRecord?.manufacturingDate,
+              "MMM d, yyyy",
+            )
+          : "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {row.original?.createdAt &&
-          format(row.original.createdAt ?? "", "MMM d, yyyy")}
+        {row.original?.batchManufacturingRecord?.expiryDate &&
+          format(
+            row.original.batchManufacturingRecord?.expiryDate ?? "",
+            "MMM d, yyyy",
+          )}
       </div>
     ),
   },
@@ -87,7 +101,8 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     header: "Quantity Received",
     cell: ({ row }) => (
       <div className=" text-green-700 ">
-        {row.original.quantityReceived} Bottles
+        {row.original.quantityReceived}
+        {row.original.materialBatch?.uoM?.name}
       </div>
     ),
   },
@@ -96,14 +111,19 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     header: "Quantity Issued",
     cell: ({ row }) => (
       <div className="w-full text-red-700 ">
-        {row.original.quantityIssued} Bottles
+        {row.original.quantityIssued}
+        {row.original.materialBatch?.uoM?.name}
       </div>
     ),
   },
   {
     accessorKey: "balanceQuantity",
     header: "Balance Quantity",
-    cell: ({ row }) => <div>{row.original.balanceQuantity} Bottles</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.balanceQuantity} {row.original.materialBatch?.uoM?.name}
+      </div>
+    ),
   },
   {
     accessorKey: "productName",

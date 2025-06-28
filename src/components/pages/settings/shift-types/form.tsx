@@ -27,8 +27,8 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   rotationTypeOptions,
-  applicableDaysOptions,
   defaultValues,
+  applicableDaysOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -49,7 +49,6 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.SELECT,
             name: "rotationType",
             required: true,
-            defaultValue: defaultValues?.rotationType,
             placeholder: "Rotational",
             options: rotationTypeOptions,
             errors,
@@ -66,7 +65,6 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
               type: InputTypes.CLOCK,
               name: "startTime",
               required: true,
-              defaultValue: defaultValues?.startTime,
               placeholder: "Select start time",
               // options: startDayOptions,
               errors,
@@ -81,7 +79,6 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
               type: InputTypes.CLOCK,
               name: "endTime",
               required: true,
-              defaultValue: defaultValues?.endTime,
               placeholder: "Select end time",
               errors,
             },
@@ -97,8 +94,8 @@ const ShiftTypeConfiguration = <TFieldValues extends FieldValues, TContext>({
             control: control as Control,
             type: InputTypes.MULTI,
             name: "applicableDays",
-            defaultValue: defaultValues?.applicableDays,
             required: true,
+            defaultValue: defaultValues?.applicableDays,
             placeholder: "Select applicable days",
             options: applicableDaysOptions,
             errors,

@@ -43,7 +43,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   const { data: productARD } = useGetApiV1ProductArdProductByProductIdQuery({
     productId,
   });
-  console.log(productARD, "productARD");
 
   const form = useForm<RoutingRequestDto>({
     resolver: CreateRoutingValidator,
@@ -69,6 +68,7 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     formState: { errors, isValid },
     reset,
     handleSubmit,
+    getValues,
   } = form;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -149,7 +149,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   })) as Option[];
 
   const onSubmit = (data: RoutingRequestDto) => {
-    // console.log(data, "data");
     const success = onAddItem(data);
     if (success) {
       toast.success("Procedure item added successfully");
@@ -189,7 +188,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
                 resourceOptions={resourceOptions}
                 workCenterOptions={workCenterOptions}
                 register={register}
-                // selectedType={typeValues}
               />
             )}
             {activeIndex === 1 && (
@@ -205,17 +203,20 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
                 operationActionOptions={OperationActionOptions}
                 typeValues={typeValues}
                 ardOptions={ardOptions}
+                getValues={getValues}
               />
             )}
 
-            <div className="flex space-x-2">
-              {dots.map((dot, index) => (
+            <div className="flex space-x-2 w-full justify-center items-center py-5">
+              {dots.map((_, index) => (
                 <button
                   type="button"
                   key={index}
                   onClick={() => setActiveIndex(index)}
                   className={`w-4 h-4 rounded-full transition-colors duration-200 ${
-                    activeIndex === index ? "bg-blue-600" : "bg-gray-300"
+                    activeIndex === index
+                      ? "bg-primary-default"
+                      : "bg-neutral-secondary"
                   }`}
                 />
               ))}
@@ -225,15 +226,28 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
               <Button type="button" variant="secondary" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                variant="default"
-                className="flex items-center gap-2"
-                disabled={!isValid}
-              >
-                <Icon name="Plus" className="h-4 w-4" />
-                <span>Add Procedure</span>
-              </Button>
+              {activeIndex === 0 && (
+                <Button
+                  type="button"
+                  variant="default"
+                  className="flex items-center gap-2"
+                  onClick={() => setActiveIndex(1)}
+                >
+                  <Icon name="Plus" className="h-4 w-4" />
+                  <span>Next</span>
+                </Button>
+              )}
+              {activeIndex === 1 && (
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="flex items-center gap-2"
+                  disabled={!isValid}
+                >
+                  <Icon name="Plus" className="h-4 w-4" />
+                  <span>Add Procedure</span>
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

@@ -76,8 +76,6 @@ export const Create = ({ isOpen, onClose }: Props) => {
     );
 
     if (!materialStp || !materialStp.stpNumber) {
-      console.log("Material STP not found");
-      toast.error("Material STP not found. Please select a valid STP.");
       return;
     }
     try {

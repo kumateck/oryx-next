@@ -97,10 +97,6 @@ export const ROUTES: Route[] = [
             url: "/warehouse/receiving-area",
           },
           {
-            title: "Approved Products",
-            url: "/warehouse/approved-products",
-          },
-          {
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
@@ -140,6 +136,11 @@ export const ROUTES: Route[] = [
             title: "Approved Materials",
             url: "/warehouse/approved-materials",
           },
+
+          {
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
+          },
           // {
           //   title: "Available Stock",
           //   url: "/stock/available",
@@ -163,6 +164,10 @@ export const ROUTES: Route[] = [
           {
             title: "Material Returns Note",
             url: "/warehouse/material-returns",
+          },
+          {
+            title: "Finished Goods Transfer Note",
+            url: "/warehouse/finished-goods-transfer-notes",
           },
           // {
           //   title: "Packaging Materials Receiving Area",
@@ -344,6 +349,10 @@ export const ROUTES: Route[] = [
             url: "/hr/staff-requisition",
           },
           {
+            title: "Attendance Report Upload",
+            url: "/hr/attendance-report-upload",
+          },
+          {
             title: "Attendance Report Summary",
             url: "/hr/attendance-report-summary",
           },
@@ -406,6 +415,12 @@ export const ROUTES: Route[] = [
         // }]
       },
       {
+        title: "BMR/BPR Request",
+        url: "/qa/bmr-bpr",
+        icon: "ShieldCheck",
+        isActive: false,
+      },
+      {
         title: "Pending Approvals",
         url: "/qa/pending-approvals",
         icon: "CircleDotDashed",
@@ -418,7 +433,7 @@ export const ROUTES: Route[] = [
     menu: [
       {
         title: "Material STP",
-        url: "/qc/stp",
+        url: "/qc/material-stp",
         icon: "BookUser",
         isActive: false,
       },

@@ -16216,7 +16216,7 @@ export type ProductAnalyticalRawDataDto = {
   specNumber?: string | null;
   stage?: Stage;
   description?: string | null;
-  form?: FormDto;
+  form?: CollectionItemDto;
   productStandardTestProcedure?: ProductStandardTestProcedureDto;
 };
 export type RouteResponsibleUserDto = {

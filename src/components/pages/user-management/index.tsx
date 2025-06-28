@@ -17,6 +17,7 @@ import Create from "./create";
 import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   // const dispatch = useDispatch();
@@ -27,14 +28,16 @@ const Page = () => {
     pageSize,
   });
   const [loadUsers, { isFetching }] = useLazyGetApiV1UserQuery();
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   useEffect(() => {
     loadUsers({
       page,
       pageSize,
+      searchQuery: searchValue ?? "",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchValue]);
   const data = result?.data ?? [];
   const [isOpen, setIsOpen] = useState(false);
 

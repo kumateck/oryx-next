@@ -138,21 +138,6 @@ const ReceivingArea = () => {
                 <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
               </Button>
             )}
-            {hasPermissionAccess(
-              PermissionKeys.warehouse
-                .createGrnForPackagingMaterialsChecklistedItems,
-            ) && (
-              <Button
-                type="button"
-                variant={"ghost"}
-                className="bg-neutral-dark text-white"
-                size={"sm"}
-                onClick={() => setIsGRNOpen(true)}
-                disabled={isCreateGRNDisabled}
-              >
-                <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
-              </Button>
-            )}
           </div>
         )}
         {isGRNOpen && (

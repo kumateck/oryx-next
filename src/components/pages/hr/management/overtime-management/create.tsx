@@ -74,6 +74,10 @@ const Create = ({ isOpen, onClose }: Props) => {
   } = useForm<OvertimeRequestDto>({
     resolver: CreateOvertimeValidator,
     mode: "all",
+    defaultValues: {
+      startTime: "00:00 AM",
+      endTime: "00:00 AM",
+    },
   });
 
   const selectedDepartmentId = watch("departmentId")?.value;
@@ -120,7 +124,9 @@ const Create = ({ isOpen, onClose }: Props) => {
     const products = productsResponse?.totalRecordCount ?? 0;
 
     generatePayload.seriesCounter = products + 1;
+    console.log(generatePayload.seriesCounter);
     const code = await generateCode(generatePayload);
+    console.log("Generated code:", code);
     setValue("code", code);
   };
 

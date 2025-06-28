@@ -6,6 +6,7 @@ import {
   FieldValues,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
+  UseFormGetValues,
   // Path,
   UseFormRegister,
 } from "react-hook-form";
@@ -13,11 +14,12 @@ import {
 import { FormInput, FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
 
-import { ProcedureType } from "./types";
-import { Button, Icon } from "@/components/ui";
+import { ProcedureType, RoutingRequestDto } from "./types";
+import { Button, Icon, Label } from "@/components/ui";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
-import PageTitle from "@/shared/title";
+
 import DropdownBtns from "@/shared/btns/drop-btn";
+import Summary from "./summary";
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
@@ -28,6 +30,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   ardOptions: Option[];
   defaultValues?: TFieldValues;
   selectedType?: ProcedureType;
+  getValues: UseFormGetValues<TFieldValues>;
   fields: FieldArrayWithId<TFieldValues>[];
   remove: UseFieldArrayRemove;
   append: UseFieldArrayAppend<TFieldValues>;
@@ -52,12 +55,15 @@ const SecondForm = <TFieldValues extends FieldValues, TContext>({
   remove,
   typeValues,
   ardOptions,
+  getValues,
 }: Props<TFieldValues, TContext>) => {
+  const summary = getValues();
+
   return (
     <div>
+      <Summary summary={summary as unknown as RoutingRequestDto} />
       <div className="flex justify-between px-2 py-5">
-        <PageTitle title="Personnel Details" />
-
+        <Label className="text-lg">Personnel</Label>
         <DropdownBtns
           title="Add Type"
           icon="Plus"

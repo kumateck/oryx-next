@@ -18,6 +18,7 @@ import {
   useGetApiV1MaterialStpsQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialArdByIdMutation,
+  useGetApiV1MaterialArdByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
@@ -40,18 +41,14 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
-  // const defaultFormId = {
-  //   value: details.formId?.value,
-  //   label: details.formId?.label,
-  // };
   const defaultFormId = {
-    value: details.form?.id as string,
-    label: details.form?.name as string,
+    value: details?.form?.id as string,
+    label: details?.form?.name as string,
   };
 
   const defaultStpId = {
-    value: details.materialStandardTestProcedure?.id as string,
-    label: details.materialStandardTestProcedure?.stpNumber as string,
+    value: details?.materialStandardTestProcedure?.id as string,
+    label: details?.materialStandardTestProcedure?.stpNumber as string,
   };
   const dispatch = useDispatch();
   const {
@@ -73,6 +70,12 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
+  //get material stp by id
+  const { data: materialStpData } = useGetApiV1MaterialArdByIdQuery({
+    id: details?.materialStandardTestProcedure?.id as string,
+    module: AuditModules.warehouse.name,
+    subModule: AuditModules.warehouse.materials,
+  });
 
   //get stp
   const { data: materialStps } = useGetApiV1MaterialStpsQuery({
@@ -85,23 +88,18 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     if (isOpen && details) {
       // Compute stpId option
       const stpOption = materialData.find(
-        (stp) => stp.id === details.materialStandardTestProcedure?.id,
+        (stp) => stp.id === details.materialStandardTestProcedure?.material?.id,
       );
       const defaultStpId = {
-        value: details.materialStandardTestProcedure?.id,
+        value: details.materialStandardTestProcedure?.id || "",
         label:
           stpOption?.stpNumber ||
           details.materialStandardTestProcedure?.stpNumber ||
           "",
       };
-
-      // Compute formId option
-      const formOption = formOptionsData.find(
-        (form) => form.id === details.form?.id,
-      );
       const defaultFormId = {
-        value: details.form?.id as string,
-        label: formOption?.name || details.form?.name || "",
+        value: materialStpData?.form?.id || "",
+        label: materialStpData?.form?.name || "",
       };
 
       reset({
@@ -112,7 +110,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, details, reset]);
+  }, [isOpen, details, reset, materialStpData, details.id]);
 
   //load forms template
   const { data: formTemplates } = useGetApiV1FormQuery({

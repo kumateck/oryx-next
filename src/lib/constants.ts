@@ -588,8 +588,11 @@ export const AuditModules = {
     extraPackingRequisitions: "Extra Packing Requisitions",
     stockTransferIssues: "Stock Transfer Issues",
     locationChartRecord: "Location Chart Record",
+    QaGrn: "Quality Assurance Goods Receipt Note",
     packingStock: "Packing Material Stock",
     rawStock: "Raw Material Stock ",
+    approvedProducts: "Approved Products",
+    attendanceReport: "Attendance Report",
   },
 
   procurement: {

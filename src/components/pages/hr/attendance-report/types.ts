@@ -1,22 +1,31 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = [
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
 
-const AttendanceReportSchema = z.object({
-  File: z
-    .instanceof(File)
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: "File must be less than 5MB",
+export const AttendanceReportSchema = z.object({
+  file: z
+    .custom<FileList>((val) => val instanceof FileList, {
+      message: "Please upload a file",
     })
-    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
-      message: "Unsupported file type. Only Excel is allowed.",
-    }),
+    .refine((fileList) => fileList.length > 0, {
+      message: "No file selected",
+    })
+    .refine(
+      (fileList) => {
+        return Array.from(fileList).every(
+          (file) =>
+            ACCEPTED_FILE_TYPES.includes(file.type) &&
+            file.size <= MAX_FILE_SIZE,
+        );
+      },
+      {
+        message: "Only Excel files (xls, xlsx) under 5MB are allowed",
+      },
+    ),
 });
 
 export type AttendanceReportDto = z.infer<typeof AttendanceReportSchema>;
-export const AttendanceReportValidator = zodResolver(AttendanceReportSchema);
