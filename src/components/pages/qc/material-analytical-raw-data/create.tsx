@@ -94,7 +94,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
         createMaterialAnalyticalRawDataRequest: payload,
       } as PostApiV1MaterialArdApiArg).unwrap();
 
-      if (ardId) {
+      if (ardId && data.attachments) {
         const formData = new FormData();
         // Ensure attachments are an array
         const attachmentsArray = Array.isArray(data.attachments)

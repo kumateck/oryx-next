@@ -10,7 +10,7 @@ import {
   useLazyGetApiV1WarehouseBincardinformationByProductIdProductQuery as fetchBincardData,
   useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery,
 } from "@/lib/redux/api/openapi.generated";
-import { ServerDatatable } from "@/shared/datatable";
+import { ListsTable, ServerDatatable } from "@/shared/datatable";
 // import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -35,7 +35,9 @@ function Page() {
   const [page, setPage] = useState(1);
   const { id } = useParams();
   const router = useRouter();
+
   const finishedProductId = id as string;
+
   const [loadFinishedProductDetails, { data, isLoading, isFetching }] =
     useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductQuery(
       {},
@@ -51,28 +53,26 @@ function Page() {
   ] = fetchBincardData({});
 
   useEffect(() => {
-    loadFinishedProductDetails({
-      productId: finishedProductId,
-    });
-    loadBincardData({
-      productId: finishedProductId,
-      page,
-      pageSize,
-      searchQuery: "",
-      module: AuditModules.warehouse.name,
-      subModule: AuditModules.warehouse.approvedProducts,
-    });
+    if (activeTab === "general-information") {
+      loadFinishedProductDetails({
+        productId: finishedProductId,
+      });
+    } else if (activeTab === "bincard-information") {
+      loadBincardData({
+        productId: finishedProductId,
+        page,
+        pageSize,
+        searchQuery: "",
+        module: AuditModules.warehouse.name,
+        subModule: AuditModules.warehouse.approvedProducts,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finishedProductId, activeTab, page, pageSize]);
 
   const generalData = data?.data || [];
   const bincardData = bincardResult?.data || [];
-  console.log("Bincard Data:", bincardResult);
-  console.log(
-    "General Data:",
-    data,
-    "and this one should be worikng as far as I know it will work in my process",
-  );
+
   return (
     <ScrollablePageWrapper className="flex flex-col">
       <div
@@ -99,21 +99,10 @@ function Page() {
 
         <div className="w-full">
           <TabsContent className="w-full" value="general-information">
-            <ServerDatatable
+            <ListsTable
               data={generalData}
               columns={generalColumn}
-              setPage={setPage}
-              setPageSize={setPageSize}
               isLoading={isLoading || isFetching}
-              meta={{
-                pageIndex: page,
-                pageCount: 1,
-                totalRecordCount: 1,
-                numberOfPagesToShow: 1,
-                startPageIndex: 1,
-                stopPageIndex: 1,
-                pageSize,
-              }}
             />
           </TabsContent>
           <TabsContent value="bincard-information">
@@ -124,12 +113,13 @@ function Page() {
               setPageSize={setPageSize}
               isLoading={isBincardFetching || isBincardLoading}
               meta={{
-                pageIndex: 1,
-                pageCount: 1,
-                totalRecordCount: 1,
-                numberOfPagesToShow: 1,
-                startPageIndex: 1,
-                stopPageIndex: 1,
+                pageIndex: bincardResult?.pageIndex as number,
+                pageCount: bincardResult?.pageCount as number,
+                totalRecordCount: bincardResult?.totalRecordCount as number,
+                numberOfPagesToShow:
+                  bincardResult?.numberOfPagesToShow as number,
+                startPageIndex: bincardResult?.startPageIndex as number,
+                stopPageIndex: bincardResult?.stopPageIndex as number,
                 pageSize,
               }}
             />

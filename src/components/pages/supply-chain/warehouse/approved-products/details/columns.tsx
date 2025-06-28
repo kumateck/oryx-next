@@ -1,3 +1,4 @@
+import { convertToLargestUnit, getSmallestUnit, Units } from "@/lib";
 import {
   BinCardInformationDtoRead,
   FinishedGoodsTransferNoteDtoRead,
@@ -99,31 +100,47 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
   {
     accessorKey: "quantityReceived",
     header: "Quantity Received",
-    cell: ({ row }) => (
-      <div className=" text-green-700 ">
-        {row.original.quantityReceived}
-        {row.original.materialBatch?.uoM?.name}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantityReceived as number,
+        getSmallestUnit(row.original.materialBatch?.uoM?.symbol as Units),
+      );
+      return (
+        <div className=" text-green-700 ">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "quantityIssued",
     header: "Quantity Issued",
-    cell: ({ row }) => (
-      <div className="w-full text-red-700 ">
-        {row.original.quantityIssued}
-        {row.original.materialBatch?.uoM?.name}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.quantityIssued as number,
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div className="w-full text-red-700 ">
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "balanceQuantity",
     header: "Balance Quantity",
-    cell: ({ row }) => (
-      <div>
-        {row.original.balanceQuantity} {row.original.materialBatch?.uoM?.name}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.balanceQuantity as number,
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {qty.value} {qty.unit}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "productName",
