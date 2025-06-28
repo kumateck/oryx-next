@@ -143,9 +143,9 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     }),
   ) as Option[];
 
-  const ardOptions = productARD?.map((uom) => ({
-    label: uom.productStandardTestProcedure?.stpNumber,
-    value: uom.id,
+  const ardOptions = productARD?.map((ard) => ({
+    label: `${ard.productStandardTestProcedure?.stpNumber}(${ard.stage})`,
+    value: ard.id,
   })) as Option[];
 
   const onSubmit = (data: RoutingRequestDto) => {
