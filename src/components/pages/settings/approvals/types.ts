@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Option } from "@/lib";
+import { isBefore, isValid } from "date-fns";
 
 const IdSchema = z.object({
   value: z.string(),
@@ -45,10 +46,43 @@ const CreateApprovalRequestSchema = z.object({
     .optional(),
 });
 
+const CreateDelegateApprovalRequestSchema = z
+  .object({
+    startDate: z.date(),
+    endDate: z.date(),
+    user: z.object(
+      {
+        value: z.string().min(1, "User is required"),
+        label: z.string().min(1, "User label is required"),
+      },
+      { message: "User is required" },
+    ),
+  })
+  .refine(
+    (data) => {
+      return (
+        isValid(data.startDate) &&
+        isValid(data.endDate) &&
+        isBefore(data.startDate, data.endDate)
+      );
+    },
+    {
+      message: "Start Date must be before End Date",
+      path: ["startDate", "endDate"],
+    },
+  );
 // Types from Zod schemas (optional but can help with stricter type checks)
 
 export type ApprovalRequestDto = z.infer<typeof CreateApprovalRequestSchema>;
 export const ApprovalValidator = zodResolver(CreateApprovalRequestSchema);
+
+// Types for the delegate approval request
+export type DelegateApprovalRequestDto = z.infer<
+  typeof CreateDelegateApprovalRequestSchema
+>;
+export const DelegateApprovalValidator = zodResolver(
+  CreateDelegateApprovalRequestSchema,
+);
 
 export const ApprovalItemTypes: Option[] = [
   {

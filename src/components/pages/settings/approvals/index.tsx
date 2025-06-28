@@ -18,6 +18,7 @@ import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import PageTitle from "@/shared/title";
 import { useRouter } from "next/navigation";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 const Page = () => {
   const router = useRouter();
@@ -71,18 +72,20 @@ const Page = () => {
         )}
       </div>
       {/* <AddApproval isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
-      <ul>
-        {approvals.map((approval, idx) => (
-          <li key={idx}>
-            <ApprovalCard
-              approval={approval}
-              number={idx}
-              isDeleteMutationLoading={isDeleteMutationLoading}
-              deleteHandler={deleteHandler}
-            />
-          </li>
-        ))}
-      </ul>
+      <ScrollablePageWrapper>
+        <ul>
+          {approvals.map((approval, idx) => (
+            <li key={idx}>
+              <ApprovalCard
+                approval={approval}
+                number={idx}
+                isDeleteMutationLoading={isDeleteMutationLoading}
+                deleteHandler={deleteHandler}
+              />
+            </li>
+          ))}
+        </ul>
+      </ScrollablePageWrapper>
     </div>
   );
 };
