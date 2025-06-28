@@ -19,8 +19,8 @@ import TableForData from "./table";
 const GRNDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const triggerReload = useSelector((state) => state.common.triggerReload);
   const grnId = id as string;
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [loadGrn, { isLoading }] = useLazyGetApiV1WarehouseGrnByIdQuery();
 
   const [grnDetails, setGrnDetails] = useState<GrnDto>();

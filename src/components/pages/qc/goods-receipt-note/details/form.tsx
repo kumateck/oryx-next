@@ -10,10 +10,12 @@ import {
 interface SampleFormProps<TFieldValues extends FieldValues> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  baseUnit: string;
 }
 function SampleForm<TFieldValues extends FieldValues>({
   register,
   errors,
+  baseUnit,
 }: SampleFormProps<TFieldValues>) {
   return (
     <div className="space-y-4">
@@ -43,7 +45,7 @@ function SampleForm<TFieldValues extends FieldValues>({
         config={[
           {
             label: "Quantity",
-            type: InputTypes.NUMBER,
+            type: InputTypes.TEXT,
             register: register("quantity" as Path<TFieldValues>),
             readOnly: true,
             errors,
@@ -56,7 +58,7 @@ function SampleForm<TFieldValues extends FieldValues>({
             label: "AR Number",
             type: InputTypes.TEXT,
             register: register("arNumber" as Path<TFieldValues>),
-            readOnly: true,
+            // readOnly: true,
             errors,
           },
         ]}
@@ -68,8 +70,8 @@ function SampleForm<TFieldValues extends FieldValues>({
             type: InputTypes.NUMBER,
             register: register("sampleQuantity" as Path<TFieldValues>),
             required: true,
-            placeholder: "20KG",
-            prefixText: "KG",
+            placeholder: "Enter Sample Quantity",
+            prefixText: baseUnit,
             errors,
           },
         ]}
