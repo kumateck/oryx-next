@@ -12467,6 +12467,7 @@ export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
 export type CreateMaterialSamplingRequest = {
   grnId: string;
   arNumber: string;
+  materialBatchId?: string;
   sampleQuantity: string;
 };
 export type GrnDto = {
@@ -12489,6 +12490,7 @@ export type GrnDtoRead = {
 };
 export type MaterialSamplingDto = {
   grnDto?: GrnDto;
+  materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
   sampleQuantity?: string | null;
@@ -12496,6 +12498,7 @@ export type MaterialSamplingDto = {
 };
 export type MaterialSamplingDtoRead = {
   grnDto?: GrnDtoRead;
+  materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
   sampleQuantity?: string | null;

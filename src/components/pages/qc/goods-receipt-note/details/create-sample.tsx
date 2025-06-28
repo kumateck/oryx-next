@@ -49,6 +49,7 @@ export const CreateSampleMaterial = ({
     try {
       await createSample({
         createMaterialSamplingRequest: {
+          materialBatchId: details.materialBatchId,
           grnId: grnId,
           arNumber: data.arNumber,
           sampleQuantity: data.sampleQuantity,
