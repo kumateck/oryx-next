@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
@@ -17,8 +18,10 @@ import PageTitle from "@/shared/title";
 import StepWrapper from "@/shared/wrapper";
 
 import Create from "./create";
-import TableForData from "./table";
+
 import { BomFormData, BomFormValidator, BomRequestDto } from "./types";
+import { MovableDatatable } from "@/shared/datatable/movable";
+import { getColumns } from "./columns";
 
 const BOM = () => {
   const { id } = useParams();
@@ -38,7 +41,7 @@ const BOM = () => {
     },
   });
 
-  const { control, handleSubmit, setValue, watch } = form;
+  const { control, handleSubmit, setValue, watch, getValues } = form;
 
   const { append, remove, update } = useFieldArray({
     control,
@@ -55,6 +58,7 @@ const BOM = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
+  // console.log(watchedItems, "watchedItems");
   const handleLoadBom = async (productId: string) => {
     try {
       const bomResponse = await loadBom({
@@ -67,6 +71,9 @@ const BOM = () => {
         const defaultBillOfMaterials = bomResponse.billOfMaterial.items.map(
           (bom, idx) => ({
             ...bom,
+            // Ensure each item has an id for the draggable table
+            id: bom.id,
+            rowId: uuidv4(),
             order: idx + 1,
             materialId: {
               label: bom.material?.name as string,
@@ -90,7 +97,8 @@ const BOM = () => {
     }
   };
 
-  const handleSave = async (data: BomFormData) => {
+  const handleSave = async () => {
+    const data = (await getValues()) as BomFormData;
     try {
       if (!data.items.length) {
         toast.error("Please add BOM items");
@@ -111,7 +119,7 @@ const BOM = () => {
             function: item.function,
             grade: item.grade,
             isSubstitutable: item.isSubstitutable,
-            order: index + 1,
+            order: index + 1, // Use the actual index from the reordered array
           })),
         },
       }).unwrap();
@@ -149,11 +157,14 @@ const BOM = () => {
       return false;
     }
 
-    append({
+    // Generate a unique ID for the new item
+    const newItemWithId = {
       ...newItem,
+      id: `item-${Date.now()}-${Math.random()}`,
       order: watchedItems.length + 1,
-    });
+    };
 
+    append(newItemWithId);
     return true;
   };
 
@@ -183,6 +194,51 @@ const BOM = () => {
 
     setValue("items", updatedItems);
   };
+
+  // Handle reordering from the draggable table
+  const handleDataReorder = (reorderedData: BomRequestDto[]) => {
+    // Update the order property for each item
+    const reorderedWithUpdatedOrder = reorderedData.map((item, index) => ({
+      ...item,
+      order: index + 1,
+    }));
+
+    // Replace the entire field array with the reordered data
+    // replace(reorderedWithUpdatedOrder);
+    form.setValue("items", reorderedWithUpdatedOrder);
+    // Optional: Show feedback to user
+    // toast.success("BOM items reordered successfully");
+  };
+
+  // // Define your table columns (you'll need to adapt this to your existing column definitions)
+  // const columns = [
+  //   // Add your column definitions here
+  //   // Example:
+  //   {
+  //     accessorKey: "order",
+  //     header: "Order",
+  //   },
+  //   {
+  //     accessorKey: "materialId.label",
+  //     header: "Material",
+  //   },
+  //   {
+  //     accessorKey: "materialTypeId.label",
+  //     header: "Material Type",
+  //   },
+  //   {
+  //     accessorKey: "baseQuantity",
+  //     header: "Base Quantity",
+  //   },
+  //   {
+  //     accessorKey: "baseUoMId.label",
+  //     header: "UoM",
+  //   },
+  //   // Add more columns as needed
+  //   // You can also add action columns for edit/delete buttons
+  // ];
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative">
@@ -215,50 +271,68 @@ const BOM = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(handleSave)}>
-        <StepWrapper className="w-full pb-3">
-          <div className="flex w-full justify-between">
-            <PageTitle title="BOM List" />
-            <div className="flex gap-2">
-              <Button
-                onClick={handleArchiveBom}
-                type="button"
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                {archiveLoading ? (
-                  <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Icon name="Recycle" className="h-4 w-4" />
-                )}
-                <span>Archive BOM</span>
-              </Button>
-              <Button
-                type="submit"
-                className="flex items-center gap-2"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Icon name="Save" className="h-4 w-4" />
-                )}
-                <span>Save Changes</span>
-              </Button>
-              <Create onAddItem={handleAddItem} existingItems={watchedItems} />
-            </div>
+      <StepWrapper className="w-full pb-3">
+        <div className="flex w-full justify-between">
+          <PageTitle title="BOM List" />
+          <div className="flex gap-2">
+            <Button
+              onClick={handleArchiveBom}
+              type="button"
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              {archiveLoading ? (
+                <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
+              ) : (
+                <Icon name="Recycle" className="h-4 w-4" />
+              )}
+              <span>Archive BOM</span>
+            </Button>
+            <Button
+              onClick={handleSubmit(handleSave)}
+              type="button"
+              className="flex items-center gap-2"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Icon name="LoaderCircle" className="h-4 w-4 animate-spin" />
+              ) : (
+                <Icon name="Save" className="h-4 w-4" />
+              )}
+              <span>Save Changes</span>
+            </Button>
+            <Button
+              onClick={() => setIsOpen(true)}
+              type="button"
+              variant="secondary"
+              className="flex items-center gap-2"
+            >
+              <Icon name="Plus" className="h-4 w-4" />
+              <span>Add New</span>
+            </Button>
+            {isOpen && (
+              <Create
+                onClose={() => setIsOpen(false)}
+                isOpen={isOpen}
+                onAddItem={handleAddItem}
+                existingItems={watchedItems}
+              />
+            )}
           </div>
+        </div>
 
-          <div className="w-full py-6">
-            <TableForData
-              items={watchedItems}
-              onUpdateItem={handleUpdateItem}
-              onRemoveItem={handleRemoveItem}
-              existingItems={watchedItems}
-            />
-          </div>
-        </StepWrapper>
-      </form>
+        <div className="w-full py-6">
+          <MovableDatatable
+            data={watchedItems}
+            columns={getColumns(
+              handleUpdateItem,
+              handleRemoveItem,
+              watchedItems,
+            )}
+            onDataReorder={handleDataReorder}
+          />
+        </div>
+      </StepWrapper>
     </div>
   );
 };

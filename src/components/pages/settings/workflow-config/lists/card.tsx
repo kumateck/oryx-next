@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
-import { Icon, Switch } from "@/components/ui";
+import { Icon, Input, Label, Switch } from "@/components/ui";
 import { QuestionType, cn } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 
@@ -251,6 +251,23 @@ export const Card: FC<CardProps> = ({
                 )
               }
             />
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Specification:</Label>
+              <Input
+                type="text"
+                className="mt-2"
+                value={question.description || ""}
+                onChange={(e) =>
+                  setQuestions((prevState) =>
+                    prevState?.map((item) =>
+                      item.id === question.id
+                        ? { ...item, description: e.target.value }
+                        : item,
+                    ),
+                  )
+                }
+              />
+            </div>
           </div>
         )}
       </div>

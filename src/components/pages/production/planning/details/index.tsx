@@ -19,8 +19,9 @@ import { Procedure } from "./tabs/procedure";
 
 const ViewPage: React.FC = () => {
   const { id } = useParams();
+  const productId = id as string;
   const { data: singleDetailed } = useGetApiV1ProductByProductIdQuery({
-    productId: id as string,
+    productId,
     module: AuditModules.production.name,
     subModule: AuditModules.production.planning,
   });
@@ -43,7 +44,7 @@ const ViewPage: React.FC = () => {
               <PageTitle title={"Products"} />
             </div>
           </div>
-          <Link href={routes.editPlanning(singleDetailed?.id as string)}>
+          <Link href={routes.editPlanning(productId)}>
             <div className="flex items-center gap-1 rounded-2xl border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
               <Icon name="Pencil" className="size-4" />
               <span className="text-sm">Edit</span>

@@ -1,7 +1,9 @@
+import { QuestionType } from "@/lib";
+
 // Define a type for the "type" object
 interface Type {
   id: string;
-  name: string;
+  name: QuestionType;
   title: string;
 }
 

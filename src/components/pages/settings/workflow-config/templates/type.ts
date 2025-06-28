@@ -32,10 +32,12 @@ export interface templateQuestions {
   label: string;
   type: QuestionType;
   options: { name: string }[];
+  description?: string;
 }
 
 export interface TemplateSection {
   id: string; // Temporary ID for React keys
   name: string;
+  description?: string;
   questions: templateQuestions[];
 }

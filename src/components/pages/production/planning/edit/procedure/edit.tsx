@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
   Button,
@@ -10,61 +11,103 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import {
+  AuditModules,
+  COLLECTION_TYPES,
+  OperationActionOptions,
+  Option,
+} from "@/lib";
 import {
   PostApiV1CollectionApiArg,
+  useGetApiV1ProductArdProductByProductIdQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import { RoutingRequestDto, CreateRoutingValidator } from "./types";
 import ProcedureForm from "./form";
-import {
-  CreateRoutingValidator,
-  ProcedureType,
-  RoutingRequestDto,
-} from "./types";
+import _ from "lodash";
+import { useParams } from "next/navigation";
+import SecondForm from "./form-2";
 
-// import "./types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  setItemLists: React.Dispatch<React.SetStateAction<RoutingRequestDto[]>>;
-  productId?: string;
   details: RoutingRequestDto;
+  onUpdateItem: (updatedItem: RoutingRequestDto) => boolean;
+  existingItems: RoutingRequestDto[];
+  currentIndex: number;
 }
-const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
+
+const Edit = ({
+  isOpen,
+  onClose,
+  details,
+  onUpdateItem,
+  existingItems,
+}: Props) => {
+  const { id } = useParams();
+  const productId = id as string;
+  const { data: productARD } = useGetApiV1ProductArdProductByProductIdQuery({
+    productId,
+  });
+  const form = useForm<RoutingRequestDto>({
+    resolver: CreateRoutingValidator,
+    mode: "onChange",
+    defaultValues: details,
+  });
+
   const {
     register,
     control,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
     reset,
     handleSubmit,
-  } = useForm<RoutingRequestDto>({
-    resolver: CreateRoutingValidator,
-    mode: "all",
-    defaultValues: details,
+    getValues,
+  } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "personnels",
   });
   const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
+    usePostApiV1CollectionMutation();
+
+  // const typeValues = useWatch({
+  //   control,
+  //   name: "type",
+  // }) as ProcedureType;
 
   useEffect(() => {
-    loadCollection({
-      body: [
-        COLLECTION_TYPES.WorkCenter,
-        COLLECTION_TYPES.Operation,
-        COLLECTION_TYPES.Resource,
-        COLLECTION_TYPES.Role,
-        COLLECTION_TYPES.User,
-      ],
-    } as PostApiV1CollectionApiArg).unwrap();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isOpen) {
+      loadCollection({
+        module: AuditModules.general.name,
+        subModule: AuditModules.general.collection,
+        body: [
+          COLLECTION_TYPES.WorkCenter,
+          COLLECTION_TYPES.Operation,
+          COLLECTION_TYPES.Resource,
+          COLLECTION_TYPES.Role,
+          COLLECTION_TYPES.User,
+        ],
+      } as PostApiV1CollectionApiArg);
+    }
+  }, [isOpen, loadCollection]);
 
-  const operationOptions = collectionResponse?.[
-    COLLECTION_TYPES.Operation
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+  const operationOptions = _.isEmpty(existingItems)
+    ? (collectionResponse?.[COLLECTION_TYPES.Operation]?.map((uom) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[])
+    : (_.filter(
+        collectionResponse?.[COLLECTION_TYPES.Operation],
+        (itemA) =>
+          !_.some(
+            existingItems,
+            (itemB) => itemA?.id === itemB?.operationId.value,
+          ),
+      )?.map((uom) => ({
+        label: uom.name,
+        value: uom.id,
+      })) as Option[]);
 
   const workCenterOptions = collectionResponse?.[
     COLLECTION_TYPES.WorkCenter
@@ -78,6 +121,7 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
       value: uom.id,
     }),
   ) as Option[];
+
   const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
     (role) => ({
       label: role.name,
@@ -92,57 +136,107 @@ const Edit = ({ isOpen, onClose, setItemLists, details }: Props) => {
     }),
   ) as Option[];
 
-  const typeValues = useWatch({
-    control,
-    name: "type",
-  }) as ProcedureType;
-  const onSubmit = (data: RoutingRequestDto) => {
-    setItemLists((prevState) => {
-      // Check if the item already exists in the list
-      const itemIndex = prevState.findIndex(
-        (item) => item.idIndex === details.idIndex,
-      );
-      if (itemIndex !== -1) {
-        // Update the existing item if found
-        const updatedList = [...prevState];
-        updatedList[itemIndex] = data;
-        return updatedList;
-      } else {
-        // Add new item if not found
-        return [...prevState, data];
-      }
-    });
+  const ardOptions = productARD?.map((uom) => ({
+    label: uom.productStandardTestProcedure?.stpNumber,
+    value: uom.id,
+  })) as Option[];
 
-    reset(); // Reset the form after submission
-    onClose(); // Close the form/modal if applicable
+  const onSubmit = (data: RoutingRequestDto) => {
+    const success = onUpdateItem(data);
+    if (success) {
+      toast.success("Procedure item updated successfully");
+      onClose();
+    }
   };
+
+  const handleClose = () => {
+    reset(details);
+    onClose();
+  };
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const dots = [0, 1];
+  const typeValues =
+    useWatch({
+      control,
+      name: "personnels",
+    })?.map((stage) => stage?.type) || [];
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Edit Procedure</DialogTitle>
+          <DialogTitle>Edit Procedure Item</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ProcedureForm
-            control={control}
-            errors={errors}
-            operationOptions={operationOptions}
-            resourceOptions={resourceOptions}
-            workCenterOptions={workCenterOptions}
-            register={register}
-            defaultValues={details}
-            selectedType={typeValues}
-            roleOptions={roleOptions}
-            userOptions={userOptions}
-          />
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {activeIndex === 0 && (
+            <ProcedureForm
+              control={control}
+              errors={errors}
+              operationOptions={operationOptions}
+              resourceOptions={resourceOptions}
+              workCenterOptions={workCenterOptions}
+              register={register}
+            />
+          )}
+          {activeIndex === 1 && (
+            <SecondForm
+              fields={fields}
+              append={append}
+              remove={remove}
+              register={register}
+              control={control}
+              errors={errors}
+              roleOptions={roleOptions}
+              userOptions={userOptions}
+              operationActionOptions={OperationActionOptions}
+              typeValues={typeValues}
+              ardOptions={ardOptions}
+              getValues={getValues}
+            />
+          )}
+          <div className="flex space-x-2 w-full justify-center items-center py-5">
+            {dots.map((_, index) => (
+              <button
+                type="button"
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`w-4 h-4 rounded-full transition-colors duration-200 ${
+                  activeIndex === index
+                    ? "bg-primary-default"
+                    : "bg-neutral-secondary"
+                }`}
+              />
+            ))}
+          </div>
           <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant={"default"} className="flex items-center gap-2">
-              <Icon name="Plus" className="h-4 w-4" />
-              <span>Update Changes</span>{" "}
-            </Button>
+            {activeIndex === 0 && (
+              <Button
+                type="button"
+                variant="default"
+                className="flex items-center gap-2"
+                onClick={() => setActiveIndex(1)}
+              >
+                <Icon name="Plus" className="h-4 w-4" />
+                <span>Next</span>
+              </Button>
+            )}
+            {activeIndex === 1 && (
+              <Button
+                type="submit"
+                variant="default"
+                className="flex items-center gap-2"
+                disabled={!isValid || !isDirty}
+              >
+                <Icon name="Check" className="h-4 w-4" />
+                <span>Update Changes</span>
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

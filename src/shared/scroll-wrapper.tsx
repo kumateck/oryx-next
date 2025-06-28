@@ -30,16 +30,16 @@ const ScrollableWrapper = ({ children, className }: Props) => {
   }, []);
 
   return (
-    <ScrollArea
-      // Apply the dynamic height style
-      style={{ height: availableHeight }}
-      className="w-full overflow-auto"
-    >
-      {/* Attach ref to the inner wrapper (if ScrollArea doesn’t forward refs, wrap it in a div) */}
-      <div ref={containerRef} className={cn("", className)}>
-        {children}
-      </div>
-    </ScrollArea>
+    <div ref={containerRef} className={cn("", className)}>
+      <ScrollArea
+        // Apply the dynamic height style
+        style={{ maxHeight: availableHeight }}
+        className="w-full overflow-auto"
+      >
+        {/* Attach ref to the inner wrapper (if ScrollArea doesn’t forward refs, wrap it in a div) */}
+        <div>{children}</div>
+      </ScrollArea>
+    </div>
   );
 };
 

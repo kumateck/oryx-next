@@ -7,7 +7,7 @@ export const CreateBomSchema = z.object({
   grade: z.string().optional(),
   isSubstitutable: z.boolean().optional(),
   id: z.string().optional(),
-  idIndex: z.string().optional(),
+  rowId: z.string(),
   materialId: z.object(
     {
       value: z.string().min(1, { message: "Material is required" }),
@@ -45,24 +45,6 @@ export const CreateBomSchema = z.object({
       message: "Material Type is required",
     },
   ),
-  //   uoMId: z.object(
-  //     {
-  //       value: z.string().min(1, { message: "Unit of Measurement is required" }),
-  //       label: z.string(),
-  //     },
-  //     {
-  //       message: "Unit of Measurement is required",
-  //     },
-  //   ),
-  //   type: z.object(
-  //     {
-  //       value: z.string().min(1, { message: "Material is required" }),
-  //       label: z.string(),
-  //     },
-  //     {
-  //       message: "Material is required",
-  //     },
-  //   ),
 });
 export const BomFormSchema = z.object({
   items: z.array(CreateBomSchema),
@@ -73,4 +55,3 @@ export const BomFormValidator = zodResolver(BomFormSchema);
 
 export type BomRequestDto = z.infer<typeof CreateBomSchema>;
 export const CreateBomValidator = zodResolver(CreateBomSchema);
- 

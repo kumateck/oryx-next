@@ -129,7 +129,7 @@ export const settingCategories: SettingCategory[] = [
       { name: "Locations", path: "/settings/locations", icon: "Layers2" },
       { name: "Racks", path: "/settings/racks", icon: "Rows3" },
       { name: "Shelves", path: "/settings/shelves", icon: "Rows4" },
-      { name: "Equipment", path: "/settings/equipment", icon: "Wrench" },
+      { name: "Equipment", path: "/settings/equipments", icon: "Wrench" },
     ],
   },
   {

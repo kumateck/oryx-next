@@ -19,6 +19,7 @@ import {
   BatchStatus,
   FloorType,
   MaterialStatus,
+  OperationAction,
   PackLocationType,
   QuestionType,
   RawLocationType,
@@ -885,6 +886,19 @@ export const QuestionTypeOptions = Object.values(QuestionType)
     };
   }) as Option[];
 
+export const OperationActionOptions = Object.values(OperationAction)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = OperationAction[enumValue as OperationAction];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
 export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
   label: key,
   value: FloorType[key as keyof typeof FloorType],
@@ -1455,4 +1469,13 @@ export function evaluateExpressionWithPreview(
   const preview = renderExpressionTemplate(expr, values);
   const result = evaluateRenderedExpression(preview);
   return { preview, result };
+}
+
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
 }

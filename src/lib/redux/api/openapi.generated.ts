@@ -13266,12 +13266,6 @@ export type ProductAnalyticalRawData = {
   formId?: string;
   form?: Form;
 };
-export type RouteOperationAction = {
-  id?: string;
-  productAnalyticalRawDataId?: string | null;
-  productAnalyticalRawData?: ProductAnalyticalRawData;
-  action?: OperationAction;
-};
 export type ProductionActivityStepUser = {
   id?: string;
   createdAt?: string;
@@ -13287,7 +13281,9 @@ export type ProductionActivityStepUser = {
   productionActivityStep?: ProductionActivityStep;
   userId?: string;
   user?: User;
-  actions?: RouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
 };
 export type ProductionActivityStep = {
   id?: string;
@@ -13548,7 +13544,9 @@ export type RouteResponsibleUser = {
   route?: Route;
   userId?: string;
   user?: User;
-  actions?: RouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
 };
 export type RouteResponsibleRole = {
   id?: string;
@@ -13565,7 +13563,9 @@ export type RouteResponsibleRole = {
   route?: Route;
   roleId?: string;
   role?: Role;
-  actions?: RouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  productAnalyticalRawData?: ProductAnalyticalRawData;
+  action?: OperationAction;
 };
 export type RouteWorkCenter = {
   id?: string;
@@ -16216,20 +16216,18 @@ export type ProductAnalyticalRawDataDto = {
   specNumber?: string | null;
   stage?: Stage;
   description?: string | null;
-  form?: FormDto;
+  form?: CollectionItemDto;
   productStandardTestProcedure?: ProductStandardTestProcedureDto;
-};
-export type RouteOperationActionDto = {
-  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
-  action?: OperationAction;
 };
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type RouteResponsibleRoleDto = {
   role?: CollectionItemDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type RouteWorkCenterDto = {
   workCenter?: CollectionItemDto;
@@ -16357,17 +16355,15 @@ export type UpdateProductPackageDescriptionRequest = {
 export type CreateRouteResource = {
   resourceId?: string;
 };
-export type CreateRouteOperationAction = {
+export type CreateRouteResponsibleUser = {
+  userId?: string;
   productAnalyticalRawDataId?: string | null;
   action?: OperationAction;
 };
-export type CreateRouteResponsibleUser = {
-  userId?: string;
-  actions?: CreateRouteOperationAction[] | null;
-};
 export type CreateRouteResponsibleRole = {
   roleId?: string;
-  actions?: CreateRouteOperationAction[] | null;
+  productAnalyticalRawDataId?: string | null;
+  action?: OperationAction;
 };
 export type CreateRouteWorkCenter = {
   workCenterId?: string;
@@ -16551,7 +16547,8 @@ export type ProductionActivityStepUserDto = {
   createdBy?: UserDto;
   createdAt?: string;
   user?: UserDto;
-  actions?: RouteOperationActionDto[] | null;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
 };
 export type ProductionActivityStepDto = {
   id?: string;
