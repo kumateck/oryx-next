@@ -32,7 +32,7 @@ const PersonnelSchema = z.object({
     ),
   userId: IdSchema("User").optional(),
   roleId: IdSchema("Role").optional(),
-  productAnalyticalRawDataId: IdSchema("Analytical Raw Data"),
+  productAnalyticalRawDataId: IdSchema("Analytical Raw Data").optional(),
   action: IdSchema("Action"),
 });
 export const CreateRoutingSchema = z.object({
