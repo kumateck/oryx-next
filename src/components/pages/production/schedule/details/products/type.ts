@@ -16,9 +16,7 @@ export const createRequisitionItemRequestSchema = z.object({
   totalStockLabel: z.string().optional(),
   materialStatus: z.string().optional(),
   materialId: z.string().min(1, { message: "Material is required" }),
-  uomId: z
-    .string({ required_error: "UOM is required" })
-    .min(1, { message: "UOM is required" }),
+  uomId: z.string().optional(),
   quantityOnHand: z.number().min(1, { message: "Quantity is required" }),
   quantityRequested: z.number().min(1, { message: "Quantity is required" }),
   quantity: z.number().optional(),

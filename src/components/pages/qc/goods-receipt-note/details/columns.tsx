@@ -155,6 +155,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
             variant="ghost"
             className="flex cursor-pointer items-start justify-center gap-2"
             onClick={() => setOpenSample(true)}
+            disabled={row.original.status !== BatchStatusEnum.Quarantine}
           >
             <Icon
               name="CreativeCommons"
