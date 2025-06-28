@@ -179,14 +179,16 @@ const Routing = () => {
             ?.filter((item) => item?.userId?.value)
             ?.map((item) => ({
               userId: item?.userId?.value,
-              productAnalyticalRawDataId: item.productAnalyticalRawDataId.value,
+              productAnalyticalRawDataId:
+                item.productAnalyticalRawDataId.value || undefined,
               action: Number(item.action.value) as OperationAction,
             })),
           responsibleRoles: item.personnels
             ?.filter((item) => item?.roleId?.value)
             ?.map((item) => ({
               roleId: item?.roleId?.value,
-              productAnalyticalRawDataId: item.productAnalyticalRawDataId.value,
+              productAnalyticalRawDataId:
+                item.productAnalyticalRawDataId.value ?? undefined,
               action: Number(item.action.value) as OperationAction,
             })),
           workCenters: item.workCenters?.map((item) => ({
