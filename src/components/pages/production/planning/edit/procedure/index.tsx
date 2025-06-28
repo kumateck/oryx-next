@@ -188,7 +188,7 @@ const Routing = () => {
             ?.map((item) => ({
               roleId: item?.roleId?.value,
               productAnalyticalRawDataId:
-                item.productAnalyticalRawDataId.value ?? undefined,
+                item.productAnalyticalRawDataId.value || undefined,
               action: Number(item.action.value) as OperationAction,
             })),
           workCenters: item.workCenters?.map((item) => ({
