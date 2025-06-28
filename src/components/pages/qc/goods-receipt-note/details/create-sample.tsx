@@ -14,20 +14,22 @@ import { toast } from "sonner";
 import { cn, ErrorResponse, isErrorResponse } from "@/lib";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useParams } from "next/navigation";
 
 type CreateSampleMaterialProps = {
   isOpen: boolean;
   onClose: () => void;
   details: CreateSampleFormData;
-  grnId: string;
 };
 
 export const CreateSampleMaterial = ({
   isOpen,
   onClose,
   details,
-  grnId,
 }: CreateSampleMaterialProps) => {
+  const { id } = useParams();
+  const grnId = id as string;
+
   const [createSample, { isLoading }] = usePostApiV1MaterialSamplingsMutation();
 
   const dispatch = useDispatch();
@@ -39,9 +41,7 @@ export const CreateSampleMaterial = ({
     formState: { errors },
   } = useForm<CreateSampleFormData>({
     resolver: CreateSampleFormResolver,
-    defaultValues: {
-      ...details,
-    },
+    defaultValues: details,
   });
 
   // Function to handle form submission
@@ -50,8 +50,7 @@ export const CreateSampleMaterial = ({
       await createSample({
         createMaterialSamplingRequest: {
           grnId: grnId,
-          // arNumber: data.arNumber ?? "AR-0000",
-          arNumber: "AR-0000",
+          arNumber: data.arNumber,
           sampleQuantity: data.sampleQuantity,
         },
       });
@@ -74,7 +73,11 @@ export const CreateSampleMaterial = ({
           Sample Material
         </DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <SampleForm register={register} errors={errors} />
+          <SampleForm
+            register={register}
+            errors={errors}
+            baseUnit={details.baseUnit as string}
+          />
           <DialogFooter className="flex items-center justify-center gap-2">
             <Button disabled={isLoading} variant="outline" onClick={onClose}>
               Cancel

@@ -6,6 +6,7 @@ import {
   BatchStatus as BatchStatusEnum,
   Units,
   convertToLargestUnit,
+  getSmallestUnit,
 } from "@/lib";
 import {
   BatchStatus,
@@ -126,7 +127,9 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [openSample, setOpenSample] = useState(false);
-
+  const totqty = row.original.totalQuantity ?? 0;
+  const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
+  const qty = convertToLargestUnit(totqty, baseUnit);
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
@@ -163,13 +166,13 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
       </TableMenuAction>
       <CreateSampleMaterial
         isOpen={openSample}
-        grnId={row.original.id as string}
         details={{
           materialName: row.original.material?.name ?? "",
           batchNumber: row.original.batchNumber ?? "",
           arNumber: row.original?.code ?? "",
-          quantity: row.original.totalQuantity as number,
+          quantity: `${qty.value} ${qty.unit}`,
           sampleQuantity: "",
+          baseUnit,
         }}
         onClose={() => setOpenSample(false)}
       />
