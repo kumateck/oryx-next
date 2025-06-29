@@ -49,6 +49,7 @@ export enum CodeModelTypes {
   PurchaseOrder = "PurchaseOrder",
   ShipmentDocument = "ShipmentDocument",
   GRNNumber = "GrnNumber",
+  FinishedGoodsTransferNote = "FinishedGoodsTransferNote",
 }
 
 export enum ApprovalDocument {
