@@ -337,10 +337,33 @@
 // };
 
 // export default CompleteDesktop;
-
+"use client";
+import { WorkflowFormType } from "@/lib";
+import {
+  useGetApiV1FormByFormIdQuery,
+  useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
+} from "@/lib/redux/api/openapi.generated";
+import { useParams } from "next/navigation";
 import React from "react";
 
 const Complete = () => {
+  const { type, id } = useParams();
+  const materialBatchId = id as string;
+  const formType = Number(type) as WorkflowFormType;
+
+  const { data } = useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery({
+    materialBatchId,
+  });
+
+  console.log(data, formType);
+  const formId = "01978a31-d7a3-7f7d-8b43-5c7b3e07b299";
+
+  const { data: formTemplate } = useGetApiV1FormByFormIdQuery({
+    formId,
+  });
+
+  console.log(formTemplate, "formTemplate");
+
   return <div>Complete</div>;
 };
 

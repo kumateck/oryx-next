@@ -5,15 +5,20 @@ import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
   Units,
+  WorkflowFormType,
   convertToLargestUnit,
   getSmallestUnit,
 } from "@/lib";
 import {
   BatchStatus,
   MaterialBatchDto,
+  usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { CreateSampleMaterial } from "./create-sample";
+import { useRouter } from "next/navigation";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -126,15 +131,30 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
 export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const router = useRouter();
+  const [startTestMutation] =
+    usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation();
   const [openSample, setOpenSample] = useState(false);
   const totqty = row.original.totalQuantity ?? 0;
   const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
   const qty = convertToLargestUnit(totqty, baseUnit);
+  const handleStartTest = async () => {
+    try {
+      await startTestMutation({
+        materialBatchId: row.original.id as string,
+      }).unwrap();
+      toast.success("Test started successfully");
+      router.push(`/complete/${WorkflowFormType.Material}/${row.original.id}`);
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem>
           <Button
+            onClick={() => handleStartTest()}
             variant={
               row.original.status === BatchStatusEnum.Testing
                 ? "default"
