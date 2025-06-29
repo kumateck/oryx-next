@@ -18,6 +18,10 @@ export enum BatchStatus {
   Approved = 8,
 }
 
+export enum WorkflowFormType {
+  Material = 0,
+  Product = 1,
+}
 export enum DistributedMaterialStatus {
   Distributed = 0,
   Arrived = 1,
