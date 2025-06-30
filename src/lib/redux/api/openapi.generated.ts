@@ -2149,12 +2149,25 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1MaterialArdStartTestByMaterialBatchId: build.query<
-      GetApiV1MaterialArdStartTestByMaterialBatchIdApiResponse,
-      GetApiV1MaterialArdStartTestByMaterialBatchIdApiArg
+    getApiV1MaterialArdMaterialBatchByMaterialBatchId: build.query<
+      GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiResponse,
+      GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/material/batch/${queryArg.materialBatchId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1MaterialArdStartTestByMaterialBatchId: build.mutation<
+      PutApiV1MaterialArdStartTestByMaterialBatchIdApiResponse,
+      PutApiV1MaterialArdStartTestByMaterialBatchIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/material-ard/start-test/${queryArg.materialBatchId}`,
+        method: "PUT",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -2175,12 +2188,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1MaterialSamplingsById: build.query<
-      GetApiV1MaterialSamplingsByIdApiResponse,
-      GetApiV1MaterialSamplingsByIdApiArg
+    getApiV1MaterialSamplingsByGrnIdAndBatchId: build.query<
+      GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiResponse,
+      GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/material-samplings/${queryArg.id}`,
+        url: `/api/v1/material-samplings/${queryArg.grnId}/${queryArg.batchId}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -3678,12 +3691,13 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductArdStartTestByBatchManufacturingRecordId: build.query<
-      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
-      GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
+    putApiV1ProductArdStartTestByBatchManufacturingRecordId: build.mutation<
+      PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
+      PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
+        method: "PUT",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -7839,7 +7853,7 @@ export type DeleteApiV1MaterialArdByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1MaterialArdMaterialByMaterialIdApiResponse =
-  /** status 200 OK */ MaterialAnalyticalRawDataDto[];
+  /** status 200 OK */ MaterialAnalyticalRawDataDto;
 export type GetApiV1MaterialArdMaterialByMaterialIdApiArg = {
   materialId: string;
   /** The module this request falls under */
@@ -7847,8 +7861,17 @@ export type GetApiV1MaterialArdMaterialByMaterialIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1MaterialArdStartTestByMaterialBatchIdApiResponse = unknown;
-export type GetApiV1MaterialArdStartTestByMaterialBatchIdApiArg = {
+export type GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiResponse =
+  /** status 200 OK */ MaterialAnalyticalRawDataDto;
+export type GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiArg = {
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1MaterialArdStartTestByMaterialBatchIdApiResponse = unknown;
+export type PutApiV1MaterialArdStartTestByMaterialBatchIdApiArg = {
   materialBatchId: string;
   /** The module this request falls under */
   module?: any;
@@ -7863,10 +7886,11 @@ export type PostApiV1MaterialSamplingsApiArg = {
   subModule?: any;
   createMaterialSamplingRequest: CreateMaterialSamplingRequest;
 };
-export type GetApiV1MaterialSamplingsByIdApiResponse =
+export type GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiResponse =
   /** status 200 OK */ MaterialSamplingDtoRead;
-export type GetApiV1MaterialSamplingsByIdApiArg = {
-  id: string;
+export type GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiArg = {
+  grnId: string;
+  batchId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8983,9 +9007,9 @@ export type GetApiV1ProductArdProductByProductIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse =
+export type PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse =
   unknown;
-export type GetApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg = {
+export type PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg = {
   batchManufacturingRecordId: string;
   /** The module this request falls under */
   module?: any;
@@ -12961,7 +12985,7 @@ export type ProductPackageRead = {
   directLinkMaterial?: MaterialRead;
   packingExcessMargin?: number;
 };
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Operation = {
   id?: string;
   createdAt?: string;
@@ -18122,11 +18146,12 @@ export const {
   useDeleteApiV1MaterialArdByIdMutation,
   useGetApiV1MaterialArdMaterialByMaterialIdQuery,
   useLazyGetApiV1MaterialArdMaterialByMaterialIdQuery,
-  useGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
-  useLazyGetApiV1MaterialArdStartTestByMaterialBatchIdQuery,
+  useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
+  usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
   usePostApiV1MaterialSamplingsMutation,
-  useGetApiV1MaterialSamplingsByIdQuery,
-  useLazyGetApiV1MaterialSamplingsByIdQuery,
+  useGetApiV1MaterialSamplingsByGrnIdAndBatchIdQuery,
+  useLazyGetApiV1MaterialSamplingsByGrnIdAndBatchIdQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -18285,8 +18310,7 @@ export const {
   useDeleteApiV1ProductArdByIdMutation,
   useGetApiV1ProductArdProductByProductIdQuery,
   useLazyGetApiV1ProductArdProductByProductIdQuery,
-  useGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
-  useLazyGetApiV1ProductArdStartTestByBatchManufacturingRecordIdQuery,
+  usePutApiV1ProductArdStartTestByBatchManufacturingRecordIdMutation,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,

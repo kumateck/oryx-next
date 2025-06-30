@@ -1,7 +1,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DistributedFinishedProductDtoRead } from "@/lib/redux/api/openapi.generated";
-import { DropdownMenuItem, Icon } from "@/components/ui";
+import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useState } from "react";
 import { ApproveTransferNote } from "./approve";
@@ -18,16 +18,13 @@ export function DataTableRowActions<
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => setOpen(true)}
-          >
+          <Button onClick={() => setOpen(true)}>
             <Icon
               name="Check"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
             <span>Approve</span>
-          </div>
+          </Button>
         </DropdownMenuItem>
       </TableMenuAction>
       <ApproveTransferNote
