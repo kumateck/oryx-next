@@ -55,7 +55,7 @@ const AddQuestions = ({ questions, setQuestions, isOpen, onClose }: Props) => {
     try {
       // Assuming your query accepts a page parameter (adjust if necessary)
       const response = await loadQuestions({
-        page,
+        page: debouncedSearchTerm ? 1 : page,
         searchQuery: debouncedSearchTerm,
       }).unwrap();
       const loadedQuestions = response.data || [];
