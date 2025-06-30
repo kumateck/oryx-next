@@ -45,7 +45,7 @@ function Page() {
         <PageTitle title="Analytical Raw Data - Product" />
         <Button onClick={() => setIsOpen(true)} className="flex items-center">
           <Icon name="Plus" />
-          <span>Add ARD</span>
+          <span>Add Product ARD</span>
         </Button>
       </div>
       <ScrollablePageWrapper>

@@ -190,6 +190,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1ApprovalDelegate: build.mutation<
+      PostApiV1ApprovalDelegateApiResponse,
+      PostApiV1ApprovalDelegateApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/approval/delegate`,
+        method: "POST",
+        body: queryArg.delegateApproval,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ApprovalByApprovalId: build.query<
       GetApiV1ApprovalByApprovalIdApiResponse,
       GetApiV1ApprovalByApprovalIdApiArg
@@ -1274,6 +1288,67 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1FormGenerateCertificateByMaterialBatchId: build.mutation<
+      PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse,
+      PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/generate-certificate/${queryArg.materialBatchId}`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
+      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
+      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/responses/material-batch/${queryArg.materialBatchId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormResponsesBmrByBatchManufacturingRecordId: build.query<
+      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse,
+      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/responses/bmr/${queryArg.batchManufacturingRecordId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormWithResponsesMaterialBatchByMaterialBatchId: build.query<
+      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse,
+      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/with-responses/material-batch/${queryArg.materialBatchId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormWithResponsesBmrByBatchManufacturingRecordId: build.query<
+      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse,
+      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/with-responses/bmr/${queryArg.batchManufacturingRecordId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Holidays: build.mutation<
       PostApiV1HolidaysApiResponse,
       PostApiV1HolidaysApiArg
@@ -2226,6 +2301,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           materialKind: queryArg.materialKind,
+          unused: queryArg.unused,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -6429,6 +6505,15 @@ export type GetApiV1ApprovalApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1ApprovalDelegateApiResponse =
+  /** status 204 No Content */ DelegateApprovalDtoRead;
+export type PostApiV1ApprovalDelegateApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  delegateApproval: DelegateApproval;
+};
 export type GetApiV1ApprovalByApprovalIdApiResponse =
   /** status 200 OK */ ApprovalDto;
 export type GetApiV1ApprovalByApprovalIdApiArg = {
@@ -7163,7 +7248,7 @@ export type PostApiV1FormResponsesApiArg = {
   createResponseRequest: CreateResponseRequest;
 };
 export type GetApiV1FormResponsesByFormResponseIdApiResponse =
-  /** status 200 OK */ FormResponseDto;
+  /** status 200 OK */ ResponseDto;
 export type GetApiV1FormResponsesByFormResponseIdApiArg = {
   /** The ID of the form response. */
   formResponseId: string;
@@ -7219,6 +7304,56 @@ export type DeleteApiV1FormQuestionByQuestionIdApiResponse = unknown;
 export type DeleteApiV1FormQuestionByQuestionIdApiArg = {
   /** The ID of the question to be deleted. */
   questionId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse =
+  unknown;
+export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg = {
+  /** The ID of the batch manufacturing record. */
+  batchManufacturingRecordId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse =
+  /** status 200 OK */ FormDto;
+export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse =
+  /** status 200 OK */ FormDto;
+export type GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg = {
+  /** The ID of the batch manufacturing record. */
+  batchManufacturingRecordId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -7908,6 +8043,7 @@ export type GetApiV1MaterialStpsApiResponse =
   /** status 200 OK */ MaterialStandardTestProcedureDtoIEnumerablePaginateable;
 export type GetApiV1MaterialStpsApiArg = {
   materialKind?: MaterialKind;
+  unused?: boolean;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -11089,6 +11225,16 @@ export type ApprovalDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type AttachmentDto = {
+  link?: string | null;
+  name?: string | null;
+  id?: string;
+  reference?: string | null;
+};
+export type Gender = 0 | 1;
+export type MaritalStatus = 0 | 1;
+export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type EmployeeType = 0 | 1;
 export type WarehouseType = 0 | 1 | 2 | 3;
 export type WarehouseDto = {
   id?: string;
@@ -11117,6 +11263,149 @@ export type DepartmentDtoRead = {
   description?: string | null;
   warehouses?: WarehouseDto[] | null;
   isBeta?: boolean;
+};
+export type DesignationDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  maximumLeaveDays?: number;
+  departments?: DepartmentDto[] | null;
+};
+export type DesignationDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  maximumLeaveDays?: number;
+  departments?: DepartmentDtoRead[] | null;
+};
+export type LifeStatus = 0 | 1;
+export type PersonDto = {
+  fullName: string;
+  phoneNumber: string;
+  occupation: string;
+  lifeStatus: LifeStatus;
+};
+export type EmergencyContactDto = {
+  fullName: string;
+  contactNumber: string;
+  relationship: string;
+  residentialAddress: string;
+};
+export type ChildDto = {
+  fullName: string;
+  dateOfBirth: string;
+  gender: Gender;
+};
+export type SiblingDto = {
+  fullName?: string | null;
+  contact: string;
+  gender: Gender;
+};
+export type EducationDto = {
+  schoolName: string;
+  startDate: string;
+  endDate: string;
+  major: string;
+  qualificationEarned: string;
+};
+export type EmploymentHistoryDto = {
+  companyName?: string | null;
+  startDate?: string;
+  endDate?: string;
+  position?: string | null;
+};
+export type EmployeeDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  avatar?: string | null;
+  dateOfBirth?: string;
+  gender?: Gender;
+  residentialAddress?: string | null;
+  annualLeaveDays?: number;
+  nationality?: string | null;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
+  region?: string | null;
+  maritalStatus?: MaritalStatus;
+  religion?: Religion;
+  staffNumber?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  type?: EmployeeType;
+  dateEmployed?: string;
+  designation?: DesignationDto;
+  department?: DepartmentDto;
+  mother?: PersonDto;
+  father?: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact?: EmergencyContactDto;
+  nextOfKin?: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground?: EducationDto[] | null;
+  employmentHistory?: EmploymentHistoryDto[] | null;
+};
+export type EmployeeDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  avatar?: string | null;
+  dateOfBirth?: string;
+  gender?: Gender;
+  residentialAddress?: string | null;
+  annualLeaveDays?: number;
+  nationality?: string | null;
+  bankAccountNumber?: string | null;
+  ssnitNumber?: string | null;
+  ghanaCardNumber?: string | null;
+  region?: string | null;
+  maritalStatus?: MaritalStatus;
+  religion?: Religion;
+  staffNumber?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  type?: EmployeeType;
+  dateEmployed?: string;
+  designation?: DesignationDtoRead;
+  department?: DepartmentDtoRead;
+  mother?: PersonDto;
+  father?: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact?: EmergencyContactDto;
+  nextOfKin?: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground?: EducationDto[] | null;
+  employmentHistory?: EmploymentHistoryDto[] | null;
+};
+export type DelegateApprovalDto = {
+  startDate?: string;
+  endDate?: string;
+  employeeId?: string;
+  employee?: EmployeeDto;
+};
+export type DelegateApprovalDtoRead = {
+  startDate?: string;
+  endDate?: string;
+  employeeId?: string;
+  employee?: EmployeeDtoRead;
+};
+export type DelegateApproval = {
+  startDate: string;
+  endDate: string;
+  employeeId: string;
 };
 export type ApprovalStatus = 0 | 1 | 2;
 export type ApprovalLog = {
@@ -11377,24 +11666,6 @@ export type CreateDesignationRequest = {
   maximumLeaveDays: number;
   departmentIds: string[];
 };
-export type DesignationDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  maximumLeaveDays?: number;
-  departments?: DepartmentDto[] | null;
-};
-export type DesignationDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  maximumLeaveDays?: number;
-  departments?: DepartmentDtoRead[] | null;
-};
 export type DesignationDtoIEnumerablePaginateable = {
   data?: DesignationDto[] | null;
   pageIndex?: number;
@@ -11413,52 +11684,12 @@ export type DesignationDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type EmployeeType = 0 | 1;
 export type EmployeeInviteDto = {
   email: string;
   employeeType: EmployeeType;
 };
 export type OnboardEmployeeDto = {
   emailList: EmployeeInviteDto[];
-};
-export type Gender = 0 | 1;
-export type MaritalStatus = 0 | 1;
-export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type LifeStatus = 0 | 1;
-export type PersonDto = {
-  fullName: string;
-  phoneNumber: string;
-  occupation: string;
-  lifeStatus: LifeStatus;
-};
-export type EmergencyContactDto = {
-  fullName: string;
-  contactNumber: string;
-  relationship: string;
-  residentialAddress: string;
-};
-export type ChildDto = {
-  fullName: string;
-  dateOfBirth: string;
-  gender: Gender;
-};
-export type SiblingDto = {
-  fullName?: string | null;
-  contact: string;
-  gender: Gender;
-};
-export type EducationDto = {
-  schoolName: string;
-  startDate: string;
-  endDate: string;
-  major: string;
-  qualificationEarned: string;
-};
-export type EmploymentHistoryDto = {
-  companyName?: string | null;
-  startDate?: string;
-  endDate?: string;
-  position?: string | null;
 };
 export type CreateEmployeeRequest = {
   avatar?: string | null;
@@ -11488,84 +11719,6 @@ export type CreateEmployeeRequest = {
   siblings?: SiblingDto[] | null;
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
-};
-export type AttachmentDto = {
-  link?: string | null;
-  name?: string | null;
-  id?: string;
-  reference?: string | null;
-};
-export type EmployeeDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  firstName?: string | null;
-  lastName?: string | null;
-  avatar?: string | null;
-  dateOfBirth?: string;
-  gender?: Gender;
-  residentialAddress?: string | null;
-  annualLeaveDays?: number;
-  nationality?: string | null;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
-  region?: string | null;
-  maritalStatus?: MaritalStatus;
-  religion?: Religion;
-  staffNumber?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
-  type?: EmployeeType;
-  dateEmployed?: string;
-  designation?: DesignationDto;
-  department?: DepartmentDto;
-  mother?: PersonDto;
-  father?: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact?: EmergencyContactDto;
-  nextOfKin?: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground?: EducationDto[] | null;
-  employmentHistory?: EmploymentHistoryDto[] | null;
-};
-export type EmployeeDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  firstName?: string | null;
-  lastName?: string | null;
-  avatar?: string | null;
-  dateOfBirth?: string;
-  gender?: Gender;
-  residentialAddress?: string | null;
-  annualLeaveDays?: number;
-  nationality?: string | null;
-  bankAccountNumber?: string | null;
-  ssnitNumber?: string | null;
-  ghanaCardNumber?: string | null;
-  region?: string | null;
-  maritalStatus?: MaritalStatus;
-  religion?: Religion;
-  staffNumber?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
-  type?: EmployeeType;
-  dateEmployed?: string;
-  designation?: DesignationDtoRead;
-  department?: DepartmentDtoRead;
-  mother?: PersonDto;
-  father?: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact?: EmergencyContactDto;
-  nextOfKin?: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground?: EducationDto[] | null;
-  employmentHistory?: EmploymentHistoryDto[] | null;
 };
 export type EmployeeDtoIEnumerablePaginateable = {
   data?: EmployeeDto[] | null;
@@ -11679,6 +11832,8 @@ export type FormResponseDto = {
   attachments?: AttachmentDto[] | null;
   formField?: FormFieldDto;
   value?: string | null;
+  checkedBy?: UserDto;
+  checkedAt?: string | null;
 };
 export type FormAssigneeDto = {
   id?: string;
@@ -11722,6 +11877,13 @@ export type CreateResponseRequest = {
   batchManufacturingRecordId?: string | null;
   materialBatchId?: string | null;
   formResponses?: CreateFormResponseRequest[] | null;
+};
+export type ResponseDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  formResponses?: FormResponseDto[] | null;
 };
 export type CreateQuestionOptionsRequest = {
   name?: string | null;
@@ -12050,7 +12212,7 @@ export type MaterialItemDistributionDto = {
   quantity?: number;
 };
 export type DistributedRequisitionMaterialStatus = 0 | 1 | 2 | 3;
-export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type EventType = 0 | 1 | 2 | 3;
 export type MaterialBatchEventDto = {
   type?: EventType;
@@ -13337,7 +13499,7 @@ export type ProductionActivityStep = {
   startedAt?: string | null;
   completedAt?: string | null;
 };
-export type BatchManufacturingStatus = 0 | 1 | 2 | 3;
+export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type BatchManufacturingRecord = {
   id?: string;
   createdAt?: string;
@@ -13469,6 +13631,9 @@ export type Response = {
   materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
+  checkedById?: string | null;
+  checkedBy?: User;
+  checkedAt?: string | null;
   approved?: boolean;
 };
 export type ResponseRead = {
@@ -13490,6 +13655,9 @@ export type ResponseRead = {
   materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
+  checkedById?: string | null;
+  checkedBy?: UserRead;
+  checkedAt?: string | null;
   approved?: boolean;
 };
 export type FormResponse = {
@@ -17940,6 +18108,7 @@ export const {
   usePostApiV1ApprovalMutation,
   useGetApiV1ApprovalQuery,
   useLazyGetApiV1ApprovalQuery,
+  usePostApiV1ApprovalDelegateMutation,
   useGetApiV1ApprovalByApprovalIdQuery,
   useLazyGetApiV1ApprovalByApprovalIdQuery,
   usePutApiV1ApprovalByApprovalIdMutation,
@@ -18053,6 +18222,15 @@ export const {
   useLazyGetApiV1FormQuestionByQuestionIdQuery,
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
+  usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
+  useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
+  useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
+  useGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
+  useGetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdQuery,
   usePostApiV1HolidaysMutation,
   useGetApiV1HolidaysQuery,
   useLazyGetApiV1HolidaysQuery,
