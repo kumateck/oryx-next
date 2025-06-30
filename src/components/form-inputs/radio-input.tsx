@@ -40,7 +40,7 @@ export const FormRadioInput = ({
         disabled={disabled}
         onValueChange={onChange}
         defaultValue={defaultValue?.toString()}
-        className="flex flex-col items-start gap-6 py-1 lg:flex-row"
+        className="flex flex-col items-start lg:flex-wrap gap-6 py-1 lg:flex-row"
       >
         {options?.map((item: Option, key: number) => (
           <div className="flex items-center space-x-2" key={key}>

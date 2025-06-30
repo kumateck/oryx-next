@@ -1274,6 +1274,67 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1FormGenerateCertificateByMaterialBatchId: build.mutation<
+      PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse,
+      PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/generate-certificate/${queryArg.materialBatchId}`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
+      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
+      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/responses/material-batch/${queryArg.materialBatchId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormResponsesBmrByBatchManufacturingRecordId: build.query<
+      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse,
+      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/responses/bmr/${queryArg.batchManufacturingRecordId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormWithResponsesMaterialBatchByMaterialBatchId: build.query<
+      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse,
+      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/with-responses/material-batch/${queryArg.materialBatchId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1FormWithResponsesBmrByBatchManufacturingRecordId: build.query<
+      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse,
+      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/with-responses/bmr/${queryArg.batchManufacturingRecordId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Holidays: build.mutation<
       PostApiV1HolidaysApiResponse,
       PostApiV1HolidaysApiArg
@@ -2226,6 +2287,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           materialKind: queryArg.materialKind,
+          unused: queryArg.unused,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -7163,7 +7225,7 @@ export type PostApiV1FormResponsesApiArg = {
   createResponseRequest: CreateResponseRequest;
 };
 export type GetApiV1FormResponsesByFormResponseIdApiResponse =
-  /** status 200 OK */ FormResponseDto;
+  /** status 200 OK */ ResponseDto;
 export type GetApiV1FormResponsesByFormResponseIdApiArg = {
   /** The ID of the form response. */
   formResponseId: string;
@@ -7219,6 +7281,56 @@ export type DeleteApiV1FormQuestionByQuestionIdApiResponse = unknown;
 export type DeleteApiV1FormQuestionByQuestionIdApiArg = {
   /** The ID of the question to be deleted. */
   questionId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse =
+  unknown;
+export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg = {
+  /** The ID of the batch manufacturing record. */
+  batchManufacturingRecordId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse =
+  /** status 200 OK */ FormDto;
+export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg = {
+  /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse =
+  /** status 200 OK */ FormDto;
+export type GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg = {
+  /** The ID of the batch manufacturing record. */
+  batchManufacturingRecordId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -7908,6 +8020,7 @@ export type GetApiV1MaterialStpsApiResponse =
   /** status 200 OK */ MaterialStandardTestProcedureDtoIEnumerablePaginateable;
 export type GetApiV1MaterialStpsApiArg = {
   materialKind?: MaterialKind;
+  unused?: boolean;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -11679,6 +11792,8 @@ export type FormResponseDto = {
   attachments?: AttachmentDto[] | null;
   formField?: FormFieldDto;
   value?: string | null;
+  checkedBy?: UserDto;
+  checkedAt?: string | null;
 };
 export type FormAssigneeDto = {
   id?: string;
@@ -11722,6 +11837,13 @@ export type CreateResponseRequest = {
   batchManufacturingRecordId?: string | null;
   materialBatchId?: string | null;
   formResponses?: CreateFormResponseRequest[] | null;
+};
+export type ResponseDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  formResponses?: FormResponseDto[] | null;
 };
 export type CreateQuestionOptionsRequest = {
   name?: string | null;
@@ -12050,7 +12172,7 @@ export type MaterialItemDistributionDto = {
   quantity?: number;
 };
 export type DistributedRequisitionMaterialStatus = 0 | 1 | 2 | 3;
-export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type BatchStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type EventType = 0 | 1 | 2 | 3;
 export type MaterialBatchEventDto = {
   type?: EventType;
@@ -13337,7 +13459,7 @@ export type ProductionActivityStep = {
   startedAt?: string | null;
   completedAt?: string | null;
 };
-export type BatchManufacturingStatus = 0 | 1 | 2 | 3;
+export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type BatchManufacturingRecord = {
   id?: string;
   createdAt?: string;
@@ -13469,6 +13591,9 @@ export type Response = {
   materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
+  checkedById?: string | null;
+  checkedBy?: User;
+  checkedAt?: string | null;
   approved?: boolean;
 };
 export type ResponseRead = {
@@ -13490,6 +13615,9 @@ export type ResponseRead = {
   materialBatch?: MaterialBatch;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
+  checkedById?: string | null;
+  checkedBy?: UserRead;
+  checkedAt?: string | null;
   approved?: boolean;
 };
 export type FormResponse = {
@@ -18053,6 +18181,15 @@ export const {
   useLazyGetApiV1FormQuestionByQuestionIdQuery,
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
+  usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
+  useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
+  useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
+  useGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
+  useGetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdQuery,
+  useLazyGetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdQuery,
   usePostApiV1HolidaysMutation,
   useGetApiV1HolidaysQuery,
   useLazyGetApiV1HolidaysQuery,
