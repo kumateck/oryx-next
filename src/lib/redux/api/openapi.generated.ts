@@ -1301,6 +1301,22 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1FormGenerateCertificateProductByMaterialBatchId: build.mutation<
+      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse,
+      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/form/generate-certificate/product/${queryArg.materialBatchId}`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          batchManufacturingRecordId: queryArg.batchManufacturingRecordId,
+        },
+      }),
+    }),
     getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
@@ -7313,6 +7329,17 @@ export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse =
   unknown;
 export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
   /** The ID of the material batch. */
+  materialBatchId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse =
+  unknown;
+export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg = {
+  /** The ID of the batch manufacturing. */
+  batchManufacturingRecordId?: string;
   materialBatchId: string;
   /** The module this request falls under */
   module?: any;
@@ -18223,6 +18250,7 @@ export const {
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
   usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
+  usePostApiV1FormGenerateCertificateProductByMaterialBatchIdMutation,
   useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
