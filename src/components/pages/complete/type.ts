@@ -1,14 +1,12 @@
 import { z } from "zod";
-import { Question } from "../settings/workflow-config/types";
-import { QuestionType } from "@/lib";
 
-export type FormField = {
-  id: string;
-  question: Question;
-  required: boolean;
-  rank: number;
-  name: QuestionType;
-};
+import { QuestionType } from "@/lib";
+import {
+  FormFieldDto,
+  FormSectionDto,
+} from "@/lib/redux/api/openapi.generated";
+
+// File validation configuration
 const allowedMimeTypes = [
   "image/png",
   "image/jpeg", // covers both JPG and JPEG
@@ -19,6 +17,7 @@ const allowedMimeTypes = [
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
 ];
 
+// File validation schema
 const imageValidationSchema = z.any().refine(
   (image: Blob[] | FileList) => {
     // If it's an array of blobs, validate each blob
@@ -57,128 +56,155 @@ const imageValidationSchema = z.any().refine(
   },
 );
 
-export const buildSchema = (inputs: FormField[]) => {
-  // console.log(inputs, "inputs");
-  const shape = inputs?.reduce(
-    (acc, input) => {
-      const { type } = input.question;
-      const id = input.id;
-      const isRequired = input.required;
-      switch (type.name) {
-        case QuestionType.FileUpload:
-          acc[id] = isRequired
-            ? imageValidationSchema
-            : imageValidationSchema.optional();
-          break;
-        // case QuestionType.Time:
-        //   acc[id] = isRequired
-        //     ? z
-        //         .string({
-        //           required_error: "Time is required",
-        //           message: "Time is required",
-        //         })
-        //         .min(1, { message: "Time is required" })
-        //     : z.string().optional();
-        //   break;
-        case QuestionType.Signature:
-          acc[id] = isRequired
-            ? z
+// Helper function to get question type title for error messages
+const getQuestionTypeTitle = (type: QuestionType): string => {
+  const typeMap = {
+    [QuestionType.ShortAnswer]: "Short Answer",
+    [QuestionType.LongAnswer]: "Long Answer",
+    [QuestionType.Paragraph]: "Paragraph",
+    [QuestionType.Datepicker]: "Date",
+    [QuestionType.SingleChoice]: "Single Choice",
+    [QuestionType.Dropdown]: "Dropdown",
+    [QuestionType.Checkbox]: "Checkbox",
+    [QuestionType.FileUpload]: "File Upload",
+    [QuestionType.Signature]: "Signature",
+    [QuestionType.Reference]: "Reference",
+    [QuestionType.Formular]: "Formula",
+  };
+  return typeMap[type] || "Field";
+};
+
+// Build validation schema for a single form field
+const buildFieldSchema = (field: FormFieldDto): z.ZodTypeAny => {
+  const questionType = field.question?.type;
+  const fieldId = field.question?.id;
+  const isRequired = field.required;
+  const typeTitle = getQuestionTypeTitle(questionType as QuestionType);
+
+  if (!questionType || !fieldId) {
+    return z.any().optional();
+  }
+
+  switch (questionType) {
+    case QuestionType.FileUpload:
+      return isRequired
+        ? imageValidationSchema
+        : imageValidationSchema.optional();
+
+    case QuestionType.Signature:
+      return isRequired
+        ? z
+            .string({
+              required_error: "Signature is required",
+              message: "Signature is required",
+            })
+            .min(1, { message: "Signature is required" })
+        : z.string().optional();
+
+    case QuestionType.Datepicker:
+      return isRequired
+        ? z
+            .date({
+              required_error: "Date is required",
+              message: "Date is required",
+            })
+            .refine((date) => date !== null && date !== undefined, {
+              message: "Date is required",
+            })
+        : z.date().optional();
+
+    case QuestionType.Checkbox:
+      return isRequired
+        ? z
+            .array(
+              z
                 .string({
-                  required_error: "Signature is required",
-                  message: "Signature is required",
+                  required_error: `${typeTitle} is required`,
+                  message: `${typeTitle} is required`,
                 })
-                .min(1, { message: "Signature is required" })
-            : z.string().optional();
-          break;
-        case QuestionType.Datepicker:
-          acc[id] = isRequired
-            ? z
-                // .string().min(1, { message: "Date is required" })
-                .date({
-                  required_error: "Date is required",
-                  message: "Date is required",
-                })
-                .refine((date) => date !== null && date !== undefined, {
-                  message: "Date is required",
-                })
-            : z.date().optional();
-          // string().optional();
-          break;
-        case QuestionType.Checkbox:
-          acc[id] = isRequired
-            ? z
-                .array(
-                  z
-                    .string({
-                      required_error: `${type.title} is required`,
-                      message: `${type.title} is required`,
-                    })
-                    .min(1, { message: "Select at least one option" }),
-                )
-                .min(1, {
-                  message: "Select at least one option",
-                })
-            : z.array(z.string().optional()).optional();
-          break;
-        case QuestionType.Formular:
-          acc[id] = isRequired
-            ? z
-                .array(
-                  z
-                    .string({
-                      required_error: `${type.title} is required`,
-                      message: `${type.title} is required`,
-                    })
-                    .min(1, { message: "Select at least one option" }),
-                )
-                .min(1, {
-                  message: "Select at least one option",
-                })
-            : z.array(z.string().optional()).optional();
-          break;
-        case QuestionType.Dropdown:
-          acc[id] = isRequired
-            ? z.object(
-                {
-                  value: z
-                    .string({
-                      required_error: `${type.title} is required`,
-                      message: `${type.title} is required`,
-                    })
-                    .min(1, { message: "Select an option" }),
-                  label: z.string(),
-                },
-                {
-                  message: "Select an option",
-                },
-              )
-            : z
-                .object({
-                  value: z.string().optional(),
-                  label: z.string().optional(),
-                })
-                .optional();
-          break;
-        case QuestionType.SingleChoice:
-          acc[id] = isRequired
-            ? z
+                .min(1, { message: "Select at least one option" }),
+            )
+            .min(1, {
+              message: "Select at least one option",
+            })
+        : z.array(z.string().optional()).optional();
+
+    case QuestionType.Formular:
+      return isRequired
+        ? z
+            .string({
+              required_error: `${typeTitle} is required`,
+              message: `${typeTitle} is required`,
+            })
+            .min(1, { message: "Select at least one option" })
+        : z.string().optional().optional();
+
+    case QuestionType.Dropdown:
+      return isRequired
+        ? z.object(
+            {
+              value: z
                 .string({
-                  required_error: `${type.title} is required`,
-                  message: `${type.title} is required`,
+                  required_error: `${typeTitle} is required`,
+                  message: `${typeTitle} is required`,
                 })
-                .min(1, { message: "Select an option" })
-            : z.string().optional();
-          break;
-        default:
-          acc[id] = isRequired
-            ? z
-                .string({
-                  required_error: `${type.title} is required`,
-                  message: `${type.title} is required`,
-                })
-                .min(1, { message: `${type.title} is required` })
-            : z.string().optional();
-      }
+                .min(1, { message: "Select an option" }),
+              label: z.string(),
+            },
+            {
+              message: "Select an option",
+            },
+          )
+        : z
+            .object({
+              value: z.string().optional(),
+              label: z.string().optional(),
+            })
+            .optional();
+
+    case QuestionType.SingleChoice:
+      return isRequired
+        ? z
+            .string({
+              required_error: `${typeTitle} is required`,
+              message: `${typeTitle} is required`,
+            })
+            .min(1, { message: "Select an option" })
+        : z.string().optional();
+
+    // case QuestionType.ShortAnswer:
+    case QuestionType.LongAnswer:
+    case QuestionType.Paragraph:
+    case QuestionType.Reference:
+    default:
+      return isRequired
+        ? z
+            .string({
+              required_error: `${typeTitle} is required`,
+              message: `${typeTitle} is required`,
+            })
+            .min(1, { message: `${typeTitle} is required` })
+        : z.string().optional();
+  }
+};
+
+// Main function to build schema from sections
+export const buildSchema = (sections?: FormSectionDto[] | null) => {
+  if (!sections || sections.length === 0) {
+    return z.object({});
+  }
+
+  const shape = sections.reduce(
+    (acc, section) => {
+      if (!section.fields) return acc;
+
+      section.fields.forEach((field) => {
+        const fieldId = field.question?.id;
+        if (fieldId) {
+          acc[fieldId] = buildFieldSchema(field);
+        }
+      });
+
       return acc;
     },
     {} as Record<string, z.ZodTypeAny>,
@@ -186,63 +212,37 @@ export const buildSchema = (inputs: FormField[]) => {
 
   return z.object(shape);
 };
-export interface FormValues {
-  [key: string]: any;
-}
 
-type FormResponseItem = {
-  formFieldId: string;
-  value: string | string[] | { [key: string]: any } | File | FileList;
-};
+// Type inference for form values
+export type FormValues = z.infer<ReturnType<typeof buildSchema>>;
 
-export type Payload = {
-  inspectionId: string;
-  formId: string;
-  formResponse: FormResponseItem[];
-};
+// Optional: Helper function to get all field IDs from sections
+export const getFieldIds = (sections?: FormSectionDto[] | null): string[] => {
+  if (!sections) return [];
 
-export function createFormData(payload: Payload): FormData {
-  const formData = new FormData();
-
-  // Append simple fields
-  formData.append("inspectionId", payload.inspectionId);
-  formData.append("formId", payload.formId);
-
-  // Append formResponse fields
-  payload.formResponse.forEach((response, index) => {
-    formData.append(
-      `formResponse[${index}][formFieldId]`,
-      response.formFieldId,
-    );
-
-    const value = response.value;
-
-    if (value instanceof File) {
-      // Handle single File
-      formData.append(`formResponse[${index}][value]`, value);
-    } else if (value instanceof FileList) {
-      // Handle FileList by iterating through each file
-      Array.from(value).forEach((file, fileIndex) => {
-        formData.append(`formResponse[${index}][value][${fileIndex}]`, file);
-      });
-    } else if (Array.isArray(value)) {
-      // Handle array of values
-      value.forEach((val, idx) => {
-        formData.append(`formResponse[${index}][value][${idx}]`, String(val));
-      });
-    } else if (typeof value === "object" && value !== null) {
-      // Handle objects with key-value pairs
-      Object.entries(value).forEach(([subKey, subValue]) => {
-        formData.append(
-          `formResponse[${index}][value][${subKey}]`,
-          String(subValue),
-        );
-      });
-    } else {
-      // Handle primitive values (e.g., strings, numbers)
-      formData.append(`formResponse[${index}][value]`, String(value));
+  return sections.reduce((acc: string[], section) => {
+    if (section.fields) {
+      const sectionFieldIds = section.fields
+        .map((field) => field.question?.id)
+        .filter(Boolean) as string[];
+      acc.push(...sectionFieldIds);
     }
-  });
+    return acc;
+  }, []);
+};
 
-  return formData;
-}
+// Optional: Helper function to get field by ID
+export const getFieldById = (
+  sections?: FormSectionDto[] | null,
+  fieldId?: string,
+): FormFieldDto | undefined => {
+  if (!sections || !fieldId) return undefined;
+
+  for (const section of sections) {
+    if (section.fields) {
+      const field = section.fields.find((f) => f.question?.id === fieldId);
+      if (field) return field;
+    }
+  }
+  return undefined;
+};
