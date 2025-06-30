@@ -11,6 +11,8 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
+  PermissionKeys,
+  SupplierType,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -33,6 +35,8 @@ import { CreateShipmentValidator, ShipmentRequestDto } from "../types";
 import DocumentForm from "./form";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -50,14 +54,16 @@ const Page = () => {
   const [loadInvoice] = useLazyGetApiV1ProcurementShipmentInvoiceByIdQuery();
 
   const { data: invoicesResponse } =
-    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
+    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery({});
 
-  const invoiceOptions = invoicesResponse?.map((item) => {
-    return {
-      label: item.code,
-      value: item?.id,
-    };
-  }) as Option[];
+  const invoiceOptions = invoicesResponse
+    ?.filter((s) => s.supplier?.type === SupplierType.Foreign)
+    ?.map((item) => {
+      return {
+        label: item.code,
+        value: item?.id,
+      };
+    }) as Option[];
 
   const {
     register,
@@ -163,6 +169,18 @@ const Page = () => {
   };
 
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.createBillingSheet,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper className="space-y-6">

@@ -11,11 +11,10 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { AuditModules, Option } from "@/lib";
 import {
   LeaveTypeDto,
   useGetApiV1DesignationQuery,
-  useLazyGetApiV1LeaveTypeQuery,
   usePutApiV1LeaveTypeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -31,7 +30,6 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [editLeaveType, { isLoading }] = usePutApiV1LeaveTypeByIdMutation();
-  const [loadDesignations] = useLazyGetApiV1LeaveTypeQuery();
 
   const defaultDesignations =
     details.designations?.map((dept) => ({
@@ -61,6 +59,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const { data: designationsResponse } = useGetApiV1DesignationQuery({
     page: 1,
     pageSize: 1000,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.designationManagement,
   });
 
   const designationData = designationsResponse?.data;
@@ -84,15 +84,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await editLeaveType({
         id: details.id as string,
         createLeaveTypeRequest: payload,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.leaveTypeConfiguration,
       });
       toast.success("Leave Type updated successfully");
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
-      dispatch(commonActions.setTriggerReload());
-      loadDesignations({
-        page: 1,
-        pageSize: 10,
-      });
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

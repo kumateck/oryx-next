@@ -11,6 +11,9 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -28,6 +31,18 @@ const Page = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.viewBillingSheet,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   const data = result?.data || [];
   return (

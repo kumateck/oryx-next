@@ -3,15 +3,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
   LeaveTypeDto,
   useDeleteApiV1LeaveTypeByIdMutation,
-  useLazyGetApiV1LeaveTypeQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -19,11 +20,11 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends LeaveTypeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const dispatch = useDispatch();
   const [deleteMutation] = useDeleteApiV1LeaveTypeByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<LeaveTypeDto>({} as LeaveTypeDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadLeaveTypes] = useLazyGetApiV1LeaveTypeQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -59,9 +60,11 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
           try {
             await deleteMutation({
               id: details.id as string,
+              module: AuditModules.management.name,
+              subModule: AuditModules.management.leaveTypeConfiguration,
             }).unwrap();
             toast.success("Leave type deleted successfully");
-            loadLeaveTypes({ page: 1, pageSize: 10 });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

@@ -1,15 +1,13 @@
 "use client";
 
-import React from "react";
-
 import { Icon } from "@/components/ui";
 import { fullname } from "@/lib";
-import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
 import BgWrapper from "@/shared/bg-wrapper";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
+
+import useCurrentUser from "@/hooks/use-current";
 
 const Page = () => {
-  const { data: user, isLoading } = useGetApiV1UserAuthenticatedQuery();
+  const { user, isLoading } = useCurrentUser();
 
   return (
     <BgWrapper>
@@ -26,9 +24,6 @@ const Page = () => {
           Work smarter with Oryx and skip the back and forth.
         </span>
       </div>
-      <ScrollablePageWrapper>
-        <div>{/* <ImageUpload /> */}</div>
-      </ScrollablePageWrapper>
     </BgWrapper>
   );
 };

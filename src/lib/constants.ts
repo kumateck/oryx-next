@@ -6,12 +6,14 @@ export const IS_DEV = process.env.NODE_ENV !== "production";
 export const APP_NAME = "Oryx ERP";
 
 export const COOKIE_ID = "_bt3HfM6509fhsYE";
-
+export const USER_PERMISSIONS = "PERMISSIONS";
 export enum APP_CONTEXT {
   ORYX_ERP = "oryx-erp",
 }
 
 export const ORYX_ERP_COOKIE_ID = `${APP_CONTEXT.ORYX_ERP}-${COOKIE_ID}`;
+
+export const USER_PERMISSIONS_COOKIE_ID = `${APP_CONTEXT.ORYX_ERP}-${COOKIE_ID}-${USER_PERMISSIONS}`;
 
 export const COLLECTION_TYPES = {
   ProductCategory: "ProductCategory",
@@ -36,6 +38,7 @@ export const COLLECTION_TYPES = {
   Charge: "Charge",
   TermsOfPayment: "TermsOfPayment",
   DeliveryMode: "DeliveryMode",
+  ShiftCategory: "ShiftCategory",
 };
 
 export const CODE_SETTINGS = {
@@ -52,12 +55,17 @@ export const CODE_SETTINGS = {
     Department: "Department",
     PurchaseOrder: "PurchaseOrder",
     ShipmentDocument: "ShipmentDocument",
+    MaterialStandardTestProcedure: "MaterialStandardTestProcedure",
+    ProductStandardTestProcedure: "ProductStandardTestProcedure",
     GRNNumber: "GrnNumber",
     StockTransfer: "StockTransfer",
     Waybill: "Waybill",
     BillingSheet: "BillingSheet",
     Employee: "Employee",
     LeaveRequest: "LeaveRequest",
+    Overtime: "Overtime",
+    MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
+    FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
   },
   nameTypes: {
     Time: 2,
@@ -91,7 +99,7 @@ export const routes = {
   schedules: () => "schedules",
   newSchedule: () => "schedules/create",
   viewSchedule: (id: string) => `schedules/${id}/details`,
-  planning: () => "plannings",
+  planning: () => "/plannings",
   newPlanning: () => "plannings/create",
   viewPlanning: (id: string) => `plannings/${id}/details`,
   editPlanning: (id: string) => `/production/plannings/${id}/edit/bom`,
@@ -553,173 +561,131 @@ export const PermissionKeys = {
   },
 };
 
-// export const PermissionKeys = {
-//   dashboard: {
-//     viewActions: "view_actions_on_dashboard",
-//     viewItems: "view_items_on_dashboard",
-//     closeItems: "close_items_on_dashboard",
-//     viewFindingsOnActions: "view_findings_on_actions",
-//     addFindingsToActions: "add_findings_to_actions",
-//   },
-//   reports: {
-//     viewDashboards: "view_dashboards",
-//     createDashboards: "create_dashboards",
-//     updateDashboards: "update_dashboards",
-//     deleteDashboards: "delete_dashboards",
-//     viewQueries: "view_queries",
-//     createQueries: "create_queries",
-//     updateQueries: "update_queries",
-//     deleteQueries: "delete_queries",
-//   },
-//   itemManagement: {
-//     incidents: {
-//       view: "view_incidents",
-//       create: "create_incidents",
-//       edit: "edit_incidents",
-//       delete: "delete_incidents",
-//       viewFindings: "view_findings_on_incidents",
-//       addFindings: "add_findings_to_incidents",
-//       addCosts: "add_costs_to_incidents",
-//       viewCosts: "view_costs_on_incidents",
-//       editCosts: "edit_costs",
-//       deleteCosts: "delete_costs",
-//       addActions: "add_actions_to_incidents",
-//     },
-//     observations: {
-//       view: "view_observations",
-//       create: "create_observations",
-//       edit: "edit_observations",
-//       delete: "delete_observations",
-//       viewFindings: "view_findings_on_observations",
-//       addFindings: "add_findings_to_observations",
-//       addActions: "add_actions_to_observations",
-//     },
-//     inspections: {
-//       view: "view_inspections",
-//       create: "create_inspections",
-//       delete: "delete_inspections",
-//       respondAndSubmit: "respond_to_and_submit_inspections",
-//       viewFindings: "view_findings_on_inspections",
-//       addFindings: "add_findings_to_inspections",
-//       addActions: "add_actions_to_inspections",
-//     },
-//     audits: {
-//       view: "view_audits",
-//       create: "create_audits",
-//       delete: "delete_audits",
-//       respondAndSubmit: "respond_to_and_submit_audits",
-//       viewFindings: "view_findings_on_audits",
-//       addFindings: "add_findings_to_audits",
-//       addActions: "add_actions_to_audits",
-//     },
-//   },
-//   complianceManagement: {
-//     certifications: {
-//       view: "view_certifications",
-//       create: "create_certifications",
-//       update: "update_certifications",
-//       delete: "delete_certifications",
-//       viewRenewals: "view_renewals_on_certifications",
-//       addRenewals: "add_renewals_to_certifications",
-//       updateRenewals: "update_renewals",
-//     },
-//     regulations: {
-//       view: "view_regulations",
-//       create: "create_regulations",
-//       update: "update_regulations",
-//       delete: "delete_regulations",
-//       viewPermits: "view_permits_on_regulations",
-//       addPermits: "add_permits_to_regulations",
-//       updatePermits: "update_permits",
-//     },
-//   },
-//   resourceManagement: {
-//     employees: {
-//       view: "view_employees",
-//       create: "create_employees",
-//       update: "update_employees",
-//       delete: "delete_employees",
-//     },
-//     rolesAndPermissions: {
-//       view: "view_roles_and_permissions",
-//       createAndAssign: "create_roles_and_assign_permissions",
-//       editAndUpdate: "edit_roles_and_update_permissions",
-//       delete: "delete_roles",
-//     },
-//   },
-//   inventory: {
-//     generalRecords: {
-//       view: "view_general_inventory_records",
-//       add: "add_general_inventory_records",
-//       update: "update_general_inventory_records",
-//       delete: "delete_general_inventory_records",
-//     },
-//     healthRecords: {
-//       view: "view_health_inventory_records",
-//       add: "add_health_inventory_records",
-//       update: "update_health_inventory_records",
-//       delete: "delete_health_inventory_records",
-//     },
-//   },
-//   recordManagement: {
-//     environmentalRecords: {
-//       view: "view_environment_records",
-//       add: "add_environment_records",
-//       update: "update_environment_records",
-//       delete: "delete_environment_records",
-//     },
-//     healthRecords: {
-//       view: "view_health_records",
-//       add: "add_health_records",
-//       update: "update_health_records",
-//       delete: "delete_health_records",
-//     },
-//     meetingRecords: {
-//       view: "view_meeting_records",
-//       add: "add_meeting_records",
-//       update: "update_meeting_records",
-//       delete: "delete_meeting_records",
-//     },
-//     manHourRecords: {
-//       view: "view_manhour_records",
-//       add: "add_manhour_records",
-//       update: "update_manhour_records",
-//       delete: "delete_manhour_records",
-//     },
-//   },
-//   settings: {
-//     questions: {
-//       view: "view_questions",
-//       add: "add_questions",
-//       update: "update_questions",
-//       delete: "delete_questions",
-//     },
-//     templates: {
-//       view: "view_templates",
-//       add: "add_templates",
-//       update: "update_templates",
-//       delete: "delete_templates",
-//     },
-//     formOptions: {
-//       view: "view_form_options",
-//       add: "add_form_options",
-//       update: "update_form_options",
-//       delete: "delete_form_options",
-//     },
-//   },
-//   approvals: {
-//     view: "view_approvals",
-//     add: "add_approvals",
-//     update: "update_approvals",
-//     delete: "delete_approvals",
-//   },
-//   alerts: {
-//     view: "view_alerts",
-//     add: "add_alerts",
-//     update: "update_alerts",
-//     delete: "delete_alerts",
-//   },
-//   currency: {
-//     setDefault: "set_default_currency",
-//   },
-// };
+export const AuditModules = {
+  general: {
+    name: "General",
+    fileUpload: "File Upload",
+    collection: "Collection",
+    AssignShift: "Assign Shift",
+  },
+  logistics: {
+    name: "Logistics",
+    availableStock: "Available Stock",
+    shipmentInvoices: "Shipment Invoices",
+    shipmentDocuments: "Shipment Documents",
+    shipmentDiscrepancy: "Shipment Discrepancy",
+    billingSheets: "Billing Sheets",
+    waybill: "Waybill",
+  },
+
+  warehouse: {
+    name: "Warehouse",
+    receivingArea: "Receiving Area",
+    quarantineAreaGRN: "Quarantine Area/GRN",
+    materials: "Materials",
+    unlinkMaterials: "Unlink Materials",
+    linkedMaterials: "Linked Materials",
+    approvedMaterials: "Approved Materials",
+    stockRequisitions: "Stock Requisitions",
+    extraPackingRequisitions: "Extra Packing Requisitions",
+    stockTransferIssues: "Stock Transfer Issues",
+    locationChartRecord: "Location Chart Record",
+    QaGrn: "Quality Assurance Goods Receipt Note",
+    packingStock: "Packing Material Stock",
+    rawStock: "Raw Material Stock ",
+    approvedProducts: "Approved Products",
+    attendanceReport: "Attendance Report",
+  },
+
+  procurement: {
+    name: "Procurement",
+    purchaseRequisition: "Purchase Requisition",
+    quotationsRequest: "Quotations Request",
+    quotationsResponses: "Quotations Responses",
+    priceComparison: "Price Comparison",
+    awardedQuotations: "Awarded Quotations",
+    proformaResponses: "Proforma Responses",
+    createPurchaseOrders: "Create Purchase Orders",
+    purchaseOrderLists: "Purchase Order Lists",
+    materialDistribution: "Material Distribution",
+  },
+
+  production: {
+    name: "Production",
+    materialRequisitions: "Material Requisitions",
+    createPurchaseRequisitions: "Create Purchase Requisitions",
+    others: "Others",
+    planning: "Product Planning",
+    stockTransferRequests: "Stock Transfer Requests",
+    productSchedule: "Product Schedule",
+    activities: "Activities",
+    steps: "Steps",
+    bmr: "BMR",
+    goodsReceivedNotes: "Goods Received Notes",
+    finalPacking: "Final Packing",
+    extraPacking: "Extra Packing",
+    bom: "BOM",
+    packing: "Packing",
+    procedure: "Procedure",
+  },
+  management: {
+    name: "HR Management",
+    employeeManagement: "Employee",
+    designationManagement: "Designation",
+    leaveManagement: "Leave Request",
+    leaveTypeConfiguration: "Leave Type",
+    overTimeMangement: "Over Time",
+    staffRequisition: "Staff Requisition",
+  },
+
+  accessManagement: {
+    name: "Access Management",
+    manageRoles: "Manage Roles",
+    managePermissions: "Manage Permissions",
+  },
+
+  userManagement: {
+    name: "User Management",
+    manageUsersDirectory: "Manage Users Directory",
+  },
+
+  qualityAssurance: {
+    name: "Quality Assurance",
+    issueBMR: "Issue BMR",
+    pendingApprovals: "Pending Approvals",
+    analyticalRawData: "Analytical Raw Data",
+  },
+
+  settings: {
+    name: "Settings",
+    departments: "Departments",
+    configurations: "Configurations",
+    codeSettings: "Code Settings",
+    changePassword: "Change Password",
+    authUser: "Authenticated User",
+    approvals: "Approvals",
+    alertsAndNotifications: "Alerts & Notifications",
+    currencySettings: "Currency Settings",
+    equipment: "Equipment",
+    workFlow: "Work Flow",
+    userDirectory: "User Directory",
+    warehouses: "Warehouses",
+    locations: "Locations",
+    racks: "Racks",
+    shelves: "Shelves",
+    standardTestProcedure: "Standard Test Procedure",
+    manufacturers: "Manufacturers",
+    holidays: "Holidays",
+    suppliers: "Suppliers",
+    alerts: "Alerts",
+  },
+  authentication: {
+    name: "Authentication",
+    login: "Login",
+    forgot: "Forgot Password",
+    reset: "Reset Password",
+    logout: "Logout",
+    setPassword: "Set Password",
+    changePassword: "Change Password",
+  },
+};

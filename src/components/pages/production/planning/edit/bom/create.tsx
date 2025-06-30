@@ -1,7 +1,7 @@
-// import { useForm } from "react-hook-form";
-import _ from "lodash";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Button,
@@ -12,7 +12,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import { AuditModules, COLLECTION_TYPES, Option } from "@/lib";
 import {
   MaterialDto,
   PostApiV1CollectionApiArg,
@@ -24,118 +24,149 @@ import {
 import BomForm from "./form";
 import { BomRequestDto, CreateBomValidator } from "./types";
 
-// import "./types";
-
 interface Props {
+  onAddItem: (item: BomRequestDto) => boolean;
+  existingItems: BomRequestDto[];
   isOpen: boolean;
   onClose: () => void;
-  setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
-  itemLists?: BomRequestDto[];
 }
-const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
+
+const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
+  const form = useForm<BomRequestDto>({
+    resolver: CreateBomValidator,
+    mode: "onChange",
+    defaultValues: {
+      casNumber: "",
+      function: "",
+      grade: "",
+      isSubstitutable: false,
+      baseQuantity: 0,
+      rowId: uuidv4(),
+    },
+  });
+
   const {
     register,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
     handleSubmit,
-  } = useForm<BomRequestDto>({
-    resolver: CreateBomValidator,
-    mode: "all",
-  });
+  } = form;
 
+  console.log(errors, "errors");
   const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
+    usePostApiV1CollectionMutation();
 
   const { data: materialResponse } = useGetApiV1MaterialQuery({
     page: 1,
     pageSize: 1000,
     kind: 0,
+    module: AuditModules.warehouse.name,
+    subModule: AuditModules.warehouse.materials,
   });
 
-  // console.log(itemLists, "itemLists");
-  const materialOptions = _.isEmpty(itemLists)
-    ? (materialResponse?.data?.map((uom: MaterialDto) => ({
-        label: uom.name,
-        value: uom.id,
-      })) as Option[])
-    : (_.filter(
-        materialResponse?.data,
-        (itemA) =>
-          !_.some(itemLists, (itemB) => itemA?.id === itemB?.materialId?.value),
-      )?.map((uom: MaterialDto) => ({
-        label: uom.name,
-        value: uom.id,
-      })) as Option[]);
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
+    module: AuditModules.general.name,
+    subModule: AuditModules.general.collection,
   });
 
-  const uomOptions = uomResponse
-    ?.filter((item) => item.isRawMaterial)
-    ?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
+  const materialOptions = useMemo(() => {
+    if (!materialResponse?.data) return [];
+
+    const usedMaterialIds = new Set(
+      existingItems.map((item) => item.materialId?.value).filter(Boolean),
+    );
+
+    return materialResponse.data
+      .filter((material) => !usedMaterialIds.has(material?.id as string))
+      .map((material: MaterialDto) => ({
+        label: material.name || "",
+        value: material.id || "",
+      })) as Option[];
+  }, [materialResponse?.data, existingItems]);
+
+  const materialTypeOptions = useMemo(() => {
+    return (
+      (collectionResponse?.[COLLECTION_TYPES.MaterialType]?.map((item) => ({
+        label: item.name || "",
+        value: item.id || "",
+      })) as Option[]) || []
+    );
+  }, [collectionResponse]);
+
+  const uomOptions = useMemo(() => {
+    return (
+      (uomResponse
+        ?.filter((item) => item.isRawMaterial)
+        ?.map((uom) => ({
+          label: uom.symbol || "",
+          value: uom.id || "",
+        })) as Option[]) || []
+    );
+  }, [uomResponse]);
 
   useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.ProductCategory],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const materialTypeOptions = collectionResponse?.[
-    COLLECTION_TYPES.MaterialType
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
-  })) as Option[];
+    if (isOpen) {
+      loadCollection({
+        module: AuditModules.general.name,
+        subModule: AuditModules.general.collection,
+        body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.ProductCategory],
+      } as PostApiV1CollectionApiArg);
+    }
+  }, [isOpen, loadCollection]);
 
   const onSubmit = (data: BomRequestDto) => {
-    // console.log(data);
-    setItemLists((prevState) => {
-      const payload = {
-        ...data,
-        // id: (prevState.length + 1).toString(),
-        idIndex: (prevState.length + 1).toString(),
-      };
-      return [...prevState, payload]; // Add new item to the array
-    });
+    console.log(data, "data");
+    const success = onAddItem(data);
+    if (success) {
+      toast.success("BOM item added successfully");
+      reset();
+      onClose();
+    }
+  };
 
-    reset(); // Reset the form after submission
-    onClose(); // Close the form/modal if applicable
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>Add BOM</DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Add BOM Item</DialogTitle>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <BomForm
-            register={register}
-            errors={errors}
-            control={control}
-            materialTypeOptions={materialTypeOptions}
-            materialOptions={materialOptions}
-            uomOptions={uomOptions}
-          />
-          <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <BomForm
+              register={register}
+              errors={errors}
+              control={control}
+              materialTypeOptions={materialTypeOptions}
+              materialOptions={materialOptions}
+              uomOptions={uomOptions}
+            />
 
-            <Button variant={"default"} className="flex items-center gap-2">
-              <Icon name="Plus" className="h-4 w-4" />
-              <span>Add BOM</span>{" "}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter className="justify-end gap-4 py-6">
+              <Button type="button" variant="secondary" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="default"
+                className="flex items-center gap-2"
+                disabled={!isValid}
+              >
+                <Icon name="Plus" className="h-4 w-4" />
+                <span>Add BOM Item</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

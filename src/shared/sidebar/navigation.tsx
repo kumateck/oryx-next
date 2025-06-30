@@ -39,6 +39,12 @@ export const ROUTES: Route[] = [
         icon: "SquareDashedKanban",
         isActive: false,
       },
+      {
+        title: "Plan Shift",
+        url: "/plan-shift",
+        icon: "SquareDashedKanban",
+        isActive: false,
+      },
     ],
   },
   {
@@ -82,10 +88,10 @@ export const ROUTES: Route[] = [
         icon: "Warehouse",
         //    isActive: false,
         items: [
-          {
-            title: "Departments",
-            url: "/warehouse/departments",
-          },
+          // {
+          //   title: "Departments",
+          //   url: "/warehouse/departments",
+          // },
           {
             title: "Receiving Area",
             url: "/warehouse/receiving-area",
@@ -94,22 +100,22 @@ export const ROUTES: Route[] = [
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
-          {
-            title: "Warehouses",
-            url: "/warehouse/warehouses",
-          },
-          {
-            title: "Locations",
-            url: "/warehouse/locations",
-          },
-          {
-            title: "Racks",
-            url: "/warehouse/racks",
-          },
-          {
-            title: "Shelves",
-            url: "/warehouse/shelves",
-          },
+          // {
+          //   title: "Warehouses",
+          //   url: "/warehouse/warehouses",
+          // },
+          // {
+          //   title: "Locations",
+          //   url: "/warehouse/locations",
+          // },
+          // {
+          //   title: "Racks",
+          //   url: "/warehouse/racks",
+          // },
+          // {
+          //   title: "Shelves",
+          //   url: "/warehouse/shelves",
+          // },
           {
             title: "Materials",
             url: "/warehouse/materials",
@@ -129,6 +135,11 @@ export const ROUTES: Route[] = [
           {
             title: "Approved Materials",
             url: "/warehouse/approved-materials",
+          },
+
+          {
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
           },
           // {
           //   title: "Available Stock",
@@ -150,6 +161,14 @@ export const ROUTES: Route[] = [
             title: "Location Chart Record",
             url: "/warehouse/location-chart",
           },
+          {
+            title: "Material Returns Note",
+            url: "/warehouse/material-returns",
+          },
+          {
+            title: "Finished Goods Transfer Note",
+            url: "/warehouse/finished-goods-transfer-notes",
+          },
           // {
           //   title: "Packaging Materials Receiving Area",
           //   url: "/warehouse/packaging-receiving-area",
@@ -159,17 +178,17 @@ export const ROUTES: Route[] = [
       {
         title: "Procurement",
         // url: "string",
-        icon: "Microchip",
+        icon: "ShoppingCart",
         //    isActive: false,
         items: [
-          {
-            title: "Manufacturers",
-            url: "/procurement/manufacturers",
-          },
-          {
-            title: "Suppliers",
-            url: "/procurement/suppliers",
-          },
+          // {
+          //   title: "Manufacturers",
+          //   url: "/procurement/manufacturers",
+          // },
+          // {
+          //   title: "Suppliers",
+          //   url: "/procurement/suppliers",
+          // },
 
           {
             title: "Purchase Requisition",
@@ -218,7 +237,7 @@ export const ROUTES: Route[] = [
       {
         title: "Requisition",
         // url: "",
-        icon: "Notebook",
+        icon: "ClipboardList",
         //    isActive: false,
         items: [
           {
@@ -258,7 +277,7 @@ export const ROUTES: Route[] = [
       {
         title: "Planning",
         url: "/production/plannings",
-        icon: "FolderKanban",
+        icon: "Check",
         //    isActive: false,
       },
       {
@@ -275,9 +294,21 @@ export const ROUTES: Route[] = [
       {
         title: "Product Schedule",
         url: "/production/schedules",
-        icon: "SwatchBook",
+        icon: "Calendar",
         isActive: false,
       },
+      // {
+      //   title: "Production Board",
+      //   url: "/production/schedules",
+      //   icon: "LayoutList",
+      //   isActive: false,
+      // },
+      // {
+      //   title: "Available Stock",
+      //   url: "/production/schedules",
+      //   icon: "TrendingUp",
+      //   isActive: false,
+      // },
       // {
       //   title: "Master Schedule",
       //   url: "/production/master-schedule",
@@ -290,7 +321,7 @@ export const ROUTES: Route[] = [
     title: "Human Resource",
     menu: [
       {
-        title: "Management",
+        title: " HR Management",
         icon: "Folder",
         items: [
           {
@@ -309,6 +340,30 @@ export const ROUTES: Route[] = [
             title: "Leave Type Configuration",
             url: "/hr/leave-configuration",
           },
+          {
+            title: "Overtime Management",
+            url: "/hr/overtime-management",
+          },
+          {
+            title: "Staff Requisition",
+            url: "/hr/staff-requisition",
+          },
+          {
+            title: "Attendance Report Upload",
+            url: "/hr/attendance-report-upload",
+          },
+          {
+            title: "Attendance Report Summary",
+            url: "/hr/attendance-report-summary",
+          },
+          // {
+          //   title: "Shift Schedule",
+          //   url: "/hr/shift-schedule",
+          // },
+          // {
+          //   title: "Shift Types",
+          //   url: "/hr/shift-types",
+          // },
         ],
       },
     ],
@@ -338,6 +393,10 @@ export const ROUTES: Route[] = [
             title: "Manage Users Directory",
             url: "/access-management/users",
           },
+          {
+            title: "Audit Trail",
+            url: "/access-management/audit-trail",
+          },
         ],
       },
     ],
@@ -348,7 +407,7 @@ export const ROUTES: Route[] = [
       {
         title: "Issue BMR",
         url: "/qa/issue-bmr",
-        icon: "BookUser",
+        icon: "ShieldCheck",
         isActive: false,
         // items: [{
         //   title: "string",
@@ -356,9 +415,50 @@ export const ROUTES: Route[] = [
         // }]
       },
       {
+        title: "BMR/BPR Request",
+        url: "/qa/bmr-bpr",
+        icon: "ShieldCheck",
+        isActive: false,
+      },
+      {
         title: "Pending Approvals",
         url: "/qa/pending-approvals",
         icon: "CircleDotDashed",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Quality Control",
+    menu: [
+      {
+        title: "Material STP",
+        url: "/qc/material-stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Product STP",
+        url: "/qc/products-stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Material ARD",
+        url: "/qc/analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Product ARD",
+        url: "/qc/product-analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Goods Receipt Note",
+        url: "/qc/goods-receipt-note",
+        icon: "BookUser",
         isActive: false,
       },
     ],

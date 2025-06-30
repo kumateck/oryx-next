@@ -7,6 +7,7 @@ import { Button, Icon } from "@/components/ui";
 import {
   DistributedMaterialStatus,
   Option,
+  PermissionKeys,
   Units,
   convertToLargestUnit,
   routes,
@@ -14,6 +15,7 @@ import {
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 import { TableCheckbox } from "@/shared/datatable/table-check";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -29,18 +31,24 @@ export function DataTableRowActions<
     status === DistributedMaterialStatus.Distributed ||
     status === DistributedMaterialStatus.Arrived;
 
+  const { hasPermissionAccess } = useUserPermissions();
+
   return (
     <section className="flex items-center justify-end gap-2">
       <div className="flex items-center justify-end gap-2">
         {canCreateChecklist ? (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => router.push(routes.createChecklist(id as string))}
-          >
-            <Icon name="Plus" className="h-4 w-4" />{" "}
-            <span>Create Checklist</span>
-          </Button>
+          hasPermissionAccess(
+            PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
+          ) && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => router.push(routes.createChecklist(id as string))}
+            >
+              <Icon name="Plus" className="h-4 w-4" />{" "}
+              <span>Create Checklist</span>
+            </Button>
+          )
         ) : (
           <Button
             variant="default"

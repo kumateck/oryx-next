@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Control, useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 
-import { InputTypes, PermissionType } from "@/lib";
+import { InputTypes, PermissionType, RoleType, splitWords } from "@/lib";
 
 import {
   Section,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
   hasOptions,
   permissionOptions,
   removeDuplicateTypes,
@@ -19,6 +19,7 @@ import LoadingSkeleton from "../../skeleton";
 import { CreateRoleValidator, RoleRequestDto } from "./type";
 import { useParams, useRouter } from "next/navigation";
 import {
+  DepartmentType,
   useLazyGetApiV1PermissionRoleByRoleIdQuery,
   useLazyGetApiV1RoleByIdQuery,
   usePutApiV1RoleByIdMutation,
@@ -40,6 +41,7 @@ const Page = () => {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<RoleRequestDto>({
     resolver: CreateRoleValidator,
@@ -54,9 +56,6 @@ const Page = () => {
     useLazyGetApiV1RoleByIdQuery();
   const [loadRolePermissions, { isLoading: isLoadingRolePermissions }] =
     useLazyGetApiV1PermissionRoleByRoleIdQuery();
-  // const editPermissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
 
   const [permissions, setPermissions] = useState<Section[]>([]);
 
@@ -67,6 +66,10 @@ const Page = () => {
       }).unwrap();
 
       setValue("name", role.name as string);
+      setValue("type", {
+        value: role.type?.toString() ?? "",
+        label: RoleType[role.type as RoleType],
+      });
       const rolePermissionsData = await loadRolePermissions({
         roleId,
       }).unwrap();
@@ -141,15 +144,27 @@ const Page = () => {
       }),
     );
   };
+
+  const roleTypeOptions = Object.entries(RoleType)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+
   const onSubmit = async (data: RoleRequestDto) => {
     const payload = {
       name: data.name,
+      type: data.type.value,
       permissions: removeDuplicateTypes(permissions),
       displayName: data.name,
     };
     try {
       await saveRole({
-        updateRoleRequest: payload,
+        updateRoleRequest: {
+          ...payload,
+          type: parseInt(data.type.value) as DepartmentType,
+        },
         id: roleId,
       }).unwrap();
       toast.success("Role updated successfully");
@@ -161,7 +176,7 @@ const Page = () => {
     }
 
     // if (
-    //   !findRecordWithFullAccess(
+    //   !findRecordWithAccess(
     //     editPermissions,
     //     PermissionKeys.resourceManagement.rolesAndPermissions.editAndUpdate,
     //   )
@@ -201,18 +216,36 @@ const Page = () => {
       </PageWrapper>
       <ScrollablePageWrapper className="space-y-5">
         <StepWrapper>
-          <div className="w-full">
-            <FormWizard
-              config={[
-                {
-                  register: register("name"),
-                  label: "Name",
-                  placeholder: "Enter name of role",
-                  type: InputTypes.TEXT,
-                  errors,
-                },
-              ]}
-            />
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    register: register("name"),
+                    label: "Name",
+                    placeholder: "Enter name of role",
+                    type: InputTypes.TEXT,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    name: `type`,
+                    label: "Role Type",
+                    type: InputTypes.SELECT,
+                    placeholder: "Select role type",
+                    control: control as unknown as Control,
+                    required: true,
+                    options: roleTypeOptions,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
           </div>
         </StepWrapper>
         <div className="pb-20">

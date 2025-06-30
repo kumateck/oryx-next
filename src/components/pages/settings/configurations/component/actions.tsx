@@ -2,6 +2,8 @@ import { Icon } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 import ActionToolTip from "./action-tooltip";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   isLoading: boolean;
@@ -33,6 +35,17 @@ export const FormOptionActions = ({
   isBeingDeleted,
   isInputError,
 }: Props) => {
+  // check permissions access
+  const { hasPermissionAccess } = useUserPermissions();
+  const canDeleteProductCategory = hasPermissionAccess(
+    PermissionKeys.categories.productCategory.delete,
+  );
+  const canDeleteRawCategory = hasPermissionAccess(
+    PermissionKeys.categories.rawCategory.delete,
+  );
+  const canDeletePackageCategory = hasPermissionAccess(
+    PermissionKeys.categories.packageCategory.delete,
+  );
   return (
     <div className="flex items-center justify-center gap-0.5 [&>svg]:cursor-pointer">
       {editMode ? (
@@ -66,18 +79,22 @@ export const FormOptionActions = ({
             />
           </ActionToolTip>
           <ActionToolTip title="Delete">
-            <Icon
-              name={isBeingDeleted ? "LoaderCircle" : "Trash2"}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                deleteOption();
-              }}
-              className={cn("text-danger-400", {
-                "text-primary-500 animate-spin": isBeingDeleted,
-              })}
-              size={20}
-            />
+            {(canDeletePackageCategory ||
+              canDeleteProductCategory ||
+              canDeleteRawCategory) && (
+              <Icon
+                name={isBeingDeleted ? "LoaderCircle" : "Trash2"}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  deleteOption();
+                }}
+                className={cn("text-danger-400", {
+                  "text-primary-500 animate-spin": isBeingDeleted,
+                })}
+                size={20}
+              />
+            )}
           </ActionToolTip>
         </>
       ) : createMode ? (

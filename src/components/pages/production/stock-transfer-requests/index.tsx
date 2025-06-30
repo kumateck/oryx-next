@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { TransferType } from "@/lib";
+import { PermissionKeys, TransferType, StockTransfer } from "@/lib";
 import {
   useLazyGetApiV1ProductionScheduleStockTransferInBoundQuery,
   useLazyGetApiV1ProductionScheduleStockTransferOutBoundQuery,
@@ -17,6 +17,8 @@ import PageTitle from "@/shared/title";
 
 import { getColumns } from "./columns";
 import TransferTable from "./table";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -52,7 +54,7 @@ const Page = () => {
       loadInboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.New,
+        status: StockTransfer.New,
       });
     }
 
@@ -60,7 +62,7 @@ const Page = () => {
       loadOutboundRequests({
         page,
         pageSize,
-        // status: StockTransfer.Approved,
+        status: StockTransfer.Approved,
       });
     }
     if (triggerReload) {
@@ -86,6 +88,15 @@ const Page = () => {
   const handleTabClick = (tabType: TransferType) => {
     router.push(pathname + "?" + createQueryString("type", tabType.toString()));
   };
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.production.viewStockTransferRequests,
+  );
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

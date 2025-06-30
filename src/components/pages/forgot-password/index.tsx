@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
-import { InputTypes, routes } from "@/lib";
+import { AuditModules, InputTypes, routes } from "@/lib";
 import {
   PostApiV1AuthForgotPasswordApiArg,
   usePostApiV1AuthForgotPasswordMutation,
@@ -39,12 +39,14 @@ function ForgotPassword() {
   const onSubmit = async (data: TForgotPassword) => {
     try {
       const payload = {
+        module: AuditModules.authentication.name,
+        subModule: AuditModules.authentication.forgot,
         forgotPasswordRequest: {
           email: data.email,
         },
       } satisfies PostApiV1AuthForgotPasswordApiArg;
 
-      await forgotPassword(payload);
+      await forgotPassword(payload).unwrap();
 
       toast.success("Password reset link sent successfully", {
         duration: 2000,

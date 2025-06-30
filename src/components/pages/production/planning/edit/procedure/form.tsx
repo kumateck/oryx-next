@@ -7,7 +7,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 
-import { FormInput, FormWizard } from "@/components/form-inputs";
+import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
 
 import { ProcedureType } from "./types";
@@ -18,8 +18,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   operationOptions: Option[];
   workCenterOptions: Option[];
-  roleOptions: Option[];
-  userOptions: Option[];
   resourceOptions: Option[];
   defaultValues?: TFieldValues;
   selectedType?: ProcedureType;
@@ -32,41 +30,7 @@ const ProcedureForm = <TFieldValues extends FieldValues, TContext>({
   defaultValues,
   workCenterOptions,
   resourceOptions,
-  roleOptions,
-  userOptions,
-  selectedType,
 }: Props<TFieldValues, TContext>) => {
-  const roleForm: FormInput<FieldValues, any> = {
-    label: "Role",
-    control: control as Control,
-    type: InputTypes.MULTI,
-    name: `responsibleRoles`,
-    required: true,
-    defaultValue: defaultValues?.responsibleRoles,
-    placeholder: "Role",
-    options: roleOptions,
-    errors,
-  };
-  const userForm: FormInput<FieldValues, any> = {
-    label: "User",
-    control: control as Control,
-    type: InputTypes.MULTI,
-    name: `responsibleUsers`,
-    required: true,
-    placeholder: "User",
-    defaultValue: defaultValues?.responsibleUsers,
-    options: userOptions,
-    errors,
-  };
-  const spaceForm: FormInput<FieldValues, any> = {
-    type: InputTypes.SPACE,
-  };
-  const typeSelect =
-    selectedType === ProcedureType.Role
-      ? roleForm
-      : selectedType === ProcedureType.User
-        ? userForm
-        : spaceForm;
   return (
     <div className="w-full">
       <FormWizard
@@ -116,19 +80,6 @@ const ProcedureForm = <TFieldValues extends FieldValues, TContext>({
             options: resourceOptions,
             errors,
           },
-          {
-            label: "Responsible",
-            control: control as Control,
-            type: InputTypes.RADIO,
-            name: `type`,
-            required: true,
-            options: [ProcedureType.Role, ProcedureType.User].map((option) => ({
-              label: option,
-              value: option,
-            })),
-            errors,
-          },
-          typeSelect,
         ]}
       />
     </div>

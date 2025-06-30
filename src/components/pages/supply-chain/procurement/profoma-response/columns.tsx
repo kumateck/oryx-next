@@ -3,13 +3,14 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { Icon } from "@/components/ui";
-import { PurchaseOrderStatusList } from "@/lib";
+import { PermissionKeys, PurchaseOrderStatusList } from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
 } from "@/lib/redux/api/openapi.generated";
 
 import AttachDocuments from "./attachment";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
 
@@ -21,6 +22,7 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
 }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [supplierId, setSupplierId] = useState("");
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
@@ -30,14 +32,18 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      <Icon
-        onClick={() => {
-          setSupplierId(row.original.id as string);
-          setIsOpen(true);
-        }}
-        name="Paperclip"
-        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-      />
+      {hasPermissionAccess(
+        PermissionKeys.procurement.uploadProformaInvoice,
+      ) && (
+        <Icon
+          onClick={() => {
+            setSupplierId(row.original.id as string);
+            setIsOpen(true);
+          }}
+          name="Paperclip"
+          className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+        />
+      )}
     </section>
   );
 }

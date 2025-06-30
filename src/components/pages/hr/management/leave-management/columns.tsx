@@ -1,16 +1,16 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import {
-  ApprovalStatus,
+  AuditModules,
   ErrorResponse,
   isErrorResponse,
   LeaveCategories,
   LeaveStatus,
+  PermissionKeys,
   splitWords,
 } from "@/lib";
 import {
   LeaveRequestDto,
-  useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
+  useDeleteApiV1LeaveRequestByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
@@ -18,27 +18,63 @@ import { toast } from "sonner";
 import { useState } from "react";
 import Edit from "./leave-request/edit";
 import { TableMenuAction } from "@/shared/table-menu";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import Recall from "./leave-request/recall";
+import { useRouter } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
 
-const batchStatusColors: Record<ApprovalStatus, string> = {
-  [ApprovalStatus.Pending]: "bg-gray-500 text-white",
-  [ApprovalStatus.Approved]: "bg-green-100 text-green-800",
-  [ApprovalStatus.Rejected]: "bg-red-100 text-red-800",
+const batchStatusColors: Record<LeaveStatus, string> = {
+  [LeaveStatus.Pending]: "bg-gray-500 text-white",
+  [LeaveStatus.Approved]: "bg-green-100 text-green-800",
+  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+  [LeaveStatus.Expired]: "bg-red-100 text-red-800",
+  [LeaveStatus.Recalled]: "bg-yellow-100 text-yellow-800",
 };
+
+const shouldShowRecall = (row: LeaveRequestDto): boolean => {
+  const today = new Date();
+  const startDate = new Date(row.startDate as string);
+  const endDate = new Date(row.endDate as string);
+
+  if (row.requestCategory === LeaveCategories.AbsenceRequest) {
+    return false;
+  }
+
+  if (row.requestCategory === LeaveCategories.ExitPassRequest) {
+    return false;
+  }
+
+  if (today < startDate || today > endDate) {
+    return false;
+  }
+
+  if (row.leaveStatus !== LeaveStatus.Approved) {
+    return false;
+  }
+
+  return true;
+};
+
 export function DataTableRowActions<TData extends LeaveRequestDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [deleteMutation] = useDeleteApiV1LeaveRequestByIdMutation();
 
   const [details, setDetails] = useState<LeaveRequestDto>(
     {} as LeaveRequestDto,
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const [isRecallOpen, setIsRecallOpen] = useState(false);
+
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -48,35 +84,86 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
             className="flex cursor-pointer items-center justify-start gap-2"
             onClick={(e) => {
               e.stopPropagation();
-              setDetails(row.original);
-              setIsOpen(true);
+              router.push(`/hr/leave-management/${row.original.id}/details`);
             }}
           >
             <Icon
-              name="Pencil"
+              name="Eye"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
-            <span>Edit</span>
+            <span>View Details</span>
           </div>
         </DropdownMenuItem>
+        {shouldShowRecall(row.original) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetails(row.original);
+                setIsRecallOpen(true);
+              }}
+            >
+              <Icon
+                name="RefreshCcw"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Recall</span>
+            </div>
+          </DropdownMenuItem>
+        )}
+        {hasPermissionAccess(
+          PermissionKeys.humanResources.editLeaveRequest,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetails(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <Icon
+                name="Pencil"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Edit</span>
+            </div>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              setDetails(row.original);
-              setIsDeleteOpen(true);
-            }}
-          >
-            <Icon
-              name="Trash2"
-              className="text-danger-500 h-5 w-5 cursor-pointer"
-            />
-            <span>Delete</span>
-          </div>
+          {hasPermissionAccess(
+            PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
+          ) && (
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetails(row.original);
+                setIsDeleteOpen(true);
+              }}
+            >
+              <Icon
+                name="Trash2"
+                className="text-danger-500 h-5 w-5 cursor-pointer"
+              />
+              <span>Delete</span>
+            </div>
+          )}
         </DropdownMenuItem>
       </TableMenuAction>
 
+      {/* Recall */}
+      {details.id && isRecallOpen && (
+        <Recall
+          details={details}
+          isOpen={isRecallOpen}
+          onClose={() => setIsRecallOpen(false)}
+        />
+      )}
+
+      {/* Edit */}
       {details.id && isOpen && (
         <Edit
           details={details}
@@ -91,9 +178,11 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
           try {
             await deleteMutation({
               id: details.id as string,
+              module: AuditModules.management.name,
+              subModule: AuditModules.management.leaveManagement,
             }).unwrap();
-            toast.success("Designation deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            toast.success("Leave Request deleted successfully");
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
@@ -160,7 +249,7 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
     accessorKey: "leaveStatus",
     header: "Leave Status",
     cell: ({ row }) => {
-      const status = row.original.leaveStatus as ApprovalStatus;
+      const status = row.original.leaveStatus as LeaveStatus;
       return (
         <div
           className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
@@ -173,9 +262,6 @@ export const columns: ColumnDef<LeaveRequestDto>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      if (row.original.leaveStatus !== ApprovalStatus.Pending) {
-        return null;
-      }
       return <DataTableRowActions row={row} />;
     },
   },

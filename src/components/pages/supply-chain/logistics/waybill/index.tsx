@@ -14,6 +14,9 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -40,14 +43,26 @@ const Page = () => {
   console.log(page);
   const router = useRouter();
 
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(PermissionKeys.logistics.viewWaybill);
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Waybill" />
         <div className="flex items-center justify-end gap-2">
-          <Link href={"/logistics/waybill/create"}>
-            <Button>Create</Button>
-          </Link>
+          {hasPermissionAccess(PermissionKeys.logistics.createWaybill) && (
+            <Link href={"/logistics/waybill/create"}>
+              <Button>Create</Button>
+            </Link>
+          )}
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   DesignationDto,
   useDeleteApiV1DesignationByIdMutation,
@@ -13,6 +13,7 @@ import {
 
 // import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -25,6 +26,9 @@ export function DataTableRowActions<TData extends DesignationDto>({
   const [details, setDetails] = useState<DesignationDto>({} as DesignationDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+
+  //permisions checks
+  const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -60,22 +64,26 @@ export function DataTableRowActions<TData extends DesignationDto>({
           </div>
         </DropdownMenuItem>
       </TableMenuAction> */}
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+      {hasPermissionAccess(PermissionKeys.humanResources.editDesignation) && (
+        <Icon
+          name="Pencil"
+          className="h-5 w-5 cursor-pointer text-neutral-500"
+          onClick={() => {
+            setDetails(row.original);
+            setIsOpen(true);
+          }}
+        />
+      )}
+      {hasPermissionAccess(PermissionKeys.humanResources.deleteDesignation) && (
+        <Icon
+          name="Trash2"
+          className="text-danger-500 h-5 w-5 cursor-pointer"
+          onClick={() => {
+            setDetails(row.original);
+            setIsDeleteOpen(true);
+          }}
+        />
+      )}
 
       {details.name && isOpen && (
         <Edit

@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/settings/form-builder/templates/edit";
+export { default } from "@/components/pages/settings/workflow-config/templates/edit";

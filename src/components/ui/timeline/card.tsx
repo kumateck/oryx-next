@@ -129,10 +129,10 @@ const TimelineCard = ({
 
           <div className="flex items-center gap-2 justify-end">
             <Link
-              href={routes.viewDetails(
+              href={`${routes.viewDetails(
                 activityId as string,
                 item?.id as string,
-              )}
+              )}?scheduleId=${scheduleId}&productId=${productId}`}
             >
               <Button variant="secondary" className="text-sm font-semibold">
                 View Details

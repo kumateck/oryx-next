@@ -19,6 +19,7 @@ import {
   BatchStatus,
   FloorType,
   MaterialStatus,
+  OperationAction,
   PackLocationType,
   QuestionType,
   RawLocationType,
@@ -117,6 +118,7 @@ interface ErrorDetail {
   code: string;
   description: string;
   type: number;
+  message?: string;
 }
 
 export interface ErrorResponse {
@@ -129,6 +131,7 @@ export interface ErrorResponse {
   errors: ErrorDetail[];
 }
 export const isErrorResponse = (error: ErrorResponse) => {
+  console.log("error", error);
   const err = error.errors ?? error?.data?.errors;
   const errorResponse = err[0];
   console.log("Error message", errorResponse.description);
@@ -883,6 +886,19 @@ export const QuestionTypeOptions = Object.values(QuestionType)
     };
   }) as Option[];
 
+export const OperationActionOptions = Object.values(OperationAction)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = OperationAction[enumValue as OperationAction];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
 export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
   label: key,
   value: FloorType[key as keyof typeof FloorType],
@@ -1215,12 +1231,12 @@ export const removeDuplicateTypes = (data: Section[]): Section[] => {
   }));
 };
 
-export const findRecordWithFullAccess = (
+export const findRecordWithAccess = (
   sections: Section[],
   key: string,
 ): RecordItem | null => {
   for (const section of sections) {
-    for (const child of section.children) {
+    for (const child of section?.children) {
       if (child?.key === key) {
         // Check if the types array includes FullAccess
         if (child?.types?.includes(Access)) {
@@ -1230,6 +1246,14 @@ export const findRecordWithFullAccess = (
     }
   }
   return null; // Return null if the key is not found or FullAccess is not in types
+};
+
+export const hasPermissionForKey = (
+  sections: Section[],
+  key: string,
+): boolean => {
+  const record = findRecordWithAccess(sections, key);
+  return !!record;
 };
 export const findRecordWithSpecifiedAccess = (
   sections: Section[],
@@ -1366,4 +1390,92 @@ export const parseClockReadable = (input: string): string => {
 export function sanitizeNumber(value: any): number {
   const num = Number(value);
   return isNaN(num) || value === null || value === undefined ? 0 : num;
+}
+
+//server actions
+
+export const unexpectedServerErrorResponse = {
+  errors: [
+    {
+      message:
+        "An unexpected server error occurred. We are working on restoring the service.",
+      status: 500,
+    },
+  ],
+};
+
+export function routeHandlerResponse(response: any, init?: ResponseInit) {
+  if (!response) {
+    return Response.json(unexpectedServerErrorResponse, {
+      status: 500,
+    });
+  }
+
+  // handle REST error
+  if (response.error || response.data?.error) {
+    return Response.json(response.data ?? response.error, {
+      status: response.data?.status ?? response.error?.status,
+    });
+  }
+
+  // handle REST cookie
+  if (response.response?.headers?.get("set-cookie")) {
+    return Response.json(response.data, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        "Set-Cookie": response.response.headers.get("set-cookie"),
+      },
+    });
+  }
+
+  return Response.json(response.data, init);
+}
+
+export function evaluateExpressionWithOperator(
+  expr: string,
+  values: Record<string, string | number>,
+): number {
+  const evaluatedExpr = expr.replace(/:(\w+)/g, (_, key) => {
+    if (values.hasOwnProperty(key)) {
+      return values[key]!.toString();
+    }
+    throw new Error(`Missing value for parameter: ${key}`);
+  });
+
+  return new Function(`return ${evaluatedExpr}`)();
+}
+
+function renderExpressionTemplate(
+  expr: string,
+  values: Record<string, string | number>,
+): string {
+  return expr.replace(/:(\w+)/g, (_, key) => {
+    if (values.hasOwnProperty(key)) {
+      return values[key]!.toString();
+    }
+    throw new Error(`Missing value for parameter: ${key}`);
+  });
+}
+
+function evaluateRenderedExpression(rendered: string): number {
+  return new Function(`return ${rendered}`)();
+}
+
+export function evaluateExpressionWithPreview(
+  expr: string,
+  values: Record<string, string | number>,
+): { preview: string; result: number } {
+  const preview = renderExpressionTemplate(expr, values);
+  const result = evaluateRenderedExpression(preview);
+  return { preview, result };
+}
+
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
 }

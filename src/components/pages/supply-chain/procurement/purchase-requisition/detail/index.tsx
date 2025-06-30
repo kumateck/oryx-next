@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button, Card, Icon } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
   RequisitionType,
   Units,
   convertToLargestUnit,
@@ -25,6 +26,8 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const { id } = useParams();
@@ -89,6 +92,18 @@ const Page = () => {
     }
   };
   // console.log(requisition, "requisition");
+
+  // Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.procurement.viewPurchaseRequisitions,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">

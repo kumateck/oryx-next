@@ -14,6 +14,10 @@ import PageTitle from "@/shared/title";
 // import { useDispatch } from "@/redux/store";
 import { columns } from "./columns";
 import Create from "./create";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   // const dispatch = useDispatch();
@@ -24,16 +28,28 @@ const Page = () => {
     pageSize,
   });
   const [loadUsers, { isFetching }] = useLazyGetApiV1UserQuery();
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   useEffect(() => {
     loadUsers({
       page,
       pageSize,
+      searchQuery: searchValue ?? "",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchValue]);
   const data = result?.data ?? [];
   const [isOpen, setIsOpen] = useState(false);
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(PermissionKeys.humanResources.viewUser);
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
@@ -41,9 +57,15 @@ const Page = () => {
       <div className="flex items-center justify-between py-2">
         <PageTitle title="User Directory" />
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create User</span>
-          </Button>
+          {hasPermissionAccess(PermissionKeys.humanResources.createUser) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create User</span>
+            </Button>
+          )}
         </div>
       </div>
 

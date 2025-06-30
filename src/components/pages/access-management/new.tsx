@@ -19,7 +19,7 @@ import { SpecialSelect } from "@/components/ui/special-select";
 import StepWrapper from "@/shared/wrapper";
 
 const Access: React.FC = () => {
-  const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery();
+  const { data, isLoading: isLoadingRole } = useGetApiV1RoleQuery({});
 
   const [loadPermissions, { isLoading: isLoadingPermissions }] =
     useLazyGetApiV1PermissionRoleByRoleIdQuery();

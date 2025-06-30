@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
 import {
@@ -26,9 +25,10 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { authActions } from "@/lib/redux/slices/auth";
 import { persistToken } from "@/lib/utilities";
-import { ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import { LoginDto, LoginValidator, TLogin } from "./types";
+
+import ThrowErrorMessage from "@/lib/throw-error";
 
 const mutex = new Mutex();
 const Signin = () => {
@@ -59,6 +59,66 @@ const Signin = () => {
         password: data.password,
       },
     } satisfies PostApiV1AuthLoginApiArg;
+
+    // try {
+    //   // const result = await loginMutation(payload).unwrap();
+    //   const response = await fetch("/api/login", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(payload.loginRequest),
+    //   });
+    //   const result = await response.json();
+    //   console.log(result, "result from login api");
+    //   if (result.success) {
+    //     // toast.success("Login successful");
+    //     // router.push("/dashboard");
+    //     const { accessToken, refreshToken, userId, expiresIn, avatar } = result;
+    //     dispatch(
+    //       authActions.setTokens({
+    //         refreshToken: refreshToken as string,
+    //         userId: userId as string,
+    //         expiresIn,
+    //         avatar,
+    //       }),
+    //     );
+    //     const redirectTo = searchParams.get("redirectTo") ?? routes.home();
+    //     router.replace(redirectTo);
+    //   } else if (isLoginError(result)) {
+    //     // This branch should not execute due to RTK Query treating non-2xx responses as errors
+    //     // But it's here for type safety
+    //     const errorMessage = result.errors?.[0]?.message || "Login failed";
+    //     toast.error(errorMessage);
+    //   }
+    // } catch (error) {
+    //   console.error("Login failed:", error);
+    //   const errorResponse = error as ErrorResponse;
+
+    //   // Properly handle RTK Query errors
+    //   if (errorResponse.data && isLoginError(errorResponse.data)) {
+    //     // Display the specific error message returned by the API
+    //     const errorMessage = isErrorResponse(errorResponse)?.message;
+    //     //errorResponse.data.errors?.[0]?.message || "Login failed";
+
+    //     toast.error(errorMessage);
+    //   } else {
+    //     // Generic error handling
+    //     toast.error("An unexpected error occurred");
+    //   }
+    // }
+    // try {
+    //   const result = await loginMutation(payload).unwrap();
+    //   console.log(result, "result ");
+    //   // if (result.success) {
+    //   //   router.push('/dashboard'); // ✅ or wherever
+    //   // }
+    // } catch (error) {
+    //   console.error("Login failed:", error);
+    //   const err = error as any;
+    //   console.error("Login failed:", err);
+    //   // toast.error(isErrorResponse(err.data as ErrorResponse)?.description);
+    // }
     try {
       // Acquire lock
       await mutex.runExclusive(async () => {
@@ -71,8 +131,8 @@ const Signin = () => {
           expiresIn as number,
           APP_CONTEXT.ORYX_ERP,
         );
-
         // Dispatch the tokens to Redux
+
         dispatch(
           authActions.setTokens({
             refreshToken: refreshToken as string,
@@ -81,7 +141,6 @@ const Signin = () => {
             avatar,
           }),
         );
-
         // await waitForTimeout(100);
         // Only proceed with navigation after dispatching the tokens
         const redirectTo = searchParams.get("redirectTo") ?? routes.home();
@@ -93,10 +152,13 @@ const Signin = () => {
           router.push(routes.signin());
         }
       });
+      // const res = await loginUser(data.email, data.password);
+      // console.log(res);
     } catch (error) {
-      const err = error as { data: ErrorResponse };
-      console.log(err, "error");
-      toast.error(isErrorResponse(err.data as ErrorResponse)?.description);
+      // const err = error as { data: ErrorResponse };
+      console.log(error, "error");
+      ThrowErrorMessage(error);
+      // toast.error(isErrorResponse(err.data as ErrorResponse)?.description);
     }
   };
   return (

@@ -8,6 +8,9 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import TableForData from "./table";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const ShipmentInvoiceDetails = () => {
   const { id } = useParams();
@@ -16,6 +19,18 @@ const ShipmentInvoiceDetails = () => {
   const { data } = useGetApiV1ProcurementShipmentInvoiceByIdQuery({
     id: shipmentInvoiceId,
   });
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.viewShipmentInvoice,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

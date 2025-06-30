@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse, routes } from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
   PostApiV1ProductByProductIdPackagesApiArg,
-  useGetApiV1ProductByProductIdQuery,
+  useLazyGetApiV1ProductByProductIdPackagesQuery,
   usePostApiV1ProductByProductIdPackagesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
@@ -24,44 +24,59 @@ const Packaging = () => {
   const { id } = useParams();
   const productId = id as string;
 
-  const { data: product } = useGetApiV1ProductByProductIdQuery({
-    productId,
-  });
-  const defaultPackaging = product?.packages?.map((p, idx) => ({
-    ...p,
-    material: p.material
-      ? {
-          label: p.material?.name as string,
-          value: p.material?.id as string,
-        }
-      : undefined,
-    idIndex: (idx + 1).toString(),
-    directLinkMaterial: p.directLinkMaterial
-      ? {
-          label: p.directLinkMaterial?.name as string,
-          value: p.directLinkMaterial?.id as string,
-        }
-      : undefined,
-  })) as PackagingRequestDto[];
+  const [loadPacking] = useLazyGetApiV1ProductByProductIdPackagesQuery();
+  useEffect(() => {
+    if (productId) {
+      handleLoadPacking(productId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productId]);
+
+  const handleLoadPacking = async (productId: string) => {
+    try {
+      const response = await loadPacking({
+        productId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.packing,
+      }).unwrap();
+
+      // console.log(response);
+      const defaultPackaging = response?.map((p, idx) => ({
+        ...p,
+        material: p.material
+          ? {
+              label: p.material?.name as string,
+              value: p.material?.id as string,
+            }
+          : undefined,
+        idIndex: (idx + 1).toString(),
+        directLinkMaterial: p.directLinkMaterial
+          ? {
+              label: p.directLinkMaterial?.name as string,
+              value: p.directLinkMaterial?.id as string,
+            }
+          : undefined,
+      })) as PackagingRequestDto[];
+      setItemLists(defaultPackaging);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [savePackaging, { isLoading }] =
     usePostApiV1ProductByProductIdPackagesMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [itemLists, setItemLists] = useState<PackagingRequestDto[]>([]);
 
-  useEffect(() => {
-    if (defaultPackaging?.length > 0) {
-      setItemLists(defaultPackaging);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultPackaging && defaultPackaging?.length]);
   if (!productId) {
     return <div>Please Save a Product Info</div>;
   }
   const handleSave = async () => {
     try {
       await savePackaging({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.packing,
         productId,
         body: itemLists?.map((item) => ({
           baseQuantity: item.baseQuantity,

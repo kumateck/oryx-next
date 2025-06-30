@@ -14,6 +14,7 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
+  PermissionKeys,
   cn,
   generateCode,
   isErrorResponse,
@@ -40,6 +41,8 @@ import {
   CreateBillingSheetValidator,
   MaterialRequestDto,
 } from "./types";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
 const CreateBillingSheet = () => {
   const router = useRouter();
@@ -279,6 +282,15 @@ const CreateBillingSheet = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  //permissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.createBillingSheet,
+  );
+  if (!hasAccess) {
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

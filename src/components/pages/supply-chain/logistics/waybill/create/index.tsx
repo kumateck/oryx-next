@@ -11,6 +11,8 @@ import {
   ErrorResponse,
   GenerateCodeOptions,
   Option,
+  PermissionKeys,
+  SupplierType,
   generateCode,
   isErrorResponse,
 } from "@/lib";
@@ -32,6 +34,8 @@ import PageTitle from "@/shared/title";
 import { MaterialRequestDto } from "../../shipment-documents/create/type";
 import { WaybillRequestDto } from "../types";
 import WaybillForm from "./form";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Create = () => {
   const {
@@ -55,18 +59,20 @@ const Create = () => {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
   const { data: invoicesResponse } =
-    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery();
+    useGetApiV1ProcurementShipmentInvoiceUnattachedQuery({});
   const [loadDataforCodes] = useLazyGetApiV1ProcurementWaybillQuery();
   const { data: codeConfig } =
     useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
       modelType: CODE_SETTINGS.modelTypes.Waybill,
     });
-  const invoiceOptions = invoicesResponse?.map((item) => {
-    return {
-      label: item.code,
-      value: item?.id,
-    };
-  }) as Option[];
+  const invoiceOptions = invoicesResponse
+    ?.filter((s) => s.supplier?.type === SupplierType.Local)
+    ?.map((item) => {
+      return {
+        label: item.code,
+        value: item?.id,
+      };
+    }) as Option[];
 
   useEffect(() => {
     loadCodes();
@@ -163,11 +169,16 @@ const Create = () => {
     }
   };
 
+  //Check Permision
+  //Premissions checks
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.logistics.createWaybill)) {
+    return <NoAccess />;
+  }
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
         <PageTitle title="Create Waybill" />
-
         <div>
           <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex items-center justify-end gap-2">

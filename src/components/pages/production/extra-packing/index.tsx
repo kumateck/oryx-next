@@ -13,7 +13,13 @@ import { MaterialRequestDto } from "./type";
 import TableForData from "./table";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
-import { convertToSmallestUnit, getLargestUnit, routes, Units } from "@/lib";
+import {
+  AuditModules,
+  convertToSmallestUnit,
+  getLargestUnit,
+  routes,
+  Units,
+} from "@/lib";
 
 const ExtraPacking = () => {
   const router = useRouter();
@@ -34,6 +40,8 @@ const ExtraPacking = () => {
     const response = await loadPackageStock({
       productId: pId,
       productionScheduleId: psId,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.packingStock,
     }).unwrap();
 
     const packingMaterial = response.map((item) => ({
@@ -59,6 +67,8 @@ const ExtraPacking = () => {
   const handleSubmit = async () => {
     try {
       await savePackingMaterial({
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.extraPacking,
         productionScheduleId: productionScheduleId,
         productId: productId,
         body: itemLists

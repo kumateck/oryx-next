@@ -1,18 +1,45 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { COLLECTION_TYPES, EMaterialKind } from "@/lib";
+import {
+  Icon,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui";
+import {
+  COLLECTION_TYPES,
+  CollectionTypes,
+  EMaterialKind,
+  PermissionKeys,
+} from "@/lib";
 import { splitWords } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { ViewProps } from "./component";
 import FormView from "./view";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
+import { useRouter } from "next/navigation";
 
 const Configurations = () => {
+  const router = useRouter();
+  const { hasPermissionAccess } = useUserPermissions();
+  if (!hasPermissionAccess(PermissionKeys.settings.viewSystemSettings)) {
+    return <NoAccess />;
+  }
   return (
     <div className="w-full">
-      <div className="mb-5">
+      <div className="flex items-center gap-2 mb-5">
+        <Icon
+          name="ArrowLeft"
+          className="h-5 w-5 text-black hover:cursor-pointer"
+          onClick={() => {
+            router.back();
+          }}
+        />
+
         <PageTitle title={"Configurations"} />
       </div>
 
@@ -115,27 +142,12 @@ const FormOptionTabs: TabProps[] = [
     ],
   },
   {
-    title: "Container",
+    title: "Schedules",
     views: [
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.PackageStyle,
-        title: "Pack Style",
-      },
-      {
-        icon: "Tag",
-        modelType: COLLECTION_TYPES.Charge,
-        title: "Billing Sheet Charge",
-      },
-      {
-        icon: "Tag",
-        modelType: COLLECTION_TYPES.TermsOfPayment,
-        title: "Terms of Payment",
-      },
-      {
-        icon: "Tag",
-        modelType: COLLECTION_TYPES.DeliveryMode,
-        title: "Delivery Mode",
+        modelType: CollectionTypes.ShiftCategory,
+        title: "Shift Category",
       },
     ],
   },

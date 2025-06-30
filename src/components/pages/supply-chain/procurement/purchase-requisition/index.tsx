@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { RequisitionStatus, RequisitionType } from "@/lib";
+import { PermissionKeys, RequisitionStatus, RequisitionType } from "@/lib";
 // import { Button, Icon } from "@/components/ui";
 // import { routes } from "@/lib";
 import { useLazyGetApiV1RequisitionQuery } from "@/lib/redux/api/openapi.generated";
@@ -12,6 +12,8 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -34,6 +36,18 @@ const Page = () => {
   }, [page, pageSize]);
 
   const data = result?.data || [];
+
+  // Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.procurement.viewPurchaseRequisitions,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">

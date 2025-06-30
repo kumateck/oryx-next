@@ -11,7 +11,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui";
-import { EMaterialKind, routes } from "@/lib";
+import { EMaterialKind, PermissionKeys, routes } from "@/lib";
 import {
   MaterialKind,
   useLazyGetApiV1MaterialQuery,
@@ -23,6 +23,8 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -60,6 +62,32 @@ const Page = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.warehouse.viewRawMaterials,
+  );
+  // check permission for packaging meterial
+  const hasAccessToPackageMaterial = hasPermissionAccess(
+    PermissionKeys.warehouse.viewPackagingMaterials,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  if (!hasAccessToPackageMaterial && kind.toString() === "1") {
+    //redirect to no access
+    return <NoAccess />;
+  }
+  const cantCreateNewRawMaterial = hasPermissionAccess(
+    PermissionKeys.warehouse.createNewRawMaterials,
+  );
+  const cantCreateNewPackagingMaterial = hasPermissionAccess(
+    PermissionKeys.warehouse.createNewRawMaterials,
+  );
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && (
@@ -85,17 +113,27 @@ const Page = () => {
               <RadioGroupItem value={EMaterialKind.Raw.toString()} id="r1" />
               <Label htmlFor="r1">Raw Materials</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value={EMaterialKind.Packing.toString()}
-                id="r2"
-              />
-              <Label htmlFor="r2">Package Materials</Label>
-            </div>
+            {hasPermissionAccess(
+              PermissionKeys.warehouse.viewPackagingMaterials,
+            ) && (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={EMaterialKind.Packing.toString()}
+                  id="r2"
+                />
+                <Label htmlFor="r2">Package Materials</Label>
+              </div>
+            )}
           </RadioGroup>
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          {(cantCreateNewPackagingMaterial || cantCreateNewRawMaterial) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
+          )}
         </div>
       </div>
 

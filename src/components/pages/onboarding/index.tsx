@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
 import {
+  AuditModules,
   CODE_SETTINGS,
   EmployeeType,
   ErrorResponse,
@@ -88,7 +89,7 @@ export default function OnboardingForm() {
 
   const { type } = useParams();
   const etype = type as string;
-
+  console.log("Employee Type", etype);
   const {
     register,
     handleSubmit,
@@ -196,7 +197,7 @@ export default function OnboardingForm() {
   const transformFormData = (
     data: OnboardingFormValues,
   ): CreateEmployeeRequest => ({
-    employeeType: parseInt(etype) as unknown as EmployeeType,
+    type: parseInt(etype) as unknown as EmployeeType,
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: data.dob.toISOString(),
@@ -286,8 +287,11 @@ export default function OnboardingForm() {
 
       const employeeId = await createEmployee({
         createEmployeeRequest: payload.createEmployeeRequest,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.employeeManagement,
       } as PostApiV1EmployeeApiArg).unwrap();
 
+      console.log(employeeId, "employeeIId");
       // const employeeId = await createEmployee(payload).unwrap();
 
       //only after successful submission
@@ -298,15 +302,19 @@ export default function OnboardingForm() {
         //   ? data.passportPhoto
         //   : Array.from(data.passportPhoto); // Convert FileList to an array
 
-        formData.append("files", data.passportPhoto, data.passportPhoto.name);
+        if (data.passportPhoto) {
+          formData.append("files", data.passportPhoto, data.passportPhoto.name);
+          const imagesRes = await uploadAttachment({
+            modelType: CODE_SETTINGS.modelTypes.Employee,
+            modelId: employeeId,
+            body: formData,
+            module: AuditModules.general.name,
+            subModule: AuditModules.general.fileUpload,
+          } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+          console.log(imagesRes, "res");
+        }
         // attachmentsArray.forEach((attachment: File) => {
         // });
-
-        await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.Employee,
-          modelId: employeeId,
-          body: formData,
-        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
 
       toast.success("Form sent successfully");

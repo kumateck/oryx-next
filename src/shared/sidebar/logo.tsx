@@ -8,7 +8,7 @@ const SideLogo = () => {
   const { state } = useSidebar();
 
   return (
-    <div className="">
+    <div>
       <Image
         src={state === "collapsed" ? tiny.src : large.src}
         alt="logo"

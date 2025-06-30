@@ -1,5 +1,5 @@
 import { ConfirmDeleteDialog } from "@/components/ui";
-import { routes } from "@/lib";
+import { PermissionKeys, routes } from "@/lib";
 import { useDeleteApiV1RoleByIdMutation } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 // import { useSelector } from "@/lib/redux/store";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface Props {
   roleId: string;
@@ -17,9 +18,6 @@ export default function ToolCell({ roleId }: Props) {
   const dispatch = useDispatch();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteMutation] = useDeleteApiV1RoleByIdMutation();
-  // const permissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
 
   const handleDelete = async () => {
     try {
@@ -30,38 +28,39 @@ export default function ToolCell({ roleId }: Props) {
       ThrowErrorMessage(error);
     }
   };
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <div className="">
       <ul className="flex gap-2  items-center justify-end">
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
           permissions,
           PermissionKeys.resourceManagement.rolesAndPermissions.editAndUpdate,
         ) && (
          import Link from "next/link";
 
         )} */}
-        <li>
-          <Link href={routes.editRole(roleId)}>
-            <span className="cursor-pointer text-primary-500 hover:cursor-pointer">
-              <Pencil className="h-5 w-5" />
-            </span>
-          </Link>
-        </li>
-        {/* {findRecordWithFullAccess(
-          permissions,
-          PermissionKeys.resourceManagement.rolesAndPermissions.delete,
+        {hasPermissionAccess(
+          PermissionKeys.humanResources.editRoleWithItsPermissions,
         ) && (
-         
-        )} */}
-        <li
-          onClick={() => {
-            setIsDeleteOpen(true);
-          }}
-        >
-          <span className="cursor-pointer text-danger-500">
-            <Trash2 className="h-5 w-5" />
-          </span>
-        </li>
+          <li>
+            <Link href={routes.editRole(roleId)}>
+              <span className="cursor-pointer text-primary-500 hover:cursor-pointer">
+                <Pencil className="h-5 w-5" />
+              </span>
+            </Link>
+          </li>
+        )}
+        {hasPermissionAccess(PermissionKeys.humanResources.deleteRole) && (
+          <li
+            onClick={() => {
+              setIsDeleteOpen(true);
+            }}
+          >
+            <span className="cursor-pointer text-danger-500">
+              <Trash2 className="h-5 w-5" />
+            </span>
+          </li>
+        )}
       </ul>
       <ConfirmDeleteDialog
         open={isDeleteOpen}

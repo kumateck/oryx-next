@@ -4,15 +4,18 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, PermissionKeys } from "@/lib";
 import { useLazyGetApiV1WarehouseGrnsQuery } from "@/lib/redux/api/openapi.generated";
 import AccessTabs from "@/shared/access";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useUserPermissions } from "@/hooks/use-permission";
+import NoAccess from "@/shared/no-access";
 
-const Page = () => {
+const GRNPage = () => {
+  const { hasPermissionAccess } = useUserPermissions();
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
@@ -50,6 +53,9 @@ const Page = () => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
 
+  if (!hasPermissionAccess(PermissionKeys.warehouse.viewDepartments)) {
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -93,4 +99,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default GRNPage;

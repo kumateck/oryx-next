@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button } from "@/components/ui/button";
-import { InputTypes } from "@/lib";
+import { AuditModules, InputTypes } from "@/lib";
 import { usePostApiV1AuthChangePasswordMutation } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, isErrorResponse } from "@/lib/utils";
 
@@ -31,6 +31,8 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess: () => void }) {
   const onSubmit = async (values: ChangePasswordDto) => {
     try {
       await changePassword({
+        module: AuditModules.authentication.name,
+        subModule: AuditModules.authentication.changePassword,
         changePasswordRequest: {
           newPassword: values.newPassword,
         },

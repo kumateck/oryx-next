@@ -7,7 +7,7 @@ import React, { useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import { AuditModules, routes } from "@/lib";
 import { useGetApiV1ProductByProductIdQuery } from "@/lib/redux/api/openapi.generated";
 import { cn } from "@/lib/utils";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -19,8 +19,11 @@ import { Procedure } from "./tabs/procedure";
 
 const ViewPage: React.FC = () => {
   const { id } = useParams();
+  const productId = id as string;
   const { data: singleDetailed } = useGetApiV1ProductByProductIdQuery({
-    productId: id as string,
+    productId,
+    module: AuditModules.production.name,
+    subModule: AuditModules.production.planning,
   });
 
   const router = useRouter();
@@ -41,7 +44,7 @@ const ViewPage: React.FC = () => {
               <PageTitle title={"Products"} />
             </div>
           </div>
-          <Link href={routes.editPlanning(singleDetailed?.id as string)}>
+          <Link href={routes.editPlanning(productId)}>
             <div className="flex items-center gap-1 rounded-2xl border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
               <Icon name="Pencil" className="size-4" />
               <span className="text-sm">Edit</span>
@@ -139,7 +142,8 @@ const ViewPage: React.FC = () => {
                         <span>Label Claims:{' '}</span>
                         <span>{singleDetailed?.}</span>
                       </div>
-                    </div> */}
+                    </div> 
+                    */}
               </div>
             </div>
           </div>

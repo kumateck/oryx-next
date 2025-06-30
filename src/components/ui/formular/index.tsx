@@ -1,0 +1,209 @@
+// useExpressionBuilder.ts
+
+// TheAduseiFormular.tsx
+import React from "react";
+import { Input } from "../input";
+import { Label } from "../label";
+import { Button } from "../button";
+import { Icon } from "../icon";
+import { cn } from "@/lib";
+import { useExpressionBuilder } from "./use-expression";
+
+interface Props {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+const TheAduseiFormular = ({ onChange }: Props) => {
+  const {
+    inputKey,
+    inputValue,
+    inputLabel,
+    rawExpression,
+    preview,
+    result,
+    isSqrtActive,
+    setInputKey,
+    setInputValue,
+    setInputLabel,
+    addOperator,
+    addOperand,
+    addParenthesis,
+    toggleSqrt,
+    resetBuilder,
+    removeLastPart,
+    operators,
+    parentheses,
+    exportJson,
+    isValidForEvaluation,
+  } = useExpressionBuilder();
+
+  const syncToForm = () => {
+    if (onChange && isValidForEvaluation()) {
+      const newValue = exportJson();
+      onChange(newValue);
+    }
+  };
+
+  const handleAddOperator = (operator: string) => {
+    addOperator(operator);
+    syncToForm();
+  };
+  const handleAddOperand = () => {
+    addOperand();
+    syncToForm();
+  };
+  const handleAddParenthesis = (paren: string) => {
+    addParenthesis(paren);
+    syncToForm();
+  };
+
+  const handleRemoveLastPart = () => {
+    removeLastPart();
+    syncToForm();
+  };
+
+  const handleToggleSqrt = () => {
+    toggleSqrt();
+    syncToForm();
+  };
+
+  const handleResetBuilder = () => {
+    resetBuilder();
+    syncToForm();
+  };
+  return (
+    <div className="space-y-3 pb-5">
+      <div className="grid grid-cols-5 gap-2 align-center">
+        <div className="col-span-2">
+          <span className="text-sm">
+            Label <small className="text-danger-default"> *</small>
+          </span>
+          <Input
+            placeholder="Enter the label"
+            value={inputLabel}
+            onChange={(e) => setInputLabel(e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="text-sm">
+            Key <small className="text-danger-default"> *</small>
+          </span>
+          <Input
+            placeholder="Key"
+            value={inputKey}
+            onChange={(e) => setInputKey(e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="text-sm">Value</span>
+          <Input
+            placeholder="Value"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+        </div>
+        <div className="">
+          <span>.</span>
+          <Button
+            type="button"
+            size={"sm"}
+            onClick={handleAddOperand}
+            className="w-full"
+          >
+            <Icon name="Plus" />
+            <span>Add</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* List of available operators (excluding sqrt) */}
+      <div className="mt-4">
+        <div className="flex gap-2">
+          {operators.map((op, idx) => (
+            <Button
+              type="button"
+              key={idx}
+              variant={"ghost"}
+              size="sm"
+              onClick={() => handleAddOperator(op)}
+              className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
+            >
+              {op}
+            </Button>
+          ))}
+
+          {parentheses.map((p, idx) => (
+            <Button
+              type="button"
+              key={idx}
+              variant={"ghost"}
+              size="sm"
+              onClick={() => handleAddParenthesis(p)}
+              className="border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed"
+            >
+              {p}
+            </Button>
+          ))}
+          <Button
+            type="button"
+            variant={"ghost"}
+            size="sm"
+            onClick={handleToggleSqrt}
+            className={cn(
+              "border rounded-md px-2 py-1 text-xs bg-blue-50 text-primary-pressed",
+              {
+                "border-primary-default": isSqrtActive,
+              },
+            )}
+          >
+            sqrt {isSqrtActive ? "(close)" : ""}
+          </Button>
+        </div>
+      </div>
+
+      {/* Expression display */}
+      <div>
+        <Label>Expression</Label>
+        <div className="text-sm rounded-2xl border border-neutral-200 bg-white p-2 h-8">
+          <code>{rawExpression}</code>
+        </div>
+      </div>
+
+      {/* Preview and result */}
+      <div className="flex flex-col gap-2">
+        <Label>
+          Preview: <code>{preview}</code>
+        </Label>
+        <Label>
+          Result: <code>{result}</code>
+        </Label>
+      </div>
+
+      {/* Buttons to remove last part or reset */}
+      <div className="flex gap-2 mt-4">
+        <Button
+          type="button"
+          variant={"secondary"}
+          size={"sm"}
+          onClick={handleRemoveLastPart}
+          className="bg-neutral-default text-white hover:text-neutral-dark"
+        >
+          <Icon name="Delete" />
+          <span>Delete Last</span>
+        </Button>
+        <Button
+          type="button"
+          variant={"destructive"}
+          size={"sm"}
+          onClick={handleResetBuilder}
+          className="bg-red-500 text-white hover:bg-red-600"
+        >
+          <Icon name="Trash2" />
+          <span>Clear</span>
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default TheAduseiFormular;

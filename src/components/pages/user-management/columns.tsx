@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
 import {
   UserWithRoleDto,
   useDeleteApiV1UserByIdMutation,
@@ -11,6 +11,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,39 +28,48 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadUsers] = useLazyGetApiV1UserQuery();
 
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
+
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsOpen(true);
-            }}
-          >
-            <Icon
-              name="Pencil"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>Edit</span>
-          </div>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsDeleteOpen(true);
-            }}
-          >
-            <Icon
-              name="Trash2"
-              className="text-danger-500 h-5 w-5 cursor-pointer"
-            />
-            <span>Delete</span>
-          </div>
-        </DropdownMenuItem>
+        {hasPermissionAccess(
+          PermissionKeys.humanResources.updateUserDetails,
+        ) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsOpen(true);
+              }}
+            >
+              <Icon
+                name="Pencil"
+                className="h-5 w-5 cursor-pointer text-neutral-500"
+              />
+              <span>Edit</span>
+            </div>
+          </DropdownMenuItem>
+        )}
+        {hasPermissionAccess(PermissionKeys.humanResources.deleteUser) && (
+          <DropdownMenuItem className="group">
+            <div
+              className="flex cursor-pointer items-center justify-start gap-2"
+              onClick={() => {
+                setDetails(row.original);
+                setIsDeleteOpen(true);
+              }}
+            >
+              <Icon
+                name="Trash2"
+                className="text-danger-500 h-5 w-5 cursor-pointer"
+              />
+              <span>Delete</span>
+            </div>
+          </DropdownMenuItem>
+        )}
       </TableMenuAction>
       {/* <Icon
          name="Pencil"

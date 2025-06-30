@@ -18,6 +18,7 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  PermissionKeys,
   ProcurementType,
   Quotations,
   SupplierType,
@@ -34,6 +35,8 @@ import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const router = useRouter();
@@ -141,6 +144,17 @@ const Page = () => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  // Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.procurement.selectVendorPricing,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">

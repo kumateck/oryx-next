@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
 
 import { Icon } from "@/components/ui";
 import { useGetApiV1MaterialByMaterialIdQuery } from "@/lib/redux/api/openapi.generated";
@@ -9,6 +8,9 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import MaterialDetails from "./material-details";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const ApprovedRawMaterialDetail = () => {
   const { id } = useParams();
@@ -17,6 +19,18 @@ const ApprovedRawMaterialDetail = () => {
     materialId,
   });
   const router = useRouter();
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.warehouse.viewApprovedRawMaterials,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

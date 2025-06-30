@@ -5,13 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { ShipmentStatus, isImageFile, splitWords } from "@/lib";
+import { PermissionKeys, ShipmentStatus, isImageFile, splitWords } from "@/lib";
 import { useGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 
 import { MaterialRequestDto } from "../create/type";
 import TableForData from "./table";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -51,6 +53,18 @@ const ShipmentDocumentDetails = () => {
       setMaterialLists(payload);
     }
   }, [data]);
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.viewShipmentDocument,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
 
   return (
     <ScrollablePageWrapper>

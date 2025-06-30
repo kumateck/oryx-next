@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1LeaveTypeQuery,
-  useLazyGetApiV1LeaveTypeQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1LeaveTypeQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -17,6 +14,7 @@ import Create from "./create";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
+import { AuditModules } from "@/lib";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -24,16 +22,16 @@ const Page = () => {
 
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1LeaveTypeQuery({
-    page,
-    pageSize,
-  });
-  const [loadLeaveTypes, { isFetching }] = useLazyGetApiV1LeaveTypeQuery();
+
+  const [loadLeaveTypes, { isLoading, data: result, isFetching }] =
+    useLazyGetApiV1LeaveTypeQuery();
 
   useEffect(() => {
     loadLeaveTypes({
       page,
       pageSize,
+      module: AuditModules.management.name,
+      subModule: AuditModules.management.leaveTypeConfiguration,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());

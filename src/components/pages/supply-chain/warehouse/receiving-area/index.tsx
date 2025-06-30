@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Checkbox, Icon } from "@/components/ui";
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, PermissionKeys } from "@/lib";
 import {
   DistributedRequisitionMaterialDto,
   useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery,
@@ -21,6 +21,8 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import CreateGRN from "./create-grn";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const ReceivingArea = () => {
   const searchParams = useSearchParams();
@@ -83,7 +85,18 @@ const ReceivingArea = () => {
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };
-
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  if (
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewReceivedRawMaterialsItems,
+    ) ||
+    !hasPermissionAccess(
+      PermissionKeys.warehouse.viewReceivedPackagingMaterialsItems,
+    )
+  ) {
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
@@ -111,16 +124,20 @@ const ReceivingArea = () => {
               />
               <div>{Object.keys(rowSelection).length} Items</div>
             </div>
-            <Button
-              type="button"
-              variant={"ghost"}
-              className="bg-neutral-dark text-white"
-              size={"sm"}
-              onClick={() => setIsGRNOpen(true)}
-              disabled={isCreateGRNDisabled}
-            >
-              <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
-            </Button>
+            {hasPermissionAccess(
+              PermissionKeys.warehouse.createGrnForRawMaterialsChecklistedItems,
+            ) && (
+              <Button
+                type="button"
+                variant={"ghost"}
+                className="bg-neutral-dark text-white"
+                size={"sm"}
+                onClick={() => setIsGRNOpen(true)}
+                disabled={isCreateGRNDisabled}
+              >
+                <Icon name="Plus" className="h-4 w-4" /> <span>Create GRN</span>
+              </Button>
+            )}
           </div>
         )}
         {isGRNOpen && (

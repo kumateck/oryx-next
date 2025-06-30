@@ -13,8 +13,13 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
 import Create from "./create";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   // const router = useRouter();
   const triggerReload = useSelector((state) => state.common.triggerReload);
@@ -47,15 +52,40 @@ const Page = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(PermissionKeys.equipment.view);
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Equipments" />
+        <div className="flex items-center gap-2 ">
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 text-black hover:cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+          />
+
+          <PageTitle title={"Equipments"} />
+        </div>
         <div className="flex items-center justify-end gap-2">
-          <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-          </Button>
+          {hasPermissionAccess(PermissionKeys.equipment.addNew) && (
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
+          )}
         </div>
       </div>
 

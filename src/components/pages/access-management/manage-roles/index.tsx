@@ -8,24 +8,25 @@ import { useSelector } from "@/lib/redux/store";
 import { useLazyGetApiV1RoleQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
-import { routes } from "@/lib";
+import { PermissionKeys, routes } from "@/lib";
 import Link from "next/link";
 import { ClientDatatable } from "@/shared/datatable";
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const ManageRoles = () => {
   const dispatch = useDispatch();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const triggerReload = useSelector((state) => state.common.triggerReload);
-  // const permissions = useSelector(
-  //   (state) => state.persistedReducer.auth?.permissions,
-  // );
+  const searchValue = useSelector((state) => state.common.searchInput);
+
   const [loadRoles, { data, isLoading, isFetching }] =
     useLazyGetApiV1RoleQuery();
 
   useEffect(() => {
-    loadRoles();
+    loadRoles({});
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
@@ -33,6 +34,19 @@ const ManageRoles = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerReload]);
   const roles = data ?? [];
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.humanResources.viewRoles,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
+
   return (
     <PageWrapper className="w-full space-y-2">
       <div className="flex items-center justify-between py-2">
@@ -42,25 +56,33 @@ const ManageRoles = () => {
           </Link>
           <PageTitle title="Manage Roles" />
         </div>
-        {/* {findRecordWithFullAccess(
+        {/* {findRecordWithAccess(
             permissions,
             PermissionKeys.resourceManagement.rolesAndPermissions
               .createAndAssign,
           ) && (
           )} */}
-        <Link href={routes.newRole()}>
-          <Button type="button" className="gap-2">
-            <Icon name="Plus" className="h-4 w-4 text-secondary-500" />
-            <span>Create New Role</span>
-          </Button>
-        </Link>
+        {hasPermissionAccess(
+          PermissionKeys.humanResources.createRoleAndAssignPermissions,
+        ) && (
+          <Link href={routes.newRole()}>
+            <Button type="button" className="gap-2">
+              <Icon name="Plus" className="h-4 w-4 text-secondary-500" />
+              <span>Create New Role</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div>
         <ClientDatatable
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
-          data={roles}
+          data={roles.filter(role=>{
+            if(!searchValue) return true;
+            return role?.displayName?.toLowerCase().includes(searchValue.toLowerCase())
+            || role?.name?.toLowerCase().includes(searchValue.toLowerCase());
+          })}
           columns={columns}
           isLoading={isLoading || isFetching}
         />

@@ -5,6 +5,15 @@ export const CreateRoleSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
+  type: z.object(
+    {
+      value: z.string().min(1, { message: "Role type is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Role type is required",
+    },
+  ),
 });
 
 export type RoleRequestDto = z.infer<typeof CreateRoleSchema>;

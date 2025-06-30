@@ -3,94 +3,104 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
+// Assuming these are correct paths to your UI components and shared items
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui"; // DropdownMenuItem removed from here
+
+import Edit from "./edit"; // Local import
+import { BomRequestDto } from "./types"; // Local import
 import { TableMenuAction } from "@/shared/table-menu";
+import { RowDragHandleCell } from "@/shared/datatable/table-move";
 
-import Edit from "./edit";
-import { BomRequestDto } from "./types";
-
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-  setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>;
-  itemLists: BomRequestDto[];
+interface DataTableRowActionsProps {
+  row: Row<BomRequestDto>; // Row type is BomRequestDto
+  onUpdateItem: (index: number, updatedItem: BomRequestDto) => boolean;
+  onRemoveItem: (index: number) => void;
+  existingItems: BomRequestDto[];
+  index: number; // This will be row.index from TanStack Table
 }
-export function DataTableRowActions<TData extends BomRequestDto>({
+
+export function DataTableRowActions({
   row,
-  setItemLists,
-  itemLists,
-}: DataTableRowActionsProps<TData>) {
-  const [isOpen, setIsOpen] = useState(false);
+  onUpdateItem,
+  onRemoveItem,
+  existingItems, // existingItems prop was not used in this component
+  index, // This is the actual current index of the row in the table
+}: DataTableRowActionsProps) {
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const [details, setDetails] = useState<BomRequestDto>({} as BomRequestDto);
   const handleDelete = () => {
-    if (details) {
-      setItemLists((prev) =>
-        prev.filter((item) => item.idIndex !== details.idIndex),
-      );
-      setIsDeleteOpen(false);
-    }
+    onRemoveItem(index); // Use the passed index (row.index)
+    setIsDeleteOpen(false);
   };
+
+  const handleUpdate = (updatedItem: BomRequestDto) => {
+    // Pass existingItems (all items currently in the table) to the Edit component
+    // This seems to be missing from the original props destructuring, assuming it's needed by Edit.
+    // If Edit doesn't need all existingItems, this can be simplified.
+    // For now, assuming `existingItems` should be available to `Edit`.
+    // The `existingItems` prop is passed to `Edit` component below, so it should be available in this scope.
+    // Let's assume `existingItems` is passed down to DataTableRowActions and then to Edit.
+    // The original signature had `existingItems` so we'll keep it for Edit component.
+    return onUpdateItem(index, updatedItem); // Use the passed index (row.index)
+  };
+
+  // This prop seems to be intended for the Edit component.
+  // We need to ensure it's correctly passed. The getColumns function provides it.
+  // const existingItems = row.original as BomRequestDto[]; //|| { existingItems: [] };
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {/* <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      /> */}
       <TableMenuAction>
-        <DropdownMenuItem className="group">
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              setDetails(row.original);
-              setIsOpen(true);
-            }}
-          >
+        <DropdownMenuItem
+          className="group"
+          onSelect={() => setIsEditOpen(true)}
+        >
+          <div className="flex cursor-pointer items-center justify-start gap-2">
             <span className="text-black">
-              <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
+              <Icon
+                name="Pencil"
+                className="h-4 w-4 text-gray-600 group-hover:text-blue-600"
+              />
             </span>
-            <span>Edit</span>
+            <span className="text-sm text-gray-700 group-hover:text-blue-600">
+              Edit
+            </span>
           </div>
-        </DropdownMenuItem>{" "}
-        <DropdownMenuItem className="group">
-          <div
-            onClick={() => {
-              setDetails(row.original);
-              setIsDeleteOpen(true);
-            }}
-            className="flex cursor-pointer items-center justify-start gap-2"
-          >
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="group"
+          onSelect={() => setIsDeleteOpen(true)}
+        >
+          <div className="flex cursor-pointer items-center justify-start gap-2">
             <span className="text-black">
-              <Icon name="Trash2" className="h-5 w-5 text-danger-default" />
+              <Icon
+                name="Trash2"
+                className="h-4 w-4 text-gray-600 group-hover:text-red-600"
+              />
             </span>
-            <span>Delete</span>
+            <span className="text-sm text-gray-700 group-hover:text-red-600">
+              Delete
+            </span>
           </div>
         </DropdownMenuItem>
       </TableMenuAction>
-      {details && isOpen && (
+
+      {isEditOpen && (
         <Edit
-          setItemLists={setItemLists}
-          details={details}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          itemLists={itemLists}
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          details={row.original}
+          onUpdateItem={handleUpdate}
+          existingItems={existingItems} // Pass the correct existingItems
+          currentIndex={index} // Pass the correct index
         />
       )}
+
       <ConfirmDeleteDialog
         open={isDeleteOpen}
+        title="Confirm Deletion"
+        description={`Are you sure you want to delete material "${row.original.materialId?.label || "this item"}"? This action cannot be undone.`}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
       />
@@ -98,61 +108,120 @@ export function DataTableRowActions<TData extends BomRequestDto>({
   );
 }
 
+// Add tableMeta to BomRequestDto if it's used for passing existingItems
+interface BomRequestDtoWithMeta extends BomRequestDto {
+  tableMeta?: {
+    existingItems: BomRequestDto[];
+  };
+}
+
+// Column definitions now use BomRequestDto directly
 export const getColumns = (
-  setItemLists: React.Dispatch<React.SetStateAction<BomRequestDto[]>>,
-  itemLists: BomRequestDto[],
-): ColumnDef<BomRequestDto>[] => [
+  onUpdateItem: (index: number, updatedItem: BomRequestDto) => boolean,
+  onRemoveItem: (index: number) => void,
+  // This existingItems is the full list, used to pass to Edit via DataTableRowActions
+  allItemsForContext: BomRequestDto[],
+): ColumnDef<BomRequestDtoWithMeta>[] => [
+  // Changed type here
+  {
+    id: "drag-handle",
+    header: () => (
+      <Icon name="GripVertical" className="h-5 w-5 text-gray-400 mx-auto" />
+    ),
+    cell: ({ row }) => <RowDragHandleCell rowId={String(row.original.rowId)} />, // Ensure rowId is string
+    size: 60, // Explicit size for drag handle
+  },
   {
     accessorKey: "order",
     header: "Order",
-    cell: ({ row }) => <div>{row.getValue("order")}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700 text-center">
+        {row.getValue("order")}
+      </div>
+    ),
+    size: 80,
   },
   {
-    accessorKey: "materialTypeId",
+    accessorKey: "materialTypeId.label", // Access nested label for display
     header: "Material Type",
     cell: ({ row }) => (
-      <div className="">{row.original.materialTypeId?.label}</div>
+      <div className="text-sm text-gray-700">
+        {row.original.materialTypeId?.label}
+      </div>
     ),
   },
   {
-    accessorKey: "componentMaterialId",
+    accessorKey: "materialId.label", // Access nested label for display
     header: "Component Material",
-    cell: ({ row }) => <div>{row.original.materialId?.label}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.materialId?.label}
+      </div>
+    ),
   },
-
   {
-    accessorKey: "quantity",
+    accessorKey: "baseQuantity", // Changed from "quantity" to match BomRequestDto
     header: "Quantity",
-    cell: ({ row }) => <div>{row.original.baseQuantity}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700 text-right">
+        {row.original.baseQuantity}
+      </div>
+    ),
+    size: 100,
   },
   {
-    accessorKey: "uomId",
+    accessorKey: "baseUoMId.label", // Changed from "uomId" and access nested label
     header: "UOM",
-    cell: ({ row }) => <div>{row.original.baseUoMId?.label}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.baseUoMId?.label}
+      </div>
+    ),
+    size: 80,
   },
   {
     accessorKey: "grade",
     header: "Grade",
-    cell: ({ row }) => <div>{row.getValue("grade")}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.getValue("grade") || "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "casNumber",
     header: "CAS Number",
-    cell: ({ row }) => <div>{row.getValue("casNumber")}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.getValue("casNumber") || "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "function",
     header: "Function",
-    cell: ({ row }) => <div>{row.getValue("function")}</div>,
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.getValue("function") || "-"}
+      </div>
+    ),
   },
   {
     id: "actions",
+    header: "Actions",
+    // Attach allItemsForContext to row.original or pass via a meta property if TanStack Table supports it easily
+    // For simplicity, we'll assume DataTableRowActions can get existingItems from a context or a re-fetch if needed,
+    // or it's passed via row.original by enriching data before passing to table.
+    // A common way is to use table.options.meta
     cell: ({ row }) => (
       <DataTableRowActions
         row={row}
-        setItemLists={setItemLists}
-        itemLists={itemLists}
+        onUpdateItem={onUpdateItem}
+        onRemoveItem={onRemoveItem}
+        existingItems={allItemsForContext} // Pass the full list here
+        index={row.index} // Use row.index provided by TanStack Table
       />
     ),
+    size: 120,
   },
 ];

@@ -1,6 +1,7 @@
-import _ from "lodash";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Button,
@@ -11,66 +12,94 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { COLLECTION_TYPES, Option } from "@/lib";
+import {
+  AuditModules,
+  COLLECTION_TYPES,
+  OperationActionOptions,
+  Option,
+} from "@/lib";
 import {
   PostApiV1CollectionApiArg,
+  useGetApiV1ProductArdProductByProductIdQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
+import { RoutingRequestDto, CreateRoutingValidator } from "./types";
 import ProcedureForm from "./form";
-import {
-  CreateRoutingValidator,
-  ProcedureType,
-  RoutingRequestDto,
-} from "./types";
+import _ from "lodash";
+import SecondForm from "./form-2";
+import { useParams } from "next/navigation";
 
-// import "./types";
 interface Props {
+  onAddItem: (item: RoutingRequestDto) => boolean;
+  existingItems: RoutingRequestDto[];
   isOpen: boolean;
   onClose: () => void;
-  setItemLists: React.Dispatch<React.SetStateAction<RoutingRequestDto[]>>;
-  productId?: string;
-  itemLists?: RoutingRequestDto[];
 }
-const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
+
+const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
+  const { id } = useParams();
+  const productId = id as string;
+  const { data: productARD } = useGetApiV1ProductArdProductByProductIdQuery({
+    productId,
+  });
+
+  const form = useForm<RoutingRequestDto>({
+    resolver: CreateRoutingValidator,
+    mode: "onChange",
+    defaultValues: {
+      estimatedTime: "0",
+      function: "",
+      grade: "",
+      operationId: {
+        label: "",
+        value: "",
+      },
+      rowId: uuidv4(),
+      resources: [],
+      // responsibleRoles: [],
+      workCenters: [],
+    },
+  });
+
   const {
     register,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
     handleSubmit,
-  } = useForm<RoutingRequestDto>({
-    resolver: CreateRoutingValidator,
-    mode: "all",
+    getValues,
+  } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "personnels",
   });
+
   const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation({});
+    usePostApiV1CollectionMutation();
+
+  // const typeValues = useWatch({
+  //   control,
+  //   name: "type",
+  // }) as ProcedureType;
 
   useEffect(() => {
-    loadCollection({
-      body: [
-        COLLECTION_TYPES.WorkCenter,
-        COLLECTION_TYPES.Operation,
-        COLLECTION_TYPES.Resource,
-        COLLECTION_TYPES.Role,
-        COLLECTION_TYPES.User,
-      ],
-    } as PostApiV1CollectionApiArg).unwrap();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isOpen) {
+      loadCollection({
+        module: AuditModules.general.name,
+        subModule: AuditModules.general.collection,
+        body: [
+          COLLECTION_TYPES.WorkCenter,
+          COLLECTION_TYPES.Operation,
+          COLLECTION_TYPES.Resource,
+          COLLECTION_TYPES.Role,
+          COLLECTION_TYPES.User,
+        ],
+      } as PostApiV1CollectionApiArg);
+    }
+  }, [isOpen, loadCollection]);
 
-  const typeValues = useWatch({
-    control,
-    name: "type",
-  }) as ProcedureType;
-  // const operationOptions = collectionResponse?.[
-  //   COLLECTION_TYPES.Operation
-  // ]?.map((uom) => ({
-  //   label: uom.name,
-  //   value: uom.id,
-  // })) as Option[];
-
-  const operationOptions = _.isEmpty(itemLists)
+  const operationOptions = _.isEmpty(existingItems)
     ? (collectionResponse?.[COLLECTION_TYPES.Operation]?.map((uom) => ({
         label: uom.name,
         value: uom.id,
@@ -78,7 +107,10 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
     : (_.filter(
         collectionResponse?.[COLLECTION_TYPES.Operation],
         (itemA) =>
-          !_.some(itemLists, (itemB) => itemA?.id === itemB?.operationId.value),
+          !_.some(
+            existingItems,
+            (itemB) => itemA?.id === itemB?.operationId.value,
+          ),
       )?.map((uom) => ({
         label: uom.name,
         value: uom.id,
@@ -110,48 +142,117 @@ const Create = ({ isOpen, onClose, setItemLists, itemLists }: Props) => {
       value: user.id,
     }),
   ) as Option[];
+
+  const ardOptions = productARD?.map((ard) => ({
+    label: `${ard.productStandardTestProcedure?.stpNumber}(${ard.stage})`,
+    value: ard.id,
+  })) as Option[];
+
   const onSubmit = (data: RoutingRequestDto) => {
-    setItemLists((prevState) => {
-      const payload = {
-        ...data,
-        idIndex: (prevState.length + 1).toString(),
-      };
-      return [...prevState, payload]; // Add new item to the array
-    });
-    reset(); // Reset the form after submission
-    onClose(); // Close the form/modal if applicable
+    const success = onAddItem(data);
+    if (success) {
+      toast.success("Procedure item added successfully");
+      reset();
+      onClose();
+    }
   };
 
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const dots = [0, 1];
+  const typeValues =
+    useWatch({
+      control,
+      name: "personnels",
+    })?.map((stage) => stage?.type) || [];
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add Procedure</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ProcedureForm
-            control={control}
-            errors={errors}
-            operationOptions={operationOptions}
-            resourceOptions={resourceOptions}
-            workCenterOptions={workCenterOptions}
-            register={register}
-            selectedType={typeValues}
-            roleOptions={roleOptions}
-            userOptions={userOptions}
-          />
-          <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button variant={"default"} className="flex items-center gap-2">
-              <Icon name="Plus" className="h-4 w-4" />
-              <span>Add Procedure</span>{" "}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Add Procedure </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {activeIndex === 0 && (
+              <ProcedureForm
+                control={control}
+                errors={errors}
+                operationOptions={operationOptions}
+                resourceOptions={resourceOptions}
+                workCenterOptions={workCenterOptions}
+                register={register}
+              />
+            )}
+            {activeIndex === 1 && (
+              <SecondForm
+                fields={fields}
+                append={append}
+                remove={remove}
+                register={register}
+                control={control}
+                errors={errors}
+                roleOptions={roleOptions}
+                userOptions={userOptions}
+                operationActionOptions={OperationActionOptions}
+                typeValues={typeValues}
+                ardOptions={ardOptions}
+                getValues={getValues}
+              />
+            )}
+
+            <div className="flex space-x-2 w-full justify-center items-center py-5">
+              {dots.map((_, index) => (
+                <button
+                  type="button"
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`w-4 h-4 rounded-full transition-colors duration-200 ${
+                    activeIndex === index
+                      ? "bg-primary-default"
+                      : "bg-neutral-secondary"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <DialogFooter className="justify-end gap-4 py-6">
+              <Button type="button" variant="secondary" onClick={handleClose}>
+                Cancel
+              </Button>
+              {activeIndex === 0 && (
+                <Button
+                  type="button"
+                  variant="default"
+                  className="flex items-center gap-2"
+                  onClick={() => setActiveIndex(1)}
+                >
+                  <Icon name="Plus" className="h-4 w-4" />
+                  <span>Next</span>
+                </Button>
+              )}
+              {activeIndex === 1 && (
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="flex items-center gap-2"
+                  disabled={!isValid}
+                >
+                  <Icon name="Plus" className="h-4 w-4" />
+                  <span>Add Procedure</span>
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

@@ -11,11 +11,10 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { AuditModules, Option } from "@/lib";
 import {
   CreateLeaveTypeRequest,
   useGetApiV1DesignationQuery,
-  useLazyGetApiV1LeaveTypeQuery,
   usePostApiV1LeaveTypeMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -30,7 +29,7 @@ interface Props {
 }
 
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadLeaveTypes] = useLazyGetApiV1LeaveTypeQuery();
+  const dispatch = useDispatch();
   const [createLeaveType, { isLoading }] = usePostApiV1LeaveTypeMutation();
 
   const {
@@ -43,7 +42,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     resolver: CreateLeaveTypeValidator,
     mode: "all",
   });
-  const dispatch = useDispatch();
 
   const onSubmit = async (data: LeaveTypeRequestDto) => {
     try {
@@ -55,17 +53,17 @@ const Create = ({ isOpen, onClose }: Props) => {
         isActive: data.deductFromBalance,
         deductFromBalance: data.deductFromBalance,
       } satisfies CreateLeaveTypeRequest;
-      console.log(payload);
 
       await createLeaveType({
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.leaveTypeConfiguration,
         createLeaveTypeRequest: payload,
       }).unwrap();
 
       toast.success("Leave type created successfully");
-      loadLeaveTypes({ page: 1, pageSize: 10 });
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
-      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
@@ -74,6 +72,8 @@ const Create = ({ isOpen, onClose }: Props) => {
   const { data: designationResponse } = useGetApiV1DesignationQuery({
     page: 1,
     pageSize: 1000,
+    module: AuditModules.management.name,
+    subModule: AuditModules.management.leaveManagement,
   });
 
   const designationData = designationResponse?.data;

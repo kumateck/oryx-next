@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 // import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { formatAmount } from "@/lib";
+import { formatAmount, PermissionKeys } from "@/lib";
 import {
   useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   // useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
@@ -19,6 +19,7 @@ import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
 import { ListsTable } from "@/shared/datatable";
 import { getColumns } from "./columns";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const PODetail = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,8 @@ const PODetail = () => {
     router.back();
   };
 
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
@@ -57,15 +60,19 @@ const PODetail = () => {
             <PageTitle title="Purchase Order" />
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant={"default"}
-              onClick={() =>
-                router.push(`/procurement/purchase-orders/${id}/revise`)
-              }
-            >
-              <Icon name="FilePenLine" />
-              <span>Revise</span>
-            </Button>
+            {hasPermissionAccess(
+              PermissionKeys.procurement.reviseExistingPurchaseOrder,
+            ) && (
+              <Button
+                variant={"default"}
+                onClick={() =>
+                  router.push(`/procurement/purchase-orders/${id}/revise`)
+                }
+              >
+                <Icon name="FilePenLine" />
+                <span>Revise</span>
+              </Button>
+            )}
             <Button variant={"success"}>
               <Icon name="Mail" />
               <span>Send Mail</span>

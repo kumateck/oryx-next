@@ -13,6 +13,9 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { PermissionKeys } from "@/lib";
+import NoAccess from "@/shared/no-access";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -32,14 +35,30 @@ const Page = () => {
   }, [page, pageSize]);
 
   const data = result?.data || [];
+
+  //Check Permision
+  const { hasPermissionAccess } = useUserPermissions();
+  // check permissions access
+  const hasAccess = hasPermissionAccess(
+    PermissionKeys.logistics.viewShipmentInvoice,
+  );
+
+  if (!hasAccess) {
+    //redirect to no access
+    return <NoAccess />;
+  }
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Shipment Invoices" />
         <div className="flex items-center justify-end gap-2">
-          <Link href={"shipment-invoices/create"}>
-            <Button>Create</Button>
-          </Link>
+          {hasPermissionAccess(
+            PermissionKeys.logistics.createShipmentInvoice,
+          ) && (
+            <Link href={"shipment-invoices/create"}>
+              <Button>Create</Button>
+            </Link>
+          )}
         </div>
       </div>
 

@@ -18,6 +18,10 @@ export enum BatchStatus {
   Approved = 8,
 }
 
+export enum WorkflowFormType {
+  Material = 0,
+  Product = 1,
+}
 export enum DistributedMaterialStatus {
   Distributed = 0,
   Arrived = 1,
@@ -45,6 +49,7 @@ export enum CodeModelTypes {
   PurchaseOrder = "PurchaseOrder",
   ShipmentDocument = "ShipmentDocument",
   GRNNumber = "GrnNumber",
+  FinishedGoodsTransferNote = "FinishedGoodsTransferNote",
 }
 
 export enum ApprovalDocument {
@@ -53,6 +58,7 @@ export enum ApprovalDocument {
   PurchaseOrder = "PurchaseOrder",
   BillingSheet = "BillingSheet",
   LeaveRequest = "LeaveRequest",
+  OvertimeRequest = "OvertimeRequest",
 }
 
 export enum InterestType {
@@ -153,6 +159,25 @@ export enum QuestionType {
   FileUpload = 7,
   Signature = 8,
   Reference = 9,
+  Formular = 10,
+}
+
+export enum OperationAction {
+  BmrAndBprRequisition = 0,
+  StockRequisition = 1,
+  FullReturn = 2,
+  AdditionalStockRequest = 3,
+  FinalPackingOrPartialReturn = 4,
+  FinishedGoodsTransferNote = 5,
+  Dispatch = 6,
+  Atr = 7,
+  Ard = 8,
+}
+
+export enum ExtraPackingStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
 }
 
 export enum InputTypes {
@@ -167,6 +192,7 @@ export enum InputTypes {
   PHONE = "phone",
   SELECT = "select",
   ASYNC_SELECT = "async-select",
+  ASYNC_MULTI = "async-multi",
   SPACE = "space",
   PAGINATED_SELECT = "paginated-select",
   MULTI = "multi",
@@ -180,11 +206,38 @@ export enum InputTypes {
   DRAGNDROP = "drag-n-drop",
   MOMENT = "moment",
   TIME = "time",
+  CLOCK = "clock",
   IMAGE = "image",
   BUTTON = "button",
   SUBMIT = "submit",
   COLOR = "color",
   SPECIAL_SELECT = "special-select",
+  FORMULAR = "formular",
+}
+export enum CollectionTypes {
+  ProductCategory = "ProductCategory",
+  MaterialCategory = "MaterialCategory",
+  PackageCategory = "PackageCategory",
+  PackageType = "PackageType",
+  Resource = "Resource",
+  UnitOfMeasure = "UnitOfMeasure",
+  Material = "Material",
+  MaterialType = "MaterialType",
+  Warehouse = "Warehouse",
+  WarehouseLocation = "WarehouseLocation",
+  WarehouseLocationRack = "WarehouseLocationRack",
+  Product = "Product",
+  WorkCenter = "WorkCenter",
+  Operation = "Operation",
+  Role = "Role",
+  User = "User",
+  Country = "Country",
+  Currency = "Currency",
+  PackageStyle = "PackageStyle",
+  Charge = "Charge",
+  TermsOfPayment = "TermsOfPayment",
+  DeliveryMode = "DeliveryMode",
+  ShiftCategory = "ShiftCategory",
 }
 
 export enum Status {
@@ -201,6 +254,7 @@ export enum Status {
 export enum TimeType {
   Time = "time",
   Moment = "moment",
+  Clock = "clock",
 }
 
 export enum ProcurementType {
@@ -349,10 +403,110 @@ export enum LeaveStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,
+  Expired = 3,
+  Recalled = 4,
 }
 
 export enum ApprovalStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,
+}
+export enum GRNStatus {
+  Pending = 0,
+  IN_PROGRESS = 1,
+  Completed = 2,
+}
+
+export enum ShiftFrequency {
+  Week = 0,
+  BiWeek = 1,
+  Month = 2,
+  Quarter = 3,
+  Half = 4,
+  Year = 5,
+}
+
+export enum StartDay {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6,
+}
+
+export enum rotationType {
+  Rotational = 0,
+  Fixed = 1,
+}
+
+export enum DayOfWeek {
+  Sunday = 0,
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6,
+}
+
+export enum MaterialReturnsStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum OvertimeStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum StaffRequisitionType {
+  Budgeted = 0,
+  Unbudgeted = 1,
+}
+
+export enum AppointmentType {
+  New = 0,
+  Replacement = 1,
+}
+
+export enum RoleType {
+  Production = 0,
+  NonProduction = 1,
+}
+
+export enum NotificationType {
+  ProductionStageChanged = 0,
+  ShiftAssigned = 1,
+  ShipmentArrived = 2,
+  MaterialAboveMaxStock = 3,
+  MaterialBelowMinStock = 4,
+  MaterialReachedReorderLevel = 5,
+  StockRequisitionCreated = 6,
+  PartialRequisitionCreated = 7,
+  PartialRequestProduction = 8,
+  OvertimeRequest = 9,
+  LeaveRequest = 10,
+  StaffRequest = 11,
+  AuditLogEvent = 12,
+  BmrBprRequested = 13,
+  BmrBprApproved = 14,
+}
+
+export enum AlertType {
+  Email = 0,
+  InApp = 1,
+  Sms = 2,
+}
+
+export enum AnalyticalTestStatus {
+  Approved = 0,
+  Quarantine = 1,
+  Under_Test = 2,
+  Rejected = 3,
+  Test_Completed = 4,
 }

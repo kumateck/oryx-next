@@ -26,7 +26,7 @@ const PendingApprovals = () => {
     useLazyGetApiV1ApprovalMyPendingQuery();
 
   useEffect(() => {
-    loadData();
+    loadData({});
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }

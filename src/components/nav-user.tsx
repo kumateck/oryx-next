@@ -25,13 +25,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { fullname, getInitials } from "@/lib";
+import { AuditModules, fullname, getInitials } from "@/lib";
 import { useGetApiV1UserAuthenticatedQuery } from "@/lib/redux/api/openapi.generated";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
 
-  const { data: user } = useGetApiV1UserAuthenticatedQuery();
+  const { data: user } = useGetApiV1UserAuthenticatedQuery({
+    module: AuditModules.settings.name,
+    subModule: AuditModules.settings.authUser,
+  });
 
   return (
     <SidebarMenu>

@@ -5,6 +5,8 @@ import { Icon } from "@/components/ui";
 import { SupplierQuotationDto } from "@/lib/redux/api/openapi.generated";
 
 import Cost from "./cost";
+import { PermissionKeys } from "@/lib";
+import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
 
@@ -17,6 +19,9 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
   const [isOpen, setIsOpen] = useState(false);
   const [supplierId, setSupplierId] = useState("");
   const [quotationId, setQuotationId] = useState("");
+
+  // check permissions here
+  const { hasPermissionAccess } = useUserPermissions();
   return (
     <section className="flex items-center justify-end gap-2">
       {isOpen && (
@@ -27,15 +32,17 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
-      <Icon
-        onClick={() => {
-          setQuotationId(row.original?.id as string);
-          setSupplierId(row.original?.supplier?.id as string);
-          setIsOpen(true);
-        }}
-        name="HandCoins"
-        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-      />
+      {hasPermissionAccess(PermissionKeys.procurement.inputResponses) && (
+        <Icon
+          onClick={() => {
+            setQuotationId(row.original?.id as string);
+            setSupplierId(row.original?.supplier?.id as string);
+            setIsOpen(true);
+          }}
+          name="HandCoins"
+          className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+        />
+      )}
     </section>
   );
 }

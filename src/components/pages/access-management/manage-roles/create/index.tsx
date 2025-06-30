@@ -1,20 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Control, useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 
-import { InputTypes, PermissionType, Section } from "@/lib";
+import { InputTypes, PermissionType, RoleType, Section } from "@/lib";
 
 import {
   ErrorResponse,
   // Permission,
-  // findRecordWithFullAccess,
-  // findRecordWithFullAccess,
+  // findRecordWithAccess,
+  // findRecordWithAccess,
   hasOptions,
   isErrorResponse,
   permissionOptions,
   removeDuplicateTypes,
+  splitWords,
   // removeDuplicateTypes,
 } from "@/lib/utils";
 
@@ -26,7 +27,6 @@ import {
   useLazyGetApiV1PermissionModulesQuery,
   usePostApiV1RoleMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { useSelector } from "@/lib/redux/store";
 // import NoAccess from "@/shared/no-access";
 import { Button, Icon } from "@/components/ui";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -39,6 +39,7 @@ const Page = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<RoleRequestDto>({
     resolver: CreateRoleValidator,
@@ -51,17 +52,12 @@ const Page = () => {
   const [saveRole, { isLoading }] = usePostApiV1RoleMutation();
   const [loadAllPermissions, { isLoading: isLoadingAllPermissions }] =
     useLazyGetApiV1PermissionModulesQuery();
-  const accessPermissions = useSelector(
-    (state) => state.persistedReducer.auth?.permissions,
-  );
-
-  console.log(accessPermissions, "accessPermissions");
 
   const [permissions, setPermissions] = useState<Section[]>([]);
 
   const triggerLoadingPermissions = async () => {
     try {
-      const allPermissions = await loadAllPermissions().unwrap();
+      const allPermissions = await loadAllPermissions({}).unwrap();
       const permissions = (allPermissions ?? []) as Section[];
       setPermissions(permissions);
     } catch (error) {
@@ -180,9 +176,18 @@ const Page = () => {
       }),
     );
   };
+
+  const roleTypeOptions = Object.entries(RoleType)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+
   const onSubmit = async (data: RoleRequestDto) => {
     const payload = {
       name: data.name,
+      type: parseInt(data.type.value) as unknown as RoleType,
       permissions: removeDuplicateTypes(permissions),
     };
     try {
@@ -198,7 +203,7 @@ const Page = () => {
   };
 
   // if (
-  //   !findRecordWithFullAccess(
+  //   !findRecordWithAccess(
   //     accessPermissions,
   //     PermissionKeys.resourceManagement.rolesAndPermissions.createAndAssign,
   //   )
@@ -239,18 +244,36 @@ const Page = () => {
       </PageWrapper>
       <ScrollablePageWrapper className="space-y-5">
         <StepWrapper>
-          <div className="max-w-2xl">
-            <FormWizard
-              config={[
-                {
-                  register: register("name"),
-                  label: "Name",
-                  placeholder: "Enter name of role",
-                  type: InputTypes.TEXT,
-                  errors,
-                },
-              ]}
-            />
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    register: register("name"),
+                    label: "Name",
+                    placeholder: "Enter name of role",
+                    type: InputTypes.TEXT,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <FormWizard
+                config={[
+                  {
+                    name: `type`,
+                    label: "Role Type",
+                    type: InputTypes.SELECT,
+                    placeholder: "Select role type",
+                    control: control as unknown as Control,
+                    required: true,
+                    options: roleTypeOptions,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
           </div>
         </StepWrapper>
 
