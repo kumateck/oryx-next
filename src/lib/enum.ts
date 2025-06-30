@@ -20,7 +20,10 @@ export enum BatchStatus {
   TestTaken = 9,
   Checked = 10,
 }
-
+export enum ExpressionKind {
+  Expression,
+  Evaluation,
+}
 export enum WorkflowFormType {
   Material = 0,
   Product = 1,
@@ -62,6 +65,7 @@ export enum ApprovalDocument {
   BillingSheet = "BillingSheet",
   LeaveRequest = "LeaveRequest",
   OvertimeRequest = "OvertimeRequest",
+  Response = "Response",
 }
 
 export enum InterestType {
@@ -216,6 +220,7 @@ export enum InputTypes {
   COLOR = "color",
   SPECIAL_SELECT = "special-select",
   FORMULAR = "formular",
+  SIGNATURE = "signature",
 }
 export enum CollectionTypes {
   ProductCategory = "ProductCategory",

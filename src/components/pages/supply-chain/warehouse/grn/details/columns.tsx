@@ -86,7 +86,7 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Checked]: "bg-green-100 text-green-800",
+  [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
 };
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
