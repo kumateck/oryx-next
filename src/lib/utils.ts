@@ -928,6 +928,19 @@ export const isImageFile = (filename: string) => {
   const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
   return imageExtensions.some((ext) => filename.toLowerCase().endsWith(ext));
 };
+export const isDocument = (fileName: string) => {
+  const documentExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt"];
+  // console.log(fileName, "fileName");
+  return documentExtensions.some((ext) => fileName.toLowerCase().endsWith(ext));
+};
+
+export function toSentenceCase(text: string | undefined): string {
+  if (!text) return "";
+
+  const trimmedText = text.trim().toLowerCase();
+
+  return trimmedText.charAt(0).toUpperCase() + trimmedText.slice(1);
+}
 
 export const ShipmentStatusOptions = Object.values(ShipmentStatus)
   .filter((enumValue) => typeof enumValue === "number")

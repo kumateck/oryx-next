@@ -9,7 +9,7 @@ import {
   UseFormRegisterReturn,
 } from "react-hook-form";
 
-import { InputTypes, Option, TimeType, cn } from "@/lib";
+import { ExpressionKind, InputTypes, Option, TimeType, cn } from "@/lib";
 
 import { Button, Icon, Label, Switch } from "../ui";
 import { SuggestionProps } from "../ui/adusei-editor/suggestion";
@@ -29,6 +29,9 @@ import { FormClockInput } from "./time-input";
 import FormImageInput from "./image-input";
 import { ExpressionInput } from "./expression-input";
 import { FormSpecialMultiSelect } from "./special-multi-input";
+import { FormSignatureInput } from "./signature-input";
+import { FormCheckInput } from "./check-input";
+import { EvaluationInput } from "./evaluate-input";
 
 interface SpaceProps {
   type: InputTypes.SPACE;
@@ -85,7 +88,10 @@ interface ExpressionInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.FORMULAR;
   control: Control<FieldValues>;
   name: string;
+  kind?: ExpressionKind;
+  option?: string;
 }
+
 interface FilesUploadInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.DRAGNDROP;
   control: Control<FieldValues>;
@@ -107,7 +113,11 @@ interface DateInputProps extends BaseInputProps<FieldValues> {
   name: string;
   disabled?: { after?: Date; before?: Date };
 }
-
+interface SignInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.SIGNATURE;
+  control: Control<FieldValues>;
+  name: string;
+}
 interface TimeInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.TIME | InputTypes.MOMENT | InputTypes.CLOCK;
   control: Control<FieldValues>;
@@ -199,6 +209,15 @@ interface RadioInputProps extends BaseInputProps<FieldValues> {
   disabled?: boolean;
 }
 
+interface CheckboxInputProps extends BaseInputProps<FieldValues> {
+  type: InputTypes.CHECKBOX;
+  control: any;
+  name: string;
+  defaultValue?: boolean;
+  value?: boolean;
+  options: Option[];
+  disabled?: boolean;
+}
 interface ButtonProps {
   type: InputTypes.SUBMIT;
   title: string;
@@ -219,12 +238,14 @@ export type FormInput<TFieldValues extends FieldValues, TContext> =
   | SelectInputProps
   | AsyncSelectInputProps
   | MultiInputProps<TFieldValues, TContext>
+  | SignInputProps
   | AsyncMultiInputProps
   | FileInputProps
   | FilesUploadInputProps
   | ImageUploadInputProps
   | DateInputProps
   | RadioInputProps
+  | CheckboxInputProps
   | RichTextInputProps
   | TimeInputProps
   | PaginatedSelectInputProps
@@ -306,7 +327,17 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           control={formInput.control}
           name={formInput.name}
           render={({ field: { onChange, value } }) => {
-            return (
+            return formInput.kind === ExpressionKind.Evaluation ? (
+              <EvaluationInput
+                label={formInput.label}
+                required={formInput.required}
+                errors={formInput.errors}
+                value={value}
+                onChange={onChange}
+                name={formInput.name}
+                option={formInput.option as string}
+              />
+            ) : (
               <ExpressionInput
                 label={formInput.label}
                 required={formInput.required}
@@ -339,7 +370,22 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           )}
         />
       );
-
+    case InputTypes.SIGNATURE:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange } }) => (
+            <FormSignatureInput
+              label={formInput.label}
+              required={formInput.required}
+              errors={formInput.errors}
+              onChange={onChange}
+              name={formInput.name}
+            />
+          )}
+        />
+      );
     case InputTypes.SWITCH:
       return (
         <Controller
@@ -530,6 +576,25 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
               disabled={formInput.disabled}
               className={formInput.className}
               errors={formInput.errors}
+              name={formInput.name}
+            />
+          )}
+        />
+      );
+    case InputTypes.CHECKBOX:
+      return (
+        <Controller
+          control={formInput.control}
+          name={formInput.name}
+          render={({ field: { onChange, value } }) => (
+            <FormCheckInput
+              label={formInput.label}
+              required={formInput.required}
+              onChange={onChange}
+              value={value || []}
+              errors={formInput.errors}
+              options={formInput.options}
+              disabled={formInput?.disabled}
               name={formInput.name}
             />
           )}

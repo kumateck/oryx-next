@@ -12,11 +12,12 @@ import {
 import {
   BatchStatus,
   MaterialBatchDto,
+  useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { CreateSampleMaterial } from "./create-sample";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
 interface DataTableRowActionsProps<TData> {
@@ -29,9 +30,11 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
   [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Reserved]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
   [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
 };
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
@@ -131,23 +134,35 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
 export function DataTableRowActions<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const { id } = useParams();
+  const grnId = id as string;
   const router = useRouter();
   const [startTestMutation] =
     usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation();
+  const [checkSTPLinked] =
+    useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery();
   const [openSample, setOpenSample] = useState(false);
   const totqty = row.original.totalQuantity ?? 0;
   const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
   const qty = convertToLargestUnit(totqty, baseUnit);
   const handleStartTest = async () => {
+    const materialBatchId = row.original.id as string;
     try {
+      await checkSTPLinked({
+        materialBatchId,
+      }).unwrap();
       await startTestMutation({
-        materialBatchId: row.original.id as string,
+        materialBatchId,
       }).unwrap();
       toast.success("Test started successfully");
       router.push(`/complete/${WorkflowFormType.Material}/${row.original.id}`);
     } catch (error) {
       ThrowErrorMessage(error);
     }
+  };
+
+  const handleViewTestResponse = () => {
+    router.push(`/qc/goods-receipt-note/${grnId}/${row.original.id}`);
   };
   return (
     <section className="flex items-center justify-end gap-2">
@@ -168,6 +183,24 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
               className="text-danger-500 h-5 w-5 cursor-pointer"
             />
             <span>Start Test</span>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Button
+            onClick={() => handleViewTestResponse()}
+            variant={
+              row.original.status === BatchStatusEnum.TestTaken
+                ? "default"
+                : "ghost"
+            }
+            disabled={row.original.status !== BatchStatusEnum.TestTaken}
+            className="flex w-full cursor-pointer items-center justify-start gap-2"
+          >
+            <Icon
+              name="Target"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Check Test Result</span>
           </Button>
         </DropdownMenuItem>
         <DropdownMenuItem>

@@ -18,7 +18,7 @@ import PageWrapper from "@/components/layout/wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
-const FormResponseForMaterial = () => {
+const FormResponseForProduct = () => {
   const router = useRouter();
 
   const { id } = useParams();
@@ -158,4 +158,4 @@ const FormResponseForMaterial = () => {
   );
 };
 
-export default FormResponseForMaterial;
+export default FormResponseForProduct;

@@ -31,6 +31,13 @@ export type Section = {
   children: RecordItem[];
 };
 
+export type Attachment = {
+  link: string;
+  name: string;
+  id: string;
+  reference: string;
+};
+
 // export interface PermissionChild {
 //   key: string;
 //   name: string;
