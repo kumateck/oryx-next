@@ -11,6 +11,7 @@ import {
   AuditModules,
   cn,
   CODE_SETTINGS,
+  EMaterialKind,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -34,9 +35,10 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  kind?: EMaterialKind;
 };
 
-export const Create = ({ isOpen, onClose }: Props) => {
+export const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
 
   const {
@@ -53,6 +55,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: materialStps } = useGetApiV1MaterialStpsQuery({
     page: 1,
     pageSize: 1000,
+    materialKind: kind || EMaterialKind.Raw,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
