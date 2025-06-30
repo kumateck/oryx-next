@@ -77,7 +77,7 @@ const getQuestionTypeTitle = (type: QuestionType): string => {
 // Build validation schema for a single form field
 const buildFieldSchema = (field: FormFieldDto): z.ZodTypeAny => {
   const questionType = field.question?.type;
-  const fieldId = field.question?.id;
+  const fieldId = field?.id;
   const isRequired = field.required;
   const typeTitle = getQuestionTypeTitle(questionType as QuestionType);
 
@@ -199,7 +199,7 @@ export const buildSchema = (sections?: FormSectionDto[] | null) => {
       if (!section.fields) return acc;
 
       section.fields.forEach((field) => {
-        const fieldId = field.question?.id;
+        const fieldId = field?.id;
         if (fieldId) {
           acc[fieldId] = buildFieldSchema(field);
         }
@@ -245,4 +245,9 @@ export const getFieldById = (
     }
   }
   return undefined;
+};
+
+export type FormResponse = {
+  formFieldId: string;
+  value: string | string[] | { [key: string]: any };
 };
