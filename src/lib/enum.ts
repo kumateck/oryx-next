@@ -6,6 +6,7 @@ export enum IsTrueorFalse {
   True = 1,
   False = 0,
 }
+
 export enum BatchStatus {
   Received = 0,
   Quarantine = 1,
@@ -13,9 +14,11 @@ export enum BatchStatus {
   Available = 3,
   Rejected = 4,
   Retest = 5,
-  Reserved = 6,
+  Frozen = 6,
   Consumed = 7,
   Approved = 8,
+  TestTaken = 9,
+  Checked = 10,
 }
 
 export enum WorkflowFormType {

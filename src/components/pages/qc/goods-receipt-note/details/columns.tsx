@@ -29,9 +29,11 @@ const batchStatusColors: Record<BatchStatus, string> = {
   [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
   [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Reserved]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Frozen]: "bg-gray-100 text-gray-800",
+  [BatchStatusEnum.Consumed]: "bg-gray-100 text-gray-800",
+  [BatchStatusEnum.Approved]: "bg-blue-100 text-blue-800",
+  [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
+  [BatchStatusEnum.Checked]: "bg-green-100 text-green-800",
 };
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
