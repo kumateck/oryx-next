@@ -3,8 +3,8 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { ErrorResponse, isErrorResponse, ShiftFrequency } from "@/lib";
 import {
   ShiftScheduleDtoRead,
-  useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
+  useDeleteApiV1ShiftSchedulesByIdMutation,
+  useLazyGetApiV1ShiftSchedulesQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
@@ -21,13 +21,13 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [deleteMutation] = useDeleteApiV1DesignationByIdMutation();
+  const [deleteMutation] = useDeleteApiV1ShiftSchedulesByIdMutation();
 
   const [details, setDetails] = useState<ShiftScheduleDtoRead>(
     {} as ShiftScheduleDtoRead,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const [loadShiftSchedules] = useLazyGetApiV1ShiftSchedulesQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -89,7 +89,7 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
               id: details.id as string,
             }).unwrap();
             toast.success("Schedule deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            loadShiftSchedules({ page: 1, pageSize: 10 });
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
