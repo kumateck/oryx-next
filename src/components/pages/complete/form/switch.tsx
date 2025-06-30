@@ -1,5 +1,5 @@
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option, QuestionType } from "@/lib";
+import { ExpressionKind, InputTypes, Option, QuestionType } from "@/lib";
 import { FormFieldDto } from "@/lib/redux/api/openapi.generated";
 import React from "react";
 import {
@@ -23,13 +23,14 @@ const FormResponseSwitch = <TFieldValues extends FieldValues, TContext>({
   field,
 }: Props<TFieldValues, TContext>) => {
   const type = Number(field.question?.type);
-  const name = field?.question?.id as Path<TFieldValues>;
+  const name = field?.id as Path<TFieldValues>;
   const label = field?.question?.label as string;
   const required = field.required;
   const options = field?.question?.options?.map((option) => ({
     label: option.name as string,
     value: option.name as string,
   })) as Option[];
+  const option = field?.question?.options?.[0]?.name as string;
   switch (type) {
     case QuestionType.ShortAnswer:
       return (
@@ -163,10 +164,10 @@ const FormResponseSwitch = <TFieldValues extends FieldValues, TContext>({
               control: control as Control,
               name,
               type: InputTypes.FORMULAR,
-              kind: 1,
+              kind: ExpressionKind.Evaluation,
               required,
               errors,
-              option: field?.question?.options?.[0].name as string,
+              option,
             },
           ]}
         />

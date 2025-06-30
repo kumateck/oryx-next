@@ -73,6 +73,7 @@ const EditTemplate = () => {
           questions: (apiSection.fields || []).map((field) => ({
             id: field?.question?.id as string,
             required: field.required || false,
+            description: field?.description,
             label: field?.question?.label as string,
             type: field?.question?.type as QuestionType,
             options: (field?.question?.options || []).map((opt) => ({
@@ -125,6 +126,7 @@ const EditTemplate = () => {
           fields: section.questions.map((item) => ({
             questionId: item.id,
             required: item.required || false,
+            description: item.description,
           })),
         })),
       },

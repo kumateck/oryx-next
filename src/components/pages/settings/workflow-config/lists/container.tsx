@@ -60,7 +60,7 @@ export const Container = ({
           <Card
             key={card.id}
             index={index}
-            id={card.id}
+            id={card.id as string}
             question={card}
             highlightedQuestion={highlightedQuestion}
             setHighlightedQuestion={setHighlightedQuestion}

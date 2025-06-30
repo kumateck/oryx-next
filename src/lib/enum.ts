@@ -19,7 +19,10 @@ export enum BatchStatus {
   TestTaken = 9,
   Checked = 10,
 }
-
+export enum ExpressionKind {
+  Expression,
+  Evaluation,
+}
 export enum WorkflowFormType {
   Material = 0,
   Product = 1,

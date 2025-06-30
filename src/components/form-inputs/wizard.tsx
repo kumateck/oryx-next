@@ -9,7 +9,7 @@ import {
   UseFormRegisterReturn,
 } from "react-hook-form";
 
-import { InputTypes, Option, TimeType, cn } from "@/lib";
+import { ExpressionKind, InputTypes, Option, TimeType, cn } from "@/lib";
 
 import { Button, Icon, Label, Switch } from "../ui";
 import { SuggestionProps } from "../ui/adusei-editor/suggestion";
@@ -84,10 +84,6 @@ interface SwitchInputProps extends BaseInputProps<FieldValues> {
   name: string;
 }
 
-enum ExpressionKind {
-  FORMULAR,
-  EVALUATION,
-}
 interface ExpressionInputProps extends BaseInputProps<FieldValues> {
   type: InputTypes.FORMULAR;
   control: Control<FieldValues>;
@@ -331,7 +327,7 @@ const FormWizardSwitch = (formInput: FormInput<FieldValues, any>) => {
           control={formInput.control}
           name={formInput.name}
           render={({ field: { onChange, value } }) => {
-            return formInput.kind === ExpressionKind.EVALUATION ? (
+            return formInput.kind === ExpressionKind.Evaluation ? (
               <EvaluationInput
                 label={formInput.label}
                 required={formInput.required}

@@ -1,5 +1,6 @@
 // components/MaterialReportCard.tsx
 
+import { format } from "date-fns";
 import React from "react";
 
 interface Props {
@@ -32,11 +33,15 @@ export const MaterialReportCard: React.FC<Props> = ({
       <div className="flex flex-wrap justify-between text-xs text-neutral-500 font-medium">
         <span>
           Sampled on:{" "}
-          <span className="text-black font-semibold">{sampledOn}</span>
+          <span className="text-black font-semibold">
+            {sampledOn ? format(sampledOn, "MMM dd, yyyy") : "-"}
+          </span>
         </span>
         <span>
           Issue Date:{" "}
-          <span className="text-black font-semibold">{issueDate}</span>
+          <span className="text-black font-semibold">
+            {issueDate ? format(issueDate, "MMM dd, yyyy") : "-"}
+          </span>
         </span>
         <span>
           Issued By:{" "}
@@ -58,11 +63,16 @@ export const MaterialReportCard: React.FC<Props> = ({
         </div>
         <div>
           <div className="text-neutral-500">Manufacturing Date:</div>
-          <div className="font-semibold">{mfgDate}</div>
+          <div className="font-semibold">
+            {" "}
+            {mfgDate ? format(mfgDate, "MMM dd, yyyy") : "-"}
+          </div>
         </div>
         <div>
           <div className="text-neutral-500">Expiry Date:</div>
-          <div className="font-semibold">{expDate}</div>
+          <div className="font-semibold">
+            {expDate ? format(expDate, "MMM dd, yyyy") : "-"}
+          </div>
         </div>
         <div>
           <div className="text-neutral-500">STP Number:</div>
