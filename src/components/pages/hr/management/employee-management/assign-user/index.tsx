@@ -78,7 +78,7 @@ const UserDialog = ({
       type: selectedEmployee?.type?.toString() as unknown as EmployeeType,
       departmentId: defaultDepartment,
       designationId: defaultDesignation,
-      staffId: selectedEmployee?.staffNumber as string,
+      staffNumber: selectedEmployee?.staffNumber as string,
     },
   });
 
@@ -117,7 +117,7 @@ const UserDialog = ({
         type: selectedEmployee.type?.toString() as unknown as EmployeeType,
         departmentId: defaultDepartment,
         designationId: defaultDesignation,
-        staffId: selectedEmployee.staffNumber as string,
+        staffNumber: selectedEmployee.staffNumber as string,
       });
     }
   }, [open, selectedEmployee, reset, defaultDepartment, defaultDesignation]);
@@ -148,7 +148,7 @@ const UserDialog = ({
       const payload = {
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
-        staffNumber: data.staffId,
+        staffNumber: data.staffNumber,
         reportingManagerId: data.reportingManagerId?.value,
       };
 

@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 // import { Icon } from "@/components/ui";
 import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
-import { AuditModules, fullname } from "@/lib";
+import { AuditModules, fullname, OperationAction } from "@/lib";
 import { useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
@@ -48,6 +48,17 @@ const Board = () => {
     images: step?.responsibleUsers?.map((x) => ({
       name: fullname(x?.user?.firstName as string, x?.user?.lastName as string),
       url: x?.user?.avatar,
+    })),
+    actions: step?.responsibleUsers?.map((x) => ({
+      user: {
+        id: x?.user?.id as string,
+        fullname: fullname(
+          x?.user?.firstName as string,
+          x?.user?.lastName as string,
+        ),
+      },
+      action: x?.action as OperationAction,
+      formId: x?.productAnalyticalRawData?.id as string,
     })),
   })) as TimelineItemProps[];
   return (

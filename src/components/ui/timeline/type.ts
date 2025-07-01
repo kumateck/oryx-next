@@ -1,4 +1,4 @@
-import { ActivityStepStatus } from "@/lib";
+import { ActivityStepStatus, OperationAction } from "@/lib";
 
 export interface TimelineItemProps {
   id?: string;
@@ -11,6 +11,14 @@ export interface TimelineItemProps {
   description?: string;
   imagesLabel?: string;
   extra?: React.ReactNode;
+  actions: {
+    user: {
+      id: string;
+      fullname: string;
+    };
+    action: OperationAction;
+    formId: string;
+  }[];
   images?: {
     url?: string;
     color?: string;
