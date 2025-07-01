@@ -48,32 +48,54 @@ export enum NotificationFrequency {
 }
 
 export const AlertSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  alertType: z.array(
-    z.nativeEnum(AlertType, {
-      errorMap: () => ({ message: "Invalid alert type" }),
-    }),
-  ),
-  timeFrame: z.string().min(1, "Time frame is required"),
+  title: z
+    .string({ required_error: "Title is required" })
+    .min(1, "Title is required"),
+
+  alertType: z
+    .array(
+      z.nativeEnum(AlertType, {
+        errorMap: () => ({ message: "Invalid alert type" }),
+      }),
+      { required_error: "At least one alert type is required" },
+    )
+    .min(1, "At least one alert type must be selected"),
+
+  timeFrame: z
+    .string({ required_error: "Time frame is required" })
+    .min(1, "Time frame is required"),
+
   notificationType: z.nativeEnum(NotificationType, {
     errorMap: () => ({ message: "Invalid notification type" }),
   }),
+
   roleIds: z
     .array(
       z.object({
-        value: z.string().uuid("Invalid role ID"),
-        label: z.string(),
+        value: z
+          .string({ required_error: "Role ID is required" })
+          .min(1, "Role ID cannot be empty"),
+        label: z
+          .string({ required_error: "Role label is required" })
+          .min(1, "Role label cannot be empty"),
       }),
+      { required_error: "At least one role must be selected" },
     )
-    .min(1, "At least one role is required"),
+    .min(1, "At least one role must be selected"),
+
   userIds: z
     .array(
       z.object({
-        value: z.string().uuid("Invalid user ID"),
-        label: z.string(),
+        value: z
+          .string({ required_error: "User ID is required" })
+          .min(1, "User ID cannot be empty"),
+        label: z
+          .string({ required_error: "User label is required" })
+          .min(1, "User label cannot be empty"),
       }),
+      { required_error: "At least one user must be selected" },
     )
-    .min(1, "At least one user is required"),
+    .min(1, "At least one user must be selected"),
 });
 
 export type CreateAlertDto = z.infer<typeof AlertSchema>;
