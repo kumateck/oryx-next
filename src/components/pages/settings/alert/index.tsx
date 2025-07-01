@@ -10,8 +10,10 @@ import { LoadingSkeleton } from "./loadingSkeleton";
 import { AuditModules } from "@/lib";
 import { AlertPagination } from "./alertPagination";
 import { AlertResponse } from "./types";
+import { Button, Icon } from "@/components/ui";
 
 function Page() {
+  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [loadAlerts, { data, isLoading, isFetching }] =
@@ -29,6 +31,7 @@ function Page() {
     (data as { value: AlertResponse })?.value || {};
   return (
     <PageWrapper className="w-full">
+      {open && <CreateAlert open={open} onClose={() => setOpen(false)} />}
       <div className="flex w-full items-center justify-between">
         <div className="flex flex-col mr-auto">
           <PageTitle title="Alerts & Notifications " />
@@ -36,7 +39,10 @@ function Page() {
             Create, edit and delete alerts & notifications
           </span>
         </div>
-        <CreateAlert />
+        <Button onClick={() => setOpen(true)}>
+          <Icon name="Plus" />
+          Create Alert
+        </Button>
       </div>
       <ScrollablePageWrapper className="space-y-2 mt-3 ">
         {isFetching || isLoading ? (
