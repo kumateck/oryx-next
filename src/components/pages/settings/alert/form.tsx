@@ -7,28 +7,28 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
-import { NotificationFrequency, NotificationTypeLabels } from "./types";
+import { NotificationTypeLabels } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
-  control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
+  control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
   roleOptions: Option[];
-  userOptions?: Option[];
+  usersOptions?: Option[];
 }
 const AlertForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   roleOptions,
-  userOptions = [],
+  usersOptions = [],
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="flex w-full flex-col gap-4">
       <FormWizard
         config={[
           {
-            register: register("title" as Path<TFieldValues>),
+            register: register("" as Path<TFieldValues>),
             label: "Alert Title",
             placeholder: "Enter alert title",
             type: InputTypes.TEXT,
@@ -37,13 +37,14 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+
       <FormWizard
         config={[
           {
             control: control as Control,
-            label: "Alert Item",
-            name: "alertType",
-            placeholder: "Enter alert item",
+            label: "Notification Type",
+            name: "notificationType",
+            placeholder: "Select a notification type",
             type: InputTypes.SELECT,
             required: true,
             options: Object.entries(NotificationType)
@@ -56,12 +57,13 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+
       <div className="flex w-full flex-col md:flex-row items-center gap-2">
         <FormWizard
           className="w-full"
           config={[
             {
-              label: "Recipients",
+              label: "Role Recipients",
               control: control as Control,
               type: InputTypes.MULTI,
               placeholder: "Select roles",
@@ -76,58 +78,41 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
           className="w-full"
           config={[
             {
-              label: "Personnel",
+              label: "User Recipients",
               control: control as Control,
               type: InputTypes.MULTI,
               name: "userIds",
               required: true,
-              placeholder: "Select personnel",
-              options: userOptions,
+              placeholder: "Select users",
+              options: usersOptions,
               errors,
             },
           ]}
         />
       </div>
-      <FormWizard
-        config={[
-          {
-            control: control as Control,
-            label: "Frequency",
-            name: "Immediate",
-            placeholder: "Select frequency",
-            type: InputTypes.SELECT,
-            required: true,
-            options: Object.entries(NotificationFrequency)
-              .filter(([, value]) => typeof value === "number")
-              .map(([key, value]) => ({
-                label: key,
-                value: value.toString(),
-              })),
-            errors,
-          },
-        ]}
-      />
+
       <FormWizard
         config={[
           {
             control: control as Control,
             label: "Due Date",
             name: "timeFrame",
-            placeholder: "Enter due date",
+            placeholder: "Select due date",
             type: InputTypes.TIME,
             required: true,
             errors,
           },
         ]}
       />
+
       <FormWizard
         config={[
           {
-            label: "Alert Notification Channel",
+            label: "Notification Channels",
             control: control as Control,
-            type: InputTypes.SELECT,
-            placeholder: "Select channel",
-            name: "type",
+            type: InputTypes.MULTI,
+            placeholder: "Select notification channels",
+            name: "alertType",
             required: true,
             options: Object.entries(AlertType)
               .filter(([, value]) => typeof value === "number")

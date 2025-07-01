@@ -5590,6 +5590,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1UserRoleByRoleId: build.query<
+      GetApiV1UserRoleByRoleIdApiResponse,
+      GetApiV1UserRoleByRoleIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/user/role/${queryArg.roleId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     putApiV1UserById: build.mutation<
       PutApiV1UserByIdApiResponse,
       PutApiV1UserByIdApiArg
@@ -10516,6 +10528,15 @@ export type PostApiV1UserSignUpApiArg = {
 export type GetApiV1UserAuthenticatedApiResponse =
   /** status 200 OK */ UserWithRoleDto;
 export type GetApiV1UserAuthenticatedApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1UserRoleByRoleIdApiResponse =
+  /** status 200 OK */ UserWithRoleDto[];
+export type GetApiV1UserRoleByRoleIdApiArg = {
+  roleId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -17385,6 +17406,7 @@ export type ProductionActivityDto = {
   status?: ProductionStatus;
   startedAt?: string;
   completedAt?: string | null;
+  responsibleUsers?: ProductionActivityStepUserDto[] | null;
   currentStep?: ProductionActivityStepDto;
   activityLogs?: ProductionActivityLogDto[] | null;
 };
@@ -19292,6 +19314,8 @@ export const {
   usePostApiV1UserSignUpMutation,
   useGetApiV1UserAuthenticatedQuery,
   useLazyGetApiV1UserAuthenticatedQuery,
+  useGetApiV1UserRoleByRoleIdQuery,
+  useLazyGetApiV1UserRoleByRoleIdQuery,
   usePutApiV1UserByIdMutation,
   useDeleteApiV1UserByIdMutation,
   usePutApiV1UserRoleByIdMutation,
