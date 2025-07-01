@@ -144,7 +144,7 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   ) as Option[];
 
   const ardOptions = productARD?.map((ard) => ({
-    label: `${ard.productStandardTestProcedure?.stpNumber}(${ard.stage})`,
+    label: `${ard.productStandardTestProcedure?.stpNumber} (Stage-${ard.stage})`,
     value: ard.id,
   })) as Option[];
 
