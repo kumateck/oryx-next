@@ -14,6 +14,7 @@ import { AlertType, NotificationType } from "@/lib";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useState } from "react";
 import { EditAlert } from "./edit";
+import { format } from "date-fns";
 
 interface AlertItemProps {
   alert: AlertDto;
@@ -73,7 +74,7 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
           </span>
         </div>
       </div>
-      <div className="col-span-3 place-content-center">
+      <div className="col-span-2 place-content-center">
         <div className="flex items-center justify-start">
           <Icon name="User" className="size-4 text-gray-600" />
           <span className="ml-1 capitalize text-sm">
@@ -88,11 +89,15 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
           </span>
         </div>
       </div>
-      <div className="col-span-2 place-content-center">
+      <div className="col-span-3 place-content-center">
         <div className="flex items-center justify-start">
-          <Icon name="Bell" className="size-4 text-gray-600" />
+          <Icon name="Calendar" className="size-4 text-gray-600" />
           {/* TODO: add alert frequency */}
-          <span className="ml-1 capitalize text-sm">Frequency</span>
+          <span className="ml-1 capitalize text-sm">
+            {alert?.createdAt
+              ? format(alert.createdAt, "MMMM do, yyyy")
+              : "N/A"}
+          </span>
         </div>
       </div>
       <div className="col-span-2 place-content-center">
