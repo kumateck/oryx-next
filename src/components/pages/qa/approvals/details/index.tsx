@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import LeaveDetails from "./leave-request";
 import Comments from "./comments";
 import PurchaseRequisition from "./purchase-requisition";
+import ArdDetails from "./ard";
 
 // const statusColors: Record<ApprovalStatus, string> = {
 //   [ApprovalStatus.Pending]: "bg-gray-500 text-white",
@@ -134,7 +135,8 @@ const DetailPage = () => {
             return <PurchaseRequisition id={id as string} />;
           case ApprovalDocument.OvertimeRequest:
             return <PurchaseRequisition id={id as string} />;
-
+          case ApprovalDocument.Response:
+            <ArdDetails grnId={id as string} materialBatchId={id as string} />;
           default:
             return null;
         }

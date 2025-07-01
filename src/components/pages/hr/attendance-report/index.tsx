@@ -29,13 +29,15 @@ const Page = () => {
   const onSubmit = async (data: AttendanceReportDto) => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
     const file = files[0];
-    // const formData = new FormData();
+    const formData = new FormData();
     // files.forEach((file) => {
     // });
-    // formData.append("attendance", file, file.name);
+    formData.append("attendance", file, file.name);
     try {
       await uploadAttendance({
-        body: { attendance: file },
+        body: formData as unknown as {
+          attendance: Blob;
+        },
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.attendanceReport,
       });
