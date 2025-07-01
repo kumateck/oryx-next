@@ -38,25 +38,42 @@ export type AlertResponse = {
   stopPageIndex: number;
 };
 
+export enum NotificationFrequency {
+  IMMEDIATE = 0,
+  HOURLY = 1,
+  DAILY = 2,
+  WEEKLY = 3,
+  MONTHLY = 4,
+  NEVER = 5,
+}
+
 export const AlertSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  alertType: z.enum(["InApp", "Email", "Sms"], {
-    errorMap: () => ({ message: "Invalid alert type" }),
-  }),
-  timeFrame: z.enum(
-    [
-      "instant",
-      "real-time",
-      "immediate",
-      "hourly",
-      "daily",
-      "weekly",
-      "monthly",
-    ],
-    {
-      errorMap: () => ({ message: "Invalid time frame" }),
-    },
+  alertType: z.array(
+    z.nativeEnum(AlertType, {
+      errorMap: () => ({ message: "Invalid alert type" }),
+    }),
   ),
+  timeFrame: z.string().min(1, "Time frame is required"),
+  notificationType: z.nativeEnum(NotificationType, {
+    errorMap: () => ({ message: "Invalid notification type" }),
+  }),
+  roleIds: z
+    .array(
+      z.object({
+        value: z.string().uuid("Invalid role ID"),
+        label: z.string(),
+      }),
+    )
+    .min(1, "At least one role is required"),
+  userIds: z
+    .array(
+      z.object({
+        value: z.string().uuid("Invalid user ID"),
+        label: z.string(),
+      }),
+    )
+    .min(1, "At least one user is required"),
 });
 
 export type CreateAlertDto = z.infer<typeof AlertSchema>;

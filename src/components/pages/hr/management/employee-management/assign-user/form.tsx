@@ -117,7 +117,7 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
           //   errors,
           // },
           {
-            register: register(`staffId` as Path<TFieldValues>),
+            register: register(`staffNumber` as Path<TFieldValues>),
             label: "Staff ID",
             type: InputTypes.TEXT,
             required: true,

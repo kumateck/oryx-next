@@ -40,7 +40,7 @@ export const employeeInfoSchema = z.object({
   //     invalid_type_error: "Emplyment Start Date Date must be a valid date",
   //   }),
   // ),
-  staffId: z.string().min(1, "Staff ID is required"),
+  staffNumber: z.string().min(1, "Staff ID is required"),
 });
 
 export type EmployeeInfoRequestDto = z.infer<typeof employeeInfoSchema>;

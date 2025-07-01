@@ -109,7 +109,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
+          modelType: CODE_SETTINGS.modelTypes.MaterialStandardTestProcedure,
           modelId: ardId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
@@ -147,7 +147,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Analytical Raw Data</DialogTitle>
+          <DialogTitle>Add Material Analytical Raw Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <MaterialArdForm
