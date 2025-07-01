@@ -10,7 +10,7 @@ import {
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { toast } from "sonner";
 import { useState } from "react";
-import Link from "next/link";
+
 import { format } from "date-fns";
 // import Edit from "./leave-request/edit";
 
@@ -31,7 +31,7 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      <div
+      {/* <div
         className="flex cursor-pointer items-center justify-start gap-2"
         onClick={(e) => {
           e.stopPropagation();
@@ -42,7 +42,7 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
           name="Pencil"
           className="h-5 w-5 cursor-pointer text-neutral-500"
         />
-      </div>
+      </div> */}
 
       <div
         className="flex cursor-pointer items-center justify-start gap-2"
@@ -55,7 +55,7 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
         <Icon name="Trash2" className="text-red-500 h-5 w-5 cursor-pointer" />
       </div>
 
-      <div
+      {/* <div
         className="flex cursor-pointer items-center justify-start gap-2"
         // onClick={(e) => {
         //   e.stopPropagation();
@@ -69,7 +69,7 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
             className="text-blue-500 h-5 w-5 cursor-pointer"
           />
         </Link>
-      </div>
+      </div> */}
       {/* <Edit
         isOpen={isOpen}
         onClose={() => {
