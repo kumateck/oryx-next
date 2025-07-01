@@ -148,7 +148,7 @@ const UserDialog = ({
       const payload = {
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
-        staffId: data.staffId,
+        staffNumber: data.staffId,
         reportingManagerId: data.reportingManagerId?.value,
       };
 

@@ -10,6 +10,7 @@ import {
 import {
   AuditModules,
   cn,
+  CODE_SETTINGS,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -18,9 +19,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   Stage,
   useGetApiV1FormQuery,
   useGetApiV1ProductStpsQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProductArdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -66,6 +69,8 @@ export const Create = ({ isOpen, onClose }: Props) => {
 
   const [createProductArdMutation, { isLoading }] =
     usePostApiV1ProductArdMutation();
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
 
   //fuction for creating product analytical raw data
   const onSubmit = async (data: ProductArdSchemaType) => {
@@ -87,7 +92,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
       };
       console.log("Creating Product ARD with payload:", payload);
       // 1. Create the product analytical raw data
-      await createProductArdMutation({
+      const productArdId = await createProductArdMutation({
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.materials,
         createProductAnalyticalRawDataRequest: payload,
@@ -97,6 +102,22 @@ export const Create = ({ isOpen, onClose }: Props) => {
       dispatch(commonActions.setTriggerReload());
       onClose();
       reset();
+      // If attachments are provided, upload them
+      if (productArdId && data.attachments) {
+        const formData = new FormData();
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.ProductStandardTestProcedure,
+          modelId: productArdId,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
     } catch (error) {
       console.log("Error creating Product ARD:", error);
       toast.error(
@@ -125,7 +146,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Analytical Raw Data</DialogTitle>
+          <DialogTitle>Add Product Analytical Raw Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <MaterialArdForm
@@ -142,7 +163,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
                 Cancel
               </Button>
               <Button
-                disabled={isLoading}
+                disabled={isLoading || isUploadingAttachment}
                 type="submit"
                 className="flex items-center gap-2"
               >

@@ -6,6 +6,7 @@ export enum IsTrueorFalse {
   True = 1,
   False = 0,
 }
+
 export enum BatchStatus {
   Received = 0,
   Quarantine = 1,
