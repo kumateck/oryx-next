@@ -11,18 +11,26 @@ import {
 import AlertForm from "./form";
 import {
   CreateAlertRequest,
-  usePostApiV1AlertMutation,
   useGetApiV1RoleQuery,
+  usePutApiV1AlertByAlertIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import { CreateAlertDto, CreateAlertDtoValidator } from "./types";
+import { Option } from "@/lib";
 
 interface CreateAlertProps {
   open: boolean;
   onClose: () => void;
+  details: CreateAlertDto;
+  alertId: string;
 }
-export function CreateAlert({ open, onClose }: CreateAlertProps) {
-  const [createAlert, { isLoading }] = usePostApiV1AlertMutation();
+export function EditAlert({
+  open,
+  onClose,
+  details,
+  alertId,
+}: CreateAlertProps) {
+  const [editAlert, { isLoading }] = usePutApiV1AlertByAlertIdMutation();
   const { data: rolesData, isLoading: isLoadingRoles } = useGetApiV1RoleQuery(
     {},
   );
@@ -33,6 +41,7 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
     formState: { errors },
   } = useForm<CreateAlertDto>({
     resolver: CreateAlertDtoValidator,
+    defaultValues: { ...details },
   });
 
   const onSubmit = async (data: CreateAlertDto) => {
@@ -44,22 +53,23 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
       alertTypes: data.alertType,
       timeFrame: data.timeFrame,
     };
-    await createAlert({
+    await editAlert({
+      alertId: alertId,
       createAlertRequest: payload,
     });
   };
-  console.log("CreateAlert", rolesData);
+  console.log("EditAlert", rolesData);
   const roleOptions =
-    rolesData?.map((role) => ({
+    (rolesData?.map((role) => ({
       value: role.id as string,
       label: role.name as string,
-    })) || [];
+    })) as Option[]) || [];
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>New Alert</DialogTitle>
+            <DialogTitle>Edit Alert</DialogTitle>
           </DialogHeader>
           <AlertForm
             errors={errors}

@@ -38,7 +38,11 @@ export const DownloadAttachmentButton = ({ attachments }: Props) => {
   };
 
   return (
-    <button onClick={handleDownload} className="cursor-pointer">
+    <button
+      disabled={attachments.length === 0}
+      onClick={handleDownload}
+      className="cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+    >
       <Icon name="Download" />
     </button>
   );

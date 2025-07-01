@@ -21,8 +21,8 @@ import { useEffect, useState } from "react";
 import { commonActions } from "@/lib/redux/slices/common";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import StepDetailsDailog from "@/components/StepDetailsDailog";
 import { AuditModules, cn, fullname, getInitials } from "@/lib";
+import StepDetailsDailog from "./StepDetailsDailog";
 
 const Details = () => {
   const { id, sid } = useParams();
@@ -60,14 +60,15 @@ const Details = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityId, stepId, triggerReload]);
 
-  const progressDuration = "2025-05-06T14:56:16.139464Z";
-  const progressDurationDate = new Date(progressDuration);
-  const days = progressDurationDate.getUTCDate();
-  const hours = progressDurationDate.getUTCHours();
-  const minutes = progressDurationDate.getUTCMinutes();
-
   return (
     <PageWrapper>
+      {open && (
+        <StepDetailsDailog
+          isOpen={open}
+          onClose={() => setOpen(!open)}
+          stepId={stepData?.id as string}
+        />
+      )}
       <Button
         onClick={() => router.back()}
         variant="ghost"
@@ -88,12 +89,19 @@ const Details = () => {
                 </span>
                 <h1 className="text-xl">{stepData?.operation?.description}</h1>
               </div>
-              <div>
+              <div className="max-w-md">
                 <span className="text-sm block text-neutral-600">
                   Status Action
                 </span>
-                <span>1/3</span>
-                <Progress color="blue" className="" value={30} />
+                <span>{`${stepData?.status}/${stepData?.responsibleUsers?.length}`}</span>
+                <Progress
+                  color="blue"
+                  className=""
+                  value={
+                    stepData?.status ??
+                    0 / (stepData?.responsibleUsers?.length ?? 0)
+                  }
+                />
               </div>
             </div>
             {/* Responsibility personels */}
@@ -119,20 +127,32 @@ const Details = () => {
             </div>
             {/* Buttons */}
             <div className="flex flex-col items-center justify-end">
-              <StepDetailsDailog isOpen={open} onClose={() => setOpen(!open)} />
+              <Button
+                onClick={() => setOpen(true)}
+                variant="default"
+                className="ml-auto mb-4"
+              >
+                Perform Activity
+              </Button>
               <div>
                 <h2 className="text-neutral-600">Progress Duration</h2>
                 <div className="grid text-sm p-1 grid-cols-3 border border-neutral-600 rounded">
                   <div className=" flex flex-col items-center justify-center">
-                    <span className="">{days}</span>
+                    <span className="">
+                      {getTimeSince(stepData?.operation?.createdAt)?.days}
+                    </span>
                     <span>Days</span>
                   </div>
                   <div className=" flex flex-col items-center justify-center">
-                    <span>{hours}</span>
+                    <span>
+                      {getTimeSince(stepData?.operation?.createdAt)?.hours}
+                    </span>
                     <span>Hours</span>
                   </div>
                   <div className=" flex flex-col items-center justify-center">
-                    <span>{minutes}</span>
+                    <span>
+                      {getTimeSince(stepData?.operation?.createdAt)?.minutes}
+                    </span>
                     <span>minutes</span>
                   </div>
                 </div>
@@ -150,3 +170,19 @@ const Details = () => {
 };
 
 export default Details;
+
+import { parseISO, intervalToDuration } from "date-fns";
+
+function getTimeSince(dateString?: string) {
+  if (!dateString) return;
+  const then = parseISO(dateString);
+  const now = new Date();
+
+  const duration = intervalToDuration({ start: then, end: now });
+
+  return {
+    days: duration.days,
+    hours: duration.hours,
+    minutes: duration.minutes,
+  };
+}

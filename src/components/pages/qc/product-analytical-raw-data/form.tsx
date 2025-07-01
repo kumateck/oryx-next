@@ -95,6 +95,18 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
+      <FormWizard
+        config={[
+          {
+            type: InputTypes.DRAGNDROP,
+            label: "Attach Documents",
+            name: `attachments`,
+            defaultValue: null,
+            control: control as Control,
+            errors,
+          },
+        ]}
+      />
     </div>
   );
 };

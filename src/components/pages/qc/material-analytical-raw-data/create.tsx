@@ -11,6 +11,7 @@ import {
   AuditModules,
   cn,
   CODE_SETTINGS,
+  EMaterialKind,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -34,9 +35,10 @@ import { useDispatch } from "react-redux";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  kind?: EMaterialKind;
 };
 
-export const Create = ({ isOpen, onClose }: Props) => {
+export const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
 
   const {
@@ -53,6 +55,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: materialStps } = useGetApiV1MaterialStpsQuery({
     page: 1,
     pageSize: 1000,
+    materialKind: kind || EMaterialKind.Raw,
     module: AuditModules.warehouse.name,
     subModule: AuditModules.warehouse.materials,
   });
@@ -94,7 +97,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
         createMaterialAnalyticalRawDataRequest: payload,
       } as PostApiV1MaterialArdApiArg).unwrap();
 
-      if (ardId) {
+      if (ardId && data.attachments) {
         const formData = new FormData();
         // Ensure attachments are an array
         const attachmentsArray = Array.isArray(data.attachments)
@@ -106,7 +109,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
+          modelType: CODE_SETTINGS.modelTypes.MaterialStandardTestProcedure,
           modelId: ardId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
@@ -144,7 +147,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Analytical Raw Data</DialogTitle>
+          <DialogTitle>Add Material Analytical Raw Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <MaterialArdForm

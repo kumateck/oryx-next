@@ -62,7 +62,9 @@ function Page() {
   const data = result?.data || [];
   return (
     <PageWrapper>
-      {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+      {isOpen && (
+        <Create isOpen={isOpen} kind={type} onClose={() => setIsOpen(false)} />
+      )}
       <PageTitle title="Analytical Raw Data - Material" />
       <div className="flex w-full justify-between items-center">
         <AccessTabs
@@ -82,7 +84,7 @@ function Page() {
         />
         <Button onClick={() => setIsOpen(true)} className="flex items-center">
           <Icon name="Plus" />
-          <span>Add ARD</span>
+          <span>Add Material ARD</span>
         </Button>
       </div>
       <ScrollablePageWrapper>

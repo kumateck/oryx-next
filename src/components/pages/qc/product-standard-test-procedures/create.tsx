@@ -90,10 +90,8 @@ export const Create = ({ isOpen, onClose }: Props) => {
         if (files.length) {
           // Upload the files
           await uploadAttachment({
-            modelType: CODE_SETTINGS.modelTypes.StandardTestProcedure,
+            modelType: CODE_SETTINGS.modelTypes.ProductStandardTestProcedure,
             modelId: standardTestProcedureId,
-            module: "ProductStandardTestProcedure",
-            subModule: "ProductStandardTestProcedure",
             body: formData,
           } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
         }
