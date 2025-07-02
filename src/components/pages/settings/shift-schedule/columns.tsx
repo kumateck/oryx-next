@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { format } from "date-fns";
+import Edit from "./edit";
 // import Edit from "./leave-request/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -21,6 +22,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const [open, setOpne] = useState(false);
   const [deleteMutation] = useDeleteApiV1ShiftSchedulesByIdMutation();
 
   const [details, setDetails] = useState<ShiftScheduleDtoRead>(
@@ -31,18 +33,23 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {/* <div
+      {open && (
+        <Edit
+          isOpen={open}
+          onClose={() => setOpne(false)}
+          defaultValues={details}
+        />
+      )}
+      <div
         className="flex cursor-pointer items-center justify-start gap-2"
         onClick={(e) => {
           e.stopPropagation();
           setDetails(row.original);
+          setOpne(true);
         }}
       >
-        <Icon
-          name="Pencil"
-          className="h-5 w-5 cursor-pointer text-neutral-500"
-        />
-      </div> */}
+        <Icon name="Pencil" className="size-5 cursor-pointer" />
+      </div>
 
       <div
         className="flex cursor-pointer items-center justify-start gap-2"

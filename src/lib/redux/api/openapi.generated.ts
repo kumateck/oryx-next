@@ -11187,6 +11187,7 @@ export type AlertDto = {
   roles?: RoleDto[] | null;
   users?: UserDto[] | null;
   isDisabled?: boolean;
+  isConfigurable?: boolean;
 };
 export type AlertDtoIEnumerablePaginateable = {
   data?: AlertDto[] | null;
@@ -12427,6 +12428,7 @@ export type MaterialBatchDto = {
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  sampledQuantity?: number;
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
@@ -12457,6 +12459,7 @@ export type MaterialBatchDtoRead = {
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  sampledQuantity?: number;
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
@@ -12702,7 +12705,7 @@ export type CreateMaterialSamplingRequest = {
   grnId: string;
   arNumber: string;
   materialBatchId?: string;
-  sampleQuantity: string;
+  sampleQuantity: number;
 };
 export type GrnDto = {
   id?: string;
@@ -12727,7 +12730,7 @@ export type MaterialSamplingDto = {
   materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   sampleDate?: string;
 };
 export type MaterialSamplingDtoRead = {
@@ -12735,7 +12738,7 @@ export type MaterialSamplingDtoRead = {
   materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   sampleDate?: string;
 };
 export type CreateMaterialStandardTestProcedureRequest = {
@@ -14266,6 +14269,7 @@ export type BatchManufacturingRecord = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  sampledQuantity?: number;
   status?: BatchManufacturingStatus;
   issuedById?: string | null;
   issuedBy?: User;
@@ -14291,6 +14295,7 @@ export type BatchManufacturingRecordRead = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  sampledQuantity?: number;
   status?: BatchManufacturingStatus;
   issuedById?: string | null;
   issuedBy?: User;
@@ -16271,6 +16276,7 @@ export type MaterialBatch = {
   quantityAssigned?: number;
   totalQuantity?: number;
   consumedQuantity?: number;
+  sampledQuantity?: number;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
   status?: BatchStatus;
@@ -16315,6 +16321,7 @@ export type MaterialBatchRead = {
   consumedQuantity?: number;
   remainingQuantity?: number;
   quantityUnassigned?: number;
+  sampledQuantity?: number;
   uoMId?: string | null;
   uoM?: UnitOfMeasureRead;
   status?: BatchStatus;
@@ -17482,6 +17489,7 @@ export type BatchManufacturingRecordDto = {
   expiryDate?: string | null;
   batchQuantity?: number;
   status?: BatchManufacturingStatus;
+  sampledQuantity?: number;
 };
 export type BatchManufacturingRecordDtoRead = {
   id?: string;
@@ -17495,6 +17503,7 @@ export type BatchManufacturingRecordDtoRead = {
   batchQuantity?: number;
   status?: BatchManufacturingStatus;
   expectedQuantity?: number;
+  sampledQuantity?: number;
 };
 export type BatchManufacturingRecordDtoIEnumerablePaginateable = {
   data?: BatchManufacturingRecordDto[] | null;
@@ -17917,7 +17926,7 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
 export type CreateProductSamplingRequest = {
   analyticalTestRequestId: string;
   arNumber: string;
-  sampleQuantity: string;
+  sampleQuantity: number;
   containersSampled: number;
 };
 export type ProductSamplingDto = {
@@ -17925,7 +17934,7 @@ export type ProductSamplingDto = {
   createdBy?: UserDto;
   createdAt?: string;
   analyticalTestRequestId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   containersSampled?: number;
   sampleDate?: string;
   analyticalTestRequest?: AnalyticalTestRequestDto;
