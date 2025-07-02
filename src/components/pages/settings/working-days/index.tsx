@@ -73,7 +73,11 @@ function Page() {
 
     const workingDaysList = getWorkingDaysList();
 
-    if (workingDaysList.length > 0 && !isInitialized && !isLoadingWorkingDays) {
+    if (
+      workingDaysList?.length > 0 &&
+      !isInitialized &&
+      !isLoadingWorkingDays
+    ) {
       try {
         const existingWorkingDays = workingDaysList.map((workDay) => ({
           day: (workDay.day ?? 0) as DaysIndexTypes,
@@ -99,7 +103,7 @@ function Page() {
       }
     } else if (
       !isLoadingWorkingDays &&
-      workingDaysList.length === 0 &&
+      workingDaysList?.length === 0 &&
       !isInitialized
     ) {
       // No existing data, mark as initialized
@@ -150,7 +154,7 @@ function Page() {
   const onSubmit = async (data: WorkDaysDto) => {
     try {
       // Validate that we have working days selected
-      if (!data.workingDays || data.workingDays.length === 0) {
+      if (!data.workingDays || data.workingDays?.length === 0) {
         toast.error("Please select at least one working day");
         return;
       }
@@ -160,7 +164,7 @@ function Page() {
         (day) => !day.startTime || !day.endTime,
       );
 
-      if (invalidDays.length > 0) {
+      if (invalidDays?.length > 0) {
         toast.error("Please set start and end times for all selected days");
         return;
       }
@@ -186,7 +190,7 @@ function Page() {
   const handleReset = useCallback(() => {
     const workingDaysList = getWorkingDaysList();
 
-    if (workingDaysList.length > 0) {
+    if (workingDaysList?.length > 0) {
       // Reset to original data
       try {
         const existingWorkingDays = workingDaysList.map((workDay) => ({
