@@ -13,6 +13,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  alertType: "roles" | "users";
+  isUpdateRecipient?: boolean;
   roleOptions: Option[];
   usersOptions?: Option[];
 }
@@ -20,7 +22,9 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  isUpdateRecipient,
   roleOptions,
+  alertType,
   usersOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -30,6 +34,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Alert Title",
             placeholder: "Enter alert title",
+            readOnly: isUpdateRecipient,
             type: InputTypes.TEXT,
             register: register("title" as Path<TFieldValues>),
             required: true,
@@ -44,6 +49,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             label: "Notification Type",
             name: "notificationType",
             placeholder: "Select a notification type",
+            readOnly: isUpdateRecipient,
             type: InputTypes.SELECT,
             required: true,
             options: Object.entries(NotificationType)
@@ -59,36 +65,40 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
         ]}
       />
       <div className="flex w-full flex-col md:flex-row items-center gap-2">
-        <FormWizard
-          className="w-full"
-          config={[
-            {
-              label: "Role Recipients",
-              control: control as Control,
-              type: InputTypes.MULTI,
-              placeholder: "Select roles",
-              name: "roleIds",
-              required: true,
-              options: roleOptions,
-              errors,
-            },
-          ]}
-        />
-        <FormWizard
-          className="w-full"
-          config={[
-            {
-              label: "User Recipients",
-              control: control as Control,
-              type: InputTypes.MULTI,
-              name: "userIds",
-              required: true,
-              placeholder: "Select users",
-              options: usersOptions || [],
-              errors,
-            },
-          ]}
-        />
+        {alertType === "roles" && (
+          <FormWizard
+            className="w-full"
+            config={[
+              {
+                label: "Role Recipients",
+                control: control as Control,
+                type: InputTypes.MULTI,
+                placeholder: "Select roles",
+                name: "roleIds",
+                required: true,
+                options: roleOptions,
+                errors,
+              },
+            ]}
+          />
+        )}
+        {alertType === "users" && (
+          <FormWizard
+            className="w-full"
+            config={[
+              {
+                label: "User Recipients",
+                control: control as Control,
+                type: InputTypes.MULTI,
+                name: "userIds",
+                required: true,
+                placeholder: "Select users",
+                options: usersOptions || [],
+                errors,
+              },
+            ]}
+          />
+        )}
       </div>
 
       <FormWizard
@@ -97,8 +107,9 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             control: control as Control,
             label: "Due Date",
             name: "timeFrame",
+            readOnly: isUpdateRecipient,
             placeholder: "Select due date",
-            type: InputTypes.MOMENT,
+            type: InputTypes.TIME,
             required: true,
             errors,
           },
@@ -113,6 +124,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.MULTI,
             placeholder: "Select notification channels",
             name: "alertType",
+            readOnly: isUpdateRecipient,
             required: true,
             options: Object.entries(AlertType)
               .filter(([, value]) => typeof value === "number")

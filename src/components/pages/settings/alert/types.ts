@@ -55,7 +55,7 @@ export const AlertSchema = z.object({
   alertType: z
     .array(
       z.object({
-        value: z.string().transform((value) => Number(value) as AlertType),
+        value: z.string().min(1, "Alert type is required"),
         label: z.string(),
       }),
       { message: "At least one channels must be selected" },
@@ -85,8 +85,7 @@ export const AlertSchema = z.object({
       }),
       { required_error: "At least one role must be selected" },
     )
-    .min(1, "At least one role must be selected"),
-
+    .optional(),
   userIds: z
     .array(
       z.object({
@@ -99,7 +98,7 @@ export const AlertSchema = z.object({
       }),
       { required_error: "At least one user must be selected" },
     )
-    .min(1, "At least one user must be selected"),
+    .optional(),
 });
 
 export type CreateAlertDto = z.infer<typeof AlertSchema>;

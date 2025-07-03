@@ -13,28 +13,33 @@ import {
   CreateAlertRequest,
   NotificationType,
   useGetApiV1RoleQuery,
-  useLazyGetApiV1UserRoleByRoleIdQuery,
+  useGetApiV1UserQuery,
   usePutApiV1AlertByAlertIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import { CreateAlertDto, CreateAlertDtoValidator } from "./types";
-import { AlertType, Option } from "@/lib";
+import { AlertType } from "@/lib";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect } from "react";
 
 interface CreateAlertProps {
   open: boolean;
   onClose: () => void;
   details: CreateAlertDto;
   id: string;
+  isUpdateRecipient?: boolean;
 }
-export function EditAlert({ open, onClose, details, id }: CreateAlertProps) {
+export function EditAlert({
+  open,
+  onClose,
+  details,
+  id,
+  isUpdateRecipient,
+}: CreateAlertProps) {
   const [editAlert, { isLoading }] = usePutApiV1AlertByAlertIdMutation();
-  const [usersOptions, setUsersOptions] = useState<Option[]>([]);
-  const [getUsersByRoleId] = useLazyGetApiV1UserRoleByRoleIdQuery();
+  const { data: usersData } = useGetApiV1UserQuery({});
   const dispatch = useDispatch();
   console.log("EditAlert", details);
   const { data: rolesData, isLoading: isLoadingRoles } = useGetApiV1RoleQuery(
@@ -44,11 +49,17 @@ export function EditAlert({ open, onClose, details, id }: CreateAlertProps) {
     handleSubmit,
     control,
     register,
-    watch,
     formState: { errors },
   } = useForm<CreateAlertDto>({
     resolver: CreateAlertDtoValidator,
-    // defaultValues: { ...details },
+    defaultValues: {
+      alertType: details.alertType,
+      title: details.title,
+      notificationType: details.notificationType,
+      roleIds: details.roleIds,
+      userIds: details.userIds,
+      timeFrame: details.timeFrame,
+    },
   });
 
   const onSubmit = async (data: CreateAlertDto) => {
@@ -56,9 +67,11 @@ export function EditAlert({ open, onClose, details, id }: CreateAlertProps) {
       const payload: CreateAlertRequest = {
         title: data.title,
         notificationType: data.notificationType.value as NotificationType,
-        roleIds: data.roleIds.map((role) => role.value),
-        userIds: data.userIds.map((user) => user.value),
-        alertTypes: data.alertType.map((type) => type.value as AlertType),
+        roleIds: data?.roleIds?.map((role) => role.value) || [],
+        userIds: data?.userIds?.map((user) => user.value) || [],
+        alertTypes: data.alertType.map(
+          (type) => type.value as unknown as AlertType,
+        ),
         timeFrame: data.timeFrame,
       };
       await editAlert({
@@ -73,46 +86,35 @@ export function EditAlert({ open, onClose, details, id }: CreateAlertProps) {
       toast.error("Failed to edit alert");
     }
   };
-  console.log("EditAlert", rolesData);
-  // Watch the roleIds to fetch users when roles change
-  const roleIds = watch("roleIds");
-  const debouncedRoleIds = useDebounce(roleIds, 500);
-  // If roleIds change, fetch users for the first role
-  useEffect(() => {
-    if (!debouncedRoleIds || debouncedRoleIds.length === 0) {
-      setUsersOptions([]);
-      return;
-    }
-    //delay for 3 seconds
-    fetchUsersForRoles(debouncedRoleIds);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedRoleIds, getUsersByRoleId]);
 
-  //function to fetch users for all selected roles
-  const fetchUsersForRoles = async (
-    roleIds: { value: string; label: string }[],
-  ) => {
-    const users: Option[] = [];
-    for (const roleId of roleIds) {
-      const { data } = await getUsersByRoleId({ roleId: roleId.value });
-      if (data) {
-        users.push(
-          ...data
-            .filter((user) => typeof user.id === "string" && user.id)
-            .map((user) => ({
-              value: user.id as string,
-              label: `${user.firstName} ${user.lastName}` as string,
-            })),
-        );
-      }
-    }
-    setUsersOptions(users);
-  };
+  // formatted roles data to match the expected format
   const roleOptions =
     rolesData?.map((role) => ({
       value: role.id as string,
       label: role.name as string,
     })) || [];
+  //Formated users data to match the expected format
+  const usersOptions =
+    usersData?.data?.map((user) => ({
+      value: user.id as string,
+      label: `${user.firstName} ${user.lastName}` as string,
+    })) || [];
+
+  const alertType =
+    (details?.roleIds?.length ?? 0) > 0
+      ? "roles"
+      : (details?.userIds?.length ?? 0) > 0
+        ? "users"
+        : "roles";
+
+  useEffect(() => {
+    // setValue("alertType", details.alertType || []);
+    // setValue("notificationType", details.notificationType);
+    // setValue("roleIds", details.roleIds);
+    // setValue("userIds", details.userIds);
+    // setValue("timeFrame", details.timeFrame);
+  }, []);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -124,6 +126,8 @@ export function EditAlert({ open, onClose, details, id }: CreateAlertProps) {
             errors={errors}
             register={register}
             control={control}
+            isUpdateRecipient={isUpdateRecipient}
+            alertType={alertType}
             roleOptions={roleOptions}
             usersOptions={usersOptions}
           />
