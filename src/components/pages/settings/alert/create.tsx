@@ -14,6 +14,8 @@ import {
   usePostApiV1AlertMutation,
   useGetApiV1RoleQuery,
   useLazyGetApiV1UserRoleByRoleIdQuery,
+  NotificationType,
+  AlertType,
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import { CreateAlertDto, CreateAlertDtoValidator } from "./types";
@@ -21,6 +23,7 @@ import { useEffect, useState } from "react";
 import { Option } from "@/lib";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { useDebounce } from "@uidotdev/usehooks";
 
 interface CreateAlertProps {
   open: boolean;
@@ -45,10 +48,10 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
   const onSubmit = async (data: CreateAlertDto) => {
     const payload: CreateAlertRequest = {
       title: data.title,
-      notificationType: data.notificationType,
+      notificationType: data.notificationType.value as NotificationType,
       roleIds: data.roleIds.map((role) => role.value),
       userIds: data.userIds.map((user) => user.value),
-      alertTypes: data.alertType,
+      alertTypes: data.alertType.map((type) => type.value as AlertType),
       timeFrame: data.timeFrame,
     };
     await createAlert({
@@ -58,22 +61,17 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
   };
   // Watch the roleIds to fetch users when roles change
   const roleIds = watch("roleIds");
+  const debouncedRoleIds = useDebounce(roleIds, 500);
   // If roleIds change, fetch users for the first role
   useEffect(() => {
-    if (!roleIds || roleIds.length === 0) {
+    if (!debouncedRoleIds || debouncedRoleIds.length === 0) {
       setUsersOptions([]);
       return;
     }
-    fetchUsersForRoles(roleIds);
+    //delay for 3 seconds
+    fetchUsersForRoles(debouncedRoleIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roleIds, getUsersByRoleId]);
-
-  //watch all values of the form
-  const watchAllFields = watch();
-
-  useEffect(() => {
-    console.log("Form Values Changed:", watchAllFields);
-  }, [watchAllFields]);
+  }, [debouncedRoleIds, getUsersByRoleId]);
 
   //function to fetch users for all selected roles
   const fetchUsersForRoles = async (
@@ -101,12 +99,11 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
       value: role.id as string,
       label: role.name as string,
     })) || [];
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader className="py-4">
             <DialogTitle>New Alert</DialogTitle>
           </DialogHeader>
           <AlertForm
@@ -116,7 +113,7 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
             roleOptions={roleOptions}
             usersOptions={usersOptions}
           />
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
@@ -124,8 +121,8 @@ export function CreateAlert({ open, onClose }: CreateAlertProps) {
               {isLoading && <Icon name="LoaderCircle" />} <span>Save</span>
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }

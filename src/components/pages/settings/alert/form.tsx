@@ -10,8 +10,8 @@ import {
 import { NotificationTypeLabels } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
-  register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
+  register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   roleOptions: Option[];
   usersOptions?: Option[];
@@ -21,23 +21,22 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   roleOptions,
-  usersOptions = [],
+  usersOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="flex w-full flex-col gap-4">
       <FormWizard
         config={[
           {
-            register: register("" as Path<TFieldValues>),
             label: "Alert Title",
             placeholder: "Enter alert title",
             type: InputTypes.TEXT,
+            register: register("title" as Path<TFieldValues>),
             required: true,
             errors,
           },
         ]}
       />
-
       <FormWizard
         config={[
           {
@@ -49,15 +48,16 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             options: Object.entries(NotificationType)
               .filter(([, value]) => typeof value === "number")
-              .map(([key, value]) => ({
-                label: NotificationTypeLabels[value],
-                value: NotificationType[key],
-              })),
+              .map(([key]) => {
+                return {
+                  label: NotificationTypeLabels[NotificationType[key]], // "Raw" or "Package"
+                  value: NotificationType[key], // 0 or 1
+                };
+              }),
             errors,
           },
         ]}
       />
-
       <div className="flex w-full flex-col md:flex-row items-center gap-2">
         <FormWizard
           className="w-full"
@@ -84,7 +84,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
               name: "userIds",
               required: true,
               placeholder: "Select users",
-              options: usersOptions,
+              options: usersOptions || [],
               errors,
             },
           ]}
@@ -98,7 +98,7 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
             label: "Due Date",
             name: "timeFrame",
             placeholder: "Select due date",
-            type: InputTypes.TIME,
+            type: InputTypes.MOMENT,
             required: true,
             errors,
           },

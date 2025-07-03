@@ -76,13 +76,26 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    patchApiV1AlertByIdToggleDisable: build.mutation<
-      PatchApiV1AlertByIdToggleDisableApiResponse,
-      PatchApiV1AlertByIdToggleDisableApiArg
+    putApiV1AlertByIdToggleDisable: build.mutation<
+      PutApiV1AlertByIdToggleDisableApiResponse,
+      PutApiV1AlertByIdToggleDisableApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/alert/${queryArg.id}/toggle-disable`,
-        method: "PATCH",
+        method: "PUT",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1AlertById: build.mutation<
+      DeleteApiV1AlertByIdApiResponse,
+      DeleteApiV1AlertByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert/${queryArg.id}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6460,8 +6473,16 @@ export type PutApiV1AlertByAlertIdApiArg = {
   subModule?: any;
   createAlertRequest: CreateAlertRequest;
 };
-export type PatchApiV1AlertByIdToggleDisableApiResponse = unknown;
-export type PatchApiV1AlertByIdToggleDisableApiArg = {
+export type PutApiV1AlertByIdToggleDisableApiResponse = unknown;
+export type PutApiV1AlertByIdToggleDisableApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type DeleteApiV1AlertByIdApiResponse = unknown;
+export type DeleteApiV1AlertByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -18735,7 +18756,8 @@ export const {
   useGetApiV1AlertByAlertIdQuery,
   useLazyGetApiV1AlertByAlertIdQuery,
   usePutApiV1AlertByAlertIdMutation,
-  usePatchApiV1AlertByIdToggleDisableMutation,
+  usePutApiV1AlertByIdToggleDisableMutation,
+  useDeleteApiV1AlertByIdMutation,
   usePostApiV1QaAnalyticalTestsMutation,
   useGetApiV1QaAnalyticalTestsQuery,
   useLazyGetApiV1QaAnalyticalTestsQuery,

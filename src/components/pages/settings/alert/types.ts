@@ -54,21 +54,25 @@ export const AlertSchema = z.object({
 
   alertType: z
     .array(
-      z.nativeEnum(AlertType, {
-        errorMap: () => ({ message: "Invalid alert type" }),
+      z.object({
+        value: z.string().transform((value) => Number(value) as AlertType),
+        label: z.string(),
       }),
-      { required_error: "At least one alert type is required" },
+      { message: "At least one channels must be selected" },
     )
-    .min(1, "At least one alert type must be selected"),
+    .min(1, "At least one channels must be selected"),
 
   timeFrame: z
     .string({ required_error: "Time frame is required" })
     .min(1, "Time frame is required"),
 
-  notificationType: z.nativeEnum(NotificationType, {
-    errorMap: () => ({ message: "Invalid notification type" }),
-  }),
-
+  notificationType: z.object(
+    {
+      value: z.nativeEnum(NotificationType),
+      label: z.string(),
+    },
+    { message: "Notification type is required" },
+  ),
   roleIds: z
     .array(
       z.object({
