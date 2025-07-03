@@ -25,7 +25,7 @@ export const CreateSample = ({ open, onClose }: Props) => {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Shift Schedule</DialogTitle>
+          <DialogTitle>Add Sample</DialogTitle>
         </DialogHeader>
         <form>
           <SampleForm control={control} register={register} errors={errors} />

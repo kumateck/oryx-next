@@ -292,8 +292,8 @@ export default function OnboardingForm() {
       } as PostApiV1EmployeeApiArg).unwrap();
 
       console.log(employeeId, "employeeIId");
+      toast.success("Form sent successfully");
       // const employeeId = await createEmployee(payload).unwrap();
-
       //only after successful submission
       if (employeeId) {
         const formData = new FormData();
@@ -317,7 +317,6 @@ export default function OnboardingForm() {
         // });
       }
 
-      toast.success("Form sent successfully");
       reset();
       setIsSubmitted(true);
     } catch (error) {

@@ -76,13 +76,26 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    patchApiV1AlertByIdToggleDisable: build.mutation<
-      PatchApiV1AlertByIdToggleDisableApiResponse,
-      PatchApiV1AlertByIdToggleDisableApiArg
+    putApiV1AlertByIdToggleDisable: build.mutation<
+      PutApiV1AlertByIdToggleDisableApiResponse,
+      PutApiV1AlertByIdToggleDisableApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/alert/${queryArg.id}/toggle-disable`,
-        method: "PATCH",
+        method: "PUT",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1AlertById: build.mutation<
+      DeleteApiV1AlertByIdApiResponse,
+      DeleteApiV1AlertByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/alert/${queryArg.id}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6460,8 +6473,16 @@ export type PutApiV1AlertByAlertIdApiArg = {
   subModule?: any;
   createAlertRequest: CreateAlertRequest;
 };
-export type PatchApiV1AlertByIdToggleDisableApiResponse = unknown;
-export type PatchApiV1AlertByIdToggleDisableApiArg = {
+export type PutApiV1AlertByIdToggleDisableApiResponse = unknown;
+export type PutApiV1AlertByIdToggleDisableApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type DeleteApiV1AlertByIdApiResponse = unknown;
+export type DeleteApiV1AlertByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -11187,6 +11208,7 @@ export type AlertDto = {
   roles?: RoleDto[] | null;
   users?: UserDto[] | null;
   isDisabled?: boolean;
+  isConfigurable?: boolean;
 };
 export type AlertDtoIEnumerablePaginateable = {
   data?: AlertDto[] | null;
@@ -12427,6 +12449,7 @@ export type MaterialBatchDto = {
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  sampledQuantity?: number;
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
@@ -12457,6 +12480,7 @@ export type MaterialBatchDtoRead = {
   totalQuantity?: number;
   consumedQuantity?: number;
   remainingQuantity?: number;
+  sampledQuantity?: number;
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
@@ -12702,7 +12726,7 @@ export type CreateMaterialSamplingRequest = {
   grnId: string;
   arNumber: string;
   materialBatchId?: string;
-  sampleQuantity: string;
+  sampleQuantity: number;
 };
 export type GrnDto = {
   id?: string;
@@ -12727,7 +12751,7 @@ export type MaterialSamplingDto = {
   materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   sampleDate?: string;
 };
 export type MaterialSamplingDtoRead = {
@@ -12735,7 +12759,7 @@ export type MaterialSamplingDtoRead = {
   materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   sampleDate?: string;
 };
 export type CreateMaterialStandardTestProcedureRequest = {
@@ -14266,6 +14290,7 @@ export type BatchManufacturingRecord = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  sampledQuantity?: number;
   status?: BatchManufacturingStatus;
   issuedById?: string | null;
   issuedBy?: User;
@@ -14291,6 +14316,7 @@ export type BatchManufacturingRecordRead = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  sampledQuantity?: number;
   status?: BatchManufacturingStatus;
   issuedById?: string | null;
   issuedBy?: User;
@@ -16271,6 +16297,7 @@ export type MaterialBatch = {
   quantityAssigned?: number;
   totalQuantity?: number;
   consumedQuantity?: number;
+  sampledQuantity?: number;
   uoMId?: string | null;
   uoM?: UnitOfMeasure;
   status?: BatchStatus;
@@ -16315,6 +16342,7 @@ export type MaterialBatchRead = {
   consumedQuantity?: number;
   remainingQuantity?: number;
   quantityUnassigned?: number;
+  sampledQuantity?: number;
   uoMId?: string | null;
   uoM?: UnitOfMeasureRead;
   status?: BatchStatus;
@@ -17482,6 +17510,7 @@ export type BatchManufacturingRecordDto = {
   expiryDate?: string | null;
   batchQuantity?: number;
   status?: BatchManufacturingStatus;
+  sampledQuantity?: number;
 };
 export type BatchManufacturingRecordDtoRead = {
   id?: string;
@@ -17495,6 +17524,7 @@ export type BatchManufacturingRecordDtoRead = {
   batchQuantity?: number;
   status?: BatchManufacturingStatus;
   expectedQuantity?: number;
+  sampledQuantity?: number;
 };
 export type BatchManufacturingRecordDtoIEnumerablePaginateable = {
   data?: BatchManufacturingRecordDto[] | null;
@@ -17917,7 +17947,7 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
 export type CreateProductSamplingRequest = {
   analyticalTestRequestId: string;
   arNumber: string;
-  sampleQuantity: string;
+  sampleQuantity: number;
   containersSampled: number;
 };
 export type ProductSamplingDto = {
@@ -17925,7 +17955,7 @@ export type ProductSamplingDto = {
   createdBy?: UserDto;
   createdAt?: string;
   analyticalTestRequestId?: string;
-  sampleQuantity?: string | null;
+  sampleQuantity?: number;
   containersSampled?: number;
   sampleDate?: string;
   analyticalTestRequest?: AnalyticalTestRequestDto;
@@ -18726,7 +18756,8 @@ export const {
   useGetApiV1AlertByAlertIdQuery,
   useLazyGetApiV1AlertByAlertIdQuery,
   usePutApiV1AlertByAlertIdMutation,
-  usePatchApiV1AlertByIdToggleDisableMutation,
+  usePutApiV1AlertByIdToggleDisableMutation,
+  useDeleteApiV1AlertByIdMutation,
   usePostApiV1QaAnalyticalTestsMutation,
   useGetApiV1QaAnalyticalTestsQuery,
   useLazyGetApiV1QaAnalyticalTestsQuery,
