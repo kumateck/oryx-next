@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import AlertForm from "./form";
 import {
+  AlertType,
   CreateAlertRequest,
   NotificationType,
   useGetApiV1RoleQuery,
@@ -18,7 +19,6 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import { CreateAlertDto, CreateAlertDtoValidator } from "./types";
-import { AlertType } from "@/lib";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";

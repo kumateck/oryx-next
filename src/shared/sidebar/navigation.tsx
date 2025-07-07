@@ -352,10 +352,10 @@ export const ROUTES: Route[] = [
             title: "Attendance Report Upload",
             url: "/hr/attendance-report-upload",
           },
-          {
-            title: "Attendance Report Summary",
-            url: "/hr/attendance-report-summary",
-          },
+          // {
+          //   title: "Attendance Report Summary",
+          //   url: "/hr/attendance-report-summary",
+          // },
           // {
           //   title: "Shift Schedule",
           //   url: "/hr/shift-schedule",

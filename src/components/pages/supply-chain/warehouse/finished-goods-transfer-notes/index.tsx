@@ -4,7 +4,6 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery } from "@/lib/redux/api/openapi.generated";
 import { useSelector } from "@/lib/redux/store";
 import { AuditModules } from "@/lib";
@@ -18,7 +17,6 @@ function Page() {
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery();
@@ -47,9 +45,9 @@ function Page() {
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
-        onRowClick={(row) => {
-          router.push(`/warehouse/finished-goods-transfer-notes/${row?.id}`);
-        }}
+        // onRowClick={(row) => {
+        //   router.push(`/warehouse/finished-goods-transfer-notes/${row?.id}`);
+        // }}
         setPage={setPage}
         setPageSize={setPageSize}
         meta={{

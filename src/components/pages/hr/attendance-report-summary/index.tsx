@@ -22,7 +22,7 @@ const Page = () => {
     useLazyGetApiV1AttendanceRecordsGeneralSummaryQuery();
 
   useEffect(() => {
-    loadAttendanceReportSummary({ date: new Date().toISOString() });
+    loadAttendanceReportSummary({});
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }

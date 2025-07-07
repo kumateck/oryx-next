@@ -36,14 +36,12 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
   const [isDelete, setIsDelete] = useState(false);
   const [openAddRecipient, setOpenAddRecipient] = useState(false);
   const [deleteAlert] = useDeleteApiV1AlertByIdMutation({});
-  //TODO: implement update
+
   const [selectedAlert, setSelectedAlert] = useState<CreateAlertDto>(
     {} as CreateAlertDto,
   );
   const [toggleAlert] = usePutApiV1AlertByIdToggleDisableMutation({});
   const dispatch = useDispatch();
-  // TODO: Implement toggle alert functionality
-  //TODO: Implement edit alert functionality
 
   return (
     <div
@@ -123,6 +121,14 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
           <div className="ml-1 flex items-center capitalize text-sm">
             {alert.roles && alert.roles.length
               ? alert.roles[0].name
+              : "No Role"}
+            {alert.roles && alert.roles.length > 1 && (
+              <span className="text-gray-500 flex items-center justify-center w-fit">
+                ,<span>+</span> {alert.roles.length - 1}
+              </span>
+            )}
+            {alert.users && alert.users.length
+              ? `${alert.users[0].firstName} ${alert.users[0].lastName}`
               : "No Role"}
             {alert.roles && alert.roles.length > 1 && (
               <span className="text-gray-500 flex items-center justify-center w-fit">
