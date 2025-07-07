@@ -1,6 +1,13 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
-import { Button, Icon, Tabs, TabsList, TabsTrigger } from "@/components/ui";
+import {
+  Button,
+  Icon,
+  Skeleton,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui";
 import PageTitle from "@/shared/title";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -16,6 +23,7 @@ import SignatureForm from "./form";
 import { useForm } from "react-hook-form";
 import {
   UploadFileRequest,
+  useGetApiV1UserAuthenticatedQuery,
   usePostApiV1UserSignatureByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -30,6 +38,11 @@ function SignatureSettings() {
     usePostApiV1UserSignatureByIdMutation({});
 
   const userId = useSelector((state) => state.persistedReducer?.auth?.userId);
+  const { data: user, isLoading: loadingUser } =
+    useGetApiV1UserAuthenticatedQuery({
+      module: AuditModules.settings.name,
+      subModule: AuditModules.settings.authUser,
+    });
 
   const {
     control,
@@ -77,16 +90,24 @@ function SignatureSettings() {
       </div>
       <PageTitle title="Digital Signature" />
 
-      {/* TODO: signature container */}
-      {signature && (
-        <div className="w-full min-w-60 h-32 rounded-lg flex items-center justify-start">
+      {/* signature container */}
+      {loadingUser ? (
+        <div className="w-full px-4 min-w-60 h-32 rounded-lg flex items-center justify-start border">
+          <Skeleton className="h-24 w-48 rounded-md" />
+        </div>
+      ) : user?.signature || signature ? (
+        <div className="w-full px-4 min-w-60 h-32 rounded-lg flex items-center justify-start">
           <Image
-            src={signature}
+            src={signature ?? user?.signature ?? ""}
             alt="Signature"
             className="max-h-full max-w-full object-contain"
-            width={200}
-            height={100}
+            width={300}
+            height={200}
           />
+        </div>
+      ) : (
+        <div className="w-full min-w-60 h-32 rounded-lg flex items-center justify-center">
+          <p className="text-gray-500">No signature Yet</p>
         </div>
       )}
       <Tabs value={activeTab} className="w-full my-4">

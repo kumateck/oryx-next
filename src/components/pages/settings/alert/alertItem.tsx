@@ -36,14 +36,12 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
   const [isDelete, setIsDelete] = useState(false);
   const [openAddRecipient, setOpenAddRecipient] = useState(false);
   const [deleteAlert] = useDeleteApiV1AlertByIdMutation({});
-  //TODO: implement update
+
   const [selectedAlert, setSelectedAlert] = useState<CreateAlertDto>(
     {} as CreateAlertDto,
   );
   const [toggleAlert] = usePutApiV1AlertByIdToggleDisableMutation({});
   const dispatch = useDispatch();
-  // TODO: Implement toggle alert functionality
-  //TODO: Implement edit alert functionality
 
   return (
     <div
