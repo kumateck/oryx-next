@@ -52,9 +52,9 @@ export function CreateAlert({ open, onClose, alertType }: CreateAlertProps) {
         roleIds: data?.roleIds?.map((role) => role.value) || [],
         userIds: data?.userIds?.map((user) => user.value) || [],
         alertTypes: data.alertType.map(
-          (type) => type.value as unknown as AlertType,
+          (type) => Number(type.value) as AlertType,
         ),
-        timeFrame: data.timeFrame,
+        timeFrame: data.timeFrame?.split(" ")[0],
       };
       const result = await createAlert({
         createAlertRequest: payload,

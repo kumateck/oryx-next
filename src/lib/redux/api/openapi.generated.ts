@@ -5096,6 +5096,21 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1Report: build.query<
+      GetApiV1ReportApiResponse,
+      GetApiV1ReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          departmentId: queryArg.departmentId,
+        },
+      }),
+    }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -5629,6 +5644,20 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/shift-schedules/${queryArg.id}/update-schedule`,
         method: "PUT",
         body: queryArg.updateShiftAssignment,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ShiftSchedulesAssignImport: build.mutation<
+      PostApiV1ShiftSchedulesAssignImportApiResponse,
+      PostApiV1ShiftSchedulesAssignImportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/assign/import`,
+        method: "POST",
+        body: queryArg.body,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -10403,6 +10432,15 @@ export type GetApiV1ReportHumanResourceApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ReportApiResponse =
+  /** status 200 OK */ PermanentStaffGradeCountDto[];
+export type GetApiV1ReportApiArg = {
+  departmentId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1RequisitionApiResponse = unknown;
 export type PostApiV1RequisitionApiArg = {
   /** The module this request falls under */
@@ -10806,6 +10844,16 @@ export type PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   updateShiftAssignment: UpdateShiftAssignment;
+};
+export type PostApiV1ShiftSchedulesAssignImportApiResponse = unknown;
+export type PostApiV1ShiftSchedulesAssignImportApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  body: {
+    file?: Blob;
+  };
 };
 export type PostApiV1ShiftTypeApiResponse = /** status 200 OK */ string;
 export type PostApiV1ShiftTypeApiArg = {
@@ -18569,6 +18617,16 @@ export type HumanResourceReportDtoRead = {
   numberOfPermanentEmployees?: number;
   attendanceStats?: AttendanceStatsDto;
 };
+export type PermanentStaffGradeCountDto = {
+  no?: number;
+  department?: string | null;
+  seniorMgtMale?: number;
+  seniorMgtFemale?: number;
+  seniorStaffMale?: number;
+  seniorStaffFemale?: number;
+  juniorStaffMale?: number;
+  juniorStaffFemale?: number;
+};
 export type CreateRequisitionItemRequest = {
   materialId?: string;
   quantity?: number;
@@ -19887,6 +19945,8 @@ export const {
   useLazyGetApiV1ReportProductionMaterialsBelowMinimumQuery,
   useGetApiV1ReportHumanResourceQuery,
   useLazyGetApiV1ReportHumanResourceQuery,
+  useGetApiV1ReportQuery,
+  useLazyGetApiV1ReportQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
@@ -19944,6 +20004,7 @@ export const {
   useGetApiV1ShiftSchedulesByScheduleIdDayQuery,
   useLazyGetApiV1ShiftSchedulesByScheduleIdDayQuery,
   usePutApiV1ShiftSchedulesByIdUpdateScheduleMutation,
+  usePostApiV1ShiftSchedulesAssignImportMutation,
   usePostApiV1ShiftTypeMutation,
   useGetApiV1ShiftTypeQuery,
   useLazyGetApiV1ShiftTypeQuery,

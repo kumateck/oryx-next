@@ -22,7 +22,6 @@ import { AlertType } from "@/lib";
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 
 interface CreateAlertProps {
   open: boolean;
@@ -58,7 +57,7 @@ export function EditAlert({
       notificationType: details.notificationType,
       roleIds: details.roleIds,
       userIds: details.userIds,
-      timeFrame: details.timeFrame,
+      timeFrame: details.timeFrame?.split(" ")[0],
     },
   });
 
@@ -70,7 +69,7 @@ export function EditAlert({
         roleIds: data?.roleIds?.map((role) => role.value) || [],
         userIds: data?.userIds?.map((user) => user.value) || [],
         alertTypes: data.alertType.map(
-          (type) => type.value as unknown as AlertType,
+          (type) => Number(type.value) as AlertType,
         ),
         timeFrame: data.timeFrame,
       };
@@ -106,14 +105,6 @@ export function EditAlert({
       : (details?.userIds?.length ?? 0) > 0
         ? "users"
         : "roles";
-
-  useEffect(() => {
-    // setValue("alertType", details.alertType || []);
-    // setValue("notificationType", details.notificationType);
-    // setValue("roleIds", details.roleIds);
-    // setValue("userIds", details.userIds);
-    // setValue("timeFrame", details.timeFrame);
-  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
