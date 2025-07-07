@@ -678,6 +678,7 @@ export const AuditModules = {
     holidays: "Holidays",
     suppliers: "Suppliers",
     alerts: "Alerts",
+    signature: "Signature",
   },
   authentication: {
     name: "Authentication",
