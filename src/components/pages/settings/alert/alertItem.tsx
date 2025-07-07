@@ -127,6 +127,14 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
                 ,<span>+</span> {alert.roles.length - 1}
               </span>
             )}
+            {alert.users && alert.users.length
+              ? `${alert.users[0].firstName} ${alert.users[0].lastName}`
+              : "No Role"}
+            {alert.roles && alert.roles.length > 1 && (
+              <span className="text-gray-500 flex items-center justify-center w-fit">
+                ,<span>+</span> {alert.roles.length - 1}
+              </span>
+            )}
           </div>
         </div>
       </div>
