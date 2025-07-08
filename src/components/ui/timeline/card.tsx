@@ -39,6 +39,12 @@ interface Props {
   showFinishedGoods?: boolean;
   showExtraPackging?: boolean;
   isPendingExtraPacking?: boolean;
+  showAtr?: boolean;
+  showFullReturn?: boolean;
+  showStockRequisition?: boolean;
+  showBmrAndBprRequisition?: boolean;
+  showDispatch?: boolean;
+  showExtra?: React.ReactNode;
   activityId?: string;
   productId?: string;
   scheduleId?: string;
@@ -77,14 +83,12 @@ const TimelineCard = ({
   const onFinalPacking = (id: string) => {
     router.push(routes.viewFinalPacking(id));
   };
-  // const onFinishedGoods = (id: string) => {
-  //   router.push(routes.viewFinalPacking(id));
-  // };
   const onExtraPacking = (id: string) => {
     router.push(
       routes.viewExtraPacking(id, productId as string, scheduleId as string),
     );
   };
+
   return (
     <div className="relative">
       <div
