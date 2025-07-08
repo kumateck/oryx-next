@@ -122,15 +122,15 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
             {alert.roles && alert.roles.length ? alert.roles[0].name : ""}
             {alert.roles && alert.roles.length > 1 && (
               <span className="text-gray-500 flex items-center justify-center w-fit">
-                ,<span>+</span> {alert.roles.length - 1}
+                <span>+</span> {alert.roles.length - 1}
               </span>
             )}
             {alert.users && alert.users.length
               ? `${alert.users[0].firstName} ${alert.users[0].lastName}`
               : ""}
-            {alert.roles && alert.roles.length > 1 && (
+            {alert.users && alert.users.length > 1 && (
               <span className="text-gray-500 flex items-center justify-center w-fit">
-                ,<span>+</span> {alert.roles.length - 1}
+                <span>+</span> {alert.users.length - 1}
               </span>
             )}
             {alert?.users?.length === 0 && alert?.roles?.length === 0 && (

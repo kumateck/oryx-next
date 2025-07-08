@@ -113,6 +113,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Button
+            variant={"ghost"}
             onClick={() => {
               setDetails(row.original);
               setIsDeleteOpen(true);
@@ -122,6 +123,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
               name="Trash2"
               className="text-danger-500 h-5 w-5 cursor-pointer"
             />
+            <span>Delete</span>
           </Button>
         </DropdownMenuItem>
       </TableMenuAction>
