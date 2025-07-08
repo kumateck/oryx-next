@@ -13,6 +13,7 @@ import {
 import Edit from "./edit";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
+import { DetailsDialog } from "./detailsDailog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -22,12 +23,19 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
   const [deleteMutation] = useDeleteApiV1LeaveTypeByIdMutation();
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<LeaveTypeDto>({} as LeaveTypeDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
     <section className="flex items-center justify-end gap-2">
+      <DetailsDialog
+        key={row.original.id}
+        open={openDetailsDialog}
+        setOpen={() => setOpenDetailsDialog(false)}
+        leaveType={row.original}
+      />
       <Icon
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-500"

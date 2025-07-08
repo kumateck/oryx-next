@@ -12,6 +12,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { UserDetailsDialog } from "./userDetailsDialog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -21,6 +22,7 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1UserByIdMutation();
 
+  const [viewDetails, setViewDetails] = useState(false);
   const [details, setDetails] = useState<UserWithRoleDto>(
     {} as UserWithRoleDto,
   );
@@ -33,6 +35,13 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
 
   return (
     <section className="flex items-center justify-end gap-2">
+      {viewDetails && (
+        <UserDetailsDialog
+          open={viewDetails}
+          setOpen={() => setViewDetails(false)}
+          user={row.original}
+        />
+      )}
       <TableMenuAction>
         {hasPermissionAccess(
           PermissionKeys.humanResources.updateUserDetails,
@@ -70,6 +79,18 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
             </div>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem>
+          <div
+            onClick={() => setViewDetails(true)}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <Icon
+              name="Eye"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>User Details</span>
+          </div>
+        </DropdownMenuItem>
       </TableMenuAction>
       {/* <Icon
          name="Pencil"
