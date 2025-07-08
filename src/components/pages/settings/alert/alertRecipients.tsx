@@ -30,7 +30,7 @@ interface CreateAlertProps {
   id: string;
   isUpdateRecipient?: boolean;
 }
-export function EditAlert({
+export function AlertRecipient({
   open,
   onClose,
   details,
@@ -71,7 +71,7 @@ export function EditAlert({
         alertTypes: data.alertType.map(
           (type) => Number(type.value) as AlertType,
         ),
-        timeFrame: data.timeFrame?.split(" ")[0],
+        timeFrame: data.timeFrame,
       };
       await editAlert({
         alertId: id,
