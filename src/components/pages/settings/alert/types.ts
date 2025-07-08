@@ -6,7 +6,6 @@ import { z } from "zod";
 export const alertTypeLabels: Record<AlertType, string> = {
   [AlertType.InApp]: "In-App",
   [AlertType.Email]: "Email",
-  [AlertType.Sms]: "Sms",
 } as const;
 
 export const NotificationTypeLabels: Record<NotificationType, string> = {

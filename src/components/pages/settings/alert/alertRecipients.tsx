@@ -30,7 +30,8 @@ interface CreateAlertProps {
   id: string;
   isUpdateRecipient?: boolean;
 }
-export function EditAlert({
+//TODO: COMPLETE THIS PAGE
+export function AlertRecipient({
   open,
   onClose,
   details,
@@ -71,20 +72,15 @@ export function EditAlert({
         alertTypes: data.alertType.map(
           (type) => Number(type.value) as AlertType,
         ),
-        timeFrame: data.timeFrame?.split(" ")[0],
+        timeFrame: data.timeFrame,
       };
-      const result = await editAlert({
+      await editAlert({
         alertId: id,
         createAlertRequest: payload,
       });
-      if (!result?.error) {
-        console.log("Alert edited successfully", result);
-        toast.success("Alert edited successfully");
-        onClose();
-        dispatch(commonActions.setTriggerReload());
-        return;
-      }
-      toast.error("Failed to edit alert");
+      toast.success("Alert edited successfully");
+      onClose();
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       console.error("Error editing alert:", error);
       toast.error("Failed to edit alert");

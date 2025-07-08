@@ -508,7 +508,6 @@ export enum NotificationType {
 export enum AlertType {
   Email = 0,
   InApp = 1,
-  Sms = 2,
 }
 
 export enum AnalyticalTestStatus {

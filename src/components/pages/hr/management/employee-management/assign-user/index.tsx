@@ -66,6 +66,7 @@ const UserDialog = ({
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<EmployeeInfoRequestDto>({
@@ -149,6 +150,7 @@ const UserDialog = ({
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
         staffNumber: data.staffNumber,
+        employeeLevel: data.employeeLevel,
         reportingManagerId: data.reportingManagerId?.value,
       };
 
@@ -197,6 +199,7 @@ const UserDialog = ({
             <AssignUserForm
               control={control}
               register={register}
+              watch={watch}
               errors={errors}
               departmentOptions={departmentOptions}
               designationOptions={designationOptions}
