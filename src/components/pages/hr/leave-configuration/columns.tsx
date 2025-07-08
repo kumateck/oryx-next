@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import {
   LeaveTypeDto,
@@ -14,6 +14,7 @@ import Edit from "./edit";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { DetailsDialog } from "./detailsDailog";
+import { TableMenuAction } from "@/shared/table-menu";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -29,30 +30,49 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
-    <section className="flex items-center justify-end gap-2">
-      <DetailsDialog
-        key={row.original.id}
-        open={openDetailsDialog}
-        setOpen={() => setOpenDetailsDialog(false)}
-        leaveType={row.original}
-      />
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-red-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
-
+    <section>
+      <TableMenuAction>
+        <DropdownMenuItem>
+          <div
+            className="flex cursor-pointer items-center justify-center gap-2"
+            onClick={() => setOpenDetailsDialog(true)}
+          >
+            <Icon
+              name="Eye"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>View Details</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <div
+            className="flex cursor-pointer items-center justify-center gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <div className="flex cursor-pointer items-center justify-center gap-2">
+            <Icon
+              name="Trash2"
+              className="text-red-500 h-5 w-5 cursor-pointer"
+              onClick={() => {
+                setDetails(row.original);
+                setIsDeleteOpen(true);
+              }}
+            />
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
       {details.name && isOpen && (
         <Edit
           details={details}
@@ -60,7 +80,6 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
-
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -78,6 +97,13 @@ export function DataTableRowActions<TData extends LeaveTypeDto>({
           }
         }}
       />
+      {openDetailsDialog && (
+        <DetailsDialog
+          open={openDetailsDialog}
+          setOpen={() => setOpenDetailsDialog(false)}
+          leaveType={row.original}
+        />
+      )}
     </section>
   );
 }
