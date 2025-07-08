@@ -153,9 +153,11 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
       <div className="col-span-2 place-content-center">
         <div className="flex items-center justify-start">
           <Icon name="SendHorizontal" className="size-4  text-gray-600" />
-          <div className="ml-2 capitalize text-sm space-x-1">
+          <div className="ml-2 capitalize text-sm space-x-2">
             {alert?.alertTypes?.map((type) => (
-              <span key={type}>{alertTypeLabels[type]}</span>
+              <span key={type}>
+                {alertTypeLabels[type]?.split("-").join(" ")}
+              </span>
             )) || "N/A"}
           </div>
         </div>
@@ -183,10 +185,12 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
                       value: user.id as string,
                       label: `${user.firstName} ${user.lastName}` as string,
                     })),
-                    alertType: (alert.alertTypes ?? []).map((type) => ({
-                      value: String(type),
-                      label: alertTypeLabels[type],
-                    })),
+                    alertType: (alert.alertTypes ?? [])
+                      .map((type) => ({
+                        value: String(type),
+                        label: alertTypeLabels[type],
+                      }))
+                      .slice(0, 2),
                     timeFrame: alert.timeFrame ?? "",
                   });
                   setOpenAddRecipient(true);
@@ -220,10 +224,12 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
                     value: user.id as string,
                     label: `${user.firstName} ${user.lastName}` as string,
                   })),
-                  alertType: (alert.alertTypes ?? []).map((type) => ({
-                    value: String(type),
-                    label: alertTypeLabels[type],
-                  })),
+                  alertType: (alert.alertTypes ?? [])
+                    .map((type) => ({
+                      value: String(type),
+                      label: alertTypeLabels[type],
+                    }))
+                    .slice(0, 2), // Limit to 2 alert types
                   timeFrame: alert.timeFrame ?? "",
                 });
                 setOpen(true);

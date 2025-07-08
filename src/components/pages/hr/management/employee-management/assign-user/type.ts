@@ -1,6 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+export enum EmployeeLevel {
+  "Junior Staff" = 0,
+  "Senior Staff" = 1,
+  "Senior Management" = 2,
+}
+
 export const employeeInfoSchema = z.object({
   type: z.string().transform((value) => {
     const numValue = Number(value);
@@ -12,6 +18,9 @@ export const employeeInfoSchema = z.object({
   firstName: z.string().min(1, "Employee name is required"),
   lastName: z.string().min(1, "Employee name is required"),
   email: z.string().email().min(1, "Employee email is required"),
+  employeeLevel: z
+    .nativeEnum(EmployeeLevel, { message: "Employee level is required" })
+    .optional(),
   departmentId: z.object(
     {
       value: z.string().min(1, { message: "Department is required" }),

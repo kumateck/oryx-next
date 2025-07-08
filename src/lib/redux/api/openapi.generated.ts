@@ -4882,6 +4882,42 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    getApiV1ProductionScheduleSummaryReport: build.query<
+      GetApiV1ProductionScheduleSummaryReportApiResponse,
+      GetApiV1ProductionScheduleSummaryReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/summary-report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          productId: queryArg.productId,
+          marketTypeId: queryArg.marketTypeId,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleDetailedReport: build.query<
+      GetApiV1ProductionScheduleDetailedReportApiResponse,
+      GetApiV1ProductionScheduleDetailedReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/detailed-report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          productId: queryArg.productId,
+          marketTypeId: queryArg.marketTypeId,
+        },
+      }),
+    }),
     postApiV1ProductSamplings: build.mutation<
       PostApiV1ProductSamplingsApiResponse,
       PostApiV1ProductSamplingsApiArg
@@ -5096,18 +5132,35 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1Report: build.query<
-      GetApiV1ReportApiResponse,
-      GetApiV1ReportApiArg
+    getApiV1ReportStaffReport: build.query<
+      GetApiV1ReportStaffReportApiResponse,
+      GetApiV1ReportStaffReportApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/report`,
+        url: `/api/v1/report/staff-report`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
         params: {
           departmentId: queryArg.departmentId,
+        },
+      }),
+    }),
+    getApiV1ReportEmployeeMovement: build.query<
+      GetApiV1ReportEmployeeMovementApiResponse,
+      GetApiV1ReportEmployeeMovementApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/employee-movement`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          departmentId: queryArg.departmentId,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
         },
       }),
     }),
@@ -10292,6 +10345,30 @@ export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPacki
     /** The list of batches for approval. */
     body: BatchTransferRequest[];
   };
+export type GetApiV1ProductionScheduleSummaryReportApiResponse =
+  /** status 200 OK */ ProductionScheduleReportDtoRead[];
+export type GetApiV1ProductionScheduleSummaryReportApiArg = {
+  startDate?: string;
+  endDate?: string;
+  productId?: string;
+  marketTypeId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionScheduleDetailedReportApiResponse =
+  /** status 200 OK */ ProductionScheduleDetailedReportDtoRead[];
+export type GetApiV1ProductionScheduleDetailedReportApiArg = {
+  startDate?: string;
+  endDate?: string;
+  productId?: string;
+  marketTypeId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ProductSamplingsApiResponse = /** status 200 OK */ string;
 export type PostApiV1ProductSamplingsApiArg = {
   /** The module this request falls under */
@@ -10432,10 +10509,21 @@ export type GetApiV1ReportHumanResourceApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ReportApiResponse =
+export type GetApiV1ReportStaffReportApiResponse =
   /** status 200 OK */ PermanentStaffGradeCountDto[];
-export type GetApiV1ReportApiArg = {
+export type GetApiV1ReportStaffReportApiArg = {
   departmentId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportEmployeeMovementApiResponse =
+  /** status 200 OK */ MovementReportDto[];
+export type GetApiV1ReportEmployeeMovementApiArg = {
+  departmentId?: string;
+  startDate?: string;
+  endDate?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -14366,6 +14454,32 @@ export type FormSectionRead = {
 };
 export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
 export type BatchSize = 0 | 1;
+export type MarketType = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+};
+export type MarketTypeRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+};
 export type ProductionScheduleProduct = {
   id?: string;
   productionScheduleId?: string;
@@ -14374,6 +14488,8 @@ export type ProductionScheduleProduct = {
   product?: Product;
   batchNumber?: string | null;
   batchSize?: BatchSize;
+  marketTypeId?: string | null;
+  marketType?: MarketType;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -14386,6 +14502,8 @@ export type ProductionScheduleProductRead = {
   product?: Product;
   batchNumber?: string | null;
   batchSize?: BatchSize;
+  marketTypeId?: string | null;
+  marketType?: MarketTypeRead;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -17815,6 +17933,7 @@ export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
 };
 export type CreateProductionScheduleProduct = {
   productId?: string;
+  marketTypeId?: string | null;
   quantity?: number;
   batchSize?: BatchSize;
 };
@@ -17830,6 +17949,7 @@ export type ProductionScheduleProductDto = {
   quantity?: number;
   batchNumber?: string | null;
   batchSize?: BatchSize;
+  marketType?: CollectionItemDto;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
 };
@@ -17838,6 +17958,7 @@ export type ProductionScheduleProductDtoRead = {
   quantity?: number;
   batchNumber?: string | null;
   batchSize?: BatchSize;
+  marketType?: CollectionItemDto;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
 };
@@ -18484,6 +18605,41 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type ProductionScheduleReportDto = {
+  product?: ProductListDto;
+  unitPrice?: number;
+  batchSize?: number;
+  batches?: number;
+  actualQuantity?: number;
+  marketType?: CollectionItemDto;
+};
+export type ProductionScheduleReportDtoRead = {
+  product?: ProductListDtoRead;
+  unitPrice?: number;
+  batchSize?: number;
+  batches?: number;
+  expectedQuantity?: number;
+  expectedAmount?: number;
+  actualQuantity?: number;
+  actualAmount?: number;
+  marketType?: CollectionItemDto;
+};
+export type ProductionScheduleDetailedReportDto = {
+  unitPrice?: number;
+  batchNumber?: string | null;
+  packageStyle?: string | null;
+  expectedQuantity?: number;
+  actualQuantity?: number;
+};
+export type ProductionScheduleDetailedReportDtoRead = {
+  unitPrice?: number;
+  batchNumber?: string | null;
+  packageStyle?: string | null;
+  expectedQuantity?: number;
+  expectedAmount?: number;
+  actualQuantity?: number;
+  actualAmount?: number;
+};
 export type CreateProductSamplingRequest = {
   analyticalTestRequestId: string;
   arNumber: string;
@@ -18504,6 +18660,7 @@ export type CreateProductSpecificationRequest = {
   specificationNumber: string;
   revisionNumber: string;
   supersedesNumber: string;
+  labelClaim: string;
   effectiveDate: string;
   reviewDate: string;
   testSpecifications: TestSpecification[];
@@ -18517,6 +18674,9 @@ export type ProductSpecificationDto = {
   specificationNumber?: string | null;
   revisionNumber?: string | null;
   supersedesNumber?: string | null;
+  labelClaim?: string | null;
+  packingStyle?: string | null;
+  shelfLife?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
   testSpecifications?: TestSpecification[] | null;
@@ -18531,6 +18691,9 @@ export type ProductSpecificationDtoRead = {
   specificationNumber?: string | null;
   revisionNumber?: string | null;
   supersedesNumber?: string | null;
+  labelClaim?: string | null;
+  packingStyle?: string | null;
+  shelfLife?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
   testSpecifications?: TestSpecification[] | null;
@@ -18618,7 +18781,6 @@ export type HumanResourceReportDtoRead = {
   attendanceStats?: AttendanceStatsDto;
 };
 export type PermanentStaffGradeCountDto = {
-  no?: number;
   department?: string | null;
   seniorMgtMale?: number;
   seniorMgtFemale?: number;
@@ -18626,6 +18788,17 @@ export type PermanentStaffGradeCountDto = {
   seniorStaffFemale?: number;
   juniorStaffMale?: number;
   juniorStaffFemale?: number;
+};
+export type MovementReportDto = {
+  departmentName?: string | null;
+  permanentNew?: number;
+  permanentTransfer?: number;
+  permanentResignation?: number;
+  permanentTermination?: number;
+  permanentSDVP?: number;
+  casualResignation?: number;
+  casualTermination?: number;
+  casualSDVP?: number;
 };
 export type CreateRequisitionItemRequest = {
   materialId?: string;
@@ -19922,6 +20095,10 @@ export const {
   useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
+  useGetApiV1ProductionScheduleSummaryReportQuery,
+  useLazyGetApiV1ProductionScheduleSummaryReportQuery,
+  useGetApiV1ProductionScheduleDetailedReportQuery,
+  useLazyGetApiV1ProductionScheduleDetailedReportQuery,
   usePostApiV1ProductSamplingsMutation,
   useGetApiV1ProductSamplingsByIdQuery,
   useLazyGetApiV1ProductSamplingsByIdQuery,
@@ -19945,8 +20122,10 @@ export const {
   useLazyGetApiV1ReportProductionMaterialsBelowMinimumQuery,
   useGetApiV1ReportHumanResourceQuery,
   useLazyGetApiV1ReportHumanResourceQuery,
-  useGetApiV1ReportQuery,
-  useLazyGetApiV1ReportQuery,
+  useGetApiV1ReportStaffReportQuery,
+  useLazyGetApiV1ReportStaffReportQuery,
+  useGetApiV1ReportEmployeeMovementQuery,
+  useLazyGetApiV1ReportEmployeeMovementQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
