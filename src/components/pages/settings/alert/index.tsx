@@ -9,29 +9,49 @@ import { useLazyGetApiV1AlertQuery } from "@/lib/redux/api/openapi.generated";
 import { LoadingSkeleton } from "./loadingSkeleton";
 import { AuditModules } from "@/lib";
 import { AlertPagination } from "./alertPagination";
-import { AlertResponse } from "./types";
-import { Button, Icon } from "@/components/ui";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
+import DropdownBtns from "@/shared/btns/drop-btn";
+import { useDebounce } from "@uidotdev/usehooks";
 
 function Page() {
   const [open, setOpen] = useState(false);
+  const [alertType, setAlertType] = useState<"roles" | "users">("roles");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debounceValue = useDebounce(searchValue, 500);
   const [loadAlerts, { data, isLoading, isFetching }] =
     useLazyGetApiV1AlertQuery();
+
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     loadAlerts({
       page: page,
       pageSize: pageSize,
+      searchQuery: debounceValue,
+      withDisabled: true,
       module: AuditModules.settings.name,
       subModule: AuditModules.settings.alerts,
     });
-  }, [loadAlerts, page, pageSize]);
-  const { data: alerts = [], ...alertPagination } =
-    (data as { value: AlertResponse })?.value || {};
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadAlerts, page, pageSize, triggerReload, debounceValue]);
+
   return (
     <PageWrapper className="w-full">
-      {open && <CreateAlert open={open} onClose={() => setOpen(false)} />}
+      {open && (
+        <CreateAlert
+          alertType={alertType}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      )}
       <div className="flex w-full items-center justify-between">
         <div className="flex flex-col mr-auto">
           <PageTitle title="Alerts & Notifications " />
@@ -39,16 +59,32 @@ function Page() {
             Create, edit and delete alerts & notifications
           </span>
         </div>
-        <Button onClick={() => setOpen(true)}>
-          <Icon name="Plus" />
-          Create Alert
-        </Button>
+        <DropdownBtns
+          title="Create Alert"
+          icon="Plus"
+          menus={[
+            {
+              name: "Roles",
+              onClick: () => {
+                setAlertType("roles");
+                setOpen(true);
+              },
+            },
+            {
+              name: "Users",
+              onClick: () => {
+                setAlertType("users");
+                setOpen(true);
+              },
+            },
+          ]}
+        />
       </div>
       <ScrollablePageWrapper className="space-y-2 mt-3 ">
         {isFetching || isLoading ? (
           <LoadingSkeleton />
-        ) : alerts?.length > 0 ? (
-          alerts?.map((alert) => <AlertItem key={alert.id} alert={alert} />)
+        ) : Array.isArray(data?.data) && data.data.length > 0 ? (
+          data.data.map((alert) => <AlertItem key={alert.id} alert={alert} />)
         ) : (
           <div className="text-center w-full py-6">No data found</div>
         )}
@@ -58,7 +94,12 @@ function Page() {
             pageSize={pageSize}
             setPage={setPage}
             setPageSize={setPageSize}
-            {...alertPagination}
+            pageIndex={data?.pageIndex ?? 0}
+            pageCount={data?.pageCount ?? 0}
+            totalRecordCount={data?.totalRecordCount ?? 0}
+            numberOfPagesToShow={data?.numberOfPagesToShow ?? 0}
+            startPageIndex={data?.startPageIndex ?? 0}
+            stopPageIndex={data?.stopPageIndex ?? 0}
           />
         </div>
       </ScrollablePageWrapper>

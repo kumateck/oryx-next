@@ -52,7 +52,7 @@ export const CreateSampleMaterial = ({
           materialBatchId: details.materialBatchId,
           grnId: grnId,
           arNumber: data.arNumber,
-          sampleQuantity: data.sampleQuantity,
+          sampleQuantity: Number(data.sampleQuantity),
         },
       });
       toast.success("Material sampling created successfully");

@@ -7,31 +7,36 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
-import { NotificationFrequency, NotificationTypeLabels } from "./types";
+import { NotificationTypeLabels } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  alertType: "roles" | "users";
+  isUpdateRecipient?: boolean;
   roleOptions: Option[];
-  userOptions?: Option[];
+  usersOptions?: Option[];
 }
 const AlertForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  isUpdateRecipient,
   roleOptions,
-  userOptions = [],
+  alertType,
+  usersOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="flex w-full flex-col gap-4">
       <FormWizard
         config={[
           {
-            register: register("title" as Path<TFieldValues>),
             label: "Alert Title",
             placeholder: "Enter alert title",
+            readOnly: isUpdateRecipient,
             type: InputTypes.TEXT,
+            register: register("title" as Path<TFieldValues>),
             required: true,
             errors,
           },
@@ -41,93 +46,85 @@ const AlertForm = <TFieldValues extends FieldValues, TContext>({
         config={[
           {
             control: control as Control,
-            label: "Alert Item",
-            name: "alertType",
-            placeholder: "Enter alert item",
+            label: "Notification Type",
+            name: "notificationType",
+            placeholder: "Select a notification type",
+            readOnly: isUpdateRecipient,
             type: InputTypes.SELECT,
             required: true,
             options: Object.entries(NotificationType)
               .filter(([, value]) => typeof value === "number")
-              .map(([key, value]) => ({
-                label: NotificationTypeLabels[value],
-                value: NotificationType[key],
-              })),
+              .map(([key]) => {
+                return {
+                  label: NotificationTypeLabels[NotificationType[key]], // "Raw" or "Package"
+                  value: NotificationType[key], // 0 or 1
+                };
+              }),
             errors,
           },
         ]}
       />
       <div className="flex w-full flex-col md:flex-row items-center gap-2">
-        <FormWizard
-          className="w-full"
-          config={[
-            {
-              label: "Recipients",
-              control: control as Control,
-              type: InputTypes.MULTI,
-              placeholder: "Select roles",
-              name: "roleIds",
-              required: true,
-              options: roleOptions,
-              errors,
-            },
-          ]}
-        />
-        <FormWizard
-          className="w-full"
-          config={[
-            {
-              label: "Personnel",
-              control: control as Control,
-              type: InputTypes.MULTI,
-              name: "userIds",
-              required: true,
-              placeholder: "Select personnel",
-              options: userOptions,
-              errors,
-            },
-          ]}
-        />
+        {alertType === "roles" && (
+          <FormWizard
+            className="w-full"
+            config={[
+              {
+                label: "Role Recipients",
+                control: control as Control,
+                type: InputTypes.MULTI,
+                placeholder: "Select roles",
+                name: "roleIds",
+                required: true,
+                options: roleOptions,
+                errors,
+              },
+            ]}
+          />
+        )}
+        {alertType === "users" && (
+          <FormWizard
+            className="w-full"
+            config={[
+              {
+                label: "User Recipients",
+                control: control as Control,
+                type: InputTypes.MULTI,
+                name: "userIds",
+                required: true,
+                placeholder: "Select users",
+                options: usersOptions || [],
+                errors,
+              },
+            ]}
+          />
+        )}
       </div>
-      <FormWizard
-        config={[
-          {
-            control: control as Control,
-            label: "Frequency",
-            name: "Immediate",
-            placeholder: "Select frequency",
-            type: InputTypes.SELECT,
-            required: true,
-            options: Object.entries(NotificationFrequency)
-              .filter(([, value]) => typeof value === "number")
-              .map(([key, value]) => ({
-                label: key,
-                value: value.toString(),
-              })),
-            errors,
-          },
-        ]}
-      />
+
       <FormWizard
         config={[
           {
             control: control as Control,
             label: "Due Date",
             name: "timeFrame",
-            placeholder: "Enter due date",
+            readOnly: isUpdateRecipient,
+            placeholder: "Select due date",
             type: InputTypes.TIME,
             required: true,
             errors,
           },
         ]}
       />
+
       <FormWizard
         config={[
           {
-            label: "Alert Notification Channel",
+            label: "Notification Channels",
             control: control as Control,
-            type: InputTypes.SELECT,
-            placeholder: "Select channel",
-            name: "type",
+            type: InputTypes.MULTI,
+            placeholder: "Select notification channels",
+            name: "alertType",
+            readOnly: isUpdateRecipient,
             required: true,
             options: Object.entries(AlertType)
               .filter(([, value]) => typeof value === "number")

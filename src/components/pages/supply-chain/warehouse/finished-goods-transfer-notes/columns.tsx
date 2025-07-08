@@ -5,6 +5,7 @@ import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useState } from "react";
 import { ApproveTransferNote } from "./approve";
+import { useRouter } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -14,16 +15,33 @@ export function DataTableRowActions<
   TData extends DistributedFinishedProductDtoRead,
 >({ row }: DataTableRowActionsProps<TData>) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          <Button onClick={() => setOpen(true)}>
+          <Button variant={"ghost"} onClick={() => setOpen(true)}>
             <Icon
               name="Check"
               className="h-5 w-5 cursor-pointer text-neutral-500"
             />
             <span>Approve</span>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <Button
+            onClick={() =>
+              router.push(
+                `/warehouse/finished-goods-transfer-notes/${row?.original.id}`,
+              )
+            }
+            variant={"ghost"}
+          >
+            <Icon
+              name="View"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>View Details</span>
           </Button>
         </DropdownMenuItem>
       </TableMenuAction>

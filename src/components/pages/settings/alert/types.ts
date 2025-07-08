@@ -6,7 +6,6 @@ import { z } from "zod";
 export const alertTypeLabels: Record<AlertType, string> = {
   [AlertType.InApp]: "In-App",
   [AlertType.Email]: "Email",
-  [AlertType.Sms]: "Sms",
 } as const;
 
 export const NotificationTypeLabels: Record<NotificationType, string> = {
@@ -48,32 +47,57 @@ export enum NotificationFrequency {
 }
 
 export const AlertSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  alertType: z.array(
-    z.nativeEnum(AlertType, {
-      errorMap: () => ({ message: "Invalid alert type" }),
-    }),
+  title: z
+    .string({ required_error: "Title is required" })
+    .min(1, "Title is required"),
+
+  alertType: z
+    .array(
+      z.object({
+        value: z.string().min(1, "Alert type is required"),
+        label: z.string(),
+      }),
+      { message: "At least one channels must be selected" },
+    )
+    .min(1, "At least one channels must be selected"),
+
+  timeFrame: z
+    .string({ required_error: "Time frame is required" })
+    .min(1, "Time frame is required"),
+
+  notificationType: z.object(
+    {
+      value: z.nativeEnum(NotificationType),
+      label: z.string(),
+    },
+    { message: "Notification type is required" },
   ),
-  timeFrame: z.string().min(1, "Time frame is required"),
-  notificationType: z.nativeEnum(NotificationType, {
-    errorMap: () => ({ message: "Invalid notification type" }),
-  }),
   roleIds: z
     .array(
       z.object({
-        value: z.string().uuid("Invalid role ID"),
-        label: z.string(),
+        value: z
+          .string({ required_error: "Role ID is required" })
+          .min(1, "Role ID cannot be empty"),
+        label: z
+          .string({ required_error: "Role label is required" })
+          .min(1, "Role label cannot be empty"),
       }),
+      { required_error: "At least one role must be selected" },
     )
-    .min(1, "At least one role is required"),
+    .optional(),
   userIds: z
     .array(
       z.object({
-        value: z.string().uuid("Invalid user ID"),
-        label: z.string(),
+        value: z
+          .string({ required_error: "User ID is required" })
+          .min(1, "User ID cannot be empty"),
+        label: z
+          .string({ required_error: "User label is required" })
+          .min(1, "User label cannot be empty"),
       }),
+      { required_error: "At least one user must be selected" },
     )
-    .min(1, "At least one user is required"),
+    .optional(),
 });
 
 export type CreateAlertDto = z.infer<typeof AlertSchema>;

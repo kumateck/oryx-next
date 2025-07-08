@@ -5,15 +5,18 @@ import {
   FieldValues,
   Path,
   UseFormRegister,
+  UseFormWatch,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { EmployeeType, InputTypes, Option } from "@/lib";
+import { EmployeeLevel } from "./type";
 
 interface FormProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  watch: UseFormWatch<TFieldValues>;
   departmentOptions: Option[];
   designationOptions: Option[];
   userOptions: Option[];
@@ -27,8 +30,12 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
   departmentOptions,
   designationOptions,
   userOptions,
+  watch,
 }: FormProps<TFieldValues>) => {
   // Initialize field array
+  const isPermanent =
+    watch("type" as Path<TFieldValues>) === EmployeeType.Permanent.toString();
+
   return (
     <div className="mt-4 space-y-4">
       <FormWizard
@@ -41,6 +48,7 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
             type: InputTypes.RADIO,
             name: "type",
             required: true,
+            disabled: true,
             placeholder: "Select employee type",
             options: Object.entries(EmployeeType)
               .filter(([, value]) => typeof value === "number")
@@ -127,6 +135,28 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
           },
         ]}
       />
+      {isPermanent && (
+        <FormWizard
+          className="grid w-full gap-4 space-y-0"
+          config={[
+            {
+              label: "Employee Level",
+              control: control as Control,
+              type: InputTypes.SELECT,
+              name: "employeeLevel",
+              placeholder: "Select employee level",
+              required: false,
+              options: Object.entries(EmployeeLevel)
+                .filter(([, value]) => typeof value === "number")
+                .map(([key, value]) => ({
+                  label: key, // "Raw" or "Package"
+                  value: value.toString(), // 0 or 1
+                })),
+              errors,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };
