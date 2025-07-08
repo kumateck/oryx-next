@@ -119,9 +119,7 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
         <div className="flex items-center justify-start">
           <Icon name="User" className="size-4 text-gray-600" />
           <div className="ml-1 flex items-center capitalize text-sm">
-            {alert.roles && alert.roles.length
-              ? alert.roles[0].name
-              : "No Role"}
+            {alert.roles && alert.roles.length ? alert.roles[0].name : ""}
             {alert.roles && alert.roles.length > 1 && (
               <span className="text-gray-500 flex items-center justify-center w-fit">
                 ,<span>+</span> {alert.roles.length - 1}
@@ -129,11 +127,14 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
             )}
             {alert.users && alert.users.length
               ? `${alert.users[0].firstName} ${alert.users[0].lastName}`
-              : "No Role"}
+              : ""}
             {alert.roles && alert.roles.length > 1 && (
               <span className="text-gray-500 flex items-center justify-center w-fit">
                 ,<span>+</span> {alert.roles.length - 1}
               </span>
+            )}
+            {alert?.users?.length === 0 && alert?.roles?.length === 0 && (
+              <span className="text-gray-500 text-sm">No recipients</span>
             )}
           </div>
         </div>
