@@ -14,9 +14,10 @@ interface Props {
   leaveType: LeaveTypeDto;
 }
 export function DetailsDialog({ open, setOpen, leaveType }: Props) {
+  //TODO: CALL THE API TO GET THE LEAVE TYPE DETAILS
   console.log(leaveType);
   return (
-    <Dialog key={leaveType.id} open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-3xl w-full">
         <DialogHeader>
           <DialogTitle>{leaveType.name}</DialogTitle>
