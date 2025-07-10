@@ -195,6 +195,10 @@ export const ROUTES: Route[] = [
             url: "/procurement/requisition",
           },
           {
+            title: "Material Specification",
+            url: "/material-specification",
+          },
+          {
             title: "Quotations Request",
             url: "/procurement/quotations",
           },

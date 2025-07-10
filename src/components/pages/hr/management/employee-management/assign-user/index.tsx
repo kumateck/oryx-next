@@ -20,7 +20,9 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
+  AssignEmployeeDto,
   EmployeeDto,
+  EmployeeLevel as EmployeeLevelEnum,
   useGetApiV1DepartmentQuery,
   useGetApiV1DesignationDepartmentByIdQuery,
   useGetApiV1UserQuery,
@@ -28,7 +30,11 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import AssignUserForm from "./form";
-import { EmployeeInfoRequestDto, EmployeeInfoValidator } from "./type";
+import {
+  EmployeeInfoRequestDto,
+  EmployeeInfoValidator,
+  EmployeeLevel,
+} from "./type";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
 
@@ -119,6 +125,12 @@ const UserDialog = ({
         departmentId: defaultDepartment,
         designationId: defaultDesignation,
         staffNumber: selectedEmployee.staffNumber as string,
+        employeeLevel: selectedEmployee.level
+          ? {
+              value: selectedEmployee.level.toString(),
+              label: EmployeeLevel[selectedEmployee.level],
+            }
+          : undefined,
       });
     }
   }, [open, selectedEmployee, reset, defaultDepartment, defaultDesignation]);
@@ -149,10 +161,12 @@ const UserDialog = ({
       const payload = {
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
-        staffNumber: data.staffNumber,
-        employeeLevel: data.employeeLevel,
         reportingManagerId: data.reportingManagerId?.value,
-      };
+        staffNumber: data.staffNumber,
+        employeeLevel: Number(
+          data.employeeLevel?.value,
+        ) as unknown as EmployeeLevelEnum,
+      } as AssignEmployeeDto;
 
       await assignUser({
         id: selectedEmployee.id as string,
