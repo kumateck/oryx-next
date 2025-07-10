@@ -6,6 +6,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
+  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
+  TestTypeEnum as TestTypeEnumLabels,
 } from "../types";
 import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -100,7 +102,7 @@ export function EditMaterialSpecification() {
                 : "",
             label:
               test.testName !== undefined && test.testName !== null
-                ? String(test.testName)
+                ? TestTypeEnumLabels[test.testName]
                 : "",
           },
           releaseSpecification:
@@ -115,7 +117,7 @@ export function EditMaterialSpecification() {
                 : "",
             label:
               test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
+                ? MaterialSpecificationReferenceEnumValues[test.reference]
                 : "",
           },
         })),

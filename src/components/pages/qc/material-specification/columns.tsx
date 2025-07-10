@@ -33,7 +33,6 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
           router.push(
             `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
           );
-          console.log("Edit action for row:", row.original);
         }}
       />
       <Icon

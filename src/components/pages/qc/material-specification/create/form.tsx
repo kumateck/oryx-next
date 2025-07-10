@@ -150,6 +150,15 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
               <FormWizard
                 config={[
                   {
+                    label: "SR Number",
+                    type: InputTypes.NUMBER,
+                    register: register(
+                      `testSpecifications.${index}.srNumber` as Path<TFieldValues>,
+                      { valueAsNumber: true },
+                    ),
+                    errors,
+                  },
+                  {
                     label: "Test Name",
                     type: InputTypes.SELECT,
                     name: `testSpecifications.${index}.testName`,
