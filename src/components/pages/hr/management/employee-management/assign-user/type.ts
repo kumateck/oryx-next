@@ -19,7 +19,10 @@ export const employeeInfoSchema = z.object({
   lastName: z.string().min(1, "Employee name is required"),
   email: z.string().email().min(1, "Employee email is required"),
   employeeLevel: z
-    .nativeEnum(EmployeeLevel, { message: "Employee level is required" })
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
     .optional(),
   departmentId: z.object(
     {
