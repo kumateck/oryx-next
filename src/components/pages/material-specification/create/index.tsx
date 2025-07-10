@@ -13,6 +13,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
+  TestSpecification,
   TestType as TestTypeEnum,
   useGetApiV1MaterialDepartmentQuery,
   usePostApiV1MaterialSpecificationsMutation,
@@ -61,7 +62,6 @@ export function MaterialSpecPage() {
       value: material?.material?.id as string,
     })) || [];
 
-  //TODO: Implement onSubmit function
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
     const payload = {
       specificationNumber: data.specificationNumber,
@@ -74,12 +74,13 @@ export function MaterialSpecPage() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: test.srNumber,
-        testName: test.testName.value as unknown as TestTypeEnum,
+        srNumber: Number(test.srNumber),
+        testName: Number(test.testName.value) as unknown as TestTypeEnum,
         releaseSpecification: test.releaseSpecification,
-        reference: test.reference
-          .value as unknown as MaterialSpecificationReferenceEnum,
-      })),
+        reference: Number(
+          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
+        ),
+      })) as TestSpecification[],
       materialId: data.materialId.value as string,
     };
     console.log("Submitting data", payload);

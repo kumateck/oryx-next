@@ -4,9 +4,12 @@ import {
   MaterialSpecificationDto,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
+import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 interface DataTableRowActionsProps<TData> {
@@ -16,8 +19,10 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
+  const dispatch = useDispatch();
   const [deleteMaterialSpecification] =
     useDeleteApiV1MaterialSpecificationsByIdMutation();
+  const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -25,6 +30,9 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
         className="h-5 w-5 cursor-pointer text-neutral-500"
         onClick={() => {
           // Handle edit action
+          router.push(
+            `/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
+          );
           console.log("Edit action for row:", row.original);
         }}
       />
@@ -38,12 +46,13 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
           open={isDelete}
           onClose={() => setIsDelete(false)}
           onConfirm={async () => {
-            if (row?.original?.id) return;
+            if (!row?.original?.id) return;
             try {
               await deleteMaterialSpecification({
                 id: row.original.id as string,
               }).unwrap();
               setIsDelete(false);
+              dispatch(commonActions.setTriggerReload());
               toast.success("Material specification deleted successfully.");
             } catch (error) {
               console.error("Error deleting specification:", error);
