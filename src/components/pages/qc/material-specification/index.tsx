@@ -114,7 +114,7 @@ function Page() {
       <ServerDatatable
         data={data}
         onRowClick={(row) =>
-          router.push(`/material-specification/${row.id}/details`)
+          router.push(`/qc/material-specification/${row.id}/details`)
         }
         columns={columns}
         isLoading={isLoading || isFetching}
