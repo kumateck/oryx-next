@@ -7,23 +7,24 @@ import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
 } from "../types";
-import SpecificationForm from "./form";
 import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestType as TestTypeEnum,
-  useGetApiV1MaterialDepartmentQuery,
-  usePostApiV1MaterialSpecificationsMutation,
+  useLazyGetApiV1MaterialDepartmentQuery,
+  useLazyGetApiV1MaterialSpecificationsByIdQuery,
+  usePutApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
+import SpecificationForm from "../create/form";
 
 function Page() {
   return (
     <PageWrapper>
       <ScrollablePageWrapper>
-        <MaterialSpecPage />
+        <EditMaterialSpecification />
       </ScrollablePageWrapper>
     </PageWrapper>
   );
@@ -31,19 +32,23 @@ function Page() {
 
 export default Page;
 
-export function MaterialSpecPage() {
+export function EditMaterialSpecification() {
   const searchParams = useSearchParams();
+  const { id } = useParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const { data: materials } = useGetApiV1MaterialDepartmentQuery({
-    kind: kind ?? EMaterialKind.Raw,
-  });
-  const [createMaterialSpecification, { isLoading }] =
-    usePostApiV1MaterialSpecificationsMutation();
+  const [getMaterials, { data: materials }] =
+    useLazyGetApiV1MaterialDepartmentQuery({});
+  const [updateMaterialSpecification, { isLoading }] =
+    usePutApiV1MaterialSpecificationsByIdMutation();
+
+  const [fetchMaterialSpecification, { data: materialData }] =
+    useLazyGetApiV1MaterialSpecificationsByIdQuery({});
 
   const {
     register,
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateMaterialSpecificationDto>({
@@ -54,6 +59,75 @@ export function MaterialSpecPage() {
     control,
     name: "testSpecifications",
   });
+
+  useEffect(() => {
+    if (id) {
+      fetchMaterialSpecification({ id: id as string });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+  useEffect(() => {
+    if (!materialData) return;
+    getMaterials({
+      kind: materialData?.material?.kind,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materialData]);
+  useEffect(() => {
+    if (materialData) {
+      // Populate form with fetched material data
+      setValue(
+        "specificationNumber",
+        materialData?.specificationNumber as string,
+      );
+      setValue("revisionNumber", materialData?.revisionNumber as string);
+      setValue("supersedesNumber", materialData?.supercedesNumber as string);
+      if (materialData?.effectiveDate) {
+        setValue("effectiveDate", new Date(materialData.effectiveDate));
+      }
+      if (materialData?.reviewDate) {
+        setValue("reviewDate", new Date(materialData.reviewDate));
+      }
+      setValue(
+        "testSpecifications",
+        (materialData?.testSpecifications ?? []).map((test) => ({
+          srNumber: test.srNumber,
+          testName: {
+            value:
+              test.testName !== undefined && test.testName !== null
+                ? String(test.testName)
+                : "",
+            label:
+              test.testName !== undefined && test.testName !== null
+                ? String(test.testName)
+                : "",
+          },
+          releaseSpecification:
+            test.releaseSpecification !== undefined &&
+            test.releaseSpecification !== null
+              ? String(test.releaseSpecification)
+              : "",
+          reference: {
+            value:
+              test.reference !== undefined && test.reference !== null
+                ? String(test.reference)
+                : "",
+            label:
+              test.reference !== undefined && test.reference !== null
+                ? String(test.reference)
+                : "",
+          },
+        })),
+      );
+      if (materialData?.material) {
+        setValue("materialId", {
+          value: materialData?.material?.id ?? "",
+          label: materialData?.material?.name ?? "",
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materialData]);
 
   const materialOptions =
     materials?.data?.map((material) => ({
@@ -83,20 +157,18 @@ export function MaterialSpecPage() {
       materialId: data.materialId.value as string,
     };
     console.log("Submitting data", payload);
+    if (!id) return;
     try {
-      await createMaterialSpecification({
+      await updateMaterialSpecification({
+        id: id as string,
         createMaterialSpecificationRequest: payload,
       }).unwrap();
-      toast.success("Material Specification created successfully");
+      toast.success("Material Specification updated successfully");
       router.back();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
-  useEffect(() => {
-    console.log("form data", errors);
-  }, [errors]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -110,7 +182,6 @@ export function MaterialSpecPage() {
         kind={kind}
         errors={errors}
       />
-
       <div className="flex justify-end gap-4">
         <Button
           onClick={() => router.back()}
@@ -124,7 +195,7 @@ export function MaterialSpecPage() {
           {isLoading && (
             <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
           )}
-          {isLoading ? "Submitting..." : "Submit"}
+          {isLoading ? "Submitting..." : "Save Changes"}
         </Button>
       </div>
     </form>
