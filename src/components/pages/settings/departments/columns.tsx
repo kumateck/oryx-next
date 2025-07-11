@@ -53,7 +53,7 @@ export function DataTableRowActions<TData extends DepartmentDto>({
             </div>
           </DropdownMenuItem>
         )}
-        {/* <DropdownMenuItem className="group">
+        <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
             onClick={() => {
@@ -67,7 +67,7 @@ export function DataTableRowActions<TData extends DepartmentDto>({
             />
             <span>Delete</span>
           </div>
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
       </TableMenuAction>
       {/* <Icon
         name="Pencil"

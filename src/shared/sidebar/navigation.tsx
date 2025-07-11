@@ -34,6 +34,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "HR Dashboard",
+        url: "/hr-dashboard",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
         title: "Product Board",
         url: "/production/activities",
         icon: "SquareDashedKanban",

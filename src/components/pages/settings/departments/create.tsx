@@ -93,6 +93,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       seriesCounter: res + 1,
     };
     const code = await generateCode(generatePayload);
+    console.log(code, "this is the generated code");
     setValue("code", code);
   };
 
