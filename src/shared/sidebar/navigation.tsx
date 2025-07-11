@@ -468,6 +468,12 @@ export const ROUTES: Route[] = [
         isActive: false,
         icon: "BookUser",
       },
+      {
+        title: "Product Specification",
+        url: "/qc/product-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
     ],
   },
   {

@@ -1,7 +1,1 @@
-import React from "react";
-
-function Page() {
-  return <div>Page</div>;
-}
-
-export default Page;
+export { default } from "@/components/pages/qc/product-specification/index";

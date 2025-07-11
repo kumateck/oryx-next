@@ -616,6 +616,8 @@ export const AuditModules = {
     createPurchaseRequisitions: "Create Purchase Requisitions",
     others: "Others",
     planning: "Product Planning",
+    productSpecification: "Product Specification",
+    materialSpecification: "Material Specification",
     stockTransferRequests: "Stock Transfer Requests",
     productSchedule: "Product Schedule",
     activities: "Activities",

@@ -38,8 +38,8 @@ function Page() {
       page,
       pageSize,
       module: AuditModules.production.name,
+      subModule: AuditModules.production.materialSpecification,
       materialKind: kind ?? EMaterialKind.Raw,
-      subModule: "",
       searchQuery: debounceValue,
     });
     if (triggerReload) {

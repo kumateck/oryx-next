@@ -1,29 +1,27 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import {
-  AuditModules,
-  EMaterialKind,
-  ErrorResponse,
-  isErrorResponse,
-} from "@/lib";
+import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import React, { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
-  CreateMaterialSpecificationDto,
-  CreateMaterialSpecificationValidator,
+  CreateProductSpecificationDto,
+  CreateProductSpecificationValidator,
   MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
+  TestStageValues,
   TestTypeEnum as TestTypeEnumLabels,
 } from "../types";
 import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
+  CreateProductSpecificationRequest,
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
+  TestStage,
   TestType as TestTypeEnum,
-  useLazyGetApiV1MaterialDepartmentQuery,
-  useLazyGetApiV1MaterialSpecificationsByIdQuery,
-  usePutApiV1MaterialSpecificationsByIdMutation,
+  useGetApiV1ProductQuery,
+  useLazyGetApiV1ProductSpecificationsByIdQuery,
+  usePutApiV1ProductSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import SpecificationForm from "../create/form";
@@ -41,26 +39,24 @@ function Page() {
 export default Page;
 
 export function EditMaterialSpecification() {
-  const searchParams = useSearchParams();
   const { id } = useParams();
   const router = useRouter();
-  const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const [getMaterials, { data: materials }] =
-    useLazyGetApiV1MaterialDepartmentQuery({});
-  const [updateMaterialSpecification, { isLoading }] =
-    usePutApiV1MaterialSpecificationsByIdMutation();
+  const { data: product } = useGetApiV1ProductQuery({});
+  const [updateProductSpecification, { isLoading }] =
+    usePutApiV1ProductSpecificationsByIdMutation();
 
-  const [fetchMaterialSpecification, { data: materialData }] =
-    useLazyGetApiV1MaterialSpecificationsByIdQuery({});
+  const [fetchProductSpecification, { data: productSpecification }] =
+    useLazyGetApiV1ProductSpecificationsByIdQuery({});
 
   const {
     register,
     control,
     setValue,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateMaterialSpecificationDto>({
-    resolver: CreateMaterialSpecificationValidator,
+  } = useForm<CreateProductSpecificationDto>({
+    resolver: CreateProductSpecificationValidator,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -70,35 +66,56 @@ export function EditMaterialSpecification() {
 
   useEffect(() => {
     if (id) {
-      fetchMaterialSpecification({ id: id as string });
+      fetchProductSpecification({ id: id as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  const productId = watch("productId");
   useEffect(() => {
-    if (!materialData) return;
-    getMaterials({
-      kind: materialData?.material?.kind,
-    });
+    if (productId) {
+      const selectedProduct = product?.data?.find(
+        (option) => option.id === productId.value,
+      );
+      setValue("labelClaim", selectedProduct?.labelClaim || "Not availabel");
+      setValue(
+        "packingStyle",
+        selectedProduct?.packageStyle || "Not available",
+      );
+      setValue("shelfLife", selectedProduct?.shelfLife || "");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materialData]);
+  }, [productId]);
   useEffect(() => {
-    if (materialData) {
+    if (productSpecification) {
       // Populate form with fetched material data
       setValue(
         "specificationNumber",
-        materialData?.specificationNumber as string,
+        productSpecification?.specificationNumber as string,
       );
-      setValue("revisionNumber", materialData?.revisionNumber as string);
-      setValue("supersedesNumber", materialData?.supersedesNumber as string);
-      if (materialData?.effectiveDate) {
-        setValue("effectiveDate", new Date(materialData.effectiveDate));
+      setValue("testStage", {
+        value: String(productSpecification?.testStage),
+        label: TestStageValues[productSpecification?.testStage as TestStage],
+      });
+      setValue(
+        "revisionNumber",
+        productSpecification?.revisionNumber as string,
+      );
+      setValue(
+        "supersedesNumber",
+        productSpecification?.supersedesNumber as string,
+      );
+      if (productSpecification?.effectiveDate) {
+        setValue("effectiveDate", new Date(productSpecification.effectiveDate));
       }
-      if (materialData?.reviewDate) {
-        setValue("reviewDate", new Date(materialData.reviewDate));
+      setValue("labelClaim", productSpecification?.labelClaim as string);
+      setValue("packingStyle", productSpecification?.packingStyle as string);
+      setValue("shelfLife", productSpecification?.shelfLife as string);
+      if (productSpecification?.reviewDate) {
+        setValue("reviewDate", new Date(productSpecification.reviewDate));
       }
       setValue(
         "testSpecifications",
-        (materialData?.testSpecifications ?? []).map((test) => ({
+        (productSpecification?.testSpecifications ?? []).map((test) => ({
           srNumber: test.srNumber,
           testName: {
             value:
@@ -127,25 +144,26 @@ export function EditMaterialSpecification() {
           },
         })),
       );
-      if (materialData?.material) {
-        setValue("materialId", {
-          value: materialData?.material?.id ?? "",
-          label: materialData?.material?.name ?? "",
+      if (productSpecification?.product) {
+        setValue("productId", {
+          value: productSpecification?.product?.id ?? "",
+          label: productSpecification?.product?.name ?? "",
         });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materialData]);
+  }, [productSpecification]);
 
-  const materialOptions =
-    materials?.data?.map((material) => ({
-      label: material?.material?.name as string,
-      value: material?.material?.id as string,
+  const productOptions =
+    product?.data?.map((product) => ({
+      label: product?.name as string,
+      value: product?.id as string,
     })) || [];
 
-  const onSubmit = async (data: CreateMaterialSpecificationDto) => {
-    const payload = {
+  const onSubmit = async (data: CreateProductSpecificationDto) => {
+    const payload: CreateProductSpecificationRequest = {
       specificationNumber: data.specificationNumber,
+      testStage: Number(data.testStage.value) as unknown as TestStage,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
       effectiveDate: data.effectiveDate
@@ -162,18 +180,18 @@ export function EditMaterialSpecification() {
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,
         ),
       })) as TestSpecification[],
-      materialId: data.materialId.value as string,
+      productId: data.productId.value as string,
     };
     console.log("Submitting data", payload);
     if (!id) return;
     try {
-      await updateMaterialSpecification({
+      await updateProductSpecification({
         id: id as string,
-        createMaterialSpecificationRequest: payload,
+        createProductSpecificationRequest: payload,
         module: AuditModules.production.name,
-        subModule: AuditModules.production.materialSpecification,
+        subModule: AuditModules.production.productSpecification,
       }).unwrap();
-      toast.success("Material Specification updated successfully");
+      toast.success("Product Specification updated successfully");
       router.back();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -188,8 +206,7 @@ export function EditMaterialSpecification() {
         append={append}
         fields={fields}
         register={register}
-        materialOptions={materialOptions}
-        kind={kind}
+        productOptions={productOptions}
         errors={errors}
       />
       <div className="flex justify-end gap-4">

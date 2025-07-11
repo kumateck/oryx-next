@@ -10,7 +10,7 @@ import {
 } from "@/components/ui";
 import {
   TestType,
-  useLazyGetApiV1MaterialSpecificationsByIdQuery,
+  useLazyGetApiV1ProductSpecificationsByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -18,79 +18,81 @@ import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { MaterialSpecificationReferenceEnum, TestTypeEnum } from "../types";
-import MaterialSpecificationSkeleton from "./loadingSkeleton";
+import ProductSpecificationSkeleton from "./loadingSkeleton";
 
 function Page() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [fetchMaterialSpecification, { data: materialData, isLoading }] =
-    useLazyGetApiV1MaterialSpecificationsByIdQuery({});
+  const [fetchProductSpecification, { data: productSpcData, isLoading }] =
+    useLazyGetApiV1ProductSpecificationsByIdQuery({});
 
   useEffect(() => {
     if (id) {
-      fetchMaterialSpecification({ id: id as string });
+      fetchProductSpecification({ id: id as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  if (isLoading) return <MaterialSpecificationSkeleton />;
-  console.log("Material Data", materialData);
+  if (isLoading) return <ProductSpecificationSkeleton />;
   return (
     <PageWrapper>
       <div className="flex items-center gap-2 mb-4 justify-between">
-        <Button
+        <div
           onClick={() => router.back()}
-          variant="ghost"
-          className="flex p-0 items-center justify-start"
+          className="flex text-gray-700 hover:underline p-0 items-center justify-start"
         >
           <Icon name="ArrowLeft" />
-          <span>Material specification list</span>
-        </Button>
+          <span>Product specification list</span>
+        </div>
         <Button
           onClick={() =>
-            router.push(
-              `/qc/material-specification/${materialData?.id}/edit?kind=${materialData?.material?.kind}`,
-            )
+            router.push(`/qc/product-specification/${productSpcData?.id}/edit`)
           }
         >
           Edit
         </Button>
       </div>
 
-      <PageTitle title="Material Specification Details" />
+      <PageTitle title="Product Specification Details" />
       <ScrollablePageWrapper>
         <Card>
           <CardHeader>
-            <CardTitle>{materialData?.material?.name}</CardTitle>
+            <CardTitle>{productSpcData?.product?.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between flex-col md:flex-row">
-              <div>
+              <div className="space-y-2">
                 <div className="flex items-center justify-start gap-3">
                   <span>SPC Number:</span>
                   <span className="font-medium">
-                    {materialData?.specificationNumber}
+                    {productSpcData?.specificationNumber}
                   </span>
                 </div>
                 <div className="flex items-center justify-start gap-3">
                   <span>Effective Date:</span>
                   <span className="font-medium">
-                    {materialData?.effectiveDate
+                    {productSpcData?.effectiveDate
                       ? format(
-                          new Date(materialData.effectiveDate),
+                          new Date(productSpcData.effectiveDate),
                           "MMMM dd, yyyy",
                         )
                       : ""}
                   </span>
                 </div>
+                <div className="flex items-center justify-start gap-3">
+                  <span>Product Code:</span>
+                  <span className="font-medium">
+                    {productSpcData?.product?.code}
+                  </span>
+                </div>
               </div>
-              <div>
+              <div className="space-y-2">
                 <div className="flex items-center justify-start gap-3">
                   <span>Review Date:</span>
                   <span className="font-medium">
-                    {materialData?.reviewDate
+                    {productSpcData?.reviewDate
                       ? format(
-                          new Date(materialData.reviewDate),
+                          new Date(productSpcData.reviewDate),
                           "MMMM dd, yyyy",
                         )
                       : ""}
@@ -99,15 +101,33 @@ function Page() {
                 <div className="flex items-center justify-start gap-3">
                   <span>Revision Number:</span>
                   <span className="font-medium">
-                    {materialData?.revisionNumber}
+                    {productSpcData?.revisionNumber}
+                  </span>
+                </div>
+                <div className="flex items-center justify-start gap-3">
+                  <span>Shell Life:</span>
+                  <span className="font-medium">
+                    {productSpcData?.product?.shelfLife}
                   </span>
                 </div>
               </div>
-              <div>
+              <div className="space-y-2">
                 <div className="flex items-center justify-start gap-3">
                   <span>Supersedes:</span>
                   <span className="font-medium">
-                    {materialData?.supersedesNumber}
+                    {productSpcData?.supersedesNumber}
+                  </span>
+                </div>
+                <div className="flex items-center justify-start gap-3">
+                  <span>Storage:</span>
+                  <span className="font-medium">
+                    {productSpcData?.product?.storageCondition}
+                  </span>
+                </div>
+                <div className="flex items-center justify-start gap-3">
+                  <span>Label Claim:</span>
+                  <span className="font-medium">
+                    {productSpcData?.labelClaim}
                   </span>
                 </div>
               </div>
@@ -125,10 +145,9 @@ function Page() {
               <div className="col-span-2">Specification</div>
               <div className="col-span-1">Reference</div>
             </div>
-
-            {materialData?.testSpecifications?.map((test, index) => (
+            {productSpcData?.testSpecifications?.map((test, index) => (
               <div
-                className="grid grid-cols-4 text-sm font-medium text-gray-900"
+                className="grid grid-cols-6 gap-3 space-y-2 text-sm font-medium text-gray-900"
                 key={index}
               >
                 <div className="col-span-1">{test?.srNumber}</div>

@@ -1,29 +1,26 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import {
-  AuditModules,
-  EMaterialKind,
-  ErrorResponse,
-  isErrorResponse,
-} from "@/lib";
-import React, { useEffect } from "react";
+import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
-  CreateMaterialSpecificationDto,
-  CreateMaterialSpecificationValidator,
+  CreateProductSpecificationDto,
+  CreateProductSpecificationValidator,
 } from "../types";
 import SpecificationForm from "./form";
 import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
+  CreateProductSpecificationRequest,
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
+  TestStage,
   TestType as TestTypeEnum,
-  useGetApiV1MaterialDepartmentQuery,
-  usePostApiV1MaterialSpecificationsMutation,
+  useGetApiV1ProductQuery,
+  usePostApiV1ProductSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 function Page() {
   return (
@@ -38,22 +35,20 @@ function Page() {
 export default Page;
 
 export function MaterialSpecPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const { data: materials } = useGetApiV1MaterialDepartmentQuery({
-    kind: kind ?? EMaterialKind.Raw,
-  });
-  const [createMaterialSpecification, { isLoading }] =
-    usePostApiV1MaterialSpecificationsMutation();
+  const { data: product } = useGetApiV1ProductQuery({});
+  const [createProductSpecification, { isLoading }] =
+    usePostApiV1ProductSpecificationsMutation();
 
   const {
     register,
     control,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
-  } = useForm<CreateMaterialSpecificationDto>({
-    resolver: CreateMaterialSpecificationValidator,
+  } = useForm<CreateProductSpecificationDto>({
+    resolver: CreateProductSpecificationValidator,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -61,14 +56,27 @@ export function MaterialSpecPage() {
     name: "testSpecifications",
   });
 
-  const materialOptions =
-    materials?.data?.map((material) => ({
-      label: material?.material?.name as string,
-      value: material?.material?.id as string,
+  const productOptions =
+    product?.data?.map((product) => ({
+      label: product?.name as string,
+      value: product?.id as string,
     })) || [];
 
-  const onSubmit = async (data: CreateMaterialSpecificationDto) => {
-    const payload = {
+  const productId = watch("productId");
+  useEffect(() => {
+    if (productId) {
+      const selectedProduct = product?.data?.find(
+        (option) => option.id === productId.value,
+      );
+      setValue("labelClaim", selectedProduct?.labelClaim || "Not availabel");
+      setValue("packingStyle", selectedProduct?.packageStyle || "");
+      setValue("shelfLife", selectedProduct?.shelfLife || "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productId]);
+
+  const onSubmit = async (data: CreateProductSpecificationDto) => {
+    const payload: CreateProductSpecificationRequest = {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
@@ -86,26 +94,22 @@ export function MaterialSpecPage() {
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,
         ),
       })) as TestSpecification[],
-      materialId: data.materialId.value as string,
+      testStage: Number(data.testStage.value) as unknown as TestStage,
+      productId: data.productId.value as string,
     };
     console.log("Submitting data", payload);
     try {
-      await createMaterialSpecification({
-        createMaterialSpecificationRequest: payload,
+      await createProductSpecification({
+        createProductSpecificationRequest: payload,
         module: AuditModules.production.name,
-        subModule: AuditModules.production.materialRequisitions,
+        subModule: AuditModules.production.productSpecification,
       }).unwrap();
-      toast.success("Material Specification created successfully");
+      toast.success("Product Specification created successfully");
       router.back();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
-  useEffect(() => {
-    console.log("form data", errors);
-  }, [errors]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <SpecificationForm
@@ -114,8 +118,7 @@ export function MaterialSpecPage() {
         append={append}
         fields={fields}
         register={register}
-        materialOptions={materialOptions}
-        kind={kind}
+        productOptions={productOptions}
         errors={errors}
       />
 
