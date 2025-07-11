@@ -11,6 +11,8 @@ import { AuditModules, EMaterialKind } from "@/lib";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import AccessTabs from "@/shared/access";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 function Page() {
   const [page, setPage] = useState(1);
@@ -19,6 +21,8 @@ function Page() {
   const router = useRouter();
 
   const searchValue = useSelector((state) => state.common.searchInput);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const dispatch = useDispatch();
   const debounceValue = useDebounce(searchValue, 500);
 
   const searchParams = useSearchParams();
@@ -34,12 +38,15 @@ function Page() {
       page,
       pageSize,
       module: AuditModules.production.name,
+      subModule: AuditModules.production.materialSpecification,
       materialKind: kind ?? EMaterialKind.Raw,
-      subModule: "",
       searchQuery: debounceValue,
     });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceValue, page, pageSize, kind]);
+  }, [debounceValue, page, pageSize, kind, triggerReload]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -106,9 +113,9 @@ function Page() {
 
       <ServerDatatable
         data={data}
-        // onRowClick={(row) =>
-        //   router.push(`/hr/overtime-management/${row.id}/details`)
-        // }
+        onRowClick={(row) =>
+          router.push(`/qc/material-specification/${row.id}/details`)
+        }
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}

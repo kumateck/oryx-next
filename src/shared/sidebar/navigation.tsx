@@ -195,10 +195,6 @@ export const ROUTES: Route[] = [
             url: "/procurement/requisition",
           },
           {
-            title: "Material Specification",
-            url: "/material-specification",
-          },
-          {
             title: "Quotations Request",
             url: "/procurement/quotations",
           },
@@ -464,6 +460,19 @@ export const ROUTES: Route[] = [
         url: "/qc/goods-receipt-note",
         icon: "BookUser",
         isActive: false,
+      },
+
+      {
+        title: "Material Specification",
+        url: "/qc/material-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
+      {
+        title: "Product Specification",
+        url: "/qc/product-specification",
+        isActive: false,
+        icon: "BookUser",
       },
     ],
   },

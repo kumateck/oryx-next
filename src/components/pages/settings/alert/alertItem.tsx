@@ -142,7 +142,7 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
       <div className="col-span-2 place-content-center">
         <div className="flex items-center justify-start">
           <Icon name="Calendar" className="size-4 text-gray-600" />
-          {/* TODO: add alert frequency */}
+          {/* TODO: add alert frequency when needed */}
           <span className="ml-1 capitalize text-sm">
             {alert?.createdAt
               ? format(alert.createdAt, "MMMM do, yyyy")

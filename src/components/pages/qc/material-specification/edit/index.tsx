@@ -1,17 +1,25 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import { EMaterialKind, ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  AuditModules,
+  EMaterialKind,
+  ErrorResponse,
+  isErrorResponse,
+} from "@/lib";
 import React, { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
+  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
+  TestTypeEnum as TestTypeEnumLabels,
 } from "../types";
 import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
+  TestSpecification,
   TestType as TestTypeEnum,
   useLazyGetApiV1MaterialDepartmentQuery,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
@@ -81,7 +89,7 @@ export function EditMaterialSpecification() {
         materialData?.specificationNumber as string,
       );
       setValue("revisionNumber", materialData?.revisionNumber as string);
-      setValue("supersedesNumber", materialData?.supercedesNumber as string);
+      setValue("supersedesNumber", materialData?.supersedesNumber as string);
       if (materialData?.effectiveDate) {
         setValue("effectiveDate", new Date(materialData.effectiveDate));
       }
@@ -99,7 +107,7 @@ export function EditMaterialSpecification() {
                 : "",
             label:
               test.testName !== undefined && test.testName !== null
-                ? String(test.testName)
+                ? TestTypeEnumLabels[test.testName]
                 : "",
           },
           releaseSpecification:
@@ -114,7 +122,7 @@ export function EditMaterialSpecification() {
                 : "",
             label:
               test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
+                ? MaterialSpecificationReferenceEnumValues[test.reference]
                 : "",
           },
         })),
@@ -135,7 +143,6 @@ export function EditMaterialSpecification() {
       value: material?.material?.id as string,
     })) || [];
 
-  //TODO: Implement onSubmit function
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
     const payload = {
       specificationNumber: data.specificationNumber,
@@ -148,12 +155,13 @@ export function EditMaterialSpecification() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: test.srNumber,
-        testName: test.testName.value as unknown as TestTypeEnum,
+        srNumber: Number(test.srNumber),
+        testName: Number(test.testName.value) as unknown as TestTypeEnum,
         releaseSpecification: test.releaseSpecification,
-        reference: test.reference
-          .value as unknown as MaterialSpecificationReferenceEnum,
-      })),
+        reference: Number(
+          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
+        ),
+      })) as TestSpecification[],
       materialId: data.materialId.value as string,
     };
     console.log("Submitting data", payload);
@@ -162,6 +170,8 @@ export function EditMaterialSpecification() {
       await updateMaterialSpecification({
         id: id as string,
         createMaterialSpecificationRequest: payload,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.materialSpecification,
       }).unwrap();
       toast.success("Material Specification updated successfully");
       router.back();

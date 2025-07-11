@@ -1,6 +1,6 @@
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
-import { EMaterialKind, InputTypes, Option } from "@/lib";
+import { InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
@@ -13,8 +13,9 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import {
-  CreateMaterialSpecificationDto,
+  CreateProductSpecificationDto,
   MaterialSpecificationReference,
+  TestStageValues,
   TestType,
 } from "../types";
 
@@ -31,37 +32,34 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   remove: UseFieldArrayRemove;
-  append: UseFieldArrayAppend<CreateMaterialSpecificationDto>;
+  append: UseFieldArrayAppend<CreateProductSpecificationDto>;
   fields: FieldArrayWithId<FieldsType>[];
-  materialOptions: Option[];
-  kind: EMaterialKind;
+  productOptions: Option[];
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
-  materialOptions,
+  productOptions,
   fields,
   append,
   remove,
   errors,
-  kind,
 }: Props<TFieldValues, TContext>) => {
-  const isRawMaterial = kind === EMaterialKind.Raw;
   return (
     <>
       <Card>
-        <CardHeader className="font-semibold">Material Information</CardHeader>
-        <CardContent className="w-full flex items-center justify-between gap-4 md:flex-row flex-col">
+        <CardHeader className="font-semibold">Product Information</CardHeader>
+        <CardContent className="w-full flex items-start justify-between gap-4 md:flex-row flex-col">
           <FormWizard
             className="w-full"
             config={[
               {
-                label: isRawMaterial ? "Raw Material" : "Packing Material",
+                label: "Product",
                 type: InputTypes.SELECT,
-                name: "materialId",
+                name: "productId",
                 control: control as Control,
-                placeholder: "Select Material",
-                options: materialOptions,
+                placeholder: "Select Product",
+                options: productOptions,
                 errors,
               },
               {
@@ -78,6 +76,24 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 placeholder: "Effective Date",
                 name: "effectiveDate",
                 control: control as Control,
+                errors,
+              },
+              {
+                label: "Packing Style",
+                type: InputTypes.TEXT,
+                placeholder: "Packing Style",
+                readOnly: true,
+                register: register("packingStyle" as Path<TFieldValues>),
+                required: true,
+                errors,
+              },
+              {
+                label: "Label Claim",
+                type: InputTypes.TEXTAREA,
+                readOnly: true,
+                required: false,
+                placeholder: "Label Claim",
+                register: register(`labelClaim` as Path<TFieldValues>),
                 errors,
               },
             ]}
@@ -105,6 +121,29 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 type: InputTypes.TEXT,
                 placeholder: "Supersedes",
                 register: register("supersedesNumber" as Path<TFieldValues>),
+                errors,
+              },
+              {
+                label: "Test Stage",
+                type: InputTypes.SELECT,
+                name: `testStage`,
+                control: control as unknown as Control,
+                // TODO: update to show the right test stage options
+                placeholder: "Select Test Stage",
+                options: Object.keys(TestStageValues) // get only labels
+                  .map((label) => ({
+                    label: String(label),
+                    value: String(TestStageValues[label]),
+                  })),
+                errors,
+              },
+              {
+                label: "Shelf Life",
+                type: InputTypes.TEXT,
+                placeholder: "Shelf Life",
+                readOnly: true,
+                register: register("shelfLife" as Path<TFieldValues>),
+                required: true,
                 errors,
               },
             ]}
@@ -150,6 +189,15 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
               <FormWizard
                 config={[
                   {
+                    label: "SR Number",
+                    type: InputTypes.NUMBER,
+                    register: register(
+                      `testSpecifications.${index}.srNumber` as Path<TFieldValues>,
+                      { valueAsNumber: true },
+                    ),
+                    errors,
+                  },
+                  {
                     label: "Test Name",
                     type: InputTypes.SELECT,
                     name: `testSpecifications.${index}.testName`,
@@ -165,6 +213,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                   {
                     label: "Release Specification",
                     type: InputTypes.TEXTAREA,
+                    placeholder: "Release Specification",
                     register: register(
                       `testSpecifications.${index}.releaseSpecification` as Path<TFieldValues>,
                     ),
