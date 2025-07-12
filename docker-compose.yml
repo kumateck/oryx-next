@@ -8,4 +8,8 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_BASE_URL=http://164.90.142.68:8080/
+      - RABBITMQ_HOST=164.90.142.68:5672
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=MvK6o4yR1CUXarZ
+      - SOCKET_PORT=3072
     restart: unless-stopped

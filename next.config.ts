@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["amqplib"],
+
   /* config options here */
   output: "standalone",
   webpack(config) {

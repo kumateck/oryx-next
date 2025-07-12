@@ -11,6 +11,10 @@ env:
   HOST_PORT: 3005
   CONTAINER_PORT: 3000
   NEXT_PUBLIC_BASE_URL: http://164.90.142.68:8080/
+  RABBITMQ_HOST: 164.90.142.68:5672
+  RABBITMQ_DEFAULT_USER: root
+  RABBITMQ_DEFAULT_PASS: MvK6o4yR1CUXarZ
+  SOCKET_PORT: 3072
 
 jobs:
   build:
@@ -33,11 +37,15 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          file: dev.Dockerfile  
+          file: dev.Dockerfile
           tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
-          no-cache: true  
+          no-cache: true
           build-args: |
             NEXT_PUBLIC_BASE_URL=${{ env.NEXT_PUBLIC_BASE_URL }}
+            RABBITMQ_HOST=${{ env.RABBITMQ_HOST }}
+            RABBITMQ_DEFAULT_USER=${{ env.RABBITMQ_DEFAULT_USER }}
+            RABBITMQ_DEFAULT_PASS=${{ env.RABBITMQ_DEFAULT_PASS }}
+            SOCKET_PORT=${{ env.SOCKET_PORT }}
 
   deploy:
     runs-on: ubuntu-latest
