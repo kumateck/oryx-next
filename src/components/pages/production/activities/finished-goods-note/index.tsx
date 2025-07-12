@@ -82,7 +82,7 @@ function FinishedGoodsTransfer({
           className="flex items-center gap-2"
         >
           <Icon name="Plus" className="h-4 w-4" />
-          <span>Perform Activity</span>{" "}
+          <span>Finished Goods</span>{" "}
         </Button>
       </div>
 
