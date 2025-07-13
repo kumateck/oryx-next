@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { Button, ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   AppointmentType,
   AuditModules,
@@ -19,6 +19,9 @@ import Edit from "./edit";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { format } from "date-fns";
+import { TableMenuAction } from "@/shared/table-menu";
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { useRouter } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,6 +30,7 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
+  const routes = useRouter();
   const [deleteMutation] = useDeleteApiV1StaffRequisitionsByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<StaffRequisitionDtoRead>(
@@ -35,23 +39,48 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
-    <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-red-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+    <TableMenuAction>
+      <DropdownMenuItem>
+        <Button
+          onClick={() =>
+            routes.push(`/hr/staff-requisition/${row?.original?.id}`)
+          }
+          variant="ghost"
+        >
+          <Icon
+            name="Eye"
+            className="h-5 w-5 cursor-pointer text-neutral-500"
+          />
+          <span>Details</span>
+        </Button>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <Button
+          onClick={() => {
+            setDetails(row.original);
+            setIsOpen(true);
+          }}
+          variant="ghost"
+        >
+          <Icon
+            name="Pencil"
+            className="h-5 w-5 cursor-pointer text-neutral-500"
+          />
+          <span>Edit</span>
+        </Button>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <Button
+          onClick={() => {
+            setDetails(row.original);
+            setIsDeleteOpen(true);
+          }}
+          variant={"ghost"}
+        >
+          <Icon name="Trash2" className="text-red-500 h-5 w-5 cursor-pointer" />
+          <span>Delete</span>
+        </Button>
+      </DropdownMenuItem>
 
       {details.id && isOpen && (
         <Edit
@@ -78,7 +107,7 @@ export function DataTableRowActions<TData extends StaffRequisitionDtoRead>({
           }
         }}
       />
-    </section>
+    </TableMenuAction>
   );
 }
 

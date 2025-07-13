@@ -467,6 +467,19 @@ export const ROUTES: Route[] = [
         icon: "BookUser",
         isActive: false,
       },
+
+      {
+        title: "Material Specification",
+        url: "/qc/material-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
+      {
+        title: "Product Specification",
+        url: "/qc/product-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
     ],
   },
   {

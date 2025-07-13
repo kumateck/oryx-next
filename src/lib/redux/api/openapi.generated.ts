@@ -973,6 +973,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1EmployeeAvatarById: build.mutation<
+      PostApiV1EmployeeAvatarByIdApiResponse,
+      PostApiV1EmployeeAvatarByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/avatar/${queryArg.id}`,
+        method: "POST",
+        body: queryArg.uploadFileRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1EmployeeDepartmentsById: build.query<
       GetApiV1EmployeeDepartmentsByIdApiResponse,
       GetApiV1EmployeeDepartmentsByIdApiArg
@@ -2164,6 +2178,37 @@ const injectedRtkApi = api.injectEndpoints({
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1MaterialBatchesImport: build.mutation<
+      PostApiV1MaterialBatchesImportApiResponse,
+      PostApiV1MaterialBatchesImportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batches/import`,
+        method: "POST",
+        body: queryArg.body,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialBatchesExpired: build.query<
+      GetApiV1MaterialBatchesExpiredApiResponse,
+      GetApiV1MaterialBatchesExpiredApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/batches/expired`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          warehouseIds: queryArg.warehouseIds,
         },
       }),
     }),
@@ -5164,6 +5209,23 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ReportStaffTotalReport: build.query<
+      GetApiV1ReportStaffTotalReportApiResponse,
+      GetApiV1ReportStaffTotalReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/staff-total-report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          departmentId: queryArg.departmentId,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+        },
+      }),
+    }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -7413,6 +7475,15 @@ export type PostApiV1EmployeeUserApiArg = {
   subModule?: any;
   employeeUserDto: EmployeeUserDto;
 };
+export type PostApiV1EmployeeAvatarByIdApiResponse = unknown;
+export type PostApiV1EmployeeAvatarByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  uploadFileRequest: UploadFileRequest;
+};
 export type GetApiV1EmployeeDepartmentsByIdApiResponse =
   /** status 200 OK */ EmployeeDtoRead[];
 export type GetApiV1EmployeeDepartmentsByIdApiArg = {
@@ -8308,6 +8379,27 @@ export type PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiArg = {
   subModule?: any;
   /** The MoveShelfMaterialBatchRequest object. */
   moveShelfMaterialBatchRequest: MoveShelfMaterialBatchRequest;
+};
+export type PostApiV1MaterialBatchesImportApiResponse = unknown;
+export type PostApiV1MaterialBatchesImportApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  body: {
+    file?: Blob;
+  };
+};
+export type GetApiV1MaterialBatchesExpiredApiResponse =
+  /** status 200 OK */ MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable;
+export type GetApiV1MaterialBatchesExpiredApiArg = {
+  startDate?: string;
+  endDate?: string;
+  warehouseIds?: string[];
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
 };
 export type PostApiV1MaterialArdApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialArdApiArg = {
@@ -10500,7 +10592,7 @@ export type GetApiV1ReportProductionMaterialsBelowMinimumApiArg = {
   subModule?: any;
 };
 export type GetApiV1ReportHumanResourceApiResponse =
-  /** status 200 OK */ HumanResourceReportDtoRead;
+  /** status 200 OK */ HrDashboardDtoRead;
 export type GetApiV1ReportHumanResourceApiArg = {
   startDate?: string;
   endDate?: string;
@@ -10510,7 +10602,7 @@ export type GetApiV1ReportHumanResourceApiArg = {
   subModule?: any;
 };
 export type GetApiV1ReportStaffReportApiResponse =
-  /** status 200 OK */ PermanentStaffGradeCountDto[];
+  /** status 200 OK */ PermanentStaffGradeReportDtoRead;
 export type GetApiV1ReportStaffReportApiArg = {
   departmentId?: string;
   /** The module this request falls under */
@@ -10519,8 +10611,19 @@ export type GetApiV1ReportStaffReportApiArg = {
   subModule?: any;
 };
 export type GetApiV1ReportEmployeeMovementApiResponse =
-  /** status 200 OK */ MovementReportDto[];
+  /** status 200 OK */ EmployeeMovementReportDto[];
 export type GetApiV1ReportEmployeeMovementApiArg = {
+  departmentId?: string;
+  startDate?: string;
+  endDate?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportStaffTotalReportApiResponse =
+  /** status 200 OK */ StaffTotalReportRead;
+export type GetApiV1ReportStaffTotalReportApiArg = {
   departmentId?: string;
   startDate?: string;
   endDate?: string;
@@ -12346,6 +12449,9 @@ export type EmployeeUserDto = {
   employeeId: string;
   roleId: string;
 };
+export type UploadFileRequest = {
+  file?: string | null;
+};
 export type MinimalEmployeeInfoDto = {
   employeeId?: string;
   firstName?: string | null;
@@ -13355,7 +13461,7 @@ export type MaterialSpecificationDto = {
   createdAt?: string;
   specificationNumber?: string | null;
   revisionNumber?: string | null;
-  supercedesNumber?: string | null;
+  supersedesNumber?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
   testSpecifications?: TestSpecification[] | null;
@@ -15423,6 +15529,7 @@ export type Product = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
+  labelClaim?: string | null;
   categoryId?: string | null;
   category?: ProductCategory;
   baseQuantity?: number;
@@ -15469,6 +15576,7 @@ export type ProductRead = {
   primaryPackDescription?: string | null;
   secondaryPackDescription?: string | null;
   tertiaryPackDescription?: string | null;
+  labelClaim?: string | null;
   categoryId?: string | null;
   category?: ProductCategoryRead;
   baseQuantity?: number;
@@ -17016,7 +17124,7 @@ export type ShelfMaterialBatch = {
   materialBatchId?: string;
   materialBatch?: MaterialBatch;
   quantity?: number;
-  uomId?: string | null;
+  uoMId?: string | null;
   uoM?: UnitOfMeasure;
   note?: string | null;
 };
@@ -17036,7 +17144,7 @@ export type ShelfMaterialBatchRead = {
   materialBatchId?: string;
   materialBatch?: MaterialBatchRead;
   quantity?: number;
-  uomId?: string | null;
+  uoMId?: string | null;
   uoM?: UnitOfMeasureRead;
   note?: string | null;
 };
@@ -17617,6 +17725,7 @@ export type ProductListDto = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  labelClaim?: string | null;
 };
 export type ProductListDtoRead = {
   id?: string;
@@ -17646,6 +17755,7 @@ export type ProductListDtoRead = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  labelClaim?: string | null;
 };
 export type ProductListDtoIEnumerablePaginateable = {
   data?: ProductListDto[] | null;
@@ -17786,6 +17896,7 @@ export type ProductDto = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  labelClaim?: string | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -17821,6 +17932,7 @@ export type ProductDtoRead = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  labelClaim?: string | null;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -18660,7 +18772,6 @@ export type CreateProductSpecificationRequest = {
   specificationNumber: string;
   revisionNumber: string;
   supersedesNumber: string;
-  labelClaim: string;
   effectiveDate: string;
   reviewDate: string;
   testSpecifications: TestSpecification[];
@@ -18753,7 +18864,7 @@ export type AttendanceStatsDto = {
   numberOfPresentEmployees?: number;
   attendanceRate?: number;
 };
-export type HumanResourceReportDto = {
+export type HrDashboardDto = {
   numberOfLeaveRequests?: number;
   numberOfPendingLeaveRequests?: number;
   numberOfRejectedLeaveRequests?: number;
@@ -18766,7 +18877,7 @@ export type HumanResourceReportDto = {
   numberOfPermanentEmployees?: number;
   attendanceStats?: AttendanceStatsDto;
 };
-export type HumanResourceReportDtoRead = {
+export type HrDashboardDtoRead = {
   numberOfLeaveRequests?: number;
   numberOfPendingLeaveRequests?: number;
   numberOfRejectedLeaveRequests?: number;
@@ -18781,7 +18892,26 @@ export type HumanResourceReportDtoRead = {
   attendanceStats?: AttendanceStatsDto;
 };
 export type PermanentStaffGradeCountDto = {
+  seniorMgtMale?: number;
+  seniorMgtFemale?: number;
+  seniorStaffMale?: number;
+  seniorStaffFemale?: number;
+  juniorStaffMale?: number;
+  juniorStaffFemale?: number;
   department?: string | null;
+};
+export type PermanentStaffGradeCountDtoRead = {
+  seniorMgtMale?: number;
+  seniorMgtFemale?: number;
+  seniorStaffMale?: number;
+  seniorStaffFemale?: number;
+  juniorStaffMale?: number;
+  juniorStaffFemale?: number;
+  totalMale?: number;
+  totalFemale?: number;
+  department?: string | null;
+};
+export type PermanentStaffGradeTotalDto = {
   seniorMgtMale?: number;
   seniorMgtFemale?: number;
   seniorStaffMale?: number;
@@ -18789,16 +18919,63 @@ export type PermanentStaffGradeCountDto = {
   juniorStaffMale?: number;
   juniorStaffFemale?: number;
 };
-export type MovementReportDto = {
+export type PermanentStaffGradeTotalDtoRead = {
+  seniorMgtMale?: number;
+  seniorMgtFemale?: number;
+  seniorStaffMale?: number;
+  seniorStaffFemale?: number;
+  juniorStaffMale?: number;
+  juniorStaffFemale?: number;
+  totalMale?: number;
+  totalFemale?: number;
+};
+export type PermanentStaffGradeReportDto = {
+  departments?: PermanentStaffGradeCountDto[] | null;
+  totals?: PermanentStaffGradeTotalDto;
+};
+export type PermanentStaffGradeReportDtoRead = {
+  departments?: PermanentStaffGradeCountDtoRead[] | null;
+  totals?: PermanentStaffGradeTotalDtoRead;
+};
+export type EmployeeMovementReportDto = {
   departmentName?: string | null;
   permanentNew?: number;
   permanentTransfer?: number;
   permanentResignation?: number;
   permanentTermination?: number;
   permanentSDVP?: number;
+  casualNew?: number;
   casualResignation?: number;
   casualTermination?: number;
   casualSDVP?: number;
+};
+export type StaffTotalSummary = {
+  totalPermanentStaff?: number;
+  totalCasualStaff?: number;
+  department?: string | null;
+};
+export type StaffTotalSummaryRead = {
+  totalPermanentStaff?: number;
+  totalCasualStaff?: number;
+  totalStaff?: number;
+  department?: string | null;
+};
+export type StaffGrandTotal = {
+  totalPermanentStaff?: number;
+  totalCasualStaff?: number;
+};
+export type StaffGrandTotalRead = {
+  totalPermanentStaff?: number;
+  totalCasualStaff?: number;
+  totalStaff?: number;
+};
+export type StaffTotalReport = {
+  departments?: StaffTotalSummary[] | null;
+  totals?: StaffGrandTotal;
+};
+export type StaffTotalReportRead = {
+  departments?: StaffTotalSummaryRead[] | null;
+  totals?: StaffGrandTotalRead;
 };
 export type CreateRequisitionItemRequest = {
   materialId?: string;
@@ -19203,9 +19380,6 @@ export type UpdateUserRequest = {
 };
 export type UpdateUserRoleRequest = {
   roleNames?: string[] | null;
-};
-export type UploadFileRequest = {
-  file?: string | null;
 };
 export type WarehouseDtoIEnumerablePaginateable = {
   data?: WarehouseDto[] | null;
@@ -19675,6 +19849,7 @@ export const {
   useGetApiV1EmployeeQuery,
   useLazyGetApiV1EmployeeQuery,
   usePostApiV1EmployeeUserMutation,
+  usePostApiV1EmployeeAvatarByIdMutation,
   useGetApiV1EmployeeDepartmentsByIdQuery,
   useLazyGetApiV1EmployeeDepartmentsByIdQuery,
   useGetApiV1EmployeeByShiftScheduleIdAvailableQuery,
@@ -19803,6 +19978,9 @@ export const {
   useGetApiV1MaterialHoldingQuery,
   useLazyGetApiV1MaterialHoldingQuery,
   usePostApiV1MaterialHoldingMoveByHoldingMaterialIdMutation,
+  usePostApiV1MaterialBatchesImportMutation,
+  useGetApiV1MaterialBatchesExpiredQuery,
+  useLazyGetApiV1MaterialBatchesExpiredQuery,
   usePostApiV1MaterialArdMutation,
   useGetApiV1MaterialArdQuery,
   useLazyGetApiV1MaterialArdQuery,
@@ -20126,6 +20304,8 @@ export const {
   useLazyGetApiV1ReportStaffReportQuery,
   useGetApiV1ReportEmployeeMovementQuery,
   useLazyGetApiV1ReportEmployeeMovementQuery,
+  useGetApiV1ReportStaffTotalReportQuery,
+  useLazyGetApiV1ReportStaffTotalReportQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,

@@ -39,6 +39,12 @@ interface Props {
   showFinishedGoods?: boolean;
   showExtraPackging?: boolean;
   isPendingExtraPacking?: boolean;
+  showAtr?: boolean;
+  showFullReturn?: boolean;
+  showStockRequisition?: boolean;
+  showBmrAndBprRequisition?: boolean;
+  showDispatch?: boolean;
+
   activityId?: string;
   productId?: string;
   scheduleId?: string;
@@ -55,6 +61,11 @@ const TimelineCard = ({
   productId,
   showExtraPackging,
   isPendingExtraPacking,
+  showAtr,
+  showFullReturn,
+  showStockRequisition,
+  showBmrAndBprRequisition,
+  showDispatch,
 }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -77,14 +88,28 @@ const TimelineCard = ({
   const onFinalPacking = (id: string) => {
     router.push(routes.viewFinalPacking(id));
   };
-  // const onFinishedGoods = (id: string) => {
-  //   router.push(routes.viewFinalPacking(id));
-  // };
   const onExtraPacking = (id: string) => {
     router.push(
       routes.viewExtraPacking(id, productId as string, scheduleId as string),
     );
   };
+
+  const onStockRequisition = (id: string) => {
+    console.log("first", id);
+  };
+  const onBmrAndBprRequisition = (id: string) => {
+    console.log("first", id);
+  };
+  const onDispatch = (id: string) => {
+    console.log("first", id);
+  };
+  const onAtr = (id: string) => {
+    console.log("first", id);
+  };
+  const onFullReturn = (id: string) => {
+    console.log("first", id);
+  };
+
   return (
     <div className="relative">
       <div
@@ -167,6 +192,41 @@ const TimelineCard = ({
               <Button onClick={() => onExtraPacking(activityId as string)}>
                 <Icon name="Navigation" />
                 <span>Extra Packing Request</span>
+              </Button>
+            )}
+
+            {showAtr && (
+              <Button onClick={() => onAtr(activityId as string)}>
+                <Icon name="Navigation" />
+                <span>ATR</span>
+              </Button>
+            )}
+
+            {showFullReturn && (
+              <Button onClick={() => onFullReturn(activityId as string)}>
+                <Icon name="Navigation" />
+                <span>Full Return</span>
+              </Button>
+            )}
+
+            {showStockRequisition && (
+              <Button onClick={() => onStockRequisition(item?.id as string)}>
+                <Icon name="Navigation" />
+                <span>Stock Requisition</span>
+              </Button>
+            )}
+            {showBmrAndBprRequisition && (
+              <Button
+                onClick={() => onBmrAndBprRequisition(item?.id as string)}
+              >
+                <Icon name="Navigation" />
+                <span>BMR/BPR Requisition</span>
+              </Button>
+            )}
+            {showDispatch && (
+              <Button onClick={() => onDispatch(item?.id as string)}>
+                <Icon name="Navigation" />
+                <span>Dispatch</span>
               </Button>
             )}
           </div>

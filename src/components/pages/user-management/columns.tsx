@@ -43,6 +43,18 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
         />
       )}
       <TableMenuAction>
+        <DropdownMenuItem>
+          <div
+            onClick={() => setViewDetails(true)}
+            className="flex cursor-pointer items-center justify-start gap-2"
+          >
+            <Icon
+              name="Eye"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>User Details</span>
+          </div>
+        </DropdownMenuItem>
         {hasPermissionAccess(
           PermissionKeys.humanResources.updateUserDetails,
         ) && (
@@ -79,18 +91,6 @@ export function DataTableRowActions<TData extends UserWithRoleDto>({
             </div>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem>
-          <div
-            onClick={() => setViewDetails(true)}
-            className="flex cursor-pointer items-center justify-start gap-2"
-          >
-            <Icon
-              name="Eye"
-              className="text-danger-500 h-5 w-5 cursor-pointer"
-            />
-            <span>User Details</span>
-          </div>
-        </DropdownMenuItem>
       </TableMenuAction>
       {/* <Icon
          name="Pencil"

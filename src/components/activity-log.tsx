@@ -17,7 +17,7 @@ export default function ActivityLog({ approvalLogs = [] }: ActivityLogProps) {
         <div className="space-y-6">
           {approvalLogs?.map((log, index) => {
             const approvedDate = new Date(log.createdAt as string);
-            const dateStr = format(approvedDate, "MMM dd, yyyy");
+            const dateStr = format(approvedDate, "MMM d, yyyy");
             const timeStr = format(approvedDate, "h:mm a");
             // const statusText = ApprovalStatus[log.status as ApprovalStatus];
 

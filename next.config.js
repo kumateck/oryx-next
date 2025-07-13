@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  serverExternalPackages: ["amqplib"],
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

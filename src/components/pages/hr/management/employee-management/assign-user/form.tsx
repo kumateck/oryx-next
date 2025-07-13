@@ -48,7 +48,7 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
             type: InputTypes.RADIO,
             name: "type",
             required: true,
-            disabled: true,
+            // disabled: true,
             placeholder: "Select employee type",
             options: Object.entries(EmployeeType)
               .filter(([, value]) => typeof value === "number")
