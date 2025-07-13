@@ -12052,6 +12052,7 @@ export type DepartmentDto = {
   type?: DepartmentType;
   description?: string | null;
   warehouses?: WarehouseDto[] | null;
+  parentDepartment?: CollectionItemDto;
 };
 export type DepartmentDtoRead = {
   id?: string;
@@ -12063,6 +12064,7 @@ export type DepartmentDtoRead = {
   description?: string | null;
   warehouses?: WarehouseDto[] | null;
   isBeta?: boolean;
+  parentDepartment?: CollectionItemDto;
 };
 export type DesignationDto = {
   id?: string;

@@ -55,10 +55,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       name: details.name as string,
       code: details.code as string,
       type: details.type?.toString() as unknown as IsYesorNo,
-      // parentDepartmentId: {
-      //   value: details.department.id,
-      //   label: details.department.name
-      // },
+      parentDepartmentId: {
+        value: details?.parentDepartment?.id as string,
+        label: details?.parentDepartment?.name as string,
+      },
     },
   });
 
