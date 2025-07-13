@@ -18,6 +18,8 @@ import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -31,6 +33,7 @@ export function DataTableRowActions<TData extends DepartmentDto>({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadDepartment] = useLazyGetApiV1DepartmentQuery();
 
+  const dispatch = useDispatch();
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
   return (
@@ -105,6 +108,7 @@ export function DataTableRowActions<TData extends DepartmentDto>({
             loadDepartment({
               pageSize: 30,
             });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

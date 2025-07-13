@@ -1,3 +1,4 @@
+"use client";
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
 import PageTitle from "@/shared/title";

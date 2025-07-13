@@ -16,6 +16,7 @@ import { IsYesorNo } from "@/lib";
 import {
   CreateDepartmentRequest,
   DepartmentDto,
+  useGetApiV1DepartmentQuery,
   usePutApiV1DepartmentByDepartmentIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -35,6 +36,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const dispatch = useDispatch();
   const [editDepartment, { isLoading }] =
     usePutApiV1DepartmentByDepartmentIdMutation();
+  const { data: departments } = useGetApiV1DepartmentQuery({
+    page: 1,
+    pageSize: 1000,
+  });
 
   const {
     register,
@@ -50,6 +55,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       name: details.name as string,
       code: details.code as string,
       type: details.type?.toString() as unknown as IsYesorNo,
+      // parentDepartmentId: {
+      //   value: details.department.id,
+      //   label: details.department.name
+      // },
     },
   });
 
@@ -57,6 +66,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         ...data,
+        parentDepartmentId: data.parentDepartmentId?.value,
       } satisfies CreateDepartmentRequest;
 
       await editDepartment({
@@ -71,7 +81,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
+  const departmentOptions =
+    departments?.data?.map((department) => {
+      return {
+        value: department.id as string,
+        label: department.name as string,
+      };
+    }) || [];
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -83,14 +99,24 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
           <DepartmentForm
             control={control}
             register={register}
+            departmentOptions={departmentOptions}
             errors={errors}
           />
           <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button
+              disabled={isLoading}
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+            >
               Cancel
             </Button>
 
-            <Button variant={"default"} className="flex items-center gap-2">
+            <Button
+              disabled={isLoading}
+              variant={"default"}
+              className="flex items-center gap-2"
+            >
               <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {

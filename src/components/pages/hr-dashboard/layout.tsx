@@ -4,17 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "lucide-react";
 import { Icon } from "@/components/ui";
+import { Tooltip } from "@radix-ui/react-tooltip";
+import { ChartContainer } from "@/components/ui/chart";
+import { Bar } from "recharts";
 // import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-// const data = [
-//   { day: "Sunday", value: 28 },
-//   { day: "Monday", value: 88 },
-//   { day: "Tuesday", value: 90 },
-//   { day: "Wednesday", value: 90 },
-//   { day: "Thursday", value: 96 },
-//   { day: "Friday", value: 91 },
-//   { day: "Saturday", value: 48 },
-// ];
+const data = [
+  { day: "Sunday", value: 28 },
+  { day: "Monday", value: 88 },
+  { day: "Tuesday", value: 90 },
+  { day: "Wednesday", value: 90 },
+  { day: "Thursday", value: 96 },
+  { day: "Friday", value: 91 },
+  { day: "Saturday", value: 48 },
+];
 export const FilterBtn = ["Today", "This Week", "This Month", "All Time"];
 
 export default function Dashboard() {
@@ -144,16 +147,19 @@ export default function Dashboard() {
         <h2 className="text-xl font-semibold mb-4">
           Daily Attendance Statistics
         </h2>
-        {/* <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
-            <XAxis dataKey="day" />
-            <YAxis />
+        <ChartContainer
+          config={{
+            bar: {
+              label: "Daily Attendance",
+              color: "#4F46E5",
+            },
+          }}
+        >
+          <BarChart width={500} height={300}>
             <Tooltip />
-            <Bar dataKey="value" fill="#6366f1" />
+            <Bar data={data} dataKey="value" fill="#4F46E5" />
           </BarChart>
-          <
-        </ResponsiveContainer> */}
-        <BarChart />
+        </ChartContainer>
       </section>
     </main>
   );
