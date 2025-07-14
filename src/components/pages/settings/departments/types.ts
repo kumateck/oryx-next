@@ -7,13 +7,15 @@ export const CreateDepartmentSchema = z.object({
   name: z.string().min(1, { message: "Location Name is required" }),
   code: z.string().min(1, { message: "Code is required" }),
   description: z.string().optional(),
-  parentDepartmentId: z.object(
-    {
-      value: z.string().min(1, { message: "Parent Department is required" }),
-      label: z.string(),
-    },
-    { message: "Parent Department is required" },
-  ),
+  parentDepartmentId: z
+    .object(
+      {
+        value: z.string().min(1, { message: "Parent Department is required" }),
+        label: z.string(),
+      },
+      { message: "Parent Department is required" },
+    )
+    .optional(),
   type: z
     .string()
     .transform((value) => {
