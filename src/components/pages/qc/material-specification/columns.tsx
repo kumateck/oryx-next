@@ -72,7 +72,7 @@ export const columns: ColumnDef<MaterialSpecificationDto>[] = [
   },
   {
     accessorKey: "spcNumber",
-    header: "SPC",
+    header: "SPEC",
     cell: ({ row }) => <div>{row.original?.specificationNumber}</div>,
   },
   {

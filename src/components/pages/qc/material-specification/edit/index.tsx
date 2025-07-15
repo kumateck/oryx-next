@@ -21,7 +21,7 @@ import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
   TestType as TestTypeEnum,
-  useLazyGetApiV1MaterialDepartmentQuery,
+  useLazyGetApiV1MaterialQuery,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -45,8 +45,7 @@ export function EditMaterialSpecification() {
   const { id } = useParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const [getMaterials, { data: materials }] =
-    useLazyGetApiV1MaterialDepartmentQuery({});
+  const [getMaterials, { data: materials }] = useLazyGetApiV1MaterialQuery({});
   const [updateMaterialSpecification, { isLoading }] =
     usePutApiV1MaterialSpecificationsByIdMutation();
 
@@ -139,8 +138,8 @@ export function EditMaterialSpecification() {
 
   const materialOptions =
     materials?.data?.map((material) => ({
-      label: material?.material?.name as string,
-      value: material?.material?.id as string,
+      label: material?.name as string,
+      value: material?.id as string,
     })) || [];
 
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
