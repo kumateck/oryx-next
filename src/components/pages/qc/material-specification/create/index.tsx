@@ -6,7 +6,6 @@ import {
   ErrorResponse,
   isErrorResponse,
 } from "@/lib";
-import React, { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
@@ -20,7 +19,7 @@ import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
   TestType as TestTypeEnum,
-  useGetApiV1MaterialDepartmentQuery,
+  useGetApiV1MaterialQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -41,7 +40,7 @@ export function MaterialSpecPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const { data: materials } = useGetApiV1MaterialDepartmentQuery({
+  const { data: materials } = useGetApiV1MaterialQuery({
     kind: kind ?? EMaterialKind.Raw,
   });
   const [createMaterialSpecification, { isLoading }] =
@@ -63,8 +62,8 @@ export function MaterialSpecPage() {
 
   const materialOptions =
     materials?.data?.map((material) => ({
-      label: material?.material?.name as string,
-      value: material?.material?.id as string,
+      label: material?.name as string,
+      value: material?.id as string,
     })) || [];
 
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
@@ -88,7 +87,6 @@ export function MaterialSpecPage() {
       })) as TestSpecification[],
       materialId: data.materialId.value as string,
     };
-    console.log("Submitting data", payload);
     try {
       await createMaterialSpecification({
         createMaterialSpecificationRequest: payload,
@@ -101,10 +99,6 @@ export function MaterialSpecPage() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
-  useEffect(() => {
-    console.log("form data", errors);
-  }, [errors]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
