@@ -110,8 +110,8 @@ export const routes = {
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "/warehouse/materials",
   viewMaterial: (id: string) => `/warehouse/materials/${id}/details`,
-  suppliers: () => `/procurement/suppliers`,
-  editSupplier: (id: string) => `/procurement/suppliers/${id}/edit`,
+  // suppliers: () => `/procurement/suppliers`,
+  // editSupplier: (id: string) => `/procurement/suppliers/${id}/edit`,
   viewScheduleRequisition: (scheduleId: string, productId: string) =>
     `/production/schedules/${scheduleId}/product/${productId}/requisition`,
 
@@ -124,6 +124,9 @@ export const routes = {
   newRegulation: () => "/compliance/external/regulations/create",
   newInspection: () => "/inspections/create",
   newAudit: () => "/audits/create",
+  suppliers: () => "/settings/suppliers",
+  newSupplier: () => "/settings/suppliers/create",
+  editSupplier: (id: string) => `/settings/suppliers/${id}/edit`,
   approvals: () => "/settings/approvals",
   newApproval: () => "/settings/approvals/create",
   editApproval: (params: { id: string }) =>
