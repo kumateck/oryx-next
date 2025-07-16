@@ -5306,6 +5306,40 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ReportMaterialsReadyForChecklist: build.query<
+      GetApiV1ReportMaterialsReadyForChecklistApiResponse,
+      GetApiV1ReportMaterialsReadyForChecklistApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/materials-ready-for-checklist`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
+    getApiV1ReportMaterialsReadyForAssignment: build.query<
+      GetApiV1ReportMaterialsReadyForAssignmentApiResponse,
+      GetApiV1ReportMaterialsReadyForAssignmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/materials-ready-for-assignment`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
     postApiV1Requisition: build.mutation<
       PostApiV1RequisitionApiResponse,
       PostApiV1RequisitionApiArg
@@ -10765,6 +10799,28 @@ export type GetApiV1ReportStaffGenderRatioReportApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ReportMaterialsReadyForChecklistApiResponse =
+  /** status 200 OK */ DistributedRequisitionMaterialDto[];
+export type GetApiV1ReportMaterialsReadyForChecklistApiArg = {
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportMaterialsReadyForAssignmentApiResponse =
+  /** status 200 OK */ MaterialBatchDtoRead[];
+export type GetApiV1ReportMaterialsReadyForAssignmentApiArg = {
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1RequisitionApiResponse = unknown;
 export type PostApiV1RequisitionApiArg = {
   /** The module this request falls under */
@@ -14135,80 +14191,6 @@ export type MaterialCategoryRead = {
   materialKind?: MaterialKind;
 };
 export type BatchKind = 0 | 1;
-export type Material = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  pharmacopoeia?: string | null;
-  alphabet?: string | null;
-  materialCategoryId?: string | null;
-  materialCategory?: MaterialCategory;
-  batches?: MaterialBatch[] | null;
-  kind?: MaterialKind;
-  status?: BatchKind;
-};
-export type MaterialRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  pharmacopoeia?: string | null;
-  alphabet?: string | null;
-  materialCategoryId?: string | null;
-  materialCategory?: MaterialCategoryRead;
-  batches?: MaterialBatch[] | null;
-  kind?: MaterialKind;
-  status?: BatchKind;
-  totalStock?: number;
-};
-export type RequisitionType = 0 | 1;
-export type ProductCategory = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  description?: string | null;
-};
-export type ProductCategoryRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  name?: string | null;
-  description?: string | null;
-};
 export type UnitOfMeasure = {
   id?: string;
   createdAt?: string;
@@ -14242,6 +14224,124 @@ export type UnitOfMeasureRead = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+};
+export type MaterialDepartment = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string | null;
+  uoM?: UnitOfMeasure;
+  departmentId?: string;
+  department?: Department;
+  reOrderLevel?: number;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+};
+export type MaterialDepartmentRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  materialId?: string;
+  material?: Material;
+  uoMId?: string | null;
+  uoM?: UnitOfMeasureRead;
+  departmentId?: string;
+  department?: Department;
+  reOrderLevel?: number;
+  minimumStockLevel?: number;
+  maximumStockLevel?: number;
+};
+export type Material = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  pharmacopoeia?: string | null;
+  alphabet?: string | null;
+  materialCategoryId?: string | null;
+  materialCategory?: MaterialCategory;
+  batches?: MaterialBatch[] | null;
+  kind?: MaterialKind;
+  status?: BatchKind;
+  departments?: MaterialDepartment[] | null;
+};
+export type MaterialRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  pharmacopoeia?: string | null;
+  alphabet?: string | null;
+  materialCategoryId?: string | null;
+  materialCategory?: MaterialCategoryRead;
+  batches?: MaterialBatch[] | null;
+  kind?: MaterialKind;
+  status?: BatchKind;
+  totalStock?: number;
+  departments?: MaterialDepartmentRead[] | null;
+};
+export type RequisitionType = 0 | 1;
+export type ProductCategory = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
+};
+export type ProductCategoryRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  name?: string | null;
+  description?: string | null;
 };
 export type Equipment = {
   id?: string;
@@ -20584,6 +20684,10 @@ export const {
   useLazyGetApiV1ReportStaffTotalReportQuery,
   useGetApiV1ReportStaffGenderRatioReportQuery,
   useLazyGetApiV1ReportStaffGenderRatioReportQuery,
+  useGetApiV1ReportMaterialsReadyForChecklistQuery,
+  useLazyGetApiV1ReportMaterialsReadyForChecklistQuery,
+  useGetApiV1ReportMaterialsReadyForAssignmentQuery,
+  useLazyGetApiV1ReportMaterialsReadyForAssignmentQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
