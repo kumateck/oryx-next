@@ -128,7 +128,7 @@ function Page() {
 
             {materialData?.testSpecifications?.map((test, index) => (
               <div
-                className="grid grid-cols-4 text-sm font-medium text-gray-900"
+                className="grid grid-cols-6 text-sm font-medium text-gray-900"
                 key={index}
               >
                 <div className="col-span-1">{test?.srNumber}</div>

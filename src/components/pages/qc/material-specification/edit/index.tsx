@@ -77,6 +77,8 @@ export function EditMaterialSpecification() {
     if (!materialData) return;
     getMaterials({
       kind: materialData?.material?.kind,
+      pageSize: 1000,
+      page: 1,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialData]);

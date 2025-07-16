@@ -42,6 +42,8 @@ export function MaterialSpecPage() {
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
   const { data: materials } = useGetApiV1MaterialQuery({
     kind: kind ?? EMaterialKind.Raw,
+    pageSize: 1000,
+    page: 1,
   });
   const [createMaterialSpecification, { isLoading }] =
     usePostApiV1MaterialSpecificationsMutation();
