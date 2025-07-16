@@ -18,11 +18,11 @@ import {
   convertToSmallestUnit,
   getLargestUnit,
   isErrorResponse,
-  routes,
 } from "@/lib";
 import { useCodeGen } from "@/lib/code-gen";
 import {
   CreateProductRequest,
+  Division,
   PostApiV1CollectionApiArg,
   useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
@@ -127,6 +127,8 @@ const Create = () => {
       equipmentId: data.equipment?.value,
       departmentId: data.department?.value,
       basePackingUomId: data.basePackingUomId?.value,
+      division: Number(data.division?.value) as unknown as Division,
+      packPerShipper: data.packPerShipper,
     } satisfies CreateProductRequest;
 
     try {
@@ -137,7 +139,7 @@ const Create = () => {
       }).unwrap();
       // const productId = res as string;
       toast.success("Product Info created successfully");
-      router.push(routes.planning());
+      router.back();
       reset();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -166,10 +168,15 @@ const Create = () => {
         <div className="flex w-full justify-between gap-4 px-5">
           <PageTitle title="Create Product" />
           <div className="flex items-center gap-2">
-            <Button type="button" onClick={onBack} variant="outline">
+            <Button
+              disabled={isLoading}
+              type="button"
+              onClick={onBack}
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button type="submit">
+            <Button disabled={isLoading} type="submit">
               {isLoading ? (
                 <Icon name="LoaderCircle" className="animate-spin" />
               ) : (
