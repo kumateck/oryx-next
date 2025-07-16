@@ -31,7 +31,11 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import ProductForm from "../../create/form";
-import { CreateProductValidator, ProductRequestDto } from "../../types";
+import {
+  CreateProductValidator,
+  Division,
+  ProductRequestDto,
+} from "../../types";
 
 export interface ProductDetailProps {
   code?: string | null;
@@ -153,6 +157,14 @@ const ProductInfo = () => {
         label: product?.equipment?.name as string,
         value: product?.equipment?.id as string,
       },
+      price: product?.price,
+      division: {
+        value: String(product?.division ?? ""),
+        label:
+          typeof product?.division === "number"
+            ? Division[product?.division]
+            : "",
+      } as Option,
       department: {
         label: product?.department?.name as string,
         value: product?.department?.id as string,
@@ -218,6 +230,7 @@ const ProductInfo = () => {
       basePackingUomId: data.basePackingUomId?.value,
       equipmentId: data.equipment?.value,
       departmentId: data.department?.value,
+      division: Number(data.division?.value) as unknown as Division,
     } satisfies CreateProductRequest;
 
     try {
