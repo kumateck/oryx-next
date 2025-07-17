@@ -16,6 +16,7 @@ import { format, parseISO } from "date-fns";
 import { TabsList } from "@radix-ui/react-tabs";
 import React from "react";
 import { fullname, getInitials } from "@/lib";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
 const TABS_OPTIONS = ["All", "Unread"];
 export function NotificationsSheet() {
   const [activeTab, setActiveTab] = React.useState(TABS_OPTIONS[0]);
@@ -31,54 +32,81 @@ export function NotificationsSheet() {
       <SheetTrigger>
         <Icon name="Bell" className="size-6 text-gray-700 cursor-pointer" />
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle className="text-xl">Notifications</SheetTitle>
-          <Tabs defaultValue={activeTab}>
-            {/* TabsList is used to render the tabs */}
-            <TabsList className="mb-4 gap-6 rounded-none border-b border-b-neutral-300 bg-transparent p-0 py-0">
-              {TABS_OPTIONS.map((option) => (
-                <TabsTrigger
-                  className=" px-4 capitalize  data-[state=active]:border-b data-[state=active]:border-b-primary-500 data-[state=active]:text-white data-[state=active]:font-Bold data-[state=active]:bg-primary-default"
-                  key={option}
-                  onClick={() => setActiveTab(option)}
-                  value={option}
-                >
-                  {option}(
-                  {option === TABS_OPTIONS[0]
-                    ? allData?.length
-                    : unreadData?.length}
-                  )
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            <TabsContent value={"all"}>
-              {allData.map((data) => (
-                <div key={data.date}>
-                  <h1>{format(new Date(data.date), "MMM d, yyyy")}</h1>
-                  <div className="flex w-full items-center justify-start">
-                    {data.items.map((item) => (
-                      <div key={item.id}>
-                        <Avatar className="h-8 w-8 rounded-lg">
-                          <AvatarImage src={" " as string} alt={""} />
-                          <AvatarFallback className="rounded-lg">
-                            {getInitials(
-                              fullname(
-                                item.user.split(" ")[0] ?? "",
-                                item.user.split(" ")[0] ?? "",
-                              ),
-                            )}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                    ))}
+      <ScrollableWrapper>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-xl">Notifications</SheetTitle>
+            <Tabs defaultValue={activeTab}>
+              {/* TabsList is used to render the tabs */}
+              <TabsList className="mb-4 gap-6 rounded-none border-b border-b-neutral-300 bg-transparent p-0 py-0">
+                {TABS_OPTIONS.map((option) => (
+                  <TabsTrigger
+                    className=" px-4 capitalize  data-[state=active]:border-b data-[state=active]:border-b-primary-500 data-[state=active]:text-white data-[state=active]:font-Bold data-[state=active]:bg-primary-default"
+                    key={option}
+                    onClick={() => setActiveTab(option)}
+                    value={option}
+                  >
+                    {option}(
+                    {option === TABS_OPTIONS[0]
+                      ? allData?.length
+                      : unreadData?.length}
+                    )
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              <TabsContent value={activeTab} className="space-y-6 ">
+                {allData.map((data) => (
+                  <div key={data.date}>
+                    <h1>{format(new Date(data.date), "MMM d, yyyy")}</h1>
+                    <div className="space-y-3 ">
+                      {data.items.map((item) => (
+                        <div key={item.id} className="flex items-center gap-2">
+                          <Avatar className="h-12 w-12 rounded-full">
+                            <AvatarImage src={" " as string} alt={""} />
+                            <AvatarFallback className="rounded-lg">
+                              {getInitials(
+                                fullname(
+                                  item.user.split(" ")[0] ?? "",
+                                  item.user.split(" ")[0] ?? "",
+                                ),
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
+                          <p className="text-lg">{item.action}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </TabsContent>
-          </Tabs>
-        </SheetHeader>
-      </SheetContent>
+                ))}
+              </TabsContent>
+              <TabsContent value={activeTab}>
+                {allData.map((data) => (
+                  <div key={data.date}>
+                    <h1>{format(new Date(data.date), "MMM d, yyyy")}</h1>
+                    <div className="flex w-full items-center justify-start">
+                      {data.items.map((item) => (
+                        <div key={item.id}>
+                          <Avatar className="h-8 w-8 rounded-lg">
+                            <AvatarImage src={" " as string} alt={""} />
+                            <AvatarFallback className="rounded-lg">
+                              {getInitials(
+                                fullname(
+                                  item.user.split(" ")[0] ?? "",
+                                  item.user.split(" ")[0] ?? "",
+                                ),
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </SheetHeader>
+        </SheetContent>
+      </ScrollableWrapper>
     </Sheet>
   );
 }
