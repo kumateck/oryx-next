@@ -92,7 +92,7 @@ export function NotificationsSheet() {
                               {getInitials(
                                 fullname(
                                   item.user.split(" ")[0] ?? "",
-                                  item.user.split(" ")[0] ?? "",
+                                  item.user.split(" ")[1] ?? "",
                                 ),
                               )}
                             </AvatarFallback>
