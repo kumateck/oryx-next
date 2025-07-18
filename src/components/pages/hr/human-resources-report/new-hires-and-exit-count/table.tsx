@@ -13,7 +13,7 @@ const data = [
     casual: { new: 5, tr: 5, resign: 5, term: 5, sdvd: 7 },
   },
 ];
-function StaffSummaryTable() {
+export function Table() {
   return (
     <div>
       <div>
@@ -87,14 +87,5 @@ function StaffSummaryTable() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <main className="">
-      <h1 className="text-2xl font-bold mb-4">Staff Summary</h1>
-      <StaffSummaryTable />
-    </main>
   );
 }

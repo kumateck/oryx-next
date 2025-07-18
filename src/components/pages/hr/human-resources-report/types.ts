@@ -32,12 +32,12 @@ export const hrCategoryReportItems: HrReportCategory[] = [
       },
       {
         name: "New Hires and Exit Count",
-        path: "",
+        path: "/hr/human-resources-report/new-hires-and-exit-count",
         icon: "CalendarRange",
       },
       {
         name: "Staff Total Report",
-        path: "",
+        path: "/hr/human-resources-report/total-staff-report",
         icon: "CalendarRange",
       },
       {
@@ -47,7 +47,7 @@ export const hrCategoryReportItems: HrReportCategory[] = [
       },
       {
         name: "Staff Gender Report",
-        path: "",
+        path: "/hr/human-resources-report/staff-gender-ratio-report",
         icon: "CalendarRange",
       },
     ],
