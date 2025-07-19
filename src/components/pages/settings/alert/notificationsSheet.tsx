@@ -24,9 +24,6 @@ export function NotificationsSheet() {
   const unreadData = allData.filter((data) =>
     data.items.filter((data) => data.status === "unread"),
   );
-  console.log(allData, "this is all data we need");
-  console.log(unreadData, "these are all unread data we've got");
-
   return (
     <Sheet>
       <SheetTrigger>

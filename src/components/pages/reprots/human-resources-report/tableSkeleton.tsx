@@ -24,25 +24,37 @@ const LoadingTable = ({ pagetitle }: { pagetitle: string }) => {
               rowSpan={2}
               className="border px-4 font-medium text-lg text-left"
             >
-              Department
+              <Skeleton className="h-5 w-1/2 rounded-full" />
             </TableHead>
             <TableHead className="p-2 border text-center" colSpan={2}>
-              Permanent Staff
+              <Skeleton className="h-5 w-1/2 rounded-full" />
             </TableHead>
             <TableHead className="p-2 border text-center" colSpan={2}>
-              Casual Staff
+              <Skeleton className="h-5 w-1/2 rounded-full" />
             </TableHead>
             <TableHead className="p-2 border text-center" colSpan={2}>
-              Total
+              <Skeleton className="h-5 w-1/2 rounded-full" />
             </TableHead>
           </TableRow>
           <TableRow className="text-white text-center">
-            <TableHead className="p-2 border">Male</TableHead>
-            <TableHead className="p-2 border">Female</TableHead>
-            <TableHead className="p-2 border">Male</TableHead>
-            <TableHead className="p-2 border">Female</TableHead>
-            <TableHead className="p-2 border">Male</TableHead>
-            <TableHead className="p-2 border">Female</TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
+            <TableHead className="p-2 border">
+              <Skeleton className="h-5 w-1/2 rounded-full" />
+            </TableHead>
           </TableRow>
         </TableHeader>
 

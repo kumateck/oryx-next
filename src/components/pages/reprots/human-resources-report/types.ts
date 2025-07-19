@@ -27,17 +27,17 @@ export const hrCategoryReportItems: HrReportCategory[] = [
     items: [
       {
         name: "Permanent Staff Grade Count",
-        path: "/hr/human-resources-report/parmanent-staff-grade-count-report",
+        path: "/reports/human-resources-report/parmanent-staff-grade-count-report",
         icon: "CalendarRange",
       },
       {
         name: "New Hires and Exit Count",
-        path: "/hr/human-resources-report/new-hires-and-exit-count",
+        path: "/reports/human-resources-report/new-hires-and-exit-count",
         icon: "CalendarRange",
       },
       {
         name: "Staff Total Report",
-        path: "/hr/human-resources-report/total-staff-report",
+        path: "/reports/human-resources-report/total-staff-report",
         icon: "CalendarRange",
       },
       {
@@ -47,7 +47,7 @@ export const hrCategoryReportItems: HrReportCategory[] = [
       },
       {
         name: "Staff Gender Report",
-        path: "/hr/human-resources-report/staff-gender-ratio-report",
+        path: "/reports/human-resources-report/staff-gender-ratio-report",
         icon: "CalendarRange",
       },
     ],
