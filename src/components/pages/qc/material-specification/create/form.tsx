@@ -124,7 +124,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 label: "",
               },
               releaseSpecification: "",
-              srNumber: 0,
+              srNumber: fields.length + 1,
               testName: {
                 value: "",
                 label: "",
