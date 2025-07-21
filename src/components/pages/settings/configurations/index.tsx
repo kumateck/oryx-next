@@ -151,6 +151,26 @@ const FormOptionTabs: TabProps[] = [
       },
     ],
   },
+  {
+    title: "Payments",
+    views: [
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.TermsOfPayment,
+        title: "Terms of Payment",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.DeliveryMode,
+        title: "Delivery Mode",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.Charge,
+        title: "Charges",
+      },
+    ],
+  },
 ];
 
 export default Configurations;
