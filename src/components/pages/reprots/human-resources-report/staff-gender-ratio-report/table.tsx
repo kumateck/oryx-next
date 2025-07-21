@@ -12,7 +12,7 @@ import { StaffGenderRatioReportRead } from "@/lib/redux/api/openapi.generated";
 export default function StaffAndGenderRatioReportTable({
   data,
 }: {
-  data: StaffGenderRatioReportRead;
+  data?: StaffGenderRatioReportRead;
 }) {
   return (
     <div>
@@ -80,27 +80,38 @@ export default function StaffAndGenderRatioReportTable({
               </TableRow>
             );
           })}
-          <TableRow className="bg-gray-100 p-2 font-bold text-center">
-            <TableCell className="text-left p-2">TOTAL</TableCell>
-            <TableCell className="p-2">
-              {data.totals?.numberOfPermanentMale}
-            </TableCell>
-            <TableCell className="p-2">
-              {data.totals?.numberOfPermanentFemale}
-            </TableCell>
-            <TableCell className="p-2">
-              {data.totals?.numberOfCasualMale}
-            </TableCell>
-            <TableCell className="p-2">
-              {data.totals?.numberOfCasualFemale}
-            </TableCell>
-            {/* <TableCell className="p-2">{total.nss.male}</TableCell>
+          {}
+          {data?.departments?.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center p-4 text-lg">
+                No data available
+              </TableCell>
+            </TableRow>
+          ) : (
+            <TableRow className="bg-gray-100 p-2 font-bold text-center">
+              <TableCell className="text-left p-2">TOTAL</TableCell>
+              <TableCell className="p-2">
+                {data?.totals?.numberOfPermanentMale}
+              </TableCell>
+              <TableCell className="p-2">
+                {data?.totals?.numberOfPermanentFemale}
+              </TableCell>
+              <TableCell className="p-2">
+                {data?.totals?.numberOfCasualMale}
+              </TableCell>
+              <TableCell className="p-2">
+                {data?.totals?.numberOfCasualFemale}
+              </TableCell>
+              {/* <TableCell className="p-2">{total.nss.male}</TableCell>
             <TableCell className="p-2">{total.nss.female}</TableCell>
             <TableCell className="p-2">{total.annex.male}</TableCell>
             <TableCell className="p-2">{total.annex.female}</TableCell> */}
-            <TableCell className="p-2">{data.totals?.totalMales}</TableCell>
-            <TableCell className="p-2">{data.totals?.totalFemales}</TableCell>
-          </TableRow>
+              <TableCell className="p-2">{data?.totals?.totalMales}</TableCell>
+              <TableCell className="p-2">
+                {data?.totals?.totalFemales}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

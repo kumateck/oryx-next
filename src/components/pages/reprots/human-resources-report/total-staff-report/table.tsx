@@ -68,24 +68,36 @@ export default function StaffTotalReport({
               </TableRow>
             ))}
           </TableBody>
-          <tfoot className="bg-gray-50 font-bold">
-            <tr>
-              <td rowSpan={2} className="py-2 px-4 ">
-                TOTAL
-              </td>
-              <td className="py-2 px-4 ">{data.totals?.totalPermanentStaff}</td>
-              <td className="py-2 px-4 ">{data.totals?.totalCasualStaff}</td>
-              <td className="py-2 px-4 ">{data.totals?.totalStaff}</td>
-            </tr>
-            <tr>
-              <td
-                colSpan={3}
-                className="py-2 bg-gray-100 font-semibold text-xl px-4 text-center"
-              >
-                {data.totals?.totalStaff}
-              </td>
-            </tr>
-          </tfoot>
+          {data.departments && data.departments.length > 0 ? (
+            <tfoot className="bg-gray-50 font-bold">
+              <tr>
+                <td rowSpan={2} className="py-2 px-4 ">
+                  TOTAL
+                </td>
+                <td className="py-2 px-4 ">
+                  {data.totals?.totalPermanentStaff}
+                </td>
+                <td className="py-2 px-4 ">{data.totals?.totalCasualStaff}</td>
+                <td className="py-2 px-4 ">{data.totals?.totalStaff}</td>
+              </tr>
+              <tr>
+                <td
+                  colSpan={3}
+                  className="py-2 bg-gray-100 font-semibold text-xl px-4 text-center"
+                >
+                  {data.totals?.totalStaff}
+                </td>
+              </tr>
+            </tfoot>
+          ) : (
+            <tfoot className="bg-gray-50">
+              <tr>
+                <td colSpan={4} className="p-4 text-center">
+                  No data available
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </Table>
       </div>
     </div>

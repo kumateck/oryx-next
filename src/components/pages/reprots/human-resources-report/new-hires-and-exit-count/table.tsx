@@ -1,19 +1,12 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { EmployeeMovementReportDtoRead } from "@/lib/redux/api/openapi.generated";
 
-const data = [
-  {
-    department: "Benjamin Botwe Factory",
-    permanent: { new: 5, tr: 5, resign: 5, term: 5, sdvd: 7 },
-    casual: { new: 5, tr: 5, resign: 5, term: 5, sdvd: 7 },
-  },
-  {
-    department: "Quality Control",
-    permanent: { new: 5, tr: 5, resign: 5, term: 5, sdvd: 7 },
-    casual: { new: 5, tr: 5, resign: 5, term: 5, sdvd: 7 },
-  },
-];
-export function Table() {
+interface TableRowData {
+  data: EmployeeMovementReportDtoRead;
+}
+export function Table({ data }: TableRowData) {
+  console.log("Table data:", data);
   return (
     <div className="overflow-x-auto rounded-t-lg">
       <table className="min-w-full border border-gray-200 text-center">
@@ -43,38 +36,48 @@ export function Table() {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, idx) => (
+          {data?.departments?.map((row, idx) => (
             <tr
               key={idx}
               className={cn(idx % 2 === 0 ? "bg-gray-50" : "bg-white")}
             >
               <td className="p-2 font-medium text-start border">
-                {row.department}
+                {row.departmentName}
               </td>
-              <td className="p-2 border">{row.permanent.new}</td>
-              <td className="p-2 border">{row.permanent.tr}</td>
-              <td className="p-2 border">{row.permanent.resign}</td>
-              <td className="p-2 border">{row.permanent.term}</td>
-              <td className="p-2 border">{row.permanent.sdvd}</td>
-              <td className="p-2 border">{row.casual.new}</td>
-              <td className="p-2 border">{row.casual.tr}</td>
-              <td className="p-2 border">{row.casual.resign}</td>
-              <td className="p-2 border">{row.casual.term}</td>
-              <td className="p-2 border">{row.casual.sdvd}</td>
+              <td className="p-2 border">{row.permanentNew}</td>
+              <td className="p-2 border">{row.permanentTermination}</td>
+              <td className="p-2 border">{row.permanentResignation}</td>
+              <td className="p-2 border">{row.permanentTermination}</td>
+              <td className="p-2 border">{row.permanentSDVP}</td>
+              <td className="p-2 border">{row.casualNew}</td>
+              <td className="p-2 border">{row.casualTermination}</td>
+              <td className="p-2 border">{row.casualResignation}</td>
+              <td className="p-2 border">{row.casualTermination}</td>
+              <td className="p-2 border">{row.casualSDVP}</td>
             </tr>
           ))}
         </tbody>
-        <tfoot className="bg-gray-100 font-bold">
-          <tr>
-            <td className="py-2 px-4 border">TOTAL</td>
-            <td colSpan={5} className="py-2 px-4 border text-center">
-              26
-            </td>
-            <td colSpan={5} className="py-2 px-4 border text-center">
-              26
-            </td>
-          </tr>
-        </tfoot>
+        {data?.departments && data.departments.length > 0 ? (
+          <tfoot className="bg-gray-100 font-bold">
+            <tr>
+              <td className="py-2 px-4 border">TOTAL</td>
+              <td colSpan={5} className="py-2 px-4 border text-center">
+                {data?.totals?.totalPermanent || 0}
+              </td>
+              <td colSpan={5} className="py-2 px-4 border text-center">
+                {data?.totals?.totalCasual || 0}
+              </td>
+            </tr>
+          </tfoot>
+        ) : (
+          <tfoot className="bg-gray-100 font-bold">
+            <tr>
+              <td colSpan={11} className=" p-4 border text-center">
+                No data available
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );
