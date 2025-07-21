@@ -378,6 +378,21 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1AttendanceRecordsExport: build.query<
+      GetApiV1AttendanceRecordsExportApiResponse,
+      GetApiV1AttendanceRecordsExportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/attendance-records/export`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          fileType: queryArg.fileType,
+        },
+      }),
+    }),
     postApiV1AuthLogin: build.mutation<
       PostApiV1AuthLoginApiResponse,
       PostApiV1AuthLoginApiArg
@@ -781,6 +796,76 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/api/v1/countries`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1Customers: build.mutation<
+      PostApiV1CustomersApiResponse,
+      PostApiV1CustomersApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/customers`,
+        method: "POST",
+        body: queryArg.createCustomerRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1Customers: build.query<
+      GetApiV1CustomersApiResponse,
+      GetApiV1CustomersApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/customers`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1CustomersById: build.query<
+      GetApiV1CustomersByIdApiResponse,
+      GetApiV1CustomersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/customers/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1CustomersById: build.mutation<
+      PutApiV1CustomersByIdApiResponse,
+      PutApiV1CustomersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/customers/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createCustomerRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1CustomersById: build.mutation<
+      DeleteApiV1CustomersByIdApiResponse,
+      DeleteApiV1CustomersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/customers/${queryArg.id}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -3401,6 +3486,39 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceId: build.mutation<
+      PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiResponse,
+      PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/shipment-invoice/paid/${queryArg.shipmentInvoiceId}`,
+        method: "PUT",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          paidAt: queryArg.paidAt,
+        },
+      }),
+    }),
+    putApiV1ProcurementShipmentInvoicePaidMultiple: build.mutation<
+      PutApiV1ProcurementShipmentInvoicePaidMultipleApiResponse,
+      PutApiV1ProcurementShipmentInvoicePaidMultipleApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/shipment-invoice/paid/multiple`,
+        method: "PUT",
+        body: queryArg.body,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          paidAt: queryArg.paidAt,
+        },
+      }),
+    }),
     postApiV1ProcurementShipmentDiscrepancy: build.mutation<
       PostApiV1ProcurementShipmentDiscrepancyApiResponse,
       PostApiV1ProcurementShipmentDiscrepancyApiArg
@@ -3986,6 +4104,76 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
         method: "PUT",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProductionOrders: build.mutation<
+      PostApiV1ProductionOrdersApiResponse,
+      PostApiV1ProductionOrdersApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders`,
+        method: "POST",
+        body: queryArg.createProductionOrderRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductionOrders: build.query<
+      GetApiV1ProductionOrdersApiResponse,
+      GetApiV1ProductionOrdersApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductionOrdersById: build.query<
+      GetApiV1ProductionOrdersByIdApiResponse,
+      GetApiV1ProductionOrdersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ProductionOrdersById: build.mutation<
+      PutApiV1ProductionOrdersByIdApiResponse,
+      PutApiV1ProductionOrdersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createProductionOrderRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1ProductionOrdersById: build.mutation<
+      DeleteApiV1ProductionOrdersByIdApiResponse,
+      DeleteApiV1ProductionOrdersByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders/${queryArg.id}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -5203,6 +5391,23 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ReportLogistics: build.query<
+      GetApiV1ReportLogisticsApiResponse,
+      GetApiV1ReportLogisticsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/logistics`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
     getApiV1ReportReservedMaterialBatches: build.query<
       GetApiV1ReportReservedMaterialBatchesApiResponse,
       GetApiV1ReportReservedMaterialBatchesApiArg
@@ -5306,6 +5511,42 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ReportStaffLeaveReport: build.query<
+      GetApiV1ReportStaffLeaveReportApiResponse,
+      GetApiV1ReportStaffLeaveReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/staff-leave-report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          departmentId: queryArg.departmentId,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
+    getApiV1ReportStaffTurnoverReport: build.query<
+      GetApiV1ReportStaffTurnoverReportApiResponse,
+      GetApiV1ReportStaffTurnoverReportApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/staff-turnover-report`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          departmentId: queryArg.departmentId,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
     getApiV1ReportMaterialsReadyForChecklist: build.query<
       GetApiV1ReportMaterialsReadyForChecklistApiResponse,
       GetApiV1ReportMaterialsReadyForChecklistApiArg
@@ -5329,6 +5570,40 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/api/v1/report/materials-ready-for-assignment`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
+    getApiV1ReportQaDashboard: build.query<
+      GetApiV1ReportQaDashboardApiResponse,
+      GetApiV1ReportQaDashboardApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/qa-dashboard`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
+    getApiV1ReportQcDashboard: build.query<
+      GetApiV1ReportQcDashboardApiResponse,
+      GetApiV1ReportQcDashboardApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/report/qc-dashboard`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -7158,6 +7433,14 @@ export type GetApiV1AttendanceRecordsGeneralSummaryApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1AttendanceRecordsExportApiResponse = unknown;
+export type GetApiV1AttendanceRecordsExportApiArg = {
+  fileType?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1AuthLoginApiResponse = /** status 200 OK */ LoginResponse;
 export type PostApiV1AuthLoginApiArg = {
   /** The module this request falls under */
@@ -7454,6 +7737,51 @@ export type GetApiV1ConfigurationByModelTypeAndPrefixApiArg = {
 };
 export type GetApiV1CountriesApiResponse = /** status 200 OK */ CountryDto[];
 export type GetApiV1CountriesApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1CustomersApiResponse = /** status 200 OK */ string;
+export type PostApiV1CustomersApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createCustomerRequest: CreateCustomerRequest;
+};
+export type GetApiV1CustomersApiResponse =
+  /** status 200 OK */ CustomerDtoIEnumerablePaginateable;
+export type GetApiV1CustomersApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1CustomersByIdApiResponse = /** status 200 OK */ CustomerDto;
+export type GetApiV1CustomersByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1CustomersByIdApiResponse =
+  /** status 204 No Content */ CustomerDto;
+export type PutApiV1CustomersByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createCustomerRequest: CreateCustomerRequest;
+};
+export type DeleteApiV1CustomersByIdApiResponse = unknown;
+export type DeleteApiV1CustomersByIdApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -9409,6 +9737,25 @@ export type DeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiResponse =
+  unknown;
+export type PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiArg = {
+  paidAt?: string;
+  shipmentInvoiceId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ProcurementShipmentInvoicePaidMultipleApiResponse = unknown;
+export type PutApiV1ProcurementShipmentInvoicePaidMultipleApiArg = {
+  paidAt?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  body: string[];
+};
 export type PostApiV1ProcurementShipmentDiscrepancyApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1ProcurementShipmentDiscrepancyApiArg = {
@@ -9817,6 +10164,52 @@ export type PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse =
   unknown;
 export type PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg = {
   batchManufacturingRecordId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProductionOrdersApiResponse = /** status 200 OK */ string;
+export type PostApiV1ProductionOrdersApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createProductionOrderRequest: CreateProductionOrderRequest;
+};
+export type GetApiV1ProductionOrdersApiResponse =
+  /** status 200 OK */ ProductionOrderDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionOrdersApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionOrdersByIdApiResponse =
+  /** status 200 OK */ ProductionOrderDtoRead;
+export type GetApiV1ProductionOrdersByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ProductionOrdersByIdApiResponse =
+  /** status 204 No Content */ ProductionOrderDtoRead;
+export type PutApiV1ProductionOrdersByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createProductionOrderRequest: CreateProductionOrderRequest;
+};
+export type DeleteApiV1ProductionOrdersByIdApiResponse = unknown;
+export type DeleteApiV1ProductionOrdersByIdApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10732,6 +11125,17 @@ export type GetApiV1ReportWarehouseApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ReportLogisticsApiResponse =
+  /** status 200 OK */ WarehouseReportDto;
+export type GetApiV1ReportLogisticsApiArg = {
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ReportReservedMaterialBatchesApiResponse =
   /** status 200 OK */ MaterialBatchReservedQuantityReportDto[];
 export type GetApiV1ReportReservedMaterialBatchesApiArg = {
@@ -10799,6 +11203,30 @@ export type GetApiV1ReportStaffGenderRatioReportApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ReportStaffLeaveReportApiResponse =
+  /** status 200 OK */ StaffLeaveSummaryReportDtoRead;
+export type GetApiV1ReportStaffLeaveReportApiArg = {
+  departmentId?: string;
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportStaffTurnoverReportApiResponse =
+  /** status 200 OK */ StaffTurnoverReportDtoRead;
+export type GetApiV1ReportStaffTurnoverReportApiArg = {
+  departmentId?: string;
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ReportMaterialsReadyForChecklistApiResponse =
   /** status 200 OK */ DistributedRequisitionMaterialDto[];
 export type GetApiV1ReportMaterialsReadyForChecklistApiArg = {
@@ -10813,6 +11241,28 @@ export type GetApiV1ReportMaterialsReadyForChecklistApiArg = {
 export type GetApiV1ReportMaterialsReadyForAssignmentApiResponse =
   /** status 200 OK */ MaterialBatchDtoRead[];
 export type GetApiV1ReportMaterialsReadyForAssignmentApiArg = {
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportQaDashboardApiResponse =
+  /** status 200 OK */ QaDashboardDto;
+export type GetApiV1ReportQaDashboardApiArg = {
+  startDate?: string;
+  endDate?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ReportQcDashboardApiResponse =
+  /** status 200 OK */ QaDashboardDto;
+export type GetApiV1ReportQcDashboardApiArg = {
   startDate?: string;
   endDate?: string;
   materialKind?: MaterialKind;
@@ -12347,22 +12797,6 @@ export type AttendanceRecordDepartmentDto = {
   clockOutTime?: string | null;
   workHours?: number;
 };
-export type MinimalEmployeeInfoDto = {
-  employeeId?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  staffNumber?: string | null;
-  employeeLevel?: EmployeeLevel;
-  type?: string | null;
-  department?: string | null;
-  designation?: string | null;
-};
-export type AbsencesDto = {
-  absentEmployees?: MinimalEmployeeInfoDto[] | null;
-};
-export type SuspensionsDto = {
-  suspendedEmployees?: MinimalEmployeeInfoDto[] | null;
-};
 export type GeneralAttendanceReportDto = {
   departmentName?: string | null;
   permanentStaff?: number;
@@ -12373,8 +12807,11 @@ export type GeneralAttendanceReportDto = {
   casualMorning?: number;
   casualAfternoon?: number;
   casualNight?: number;
-  absences?: AbsencesDto;
-  suspensions?: SuspensionsDto;
+  approvedLeaves?: number;
+  absences?: number;
+  suspensions?: number;
+  sickLeaves?: number;
+  maternityLeaves?: number;
 };
 export type GeneralAttendanceReportDtoRead = {
   departmentName?: string | null;
@@ -12387,8 +12824,11 @@ export type GeneralAttendanceReportDtoRead = {
   casualMorning?: number;
   casualAfternoon?: number;
   casualNight?: number;
-  absences?: AbsencesDto;
-  suspensions?: SuspensionsDto;
+  approvedLeaves?: number;
+  absences?: number;
+  suspensions?: number;
+  sickLeaves?: number;
+  maternityLeaves?: number;
 };
 export type LoginResponse = {
   userId?: string | null;
@@ -12536,6 +12976,30 @@ export type CountryDto = {
   nationality?: string | null;
   code?: string | null;
 };
+export type CreateCustomerRequest = {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+};
+export type CustomerDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+};
+export type CustomerDtoIEnumerablePaginateable = {
+  data?: CustomerDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateWarehouseLocationShelfRequest = {
   code?: string | null;
   name?: string | null;
@@ -12669,6 +13133,16 @@ export type EmployeeUserDto = {
 };
 export type UploadFileRequest = {
   file?: string | null;
+};
+export type MinimalEmployeeInfoDto = {
+  employeeId?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  staffNumber?: string | null;
+  level?: EmployeeLevel;
+  type?: string | null;
+  department?: string | null;
+  designation?: string | null;
 };
 export type UpdateEmployeeRequest = {
   avatar?: string | null;
@@ -12901,7 +13375,7 @@ export type LeaveEntitlementDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type RequestCategory = 0 | 1 | 2;
+export type RequestCategory = 0 | 1 | 2 | 3;
 export type CreateLeaveRequest = {
   leaveTypeId: string;
   startDate: string;
@@ -12910,6 +13384,7 @@ export type CreateLeaveRequest = {
   requestCategory: RequestCategory;
   contactPerson?: string | null;
   contactPersonNumber?: string | null;
+  destination?: string | null;
   justification?: string | null;
 };
 export type LeaveTypeDto = {
@@ -13160,6 +13635,7 @@ export type ShipmentInvoiceDto = {
   isAttached?: boolean;
   totalCost?: number;
   currency?: CurrencyDto;
+  paidAt?: string | null;
 };
 export type MaterialItemDistributionDto = {
   shipmentInvoiceItem?: ShipmentInvoiceItemDto;
@@ -16411,6 +16887,7 @@ export type ShipmentInvoice = {
   totalCost?: number;
   currencyId?: string | null;
   currency?: Currency;
+  paidAt?: string | null;
 };
 export type ShipmentInvoiceRead = {
   id?: string;
@@ -16430,6 +16907,7 @@ export type ShipmentInvoiceRead = {
   totalCost?: number;
   currencyId?: string | null;
   currency?: CurrencyRead;
+  paidAt?: string | null;
 };
 export type ProcurementSource = 0 | 1;
 export type SourceRequisitionItem = {
@@ -18299,6 +18777,70 @@ export type ProductAnalyticalRawDataDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type ProductionOrderProducts = {
+  productId?: string;
+  product?: Product;
+  totalOrderQuantity?: number;
+  volumePerPiece?: number;
+};
+export type ProductionOrderProductsRead = {
+  productId?: string;
+  product?: ProductRead;
+  totalOrderQuantity?: number;
+  volumePerPiece?: number;
+  totalVolume?: number;
+  totalBatches?: number;
+  totalValue?: number;
+};
+export type CreateProductionOrderRequest = {
+  productionOrderCode?: string | null;
+  customerId: string;
+  productionOrderProducts?: ProductionOrderProducts[] | null;
+};
+export type CreateProductionOrderRequestRead = {
+  productionOrderCode?: string | null;
+  customerId: string;
+  productionOrderProducts?: ProductionOrderProductsRead[] | null;
+  totalValue?: number;
+};
+export type ProductionOrderDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrderCode?: string | null;
+  customerId?: string;
+  customer?: CustomerDto;
+  productionOrderProducts?: ProductionOrderProducts[] | null;
+  totalValue?: number;
+};
+export type ProductionOrderDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrderCode?: string | null;
+  customerId?: string;
+  customer?: CustomerDto;
+  productionOrderProducts?: ProductionOrderProductsRead[] | null;
+  totalValue?: number;
+};
+export type ProductionOrderDtoIEnumerablePaginateable = {
+  data?: ProductionOrderDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ProductionOrderDtoIEnumerablePaginateableRead = {
+  data?: ProductionOrderDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type CreateProductionScheduleProduct = {
   productId?: string;
   marketTypeId?: string | null;
@@ -19346,6 +19888,67 @@ export type StaffGenderRatioReportRead = {
   departments?: StaffGenderRatioCountDtoRead[] | null;
   totals?: StaffGenderRatioTotalDtoRead;
 };
+export type StaffLeaveSummaryDto = {
+  departmentName?: string | null;
+  staffDueForLeave?: number;
+  totalLeaveEntitlement?: number;
+  daysUsed?: number;
+};
+export type StaffLeaveSummaryDtoRead = {
+  departmentName?: string | null;
+  staffDueForLeave?: number;
+  totalLeaveEntitlement?: number;
+  daysUsed?: number;
+  daysLeft?: number;
+  percentUsed?: number;
+  percentLeft?: number;
+};
+export type StaffLeaveSummaryReportDto = {
+  departments?: StaffLeaveSummaryDto[] | null;
+};
+export type StaffLeaveSummaryReportDtoRead = {
+  departments?: StaffLeaveSummaryDtoRead[] | null;
+};
+export type StaffTurnoverCountDto = {
+  departmentName?: string | null;
+  exitReasons?: {
+    [key: string]: number | null;
+  } | null;
+};
+export type StaffTurnoverCountDtoRead = {
+  departmentName?: string | null;
+  exitReasons?: {
+    [key: string]: number | null;
+  } | null;
+  totalLeavers?: number;
+};
+export type StaffTurnoverReportDto = {
+  turnoverRate?: number;
+  grandTotalLeavers?: number;
+  departmentSummaries?: StaffTurnoverCountDto[] | null;
+};
+export type StaffTurnoverReportDtoRead = {
+  turnoverRate?: number;
+  grandTotalLeavers?: number;
+  departmentSummaries?: StaffTurnoverCountDtoRead[] | null;
+};
+export type QaDashboardDto = {
+  numberOfBmrRequests?: number;
+  numberOfPendingBmrRequests?: number;
+  numberOfApprovedBmrRequests?: number;
+  numberOfRejectBmrRequests?: number;
+  numberOfAnalyticalTestRequests?: number;
+  numberOfExpiredAnalyticalTestRequests?: number;
+  numberOfApprovals?: number;
+  numberOfPendingApprovals?: number;
+  numberOfRejectedApprovals?: number;
+  numberOfManufacturers?: number;
+  numberOfNewManufacturers?: number;
+  numberOfExpiredManufacturers?: number;
+  numberOfProducts?: number;
+  numberOfRawMaterials?: number;
+  numberOfPackingMaterials?: number;
+};
 export type CreateRequisitionItemRequest = {
   materialId?: string;
   quantity?: number;
@@ -20157,6 +20760,8 @@ export const {
   useLazyGetApiV1AttendanceRecordsDailySummaryQuery,
   useGetApiV1AttendanceRecordsGeneralSummaryQuery,
   useLazyGetApiV1AttendanceRecordsGeneralSummaryQuery,
+  useGetApiV1AttendanceRecordsExportQuery,
+  useLazyGetApiV1AttendanceRecordsExportQuery,
   usePostApiV1AuthLoginMutation,
   usePostApiV1AuthLoginWithRefreshTokenMutation,
   usePostApiV1AuthSetPasswordMutation,
@@ -20200,6 +20805,13 @@ export const {
   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   useGetApiV1CountriesQuery,
   useLazyGetApiV1CountriesQuery,
+  usePostApiV1CustomersMutation,
+  useGetApiV1CustomersQuery,
+  useLazyGetApiV1CustomersQuery,
+  useGetApiV1CustomersByIdQuery,
+  useLazyGetApiV1CustomersByIdQuery,
+  usePutApiV1CustomersByIdMutation,
+  useDeleteApiV1CustomersByIdMutation,
   usePostApiV1DepartmentMutation,
   useGetApiV1DepartmentQuery,
   useLazyGetApiV1DepartmentQuery,
@@ -20476,6 +21088,8 @@ export const {
   useLazyGetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdQuery,
   usePutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdMutation,
   useDeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdMutation,
+  usePutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdMutation,
+  usePutApiV1ProcurementShipmentInvoicePaidMultipleMutation,
   usePostApiV1ProcurementShipmentDiscrepancyMutation,
   useGetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdQuery,
   useLazyGetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdQuery,
@@ -20537,6 +21151,13 @@ export const {
   useGetApiV1ProductArdProductByProductIdQuery,
   useLazyGetApiV1ProductArdProductByProductIdQuery,
   usePutApiV1ProductArdStartTestByBatchManufacturingRecordIdMutation,
+  usePostApiV1ProductionOrdersMutation,
+  useGetApiV1ProductionOrdersQuery,
+  useLazyGetApiV1ProductionOrdersQuery,
+  useGetApiV1ProductionOrdersByIdQuery,
+  useLazyGetApiV1ProductionOrdersByIdQuery,
+  usePutApiV1ProductionOrdersByIdMutation,
+  useDeleteApiV1ProductionOrdersByIdMutation,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -20672,6 +21293,8 @@ export const {
   useLazyGetApiV1ReportProductionMaterialsBelowMinimumQuery,
   useGetApiV1ReportWarehouseQuery,
   useLazyGetApiV1ReportWarehouseQuery,
+  useGetApiV1ReportLogisticsQuery,
+  useLazyGetApiV1ReportLogisticsQuery,
   useGetApiV1ReportReservedMaterialBatchesQuery,
   useLazyGetApiV1ReportReservedMaterialBatchesQuery,
   useGetApiV1ReportHumanResourceQuery,
@@ -20684,10 +21307,18 @@ export const {
   useLazyGetApiV1ReportStaffTotalReportQuery,
   useGetApiV1ReportStaffGenderRatioReportQuery,
   useLazyGetApiV1ReportStaffGenderRatioReportQuery,
+  useGetApiV1ReportStaffLeaveReportQuery,
+  useLazyGetApiV1ReportStaffLeaveReportQuery,
+  useGetApiV1ReportStaffTurnoverReportQuery,
+  useLazyGetApiV1ReportStaffTurnoverReportQuery,
   useGetApiV1ReportMaterialsReadyForChecklistQuery,
   useLazyGetApiV1ReportMaterialsReadyForChecklistQuery,
   useGetApiV1ReportMaterialsReadyForAssignmentQuery,
   useLazyGetApiV1ReportMaterialsReadyForAssignmentQuery,
+  useGetApiV1ReportQaDashboardQuery,
+  useLazyGetApiV1ReportQaDashboardQuery,
+  useGetApiV1ReportQcDashboardQuery,
+  useLazyGetApiV1ReportQcDashboardQuery,
   usePostApiV1RequisitionMutation,
   useGetApiV1RequisitionQuery,
   useLazyGetApiV1RequisitionQuery,
