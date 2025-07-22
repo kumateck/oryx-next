@@ -1,10 +1,21 @@
+"use client";
 import { Button, Icon } from "@/components/ui";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
-import React from "react";
+import React, { useEffect } from "react";
 import { FilterBtn } from "../types";
+import { DashboardCard } from "./features/card";
+import { useLazyGetApiV1ReportQaDashboardQuery } from "@/lib/redux/api/openapi.generated";
 
 function Index() {
+  const [loadReport, { data, isLoading }] =
+    useLazyGetApiV1ReportQaDashboardQuery({});
+
+  useEffect(() => {
+    loadReport({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log("data", data, isLoading);
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full items-center justify-between gap-4">
@@ -31,6 +42,7 @@ function Index() {
           </div>
         </div>
       </div>
+      <DashboardCard data={data ?? {}} />
     </ScrollablePageWrapper>
   );
 }
