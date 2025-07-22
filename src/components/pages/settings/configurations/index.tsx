@@ -79,18 +79,18 @@ const FormOptionTabs: TabProps[] = [
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.ProductCategory,
-        title: "ProductCategory",
+        title: "Product Category",
       },
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.MaterialCategory,
-        title: "RawCategory",
+        title: "Raw Category",
         kind: EMaterialKind.Raw,
       },
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.MaterialCategory,
-        title: "PackageCategory",
+        title: "Package Category",
         kind: EMaterialKind.Packing,
       },
     ],
@@ -111,7 +111,7 @@ const FormOptionTabs: TabProps[] = [
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.WorkCenter,
-        title: "WorkCenter",
+        title: "Work Center",
       },
     ],
   },
@@ -121,13 +121,18 @@ const FormOptionTabs: TabProps[] = [
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.MaterialType,
-        title: "MaterialType",
+        title: "Material Type",
       },
 
       {
         icon: "Tag",
         modelType: COLLECTION_TYPES.UnitOfMeasure,
-        title: "UnitOfMeasure",
+        title: "UOM",
+      },
+      {
+        icon: "Tag",
+        modelType: COLLECTION_TYPES.PackageStyle,
+        title: "Package Style",
       },
     ],
   },
