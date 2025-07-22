@@ -14,7 +14,6 @@ import {
   MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
   TestTypeEnum as TestTypeEnumLabels,
 } from "../types";
-import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -27,14 +26,13 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import SpecificationForm from "../create/form";
+import PageTitle from "@/shared/title";
 
 function Page() {
   return (
-    <PageWrapper>
-      <ScrollablePageWrapper>
-        <EditMaterialSpecification />
-      </ScrollablePageWrapper>
-    </PageWrapper>
+    <ScrollablePageWrapper>
+      <EditMaterialSpecification />
+    </ScrollablePageWrapper>
   );
 }
 
@@ -182,33 +180,49 @@ export function EditMaterialSpecification() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <SpecificationForm
-        control={control}
-        remove={remove}
-        append={append}
-        fields={fields}
-        register={register}
-        materialOptions={materialOptions}
-        kind={kind}
-        errors={errors}
-      />
-      <div className="flex justify-end gap-4">
-        <Button
-          onClick={() => router.back()}
-          disabled={isLoading}
-          type="button"
-          variant="outline"
-        >
-          Cancel
-        </Button>
-        <Button disabled={isLoading} type="submit">
-          {isLoading && (
-            <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
-          )}
-          {isLoading ? "Submitting..." : "Save Changes"}
-        </Button>
+    <>
+      <div
+        onClick={() => router.back()}
+        className="flex mb-6 cursor-pointer hover:underline items-center gap-2"
+      >
+        <Icon name="ArrowLeft" />
+        <PageTitle title="Material Specification List" />
       </div>
-    </form>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <SpecificationForm
+            control={control}
+            remove={remove}
+            append={append}
+            fields={fields}
+            register={register}
+            materialOptions={materialOptions}
+            kind={kind}
+            errors={errors}
+          />
+          <span>
+            <span className="text-red-600 text-sm font-medium">
+              {errors?.testSpecifications?.message}
+            </span>
+          </span>
+        </div>
+        <div className="flex justify-end gap-4">
+          <Button
+            onClick={() => router.back()}
+            disabled={isLoading}
+            type="button"
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading && (
+              <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
+            )}
+            {isLoading ? "Submitting..." : "Save Changes"}
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

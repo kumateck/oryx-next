@@ -358,10 +358,7 @@ export const ROUTES: Route[] = [
             title: "Attendance Report Upload",
             url: "/hr/attendance-report-upload",
           },
-          {
-            title: "Human Resources Report",
-            url: "/hr/human-resources-report",
-          },
+
           // {
           //   title: "Attendance Report Summary",
           //   url: "/hr/attendance-report-summary",
@@ -544,6 +541,17 @@ export const ROUTES: Route[] = [
       //   //   url: "string"
       //   // }]
       // },
+      {
+        title: "Human Resources Report",
+        url: "/reports/human-resources-report",
+        icon: "Users",
+      },
+      {
+        title: "QC and QA Reports",
+        url: "/reports/qc-qa-reports",
+        isActive: false,
+        icon: "BookUser",
+      },
     ],
   },
 ];

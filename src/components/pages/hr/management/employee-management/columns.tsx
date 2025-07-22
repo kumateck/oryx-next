@@ -86,6 +86,15 @@ export function DataTableRowActions<TData extends EmployeeDto>({
 
 export const columns: ColumnDef<EmployeeDto>[] = [
   {
+    accessorKey: "staffId",
+    header: "Staff ID",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {row.original.staffNumber ? row.original.staffNumber : "N/A"}
+      </div>
+    ),
+  },
+  {
     accessorKey: "name",
     header: "Employee Name",
     cell: ({ row }) => (
