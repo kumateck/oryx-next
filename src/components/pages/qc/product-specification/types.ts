@@ -2,12 +2,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const MaterialSpecificationReference = {
-  "In House": 0,
-  BP: 1,
+  BP: 0,
+  USP: 1,
+  PhInt: 2,
+  "In House": 3,
 };
 export enum MaterialSpecificationReferenceEnum {
-  "In House" = 0,
-  BP = 1,
+  BP = 0,
+  USP = 1,
+  PhInt = 2,
+  "In House" = 3,
 }
 
 export enum TestStageEnum {

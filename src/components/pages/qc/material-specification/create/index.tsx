@@ -17,8 +17,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
-  TestType as TestTypeEnum,
-  useGetApiV1MaterialQuery,
+  useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -38,10 +37,8 @@ export function MaterialSpecPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const { data: materials } = useGetApiV1MaterialQuery({
-    kind: kind ?? EMaterialKind.Raw,
-    pageSize: 1000,
-    page: 1,
+  const { data: materials } = useGetApiV1MaterialMaterialSpecsNotLinkedQuery({
+    materialKind: kind ?? EMaterialKind.Raw,
   });
   const [createMaterialSpecification, { isLoading }] =
     usePostApiV1MaterialSpecificationsMutation();
@@ -61,7 +58,7 @@ export function MaterialSpecPage() {
   });
 
   const materialOptions =
-    materials?.data?.map((material) => ({
+    materials?.map((material) => ({
       label: material?.name as string,
       value: material?.id as string,
     })) || [];
@@ -79,7 +76,7 @@ export function MaterialSpecPage() {
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
         srNumber: Number(test.srNumber),
-        testName: Number(test.testName.value) as unknown as TestTypeEnum,
+        name: test.name,
         releaseSpecification: test.releaseSpecification,
         reference: Number(
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,

@@ -11,6 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
 import { CartesianGrid, Line, LineChart, Pie, PieChart } from "recharts";
 
 const cardsStatus = {
@@ -128,7 +129,10 @@ const pieChartConfig = {
   },
 } satisfies ChartConfig;
 
-export const ChartCards = () => {
+interface Props {
+  data: HrDashboardDtoRead;
+}
+export const ChartCards = ({ data }: Props) => {
   return (
     <div className=" grid grid-cols-9 gap-4">
       {/* leave reqest card */}
@@ -140,22 +144,31 @@ export const ChartCards = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-6">
+          <div className="flex items-center">
             <div className="col-span-2 text-center">
               <span className="font-extrabold text-2xl text-gray-800 text-center">
-                105
+                {data?.numberOfLeaveRequests}
               </span>
               <Separator className="my-2" />
-              <div className="space-y-2">
-                {cardsStatus.leaveRequest.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`flex ${item.color} text-white text-sm p-2 rounded-full items-center justify-between`}
-                  >
-                    <span>{item.status}</span>
-                    <span>{item.count}</span>
-                  </div>
-                ))}
+              <div className="flex flex-col  gap-1">
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-gray-700 text-white">
+                  <span className="text-xs">Pending</span>
+                  <span className="font-semibold">
+                    {data?.numberOfPendingLeaveRequests}
+                  </span>
+                </div>
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-yellow-700 text-white">
+                  <span className="text-xs">Rejected</span>
+                  <span className="font-semibold">
+                    {data?.numberOfRejectedLeaveRequests}
+                  </span>
+                </div>
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-red-700 text-white">
+                  <span className="text-xs">Expired</span>
+                  <span className="font-semibold">
+                    {data?.numberOfExpiredLeaveRequests}
+                  </span>
+                </div>
               </div>
             </div>
             <div className="col-span-4">
@@ -196,19 +209,28 @@ export const ChartCards = () => {
           <div className="grid grid-cols-6">
             <div className="col-span-2 text-center">
               <span className="font-extrabold text-2xl text-gray-800 text-center">
-                105
+                {data.numberOfOvertimeRequests}
               </span>
               <Separator className="my-2" />
-              <div className="space-y-2">
-                {cardsStatus.overtimeRequest.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`flex ${item.color} text-white text-sm p-2 rounded-full items-center justify-between`}
-                  >
-                    <span>{item.status}</span>
-                    <span>{item.count}</span>
-                  </div>
-                ))}
+              <div className="flex flex-col  gap-1">
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-gray-700 text-white">
+                  <span className="text-xs">Pending</span>
+                  <span className="font-semibold">
+                    {data?.numberOfPendingOvertimeRequests}
+                  </span>
+                </div>
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-green-700 text-white">
+                  <span className="text-xs">Approved</span>
+                  <span className="font-semibold">
+                    {data?.numberOfApprovedOvertimeRequests}
+                  </span>
+                </div>
+                <div className="flex font-medium px-2 py-1 w-fit rounded-full items-center gap-1 bg-red-700 text-white">
+                  <span className="text-xs">Rejected</span>
+                  <span className="font-semibold">
+                    {data?.numberOfRejectedLeaveRequests}
+                  </span>
+                </div>
               </div>
             </div>
             <div className="col-span-4">

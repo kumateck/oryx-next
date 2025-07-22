@@ -8,16 +8,13 @@ import {
   CardTitle,
   Icon,
 } from "@/components/ui";
-import {
-  TestType,
-  useLazyGetApiV1MaterialSpecificationsByIdQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1MaterialSpecificationsByIdQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { MaterialSpecificationReferenceEnum, TestTypeEnum } from "../types";
+import { MaterialSpecificationReferenceEnum } from "../types";
 import MaterialSpecificationSkeleton from "./loadingSkeleton";
 
 function Page() {
@@ -132,9 +129,7 @@ function Page() {
                 key={index}
               >
                 <div className="col-span-1">{test?.srNumber}</div>
-                <div className="col-span-2">
-                  {TestTypeEnum[test?.testName as TestType] || test?.testName}
-                </div>
+                <div className="col-span-2">{test?.name}</div>
                 <div className="col-span-2">{test?.releaseSpecification}</div>
                 <div className="col-span-1">
                   {
