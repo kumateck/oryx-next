@@ -8,7 +8,6 @@ import {
   CreateProductSpecificationValidator,
   MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
   TestStageValues,
-  TestTypeEnum as TestTypeEnumLabels,
 } from "../types";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
@@ -17,7 +16,6 @@ import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
   TestStage,
-  TestType as TestTypeEnum,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
@@ -115,16 +113,7 @@ export function EditMaterialSpecification() {
         "testSpecifications",
         (productSpecification?.testSpecifications ?? []).map((test) => ({
           srNumber: test.srNumber,
-          testName: {
-            value:
-              test.testName !== undefined && test.testName !== null
-                ? String(test.testName)
-                : "",
-            label:
-              test.testName !== undefined && test.testName !== null
-                ? TestTypeEnumLabels[test.testName]
-                : "",
-          },
+          name: test.name as string,
           releaseSpecification:
             test.releaseSpecification !== undefined &&
             test.releaseSpecification !== null
@@ -172,7 +161,7 @@ export function EditMaterialSpecification() {
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
         srNumber: Number(test.srNumber),
-        testName: Number(test.testName.value) as unknown as TestTypeEnum,
+        name: test.name,
         releaseSpecification: test.releaseSpecification,
         reference: Number(
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,
