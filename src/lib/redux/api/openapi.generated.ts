@@ -2335,6 +2335,9 @@ const injectedRtkApi = api.injectEndpoints({
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
+        params: {
+          materialKind: queryArg.materialKind,
+        },
       }),
     }),
     postApiV1MaterialArd: build.mutation<
@@ -8972,6 +8975,7 @@ export type GetApiV1MaterialBatchesExpiredApiArg = {
 export type GetApiV1MaterialMaterialSpecsNotLinkedApiResponse =
   /** status 200 OK */ MaterialDto[];
 export type GetApiV1MaterialMaterialSpecsNotLinkedApiArg = {
+  materialKind?: MaterialKind;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -14377,11 +14381,10 @@ export type MaterialSamplingDtoRead = {
   sampleQuantity?: number;
   sampleDate?: string;
 };
-export type TestType = 0 | 1 | 2 | 3 | 4 | 5;
-export type MaterialSpecificationReference = 0 | 1;
+export type MaterialSpecificationReference = 0 | 1 | 2 | 3;
 export type TestSpecification = {
   srNumber?: number;
-  testName?: TestType;
+  name?: string | null;
   releaseSpecification?: string | null;
   reference?: MaterialSpecificationReference;
 };
@@ -14404,6 +14407,8 @@ export type MaterialSpecificationDto = {
   effectiveDate?: string;
   reviewDate?: string;
   testSpecifications?: TestSpecification[] | null;
+  materialAnalyticalRawDataId?: string;
+  materialAnalyticalRawData?: MaterialAnalyticalRawDataDto;
   materialId?: string;
   material?: MaterialDto;
 };

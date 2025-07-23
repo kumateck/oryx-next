@@ -14,7 +14,6 @@ import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
   TestStage,
-  TestType as TestTypeEnum,
   useGetApiV1ProductQuery,
   usePostApiV1ProductSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -86,7 +85,7 @@ export function MaterialSpecPage() {
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
         srNumber: Number(test.srNumber),
-        testName: Number(test.testName.value) as unknown as TestTypeEnum,
+        name: test.name,
         releaseSpecification: test.releaseSpecification,
         reference: Number(
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,

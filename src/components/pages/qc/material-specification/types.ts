@@ -2,12 +2,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const MaterialSpecificationReference = {
-  "In House": 0,
-  BP: 1,
+  BP: 0,
+  USP: 1,
+  PhInt: 2,
+  "In House": 3,
 };
 export enum MaterialSpecificationReferenceEnum {
-  "In House" = 0,
-  BP = 1,
+  BP = 0,
+  USP = 1,
+  PhInt = 2,
+  "In House" = 3,
 }
 
 export const TestType = {
@@ -29,15 +33,7 @@ export enum TestTypeEnum {
 
 const testSpecificationSchema = z.object({
   srNumber: z.number().nonnegative().optional(),
-  testName: z.object(
-    {
-      value: z.string().min(1, "Test name is required"),
-      label: z.string().min(1, "Test name is required"),
-    },
-    {
-      message: "Test name is required",
-    },
-  ),
+  name: z.string().min(1, "Test name is required"),
   releaseSpecification: z.string().min(1, "Release specification is required"),
   reference: z.object(
     {

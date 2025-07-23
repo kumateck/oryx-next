@@ -1,15 +1,18 @@
 import {
   Card,
-  CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
   Icon,
 } from "@/components/ui";
 import React from "react";
 import { SegmentedBar } from "./segmentedBar";
-
-export function AttendanceCard() {
+import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
+interface Props {
+  data: HrDashboardDtoRead;
+}
+export function AttendanceCard({ data }: Props) {
   return (
     <Card className="col-span-4 row-span-full">
       <CardHeader>
@@ -28,9 +31,9 @@ export function AttendanceCard() {
           </span>
         </CardDescription>
       </CardHeader>
-      <CardContent className="mt-auto">
-        <SegmentedBar />
-      </CardContent>
+      <CardFooter className="mt-auto">
+        <SegmentedBar data={data} />
+      </CardFooter>
     </Card>
   );
 }

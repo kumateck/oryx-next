@@ -9,6 +9,7 @@ import {
   Icon,
 } from "@/components/ui";
 import { fullname, getInitials } from "@/lib";
+import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
 
 //ARRAY OF USERS WITH THEIR NAMES AVATARS URLS AND ROLES
 const users = [
@@ -34,7 +35,12 @@ const users = [
     role: "Payroll Specialist",
   },
 ];
-export function ExitPassCard() {
+
+interface Props {
+  data: HrDashboardDtoRead;
+}
+export function ExitPassCard({ data }: Props) {
+  console.log("ExitPassCard data", data);
   return (
     <Card className="">
       <CardHeader>
