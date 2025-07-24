@@ -8,7 +8,12 @@ import { useState } from "react";
 import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import { EmployeeType, PermissionKeys, splitWords } from "@/lib";
+import {
+  EmployeeStatusType,
+  EmployeeType,
+  PermissionKeys,
+  splitWords,
+} from "@/lib";
 import { useRouter } from "next/navigation";
 import { useUserPermissions } from "@/hooks/use-permission";
 
@@ -114,6 +119,17 @@ export const columns: ColumnDef<EmployeeDto>[] = [
     cell: ({ row }) => (
       <div className="min-w-36">
         {splitWords(EmployeeType[row.original.type as EmployeeType])}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div
+        className={`text-sm flex items-center justify-center ${row.original.status === EmployeeStatusType.Active ? "bg-green-600" : "bg-gray-500"} text-white px-3 py-1 rounded-full w-fit`}
+      >
+        {EmployeeStatusType[row.original.status as EmployeeStatusType]}
       </div>
     ),
   },
