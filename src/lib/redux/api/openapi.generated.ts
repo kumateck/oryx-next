@@ -2325,6 +2325,21 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1MaterialMaterialSpecsNotLinked: build.query<
+      GetApiV1MaterialMaterialSpecsNotLinkedApiResponse,
+      GetApiV1MaterialMaterialSpecsNotLinkedApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/material-specs/not-linked`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
     postApiV1MaterialArd: build.mutation<
       PostApiV1MaterialArdApiResponse,
       PostApiV1MaterialArdApiArg
@@ -2433,6 +2448,103 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1MaterialArdUniformityOfWeight: build.mutation<
+      PostApiV1MaterialArdUniformityOfWeightApiResponse,
+      PostApiV1MaterialArdUniformityOfWeightApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight`,
+        method: "POST",
+        body: queryArg.createUniformityOfWeight,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialArdUniformityOfWeight: build.query<
+      GetApiV1MaterialArdUniformityOfWeightApiResponse,
+      GetApiV1MaterialArdUniformityOfWeightApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1MaterialArdUniformityOfWeightById: build.query<
+      GetApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+      GetApiV1MaterialArdUniformityOfWeightByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1MaterialArdUniformityOfWeightById: build.mutation<
+      PutApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+      PutApiV1MaterialArdUniformityOfWeightByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createUniformityOfWeight,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1MaterialArdUniformityOfWeightById: build.mutation<
+      DeleteApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+      DeleteApiV1MaterialArdUniformityOfWeightByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1MaterialArdUniformityOfWeightResponse: build.mutation<
+      PostApiV1MaterialArdUniformityOfWeightResponseApiResponse,
+      PostApiV1MaterialArdUniformityOfWeightResponseApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-ard/uniformity-of-weight/response`,
+        method: "POST",
+        body: queryArg.createUniformityOfWeightResponse,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponse:
+      build.query<
+        GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiResponse,
+        GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.uniformityOfWeightId}/${queryArg.materialBatchId}/response`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
     postApiV1MaterialSamplings: build.mutation<
       PostApiV1MaterialSamplingsApiResponse,
       PostApiV1MaterialSamplingsApiArg
@@ -8860,6 +8972,15 @@ export type GetApiV1MaterialBatchesExpiredApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1MaterialMaterialSpecsNotLinkedApiResponse =
+  /** status 200 OK */ MaterialDto[];
+export type GetApiV1MaterialMaterialSpecsNotLinkedApiArg = {
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1MaterialArdApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialArdApiArg = {
   /** The module this request falls under */
@@ -8933,6 +9054,72 @@ export type PutApiV1MaterialArdStartTestByMaterialBatchIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1MaterialArdUniformityOfWeightApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1MaterialArdUniformityOfWeightApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUniformityOfWeight: CreateUniformityOfWeight;
+};
+export type GetApiV1MaterialArdUniformityOfWeightApiResponse =
+  /** status 200 OK */ UniformityOfWeightDtoIEnumerablePaginateable;
+export type GetApiV1MaterialArdUniformityOfWeightApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialArdUniformityOfWeightByIdApiResponse =
+  /** status 200 OK */ UniformityOfWeightDto;
+export type GetApiV1MaterialArdUniformityOfWeightByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1MaterialArdUniformityOfWeightByIdApiResponse = unknown;
+export type PutApiV1MaterialArdUniformityOfWeightByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUniformityOfWeight: CreateUniformityOfWeight;
+};
+export type DeleteApiV1MaterialArdUniformityOfWeightByIdApiResponse = unknown;
+export type DeleteApiV1MaterialArdUniformityOfWeightByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1MaterialArdUniformityOfWeightResponseApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1MaterialArdUniformityOfWeightResponseApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUniformityOfWeightResponse: CreateUniformityOfWeightResponse;
+};
+export type GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiResponse =
+  /** status 200 OK */ UniformityOfWeightResponseDto[];
+export type GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiArg =
+  {
+    uniformityOfWeightId: string;
+    materialBatchId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type PostApiV1MaterialSamplingsApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialSamplingsApiArg = {
   /** The module this request falls under */
@@ -12484,6 +12671,7 @@ export type NotificationDto = {
   message?: string | null;
   type?: NotificationType;
   recipients?: UserDto[] | null;
+  sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
 export type State = 0 | 1 | 2 | 3 | 4 | 5;
@@ -13197,6 +13385,8 @@ export type CreateFormFieldRequest = {
 export type CreateFormSectionRequest = {
   name?: string | null;
   description?: string | null;
+  order?: number;
+  instrumentId?: string | null;
   fields?: CreateFormFieldRequest[] | null;
 };
 export type CreateFormAssigneeRequest = {
@@ -13251,6 +13441,8 @@ export type FormSectionDto = {
   form?: CollectionItemDto;
   name?: string | null;
   description?: string | null;
+  instrument?: CollectionItemDto;
+  order?: number;
   fields?: FormFieldDto[] | null;
 };
 export type FormResponseDto = {
@@ -14053,6 +14245,7 @@ export type CreateMaterialAnalyticalRawDataRequest = {
   stpId: string;
   formId: string;
   materialBatchId?: string | null;
+  uniformityOfWeightId?: string | null;
 };
 export type MaterialStandardTestProcedureDto = {
   id?: string;
@@ -14063,6 +14256,22 @@ export type MaterialStandardTestProcedureDto = {
   material?: CollectionItemDto;
   description?: string | null;
 };
+export type UniformityOfWeightDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  balanceNumber?: string | null;
+  numberOfItems?: number;
+  nominalWeight?: number;
+  itemType?: string | null;
+  disintegrationTest?: string | null;
+  disintegrationInstrument?: CollectionItemDto;
+  disintegrationMean?: number;
+  hardnessTest?: string | null;
+  hardnessInstrument?: CollectionItemDto;
+  hardnessMean?: number;
+};
 export type MaterialAnalyticalRawDataDto = {
   id?: string;
   createdBy?: UserDto;
@@ -14072,6 +14281,7 @@ export type MaterialAnalyticalRawDataDto = {
   description?: string | null;
   materialStandardTestProcedure?: MaterialStandardTestProcedureDto;
   form?: CollectionItemDto;
+  uniformityOfWeight?: UniformityOfWeightDto;
 };
 export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   data?: MaterialAnalyticalRawDataDto[] | null;
@@ -14081,6 +14291,55 @@ export type MaterialAnalyticalRawDataDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type CreateUniformityOfWeight = {
+  name?: string | null;
+  balanceNumber?: string | null;
+  numberOfItems?: number;
+  nominalWeight?: number;
+  itemType?: string | null;
+  disintegrationTest?: string | null;
+  disintegrationInstrumentId?: string | null;
+  disintegrationMean?: number;
+  hardnessTest?: string | null;
+  hardnessInstrumentId?: string | null;
+  hardnessMean?: number;
+};
+export type UniformityOfWeightDtoIEnumerablePaginateable = {
+  data?: UniformityOfWeightDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateUniformityOfWeightResponse = {
+  uniformityOfWeightId?: string;
+  batchManufacturingRecordId?: string | null;
+  materialBatchId?: string | null;
+  weights?: number[] | null;
+  mean?: number;
+  standardDeviation?: number;
+  minimumStandardDeviation?: number;
+  maximumStandardDeviation?: number;
+  maximumWeight?: number;
+  minimumWeight?: number;
+};
+export type UniformityOfWeightResponseDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  uniformityOfWeight?: CollectionItemDto;
+  batchManufacturingRecord?: CollectionItemDto;
+  materialBatch?: CollectionItemDto;
+  weights?: number[] | null;
+  mean?: number;
+  standardDeviation?: number;
+  minimumStandardDeviation?: number;
+  maximumStandardDeviation?: number;
+  maximumWeight?: number;
+  minimumWeight?: number;
 };
 export type CreateMaterialSamplingRequest = {
   grnId: string;
@@ -14122,11 +14381,10 @@ export type MaterialSamplingDtoRead = {
   sampleQuantity?: number;
   sampleDate?: string;
 };
-export type TestType = 0 | 1 | 2 | 3 | 4 | 5;
-export type MaterialSpecificationReference = 0 | 1;
+export type MaterialSpecificationReference = 0 | 1 | 2 | 3;
 export type TestSpecification = {
   srNumber?: number;
-  testName?: TestType;
+  name?: string | null;
   releaseSpecification?: string | null;
   reference?: MaterialSpecificationReference;
 };
@@ -14149,6 +14407,8 @@ export type MaterialSpecificationDto = {
   effectiveDate?: string;
   reviewDate?: string;
   testSpecifications?: TestSpecification[] | null;
+  materialAnalyticalRawDataId?: string;
+  materialAnalyticalRawData?: MaterialAnalyticalRawDataDto;
   materialId?: string;
   material?: MaterialDto;
 };
@@ -15138,6 +15398,34 @@ export type OperationRead = {
   order?: number;
   action?: OperationAction;
 };
+export type Instrument = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+};
+export type InstrumentRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  code?: string | null;
+  name?: string | null;
+};
 export type QuestionOption = {
   id?: string;
   createdAt?: string;
@@ -15267,6 +15555,9 @@ export type FormSection = {
   form?: Form;
   name?: string | null;
   description?: string | null;
+  instrumentId?: string | null;
+  instrument?: Instrument;
+  order?: number;
   fields?: FormField[] | null;
 };
 export type FormSectionRead = {
@@ -15284,6 +15575,9 @@ export type FormSectionRead = {
   form?: Form;
   name?: string | null;
   description?: string | null;
+  instrumentId?: string | null;
+  instrument?: InstrumentRead;
+  order?: number;
   fields?: FormFieldRead[] | null;
 };
 export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
@@ -20965,6 +21259,8 @@ export const {
   usePostApiV1MaterialBatchesImportMutation,
   useGetApiV1MaterialBatchesExpiredQuery,
   useLazyGetApiV1MaterialBatchesExpiredQuery,
+  useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   usePostApiV1MaterialArdMutation,
   useGetApiV1MaterialArdQuery,
   useLazyGetApiV1MaterialArdQuery,
@@ -20977,6 +21273,16 @@ export const {
   useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
+  usePostApiV1MaterialArdUniformityOfWeightMutation,
+  useGetApiV1MaterialArdUniformityOfWeightQuery,
+  useLazyGetApiV1MaterialArdUniformityOfWeightQuery,
+  useGetApiV1MaterialArdUniformityOfWeightByIdQuery,
+  useLazyGetApiV1MaterialArdUniformityOfWeightByIdQuery,
+  usePutApiV1MaterialArdUniformityOfWeightByIdMutation,
+  useDeleteApiV1MaterialArdUniformityOfWeightByIdMutation,
+  usePostApiV1MaterialArdUniformityOfWeightResponseMutation,
+  useGetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseQuery,
+  useLazyGetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseQuery,
   usePostApiV1MaterialSamplingsMutation,
   useGetApiV1MaterialSamplingsByGrnIdAndBatchIdQuery,
   useLazyGetApiV1MaterialSamplingsByGrnIdAndBatchIdQuery,

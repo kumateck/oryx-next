@@ -15,15 +15,16 @@ import {
   UpdateUserRoleRequest,
   useGetApiV1EmployeeQuery,
   useGetApiV1RoleQuery,
-  useLazyGetApiV1UserQuery,
   usePutApiV1UserRoleByIdMutation,
   UserWithRoleDto, // CreateUserRequest,
   // usePostApiV1UserMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { cn, ErrorResponse, isErrorResponse } from "@/lib/utils";
 
-import { CreateUserValidator, UserRequestDto } from "./types";
+import { RoleRequestDto, RoleValidator } from "./types";
 import EditRoleForm from "./edit-form";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface Props {
   isOpen: boolean;
@@ -31,16 +32,12 @@ interface Props {
   details: UserWithRoleDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadUsers] = useLazyGetApiV1UserQuery();
+  const dispatch = useDispatch();
   const [createUser, { isLoading }] = usePutApiV1UserRoleByIdMutation();
-  const defaultEmployee = {
-    label: (details?.firstName + " " + details.lastName) as string,
-    value: details?.id as string,
-  };
 
   const defaultRole = {
-    label: details?.roles?.[0].name as string,
-    value: details?.roles?.[0].id as string,
+    label: details?.roles?.[0]?.name as string,
+    value: details?.roles?.[0]?.id as string,
   };
 
   const {
@@ -49,30 +46,27 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<UserRequestDto>({
-    resolver: CreateUserValidator,
+  } = useForm<RoleRequestDto>({
+    resolver: RoleValidator,
     mode: "all",
     defaultValues: {
-      employeeId: defaultEmployee,
       roleId: defaultRole,
     },
   });
 
-  const onSubmit = async (data: UserRequestDto) => {
+  console.log(errors, "errors");
+  const onSubmit = async (data: RoleRequestDto) => {
     try {
       console.log(data);
       const payload = {
-        roleNames: [data.roleId.value],
+        roleNames: [data.roleId.label],
       } satisfies UpdateUserRoleRequest;
       await createUser({
         updateUserRoleRequest: payload,
         id: details.id as string,
       }).unwrap();
       toast.success("User updated successfully");
-      loadUsers({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -106,7 +100,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add User</DialogTitle>
+          <DialogTitle>Edit User Role</DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
