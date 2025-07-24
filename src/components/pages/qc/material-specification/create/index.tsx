@@ -18,7 +18,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
-  TestType as TestTypeEnum,
   useGetApiV1MaterialQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -81,7 +80,7 @@ export function MaterialSpecPage() {
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
         srNumber: Number(test.srNumber),
-        testName: Number(test.testName.value) as unknown as TestTypeEnum,
+        // testName: Number(test.testName.value) as unknown as TestTypeEnum,
         releaseSpecification: test.releaseSpecification,
         reference: Number(
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,
