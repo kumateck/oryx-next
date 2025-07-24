@@ -27,6 +27,7 @@ export function NotificationsSheet() {
   // console.log(unreadData, "these are all unread data we've got");
 
   const notificationCount = unReadNotfications?.length ?? 0;
+
   return (
     <Sheet>
       <SheetTrigger>

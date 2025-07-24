@@ -16,7 +16,6 @@ import {
   CreateProductSpecificationDto,
   MaterialSpecificationReference,
   TestStageValues,
-  TestType,
 } from "../types";
 
 type FieldsType = {
@@ -163,10 +162,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
               },
               releaseSpecification: "",
               srNumber: 0,
-              testName: {
-                value: "",
-                label: "",
-              },
+              name: "",
             })
           }
         >
@@ -199,15 +195,11 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                   },
                   {
                     label: "Test Name",
-                    type: InputTypes.SELECT,
-                    name: `testSpecifications.${index}.testName`,
-                    control: control as unknown as Control,
+                    type: InputTypes.TEXT,
+                    register: register(
+                      `testSpecifications.${index}.testName` as Path<TFieldValues>,
+                    ),
                     placeholder: "Select Test Name",
-                    options: Object.keys(TestType) // get only labels
-                      .map((label) => ({
-                        label: String(label),
-                        value: String(TestType[label]),
-                      })),
                     errors,
                   },
                   {

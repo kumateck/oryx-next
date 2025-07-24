@@ -242,6 +242,13 @@ const Page = () => {
     <ScrollablePageWrapper className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex w-full items-center justify-between space-y-4">
+          <div
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <Icon name="ArrowLeft" />
+            <div>Back to Shipment Invoice List</div>
+          </div>
           <PageTitle title="Create Shipment Invoice" />
           <Button>
             {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}

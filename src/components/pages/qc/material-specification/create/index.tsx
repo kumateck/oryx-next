@@ -12,24 +12,22 @@ import {
   CreateMaterialSpecificationValidator,
 } from "../types";
 import SpecificationForm from "./form";
-import PageWrapper from "@/components/layout/wrapper";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
   TestSpecification,
-  useGetApiV1MaterialQuery,
+  useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
+import PageTitle from "@/shared/title";
 
 function Page() {
   return (
-    <PageWrapper>
-      <ScrollablePageWrapper>
-        <MaterialSpecPage />
-      </ScrollablePageWrapper>
-    </PageWrapper>
+    <ScrollablePageWrapper>
+      <MaterialSpecPage />
+    </ScrollablePageWrapper>
   );
 }
 
@@ -39,10 +37,8 @@ export function MaterialSpecPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
-  const { data: materials } = useGetApiV1MaterialQuery({
-    kind: kind ?? EMaterialKind.Raw,
-    pageSize: 1000,
-    page: 1,
+  const { data: materials } = useGetApiV1MaterialMaterialSpecsNotLinkedQuery({
+    materialKind: kind ?? EMaterialKind.Raw,
   });
   const [createMaterialSpecification, { isLoading }] =
     usePostApiV1MaterialSpecificationsMutation();
@@ -62,7 +58,7 @@ export function MaterialSpecPage() {
   });
 
   const materialOptions =
-    materials?.data?.map((material) => ({
+    materials?.map((material) => ({
       label: material?.name as string,
       value: material?.id as string,
     })) || [];
@@ -102,34 +98,47 @@ export function MaterialSpecPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <SpecificationForm
-        control={control}
-        remove={remove}
-        append={append}
-        fields={fields}
-        register={register}
-        materialOptions={materialOptions}
-        kind={kind}
-        errors={errors}
-      />
-
-      <div className="flex justify-end gap-4">
-        <Button
-          onClick={() => router.back()}
-          disabled={isLoading}
-          type="button"
-          variant="outline"
-        >
-          Cancel
-        </Button>
-        <Button disabled={isLoading} type="submit">
-          {isLoading && (
-            <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
-          )}
-          {isLoading ? "Submitting..." : "Submit"}
-        </Button>
+    <>
+      <div
+        onClick={() => router.back()}
+        className="flex mb-6 cursor-pointer hover:underline items-center gap-2"
+      >
+        <Icon name="ArrowLeft" />
+        <PageTitle title="Material Specification List" />
       </div>
-    </form>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <SpecificationForm
+            control={control}
+            remove={remove}
+            append={append}
+            fields={fields}
+            register={register}
+            materialOptions={materialOptions}
+            kind={kind}
+            errors={errors}
+          />
+          <span className="text-red-600 text-sm font-medium">
+            {errors?.testSpecifications?.message}
+          </span>
+        </div>
+        <div className="flex justify-end gap-4">
+          <Button
+            onClick={() => router.back()}
+            disabled={isLoading}
+            type="button"
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading && (
+              <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
+            )}
+            {isLoading ? "Submitting..." : "Submit"}
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

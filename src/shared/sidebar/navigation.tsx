@@ -40,6 +40,18 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "QC Dashboard",
+        url: "/qa-qc-dashboard/qc",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
+        title: "QA Dashboard",
+        url: "/qa-qc-dashboard/qa",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
         title: "Product Board",
         url: "/production/activities",
         icon: "SquareDashedKanban",
@@ -359,9 +371,10 @@ export const ROUTES: Route[] = [
             url: "/hr/attendance-report-upload",
           },
           {
-            title: "Human Resources Report",
-            url: "/hr/human-resources-report",
+            title: "Customer Managements",
+            url: "/hr/customers",
           },
+
           // {
           //   title: "Attendance Report Summary",
           //   url: "/hr/attendance-report-summary",
@@ -544,6 +557,17 @@ export const ROUTES: Route[] = [
       //   //   url: "string"
       //   // }]
       // },
+      {
+        title: "Human Resources Report",
+        url: "/reports/human-resources-report",
+        icon: "Users",
+      },
+      {
+        title: "QC and QA Reports",
+        url: "/reports/qc-qa-reports",
+        isActive: false,
+        icon: "BookUser",
+      },
     ],
   },
 ];

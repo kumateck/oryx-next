@@ -5,6 +5,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
 import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from "recharts";
 
 const chartConfig = {
@@ -50,7 +51,12 @@ const chartData = [
   { day: "Fri", visitors: 90, fill: "#006400" },
   { day: "Sat", visitors: 90, fill: "#9acd32" },
 ];
-export function HrBarChart() {
+
+interface Props {
+  data: HrDashboardDtoRead;
+}
+export function HrBarChart({ data }: Props) {
+  console.log("HrBarChart data", data);
   return (
     <Card className="mt-6">
       <CardHeader>
