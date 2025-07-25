@@ -26,7 +26,8 @@ export const createFinalDetailsRequestSchema = z.object({
     })
     .positive({
       message: "Freight Cost must be greater than 0",
-    }),
+    })
+    .optional(),
   insuranceAmount: z
     .number({
       required_error: "Insurance Amount is required",
@@ -34,7 +35,8 @@ export const createFinalDetailsRequestSchema = z.object({
     })
     .positive({
       message: "Insurance Amount must be greater than 0",
-    }),
+    })
+    .optional(),
   amountInWords: z.string().min(1, { message: "Amount in Words is required" }),
   termsOfPayment: z.object(
     {

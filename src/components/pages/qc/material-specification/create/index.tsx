@@ -76,7 +76,7 @@ export function MaterialSpecPage() {
         : "",
       testSpecifications: data.testSpecifications.map((test) => ({
         srNumber: Number(test.srNumber),
-        name: test.name,
+        // testName: Number(test.testName.value) as unknown as TestTypeEnum,
         releaseSpecification: test.releaseSpecification,
         reference: Number(
           test.reference.value as unknown as MaterialSpecificationReferenceEnum,

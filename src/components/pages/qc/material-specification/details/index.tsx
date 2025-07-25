@@ -129,7 +129,9 @@ function Page() {
                 key={index}
               >
                 <div className="col-span-1">{test?.srNumber}</div>
-                <div className="col-span-2">{test?.name}</div>
+                {/* <div className="col-span-2">
+                  {TestTypeEnum[test?.testName as TestType] || test?.testName}
+                </div> */}
                 <div className="col-span-2">{test?.releaseSpecification}</div>
                 <div className="col-span-1">
                   {

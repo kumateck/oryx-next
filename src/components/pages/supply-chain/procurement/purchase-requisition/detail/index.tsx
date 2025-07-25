@@ -63,6 +63,16 @@ const Page = () => {
   }, [requisition]);
 
   const onSubmit = async () => {
+    const hasEmptySuppliers = purchaseLists?.some(
+      (item) =>
+        item.sourceSuppliers?.length === 0 ||
+        item.sourceSuppliers === undefined,
+    );
+
+    if (hasEmptySuppliers) {
+      toast.warning("One or more items are missing supplier selection.");
+      return; // stop execution if needed
+    }
     try {
       const payload = {
         requisitionId: id as string,
@@ -79,6 +89,7 @@ const Page = () => {
           uoMId: item.uomId,
         })),
       } satisfies CreateSourceRequisitionRequest;
+
       // console.log(payload, "payload");
       await saveMutation({
         createSourceRequisitionRequest: payload,
