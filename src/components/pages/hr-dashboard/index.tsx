@@ -13,13 +13,11 @@ import { useLazyGetApiV1ReportHumanResourceQuery } from "@/lib/redux/api/openapi
 const FilterBtn = ["Today", "This Week", "This Month", "All Time"];
 
 function Page() {
-  const [loadReport, { data, isLoading }] =
-    useLazyGetApiV1ReportHumanResourceQuery({});
+  const [loadReport, { data }] = useLazyGetApiV1ReportHumanResourceQuery({});
   useEffect(() => {
     loadReport({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(data, isLoading, "HR Dashboard Data");
   return (
     <ScrollablePageWrapper>
       <div className="flex w-full items-center justify-between gap-4">
@@ -48,16 +46,15 @@ function Page() {
       </div>
       <div className="grid mt-8 grid-flow-row gap-4">
         <ChartCards data={data ?? {}} />
-        <div className=" grid grid-cols-12 gap-4 ">
+        <div className="grid grid-cols-12 gap-4 mt-4">
           <AttendanceCard data={data ?? {}} />
           <EmployeeCard data={data ?? {}} />
-          <div className=" col-span-3">
+          <div className="col-span-12 lg:col-span-3">
             <ExitPassCard data={data ?? {}} />
           </div>
         </div>
+        <HrBarChart data={data ?? {}} />
       </div>
-      {/* <Dashboard /> */}
-      <HrBarChart data={data ?? {}} />
     </ScrollablePageWrapper>
   );
 }

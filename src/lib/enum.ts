@@ -517,3 +517,8 @@ export enum AnalyticalTestStatus {
   Rejected = 3,
   Test_Completed = 4,
 }
+
+export enum EmployeeStatusType {
+  Active = 0,
+  Inactive = 1,
+}

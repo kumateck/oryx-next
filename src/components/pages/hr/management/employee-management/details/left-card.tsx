@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, Separator } from "@/components/ui";
-import { EmployeeType, Gender, MaritalStatus, Religions } from "@/lib";
-import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
+import {
+  EmployeeStatusType,
+  EmployeeType,
+  Gender,
+  MaritalStatus,
+  Religions,
+} from "@/lib";
+import { EmployeeDto, EmployeeStatus } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import React from "react";
 
@@ -42,6 +48,9 @@ function LeftCard({ data }: Props) {
               )}
             </div>
             <div className="text-center sm:text-left">
+              <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-3xl">
+                {EmployeeStatusType[data?.status as EmployeeStatus]}
+              </span>
               <h2 className="font-bold text-xl">
                 {data?.firstName} {data?.lastName}
               </h2>
