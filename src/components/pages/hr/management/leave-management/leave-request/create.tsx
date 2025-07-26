@@ -59,6 +59,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
   const isExitPass =
     selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
+  const isOfficialDuty =
+    selectedCategory?.value === String(LeaveCategories.OfficialDuty);
   const isLeaveOrAbsence = [
     String(LeaveCategories.LeaveRequest),
     String(LeaveCategories.AbsenceRequest),
@@ -74,6 +76,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "-",
+        destination: data.destination ?? "-",
         requestCategory: parseInt(data.leaveCategory.value) as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
@@ -165,6 +168,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
             leaveTypesOptions={leaveTypesOptions}
             categoryOptions={categoryOptions}
             isExitPass={isExitPass}
+            isOfficialDuty={isOfficialDuty}
             isLeaveOrAbsence={isLeaveOrAbsence}
           />
 

@@ -405,6 +405,7 @@ export enum LeaveCategories {
   LeaveRequest = 0,
   AbsenceRequest = 1,
   ExitPassRequest = 2,
+  OfficialDuty = 3,
 }
 
 export enum LeaveStatus {

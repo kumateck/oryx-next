@@ -94,6 +94,7 @@ export const CreateLeaveSchema = z
     contactPersonNumber: z.string().optional(),
     attachments: imageValidationSchema.optional(),
     justification: z.string().optional(),
+    destination: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     const isExitPass =
