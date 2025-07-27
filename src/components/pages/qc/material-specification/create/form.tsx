@@ -1,57 +1,39 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
+import { Card, CardContent, CardHeader } from "@/components/ui";
 import { EMaterialKind, InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
-  FieldArrayWithId,
   FieldErrors,
   FieldValues,
   Path,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
   UseFormRegister,
 } from "react-hook-form";
-import {
-  CreateMaterialSpecificationDto,
-  MaterialSpecificationReference,
-} from "../types";
 
-type FieldsType = {
-  id: string;
-  testSpecifications: {
-    testName: string;
-    releaseSpecification: string;
-    reference: string;
-  };
-}[];
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  remove: UseFieldArrayRemove;
-  append: UseFieldArrayAppend<CreateMaterialSpecificationDto>;
-  fields: FieldArrayWithId<FieldsType>[];
   materialOptions: Option[];
+  formOptions: Option[];
+  userOptions: Option[];
   kind: EMaterialKind;
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   materialOptions,
-  fields,
-  append,
-  remove,
   errors,
+  userOptions,
+  formOptions,
   kind,
 }: Props<TFieldValues, TContext>) => {
   const isRawMaterial = kind?.toString() === EMaterialKind.Raw.toString();
-  console.log(kind, "this is thekind");
   return (
     <>
       <Card>
         <CardHeader className="font-semibold">Material Information</CardHeader>
-        <CardContent className="w-full flex items-center justify-between gap-4 md:flex-row flex-col">
+        <CardContent className="w-full flex items-start gap-4 md:flex-row flex-col">
           <FormWizard
             className="w-full"
             config={[
@@ -59,6 +41,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 label: isRawMaterial ? "Raw Material" : "Packing Material",
                 type: InputTypes.SELECT,
                 name: "materialId",
+                required: true,
                 control: control as Control,
                 placeholder: "Select Material",
                 options: materialOptions,
@@ -73,11 +56,28 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
+                label: "Due Date",
+                type: InputTypes.DATE,
+                placeholder: "Due Date",
+                name: "dueDate",
+                required: true,
+                control: control as Control,
+                errors,
+              },
+              {
                 label: "Effective Date",
                 type: InputTypes.DATE,
                 placeholder: "Effective Date",
                 name: "effectiveDate",
+                required: true,
                 control: control as Control,
+                errors,
+              },
+              {
+                label: "Description",
+                type: InputTypes.TEXTAREA,
+                placeholder: "Description",
+                register: register("description" as Path<TFieldValues>),
                 errors,
               },
             ]}
@@ -86,11 +86,30 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
             className="w-full"
             config={[
               {
+                label: "Assigned User",
+                type: InputTypes.SELECT,
+                name: "userId",
+                control: control as Control,
+                placeholder: "Select User",
+                options: userOptions,
+                errors,
+              },
+              {
+                label: "Template",
+                type: InputTypes.SELECT,
+                name: "formId",
+                control: control as Control,
+                placeholder: "Select Template",
+                options: formOptions,
+                errors,
+              },
+              {
                 label: "Revision Date",
                 type: InputTypes.DATE,
                 name: "reviewDate",
                 placeholder: "Revision Date",
                 control: control as Control,
+                required: true,
                 errors,
               },
               {
@@ -98,12 +117,15 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 type: InputTypes.TEXT,
                 placeholder: "Revision",
                 register: register("revisionNumber" as Path<TFieldValues>),
+                required: true,
                 errors,
               },
+
               {
                 label: "Supersedes",
                 type: InputTypes.TEXT,
                 placeholder: "Supersedes",
+                required: true,
                 register: register("supersedesNumber" as Path<TFieldValues>),
                 errors,
               },
@@ -111,86 +133,6 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           />
         </CardContent>
       </Card>
-      <div className="flex justify-between items-center mt-4">
-        <span className="font-semibold">Tests & Specification</span>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() =>
-            append({
-              reference: {
-                value: "",
-                label: "",
-              },
-              releaseSpecification: "",
-              srNumber: fields.length + 1,
-              name: "",
-            })
-          }
-        >
-          <Icon name="Plus" className="h-4 w-4 mr-2" /> Test & Specification
-        </Button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {fields.map((field, index) => (
-          <Card key={field.id}>
-            <div key={field.id} className="p-4 rounded-md relative space-y-3">
-              <Button
-                type="button"
-                size="icon"
-                variant="ghost"
-                className="absolute top-2 right-2 text-red-500"
-                onClick={() => remove(index)}
-              >
-                <Icon name="Trash" className="h-4 w-4" />
-              </Button>
-              <FormWizard
-                config={[
-                  {
-                    label: "SR Number",
-                    type: InputTypes.NUMBER,
-                    register: register(
-                      `testSpecifications.${index}.srNumber` as Path<TFieldValues>,
-                      { valueAsNumber: true },
-                    ),
-                    errors,
-                  },
-                  {
-                    label: "Test",
-                    type: InputTypes.TEXT,
-                    register: register(
-                      `testSpecifications.${index}.name` as Path<TFieldValues>,
-                    ),
-                    placeholder: "Select Test Name",
-                    errors,
-                  },
-                  {
-                    label: "Release Specification",
-                    type: InputTypes.TEXTAREA,
-                    register: register(
-                      `testSpecifications.${index}.releaseSpecification` as Path<TFieldValues>,
-                    ),
-                    errors,
-                  },
-                  {
-                    label: "Reference",
-                    type: InputTypes.SELECT,
-                    name: `testSpecifications.${index}.reference`,
-                    control: control as unknown as Control,
-                    placeholder: "Select Reference",
-                    options: Object.keys(MaterialSpecificationReference) // get only labels
-                      .map((label) => ({
-                        label: String(label),
-                        value: String(MaterialSpecificationReference[label]),
-                      })),
-                    errors,
-                  },
-                ]}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
     </>
   );
 };

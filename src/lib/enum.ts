@@ -539,3 +539,7 @@ export enum EmployeeInactiveStatus {
   Termination = 4,
   Transfer = 5,
 }
+export enum FormTypeEnum {
+  Default = 0,
+  Specification = 1,
+}

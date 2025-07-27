@@ -1,22 +1,27 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  AuditModules,
+  ErrorResponse,
+  FormTypeEnum,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import React, { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
-  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
   TestStageValues,
 } from "../types";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   TestStage,
+  useGetApiV1FormQuery,
   useGetApiV1ProductQuery,
+  useGetApiV1UserQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -55,11 +60,6 @@ export function EditMaterialSpecification() {
     resolver: CreateProductSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
-  });
-
   useEffect(() => {
     if (id) {
       fetchProductSpecification({ id: id as string });
@@ -92,6 +92,20 @@ export function EditMaterialSpecification() {
         value: String(productSpecification?.testStage),
         label: TestStageValues[productSpecification?.testStage as TestStage],
       });
+      setValue("userId", {
+        value: productSpecification.user?.id ?? "",
+        label: `${productSpecification.user?.firstName} ${productSpecification.user?.lastName}`,
+      });
+      setValue(
+        "formId",
+        productSpecification?.form
+          ? {
+              value: productSpecification.form.id ?? "",
+              label: productSpecification.form.name ?? "",
+            }
+          : { value: "", label: "" },
+      );
+      setValue("description", productSpecification?.description || "");
       setValue(
         "revisionNumber",
         productSpecification?.revisionNumber as string,
@@ -109,28 +123,6 @@ export function EditMaterialSpecification() {
       if (productSpecification?.reviewDate) {
         setValue("reviewDate", new Date(productSpecification.reviewDate));
       }
-      setValue(
-        "testSpecifications",
-        (productSpecification?.testSpecifications ?? []).map((test) => ({
-          srNumber: test.srNumber,
-          name: test.name as string,
-          releaseSpecification:
-            test.releaseSpecification !== undefined &&
-            test.releaseSpecification !== null
-              ? String(test.releaseSpecification)
-              : "",
-          reference: {
-            value:
-              test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
-                : "",
-            label:
-              test.reference !== undefined && test.reference !== null
-                ? MaterialSpecificationReferenceEnumValues[test.reference]
-                : "",
-          },
-        })),
-      );
       if (productSpecification?.product) {
         setValue("productId", {
           value: productSpecification?.product?.id ?? "",
@@ -140,6 +132,31 @@ export function EditMaterialSpecification() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSpecification]);
+
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const productOptions =
     product?.data?.map((product) => ({
@@ -153,20 +170,16 @@ export function EditMaterialSpecification() {
       testStage: Number(data.testStage.value) as unknown as TestStage,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
+      userId: data.userId.value,
+      formId: data.formId.value,
+      description: data.description,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
       productId: data.productId.value as string,
     };
     console.log("Submitting data", payload);
@@ -198,18 +211,12 @@ export function EditMaterialSpecification() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
+            userOptions={userOptions}
+            formOptions={formOptions}
             productOptions={productOptions}
             errors={errors}
           />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button

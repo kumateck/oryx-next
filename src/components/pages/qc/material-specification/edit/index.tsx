@@ -4,20 +4,21 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
+  Option,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
-  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
 } from "../types";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
+  useGetApiV1FormQuery,
+  useGetApiV1UserQuery,
   useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
@@ -59,11 +60,6 @@ export function EditMaterialSpecification() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
-  });
-
   useEffect(() => {
     if (id) {
       fetchMaterialSpecification({ id: id as string });
@@ -92,24 +88,6 @@ export function EditMaterialSpecification() {
       if (materialData?.reviewDate) {
         setValue("reviewDate", new Date(materialData.reviewDate));
       }
-      setValue(
-        "testSpecifications",
-        (materialData?.testSpecifications ?? []).map((test) => ({
-          srNumber: test.srNumber,
-          name: test.name as string,
-          releaseSpecification: test.releaseSpecification ?? "",
-          reference: {
-            value:
-              test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
-                : "",
-            label:
-              test.reference !== undefined && test.reference !== null
-                ? MaterialSpecificationReferenceEnumValues[test.reference]
-                : "",
-          },
-        })),
-      );
       if (materialData?.material) {
         setValue("materialId", {
           value: materialData?.material?.id ?? "",
@@ -119,6 +97,31 @@ export function EditMaterialSpecification() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialData]);
+
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const materialOptions =
     materials?.map((material) => ({
@@ -131,20 +134,14 @@ export function EditMaterialSpecification() {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
+      formId: "",
+      userId: "",
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
       materialId: data.materialId.value as string,
     };
     console.log("Submitting data", payload);
@@ -176,19 +173,13 @@ export function EditMaterialSpecification() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
+            formOptions={formOptions}
+            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
           />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button

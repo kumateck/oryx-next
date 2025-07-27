@@ -25,21 +25,6 @@ export const TestStageValues = {
   Finished: 2,
 };
 
-const testSpecificationSchema = z.object({
-  srNumber: z.number().nonnegative().optional(),
-  name: z.string().min(1, "Test name is required"),
-  releaseSpecification: z.string().min(1, "Release specification is required"),
-  reference: z.object(
-    {
-      value: z.string().min(1, "Reference is required"),
-      label: z.string().min(1, "Reference is required"),
-    },
-    {
-      message: "Reference is required",
-    },
-  ),
-});
-
 const specificationSchema = z.object({
   specificationNumber: z.string().min(1, "Specification number is required"),
   labelClaim: z.string().min(1, "Label claim is required"),
@@ -58,15 +43,34 @@ const specificationSchema = z.object({
   effectiveDate: z.date({
     message: "Effective date must be a valid ISO datetime string",
   }),
+  dueDate: z.date({
+    message: "Due date must be a valid ISO datetime string",
+  }),
 
   reviewDate: z.date({
     message: "Review date must be a valid ISO datetime string",
   }),
-  packingStyle: z.string().optional(),
-  testSpecifications: z
-    .array(testSpecificationSchema)
-    .min(1, "At least one test specification is required"),
+  formId: z.object(
+    {
+      value: z.string(),
+      label: z.string(),
+    },
+    {
+      message: "Template is required",
+    },
+  ),
+  userId: z.object(
+    {
+      value: z.string(),
+      label: z.string(),
+    },
+    {
+      message: "Assignee is required",
+    },
+  ),
+  description: z.string().optional(),
 
+  packingStyle: z.string().optional(),
   productId: z.object(
     {
       value: z.string(),

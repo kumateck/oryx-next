@@ -1,47 +1,29 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
+import { Card, CardContent, CardHeader } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
-  FieldArrayWithId,
   FieldErrors,
   FieldValues,
   Path,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
   UseFormRegister,
 } from "react-hook-form";
-import {
-  CreateProductSpecificationDto,
-  MaterialSpecificationReference,
-  TestStageValues,
-} from "../types";
-
-type FieldsType = {
-  id: string;
-  testSpecifications: {
-    testName: string;
-    releaseSpecification: string;
-    reference: string;
-  };
-}[];
+import { TestStageValues } from "../types";
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  remove: UseFieldArrayRemove;
-  append: UseFieldArrayAppend<CreateProductSpecificationDto>;
-  fields: FieldArrayWithId<FieldsType>[];
   productOptions: Option[];
+  userOptions: Option[];
+  formOptions: Option[];
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   productOptions,
-  fields,
-  append,
-  remove,
+  formOptions,
+  userOptions,
   errors,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -78,11 +60,28 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
+                label: "Due Date",
+                type: InputTypes.DATE,
+                placeholder: "Due Date",
+                name: "dueDate",
+                control: control as Control,
+                errors,
+              },
+              {
                 label: "Packing Style",
                 type: InputTypes.TEXT,
                 placeholder: "Packing Style",
                 readOnly: true,
                 register: register("packingStyle" as Path<TFieldValues>),
+                required: true,
+                errors,
+              },
+              {
+                label: "Shelf Life",
+                type: InputTypes.TEXT,
+                placeholder: "Shelf Life",
+                readOnly: true,
+                register: register("shelfLife" as Path<TFieldValues>),
                 required: true,
                 errors,
               },
@@ -100,6 +99,24 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           <FormWizard
             className="w-full"
             config={[
+              {
+                label: "Assigned User",
+                type: InputTypes.SELECT,
+                name: "userId",
+                placeholder: "Select User",
+                control: control as Control,
+                options: userOptions,
+                errors,
+              },
+              {
+                label: "Template",
+                type: InputTypes.SELECT,
+                name: "formId",
+                placeholder: "Select Template",
+                control: control as Control,
+                options: formOptions,
+                errors,
+              },
               {
                 label: "Revision Date",
                 type: InputTypes.DATE,
@@ -136,100 +153,10 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                   })),
                 errors,
               },
-              {
-                label: "Shelf Life",
-                type: InputTypes.TEXT,
-                placeholder: "Shelf Life",
-                readOnly: true,
-                register: register("shelfLife" as Path<TFieldValues>),
-                required: true,
-                errors,
-              },
             ]}
           />
         </CardContent>
       </Card>
-      <div className="flex justify-between items-center mt-4">
-        <span className="font-semibold">Tests & Specification</span>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() =>
-            append({
-              reference: {
-                value: "",
-                label: "",
-              },
-              releaseSpecification: "",
-              srNumber: 0,
-              name: "",
-            })
-          }
-        >
-          <Icon name="Plus" className="h-4 w-4 mr-2" /> Test & Specification
-        </Button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {fields.map((field, index) => (
-          <Card key={field.id}>
-            <div key={field.id} className="p-4 rounded-md relative space-y-3">
-              <Button
-                type="button"
-                size="icon"
-                variant="ghost"
-                className="absolute top-2 right-2 text-red-500"
-                onClick={() => remove(index)}
-              >
-                <Icon name="Trash" className="h-4 w-4" />
-              </Button>
-              <FormWizard
-                config={[
-                  {
-                    label: "SR Number",
-                    type: InputTypes.NUMBER,
-                    register: register(
-                      `testSpecifications.${index}.srNumber` as Path<TFieldValues>,
-                      { valueAsNumber: true },
-                    ),
-                    errors,
-                  },
-                  {
-                    label: "Test Name",
-                    type: InputTypes.TEXT,
-                    register: register(
-                      `testSpecifications.${index}.testName` as Path<TFieldValues>,
-                    ),
-                    placeholder: "Select Test Name",
-                    errors,
-                  },
-                  {
-                    label: "Release Specification",
-                    type: InputTypes.TEXTAREA,
-                    placeholder: "Release Specification",
-                    register: register(
-                      `testSpecifications.${index}.releaseSpecification` as Path<TFieldValues>,
-                    ),
-                    errors,
-                  },
-                  {
-                    label: "Reference",
-                    type: InputTypes.SELECT,
-                    name: `testSpecifications.${index}.reference`,
-                    control: control as unknown as Control,
-                    placeholder: "Select Reference",
-                    options: Object.keys(MaterialSpecificationReference) // get only labels
-                      .map((label) => ({
-                        label: String(label),
-                        value: String(MaterialSpecificationReference[label]),
-                      })),
-                    errors,
-                  },
-                ]}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
     </>
   );
 };

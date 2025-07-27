@@ -107,7 +107,6 @@ export function DataTableRowActions<TData extends EmployeeDto>({
 function StatusActions<TData extends EmployeeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  // TODO: use the right endpoint for updating
   const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdStatusMutation(
     {},
   );

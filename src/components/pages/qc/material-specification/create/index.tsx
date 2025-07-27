@@ -4,9 +4,11 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
+  Option,
 } from "@/lib";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -16,7 +18,9 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CreateMaterialSpecificationRequest,
+  useGetApiV1FormQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1UserQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -51,10 +55,30 @@ export function MaterialSpecPage() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
   });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const materialOptions =
     materials?.map((material) => ({
@@ -104,17 +128,13 @@ export function MaterialSpecPage() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
+            formOptions={formOptions}
+            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
           />
-          <span className="text-red-600 text-sm font-medium">
-            {errors?.testSpecifications?.message}
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button

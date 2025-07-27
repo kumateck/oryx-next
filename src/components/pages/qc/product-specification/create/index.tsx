@@ -1,7 +1,13 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
-import { useFieldArray, useForm } from "react-hook-form";
+import {
+  AuditModules,
+  ErrorResponse,
+  FormTypeEnum,
+  isErrorResponse,
+  Option,
+} from "@/lib";
+import { useForm } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
@@ -11,10 +17,10 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   TestStage,
+  useGetApiV1FormQuery,
   useGetApiV1ProductQuery,
+  useGetApiV1UserQuery,
   usePostApiV1ProductSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -41,17 +47,37 @@ export function MaterialSpecPage() {
     register,
     control,
     handleSubmit,
-    setValue,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CreateProductSpecificationDto>({
     resolver: CreateProductSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
   });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const productOptions =
     product?.data?.map((product) => ({
@@ -83,14 +109,10 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
+      userId: data.userId.value,
+      formId: data.formId.value,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      description: data.description,
       testStage: Number(data.testStage.value) as unknown as TestStage,
       productId: data.productId.value as string,
     };
@@ -117,22 +139,14 @@ export function MaterialSpecPage() {
         <PageTitle title="Products Specification List" />
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          <SpecificationForm
-            control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
-            register={register}
-            productOptions={productOptions}
-            errors={errors}
-          />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
-        </div>
+        <SpecificationForm
+          control={control}
+          register={register}
+          userOptions={userOptions}
+          formOptions={formOptions}
+          productOptions={productOptions}
+          errors={errors}
+        />
 
         <div className="flex justify-end gap-4">
           <Button
