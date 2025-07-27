@@ -51,6 +51,14 @@ const WarehousesForm = <TFieldValues extends FieldValues, TContext>({
 
             errors,
           },
+          {
+            register: register("location" as Path<TFieldValues>),
+            label: "Warehouse Location",
+            placeholder: "Enter location",
+            type: InputTypes.TEXT,
+            required: true,
+            errors,
+          },
 
           {
             label: "Description",

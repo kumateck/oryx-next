@@ -1,21 +1,36 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 
-import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
+import {
+  EmployeeDto,
+  usePutApiV1EmployeeByIdMutation,
+} from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
-import { DropdownMenuItem, Icon } from "@/components/ui";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Icon,
+} from "@/components/ui";
 import { useState } from "react";
 
 import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import {
+  EmployeeActiveStatus,
+  EmployeeInactiveStatus,
   EmployeeStatusType,
   EmployeeType,
+  ErrorResponse,
+  isErrorResponse,
   PermissionKeys,
   splitWords,
 } from "@/lib";
 import { useRouter } from "next/navigation";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { toast } from "sonner";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -89,6 +104,116 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   );
 }
 
+function StatusActions<TData extends EmployeeDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdMutation({});
+  const dispatch = useDispatch();
+
+  const activeStatusOptions = Object.entries(EmployeeActiveStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+  const inactiveStatusOptions = Object.entries(EmployeeInactiveStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+  console.log(row.original, "this is active status");
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger disabled={isLoading} asChild>
+        <div
+          className={`text-sm cursor-pointer flex gap-1 items-center justify-center ${row.original.status === EmployeeStatusType.Active ? "bg-green-600" : "bg-gray-500"} text-white px-3 py-1 rounded-full w-fit`}
+        >
+          <span>
+            {EmployeeStatusType[row.original.status as EmployeeStatusType]}
+          </span>
+          {isLoading && (
+            <Icon name="LoaderCircle" className="size-5 animate-spin" />
+          )}
+        </div>
+      </DropdownMenuTrigger>
+      {row.original.status === EmployeeStatusType.Active ? (
+        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+          {activeStatusOptions.map((option) => (
+            <DropdownMenuItem key={option.value} className="group">
+              <Button
+                variant={
+                  String(row?.original?.activeStatus) === option.value
+                    ? "outline"
+                    : "default"
+                }
+                className="w-full flex text-start items-center gap-2"
+                onClick={async () => {
+                  try {
+                    await updateStatus({
+                      id: row?.original?.id as string,
+                      updateEmployeeRequest: {
+                        activeStatus:
+                          option.value as unknown as EmployeeActiveStatus,
+                        ...row.original,
+                      },
+                    }).unwrap();
+                    toast.success("Status updated successfully");
+                    dispatch(commonActions.setTriggerReload());
+                  } catch (error) {
+                    console.error("Failed to update status:", error);
+                    toast.error(
+                      isErrorResponse(error as ErrorResponse)?.description,
+                    );
+                  }
+                }}
+              >
+                <span>{option.label}</span>
+              </Button>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      ) : (
+        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+          {inactiveStatusOptions.map((option) => (
+            <DropdownMenuItem key={option.value} className="group">
+              <Button
+                variant={
+                  String(row?.original?.inactiveStatus) === option.value
+                    ? "outline"
+                    : "ghost"
+                }
+                className="w-full text-start items-center gap-2"
+                onClick={async () => {
+                  try {
+                    await updateStatus({
+                      id: row?.original?.id as string,
+                      updateEmployeeRequest: {
+                        inactiveStatus:
+                          option.value as unknown as EmployeeInactiveStatus,
+                        ...row.original,
+                      },
+                    }).unwrap();
+                    toast.success("Status updated successfully");
+                    dispatch(commonActions.setTriggerReload());
+                  } catch (error) {
+                    console.error("Failed to update status:", error);
+                    toast.error(
+                      isErrorResponse(error as ErrorResponse)?.description,
+                    );
+                  }
+                }}
+              >
+                {option.label}
+              </Button>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      )}
+    </DropdownMenu>
+  );
+}
+
 export const columns: ColumnDef<EmployeeDto>[] = [
   {
     accessorKey: "staffId",
@@ -125,13 +250,7 @@ export const columns: ColumnDef<EmployeeDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`text-sm flex items-center justify-center ${row.original.status === EmployeeStatusType.Active ? "bg-green-600" : "bg-gray-500"} text-white px-3 py-1 rounded-full w-fit`}
-      >
-        {EmployeeStatusType[row.original.status as EmployeeStatusType]}
-      </div>
-    ),
+    cell: ({ row }) => <StatusActions row={row} />,
   },
   {
     id: "actions",
