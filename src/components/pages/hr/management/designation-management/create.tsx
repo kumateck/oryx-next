@@ -15,7 +15,6 @@ import { Option } from "@/lib";
 import {
   CreateDesignationRequest,
   useGetApiV1DepartmentQuery,
-  useLazyGetApiV1DesignationQuery,
   usePostApiV1DesignationMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -30,7 +29,8 @@ interface Props {
 }
 
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const dispatch = useDispatch();
+
   const [createDesignation, { isLoading }] = usePostApiV1DesignationMutation();
 
   const {
@@ -43,7 +43,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     resolver: CreateDesignationValidator,
     mode: "all",
   });
-  const dispatch = useDispatch();
 
   const onSubmit = async (data: DesignationRequestDto) => {
     try {
@@ -56,10 +55,10 @@ const Create = ({ isOpen, onClose }: Props) => {
 
       await createDesignation({
         createDesignationRequest: payload,
-      });
+      }).unwrap();
 
       toast.success("Designation created successfully");
-      loadDesignations({ page: 1, pageSize: 10 });
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
       dispatch(commonActions.setTriggerReload());

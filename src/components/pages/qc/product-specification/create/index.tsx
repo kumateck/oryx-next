@@ -1,7 +1,7 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
@@ -11,8 +11,6 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   TestStage,
   useGetApiV1ProductQuery,
   usePostApiV1ProductSpecificationsMutation,
@@ -48,11 +46,6 @@ export function MaterialSpecPage() {
     resolver: CreateProductSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
-  });
-
   const productOptions =
     product?.data?.map((product) => ({
       label: product?.name as string,
@@ -83,18 +76,15 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
+
       testStage: Number(data.testStage.value) as unknown as TestStage,
       productId: data.productId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      formId: data.formId.value as string,
+      description: data.description,
+      userId: data.userId.value as string,
     };
-    console.log("Submitting data", payload);
+
     try {
       await createProductSpecification({
         createProductSpecificationRequest: payload,
@@ -120,18 +110,10 @@ export function MaterialSpecPage() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
             productOptions={productOptions}
             errors={errors}
           />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
         </div>
 
         <div className="flex justify-end gap-4">

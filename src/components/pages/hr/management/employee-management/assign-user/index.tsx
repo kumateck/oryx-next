@@ -125,6 +125,7 @@ const UserDialog = ({
         departmentId: defaultDepartment,
         designationId: defaultDesignation,
         staffNumber: selectedEmployee.staffNumber as string,
+        // reportingManagerId: selectedEmployee.re
         employeeLevel: selectedEmployee.level
           ? {
               value: selectedEmployee.level.toString(),
@@ -203,7 +204,7 @@ const UserDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[80vh] min-h-[400px] max-w-2xl flex-col">
-        <DialogTitle>Edit Employee Info</DialogTitle>
+        <DialogTitle>Assign Employee Designation</DialogTitle>
 
         <form
           onSubmit={handleSubmit(onSubmit)}

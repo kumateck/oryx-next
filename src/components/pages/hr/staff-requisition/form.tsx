@@ -94,6 +94,7 @@ export const PositionDetailsForm = <
             type: InputTypes.DATE,
             name: "requestUrgency",
             required: true,
+            disabled: { before: new Date() },
             placeholder: "Select request urgency date",
             errors,
           },

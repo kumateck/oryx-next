@@ -6,7 +6,7 @@ import {
   ErrorResponse,
   isErrorResponse,
 } from "@/lib";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -15,8 +15,6 @@ import SpecificationForm from "./form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -52,11 +50,6 @@ export function MaterialSpecPage() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
-  });
-
   const materialOptions =
     materials?.map((material) => ({
       label: material?.name as string,
@@ -74,15 +67,11 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        // testName: Number(test.testName.value) as unknown as TestTypeEnum,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
       materialId: data.materialId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      formId: data.formId.value as string,
+      description: data.description,
+      userId: data.userId.value as string,
     };
     try {
       await createMaterialSpecification({
@@ -110,17 +99,11 @@ export function MaterialSpecPage() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
           />
-          <span className="text-red-600 text-sm font-medium">
-            {errors?.testSpecifications?.message}
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button
