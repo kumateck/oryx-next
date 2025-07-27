@@ -1188,10 +1188,12 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/employee/${queryArg.id}/change-type`,
         method: "PUT",
-        body: queryArg.employeeType,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
+        },
+        params: {
+          employeeType: queryArg.employeeType,
         },
       }),
     }),
@@ -1615,6 +1617,7 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
+          materialKind: queryArg.materialKind,
         },
       }),
     }),
@@ -8276,11 +8279,11 @@ export type PutApiV1EmployeeByIdChangeTypeApiResponse =
   /** status 204 No Content */ EmployeeDtoRead;
 export type PutApiV1EmployeeByIdChangeTypeApiArg = {
   id: string;
+  employeeType?: EmployeeType;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
-  employeeType: EmployeeType;
 };
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiResponse = unknown;
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiArg = {
@@ -8600,6 +8603,7 @@ export type GetApiV1InventoriesApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  materialKind?: MaterialKind;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */

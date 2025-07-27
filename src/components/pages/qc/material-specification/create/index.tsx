@@ -67,9 +67,9 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      formId: data.formId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
       materialId: data.materialId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      formId: data.formId.value as string,
       description: data.description,
       userId: data.userId.value as string,
     };

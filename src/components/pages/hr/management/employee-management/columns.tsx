@@ -1,21 +1,42 @@
+"use client";
+
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import {
   EmployeeDto,
   usePutApiV1EmployeeByIdChangeTypeMutation,
+  usePutApiV1EmployeeByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { TableMenuAction } from "@/shared/table-menu";
-import { DropdownMenuItem, Icon } from "@/components/ui";
-import { useState } from "react";
-
-import UserDialog from "./assign-user";
-import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import { EmployeeType, PermissionKeys } from "@/lib";
-import { useRouter } from "next/navigation";
+import {
+  EmployeeType,
+  EmployeeStatusType,
+  EmployeeActiveStatus,
+  EmployeeInactiveStatus,
+  ErrorResponse,
+  isErrorResponse,
+  PermissionKeys,
+  splitWords,
+} from "@/lib";
 import { useUserPermissions } from "@/hooks/use-permission";
-import DropdownBtns from "@/shared/btns/drop-btn";
 import ThrowErrorMessage from "@/lib/throw-error";
+
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Icon,
+} from "@/components/ui";
+
+import { TableMenuAction } from "@/shared/table-menu";
+import DropdownBtns from "@/shared/btns/drop-btn";
+import UserDialog from "./assign-user";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -31,8 +52,6 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   const [isAssignLocationOpen, setIsAssignLocationOpen] = useState(false);
   const router = useRouter();
 
-  //Check Permision
-  // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
 
   return (
@@ -47,13 +66,9 @@ export function DataTableRowActions<TData extends EmployeeDto>({
               onClick={() => {
                 setSelectedEmployee(row.original);
                 setIsAssignLocationOpen(true);
-                console.log(row.original.type);
               }}
             >
-              <Icon
-                name="Pencil"
-                className="h-5 w-5 cursor-pointer text-neutral-500"
-              />
+              <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
               <span>Update Employee Info</span>
             </div>
           </DropdownMenuItem>
@@ -69,10 +84,7 @@ export function DataTableRowActions<TData extends EmployeeDto>({
                 );
               }}
             >
-              <Icon
-                name="User"
-                className="h-5 w-5 cursor-pointer text-neutral-500"
-              />
+              <Icon name="User" className="h-5 w-5 text-neutral-500" />
               <span>Employee Details</span>
             </div>
           </DropdownMenuItem>
@@ -96,20 +108,19 @@ export function EmployeeTypeColumn<TData extends EmployeeDto>({
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
   );
-  const [updateEmployee, isLoading] =
+  const [updateEmployee, { isLoading }] =
     usePutApiV1EmployeeByIdChangeTypeMutation();
+
   const handleEmployeeType = async (id: string, type: EmployeeType) => {
     setSelectedEmployeeId(id);
     try {
-      await updateEmployee({
-        id,
-        employeeType: type,
-      }).unwrap();
+      await updateEmployee({ id, employeeType: type }).unwrap();
       dispatch(commonActions.setTriggerReload());
     } catch (error) {
       ThrowErrorMessage(error);
     }
   };
+
   return (
     <div className="min-w-36 flex gap-2 items-center">
       {isLoading && selectedEmployeeId === row.original.id && (
@@ -142,14 +153,97 @@ export function EmployeeTypeColumn<TData extends EmployeeDto>({
   );
 }
 
+export function StatusActions<TData extends EmployeeDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdMutation({});
+  const dispatch = useDispatch();
+
+  const activeStatusOptions = Object.entries(EmployeeActiveStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({ label: splitWords(key), value: String(value) }));
+
+  const inactiveStatusOptions = Object.entries(EmployeeInactiveStatus)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({ label: splitWords(key), value: String(value) }));
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger disabled={isLoading} asChild>
+        <div
+          className={`text-sm cursor-pointer flex gap-1 items-center justify-center ${
+            row.original.status === EmployeeStatusType.Active
+              ? "bg-green-600"
+              : "bg-gray-500"
+          } text-white px-3 py-1 rounded-full w-fit`}
+        >
+          <span>
+            {EmployeeStatusType[row.original.status as EmployeeStatusType]}
+          </span>
+          {isLoading && (
+            <Icon name="LoaderCircle" className="size-5 animate-spin" />
+          )}
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+        {(row.original.status === EmployeeStatusType.Active
+          ? activeStatusOptions
+          : inactiveStatusOptions
+        ).map((option) => (
+          <DropdownMenuItem key={option.value} className="group">
+            <Button
+              variant={
+                String(
+                  row.original.status === EmployeeStatusType.Active
+                    ? row.original.activeStatus
+                    : row.original.inactiveStatus,
+                ) === option.value
+                  ? "outline"
+                  : "ghost"
+              }
+              className="w-full flex text-start items-center gap-2"
+              onClick={async () => {
+                try {
+                  await updateStatus({
+                    id: row.original.id as string,
+                    updateEmployeeRequest: {
+                      ...(row.original.status === EmployeeStatusType.Active
+                        ? {
+                            activeStatus:
+                              option.value as unknown as EmployeeActiveStatus,
+                          }
+                        : {
+                            inactiveStatus:
+                              option.value as unknown as EmployeeInactiveStatus,
+                          }),
+                      ...row.original,
+                    },
+                  }).unwrap();
+                  toast.success("Status updated successfully");
+                  dispatch(commonActions.setTriggerReload());
+                } catch (error) {
+                  console.error("Failed to update status:", error);
+                  toast.error(
+                    isErrorResponse(error as ErrorResponse)?.description,
+                  );
+                }
+              }}
+            >
+              {option.label}
+            </Button>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export const columns: ColumnDef<EmployeeDto>[] = [
   {
     accessorKey: "staffId",
     header: "Staff ID",
     cell: ({ row }) => (
-      <div className="min-w-36">
-        {row.original.staffNumber ? row.original.staffNumber : "N/A"}
-      </div>
+      <div className="min-w-36">{row.original.staffNumber ?? "N/A"}</div>
     ),
   },
   {
@@ -172,7 +266,13 @@ export const columns: ColumnDef<EmployeeDto>[] = [
     cell: ({ row }) => <EmployeeTypeColumn row={row} />,
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <StatusActions row={row} />,
+  },
+  {
     id: "actions",
+    header: "",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

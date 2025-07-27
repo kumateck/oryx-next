@@ -19,6 +19,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   categoryOptions: Option[];
   defaultValues?: TFieldValues;
   isExitPass: boolean;
+  isOfficialDuty: boolean;
   isLeaveOrAbsence: boolean;
 }
 
@@ -29,6 +30,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
   leaveTypesOptions,
   employeeOptions,
   categoryOptions,
+  isOfficialDuty,
   defaultValues,
   isExitPass,
   // isLeaveOrAbsence,
@@ -160,7 +162,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {!isExitPass && (
+      {!isExitPass && !isOfficialDuty && (
         <div className="w-full my-5 gap-4">
           <FormWizard
             config={[
@@ -183,6 +185,21 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             ]}
           />
         </div>
+      )}
+      {isOfficialDuty && (
+        <FormWizard
+          className="w-full my-5 gap-4"
+          config={[
+            {
+              label: "Destination",
+              register: register("destination" as Path<TFieldValues>),
+              type: InputTypes.TEXT,
+              required: true,
+              placeholder: "Enter official duty location",
+              errors,
+            },
+          ]}
+        />
       )}
       <FormWizard
         className="w-full space-y-5 my-5"

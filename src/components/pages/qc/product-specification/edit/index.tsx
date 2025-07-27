@@ -2,19 +2,16 @@
 import { Button, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
 import React, { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
-  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
   TestStageValues,
 } from "../types";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   TestStage,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
@@ -53,11 +50,6 @@ export function EditMaterialSpecification() {
     formState: { errors },
   } = useForm<CreateProductSpecificationDto>({
     resolver: CreateProductSpecificationValidator,
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
   });
 
   useEffect(() => {
@@ -109,28 +101,7 @@ export function EditMaterialSpecification() {
       if (productSpecification?.reviewDate) {
         setValue("reviewDate", new Date(productSpecification.reviewDate));
       }
-      setValue(
-        "testSpecifications",
-        (productSpecification?.testSpecifications ?? []).map((test) => ({
-          srNumber: test.srNumber,
-          name: test.name as string,
-          releaseSpecification:
-            test.releaseSpecification !== undefined &&
-            test.releaseSpecification !== null
-              ? String(test.releaseSpecification)
-              : "",
-          reference: {
-            value:
-              test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
-                : "",
-            label:
-              test.reference !== undefined && test.reference !== null
-                ? MaterialSpecificationReferenceEnumValues[test.reference]
-                : "",
-          },
-        })),
-      );
+
       if (productSpecification?.product) {
         setValue("productId", {
           value: productSpecification?.product?.id ?? "",
@@ -159,17 +130,14 @@ export function EditMaterialSpecification() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
+
       productId: data.productId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      formId: data.formId.value as string,
+      description: data.description,
+      userId: data.userId.value as string,
     };
-    console.log("Submitting data", payload);
+
     if (!id) return;
     try {
       await updateProductSpecification({
@@ -198,18 +166,10 @@ export function EditMaterialSpecification() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
             productOptions={productOptions}
             errors={errors}
           />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button

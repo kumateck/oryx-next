@@ -13,7 +13,7 @@ interface Props {
 }
 export function EmployeeCard({ data }: Props) {
   return (
-    <Card className=" col-span-5">
+    <Card className="col-span-7 lg:col-span-5 w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Total Employee</CardTitle>

@@ -14,7 +14,7 @@ import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { MaterialSpecificationReferenceEnum } from "../types";
+
 import MaterialSpecificationSkeleton from "./loadingSkeleton";
 
 function Page() {
@@ -31,7 +31,7 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   if (isLoading) return <MaterialSpecificationSkeleton />;
-  console.log("Material Data", materialData);
+
   return (
     <PageWrapper>
       <div className="flex items-center gap-2 mb-4 justify-between">
@@ -109,39 +109,6 @@ function Page() {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-xl">Test and Specifications</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-6 mb-2 font-medium text-gray-600">
-              <div className="col-span-1">SR Number</div>
-              <div className="col-span-2">Test</div>
-              <div className="col-span-2">Specification</div>
-              <div className="col-span-1">Reference</div>
-            </div>
-
-            {materialData?.testSpecifications?.map((test, index) => (
-              <div
-                className="grid grid-cols-6 text-sm font-medium text-gray-900"
-                key={index}
-              >
-                <div className="col-span-1">{test?.srNumber}</div>
-                {/* <div className="col-span-2">
-                  {TestTypeEnum[test?.testName as TestType] || test?.testName}
-                </div> */}
-                <div className="col-span-2">{test?.releaseSpecification}</div>
-                <div className="col-span-1">
-                  {
-                    MaterialSpecificationReferenceEnum[
-                      test?.reference as MaterialSpecificationReferenceEnum
-                    ]
-                  }
-                </div>
-              </div>
-            ))}
           </CardContent>
         </Card>
       </ScrollablePageWrapper>

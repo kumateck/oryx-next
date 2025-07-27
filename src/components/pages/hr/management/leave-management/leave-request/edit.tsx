@@ -161,6 +161,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
   const isExitPass =
     selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
+  const isOfficialDuty =
+    selectedCategory?.value === String(LeaveCategories.OfficialDuty);
   const isLeaveOrAbsence = [
     String(LeaveCategories.LeaveRequest),
     String(LeaveCategories.AbsenceRequest),
@@ -189,6 +191,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             leaveTypesOptions={leaveTypesOptions}
             categoryOptions={categoryOptions}
             isExitPass={isExitPass}
+            isOfficialDuty={isOfficialDuty}
             isLeaveOrAbsence={isLeaveOrAbsence}
           />
           <DialogFooter className="justify-end gap-4 py-6">
