@@ -33,13 +33,6 @@ export const Packaging = ({ data }: IProps) => {
             header: "Base Quantity",
             cell: (info) => info.row.original.baseQuantity,
           },
-          // TODO: Update this to show the UOM name when available
-          // {
-          //   accessorKey: "uom",
-          //   header: "Unit of Measure",
-
-          //   cell: (info) => info.row.original.material?.symbol,
-          // },
           {
             accessorKey: "materialThickness",
             header: "Material Thickness",

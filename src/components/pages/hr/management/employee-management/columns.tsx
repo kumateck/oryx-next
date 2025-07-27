@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 
 import {
   EmployeeDto,
-  usePutApiV1EmployeeByIdMutation,
+  usePutApiV1EmployeeByIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import {
@@ -107,7 +107,10 @@ export function DataTableRowActions<TData extends EmployeeDto>({
 function StatusActions<TData extends EmployeeDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdMutation({});
+  // TODO: use the right endpoint for updating
+  const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdStatusMutation(
+    {},
+  );
   const dispatch = useDispatch();
 
   const activeStatusOptions = Object.entries(EmployeeActiveStatus)
@@ -129,7 +132,19 @@ function StatusActions<TData extends EmployeeDto>({
           className={`text-sm cursor-pointer flex gap-1 items-center justify-center ${row.original.status === EmployeeStatusType.Active ? "bg-green-600" : "bg-gray-500"} text-white px-3 py-1 rounded-full w-fit`}
         >
           <span>
-            {EmployeeStatusType[row.original.status as EmployeeStatusType]}
+            {/* { EmployeeStatusType[row.original.status as EmployeeStatusType]} */}
+            {row.original.status === EmployeeStatusType.Active
+              ? row?.original?.activeStatus
+                ? splitWords(EmployeeActiveStatus[row?.original?.activeStatus])
+                : EmployeeStatusType[row.original.status as EmployeeStatusType]
+              : ""}
+            {row.original.status === EmployeeStatusType.Inactive
+              ? row?.original?.inactiveStatus
+                ? splitWords(
+                    EmployeeInactiveStatus[row?.original?.inactiveStatus],
+                  )
+                : EmployeeStatusType[row.original.status as EmployeeStatusType]
+              : ""}
           </span>
           {isLoading && (
             <Icon name="LoaderCircle" className="size-5 animate-spin" />
@@ -150,11 +165,11 @@ function StatusActions<TData extends EmployeeDto>({
                 onClick={async () => {
                   try {
                     await updateStatus({
-                      id: row?.original?.id as string,
-                      updateEmployeeRequest: {
+                      id: row.original.id as string,
+                      updateEmployeeStatus: {
+                        status: row.original.status as EmployeeStatusType,
                         activeStatus:
                           option.value as unknown as EmployeeActiveStatus,
-                        ...row.original,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");
@@ -187,10 +202,11 @@ function StatusActions<TData extends EmployeeDto>({
                   try {
                     await updateStatus({
                       id: row?.original?.id as string,
-                      updateEmployeeRequest: {
+                      updateEmployeeStatus: {
                         inactiveStatus:
                           option.value as unknown as EmployeeInactiveStatus,
-                        ...row.original,
+                        activeStatus: row.original
+                          .activeStatus as EmployeeActiveStatus,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");
