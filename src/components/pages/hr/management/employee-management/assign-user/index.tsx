@@ -37,6 +37,8 @@ import {
 } from "./type";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface AssignLocationDialogProps {
   open: boolean;
@@ -59,6 +61,8 @@ const UserDialog = ({
     }),
     [selectedEmployee?.department?.name, selectedEmployee?.department?.id],
   );
+
+  const dispatch = useDispatch();
 
   const defaultDesignation = useMemo(
     () => ({
@@ -156,7 +160,6 @@ const UserDialog = ({
         toast.error("No employee selected");
         return;
       }
-      console.log("Data", data);
 
       const payload = {
         designationId: data.designationId?.value,
@@ -174,6 +177,7 @@ const UserDialog = ({
       }).unwrap();
 
       toast.success("Employee assigned successfully");
+      dispatch(commonActions.setTriggerReload());
       onSuccess();
       handleClose();
     } catch (error) {
@@ -224,10 +228,19 @@ const UserDialog = ({
           {/* Fixed footer */}
           <div className="sticky bottom-0 bg-background pt-4">
             <div className="flex justify-end gap-2 border-t pt-4">
-              <Button type="button" variant="secondary" onClick={handleClose}>
+              <Button
+                disabled={isLoading}
+                type="button"
+                variant="secondary"
+                onClick={handleClose}
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="flex items-center gap-2">
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="flex items-center gap-2"
+              >
                 <Icon name="Plus" className="h-4 w-4" />
                 <span>{isLoading ? "Assigning..." : "Assign"}</span>
               </Button>

@@ -122,7 +122,6 @@ function StatusActions<TData extends EmployeeDto>({
       label: splitWords(key),
       value: String(value),
     }));
-  console.log(row.original, "this is active status");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>
