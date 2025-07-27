@@ -42,8 +42,7 @@ interface Props {
 }
 const Create = ({ isOpen, onClose }: Props) => {
   const dispatch = useDispatch();
-  const [loadOvertimeRequests, { isFetching }] =
-    useLazyGetApiV1OvertimeRequestsQuery();
+
   const [createOvertimeRequest, { isLoading }] =
     usePostApiV1OvertimeRequestsMutation();
 
@@ -146,10 +145,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       }).unwrap();
       toast.success("Overtime request created successfully");
       dispatch(commonActions.setTriggerReload());
-      loadOvertimeRequests({
-        page: 1,
-        pageSize: 10,
-      });
+
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -180,12 +176,12 @@ const Create = ({ isOpen, onClose }: Props) => {
             <Button
               variant={"default"}
               className="flex items-center gap-2"
-              disabled={isLoading || isFetching}
+              disabled={isLoading}
             >
               <Icon
                 name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": isLoading || isFetching,
+                  "animate-spin": isLoading,
                 })}
               />
               <span>Save</span>{" "}

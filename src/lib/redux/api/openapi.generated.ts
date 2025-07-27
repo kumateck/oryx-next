@@ -1069,6 +1069,7 @@ const injectedRtkApi = api.injectEndpoints({
           searchQuery: queryArg.searchQuery,
           designation: queryArg.designation,
           department: queryArg.department,
+          status: queryArg.status,
         },
       }),
     }),
@@ -1180,6 +1181,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1EmployeeByIdChangeType: build.mutation<
+      PutApiV1EmployeeByIdChangeTypeApiResponse,
+      PutApiV1EmployeeByIdChangeTypeApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/employee/${queryArg.id}/change-type`,
+        method: "PUT",
+        body: queryArg.employeeType,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1FileByModelTypeAndModelIdReference: build.mutation<
       PostApiV1FileByModelTypeAndModelIdReferenceApiResponse,
       PostApiV1FileByModelTypeAndModelIdReferenceApiArg
@@ -1281,6 +1296,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           searchQuery: queryArg.searchQuery,
+          type: queryArg["type"],
           pageSize: queryArg.pageSize,
           page: queryArg.page,
           sortLabel: queryArg.sortLabel,
@@ -1379,6 +1395,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           searchQuery: queryArg.searchQuery,
+          type: queryArg["type"],
           pageSize: queryArg.pageSize,
           page: queryArg.page,
           sortLabel: queryArg.sortLabel,
@@ -1564,6 +1581,76 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/holidays/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1Inventories: build.mutation<
+      PostApiV1InventoriesApiResponse,
+      PostApiV1InventoriesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/inventories`,
+        method: "POST",
+        body: queryArg.createInventoryRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1Inventories: build.query<
+      GetApiV1InventoriesApiResponse,
+      GetApiV1InventoriesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/inventories`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    deleteApiV1Inventories: build.mutation<
+      DeleteApiV1InventoriesApiResponse,
+      DeleteApiV1InventoriesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/inventories`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1InventoriesById: build.query<
+      GetApiV1InventoriesByIdApiResponse,
+      GetApiV1InventoriesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/inventories/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1InventoriesById: build.mutation<
+      PutApiV1InventoriesByIdApiResponse,
+      PutApiV1InventoriesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/inventories/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createInventoryRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6137,6 +6224,79 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1Services: build.mutation<
+      PostApiV1ServicesApiResponse,
+      PostApiV1ServicesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services`,
+        method: "POST",
+        body: queryArg.createServiceRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1Services: build.query<
+      GetApiV1ServicesApiResponse,
+      GetApiV1ServicesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          isActive: queryArg.isActive,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+        },
+      }),
+    }),
+    getApiV1ServicesById: build.query<
+      GetApiV1ServicesByIdApiResponse,
+      GetApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ServicesById: build.mutation<
+      PutApiV1ServicesByIdApiResponse,
+      PutApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createServiceRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1ServicesById: build.mutation<
+      DeleteApiV1ServicesByIdApiResponse,
+      DeleteApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ShiftSchedules: build.mutation<
       PostApiV1ShiftSchedulesApiResponse,
       PostApiV1ShiftSchedulesApiArg
@@ -8033,6 +8193,7 @@ export type GetApiV1EmployeeApiArg = {
   searchQuery?: string;
   designation?: string;
   department?: string;
+  status?: EmployeeStatus;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8110,6 +8271,16 @@ export type PutApiV1EmployeeByIdAssignApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   assignEmployeeDto: AssignEmployeeDto;
+};
+export type PutApiV1EmployeeByIdChangeTypeApiResponse =
+  /** status 204 No Content */ EmployeeDtoRead;
+export type PutApiV1EmployeeByIdChangeTypeApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  employeeType: EmployeeType;
 };
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiResponse = unknown;
 export type PostApiV1FileByModelTypeAndModelIdReferenceApiArg = {
@@ -8200,6 +8371,7 @@ export type GetApiV1FormApiResponse =
   /** status 200 OK */ FormDtoIEnumerablePaginateable;
 export type GetApiV1FormApiArg = {
   searchQuery?: string;
+  type?: FormType;
   pageSize?: number;
   page?: number;
   sortLabel?: string;
@@ -8270,6 +8442,7 @@ export type GetApiV1FormQuestionApiResponse =
   /** status 200 OK */ QuestionDtoIEnumerablePaginateable;
 export type GetApiV1FormQuestionApiArg = {
   searchQuery?: string;
+  type?: FormType;
   pageSize?: number;
   page?: number;
   sortLabel?: string;
@@ -8412,6 +8585,52 @@ export type DeleteApiV1HolidaysByIdApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
+};
+export type PostApiV1InventoriesApiResponse = /** status 200 OK */ string;
+export type PostApiV1InventoriesApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createInventoryRequest: CreateInventoryRequest;
+};
+export type GetApiV1InventoriesApiResponse =
+  /** status 200 OK */ InventoryDtoIEnumerablePaginateableRead;
+export type GetApiV1InventoriesApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type DeleteApiV1InventoriesApiResponse = unknown;
+export type DeleteApiV1InventoriesApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1InventoriesByIdApiResponse =
+  /** status 200 OK */ InventoryDtoRead;
+export type GetApiV1InventoriesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1InventoriesByIdApiResponse =
+  /** status 204 No Content */ InventoryDtoRead;
+export type PutApiV1InventoriesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createInventoryRequest: CreateInventoryRequest;
 };
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
@@ -11778,6 +11997,54 @@ export type GetApiV1RoleCheckByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1ServicesApiResponse = /** status 200 OK */ string;
+export type PostApiV1ServicesApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createServiceRequest: CreateServiceRequest;
+};
+export type GetApiV1ServicesApiResponse =
+  /** status 200 OK */ ServiceDtoIEnumerablePaginateable;
+export type GetApiV1ServicesApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  isActive?: boolean;
+  startDate?: string;
+  endDate?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ServicesByIdApiResponse = /** status 200 OK */ ServiceDto;
+export type GetApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ServicesByIdApiResponse =
+  /** status 204 No Content */ ServiceDto;
+export type PutApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createServiceRequest: CreateServiceRequest;
+};
+export type DeleteApiV1ServicesByIdApiResponse = unknown;
+export type DeleteApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ShiftSchedulesApiResponse = /** status 200 OK */ string;
 export type PostApiV1ShiftSchedulesApiArg = {
   /** The module this request falls under */
@@ -12874,6 +13141,8 @@ export type EmployeeDto = {
   dateEmployed?: string;
   designation?: DesignationDto;
   department?: DepartmentDto;
+  reportingManagerId?: string | null;
+  reportingManager?: UserDto;
   mother?: PersonDto;
   father?: PersonDto;
   spouse?: PersonDto;
@@ -12916,6 +13185,8 @@ export type EmployeeDtoRead = {
   dateEmployed?: string;
   designation?: DesignationDtoRead;
   department?: DepartmentDtoRead;
+  reportingManagerId?: string | null;
+  reportingManager?: UserDto;
   mother?: PersonDto;
   father?: PersonDto;
   spouse?: PersonDto;
@@ -13395,13 +13666,15 @@ export type CreateFormAssigneeRequest = {
 export type CreateFormReviewerRequest = {
   userId?: string;
 };
+export type FormType = 0 | 1;
 export type CreateFormRequest = {
   name?: string | null;
   sections?: CreateFormSectionRequest[] | null;
   assignees?: CreateFormAssigneeRequest[] | null;
   reviewers?: CreateFormReviewerRequest[] | null;
+  type?: FormType;
 };
-export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 export type QuestionValidationType = 0 | 1 | 2 | 3;
 export type QuestionOptionDto = {
   id?: string;
@@ -13474,6 +13747,7 @@ export type FormDto = {
   createdBy?: UserDto;
   createdAt?: string;
   name?: string | null;
+  type?: FormType;
   sections?: FormSectionDto[] | null;
   responses?: FormResponseDto[] | null;
   assignees?: FormAssigneeDto[] | null;
@@ -13553,157 +13827,22 @@ export type HolidayDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type LeaveEntitlementDto = {
-  employeeId: string;
-  year: number;
-  daysAllowed?: number;
-};
-export type LeaveEntitlementDtoIEnumerablePaginateable = {
-  data?: LeaveEntitlementDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type RequestCategory = 0 | 1 | 2 | 3;
-export type CreateLeaveRequest = {
-  leaveTypeId: string;
-  startDate: string;
-  endDate: string;
-  employeeId: string;
-  requestCategory: RequestCategory;
-  contactPerson?: string | null;
-  contactPersonNumber?: string | null;
-  destination?: string | null;
-  justification?: string | null;
-};
-export type LeaveTypeDto = {
-  id?: string;
-  name?: string | null;
-  isPaid?: boolean;
-  deductFromBalance?: boolean;
-  deductionLimit?: number | null;
-  numberOfDays?: number;
-  isActive?: boolean;
-  designations?: DesignationDto[] | null;
-};
-export type LeaveTypeDtoRead = {
-  id?: string;
-  name?: string | null;
-  isPaid?: boolean;
-  deductFromBalance?: boolean;
-  deductionLimit?: number | null;
-  numberOfDays?: number;
-  isActive?: boolean;
-  designations?: DesignationDtoRead[] | null;
-};
-export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
-export type LeaveRequestDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  leaveTypeId?: string;
-  leaveType?: LeaveTypeDto;
-  startDate?: string;
-  endDate?: string;
-  contactPerson?: string | null;
-  contactPersonNumber?: string | null;
-  recallDate?: string;
-  justification?: string | null;
-  requestCategory?: RequestCategory;
-  leaveStatus?: LeaveStatus;
-  unpaidDays?: number;
-  paidDays?: number;
-  employeeId?: string;
-  employee?: EmployeeDto;
-};
-export type LeaveRequestDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  leaveTypeId?: string;
-  leaveType?: LeaveTypeDtoRead;
-  startDate?: string;
-  endDate?: string;
-  contactPerson?: string | null;
-  contactPersonNumber?: string | null;
-  recallDate?: string;
-  justification?: string | null;
-  requestCategory?: RequestCategory;
-  leaveStatus?: LeaveStatus;
-  unpaidDays?: number;
-  paidDays?: number;
-  employeeId?: string;
-  employee?: EmployeeDtoRead;
-};
-export type LeaveRequestDtoIEnumerablePaginateable = {
-  data?: LeaveRequestDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type LeaveRequestDtoIEnumerablePaginateableRead = {
-  data?: LeaveRequestDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateLeaveRecallRequest = {
-  employeeId: string;
-  recallDate: string;
-  recallReason?: string | null;
-};
-export type ReapplyLeaveRequest = {
-  newStartDate?: string;
-  newEndDate?: string;
-  justification?: string | null;
-};
-export type CreateLeaveTypeRequest = {
-  name: string;
-  isPaid: boolean;
-  deductFromBalance: boolean;
-  deductionLimit?: number | null;
-  numberOfDays: number;
+export type InventoryType = 0 | 1;
+export type ReorderRules = 0 | 1 | 2;
+export type CreateInventoryRequest = {
+  materialName: string;
+  code: string;
+  classification: InventoryType;
+  type?: string | null;
+  unitOfMeasureId: string;
+  hasBatchNumber?: boolean;
+  materialBatchId?: string;
+  remarks?: string | null;
+  reorderRule?: ReorderRules;
+  initialStockQuantity?: number;
+  departmentId: string;
   isActive: boolean;
-  designationList: string[];
-};
-export type LeaveTypeDtoIEnumerablePaginateable = {
-  data?: LeaveTypeDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type LeaveTypeDtoIEnumerablePaginateableRead = {
-  data?: LeaveTypeDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateMaterialRequest = {
-  code?: string | null;
-  name?: string | null;
-  pharmacopoeia?: string | null;
   description?: string | null;
-  alphabet?: string | null;
-  materialCategoryId?: string | null;
-  kind?: MaterialKind;
-  reOrderLevel?: number;
 };
 export type MaterialCategoryDto = {
   id?: string;
@@ -13723,18 +13862,6 @@ export type MaterialDto = {
   kind?: MaterialKind;
   materialCategory?: MaterialCategoryDto;
   totalStock?: number;
-};
-export type MaterialDtoIEnumerablePaginateable = {
-  data?: MaterialDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type UpdateReOrderLevelRequest = {
-  reOrderLevel?: number;
 };
 export type RequestStatus = 0 | 1 | 2 | 3 | 4;
 export type BatchToSupply = {
@@ -14043,6 +14170,232 @@ export type MaterialBatchDtoRead = {
   locations?: CurrentLocationDto[] | null;
   reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
   reservedQuantity?: number;
+};
+export type InventoryDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  materialName?: string | null;
+  code?: string | null;
+  classification?: InventoryType;
+  type?: string | null;
+  unitOfMeasureId?: string;
+  unitOfMeasure?: UnitOfMeasureDto;
+  hasBatchNumber?: boolean;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatchDto;
+  remarks?: string | null;
+  reorderRule?: ReorderRules;
+  initialStockQuantity?: number;
+  departmentId?: string;
+  department?: DepartmentDto;
+  isActive?: boolean;
+  description?: string | null;
+};
+export type InventoryDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  materialName?: string | null;
+  code?: string | null;
+  classification?: InventoryType;
+  type?: string | null;
+  unitOfMeasureId?: string;
+  unitOfMeasure?: UnitOfMeasureDto;
+  hasBatchNumber?: boolean;
+  materialBatchId?: string;
+  materialBatch?: MaterialBatchDtoRead;
+  remarks?: string | null;
+  reorderRule?: ReorderRules;
+  initialStockQuantity?: number;
+  departmentId?: string;
+  department?: DepartmentDtoRead;
+  isActive?: boolean;
+  description?: string | null;
+};
+export type InventoryDtoIEnumerablePaginateable = {
+  data?: InventoryDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type InventoryDtoIEnumerablePaginateableRead = {
+  data?: InventoryDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type LeaveEntitlementDto = {
+  employeeId: string;
+  year: number;
+  daysAllowed?: number;
+};
+export type LeaveEntitlementDtoIEnumerablePaginateable = {
+  data?: LeaveEntitlementDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type RequestCategory = 0 | 1 | 2 | 3;
+export type CreateLeaveRequest = {
+  leaveTypeId: string;
+  startDate: string;
+  endDate: string;
+  employeeId: string;
+  requestCategory: RequestCategory;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
+  destination?: string | null;
+  justification?: string | null;
+};
+export type LeaveTypeDto = {
+  id?: string;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: DesignationDto[] | null;
+};
+export type LeaveTypeDtoRead = {
+  id?: string;
+  name?: string | null;
+  isPaid?: boolean;
+  deductFromBalance?: boolean;
+  deductionLimit?: number | null;
+  numberOfDays?: number;
+  isActive?: boolean;
+  designations?: DesignationDtoRead[] | null;
+};
+export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type LeaveRequestDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  leaveTypeId?: string;
+  leaveType?: LeaveTypeDto;
+  startDate?: string;
+  endDate?: string;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
+  recallDate?: string;
+  justification?: string | null;
+  requestCategory?: RequestCategory;
+  leaveStatus?: LeaveStatus;
+  unpaidDays?: number;
+  paidDays?: number;
+  employeeId?: string;
+  employee?: EmployeeDto;
+};
+export type LeaveRequestDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  leaveTypeId?: string;
+  leaveType?: LeaveTypeDtoRead;
+  startDate?: string;
+  endDate?: string;
+  contactPerson?: string | null;
+  contactPersonNumber?: string | null;
+  recallDate?: string;
+  justification?: string | null;
+  requestCategory?: RequestCategory;
+  leaveStatus?: LeaveStatus;
+  unpaidDays?: number;
+  paidDays?: number;
+  employeeId?: string;
+  employee?: EmployeeDtoRead;
+};
+export type LeaveRequestDtoIEnumerablePaginateable = {
+  data?: LeaveRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type LeaveRequestDtoIEnumerablePaginateableRead = {
+  data?: LeaveRequestDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateLeaveRecallRequest = {
+  employeeId: string;
+  recallDate: string;
+  recallReason?: string | null;
+};
+export type ReapplyLeaveRequest = {
+  newStartDate?: string;
+  newEndDate?: string;
+  justification?: string | null;
+};
+export type CreateLeaveTypeRequest = {
+  name: string;
+  isPaid: boolean;
+  deductFromBalance: boolean;
+  deductionLimit?: number | null;
+  numberOfDays: number;
+  isActive: boolean;
+  designationList: string[];
+};
+export type LeaveTypeDtoIEnumerablePaginateable = {
+  data?: LeaveTypeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type LeaveTypeDtoIEnumerablePaginateableRead = {
+  data?: LeaveTypeDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateMaterialRequest = {
+  code?: string | null;
+  name?: string | null;
+  pharmacopoeia?: string | null;
+  description?: string | null;
+  alphabet?: string | null;
+  materialCategoryId?: string | null;
+  kind?: MaterialKind;
+  reOrderLevel?: number;
+};
+export type MaterialDtoIEnumerablePaginateable = {
+  data?: MaterialDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type UpdateReOrderLevelRequest = {
+  reOrderLevel?: number;
 };
 export type CreateSrRequest = {
   srNumber?: string | null;
@@ -14381,20 +14734,16 @@ export type MaterialSamplingDtoRead = {
   sampleQuantity?: number;
   sampleDate?: string;
 };
-export type MaterialSpecificationReference = 0 | 1 | 2 | 3;
-export type TestSpecification = {
-  srNumber?: number;
-  name?: string | null;
-  releaseSpecification?: string | null;
-  reference?: MaterialSpecificationReference;
-};
 export type CreateMaterialSpecificationRequest = {
   specificationNumber: string;
   revisionNumber: string;
   supersedesNumber: string;
   effectiveDate: string;
   reviewDate: string;
-  testSpecifications: TestSpecification[];
+  formId: string;
+  dueDate?: string;
+  description?: string | null;
+  userId: string;
   materialId: string;
 };
 export type MaterialSpecificationDto = {
@@ -14406,7 +14755,12 @@ export type MaterialSpecificationDto = {
   supersedesNumber?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
-  testSpecifications?: TestSpecification[] | null;
+  formId?: string;
+  form?: FormDto;
+  dueDate?: string;
+  description?: string | null;
+  userId?: string;
+  user?: UserDto;
   materialAnalyticalRawDataId?: string;
   materialAnalyticalRawData?: MaterialAnalyticalRawDataDto;
   materialId?: string;
@@ -16315,6 +16669,7 @@ export type Form = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  type?: FormType;
   sections?: FormSection[] | null;
   responses?: FormResponse[] | null;
   assignees?: FormAssignee[] | null;
@@ -16332,6 +16687,7 @@ export type FormRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  type?: FormType;
   sections?: FormSectionRead[] | null;
   responses?: FormResponseRead[] | null;
   assignees?: FormAssigneeRead[] | null;
@@ -19866,9 +20222,12 @@ export type CreateProductSpecificationRequest = {
   supersedesNumber: string;
   effectiveDate: string;
   reviewDate: string;
-  testSpecifications: TestSpecification[];
+  formId: string;
+  userId: string;
   testStage: TestStage;
   productId: string;
+  dueDate?: string;
+  description?: string | null;
 };
 export type ProductSpecificationDto = {
   id?: string;
@@ -19879,10 +20238,15 @@ export type ProductSpecificationDto = {
   supersedesNumber?: string | null;
   labelClaim?: string | null;
   packingStyle?: string | null;
+  formId?: string;
+  form?: FormDto;
+  dueDate?: string;
+  description?: string | null;
+  userId?: string;
+  user?: UserDto;
   shelfLife?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
-  testSpecifications?: TestSpecification[] | null;
   testStage?: TestStage;
   productId?: string;
   product?: ProductDto;
@@ -19896,10 +20260,15 @@ export type ProductSpecificationDtoRead = {
   supersedesNumber?: string | null;
   labelClaim?: string | null;
   packingStyle?: string | null;
+  formId?: string;
+  form?: FormDto;
+  dueDate?: string;
+  description?: string | null;
+  userId?: string;
+  user?: UserDto;
   shelfLife?: string | null;
   effectiveDate?: string;
   reviewDate?: string;
-  testSpecifications?: TestSpecification[] | null;
   testStage?: TestStage;
   productId?: string;
   product?: ProductDtoRead;
@@ -20399,6 +20768,34 @@ export type UpdateRoleRequest = {
   name: string;
   displayName: string;
   type?: DepartmentType;
+};
+export type CreateServiceRequest = {
+  name: string;
+  code?: string | null;
+  startDate: string;
+  endDate: string;
+  description?: string | null;
+};
+export type ServiceDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  name?: string | null;
+  code?: string | null;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+  description?: string | null;
+};
+export type ServiceDtoIEnumerablePaginateable = {
+  data?: ServiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4 | 5;
 export type CreateShiftScheduleRequest = {
@@ -21137,6 +21534,7 @@ export const {
   usePutApiV1EmployeeByIdMutation,
   useDeleteApiV1EmployeeByIdMutation,
   usePutApiV1EmployeeByIdAssignMutation,
+  usePutApiV1EmployeeByIdChangeTypeMutation,
   usePostApiV1FileByModelTypeAndModelIdReferenceMutation,
   useGetApiV1FileByModelTypeAndModelIdReferenceQuery,
   useLazyGetApiV1FileByModelTypeAndModelIdReferenceQuery,
@@ -21179,6 +21577,13 @@ export const {
   useLazyGetApiV1HolidaysByIdQuery,
   usePutApiV1HolidaysByIdMutation,
   useDeleteApiV1HolidaysByIdMutation,
+  usePostApiV1InventoriesMutation,
+  useGetApiV1InventoriesQuery,
+  useLazyGetApiV1InventoriesQuery,
+  useDeleteApiV1InventoriesMutation,
+  useGetApiV1InventoriesByIdQuery,
+  useLazyGetApiV1InventoriesByIdQuery,
+  usePutApiV1InventoriesByIdMutation,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,
@@ -21669,6 +22074,13 @@ export const {
   useDeleteApiV1RoleByIdMutation,
   useGetApiV1RoleCheckByIdQuery,
   useLazyGetApiV1RoleCheckByIdQuery,
+  usePostApiV1ServicesMutation,
+  useGetApiV1ServicesQuery,
+  useLazyGetApiV1ServicesQuery,
+  useGetApiV1ServicesByIdQuery,
+  useLazyGetApiV1ServicesByIdQuery,
+  usePutApiV1ServicesByIdMutation,
+  useDeleteApiV1ServicesByIdMutation,
   usePostApiV1ShiftSchedulesMutation,
   useGetApiV1ShiftSchedulesQuery,
   useLazyGetApiV1ShiftSchedulesQuery,

@@ -1,6 +1,9 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 
-import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
+import {
+  EmployeeDto,
+  usePutApiV1EmployeeByIdChangeTypeMutation,
+} from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { DropdownMenuItem, Icon } from "@/components/ui";
 import { useState } from "react";
@@ -8,9 +11,11 @@ import { useState } from "react";
 import UserDialog from "./assign-user";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import { EmployeeType, PermissionKeys, splitWords } from "@/lib";
+import { EmployeeType, PermissionKeys } from "@/lib";
 import { useRouter } from "next/navigation";
 import { useUserPermissions } from "@/hooks/use-permission";
+import DropdownBtns from "@/shared/btns/drop-btn";
+import ThrowErrorMessage from "@/lib/throw-error";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -84,6 +89,59 @@ export function DataTableRowActions<TData extends EmployeeDto>({
   );
 }
 
+export function EmployeeTypeColumn<TData extends EmployeeDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const dispatch = useDispatch();
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
+  const [updateEmployee, isLoading] =
+    usePutApiV1EmployeeByIdChangeTypeMutation();
+  const handleEmployeeType = async (id: string, type: EmployeeType) => {
+    setSelectedEmployeeId(id);
+    try {
+      await updateEmployee({
+        id,
+        employeeType: type,
+      }).unwrap();
+      dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
+  return (
+    <div className="min-w-36 flex gap-2 items-center">
+      {isLoading && selectedEmployeeId === row.original.id && (
+        <Icon name="LoaderCircle" className="animate-spin size-5" />
+      )}
+      <DropdownBtns
+        variant="ghost"
+        icon="AlignJustify"
+        title={EmployeeType[row.original.type as EmployeeType]}
+        menus={[
+          {
+            name: EmployeeType[EmployeeType.Casual],
+            onClick: () =>
+              handleEmployeeType(
+                row.original.id as string,
+                EmployeeType.Casual,
+              ),
+          },
+          {
+            name: EmployeeType[EmployeeType.Permanent],
+            onClick: () =>
+              handleEmployeeType(
+                row.original.id as string,
+                EmployeeType.Permanent,
+              ),
+          },
+        ]}
+      />
+    </div>
+  );
+}
+
 export const columns: ColumnDef<EmployeeDto>[] = [
   {
     accessorKey: "staffId",
@@ -111,11 +169,7 @@ export const columns: ColumnDef<EmployeeDto>[] = [
   {
     accessorKey: "type",
     header: "Employee Type",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {splitWords(EmployeeType[row.original.type as EmployeeType])}
-      </div>
-    ),
+    cell: ({ row }) => <EmployeeTypeColumn row={row} />,
   },
   {
     id: "actions",

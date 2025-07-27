@@ -66,8 +66,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const onSubmit = async (data: LocationRequestDto) => {
     try {
       const payload = {
-        ...data,
+        // ...data,
         floorName: data?.floorName?.value,
+
         name: data?.name?.value,
       } satisfies CreateWarehouseLocationRequest;
 
