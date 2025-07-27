@@ -14,13 +14,15 @@ import { EmployeeType, Option, WarehouseType } from "@/lib";
 import {
   // CreateWarehouseLocationRackRequest,
   useLazyGetApiV1WarehouseLocationQuery,
-  useLazyGetApiV1WarehouseRackQuery,
+  // useLazyGetApiV1WarehouseRackQuery,
   usePostApiV1EmployeeRegisterMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateEmployeeValidator, EmployeeRequestDto } from "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import "./types";
 
@@ -29,9 +31,11 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadEmployees] = useLazyGetApiV1WarehouseRackQuery();
+  // const [loadEmployees] = useLazyGetApiV1WarehouseRackQuery();
   const [createEmployee, { isLoading }] =
     usePostApiV1EmployeeRegisterMutation();
+
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -82,10 +86,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         onboardEmployeeDto: payload,
       });
       toast.success("Employee(s) registered successfully");
-      loadEmployees({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
     } catch (error) {

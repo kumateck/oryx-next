@@ -166,7 +166,6 @@ export function StatusActions<TData extends EmployeeDto>({
   const inactiveStatusOptions = Object.entries(EmployeeInactiveStatus)
     .filter(([key]) => isNaN(Number(key)))
     .map(([key, value]) => ({ label: splitWords(key), value: String(value) }));
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>
