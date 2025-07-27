@@ -1069,6 +1069,7 @@ const injectedRtkApi = api.injectEndpoints({
           searchQuery: queryArg.searchQuery,
           designation: queryArg.designation,
           department: queryArg.department,
+          status: queryArg.status,
         },
       }),
     }),
@@ -1281,6 +1282,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           searchQuery: queryArg.searchQuery,
+          type: queryArg["type"],
           pageSize: queryArg.pageSize,
           page: queryArg.page,
           sortLabel: queryArg.sortLabel,
@@ -1379,6 +1381,7 @@ const injectedRtkApi = api.injectEndpoints({
         },
         params: {
           searchQuery: queryArg.searchQuery,
+          type: queryArg["type"],
           pageSize: queryArg.pageSize,
           page: queryArg.page,
           sortLabel: queryArg.sortLabel,
@@ -6137,6 +6140,79 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1Services: build.mutation<
+      PostApiV1ServicesApiResponse,
+      PostApiV1ServicesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services`,
+        method: "POST",
+        body: queryArg.createServiceRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1Services: build.query<
+      GetApiV1ServicesApiResponse,
+      GetApiV1ServicesApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          isActive: queryArg.isActive,
+          startDate: queryArg.startDate,
+          endDate: queryArg.endDate,
+        },
+      }),
+    }),
+    getApiV1ServicesById: build.query<
+      GetApiV1ServicesByIdApiResponse,
+      GetApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ServicesById: build.mutation<
+      PutApiV1ServicesByIdApiResponse,
+      PutApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createServiceRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1ServicesById: build.mutation<
+      DeleteApiV1ServicesByIdApiResponse,
+      DeleteApiV1ServicesByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/services/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ShiftSchedules: build.mutation<
       PostApiV1ShiftSchedulesApiResponse,
       PostApiV1ShiftSchedulesApiArg
@@ -8033,6 +8109,7 @@ export type GetApiV1EmployeeApiArg = {
   searchQuery?: string;
   designation?: string;
   department?: string;
+  status?: EmployeeStatus;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -8200,6 +8277,7 @@ export type GetApiV1FormApiResponse =
   /** status 200 OK */ FormDtoIEnumerablePaginateable;
 export type GetApiV1FormApiArg = {
   searchQuery?: string;
+  type?: FormType;
   pageSize?: number;
   page?: number;
   sortLabel?: string;
@@ -8270,6 +8348,7 @@ export type GetApiV1FormQuestionApiResponse =
   /** status 200 OK */ QuestionDtoIEnumerablePaginateable;
 export type GetApiV1FormQuestionApiArg = {
   searchQuery?: string;
+  type?: FormType;
   pageSize?: number;
   page?: number;
   sortLabel?: string;
@@ -11778,6 +11857,54 @@ export type GetApiV1RoleCheckByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1ServicesApiResponse = /** status 200 OK */ string;
+export type PostApiV1ServicesApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createServiceRequest: CreateServiceRequest;
+};
+export type GetApiV1ServicesApiResponse =
+  /** status 200 OK */ ServiceDtoIEnumerablePaginateable;
+export type GetApiV1ServicesApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  isActive?: boolean;
+  startDate?: string;
+  endDate?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ServicesByIdApiResponse = /** status 200 OK */ ServiceDto;
+export type GetApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ServicesByIdApiResponse =
+  /** status 204 No Content */ ServiceDto;
+export type PutApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createServiceRequest: CreateServiceRequest;
+};
+export type DeleteApiV1ServicesByIdApiResponse = unknown;
+export type DeleteApiV1ServicesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ShiftSchedulesApiResponse = /** status 200 OK */ string;
 export type PostApiV1ShiftSchedulesApiArg = {
   /** The module this request falls under */
@@ -13395,13 +13522,15 @@ export type CreateFormAssigneeRequest = {
 export type CreateFormReviewerRequest = {
   userId?: string;
 };
+export type FormType = 0 | 1;
 export type CreateFormRequest = {
   name?: string | null;
   sections?: CreateFormSectionRequest[] | null;
   assignees?: CreateFormAssigneeRequest[] | null;
   reviewers?: CreateFormReviewerRequest[] | null;
+  type?: FormType;
 };
-export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 export type QuestionValidationType = 0 | 1 | 2 | 3;
 export type QuestionOptionDto = {
   id?: string;
@@ -13474,6 +13603,7 @@ export type FormDto = {
   createdBy?: UserDto;
   createdAt?: string;
   name?: string | null;
+  type?: FormType;
   sections?: FormSectionDto[] | null;
   responses?: FormResponseDto[] | null;
   assignees?: FormAssigneeDto[] | null;
@@ -16315,6 +16445,7 @@ export type Form = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  type?: FormType;
   sections?: FormSection[] | null;
   responses?: FormResponse[] | null;
   assignees?: FormAssignee[] | null;
@@ -16332,6 +16463,7 @@ export type FormRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  type?: FormType;
   sections?: FormSectionRead[] | null;
   responses?: FormResponseRead[] | null;
   assignees?: FormAssigneeRead[] | null;
@@ -20400,6 +20532,35 @@ export type UpdateRoleRequest = {
   displayName: string;
   type?: DepartmentType;
 };
+export type CreateServiceRequest = {
+  name: string;
+  code?: string | null;
+  startDate: string;
+  endDate: string;
+  description?: string | null;
+};
+export type ServiceDto = {
+  id?: string;
+  attachments?: AttachmentDto[] | null;
+  serviceId?: string;
+  name?: string | null;
+  code?: string | null;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+  description?: string | null;
+  createdBy?: UserDto;
+  createdAt?: string;
+};
+export type ServiceDtoIEnumerablePaginateable = {
+  data?: ServiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type ScheduleFrequency = 0 | 1 | 2 | 3 | 4 | 5;
 export type CreateShiftScheduleRequest = {
   scheduleName: string;
@@ -21669,6 +21830,13 @@ export const {
   useDeleteApiV1RoleByIdMutation,
   useGetApiV1RoleCheckByIdQuery,
   useLazyGetApiV1RoleCheckByIdQuery,
+  usePostApiV1ServicesMutation,
+  useGetApiV1ServicesQuery,
+  useLazyGetApiV1ServicesQuery,
+  useGetApiV1ServicesByIdQuery,
+  useLazyGetApiV1ServicesByIdQuery,
+  usePutApiV1ServicesByIdMutation,
+  useDeleteApiV1ServicesByIdMutation,
   usePostApiV1ShiftSchedulesMutation,
   useGetApiV1ShiftSchedulesQuery,
   useLazyGetApiV1ShiftSchedulesQuery,

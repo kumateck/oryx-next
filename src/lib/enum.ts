@@ -523,3 +523,19 @@ export enum EmployeeStatusType {
   Active = 0,
   Inactive = 1,
 }
+
+export enum EmployeeActiveStatus {
+  Question = 0,
+  Warning = 1,
+  FinalWarning = 2,
+  Suspension = 3,
+}
+
+export enum EmployeeInactiveStatus {
+  Resignation = 0,
+  VacatedPost = 1,
+  Deceased = 2,
+  SummaryDismissed = 3,
+  Termination = 4,
+  Transfer = 5,
+}
