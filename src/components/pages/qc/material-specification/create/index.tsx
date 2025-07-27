@@ -15,8 +15,7 @@ import SpecificationForm from "./form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
+  CreateMaterialSpecificationRequest,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -64,24 +63,19 @@ export function MaterialSpecPage() {
     })) || [];
 
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
-    const payload = {
+    const payload: CreateMaterialSpecificationRequest = {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
+      formId: "",
+      userId: "",
+
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        // testName: Number(test.testName.value) as unknown as TestTypeEnum,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
       materialId: data.materialId.value as string,
     };
     try {

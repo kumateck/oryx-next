@@ -118,7 +118,17 @@ const Page = () => {
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">
-        <span className="text-2xl font-semibold">Requisition Sourcing</span>
+        <div
+          onClick={() => router.back()}
+          className="flex hover:underline items-center w-full gap-2"
+        >
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 cursor-pointer text-neutral-500"
+          />
+          <span className="text-2xl font-semibold">Requisition Sourcing</span>
+        </div>
+
         <Button className="flex gap-2" onClick={onSubmit}>
           {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}
           <span>Save</span>

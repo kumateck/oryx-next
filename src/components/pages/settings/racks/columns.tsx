@@ -13,6 +13,7 @@ import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -118,6 +119,13 @@ export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
     cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
+    accessorKey: "warehouse",
+    header: "Warehouse",
+    cell: ({ row }) => (
+      <div>{row.original?.warehouseLocation?.warehouse?.name}</div>
+    ),
+  },
+  {
     accessorKey: "location",
     header: "Location",
     cell: ({ row }) => <div>{row.original.warehouseLocation?.name}</div>,
@@ -125,7 +133,11 @@ export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>
+        {<TheAduseiEditorViewer content={row?.original?.description ?? ""} />}
+      </div>
+    ),
   },
 
   {
