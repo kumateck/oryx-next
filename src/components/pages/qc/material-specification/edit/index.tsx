@@ -7,17 +7,14 @@ import {
   isErrorResponse,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
-  MaterialSpecificationReferenceEnum as MaterialSpecificationReferenceEnumValues,
 } from "../types";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
-  MaterialSpecificationReference as MaterialSpecificationReferenceEnum,
-  TestSpecification,
   useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
@@ -59,11 +56,6 @@ export function EditMaterialSpecification() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testSpecifications",
-  });
-
   useEffect(() => {
     if (id) {
       fetchMaterialSpecification({ id: id as string });
@@ -92,24 +84,7 @@ export function EditMaterialSpecification() {
       if (materialData?.reviewDate) {
         setValue("reviewDate", new Date(materialData.reviewDate));
       }
-      setValue(
-        "testSpecifications",
-        (materialData?.testSpecifications ?? []).map((test) => ({
-          srNumber: test.srNumber,
-          name: test.name as string,
-          releaseSpecification: test.releaseSpecification ?? "",
-          reference: {
-            value:
-              test.reference !== undefined && test.reference !== null
-                ? String(test.reference)
-                : "",
-            label:
-              test.reference !== undefined && test.reference !== null
-                ? MaterialSpecificationReferenceEnumValues[test.reference]
-                : "",
-          },
-        })),
-      );
+
       if (materialData?.material) {
         setValue("materialId", {
           value: materialData?.material?.id ?? "",
@@ -137,15 +112,12 @@ export function EditMaterialSpecification() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      testSpecifications: data.testSpecifications.map((test) => ({
-        srNumber: Number(test.srNumber),
-        name: test.name,
-        releaseSpecification: test.releaseSpecification,
-        reference: Number(
-          test.reference.value as unknown as MaterialSpecificationReferenceEnum,
-        ),
-      })) as TestSpecification[],
+
       materialId: data.materialId.value as string,
+      formId: data.formId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      description: data.description,
+      userId: data.userId.value as string,
     };
     console.log("Submitting data", payload);
     if (!id) return;
@@ -176,19 +148,11 @@ export function EditMaterialSpecification() {
         <div>
           <SpecificationForm
             control={control}
-            remove={remove}
-            append={append}
-            fields={fields}
             register={register}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
           />
-          <span>
-            <span className="text-red-600 text-sm font-medium">
-              {errors?.testSpecifications?.message}
-            </span>
-          </span>
         </div>
         <div className="flex justify-end gap-4">
           <Button

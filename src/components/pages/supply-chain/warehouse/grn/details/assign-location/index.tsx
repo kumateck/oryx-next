@@ -168,6 +168,7 @@ const AssignLocationDialog = ({
         selectedBatch?.totalQuantity as number,
         selectedBatch?.uoM?.symbol as Units,
       ).unit as Units;
+
       const payload = {
         materialBatchId: selectedBatch.id,
         shelfMaterialBatches: data.locations.map((location) => ({
@@ -180,10 +181,25 @@ const AssignLocationDialog = ({
       } satisfies SupplyMaterialBatchRequest;
 
       console.log(payload);
+
+      // Calculate total quantity to allocate
+      const totalQtyToAllocate = payload.shelfMaterialBatches.reduce(
+        (sum, item) => {
+          return sum + (item.quantity || 0);
+        },
+        0,
+      );
+
+      // Check against unassigned quantity
+      if ((selectedBatch?.quantityUnassigned || 0) < totalQtyToAllocate) {
+        toast.error("Cannot assign more than unassigned quantity");
+        return;
+      }
+
+      // Submit the supply request
       await supplyShelf({
         supplyMaterialBatchRequest: payload,
       });
-
       toast.success("Location assigned successfully");
       onSuccess();
       handleClose();

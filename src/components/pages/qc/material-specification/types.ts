@@ -31,21 +31,6 @@ export enum TestTypeEnum {
   Assay = 5,
 }
 
-const testSpecificationSchema = z.object({
-  srNumber: z.number().nonnegative().optional(),
-  name: z.string().min(1, "Test name is required"),
-  releaseSpecification: z.string().min(1, "Release specification is required"),
-  reference: z.object(
-    {
-      value: z.string().min(1, "Reference is required"),
-      label: z.string().min(1, "Reference is required"),
-    },
-    {
-      message: "Reference is required",
-    },
-  ),
-});
-
 const specificationSchema = z.object({
   specificationNumber: z.string().min(1, "Specification number is required"),
 
@@ -59,10 +44,6 @@ const specificationSchema = z.object({
     message: "Review date must be a valid ISO datetime string",
   }),
 
-  testSpecifications: z
-    .array(testSpecificationSchema)
-    .min(1, "At least one test specification is required"),
-
   materialId: z.object(
     {
       value: z.string(),
@@ -72,6 +53,30 @@ const specificationSchema = z.object({
       message: "Material is required",
     },
   ),
+  formId: z.object(
+    {
+      value: z.string().min(1, { message: "Form Template is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Form Template is required",
+    },
+  ),
+  userId: z.object(
+    {
+      value: z.string().min(1, { message: "Meterial is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Material is required",
+    },
+  ),
+  description: z.string().optional(),
+  dueDate: z
+    .date({
+      message: "Due date must be a valid ISO datetime string",
+    })
+    .optional(),
 });
 export type CreateMaterialSpecificationDto = z.infer<
   typeof specificationSchema
