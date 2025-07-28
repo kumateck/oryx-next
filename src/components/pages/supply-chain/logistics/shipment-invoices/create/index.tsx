@@ -97,11 +97,17 @@ const Page = () => {
       array2Values.includes(item?.id as string),
     );
 
-    // console.log(filteredArray, "filteredArray");
     const formatArray = filteredArray?.map((item) => {
       const items = item.items?.map((x) => {
-        const converted = convertToLargestUnit(
+        const remainingQuantity =
+          (x?.quantity || 0) - (x?.receivedQuantity || 0);
+
+        const initialQuantity = convertToLargestUnit(
           x.quantity as number,
+          x.uom?.symbol as Units,
+        );
+        const converted = convertToLargestUnit(
+          remainingQuantity as number,
           x.uom?.symbol as Units,
         );
 
@@ -125,6 +131,7 @@ const Page = () => {
           expectedQuantity: converted.value,
           uomName: converted.unit,
           receivedQuantity: converted.value,
+          initialQuantity: initialQuantity.value,
           reason: "",
           manufacturerId: {
             label: defaultManufacturer?.manufacturer?.name,
