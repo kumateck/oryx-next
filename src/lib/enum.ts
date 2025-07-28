@@ -6,6 +6,12 @@ export enum IsTrueorFalse {
   True = 1,
   False = 0,
 }
+export enum SpecificationReference {
+  BP,
+  USP,
+  PhInt,
+  InHouse,
+}
 
 export enum BatchStatus {
   Received = 0,
@@ -168,6 +174,11 @@ export enum QuestionType {
   Reference = 9,
   Formular = 10,
   Specification = 11,
+}
+
+export enum FormComplete {
+  Batch,
+  Specification,
 }
 
 export enum OperationAction {

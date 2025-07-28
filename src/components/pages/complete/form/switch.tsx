@@ -1,5 +1,11 @@
 import { FormWizard } from "@/components/form-inputs";
-import { ExpressionKind, InputTypes, Option, QuestionType } from "@/lib";
+import {
+  ExpressionKind,
+  InputTypes,
+  Option,
+  QuestionType,
+  referenceOptions,
+} from "@/lib";
 import { FormFieldDto } from "@/lib/redux/api/openapi.generated";
 import React from "react";
 import {
@@ -168,6 +174,23 @@ const FormResponseSwitch = <TFieldValues extends FieldValues, TContext>({
               required,
               errors,
               option,
+            },
+          ]}
+        />
+      );
+
+    case QuestionType.Specification:
+      return (
+        <FormWizard
+          config={[
+            {
+              label,
+              control: control as Control,
+              name,
+              type: InputTypes.SELECT,
+              options: referenceOptions,
+              required,
+              errors,
             },
           ]}
         />

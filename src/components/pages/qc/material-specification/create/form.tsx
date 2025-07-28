@@ -58,15 +58,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 required: true,
                 errors,
               },
-              {
-                label: "Due Date",
-                type: InputTypes.DATE,
-                placeholder: "Due Date",
-                name: "dueDate",
-                required: true,
-                control: control as Control,
-                errors,
-              },
+
               {
                 label: "Effective Date",
                 type: InputTypes.DATE,
@@ -76,36 +68,11 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 control: control as Control,
                 errors,
               },
-              {
-                label: "Description",
-                type: InputTypes.TEXTAREA,
-                placeholder: "Description",
-                register: register("description" as Path<TFieldValues>),
-                errors,
-              },
             ]}
           />
           <FormWizard
             className="w-full"
             config={[
-              {
-                label: "Assigned User",
-                type: InputTypes.SELECT,
-                name: "userId",
-                control: control as Control,
-                placeholder: "Select User",
-                options: userOptions,
-                errors,
-              },
-              {
-                label: "Template",
-                type: InputTypes.SELECT,
-                name: "formId",
-                control: control as Control,
-                placeholder: "Select Template",
-                options: formOptions,
-                errors,
-              },
               {
                 label: "Revision Date",
                 type: InputTypes.DATE,
@@ -141,6 +108,8 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
 
         <CardContent>
           <FormWizard
+            className="grid w-full grid-cols-2 gap-10 space-y-0"
+            fieldWrapperClassName="flex-grow"
             config={[
               {
                 label: "Template",
@@ -150,6 +119,13 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 required: true,
                 placeholder: "Select Template",
                 options: formOptions,
+                errors,
+              },
+              {
+                type: InputTypes.DATE,
+                label: "Due Date",
+                name: "dueDate",
+                control: control as Control,
                 errors,
               },
             ]}
@@ -181,13 +157,6 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                   name: "userId",
                   placeholder: "Assignee",
                   options: userOptions,
-                  errors,
-                },
-                {
-                  type: InputTypes.DATE,
-                  label: "Due Date",
-                  name: "dueDate",
-                  control: control as Control,
                   errors,
                 },
               ]}
