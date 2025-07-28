@@ -166,7 +166,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const isLeaveOrAbsence = [
     String(LeaveCategories.LeaveRequest),
     String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
+  ].includes(selectedCategory?.value ?? "");
 
   const categoryOptions = Object.entries(LeaveCategories)
     .filter(([key]) => isNaN(Number(key)))

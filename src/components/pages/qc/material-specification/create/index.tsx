@@ -91,8 +91,6 @@ export function MaterialSpecPage() {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
-      formId: "",
-      userId: "",
 
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
@@ -101,6 +99,10 @@ export function MaterialSpecPage() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       materialId: data.materialId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      formId: data.formId.value as string,
+      description: data.description,
+      userId: data.userId.value as string,
     };
     try {
       await createMaterialSpecification({

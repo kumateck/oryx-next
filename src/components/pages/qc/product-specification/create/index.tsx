@@ -109,14 +109,14 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      userId: data.userId.value,
-      formId: data.formId.value,
+      userId: data.userId.value as string,
+      formId: data.formId.value as string,
       dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
       description: data.description,
       testStage: Number(data.testStage.value) as unknown as TestStage,
       productId: data.productId.value as string,
     };
-    console.log("Submitting data", payload);
+
     try {
       await createProductSpecification({
         createProductSpecificationRequest: payload,

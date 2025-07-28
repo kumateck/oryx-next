@@ -134,8 +134,6 @@ export function EditMaterialSpecification() {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
-      formId: "",
-      userId: "",
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
@@ -143,6 +141,10 @@ export function EditMaterialSpecification() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       materialId: data.materialId.value as string,
+      formId: data.formId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      description: data.description,
+      userId: data.userId.value as string,
     };
     console.log("Submitting data", payload);
     if (!id) return;

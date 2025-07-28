@@ -30,7 +30,7 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   if (isLoading) return <MaterialSpecificationSkeleton />;
-  console.log("Material Data", materialData);
+
   return (
     <PageWrapper>
       <div className="flex items-center gap-2 mb-4 justify-between">

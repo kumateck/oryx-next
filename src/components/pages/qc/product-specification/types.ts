@@ -43,32 +43,10 @@ const specificationSchema = z.object({
   effectiveDate: z.date({
     message: "Effective date must be a valid ISO datetime string",
   }),
-  dueDate: z.date({
-    message: "Due date must be a valid ISO datetime string",
-  }),
 
   reviewDate: z.date({
     message: "Review date must be a valid ISO datetime string",
   }),
-  formId: z.object(
-    {
-      value: z.string(),
-      label: z.string(),
-    },
-    {
-      message: "Template is required",
-    },
-  ),
-  userId: z.object(
-    {
-      value: z.string(),
-      label: z.string(),
-    },
-    {
-      message: "Assignee is required",
-    },
-  ),
-  description: z.string().optional(),
 
   packingStyle: z.string().optional(),
   productId: z.object(
@@ -77,9 +55,33 @@ const specificationSchema = z.object({
       label: z.string(),
     },
     {
+      message: "Product is required",
+    },
+  ),
+  formId: z.object(
+    {
+      value: z.string().min(1, { message: "Form Template is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Form Template is required",
+    },
+  ),
+  userId: z.object(
+    {
+      value: z.string().min(1, { message: "Meterial is required" }),
+      label: z.string(),
+    },
+    {
       message: "Material is required",
     },
   ),
+  description: z.string().optional(),
+  dueDate: z
+    .date({
+      message: "Due date must be a valid ISO datetime string",
+    })
+    .optional(),
 });
 export type CreateProductSpecificationDto = z.infer<typeof specificationSchema>;
 export const CreateProductSpecificationValidator =

@@ -182,7 +182,7 @@ export function EditMaterialSpecification() {
         : "",
       productId: data.productId.value as string,
     };
-    console.log("Submitting data", payload);
+
     if (!id) return;
     try {
       await updateProductSpecification({
