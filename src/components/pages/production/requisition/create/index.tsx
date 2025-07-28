@@ -19,10 +19,12 @@ import { Button, Icon, Separator } from "@/components/ui";
 import { MaterialRequestDto } from "./type";
 import Purchase from "../../schedule/details/products/purchase";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const searchValue = useSelector((state) => state.common.searchInput);
 
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
@@ -54,10 +56,11 @@ const Page = () => {
       page,
       pageSize,
       kind: kind || EMaterialKind.Raw,
+      searchQuery: searchValue,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, kind]);
+  }, [page, pageSize, kind, searchValue]);
   const [loadMaterials, { isLoading, isFetching, data: rawMaterials }] =
     useLazyGetApiV1MaterialDepartmentQuery();
 
