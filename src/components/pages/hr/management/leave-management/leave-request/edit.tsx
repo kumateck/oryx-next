@@ -90,7 +90,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         contactPerson: data.contactPerson as string,
         contactPersonNumber: data.contactPersonNumber as string,
         requestCategory: parseInt(
-          data.leaveCategory.value,
+          data?.leaveCategory?.value ?? "",
         ) as unknown as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
