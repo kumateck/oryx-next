@@ -5,6 +5,10 @@ import { QuestionType } from "@/lib";
 
 const CreateTemplateSchema = z.object({
   name: z.string().min(1, "name is required"),
+  type: z.object({
+    value: z.string().min(1, "Type is required"),
+    label: z.string().min(1, "Type is required"),
+  }),
   // sections: z
   //   .array(
   //     z.object({

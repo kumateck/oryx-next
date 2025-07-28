@@ -18,12 +18,14 @@ import {
   BatchSizeType,
   BatchStatus,
   FloorType,
+  FormType,
   MaterialStatus,
   OperationAction,
   PackLocationType,
   QuestionType,
   RawLocationType,
   ShipmentStatus,
+  SpecificationReference,
   SupplierStatus,
   Units,
   WaybillStatus,
@@ -843,6 +845,34 @@ export const batchSizeTypeOptions = Object.values(BatchSizeType)
     const enumKey = BatchSizeType[enumValue as BatchSizeType];
     return {
       label: enumKey, // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  });
+
+//
+export const formTypeOptions = Object.values(FormType)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = FormType[enumValue as FormType];
+    return {
+      label: enumKey, // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  });
+
+//
+export const referenceOptions = Object.values(SpecificationReference)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = SpecificationReference[enumValue as SpecificationReference];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
       value: String(enumValue), // e.g., "0"
     };
   });

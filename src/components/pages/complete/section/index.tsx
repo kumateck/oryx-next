@@ -26,16 +26,18 @@ const FormSection = <TFieldValues extends FieldValues, TContext>({
   return (
     <StepWrapper>
       <div className=" border-b border-gray-100 pb-2">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">
-          {section.name}
-        </h2>
+        {section.name && (
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            {section.name}
+          </h2>
+        )}
         {section.description && (
           <p className="text-gray-600 text-sm leading-relaxed">
             {section.description}
           </p>
         )}
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 py-5">
         {section.fields?.map((field, key) => (
           <FormResponse
             register={register}

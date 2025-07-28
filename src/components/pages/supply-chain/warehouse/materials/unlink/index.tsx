@@ -76,7 +76,7 @@ const Page = () => {
     const response = await loadUnlinkedMaterials({
       kind: (Number(kind) as EMaterialKind) || EMaterialKind.Raw,
       page: 1,
-      pageSize: 30,
+      pageSize: 500,
       searchQuery,
     }).unwrap();
 
@@ -167,7 +167,7 @@ const Page = () => {
           <span>Save Changes</span>
         </Button>
       </div>
-      <div>
+      <div className="pb-12">
         <TableForData
           isLoading={isLoading || isFetching}
           lists={itemLists}

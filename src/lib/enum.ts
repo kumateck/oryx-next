@@ -6,6 +6,12 @@ export enum IsTrueorFalse {
   True = 1,
   False = 0,
 }
+export enum SpecificationReference {
+  BP,
+  USP,
+  PhInt,
+  InHouse,
+}
 
 export enum BatchStatus {
   Received = 0,
@@ -167,6 +173,12 @@ export enum QuestionType {
   Signature = 8,
   Reference = 9,
   Formular = 10,
+  Specification = 11,
+}
+
+export enum FormComplete {
+  Batch,
+  Specification,
 }
 
 export enum OperationAction {
@@ -400,7 +412,10 @@ export enum EmployeeType {
   Casual = 0,
   Permanent = 1,
 }
-
+export enum FormType {
+  Default,
+  Specification,
+}
 export enum LeaveCategories {
   LeaveRequest = 0,
   AbsenceRequest = 1,

@@ -4,12 +4,13 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
-  FormTypeEnum,
+  FormType,
+  fullname,
   isErrorResponse,
   Option,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -26,6 +27,7 @@ import {
 import { toast } from "sonner";
 import SpecificationForm from "../create/form";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
 
 function Page() {
   return (
@@ -41,6 +43,9 @@ export function EditMaterialSpecification() {
   const searchParams = useSearchParams();
   const { id } = useParams();
   const router = useRouter();
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
   const [getMaterials, { data: materials }] =
     useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery({});
@@ -98,31 +103,6 @@ export function EditMaterialSpecification() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialData]);
 
-  const { data: userResults } = useGetApiV1UserQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const users = userResults?.data ?? [];
-  const userOptions = users?.map((user) => ({
-    label: `${user?.firstName} ${user?.lastName} `,
-    value: user.id,
-  })) as Option[];
-
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.Specification,
-  });
-
-  // Convert form templates to options
-  const formData = formTemplates?.data || [];
-  const formOptions = formData?.map((form) => {
-    return {
-      label: form.name,
-      value: form.id,
-    };
-  }) as Option[];
-
   const materialOptions =
     materials?.map((material) => ({
       label: material?.name as string,
@@ -142,9 +122,11 @@ export function EditMaterialSpecification() {
         : "",
       materialId: data.materialId.value as string,
       formId: data.formId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
       description: data.description,
-      userId: data.userId.value as string,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
     };
     console.log("Submitting data", payload);
     if (!id) return;
@@ -161,7 +143,30 @@ export function EditMaterialSpecification() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const { data: usersData } = useGetApiV1UserQuery({});
 
+  const users = usersData?.data;
+  const userOptions = users?.map((user) => ({
+    label: fullname(user?.firstName as string, user?.lastName as string),
+    value: user?.id as string,
+  })) as Option[];
+
+  const assignSpec = useWatch<CreateMaterialSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
+  //load forms template
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormType.Specification,
+  });
+
+  const formOptionsData = formTemplates?.data || [];
+  const formOptions = formOptionsData.map((form) => ({
+    value: form.id,
+    label: form.name,
+  })) as Option[];
   return (
     <>
       <div
@@ -181,6 +186,7 @@ export function EditMaterialSpecification() {
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
+            assignSpec={assignSpec}
           />
         </div>
         <div className="flex justify-end gap-4">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
+  FormComplete,
   Units,
   WorkflowFormType,
   convertToLargestUnit,
@@ -155,7 +156,9 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
         materialBatchId,
       }).unwrap();
       toast.success("Test started successfully");
-      router.push(`/complete/${WorkflowFormType.Material}/${row.original.id}`);
+      router.push(
+        `/complete/${WorkflowFormType.Material}/${row.original.id}/${FormComplete.Batch}`,
+      );
     } catch (error) {
       ThrowErrorMessage(error);
     }

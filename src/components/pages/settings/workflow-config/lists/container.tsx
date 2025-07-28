@@ -1,5 +1,5 @@
 import update from "immutability-helper";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 
@@ -20,7 +20,7 @@ export interface ContainerState {
 }
 
 interface ContainerProps {
-  questions: QuestionDto[];
+  questions: templateQuestions[];
   highlightedQuestion?: QuestionDto;
   setHighlightedQuestion: React.Dispatch<
     React.SetStateAction<QuestionDto | undefined>
@@ -28,6 +28,7 @@ interface ContainerProps {
   setQuestions: React.Dispatch<React.SetStateAction<templateQuestions[]>>;
   onDeleteQuestion: (questionId: string) => void;
 }
+
 export const Container = ({
   questions,
   highlightedQuestion,
@@ -35,56 +36,50 @@ export const Container = ({
   onDeleteQuestion,
   setQuestions,
 }: ContainerProps) => {
-  {
-    const [cards, setCards] = useState<QuestionDto[]>(questions);
-    useEffect(() => {
-      setCards(questions);
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [questions?.length]);
-
-    const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-      setCards((prevCards: QuestionDto[]) =>
-        update(prevCards, {
+  const moveCard = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      setQuestions((prevQuestions: templateQuestions[]) =>
+        update(prevQuestions, {
           $splice: [
             [dragIndex, 1],
-            [hoverIndex, 0, prevCards[dragIndex] as QuestionDto],
+            [hoverIndex, 0, prevQuestions[dragIndex] as templateQuestions],
           ],
         }),
       );
-    }, []);
+    },
+    [setQuestions],
+  );
 
-    const renderCard = useCallback(
-      (card: QuestionDto, index: number) => {
-        return (
-          <Card
-            key={card.id}
-            index={index}
-            id={card.id as string}
-            question={card}
-            highlightedQuestion={highlightedQuestion}
-            setHighlightedQuestion={setHighlightedQuestion}
-            setQuestions={setQuestions}
-            onDeleteQuestion={onDeleteQuestion}
-            moveCard={moveCard}
-          />
-        );
-      },
-      [
-        highlightedQuestion,
-        setHighlightedQuestion,
-        onDeleteQuestion,
-        moveCard,
-        setQuestions,
-      ],
-    );
+  const renderCard = useCallback(
+    (card: templateQuestions, index: number) => {
+      return (
+        <Card
+          key={card.id}
+          index={index}
+          id={card.id as string}
+          question={card}
+          highlightedQuestion={highlightedQuestion}
+          setHighlightedQuestion={setHighlightedQuestion}
+          setQuestions={setQuestions}
+          onDeleteQuestion={onDeleteQuestion}
+          moveCard={moveCard}
+        />
+      );
+    },
+    [
+      highlightedQuestion,
+      setHighlightedQuestion,
+      onDeleteQuestion,
+      moveCard,
+      setQuestions,
+    ],
+  );
 
-    return (
-      <>
-        <div style={style} className="w-full">
-          {cards.map((card, i) => renderCard(card, i))}
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <div style={style} className="w-full">
+        {questions.map((card, i) => renderCard(card, i))}
+      </div>
+    </>
+  );
 };
