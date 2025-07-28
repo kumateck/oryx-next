@@ -289,7 +289,7 @@ import { ItemTypes } from "./type";
 
 export interface CardProps {
   id: string;
-  question: QuestionDto;
+  question: templateQuestions;
   highlightedQuestion?: QuestionDto;
   setHighlightedQuestion: React.Dispatch<
     React.SetStateAction<QuestionDto | undefined>
@@ -492,6 +492,7 @@ export const Card: FC<CardProps> = ({
               <Switch
                 className="h-4 w-7"
                 onCheckedChange={handleRequiredChange}
+                checked={question.required ?? false}
               />
               <Label className="text-sm">Required</Label>
             </div>
@@ -501,8 +502,8 @@ export const Card: FC<CardProps> = ({
               <Input
                 type="text"
                 className="mt-2"
-                defaultValue={question.description ?? ""}
-                // value={question.description ?? ""}
+                // defaultValue={question.description ?? ""}
+                value={question.description ?? ""}
                 onChange={handleDescriptionChange}
               />
             </div>

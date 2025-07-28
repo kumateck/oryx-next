@@ -69,7 +69,7 @@ function Page() {
   };
 
   const data = result?.data ?? [];
-  console.log(data);
+
   return (
     <PageWrapper className="w-full space-y-4">
       <div className="flex w-full items-center justify-between">

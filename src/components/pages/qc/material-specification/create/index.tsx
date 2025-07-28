@@ -4,9 +4,12 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormType,
+  fullname,
   isErrorResponse,
+  Option,
 } from "@/lib";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -15,7 +18,9 @@ import SpecificationForm from "./form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  useGetApiV1FormQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1UserQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -40,7 +45,6 @@ export function MaterialSpecPage() {
   });
   const [createMaterialSpecification, { isLoading }] =
     usePostApiV1MaterialSpecificationsMutation();
-
   const {
     register,
     control,
@@ -85,6 +89,30 @@ export function MaterialSpecPage() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const { data: usersData } = useGetApiV1UserQuery({});
+
+  const users = usersData?.data;
+  const userOptions = users?.map((user) => ({
+    label: fullname(user?.firstName as string, user?.lastName as string),
+    value: user?.id as string,
+  })) as Option[];
+
+  const assignSpec = useWatch<CreateMaterialSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
+  //load forms template
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormType.Specification,
+  });
+
+  const formOptionsData = formTemplates?.data || [];
+  const formOptions = formOptionsData.map((form) => ({
+    value: form.id,
+    label: form.name,
+  })) as Option[];
 
   return (
     <>
@@ -103,6 +131,9 @@ export function MaterialSpecPage() {
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
+            userOptions={userOptions}
+            formOptions={formOptions}
+            assignSpec={assignSpec}
           />
         </div>
         <div className="flex justify-end gap-4">

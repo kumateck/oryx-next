@@ -1,9 +1,10 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardHeader } from "@/components/ui";
-import { EMaterialKind, InputTypes, Option } from "@/lib";
+import { Card, CardContent, CardHeader, Label, Switch } from "@/components/ui";
+import { cn, EMaterialKind, InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
+  Controller,
   FieldErrors,
   FieldValues,
   Path,
@@ -14,22 +15,26 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
+  formOptions: Option[];
   materialOptions: Option[];
+  userOptions: Option[];
   kind: EMaterialKind;
+  assignSpec: boolean;
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   materialOptions,
-
+  formOptions,
   errors,
   kind,
+  assignSpec,
+  userOptions,
 }: Props<TFieldValues, TContext>) => {
   const isRawMaterial = kind?.toString() === EMaterialKind.Raw.toString();
-  console.log(kind, "this is thekind");
+
   return (
-    <>
+    <div className="space-y-4">
       <Card>
         <CardHeader className="font-semibold">Material Information</CardHeader>
         <CardContent className="w-full flex items-center justify-between gap-4 md:flex-row flex-col">
@@ -92,7 +97,79 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           />
         </CardContent>
       </Card>
-    </>
+      <Card>
+        <CardHeader className="font-semibold">Assignee Information</CardHeader>
+
+        <CardContent>
+          <FormWizard
+            config={[
+              {
+                label: "Template",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "formId",
+                required: true,
+                placeholder: "Select Template",
+                options: formOptions,
+                errors,
+              },
+            ]}
+          />
+          <div className="flex items-center gap-3 py-5">
+            <Controller
+              control={control}
+              name={"assignSpec" as Path<TFieldValues>}
+              render={({ field }) => (
+                <Switch className="h-4 w-7" onCheckedChange={field.onChange} />
+              )}
+            />
+
+            <Label>Assign Specification</Label>
+          </div>
+          <div
+            className={cn("space-y-6", {
+              "pointer-events-none opacity-50": !assignSpec,
+            })}
+          >
+            <FormWizard
+              className="grid w-full grid-cols-2 gap-10 space-y-0"
+              fieldWrapperClassName="flex-grow"
+              config={[
+                {
+                  label: "Assignee",
+                  control: control as Control,
+                  type: InputTypes.SELECT,
+                  name: "userId",
+                  placeholder: "Assignee",
+                  options: userOptions,
+                  errors,
+                },
+                {
+                  type: InputTypes.DATE,
+                  label: "Due Date",
+                  name: "dueDate",
+                  control: control as Control,
+                  errors,
+                },
+              ]}
+            />
+            <FormWizard
+              config={[
+                {
+                  label: "Notes",
+                  control: control as Control,
+                  type: InputTypes.RICHTEXT,
+                  name: "description",
+                  required: true,
+                  placeholder: "Enter Notes",
+                  errors,
+                },
+              ]}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
