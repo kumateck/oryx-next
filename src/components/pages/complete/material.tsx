@@ -57,9 +57,7 @@ const FormResponseForMaterial = () => {
       const response = await loadMaterialSpecData({
         id,
       }).unwrap();
-      console.log(response);
-      const batchFormId =
-        (response?.form?.id as string) || (response.formId as string);
+      const batchFormId = response?.form?.id as string;
       setCurrentFormId(batchFormId);
       await handleLoadForm(batchFormId);
     } catch (error) {

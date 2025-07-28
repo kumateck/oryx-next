@@ -50,6 +50,10 @@ export const getColumns = (
     header: "Price per Unit",
   },
   {
+    accessorKey: "initialQuantity",
+    header: "Initial Quantity",
+  },
+  {
     accessorKey: "expectedQuantity",
     header: "Expected Quantity",
   },

@@ -38,20 +38,10 @@ export const createRequisitionRequestSchema = z.object({
   code: z.string({ required_error: "Code is required" }).min(1, {
     message: "Code is required",
   }),
-  comments: z.string().nullable().optional(),
-  items: z.array(createRequisitionItemRequestSchema).nullable().optional(),
-  //   expectedDelivery: z.preprocess(
-  //     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-  //     z.date({
-  //       required_error: "Expected Delivery Date is required",
-  //       invalid_type_error: "Expected Delivery Date must be a valid date",
-  //     }),
-  //   ),
+  comments: z.string().optional(),
+  items: z.array(createRequisitionItemRequestSchema).optional(),
+
   expectedDelivery: z.date().optional(),
-  // .min(1, { message: "Expected Delivery Date is required" })
-  // .refine((val) => !isNaN(Date.parse(val)), {
-  //   message: "Invalid date format",
-  // }),
 });
 
 export type RequisitionRequestDto = z.infer<

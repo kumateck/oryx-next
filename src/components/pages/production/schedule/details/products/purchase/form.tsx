@@ -63,7 +63,7 @@ const PurchaseForm = <TFieldValues extends FieldValues, TContext>({
             label: "Remarks",
             control: control as Control,
             type: InputTypes.RICHTEXT,
-            name: "remarks",
+            name: "comments",
             autoFocus: false,
             placeholder: "Enter remarks for schedule",
             suggestions: [],
