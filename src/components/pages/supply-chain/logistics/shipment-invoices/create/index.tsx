@@ -151,39 +151,6 @@ const Page = () => {
     // }
   }, [purchaseOrderIds, purchaseOrders]);
 
-  // const handleLoadPO = async () => {
-  //   // const res = await loadPurchaseOrder({}).unwrap();
-  // };
-  // useEffect(() => {
-  //   if (poOptions?.value) {
-  //     loadPurchaseOrderDetailsHandler(poOptions.value);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [poOptions]);
-
-  // const loadPurchaseOrderDetailsHandler = async (poId: string) => {
-  //   const res = await loadPurchaseOrder({
-  //     purchaseOrderId: poId,
-  //   }).unwrap();
-
-  //   const payload = res?.items?.map((item) => ({
-  //     materialId: item.material?.id as string,
-  //     uomId: item.uom?.id as string,
-  //     expectedQuantity: item.quantity as number,
-  //     materialName: item.material?.name as string,
-  //     uomName: item.uom?.name as string,
-  //     receivedQuantity: item.quantity as number,
-  //     reason: "",
-  //     code: item.material?.code as string,
-  //     costPrice: item.price?.toString(),
-  //     options: item.manufacturers?.map((item) => ({
-  //       label: item.name,
-  //       value: item.id,
-  //     })),
-  //   })) as MaterialRequestDto[];
-  //   setMaterialLists(payload);
-  // };
-
   const onSubmit = async (data: InvoiceRequestDto) => {
     const flatItems = poLists.flatMap((obj) => obj.items);
     const payload = {
