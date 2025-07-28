@@ -20,6 +20,7 @@ import {
 } from "./type";
 import PageTitle from "@/shared/title";
 import ThrowErrorMessage from "@/lib/throw-error";
+import { FormType } from "@/lib";
 
 const CreateTemplate = () => {
   const router = useRouter();
@@ -39,6 +40,7 @@ const CreateTemplate = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<TemplateRequestDto>({
@@ -48,12 +50,12 @@ const CreateTemplate = () => {
 
   const onSubmit = async (data: TemplateRequestDto) => {
     // Validate sections
-    const validSections = sections.filter((s) => s.name.trim() !== "");
+    const validSections = sections; //.filter((s) => s.name.trim() !== "");
 
-    if (validSections.length === 0) {
-      toast.warning("Please add at least one section with a name");
-      return;
-    }
+    // if (validSections.length === 0) {
+    //   toast.warning("Please add at least one section with a name");
+    //   return;
+    // }
 
     const sectionsWithQuestions = validSections.filter(
       (s) => s.questions.length > 0,
@@ -67,6 +69,9 @@ const CreateTemplate = () => {
     const payload = {
       createFormRequest: {
         name: data.name,
+        type: data.type
+          ? (Number(data.type.value) as FormType)
+          : FormType.Default,
         sections: validSections.map((section) => ({
           name: section.name,
           description: section.description,
@@ -117,6 +122,7 @@ const CreateTemplate = () => {
         </div>
 
         <QuestionForm
+          control={control}
           sections={sections}
           setSections={setSections}
           currentSectionId={currentSectionId}

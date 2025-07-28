@@ -167,6 +167,7 @@ export enum QuestionType {
   Signature = 8,
   Reference = 9,
   Formular = 10,
+  Specification = 11,
 }
 
 export enum OperationAction {
@@ -400,7 +401,10 @@ export enum EmployeeType {
   Casual = 0,
   Permanent = 1,
 }
-
+export enum FormType {
+  Default,
+  Specification,
+}
 export enum LeaveCategories {
   LeaveRequest = 0,
   AbsenceRequest = 1,

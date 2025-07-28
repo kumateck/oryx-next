@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Control,
   FieldErrors,
   FieldValues,
   Path,
@@ -8,7 +9,7 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { Button, Icon, Input } from "@/components/ui";
-import { InputTypes } from "@/lib";
+import { formTypeOptions, InputTypes } from "@/lib";
 import { QuestionDto } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import StepWrapper from "@/shared/wrapper";
@@ -17,8 +18,9 @@ import DragLists from "../lists";
 import AddQuestions from "./add-questions";
 import { templateQuestions, TemplateSection } from "./type";
 
-interface Props<TFieldValues extends FieldValues> {
+interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
+  control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
   sections: TemplateSection[];
   setSections: React.Dispatch<React.SetStateAction<TemplateSection[]>>;
@@ -32,7 +34,7 @@ interface Props<TFieldValues extends FieldValues> {
   >;
 }
 
-const QuestionForm = <TFieldValues extends FieldValues>({
+const QuestionForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   sections,
@@ -43,7 +45,8 @@ const QuestionForm = <TFieldValues extends FieldValues>({
   setIsAddQuestionsOpen,
   highlightedQuestion,
   setHighlightedQuestion,
-}: Props<TFieldValues>) => {
+  control,
+}: Props<TFieldValues, TContext>) => {
   const addNewSection = () => {
     const newSection: TemplateSection = {
       id: `section-${Date.now()}`,
@@ -57,6 +60,13 @@ const QuestionForm = <TFieldValues extends FieldValues>({
     setSections((prev) =>
       prev.map((section) =>
         section.id === sectionId ? { ...section, name } : section,
+      ),
+    );
+  };
+  const updateSectionDescription = (sectionId: string, description: string) => {
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === sectionId ? { ...section, description } : section,
       ),
     );
   };
@@ -127,6 +137,16 @@ const QuestionForm = <TFieldValues extends FieldValues>({
                 type: InputTypes.TEXT,
                 errors,
               },
+              {
+                label: "Type",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "type",
+                required: true,
+                placeholder: "Select Type",
+                options: formTypeOptions,
+                errors,
+              },
             ]}
           />
         </StepWrapper>
@@ -153,7 +173,7 @@ const QuestionForm = <TFieldValues extends FieldValues>({
             >
               {/* Section Header */}
               <div className="flex items-center gap-3">
-                <div className="flex-1">
+                <div className="flex-1 flex gap-2 items-center">
                   <Input
                     type="text"
                     value={section.name}
@@ -161,6 +181,14 @@ const QuestionForm = <TFieldValues extends FieldValues>({
                       updateSectionName(section.id, e.target.value)
                     }
                     placeholder={`Section ${index + 1} Name`}
+                  />
+                  <Input
+                    type="text"
+                    value={section.description}
+                    onChange={(e) =>
+                      updateSectionDescription(section.id, e.target.value)
+                    }
+                    placeholder={`Section ${index + 1} Description`}
                   />
                 </div>
                 <Button

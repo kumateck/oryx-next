@@ -4,12 +4,13 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
-  FormTypeEnum,
+  FormType,
+  fullname,
   isErrorResponse,
   Option,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -98,31 +99,6 @@ export function EditMaterialSpecification() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialData]);
 
-  const { data: userResults } = useGetApiV1UserQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const users = userResults?.data ?? [];
-  const userOptions = users?.map((user) => ({
-    label: `${user?.firstName} ${user?.lastName} `,
-    value: user.id,
-  })) as Option[];
-
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.Specification,
-  });
-
-  // Convert form templates to options
-  const formData = formTemplates?.data || [];
-  const formOptions = formData?.map((form) => {
-    return {
-      label: form.name,
-      value: form.id,
-    };
-  }) as Option[];
-
   const materialOptions =
     materials?.map((material) => ({
       label: material?.name as string,
@@ -161,7 +137,30 @@ export function EditMaterialSpecification() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const { data: usersData } = useGetApiV1UserQuery({});
 
+  const users = usersData?.data;
+  const userOptions = users?.map((user) => ({
+    label: fullname(user?.firstName as string, user?.lastName as string),
+    value: user?.id as string,
+  })) as Option[];
+
+  const assignSpec = useWatch<CreateMaterialSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
+  //load forms template
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormType.Specification,
+  });
+
+  const formOptionsData = formTemplates?.data || [];
+  const formOptions = formOptionsData.map((form) => ({
+    value: form.id,
+    label: form.name,
+  })) as Option[];
   return (
     <>
       <div
@@ -181,6 +180,7 @@ export function EditMaterialSpecification() {
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
+            assignSpec={assignSpec}
           />
         </div>
         <div className="flex justify-end gap-4">

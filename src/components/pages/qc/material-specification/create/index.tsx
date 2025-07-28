@@ -4,11 +4,12 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
-  FormTypeEnum,
+  FormType,
+  fullname,
   isErrorResponse,
   Option,
 } from "@/lib";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateMaterialSpecificationDto,
   CreateMaterialSpecificationValidator,
@@ -17,7 +18,6 @@ import SpecificationForm from "./form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  CreateMaterialSpecificationRequest,
   useGetApiV1FormQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useGetApiV1UserQuery,
@@ -45,7 +45,6 @@ export function MaterialSpecPage() {
   });
   const [createMaterialSpecification, { isLoading }] =
     usePostApiV1MaterialSpecificationsMutation();
-
   const {
     register,
     control,
@@ -55,31 +54,6 @@ export function MaterialSpecPage() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
-  const { data: userResults } = useGetApiV1UserQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const users = userResults?.data ?? [];
-  const userOptions = users?.map((user) => ({
-    label: `${user?.firstName} ${user?.lastName} `,
-    value: user.id,
-  })) as Option[];
-
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.Specification,
-  });
-
-  // Convert form templates to options
-  const formData = formTemplates?.data || [];
-  const formOptions = formData?.map((form) => {
-    return {
-      label: form.name,
-      value: form.id,
-    };
-  }) as Option[];
-
   const materialOptions =
     materials?.map((material) => ({
       label: material?.name as string,
@@ -87,7 +61,7 @@ export function MaterialSpecPage() {
     })) || [];
 
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
-    const payload: CreateMaterialSpecificationRequest = {
+    const payload = {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
@@ -116,6 +90,30 @@ export function MaterialSpecPage() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const { data: usersData } = useGetApiV1UserQuery({});
+
+  const users = usersData?.data;
+  const userOptions = users?.map((user) => ({
+    label: fullname(user?.firstName as string, user?.lastName as string),
+    value: user?.id as string,
+  })) as Option[];
+
+  const assignSpec = useWatch<CreateMaterialSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
+  //load forms template
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormType.Specification,
+  });
+
+  const formOptionsData = formTemplates?.data || [];
+  const formOptions = formOptionsData.map((form) => ({
+    value: form.id,
+    label: form.name,
+  })) as Option[];
 
   return (
     <>
@@ -131,11 +129,12 @@ export function MaterialSpecPage() {
           <SpecificationForm
             control={control}
             register={register}
-            formOptions={formOptions}
-            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
+            userOptions={userOptions}
+            formOptions={formOptions}
+            assignSpec={assignSpec}
           />
         </div>
         <div className="flex justify-end gap-4">
