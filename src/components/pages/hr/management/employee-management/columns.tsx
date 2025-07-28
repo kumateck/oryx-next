@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import {
   EmployeeDto,
+  usePutApiV1EmployeeByIdChangeTypeMutation,
   usePutApiV1EmployeeByIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
