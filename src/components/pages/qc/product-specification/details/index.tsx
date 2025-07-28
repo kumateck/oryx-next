@@ -14,7 +14,6 @@ import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { MaterialSpecificationReferenceEnum } from "../types";
 import ProductSpecificationSkeleton from "./loadingSkeleton";
 
 function Page() {
@@ -131,7 +130,7 @@ function Page() {
             </div>
           </CardContent>
         </Card>
-        <Card className="mt-6">
+        {/* <Card className="mt-6">
           <CardHeader>
             <CardTitle className="text-xl">Test and Specifications</CardTitle>
           </CardHeader>
@@ -160,7 +159,7 @@ function Page() {
               </div>
             ))}
           </CardContent>
-        </Card>
+        </Card> */}
       </ScrollablePageWrapper>
     </PageWrapper>
   );
