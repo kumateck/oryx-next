@@ -64,7 +64,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   const isLeaveOrAbsence = [
     String(LeaveCategories.LeaveRequest),
     String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
+  ].includes(selectedCategory?.value ?? "");
 
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
@@ -77,7 +77,9 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "-",
         destination: data.destination ?? "-",
-        requestCategory: parseInt(data.leaveCategory.value) as RequestCategory,
+        requestCategory: parseInt(
+          data?.leaveCategory?.value ?? "0",
+        ) as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
