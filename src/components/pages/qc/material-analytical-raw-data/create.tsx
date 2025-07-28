@@ -13,6 +13,7 @@ import {
   CODE_SETTINGS,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
@@ -64,6 +65,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.Default,
   });
 
   const [createMaterialArdMutation, { isLoading }] =

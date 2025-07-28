@@ -4,7 +4,9 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
+  Option,
 } from "@/lib";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +17,8 @@ import {
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
+  useGetApiV1FormQuery,
+  useGetApiV1UserQuery,
   useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
@@ -84,7 +88,6 @@ export function EditMaterialSpecification() {
       if (materialData?.reviewDate) {
         setValue("reviewDate", new Date(materialData.reviewDate));
       }
-
       if (materialData?.material) {
         setValue("materialId", {
           value: materialData?.material?.id ?? "",
@@ -94,6 +97,31 @@ export function EditMaterialSpecification() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialData]);
+
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const materialOptions =
     materials?.map((material) => ({
@@ -112,7 +140,6 @@ export function EditMaterialSpecification() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-
       materialId: data.materialId.value as string,
       formId: data.formId.value as string,
       dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
@@ -149,6 +176,8 @@ export function EditMaterialSpecification() {
           <SpecificationForm
             control={control}
             register={register}
+            formOptions={formOptions}
+            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}

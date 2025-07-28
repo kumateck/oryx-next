@@ -29,6 +29,24 @@ export const imageValidationSchema = z.any().refine(
 
 export const ShiftScheduleUploadSchema = z.object({
   file: imageValidationSchema,
+  departmentId: z.object(
+    {
+      label: z.string(),
+      value: z.string(),
+    },
+    {
+      message: "Department is required",
+    },
+  ),
+  shiftScheduleId: z.object(
+    {
+      label: z.string(),
+      value: z.string(),
+    },
+    {
+      message: "Shift schedule is require",
+    },
+  ),
 });
 
 export type ShiftScheduleUploadDto = z.infer<typeof ShiftScheduleUploadSchema>;

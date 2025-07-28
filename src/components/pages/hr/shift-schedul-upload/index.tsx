@@ -8,34 +8,37 @@ import { FileUpload } from "./FileUpload";
 import { AuditModules } from "@/lib";
 import { toast } from "sonner";
 import ThrowErrorMessage from "@/lib/throw-error";
-import { useEffect, useState } from "react";
-import { usePostApiV1ShiftSchedulesAssignImportMutation } from "@/lib/redux/api/openapi.generated";
+import { useState } from "react";
+import {
+  useGetApiV1DepartmentQuery,
+  useGetApiV1ShiftSchedulesQuery,
+  usePostApiV1ShiftSchedulesAssignImportMutation,
+} from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import { columns, ShiftsReportSummary } from "./column";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
+import { Button, Icon } from "@/components/ui";
 
 function Index() {
-  const [selectedFileUrl, setSelectedFileUrl] = useState<string | null>(null);
   const [results, setResults] = useState<ShiftsReportSummary[]>([]);
+  const { data: departments } = useGetApiV1DepartmentQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const { data: shiftSchedules } = useGetApiV1ShiftSchedulesQuery({
+    page: 1,
+    pageSize: 1000,
+  });
 
   const [uploadShiftSchedule, { isLoading }] =
     usePostApiV1ShiftSchedulesAssignImportMutation({});
   const {
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm<ShiftScheduleUploadDto>({
     resolver: zodResolver(ShiftScheduleUploadSchema),
   });
-
-  const selectedFile = watch("file");
-  useEffect(() => {
-    if (selectedFile && selectedFile.length > 0) {
-      const url = URL.createObjectURL(selectedFile[0]);
-      setSelectedFileUrl(url);
-    }
-  }, [selectedFile]);
 
   const onSubmit = async (data: ShiftScheduleUploadDto) => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
@@ -49,6 +52,8 @@ function Index() {
         body: formData as unknown as {
           file: Blob;
         },
+        departmentId: data.departmentId.value,
+        shiftId: data.shiftScheduleId.value,
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.attendanceReport,
       });
@@ -65,14 +70,16 @@ function Index() {
     }
   };
 
-  useEffect(() => {
-    //trigger file submission when a file is selected
-    if (selectedFileUrl) {
-      handleSubmit(onSubmit)();
-      console.log("File submitted:", results);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFileUrl]);
+  const departmentOptions =
+    departments?.data?.map((d) => ({
+      label: d.name as string,
+      value: d.id as string,
+    })) || [];
+  const shiftScheduleOptions =
+    shiftSchedules?.data?.map((shift) => ({
+      label: shift.scheduleName as string,
+      value: shift.id as string,
+    })) || [];
 
   return (
     <PageWrapper>
@@ -82,8 +89,24 @@ function Index() {
         excel sheet.
       </p>
       <ScrollableWrapper>
-        <form className="w-full my-8" onSubmit={handleSubmit(onSubmit)}>
-          <FileUpload control={control} errors={errors} />
+        <form
+          className="w-full flex flex-col my-10"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <FileUpload
+            departmentOptions={departmentOptions}
+            shiftScheduleOptions={shiftScheduleOptions}
+            control={control}
+            errors={errors}
+          />
+          <Button
+            disabled={isLoading}
+            type="submit"
+            className="ml-auto flex items-center gap-2"
+          >
+            {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}
+            Submit
+          </Button>
         </form>
 
         {results?.length > 0 && (

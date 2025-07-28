@@ -83,13 +83,15 @@ export const CreateLeaveSchema = z
       },
       { required_error: "Staff name is required" },
     ),
-    leaveCategory: z.object(
-      {
-        value: z.string().min(1, { message: "Leave Category is required" }),
-        label: z.string(),
-      },
-      { required_error: "Leave Category is required" },
-    ),
+    leaveCategory: z
+      .object(
+        {
+          value: z.string(),
+          label: z.string(),
+        },
+        { required_error: "Leave Category is required" },
+      )
+      .optional(),
     contactPerson: z.string().optional(),
     contactPersonNumber: z.string().optional(),
     attachments: imageValidationSchema.optional(),
@@ -98,7 +100,7 @@ export const CreateLeaveSchema = z
   })
   .superRefine((data, ctx) => {
     const isExitPass =
-      data.leaveCategory.value === String(LeaveCategories.ExitPassRequest);
+      data?.leaveCategory?.value === String(LeaveCategories.ExitPassRequest);
 
     if (!isExitPass) {
       if (!data.leaveTypeId?.value) {

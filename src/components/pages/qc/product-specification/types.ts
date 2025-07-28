@@ -47,8 +47,8 @@ const specificationSchema = z.object({
   reviewDate: z.date({
     message: "Review date must be a valid ISO datetime string",
   }),
-  packingStyle: z.string().optional(),
 
+  packingStyle: z.string().optional(),
   productId: z.object(
     {
       value: z.string(),

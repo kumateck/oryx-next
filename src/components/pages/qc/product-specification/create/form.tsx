@@ -15,14 +15,16 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-
   productOptions: Option[];
+  userOptions: Option[];
+  formOptions: Option[];
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   productOptions,
-
+  formOptions,
+  userOptions,
   errors,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -59,11 +61,28 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
+                label: "Due Date",
+                type: InputTypes.DATE,
+                placeholder: "Due Date",
+                name: "dueDate",
+                control: control as Control,
+                errors,
+              },
+              {
                 label: "Packing Style",
                 type: InputTypes.TEXT,
                 placeholder: "Packing Style",
                 readOnly: true,
                 register: register("packingStyle" as Path<TFieldValues>),
+                required: true,
+                errors,
+              },
+              {
+                label: "Shelf Life",
+                type: InputTypes.TEXT,
+                placeholder: "Shelf Life",
+                readOnly: true,
+                register: register("shelfLife" as Path<TFieldValues>),
                 required: true,
                 errors,
               },
@@ -81,6 +100,24 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           <FormWizard
             className="w-full"
             config={[
+              {
+                label: "Assigned User",
+                type: InputTypes.SELECT,
+                name: "userId",
+                placeholder: "Select User",
+                control: control as Control,
+                options: userOptions,
+                errors,
+              },
+              {
+                label: "Template",
+                type: InputTypes.SELECT,
+                name: "formId",
+                placeholder: "Select Template",
+                control: control as Control,
+                options: formOptions,
+                errors,
+              },
               {
                 label: "Revision Date",
                 type: InputTypes.DATE,
@@ -115,15 +152,6 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                     label: String(label),
                     value: String(TestStageValues[label]),
                   })),
-                errors,
-              },
-              {
-                label: "Shelf Life",
-                type: InputTypes.TEXT,
-                placeholder: "Shelf Life",
-                readOnly: true,
-                register: register("shelfLife" as Path<TFieldValues>),
-                required: true,
                 errors,
               },
             ]}

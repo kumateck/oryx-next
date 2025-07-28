@@ -12,6 +12,7 @@ import {
   cn,
   CODE_SETTINGS,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
@@ -65,6 +66,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.Default,
   });
 
   const [createProductArdMutation, { isLoading }] =

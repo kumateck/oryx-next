@@ -4,7 +4,9 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
+  Option,
 } from "@/lib";
 import { useForm } from "react-hook-form";
 import {
@@ -15,7 +17,10 @@ import SpecificationForm from "./form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  CreateMaterialSpecificationRequest,
+  useGetApiV1FormQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1UserQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -50,6 +55,31 @@ export function MaterialSpecPage() {
     resolver: CreateMaterialSpecificationValidator,
   });
 
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
+
   const materialOptions =
     materials?.map((material) => ({
       label: material?.name as string,
@@ -57,10 +87,11 @@ export function MaterialSpecPage() {
     })) || [];
 
   const onSubmit = async (data: CreateMaterialSpecificationDto) => {
-    const payload = {
+    const payload: CreateMaterialSpecificationRequest = {
       specificationNumber: data.specificationNumber,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
+
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
@@ -100,6 +131,8 @@ export function MaterialSpecPage() {
           <SpecificationForm
             control={control}
             register={register}
+            formOptions={formOptions}
+            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}

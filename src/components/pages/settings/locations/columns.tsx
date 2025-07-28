@@ -12,12 +12,14 @@ import {
 import {
   WarehouseLocationDto,
   useDeleteApiV1WarehouseLocationByLocationIdMutation,
-  useLazyGetApiV1WarehouseLocationQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,7 +34,7 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
     {} as WarehouseLocationDto,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadWarehouseLocation] = useLazyGetApiV1WarehouseLocationQuery();
+  const dispatch = useDispatch();
 
   const { hasPermissionAccess } = useUserPermissions();
   return (
@@ -104,9 +106,7 @@ export function DataTableRowActions<TData extends WarehouseLocationDto>({
               locationId: details.id as string,
             }).unwrap();
             toast.success("Location deleted successfully");
-            loadWarehouseLocation({
-              pageSize: 30,
-            });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
@@ -135,7 +135,11 @@ export const columns: ColumnDef<WarehouseLocationDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>
+        <TheAduseiEditorViewer content={row.original.description as string} />
+      </div>
+    ),
   },
   {
     accessorKey: "warehouse",

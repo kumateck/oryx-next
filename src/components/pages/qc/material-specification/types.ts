@@ -39,11 +39,9 @@ const specificationSchema = z.object({
   effectiveDate: z.date({
     message: "Effective date must be a valid ISO datetime string",
   }),
-
   reviewDate: z.date({
     message: "Review date must be a valid ISO datetime string",
   }),
-
   materialId: z.object(
     {
       value: z.string(),
