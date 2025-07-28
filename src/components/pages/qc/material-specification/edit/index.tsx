@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import SpecificationForm from "../create/form";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
 
 function Page() {
   return (
@@ -42,6 +43,9 @@ export function EditMaterialSpecification() {
   const searchParams = useSearchParams();
   const { id } = useParams();
   const router = useRouter();
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
   const [getMaterials, { data: materials }] =
     useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery({});
@@ -118,9 +122,11 @@ export function EditMaterialSpecification() {
         : "",
       materialId: data.materialId.value as string,
       formId: data.formId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
       description: data.description,
-      userId: data.userId.value as string,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
     };
     console.log("Submitting data", payload);
     if (!id) return;

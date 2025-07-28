@@ -25,6 +25,7 @@ import {
   QuestionType,
   RawLocationType,
   ShipmentStatus,
+  SpecificationReference,
   SupplierStatus,
   Units,
   WaybillStatus,
@@ -861,6 +862,21 @@ export const formTypeOptions = Object.values(FormType)
       value: String(enumValue), // e.g., "0"
     };
   });
+
+//
+export const referenceOptions = Object.values(SpecificationReference)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = SpecificationReference[enumValue as SpecificationReference];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  });
+
 export const SupplierTypeOptions = Object.values(SupplierStatus)
   // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
   .filter((enumValue) => typeof enumValue === "number")

@@ -4,10 +4,12 @@ import {
   AuditModules,
   EMaterialKind,
   ErrorResponse,
+  FormComplete,
   FormType,
   fullname,
   isErrorResponse,
   Option,
+  WorkflowFormType,
 } from "@/lib";
 import { useForm, useWatch } from "react-hook-form";
 import {
@@ -25,6 +27,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
 
 function Page() {
   return (
@@ -38,6 +41,9 @@ export default Page;
 
 export function MaterialSpecPage() {
   const searchParams = useSearchParams();
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
   const router = useRouter();
   const kind = searchParams.get("kind") as unknown as EMaterialKind;
   const { data: materials } = useGetApiV1MaterialMaterialSpecsNotLinkedQuery({
@@ -73,19 +79,29 @@ export function MaterialSpecPage() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       materialId: data.materialId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
       formId: data.formId.value as string,
       description: data.description,
-      userId: data.userId.value as string,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
     };
     try {
-      await createMaterialSpecification({
+      const res = await createMaterialSpecification({
         createMaterialSpecificationRequest: payload,
         module: AuditModules.production.name,
         subModule: AuditModules.production.materialRequisitions,
       }).unwrap();
+      // console.log(res, "res");
       toast.success("Material Specification created successfully");
-      router.back();
+      if (!assignSpec) {
+        router.push(
+          `/complete/${WorkflowFormType.Material}/${res}/${FormComplete.Specification}`,
+        );
+        return;
+      } else {
+        router.back();
+      }
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
