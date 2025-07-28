@@ -1,6 +1,12 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  AuditModules,
+  ErrorResponse,
+  FormTypeEnum,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import { useForm } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
@@ -12,7 +18,9 @@ import { useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
   TestStage,
+  useGetApiV1FormQuery,
   useGetApiV1ProductQuery,
+  useGetApiV1UserQuery,
   usePostApiV1ProductSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -39,12 +47,37 @@ export function MaterialSpecPage() {
     register,
     control,
     handleSubmit,
-    setValue,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CreateProductSpecificationDto>({
     resolver: CreateProductSpecificationValidator,
   });
+
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const productOptions =
     product?.data?.map((product) => ({
@@ -76,13 +109,12 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-
+      userId: data.userId.value as string,
+      formId: data.formId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      description: data.description,
       testStage: Number(data.testStage.value) as unknown as TestStage,
       productId: data.productId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
-      formId: data.formId.value as string,
-      description: data.description,
-      userId: data.userId.value as string,
     };
 
     try {
@@ -107,14 +139,14 @@ export function MaterialSpecPage() {
         <PageTitle title="Products Specification List" />
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          <SpecificationForm
-            control={control}
-            register={register}
-            productOptions={productOptions}
-            errors={errors}
-          />
-        </div>
+        <SpecificationForm
+          control={control}
+          register={register}
+          userOptions={userOptions}
+          formOptions={formOptions}
+          productOptions={productOptions}
+          errors={errors}
+        />
 
         <div className="flex justify-end gap-4">
           <Button

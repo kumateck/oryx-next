@@ -90,7 +90,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         contactPerson: data.contactPerson as string,
         contactPersonNumber: data.contactPersonNumber as string,
         requestCategory: parseInt(
-          data.leaveCategory.value,
+          data?.leaveCategory?.value ?? "",
         ) as unknown as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
@@ -166,7 +166,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const isLeaveOrAbsence = [
     String(LeaveCategories.LeaveRequest),
     String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
+  ].includes(selectedCategory?.value ?? "");
 
   const categoryOptions = Object.entries(LeaveCategories)
     .filter(([key]) => isNaN(Number(key)))

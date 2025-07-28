@@ -49,7 +49,6 @@ const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
             name: "parentDepartmentId",
             placeholder: "Select Parent Department",
             options: departmentOptions,
-            required: true,
             errors,
           },
           {

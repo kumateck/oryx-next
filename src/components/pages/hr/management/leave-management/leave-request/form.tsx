@@ -37,22 +37,25 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
-      <FormWizard
-        className="w-full space-y-5"
-        config={[
-          {
-            label: "Leave Category",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "leaveCategory",
-            required: true,
-            defaultValue: defaultValues?.leaveCategory,
-            placeholder: "Select leave category",
-            options: categoryOptions,
-            errors,
-          },
-        ]}
-      />
+      {!isOfficialDuty && (
+        <FormWizard
+          className="w-full space-y-5"
+          config={[
+            {
+              label: "Leave Category",
+              control: control as Control,
+              type: InputTypes.SELECT,
+              name: "leaveCategory",
+              required: true,
+              defaultValue: defaultValues?.leaveCategory,
+              placeholder: "Select leave category",
+              options: categoryOptions,
+              errors,
+            },
+          ]}
+        />
+      )}
+
       {!isExitPass && (
         <div className="w-full my-5">
           <FormWizard

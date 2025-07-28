@@ -1,6 +1,12 @@
 "use client";
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse } from "@/lib";
+import {
+  AuditModules,
+  ErrorResponse,
+  FormTypeEnum,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -13,7 +19,9 @@ import { useParams, useRouter } from "next/navigation";
 import {
   CreateProductSpecificationRequest,
   TestStage,
+  useGetApiV1FormQuery,
   useGetApiV1ProductQuery,
+  useGetApiV1UserQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -84,6 +92,20 @@ export function EditMaterialSpecification() {
         value: String(productSpecification?.testStage),
         label: TestStageValues[productSpecification?.testStage as TestStage],
       });
+      setValue("userId", {
+        value: productSpecification.user?.id ?? "",
+        label: `${productSpecification.user?.firstName} ${productSpecification.user?.lastName}`,
+      });
+      setValue(
+        "formId",
+        productSpecification?.form
+          ? {
+              value: productSpecification.form.id ?? "",
+              label: productSpecification.form.name ?? "",
+            }
+          : { value: "", label: "" },
+      );
+      setValue("description", productSpecification?.description || "");
       setValue(
         "revisionNumber",
         productSpecification?.revisionNumber as string,
@@ -101,7 +123,6 @@ export function EditMaterialSpecification() {
       if (productSpecification?.reviewDate) {
         setValue("reviewDate", new Date(productSpecification.reviewDate));
       }
-
       if (productSpecification?.product) {
         setValue("productId", {
           value: productSpecification?.product?.id ?? "",
@@ -111,6 +132,31 @@ export function EditMaterialSpecification() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSpecification]);
+
+  const { data: userResults } = useGetApiV1UserQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const users = userResults?.data ?? [];
+  const userOptions = users?.map((user) => ({
+    label: `${user?.firstName} ${user?.lastName} `,
+    value: user.id,
+  })) as Option[];
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormTypeEnum.Specification,
+  });
+
+  // Convert form templates to options
+  const formData = formTemplates?.data || [];
+  const formOptions = formData?.map((form) => {
+    return {
+      label: form.name,
+      value: form.id,
+    };
+  }) as Option[];
 
   const productOptions =
     product?.data?.map((product) => ({
@@ -124,18 +170,17 @@ export function EditMaterialSpecification() {
       testStage: Number(data.testStage.value) as unknown as TestStage,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
+      userId: data.userId.value,
+      formId: data.formId.value,
+      description: data.description,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
       effectiveDate: data.effectiveDate
         ? new Date(data.effectiveDate).toISOString()
         : "",
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-
       productId: data.productId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
-      formId: data.formId.value as string,
-      description: data.description,
-      userId: data.userId.value as string,
     };
 
     if (!id) return;
@@ -167,6 +212,8 @@ export function EditMaterialSpecification() {
           <SpecificationForm
             control={control}
             register={register}
+            userOptions={userOptions}
+            formOptions={formOptions}
             productOptions={productOptions}
             errors={errors}
           />

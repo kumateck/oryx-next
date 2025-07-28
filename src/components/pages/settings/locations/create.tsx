@@ -43,6 +43,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     formState: { errors },
     reset,
     handleSubmit,
+    register,
   } = useForm<LocationRequestDto>({
     resolver: CreateLocationValidator,
     mode: "all",
@@ -70,7 +71,6 @@ const Create = ({ isOpen, onClose }: Props) => {
         warehouseId: data?.warehouseId?.value,
       });
       toast.success("Location created successfully");
-
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
@@ -114,6 +114,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <LocationForm
             control={control}
+            register={register}
             errors={errors}
             fetchOptions={loadDataOrSearch}
             isLoading={isLoadingWarehouse || isFetchingWarehouse}

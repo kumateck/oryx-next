@@ -77,39 +77,41 @@ function Page() {
         {/* 
          
         */}
-        <DropdownBtns
-          icon="Plus"
-          title="Create Specification"
-          menus={[
-            {
-              name: "Raw",
-              onClick: () => {
-                handleCreateTabClick(EMaterialKind.Raw);
+        <div className="flex items-center gap-2 ml-auto w-fit">
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={kind}
+            tabs={[
+              {
+                label: EMaterialKind[EMaterialKind.Raw],
+                value: EMaterialKind.Raw.toString(),
               },
-            },
-            {
-              name: "Packing",
-              onClick: () => {
-                handleCreateTabClick(EMaterialKind.Packing);
+              {
+                label: EMaterialKind[EMaterialKind.Packing],
+                value: EMaterialKind.Packing.toString(),
               },
-            },
-          ]}
-        />
+            ]}
+          />
+          <DropdownBtns
+            icon="Plus"
+            title="Create Specification"
+            menus={[
+              {
+                name: "Raw",
+                onClick: () => {
+                  handleCreateTabClick(EMaterialKind.Raw);
+                },
+              },
+              {
+                name: "Packing",
+                onClick: () => {
+                  handleCreateTabClick(EMaterialKind.Packing);
+                },
+              },
+            ]}
+          />
+        </div>
       </div>
-      <AccessTabs
-        handleTabClick={handleTabClick}
-        type={kind}
-        tabs={[
-          {
-            label: EMaterialKind[EMaterialKind.Raw],
-            value: EMaterialKind.Raw.toString(),
-          },
-          {
-            label: EMaterialKind[EMaterialKind.Packing],
-            value: EMaterialKind.Packing.toString(),
-          },
-        ]}
-      />
 
       <ServerDatatable
         data={data}

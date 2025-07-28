@@ -15,7 +15,6 @@ import { Option } from "@/lib";
 import {
   CreateWarehouseLocationRequest,
   WarehouseLocationDto,
-  useLazyGetApiV1WarehouseLocationQuery,
   useLazyGetApiV1WarehouseQuery,
   usePutApiV1WarehouseLocationByLocationIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -27,6 +26,8 @@ import {
   LocationRequestDto,
   WAREtYPES,
 } from "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface Props {
   isOpen: boolean;
@@ -34,10 +35,9 @@ interface Props {
   details: WarehouseLocationDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadLocations] = useLazyGetApiV1WarehouseLocationQuery();
-
   const [editLocation, { isLoading }] =
     usePutApiV1WarehouseLocationByLocationIdMutation();
+  const dispatch = useDispatch();
 
   const defaultWarehouse = {
     label: details?.warehouse?.name as string,
@@ -48,6 +48,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     control,
     formState: { errors },
     reset,
+    register,
     handleSubmit,
   } = useForm<LocationRequestDto>({
     resolver: CreateLocationValidator,
@@ -55,6 +56,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       warehouseId: defaultWarehouse,
       description: details.description as string,
+      isEdit: defaultWarehouse.label,
       name: { label: details.name as string, value: details.name as string },
       floorName: {
         label: details.floorName as string,
@@ -77,10 +79,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         createWarehouseLocationRequest: payload,
       });
       toast.success("Location updated successfully");
-      loadLocations({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {
@@ -132,6 +131,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
           <LocationForm
             control={control}
             errors={errors}
+            register={register}
+            isEdit={true}
             fetchOptions={loadDataOrSearch}
             isLoading={isLoadingWarehouse || isFetchingWarehouse}
             warehouseType={

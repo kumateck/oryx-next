@@ -89,7 +89,6 @@ export function EditMaterialSpecification() {
       if (materialData?.reviewDate) {
         setValue("reviewDate", new Date(materialData.reviewDate));
       }
-
       if (materialData?.material) {
         setValue("materialId", {
           value: materialData?.material?.id ?? "",
@@ -117,7 +116,6 @@ export function EditMaterialSpecification() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-
       materialId: data.materialId.value as string,
       formId: data.formId.value as string,
       dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
@@ -177,11 +175,11 @@ export function EditMaterialSpecification() {
           <SpecificationForm
             control={control}
             register={register}
+            formOptions={formOptions}
+            userOptions={userOptions}
             materialOptions={materialOptions}
             kind={kind}
             errors={errors}
-            userOptions={userOptions}
-            formOptions={formOptions}
             assignSpec={assignSpec}
           />
         </div>

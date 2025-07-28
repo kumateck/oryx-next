@@ -62,7 +62,7 @@ const EmployeeManagement = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, searchValue, status]);
+  }, [page, pageSize, searchValue, status, triggerReload]);
 
   const data = result?.data || [];
   const router = useRouter();

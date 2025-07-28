@@ -36,8 +36,6 @@ function Index() {
     useGetApiV1DepartmentQuery({});
 
   const contentRef = useRef<HTMLDivElement>(null);
-  //TODO: currently working here
-  //use form
   const {
     register,
     control,

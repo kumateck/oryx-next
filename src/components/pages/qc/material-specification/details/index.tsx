@@ -14,7 +14,6 @@ import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-
 import MaterialSpecificationSkeleton from "./loadingSkeleton";
 
 function Page() {
@@ -108,6 +107,19 @@ function Page() {
                   </span>
                 </div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="text-xl">Test and Specifications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-6 mb-2 font-medium text-gray-600">
+              <div className="col-span-1">SR Number</div>
+              <div className="col-span-2">Test</div>
+              <div className="col-span-2">Specification</div>
+              <div className="col-span-1">Reference</div>
             </div>
           </CardContent>
         </Card>

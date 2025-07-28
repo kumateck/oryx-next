@@ -31,6 +31,7 @@ export const CreateLocationSchema = z.object({
   ), //z.string().min(1, { message: "Location Name is required" }),
   // floorName: z.string().min(1, { message: "Floor is required" }),
   description: z.string().optional(),
+  isEdit: z.string().optional(),
 });
 
 export type LocationRequestDto = z.infer<typeof CreateLocationSchema>;
