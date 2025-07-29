@@ -513,6 +513,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "Service Providers",
+        url: "/extrals/services-providers",
+        icon: "HandHelping",
+        isActive: false,
+      },
+      {
         title: "General Inventory",
         url: "/extrals/general-inventory-config",
         icon: "BaggageClaim",

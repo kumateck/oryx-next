@@ -1,6 +1,6 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
-import { useLazyGetApiV1ServicesQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ServiceProvidersQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import React, { useEffect, useState } from "react";
@@ -8,19 +8,18 @@ import { columns } from "./columns";
 import { useSelector } from "@/lib/redux/store";
 import { useDebounce } from "@uidotdev/usehooks";
 import { AuditModules } from "@/lib";
-import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
 import { CreateService } from "./create";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
-  const router = useRouter();
 
   const searchValue = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);
@@ -28,14 +27,14 @@ function Page() {
   const debounceValue = useDebounce(searchValue, 500);
 
   const [LoadData, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1ServicesQuery({});
+    useLazyGetApiV1ServiceProvidersQuery({});
 
   useEffect(() => {
     LoadData({
       page,
       pageSize,
-      module: AuditModules.production.name,
-      subModule: AuditModules.production.materialSpecification,
+      module: AuditModules.extral.name,
+      subModule: AuditModules.extral.serviceProviders,
       searchQuery: debounceValue,
     });
     if (triggerReload) {
@@ -52,7 +51,7 @@ function Page() {
         <CreateService isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
       <div className="flex w-full items-center justify-between">
-        <PageTitle title="Services" />
+        <PageTitle title="Service Providers" />
         <Button
           onClick={() => setIsOpen(true)}
           className="flex items-center gap-2"
@@ -64,7 +63,9 @@ function Page() {
 
       <ServerDatatable
         data={data}
-        onRowClick={(row) => router.push(`/extrals/services/${row.id}`)}
+        onRowClick={(row) =>
+          router.push(`/extrals/services-providers/${row.id}`)
+        }
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}
