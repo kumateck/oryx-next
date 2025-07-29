@@ -67,6 +67,7 @@ export const CODE_SETTINGS = {
     MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
     Service: "Service",
+    GeneralInventory: "GeneralInventory",
   },
   nameTypes: {
     Time: 2,
@@ -698,5 +699,6 @@ export const AuditModules = {
   extral: {
     name: "Extral",
     service: "Service",
+    generalInventoryConfiguration: "General Inventory Configuration",
   },
 };

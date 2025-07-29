@@ -509,7 +509,13 @@ export const ROUTES: Route[] = [
       {
         title: "Services",
         url: "/extrals/services",
-        icon: "Option",
+        icon: "List",
+        isActive: false,
+      },
+      {
+        title: "General Inventory",
+        url: "/extrals/general-inventory-config",
+        icon: "BaggageClaim",
         isActive: false,
       },
     ],

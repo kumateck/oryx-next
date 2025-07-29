@@ -1,12 +1,16 @@
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
+  ErrorResponse,
+  InventoryClassificationEnum,
+  isErrorResponse,
+} from "@/lib";
+import {
+  InventoryDtoRead,
   MaterialSpecificationDto,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -63,52 +67,46 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
     </section>
   );
 }
-
-export const columns: ColumnDef<MaterialSpecificationDto>[] = [
+export const columns: ColumnDef<InventoryDtoRead>[] = [
   {
     accessorKey: "materialName",
-    header: "Material Name",
-    cell: ({ row }) => <div>{row.original.material?.name}</div>,
+    header: "Item Name",
+    cell: ({ row }) => <div>{row.original?.materialName}</div>,
   },
   {
-    accessorKey: "spcNumber",
-    header: "SPEC",
-    cell: ({ row }) => <div>{row.original?.specificationNumber}</div>,
+    accessorKey: "code",
+    header: "Item Code",
+    cell: ({ row }) => <div>{row.original?.code}</div>,
+  },
+  // TODO: Uncomment when the type is available
+  // {
+  //   accessorKey: "type",
+  //   header: "Item Type",
+  //   cell: ({ row }) => <div>{row.original?.inventoryType}</div>,
+  // },
+  {
+    accessorKey: "quantity",
+    header: "Item Quantity",
+    cell: ({ row }) => <div>{row.original?.initialStockQuantity}</div>,
   },
   {
-    accessorKey: "effectiveDate",
-    header: "Effective Date",
+    accessorKey: "classification",
+    header: "Classification",
     cell: ({ row }) => (
       <div>
-        {row.original.effectiveDate
-          ? format(row.original.effectiveDate, "MMM d, yyyy")
-          : "-"}
+        {
+          InventoryClassificationEnum[
+            row.original?.classification as InventoryClassificationEnum
+          ]
+        }
       </div>
     ),
   },
   {
-    accessorKey: "reviewDate",
-    header: "Review Date",
-    cell: ({ row }) => (
-      // { row }
-      <div>
-        {row.original.reviewDate
-          ? format(row.original.reviewDate, "MMM d, yyyy")
-          : "-"}
-      </div>
-    ),
+    accessorKey: "department",
+    header: "Department",
+    cell: ({ row }) => <div>{row.original?.department?.name}</div>,
   },
-  {
-    accessorKey: "revisionNumber",
-    header: "Revision Number",
-    cell: ({ row }) => <div>{row.original?.revisionNumber}</div>,
-  },
-  {
-    accessorKey: "supercedesNumber",
-    header: "Supercedes",
-    cell: ({ row }) => <div>{row.original?.supersedesNumber}</div>,
-  },
-
   {
     id: "actions",
     meta: {

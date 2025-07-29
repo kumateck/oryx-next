@@ -558,3 +558,14 @@ export enum FormTypeEnum {
   Default = 0,
   Specification = 1,
 }
+
+export enum InventoryClassificationEnum {
+  Recoverable = 0,
+  NonRecoverable = 1,
+}
+
+export enum ReorderdRules {
+  Minimum = 0,
+  Reorder = 1,
+  Maximum = 2,
+}
