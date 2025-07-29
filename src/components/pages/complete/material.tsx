@@ -59,7 +59,7 @@ const FormResponseForMaterial = () => {
       }).unwrap();
       console.log(response);
       const batchFormId =
-        (response?.form?.id as string) || (response.formId as string);
+        (response?.form?.id as string) || (response.form?.id as string);
       setCurrentFormId(batchFormId);
       await handleLoadForm(batchFormId);
     } catch (error) {
