@@ -504,6 +504,23 @@ export const ROUTES: Route[] = [
     ],
   },
   {
+    title: "Extrals",
+    menu: [
+      {
+        title: "Services",
+        url: "/extrals/services",
+        icon: "List",
+        isActive: false,
+      },
+      {
+        title: "General Inventory",
+        url: "/extrals/general-inventory-config",
+        icon: "BaggageClaim",
+        isActive: false,
+      },
+    ],
+  },
+  {
     title: "System Settings",
     menu: [
       {
