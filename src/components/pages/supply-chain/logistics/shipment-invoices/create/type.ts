@@ -13,6 +13,7 @@ export const createRequisitionItemRequestSchema = z.object({
     .string({ required_error: "UOM is required" })
     .min(1, { message: "UOM is required" }),
   expectedQuantity: z.number().min(0.1, { message: "Quantity is required" }),
+  initialQuantity: z.number().optional(),
   receivedQuantity: z
     .number()
     .min(0.1, { message: "Received Quantity is required" }),
