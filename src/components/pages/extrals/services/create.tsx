@@ -96,6 +96,7 @@ export function CreateService({ isOpen, onClose }: CreateServiceProps) {
       onClose();
       toast.success("Service created successfully.");
       reset();
+      console.log("Service created successfully:", serviceId);
       // If attachments are provided, upload them
       if (serviceId && data.attachments) {
         const formData = new FormData();

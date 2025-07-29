@@ -699,6 +699,7 @@ export const AuditModules = {
   extral: {
     name: "Extral",
     service: "Service",
+    serviceProviders: "Service Providers",
     generalInventoryConfiguration: "General Inventory Configuration",
   },
 };
