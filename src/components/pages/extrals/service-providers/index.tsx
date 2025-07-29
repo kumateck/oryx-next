@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Button, Icon } from "@/components/ui";
 import { CreateService } from "./create";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [isOpen, setIsOpen] = useState(false);
