@@ -504,6 +504,17 @@ export const ROUTES: Route[] = [
     ],
   },
   {
+    title: "Extrals",
+    menu: [
+      {
+        title: "Services",
+        url: "/extrals/services",
+        icon: "Option",
+        isActive: false,
+      },
+    ],
+  },
+  {
     title: "System Settings",
     menu: [
       {

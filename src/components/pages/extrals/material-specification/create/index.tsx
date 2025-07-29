@@ -1,0 +1,175 @@
+"use client";
+import { Button, Icon } from "@/components/ui";
+import {
+  AuditModules,
+  EMaterialKind,
+  ErrorResponse,
+  FormComplete,
+  FormType,
+  fullname,
+  isErrorResponse,
+  Option,
+  WorkflowFormType,
+} from "@/lib";
+import { useForm, useWatch } from "react-hook-form";
+import {
+  CreateMaterialSpecificationDto,
+  CreateMaterialSpecificationValidator,
+} from "../types";
+import SpecificationForm from "./form";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useGetApiV1FormQuery,
+  useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1UserQuery,
+  usePostApiV1MaterialSpecificationsMutation,
+} from "@/lib/redux/api/openapi.generated";
+import { toast } from "sonner";
+import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
+
+function Page() {
+  return (
+    <ScrollablePageWrapper>
+      <MaterialSpecPage />
+    </ScrollablePageWrapper>
+  );
+}
+
+export default Page;
+
+export function MaterialSpecPage() {
+  const searchParams = useSearchParams();
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
+  const router = useRouter();
+  const kind = searchParams.get("kind") as unknown as EMaterialKind;
+  const { data: materials } = useGetApiV1MaterialMaterialSpecsNotLinkedQuery({
+    materialKind: kind ?? EMaterialKind.Raw,
+  });
+  const [createMaterialSpecification, { isLoading }] =
+    usePostApiV1MaterialSpecificationsMutation();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateMaterialSpecificationDto>({
+    resolver: CreateMaterialSpecificationValidator,
+  });
+
+  const materialOptions =
+    materials?.map((material) => ({
+      label: material?.name as string,
+      value: material?.id as string,
+    })) || [];
+
+  const onSubmit = async (data: CreateMaterialSpecificationDto) => {
+    const payload = {
+      specificationNumber: data.specificationNumber,
+      revisionNumber: data.revisionNumber,
+      supersedesNumber: data.supersedesNumber,
+
+      effectiveDate: data.effectiveDate
+        ? new Date(data.effectiveDate).toISOString()
+        : "",
+      reviewDate: data.reviewDate
+        ? new Date(data.reviewDate).toISOString()
+        : "",
+      materialId: data.materialId.value as string,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
+      formId: data.formId.value as string,
+      description: data.description,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
+    };
+    try {
+      const res = await createMaterialSpecification({
+        createMaterialSpecificationRequest: payload,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.materialRequisitions,
+      }).unwrap();
+      // console.log(res, "res");
+      toast.success("Material Specification created successfully");
+      if (!assignSpec) {
+        router.push(
+          `/complete/${WorkflowFormType.Material}/${res}/${FormComplete.Specification}`,
+        );
+        return;
+      } else {
+        router.back();
+      }
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
+  const { data: usersData } = useGetApiV1UserQuery({});
+
+  const users = usersData?.data;
+  const userOptions = users?.map((user) => ({
+    label: fullname(user?.firstName as string, user?.lastName as string),
+    value: user?.id as string,
+  })) as Option[];
+
+  const assignSpec = useWatch<CreateMaterialSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
+  //load forms template
+  const { data: formTemplates } = useGetApiV1FormQuery({
+    page: 1,
+    pageSize: 1000,
+    type: FormType.Specification,
+  });
+
+  const formOptionsData = formTemplates?.data || [];
+  const formOptions = formOptionsData.map((form) => ({
+    value: form.id,
+    label: form.name,
+  })) as Option[];
+
+  return (
+    <>
+      <div
+        onClick={() => router.back()}
+        className="flex mb-6 cursor-pointer hover:underline items-center gap-2"
+      >
+        <Icon name="ArrowLeft" />
+        <PageTitle title="Material Specification List" />
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <SpecificationForm
+            control={control}
+            register={register}
+            materialOptions={materialOptions}
+            kind={kind}
+            errors={errors}
+            userOptions={userOptions}
+            formOptions={formOptions}
+            assignSpec={assignSpec}
+          />
+        </div>
+        <div className="flex justify-end gap-4">
+          <Button
+            onClick={() => router.back()}
+            disabled={isLoading}
+            type="button"
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading && (
+              <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
+            )}
+            {isLoading ? "Submitting..." : "Submit"}
+          </Button>
+        </div>
+      </form>
+    </>
+  );
+}

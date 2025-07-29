@@ -66,6 +66,7 @@ export const CODE_SETTINGS = {
     Overtime: "Overtime",
     MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
+    Service: "Service",
   },
   nameTypes: {
     Time: 2,
@@ -693,5 +694,9 @@ export const AuditModules = {
     logout: "Logout",
     setPassword: "Set Password",
     changePassword: "Change Password",
+  },
+  extral: {
+    name: "Extral",
+    service: "Service",
   },
 };
