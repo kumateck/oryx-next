@@ -61,8 +61,8 @@ export const checklistBatchRequestSchema = z.object({
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
       z.date({
-        required_error: "Restest date is required",
-        invalid_type_error: "Restest date must be a valid date",
+        required_error: "Retest date is required",
+        invalid_type_error: "Retest date must be a valid date",
       }),
     )
     .optional(),

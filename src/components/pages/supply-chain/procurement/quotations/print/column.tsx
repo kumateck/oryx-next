@@ -28,12 +28,10 @@ export const columns: ColumnDef<SupplierQuotationItemDto>[] = [
     header: "Unit of Measurement",
     cell: ({ row }) => (
       <div>
-        {
-          convertToLargestUnit(
-            row.original.quantity as number,
-            row.original.uoM?.symbol as Units,
-          ).unit
-        }
+        {convertToLargestUnit(
+          row.original.quantity as number,
+          row.original.uoM?.symbol as Units,
+        ).unit ?? row.original.uoM?.name}
       </div>
     ),
   },

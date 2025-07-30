@@ -33,12 +33,10 @@ export const getColumns = (
     header: "Unit of Measurement",
     cell: ({ row }) => (
       <div>
-        {
-          convertToLargestUnit(
-            row.original.quantity as number,
-            row.original.uom as Units,
-          ).unit
-        }
+        {convertToLargestUnit(
+          row.original.quantity as number,
+          row.original.uom as Units,
+        ).unit ?? row.original.uom}
       </div>
     ),
   },
