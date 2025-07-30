@@ -1,9 +1,10 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardHeader } from "@/components/ui";
-import { InputTypes, Option } from "@/lib";
+import { Card, CardContent, CardHeader, Label, Switch } from "@/components/ui";
+import { cn, InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
+  Controller,
   FieldErrors,
   FieldValues,
   Path,
@@ -18,6 +19,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   productOptions: Option[];
   userOptions: Option[];
   formOptions: Option[];
+  assignSpec: boolean;
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -26,9 +28,10 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   formOptions,
   userOptions,
   errors,
+  assignSpec,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <>
+    <div className="space-y-4">
       <Card>
         <CardHeader className="font-semibold">Product Information</CardHeader>
         <CardContent className="w-full flex items-start justify-between gap-4 md:flex-row flex-col">
@@ -60,14 +63,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 control: control as Control,
                 errors,
               },
-              {
-                label: "Due Date",
-                type: InputTypes.DATE,
-                placeholder: "Due Date",
-                name: "dueDate",
-                control: control as Control,
-                errors,
-              },
+
               {
                 label: "Packing Style",
                 type: InputTypes.TEXT,
@@ -100,24 +96,6 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           <FormWizard
             className="w-full"
             config={[
-              {
-                label: "Assigned User",
-                type: InputTypes.SELECT,
-                name: "userId",
-                placeholder: "Select User",
-                control: control as Control,
-                options: userOptions,
-                errors,
-              },
-              {
-                label: "Template",
-                type: InputTypes.SELECT,
-                name: "formId",
-                placeholder: "Select Template",
-                control: control as Control,
-                options: formOptions,
-                errors,
-              },
               {
                 label: "Revision Date",
                 type: InputTypes.DATE,
@@ -158,7 +136,81 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
           />
         </CardContent>
       </Card>
-    </>
+      <Card>
+        <CardHeader className="font-semibold">Assignee Information</CardHeader>
+
+        <CardContent>
+          <FormWizard
+            className="grid w-full grid-cols-2 gap-10 space-y-0"
+            fieldWrapperClassName="flex-grow"
+            config={[
+              {
+                label: "Template",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "formId",
+                required: true,
+                placeholder: "Select Template",
+                options: formOptions,
+                errors,
+              },
+              {
+                type: InputTypes.DATE,
+                label: "Due Date",
+                name: "dueDate",
+                control: control as Control,
+                errors,
+              },
+            ]}
+          />
+          <div className="flex items-center gap-3 py-5">
+            <Controller
+              control={control}
+              name={"assignSpec" as Path<TFieldValues>}
+              render={({ field }) => (
+                <Switch className="h-4 w-7" onCheckedChange={field.onChange} />
+              )}
+            />
+
+            <Label>Assign Specification</Label>
+          </div>
+          <div
+            className={cn("space-y-6", {
+              "pointer-events-none opacity-50": !assignSpec,
+            })}
+          >
+            <FormWizard
+              className="grid w-full grid-cols-2 gap-10 space-y-0"
+              fieldWrapperClassName="flex-grow"
+              config={[
+                {
+                  label: "Assignee",
+                  control: control as Control,
+                  type: InputTypes.SELECT,
+                  name: "userId",
+                  placeholder: "Assignee",
+                  options: userOptions,
+                  errors,
+                },
+              ]}
+            />
+            <FormWizard
+              config={[
+                {
+                  label: "Notes",
+                  control: control as Control,
+                  type: InputTypes.RICHTEXT,
+                  name: "description",
+                  required: true,
+                  placeholder: "Enter Notes",
+                  errors,
+                },
+              ]}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

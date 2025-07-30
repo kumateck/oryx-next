@@ -3,11 +3,14 @@ import { Button, Icon } from "@/components/ui";
 import {
   AuditModules,
   ErrorResponse,
+  FormComplete,
   FormTypeEnum,
+  fullname,
   isErrorResponse,
   Option,
+  WorkflowFormType,
 } from "@/lib";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
@@ -26,6 +29,7 @@ import {
 import { toast } from "sonner";
 import { useEffect } from "react";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
 
 function Page() {
   return (
@@ -58,12 +62,19 @@ export function MaterialSpecPage() {
     page: 1,
     pageSize: 1000,
   });
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
   const users = userResults?.data ?? [];
   const userOptions = users?.map((user) => ({
-    label: `${user?.firstName} ${user?.lastName} `,
+    label: fullname(user?.firstName as string, user?.lastName as string),
     value: user.id,
   })) as Option[];
 
+  const assignSpec = useWatch<CreateProductSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
@@ -109,26 +120,39 @@ export function MaterialSpecPage() {
       reviewDate: data.reviewDate
         ? new Date(data.reviewDate).toISOString()
         : "",
-      userId: data.userId.value as string,
       formId: data.formId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
+      dueDate: data.dueDate
+        ? new Date(data.dueDate).toISOString()
+        : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // adds 1 day,
       description: data.description,
       testStage: Number(data.testStage.value) as unknown as TestStage,
       productId: data.productId.value as string,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
     };
 
     try {
-      await createProductSpecification({
+      const res = await createProductSpecification({
         createProductSpecificationRequest: payload,
         module: AuditModules.production.name,
         subModule: AuditModules.production.productSpecification,
       }).unwrap();
       toast.success("Product Specification created successfully");
-      router.back();
+      if (!assignSpec) {
+        router.push(
+          `/complete/${WorkflowFormType.Product}/${res}/${FormComplete.Specification}`,
+        );
+        return;
+      } else {
+        router.back();
+      }
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  console.log(errors, "errors");
   return (
     <>
       <div
@@ -146,6 +170,7 @@ export function MaterialSpecPage() {
           formOptions={formOptions}
           productOptions={productOptions}
           errors={errors}
+          assignSpec={assignSpec}
         />
 
         <div className="flex justify-end gap-4">

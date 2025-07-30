@@ -2837,6 +2837,36 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getById: build.query<GetByIdApiResponse, GetByIdApiArg>({
+      query: (queryArg) => ({
+        url: `/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putById: build.mutation<PutByIdApiResponse, PutByIdApiArg>({
+      query: (queryArg) => ({
+        url: `/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createNonProductionSupplierRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteById: build.mutation<DeleteByIdApiResponse, DeleteByIdApiArg>({
+      query: (queryArg) => ({
+        url: `/${queryArg.id}`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1OvertimeRequests: build.mutation<
       PostApiV1OvertimeRequestsApiResponse,
       PostApiV1OvertimeRequestsApiArg
@@ -9582,6 +9612,33 @@ export type PutApiV1MaterialStpsByIdApiArg = {
 };
 export type DeleteApiV1MaterialStpsByIdApiResponse = unknown;
 export type DeleteApiV1MaterialStpsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetByIdApiResponse =
+  /** status 200 OK */ NonProductionSupplierDtoRead;
+export type GetByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutByIdApiResponse =
+  /** status 204 No Content */ NonProductionSupplierDtoRead;
+export type PutByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createNonProductionSupplierRequest: CreateNonProductionSupplierRequest;
+};
+export type DeleteByIdApiResponse = unknown;
+export type DeleteByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -18609,6 +18666,43 @@ export type MaterialStandardTestProcedureDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type NonProductionSupplierDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  countryId?: string;
+  country?: CountryDto;
+  currencyId?: string;
+  currency?: CurrencyDto;
+  inventory?: InventoryDto[] | null;
+};
+export type NonProductionSupplierDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  countryId?: string;
+  country?: CountryDto;
+  currencyId?: string;
+  currency?: CurrencyDto;
+  inventory?: InventoryDtoRead[] | null;
+};
+export type CreateNonProductionSupplierRequest = {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  countryId: string;
+  currencyId: string;
+  inventoryIds: string[];
+};
 export type CreateOvertimeRequest = {
   code: string;
   employeeIds: string[];
@@ -21968,6 +22062,10 @@ export const {
   useLazyGetApiV1MaterialStpsByIdQuery,
   usePutApiV1MaterialStpsByIdMutation,
   useDeleteApiV1MaterialStpsByIdMutation,
+  useGetByIdQuery,
+  useLazyGetByIdQuery,
+  usePutByIdMutation,
+  useDeleteByIdMutation,
   usePostApiV1OvertimeRequestsMutation,
   useGetApiV1OvertimeRequestsQuery,
   useLazyGetApiV1OvertimeRequestsQuery,
