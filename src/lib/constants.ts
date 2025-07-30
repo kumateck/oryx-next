@@ -65,7 +65,10 @@ export const CODE_SETTINGS = {
     LeaveRequest: "LeaveRequest",
     Overtime: "Overtime",
     MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
+    ProductAnalyticalRawData: "ProductAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
+    Service: "Service",
+    GeneralInventory: "GeneralInventory",
   },
   nameTypes: {
     Time: 2,
@@ -693,5 +696,11 @@ export const AuditModules = {
     logout: "Logout",
     setPassword: "Set Password",
     changePassword: "Change Password",
+  },
+  extral: {
+    name: "Extral",
+    service: "Service",
+    serviceProviders: "Service Providers",
+    generalInventoryConfiguration: "General Inventory Configuration",
   },
 };

@@ -66,8 +66,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       employeeId: defaultEmployee,
       leaveCategory: defaultCategory,
-      contactPerson: details.contactPerson as string,
-      contactPersonNumber: details.contactPersonNumber as string,
       leaveTypeId: defaultLeaveType,
       startDate: new Date(details.startDate as string),
       endDate: new Date(details.endDate as string),
