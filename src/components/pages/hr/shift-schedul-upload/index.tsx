@@ -85,8 +85,7 @@ function Index() {
     <PageWrapper>
       <PageTitle title="Shift Schedule Report Upload" />
       <p className="text-lg font-medium text-gray-700">
-        Upload the daily attendance report to generate departmental attendance
-        excel sheet.
+        Upload shift schedule report in an excel sheet.
       </p>
       <ScrollableWrapper>
         <form
