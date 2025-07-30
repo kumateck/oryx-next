@@ -8,6 +8,7 @@ import {
   Icon,
   Skeleton,
 } from "@/components/ui";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import { AppointmentType, AuditModules, StaffRequisitionType } from "@/lib";
 import { useGetApiV1StaffRequisitionsByIdQuery } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
@@ -70,7 +71,9 @@ const Page = () => {
             <div className="space-y-1">
               <p>
                 Justification for request:{" "}
-                <span className="font-semibold">{data?.justification}</span>
+                <TheAduseiEditorViewer
+                  content={data?.justification as string}
+                />
               </p>
               <p>
                 Budjet type:{" "}

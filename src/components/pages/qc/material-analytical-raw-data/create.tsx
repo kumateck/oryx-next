@@ -111,7 +111,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.MaterialStandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
           modelId: ardId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

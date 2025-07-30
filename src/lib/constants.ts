@@ -65,6 +65,7 @@ export const CODE_SETTINGS = {
     LeaveRequest: "LeaveRequest",
     Overtime: "Overtime",
     MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
+    ProductAnalyticalRawData: "ProductAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
     Service: "Service",
     GeneralInventory: "GeneralInventory",

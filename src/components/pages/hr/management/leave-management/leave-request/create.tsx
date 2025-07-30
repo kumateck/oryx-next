@@ -74,8 +74,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         startDate: data.startDate.toISOString(),
         endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
-        contactPerson: data.contactPerson ?? "-",
-        contactPersonNumber: data.contactPersonNumber ?? "-",
+        // contactPerson: data.contactPerson ?? "-",
+        // contactPersonNumber: data.contactPersonNumber ?? "-",
         destination: data.destination ?? "-",
         requestCategory: parseInt(
           data?.leaveCategory?.value ?? "0",
