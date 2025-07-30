@@ -8,7 +8,7 @@ import {
   Option,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CreateProductSpecificationDto,
   CreateProductSpecificationValidator,
@@ -28,6 +28,7 @@ import {
 import { toast } from "sonner";
 import SpecificationForm from "../create/form";
 import PageTitle from "@/shared/title";
+import { useSelector } from "@/lib/redux/store";
 
 function Page() {
   return (
@@ -42,6 +43,9 @@ export default Page;
 export function EditMaterialSpecification() {
   const { id } = useParams();
   const router = useRouter();
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.userId,
+  );
   const { data: product } = useGetApiV1ProductQuery({});
   const [updateProductSpecification, { isLoading }] =
     usePutApiV1ProductSpecificationsByIdMutation();
@@ -148,7 +152,10 @@ export function EditMaterialSpecification() {
     pageSize: 1000,
     type: FormTypeEnum.Specification,
   });
-
+  const assignSpec = useWatch<CreateProductSpecificationDto>({
+    name: "assignSpec",
+    control,
+  }) as boolean;
   // Convert form templates to options
   const formData = formTemplates?.data || [];
   const formOptions = formData?.map((form) => {
@@ -170,7 +177,9 @@ export function EditMaterialSpecification() {
       testStage: Number(data.testStage.value) as unknown as TestStage,
       revisionNumber: data.revisionNumber,
       supersedesNumber: data.supersedesNumber,
-      userId: data.userId.value,
+      userId: data.assignSpec
+        ? (data?.userId?.value as string)
+        : (currentUser as string),
       formId: data.formId.value,
       description: data.description,
       dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : "",
@@ -216,6 +225,7 @@ export function EditMaterialSpecification() {
             formOptions={formOptions}
             productOptions={productOptions}
             errors={errors}
+            assignSpec={assignSpec}
           />
         </div>
         <div className="flex justify-end gap-4">
