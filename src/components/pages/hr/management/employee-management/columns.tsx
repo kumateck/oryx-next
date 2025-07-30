@@ -26,14 +26,12 @@ import { useUserPermissions } from "@/hooks/use-permission";
 import ThrowErrorMessage from "@/lib/throw-error";
 
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   Icon,
 } from "@/components/ui";
-
 import { TableMenuAction } from "@/shared/table-menu";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import UserDialog from "./assign-user";
@@ -172,14 +170,24 @@ export function StatusActions<TData extends EmployeeDto>({
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>
         <div
-          className={`text-sm cursor-pointer flex gap-1 items-center justify-center ${
-            row.original.status === EmployeeStatusType.Active
+          className={`text-sm cursor-pointer flex gap-2 items-center justify-center ${
+            row.original.status == EmployeeStatusType.Active
               ? "bg-green-600"
               : "bg-gray-500"
           } text-white px-3 py-1 rounded-full w-fit`}
         >
+          {isLoading ? (
+            <Icon name="LoaderCircle" size={15} className="animate-spin" />
+          ) : (
+            <Icon name="AlignJustify" size={15} />
+          )}
           <span>
-            {/* { EmployeeStatusType[row.original.status as EmployeeStatusType]} */}
+            {/* {row.original?.status &&
+              getDisplayStatus(
+                row.original?.status,
+                row.original?.activeStatus,
+                row.original?.inactiveStatus,
+              )} */}
             {row.original.status === EmployeeStatusType.Active
               ? row?.original?.activeStatus
                 ? splitWords(EmployeeActiveStatus[row?.original?.activeStatus])
@@ -193,28 +201,31 @@ export function StatusActions<TData extends EmployeeDto>({
                 : EmployeeStatusType[row.original.status as EmployeeStatusType]
               : ""}
           </span>
-          {isLoading && (
-            <Icon name="LoaderCircle" className="size-5 animate-spin" />
-          )}
         </div>
       </DropdownMenuTrigger>
       {row.original.status === EmployeeStatusType.Active ? (
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-          {activeStatusOptions.map((option) => (
-            <DropdownMenuItem key={option.value} className="group">
-              <Button
-                variant={
+          {activeStatusOptions.map((option) => {
+            console.log(option);
+            return (
+              <DropdownMenuItem
+                key={option.value}
+                className="group w-full cursor-pointer"
+                disabled={
+                  isLoading ||
                   String(row?.original?.activeStatus) === option.value
-                    ? "outline"
-                    : "default"
                 }
-                className="w-full flex text-start items-center gap-2"
                 onClick={async () => {
+                  if (
+                    isLoading ||
+                    String(row?.original?.activeStatus) === option.value
+                  ) {
+                    return;
+                  }
                   try {
                     await updateStatus({
                       id: row.original.id as string,
                       updateEmployeeStatus: {
-                        status: row.original.status as EmployeeStatusType,
                         activeStatus:
                           option.value as unknown as EmployeeActiveStatus,
                       },
@@ -230,44 +241,42 @@ export function StatusActions<TData extends EmployeeDto>({
                 }}
               >
                 <span>{option.label}</span>
-              </Button>
-            </DropdownMenuItem>
-          ))}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       ) : (
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {inactiveStatusOptions.map((option) => (
-            <DropdownMenuItem key={option.value} className="group">
-              <Button
-                variant={
+            <DropdownMenuItem
+              key={option.value}
+              className="group cursor-pointer w-full"
+              onClick={async () => {
+                if (
+                  isLoading ||
                   String(row?.original?.inactiveStatus) === option.value
-                    ? "outline"
-                    : "ghost"
+                ) {
+                  return;
                 }
-                className="w-full text-start items-center gap-2"
-                onClick={async () => {
-                  try {
-                    await updateStatus({
-                      id: row?.original?.id as string,
-                      updateEmployeeStatus: {
-                        inactiveStatus:
-                          option.value as unknown as EmployeeInactiveStatus,
-                        activeStatus: row.original
-                          .activeStatus as EmployeeActiveStatus,
-                      },
-                    }).unwrap();
-                    toast.success("Status updated successfully");
-                    dispatch(commonActions.setTriggerReload());
-                  } catch (error) {
-                    console.error("Failed to update status:", error);
-                    toast.error(
-                      isErrorResponse(error as ErrorResponse)?.description,
-                    );
-                  }
-                }}
-              >
-                {option.label}
-              </Button>
+                try {
+                  await updateStatus({
+                    id: row?.original?.id as string,
+                    updateEmployeeStatus: {
+                      inactiveStatus:
+                        option.value as unknown as EmployeeInactiveStatus,
+                    },
+                  }).unwrap();
+                  toast.success("Status updated successfully");
+                  dispatch(commonActions.setTriggerReload());
+                } catch (error) {
+                  console.error("Failed to update status:", error);
+                  toast.error(
+                    isErrorResponse(error as ErrorResponse)?.description,
+                  );
+                }
+              }}
+            >
+              {option.label}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>

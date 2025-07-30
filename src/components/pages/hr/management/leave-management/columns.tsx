@@ -132,10 +132,11 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
             </div>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem className="group">
-          {hasPermissionAccess(
-            PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
-          ) && (
+        {(hasPermissionAccess(
+          PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
+        ) ||
+          row.original.leaveStatus == LeaveStatus.Approved) && (
+          <DropdownMenuItem className="group">
             <div
               className="flex cursor-pointer items-center justify-start gap-2"
               onClick={(e) => {
@@ -150,8 +151,8 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
               />
               <span>Delete</span>
             </div>
-          )}
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        )}
       </TableMenuAction>
 
       {/* Recall */}
@@ -176,6 +177,7 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={async () => {
           try {
+            console.log(details.leaveStatus);
             await deleteMutation({
               id: details.id as string,
               module: AuditModules.management.name,

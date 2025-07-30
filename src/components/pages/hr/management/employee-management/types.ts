@@ -1,5 +1,31 @@
+import {
+  EmployeeActiveStatus,
+  EmployeeInactiveStatus,
+  EmployeeStatusType,
+  splitWords,
+} from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+export function getDisplayStatus(
+  status: EmployeeStatusType,
+  activeStatus?: EmployeeActiveStatus | null,
+  inactiveStatus?: EmployeeInactiveStatus | null,
+): string {
+  if (status === EmployeeStatusType.Active) {
+    return activeStatus != null
+      ? splitWords(EmployeeActiveStatus[activeStatus])
+      : splitWords(EmployeeStatusType[status]);
+  }
+
+  if (status === EmployeeStatusType.Inactive) {
+    return inactiveStatus != null
+      ? splitWords(EmployeeInactiveStatus[inactiveStatus])
+      : splitWords(EmployeeStatusType[status]);
+  }
+
+  return splitWords(EmployeeStatusType[status]);
+}
 
 export const associateEmployeesRequestSchema = z.object({
   employeeType: z.object(
