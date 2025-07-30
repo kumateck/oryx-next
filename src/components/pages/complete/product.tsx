@@ -3,7 +3,7 @@ import { fileToBase64, FormComplete } from "@/lib";
 import {
   useLazyGetApiV1FormByFormIdQuery,
   useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
-  useLazyGetApiV1MaterialSpecificationsByIdQuery,
+  useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePostApiV1FormResponsesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { useParams, useRouter } from "next/navigation";
@@ -34,8 +34,8 @@ const FormResponseForProduct = () => {
   const [loadMaterialBatchData, { isLoading: isDataLoading }] =
     useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery();
 
-  const [loadMaterialSpecData, { isLoading: isSpecLoading }] =
-    useLazyGetApiV1MaterialSpecificationsByIdQuery();
+  const [loadSpecData, { isLoading: isSpecLoading }] =
+    useLazyGetApiV1ProductSpecificationsByIdQuery();
 
   const [loadFormData, { data: formTemplate, isLoading: isFormLoading }] =
     useLazyGetApiV1FormByFormIdQuery();
@@ -54,7 +54,7 @@ const FormResponseForProduct = () => {
 
   const handleMaterialSpecification = async (id: string) => {
     try {
-      const response = await loadMaterialSpecData({
+      const response = await loadSpecData({
         id,
       }).unwrap();
       const batchFormId = response?.form?.id as string;
@@ -138,9 +138,9 @@ const FormResponseForProduct = () => {
       await formResponseMutation({
         createResponseRequest: {
           formId: currentFormId,
-          materialBatchId:
+          batchManufacturingRecordId:
             completeForm === FormComplete.Batch ? completeId : undefined,
-          materialSpecificationId:
+          productSpecificationId:
             completeForm === FormComplete.Specification
               ? completeId
               : undefined,
@@ -149,7 +149,7 @@ const FormResponseForProduct = () => {
       }).unwrap();
       toast.success("Form Completed Successfully");
       if (completeForm === FormComplete.Specification) {
-        router.push(`/qc/material-specification`);
+        router.push(`/qc/product-specification`);
       } else {
         router.back();
       }

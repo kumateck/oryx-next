@@ -82,7 +82,7 @@ const specificationSchema = z
         message: "Due date must be a valid ISO datetime string",
       })
       .optional(),
-  }) // If assignAudit is true, responsiblePersonId must be provided.
+  })
   .refine(
     (data) =>
       !data.assignSpec || (data.userId && data.userId.value.trim() !== ""),
@@ -90,12 +90,12 @@ const specificationSchema = z
       message: "Responsible Person is required when assigning a specification.",
       path: ["userId"],
     },
-  )
-  // If assignAudit is true, dueDate must be provided.
-  .refine((data) => !data.assignSpec || !!data.dueDate, {
-    message: "Due Date is required when assigning a specification .",
-    path: ["dueDate"],
-  });
+  );
+// If assignAudit is true, dueDate must be provided.
+// .refine((data) => !data.assignSpec || !!data.dueDate, {
+//   message: "Due Date is required when assigning a specification .",
+//   path: ["dueDate"],
+// });
 export type CreateMaterialSpecificationDto = z.infer<
   typeof specificationSchema
 >;

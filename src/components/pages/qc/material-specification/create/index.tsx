@@ -79,7 +79,9 @@ export function MaterialSpecPage() {
         ? new Date(data.reviewDate).toISOString()
         : "",
       materialId: data.materialId.value as string,
-      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
+      dueDate: data.dueDate
+        ? new Date(data.dueDate).toISOString()
+        : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // adds 1 day,
       formId: data.formId.value as string,
       description: data.description,
       userId: data.assignSpec
