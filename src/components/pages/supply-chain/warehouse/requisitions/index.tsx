@@ -69,27 +69,27 @@ const Page = () => {
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Stock Requisitions" />
-        {hasPermissionAccess(
+        {(hasPermissionAccess(
           PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
         ) ||
-          (hasPermissionAccess(
+          hasPermissionAccess(
             PermissionKeys.warehouse.viewRawMaterialRequisitions,
-          ) && (
-            <AccessTabs
-              handleTabClick={handleTabClick}
-              type={kind}
-              tabs={[
-                {
-                  label: EMaterialKind[EMaterialKind.Raw],
-                  value: EMaterialKind.Raw.toString(),
-                },
-                {
-                  label: EMaterialKind[EMaterialKind.Packing],
-                  value: EMaterialKind.Packing.toString(),
-                },
-              ]}
-            />
-          ))}
+          )) && (
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={kind}
+            tabs={[
+              {
+                label: EMaterialKind[EMaterialKind.Raw],
+                value: EMaterialKind.Raw.toString(),
+              },
+              {
+                label: EMaterialKind[EMaterialKind.Packing],
+                value: EMaterialKind.Packing.toString(),
+              },
+            ]}
+          />
+        )}
       </div>
 
       <ServerDatatable
