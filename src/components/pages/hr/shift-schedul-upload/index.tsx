@@ -2,25 +2,31 @@
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
 import { useForm } from "react-hook-form";
-import { ShiftScheduleUploadDto, ShiftScheduleUploadSchema } from "./types";
+import {
+  allowedMimeTypes,
+  ShiftScheduleUploadDto,
+  ShiftScheduleUploadSchema,
+  ShiftsReportSummary,
+} from "./types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileUpload } from "./FileUpload";
 import { AuditModules } from "@/lib";
 import { toast } from "sonner";
 import ThrowErrorMessage from "@/lib/throw-error";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useGetApiV1DepartmentQuery,
   useGetApiV1ShiftSchedulesQuery,
   usePostApiV1ShiftSchedulesAssignImportMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ClientDatatable } from "@/shared/datatable";
-import { columns, ShiftsReportSummary } from "./column";
-import ScrollableWrapper from "@/shared/scroll-wrapper";
 import { Button, Icon } from "@/components/ui";
+import { parseExcelFile } from "./parseExcelfile";
+import { ExcelPreviewTable } from "./table";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 function Index() {
-  const [results, setResults] = useState<ShiftsReportSummary[]>([]);
+  const [results, setResults] = useState<Record<string, any>[]>([]);
+
   const { data: departments } = useGetApiV1DepartmentQuery({
     page: 1,
     pageSize: 1000,
@@ -35,6 +41,7 @@ function Index() {
   const {
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<ShiftScheduleUploadDto>({
     resolver: zodResolver(ShiftScheduleUploadSchema),
@@ -70,6 +77,22 @@ function Index() {
     }
   };
 
+  //handle excel selected File and convert it to JSON
+  const fileChange = watch("file");
+
+  useEffect(() => {
+    if (fileChange && fileChange.length > 0) {
+      const file = fileChange[0];
+      parseExcelFile(file, allowedMimeTypes).then((result) => {
+        if (result.error) {
+          toast.error(result.error);
+        } else {
+          setResults(result.data ?? []);
+        }
+      });
+    }
+  }, [fileChange]);
+
   const departmentOptions =
     departments?.data?.map((d) => ({
       label: d.name as string,
@@ -87,7 +110,7 @@ function Index() {
       <p className="text-lg font-medium text-gray-700">
         Upload shift schedule report in an excel sheet.
       </p>
-      <ScrollableWrapper>
+      <ScrollablePageWrapper className=" px-4 py-2">
         <form
           className="w-full flex flex-col my-10"
           onSubmit={handleSubmit(onSubmit)}
@@ -108,14 +131,8 @@ function Index() {
           </Button>
         </form>
 
-        {results?.length > 0 && (
-          <ClientDatatable
-            columns={columns}
-            data={results}
-            isLoading={isLoading}
-          />
-        )}
-      </ScrollableWrapper>
+        {results?.length > 0 && <ExcelPreviewTable data={results} />}
+      </ScrollablePageWrapper>
     </PageWrapper>
   );
 }

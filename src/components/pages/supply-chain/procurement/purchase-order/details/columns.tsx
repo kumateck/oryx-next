@@ -25,7 +25,7 @@ export const getColumns = (
         row.original.quantity as number,
         getSmallestUnit(row.original.uom?.symbol as Units),
       );
-      return <div className="">{qty.unit}</div>;
+      return <div className="">{qty.unit ?? row.original.uom?.name}</div>;
     },
   },
   {

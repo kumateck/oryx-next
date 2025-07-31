@@ -30,12 +30,10 @@ export const getColums = (
     header: "UOM",
     cell: ({ row }) => (
       <div>
-        {
-          convertToLargestUnit(
-            row.original.quantity as number,
-            row.original.uom?.symbol as Units,
-          ).unit
-        }
+        {convertToLargestUnit(
+          row.original.quantity as number,
+          row.original.uom?.symbol as Units,
+        ).unit ?? row.original.uom?.name}
       </div>
     ),
   },
