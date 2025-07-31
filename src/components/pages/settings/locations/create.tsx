@@ -62,9 +62,9 @@ const Create = ({ isOpen, onClose }: Props) => {
   const onSubmit = async (data: LocationRequestDto) => {
     try {
       const payload = {
-        ...data,
         floorName: data?.floorName?.value,
         name: data?.name?.value,
+        description: data.description,
       } satisfies CreateWarehouseLocationRequest;
       await createWarehouseLocation({
         createWarehouseLocationRequest: payload,

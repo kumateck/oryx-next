@@ -369,6 +369,7 @@ export enum ShipmentStatus {
   InTransit = 1,
   Cleared = 2,
   Arrived = 3,
+  AtPort = 4,
 }
 
 export enum WaybillStatus {
