@@ -28,6 +28,7 @@ import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 const Page = () => {
   const { id } = useParams();
@@ -59,6 +60,7 @@ const Page = () => {
         options: [],
       })) as unknown as MaterialRequestDto[];
       setPurchaseLists(items);
+      console.log(items, "items itmes from requisition");
     }
   }, [requisition]);
 
@@ -167,7 +169,11 @@ const Page = () => {
               </li>
               <li>
                 <span className="text-sm font-semibold">Comments</span>
-                <p>{requisition?.comments}</p>
+                <p>
+                  <TheAduseiEditorViewer
+                    content={requisition?.comments as string}
+                  />
+                </p>
               </li>
             </ul>
           </div>

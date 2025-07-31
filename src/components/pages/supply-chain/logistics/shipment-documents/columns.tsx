@@ -40,7 +40,7 @@ export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
     try {
       await updateMutation({
         shipmentId: row.original.id as string,
-        updateShipmentStatusRequest: { status },
+        updateShipmentStatusRequest: { status: status as ShipmentStatus },
       }).unwrap();
       dispatch(commonActions.setTriggerReload());
       toast.success("Status updated successfully");
@@ -168,4 +168,5 @@ const statusColors: Record<ShipmentStatus, string> = {
   [ShipmentStatus.InTransit]: "bg-yellow-100 text-yellow-800",
   [ShipmentStatus.Cleared]: "bg-purple-100 text-purple-800",
   [ShipmentStatus.Arrived]: "bg-green-100 text-green-800",
+  [ShipmentStatus.AtPort]: "bg-orange-100 text-green-800",
 };

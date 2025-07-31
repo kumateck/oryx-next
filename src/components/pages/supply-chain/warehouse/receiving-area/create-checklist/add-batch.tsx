@@ -177,7 +177,7 @@ const AddBatchDialog = ({
               },
 
               {
-                label: "Restest Date",
+                label: "Retest Date",
                 control: control as Control,
                 type: InputTypes.DATE,
                 name: "retestDate",

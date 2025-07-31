@@ -38,7 +38,7 @@ const Page = () => {
         <span className="ml-2 text-gray-700">Staff Requisition List</span>
       </div>
       <PageTitle title="Staff Requisition" />
-      <Card className="max-w-4xl">
+      <Card className="max-w-6xl">
         <CardHeader>
           <div className="flex text-sm items-center justify-start gap-2 pb-2">
             <span>

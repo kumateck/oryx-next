@@ -1,7 +1,6 @@
 import { cva } from "class-variance-authority";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod";
 
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
@@ -48,6 +47,7 @@ import {
   ProductionScheduleProcurementDto,
 } from "./redux/api/openapi.generated";
 import { Quotations, RecordItem, Section } from "./types";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
