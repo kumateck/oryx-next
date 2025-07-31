@@ -2,10 +2,21 @@ import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
-const allowedMimeTypes = [
+export const allowedMimeTypes = [
   "application/vnd.ms-excel", // .xls
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
+
+export type ShiftsReportSummary = {
+  staffId: string;
+  staffName: string;
+  category: string;
+  startDate: Date;
+  endDate: string;
+  shiftType: string;
+  scheduleName: string;
+  departmentName: string;
+};
 
 export const imageValidationSchema = z.any().refine(
   (image: Blob[] | FileList) => {

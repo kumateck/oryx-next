@@ -13,6 +13,7 @@ import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 // import Edit from "../raw-materials/edit";
 
@@ -138,7 +139,11 @@ export const columns: ColumnDef<WarehouseLocationShelfDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>
+        <TheAduseiEditorViewer content={row.original.description as string} />
+      </div>
+    ),
   },
 
   {
