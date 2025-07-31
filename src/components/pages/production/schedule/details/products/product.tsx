@@ -11,10 +11,9 @@ import {
   ErrorResponse,
   ProductionStatus,
   Units,
+  areAllMaterialsAvailable,
   convertToLargestUnit,
   isErrorResponse,
-  isStockAvailable,
-  isStockUnAvailable,
   routes,
 } from "@/lib";
 import {
@@ -110,29 +109,38 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
 
       setProduct(productResponse);
 
-      const isnotAvailable =
-        isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
-      // console.log(
-      //   "checking isnotAvailable",
-      //   isnotAvailable,
-      //   isStockUnAvailable(rResponse),
-      //   isStockUnAvailable(pResponse),
-      // );
+      // const isnotAvailable =
+      //   isStockUnAvailable(rResponse) || isStockUnAvailable(pResponse);
+      // // console.log(
+      // //   "checking isnotAvailable",
+      // //   isnotAvailable,
+      // //   isStockUnAvailable(rResponse),
+      // //   isStockUnAvailable(pResponse),
+      // // );
 
-      const isAvailable =
-        isStockAvailable(rResponse) && isStockAvailable(pResponse);
-      // console.log(
-      //   "checking isAvailable",
-      //   isAvailable,
-      //   isStockAvailable(rResponse),
-      //   isStockAvailable(pResponse),
-      // );
+      // const isAvailable =
+      //   isStockAvailable(rResponse) && isStockAvailable(pResponse);
+      // // console.log(
+      // //   "checking isAvailable",
+      // //   isAvailable,
+      // //   isStockAvailable(rResponse),
+      // //   isStockAvailable(pResponse),
+      // // );
 
-      if (isnotAvailable) {
-        setEnableStatusButton(ScheduleProductStatus.Purchase);
-      }
-      if (isAvailable) {
+      // if (isnotAvailable) {
+      //   setEnableStatusButton(ScheduleProductStatus.Purchase);
+      // }
+      // if (isAvailable) {
+      //   setEnableStatusButton(ScheduleProductStatus.Start);
+      // }
+
+      const allRawAvailable = areAllMaterialsAvailable(rResponse);
+      const allPackAvailable = areAllMaterialsAvailable(pResponse);
+
+      if (allRawAvailable && allPackAvailable) {
         setEnableStatusButton(ScheduleProductStatus.Start);
+      } else {
+        setEnableStatusButton(ScheduleProductStatus.Purchase);
       }
 
       const rawOptions = rResponse?.map((item) => {

@@ -214,6 +214,22 @@ export const getStatusColor = (status: MaterialStatus) => {
   }
 };
 
+export function areAllMaterialsAvailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  return materials.every(
+    (item) => Number(item.quantityOnHand) >= Number(item.quantityNeeded),
+  );
+}
+
+export function areAnyMaterialsUnavailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  return materials.some(
+    (item) => Number(item.quantityOnHand) < Number(item.quantityNeeded),
+  );
+}
+
 export function isStockUnAvailable(
   materials: ProductionScheduleProcurementDto[],
 ): boolean {
