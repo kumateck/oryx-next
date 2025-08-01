@@ -79,7 +79,7 @@ const EmployeeManagement = () => {
     //redirect to no access
     return <NoAccess />;
   }
-
+  console.log("these are the data", data);
   return (
     <ScrollablePageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
