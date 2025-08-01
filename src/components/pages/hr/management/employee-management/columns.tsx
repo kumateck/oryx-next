@@ -35,6 +35,7 @@ import {
 import { TableMenuAction } from "@/shared/table-menu";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import UserDialog from "./assign-user";
+import { StatusColorsOptions } from "./types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -166,14 +167,29 @@ export function StatusActions<TData extends EmployeeDto>({
   const inactiveStatusOptions = Object.entries(EmployeeInactiveStatus)
     .filter(([key]) => isNaN(Number(key)))
     .map(([key, value]) => ({ label: splitWords(key), value: String(value) }));
+
+  const isActiveStatus =
+    row.original.activeStatus !== null &&
+    row.original.activeStatus !== undefined;
+  const isInactiveStatus =
+    row.original.inactiveStatus !== null &&
+    row.original.inactiveStatus !== undefined;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>
         <div
           className={`text-sm cursor-pointer flex gap-2 items-center justify-center ${
-            row.original.status == EmployeeStatusType.Active
-              ? "bg-green-600"
-              : "bg-gray-500"
+            isActiveStatus
+              ? StatusColorsOptions.activeStatus[
+                  row.original.activeStatus as EmployeeActiveStatus
+                ]
+              : isInactiveStatus
+                ? StatusColorsOptions.inactiveStatus[
+                    row.original.inactiveStatus as EmployeeInactiveStatus
+                  ]
+                : StatusColorsOptions.statusColors[
+                    row.original.status as EmployeeStatusType
+                  ]
           } text-white px-3 py-1 rounded-full w-fit`}
         >
           {isLoading ? (
@@ -189,14 +205,20 @@ export function StatusActions<TData extends EmployeeDto>({
                 row.original?.inactiveStatus,
               )} */}
             {row.original.status === EmployeeStatusType.Active
-              ? row?.original?.activeStatus
-                ? splitWords(EmployeeActiveStatus[row?.original?.activeStatus])
+              ? row?.original?.activeStatus !== null
+                ? splitWords(
+                    EmployeeActiveStatus[
+                      row?.original?.activeStatus as EmployeeActiveStatus
+                    ],
+                  )
                 : EmployeeStatusType[row.original.status as EmployeeStatusType]
               : ""}
             {row.original.status === EmployeeStatusType.Inactive
-              ? row?.original?.inactiveStatus
+              ? row?.original?.inactiveStatus !== null
                 ? splitWords(
-                    EmployeeInactiveStatus[row?.original?.inactiveStatus],
+                    EmployeeInactiveStatus[
+                      row?.original?.inactiveStatus as EmployeeInactiveStatus
+                    ],
                   )
                 : EmployeeStatusType[row.original.status as EmployeeStatusType]
               : ""}
@@ -206,7 +228,6 @@ export function StatusActions<TData extends EmployeeDto>({
       {row.original.status === EmployeeStatusType.Active ? (
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {activeStatusOptions.map((option) => {
-            console.log(option);
             return (
               <DropdownMenuItem
                 key={option.value}
@@ -226,8 +247,9 @@ export function StatusActions<TData extends EmployeeDto>({
                     await updateStatus({
                       id: row.original.id as string,
                       updateEmployeeStatus: {
-                        activeStatus:
-                          option.value as unknown as EmployeeActiveStatus,
+                        activeStatus: Number(
+                          option.value,
+                        ) as unknown as EmployeeActiveStatus,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");
@@ -262,8 +284,9 @@ export function StatusActions<TData extends EmployeeDto>({
                   await updateStatus({
                     id: row?.original?.id as string,
                     updateEmployeeStatus: {
-                      inactiveStatus:
-                        option.value as unknown as EmployeeInactiveStatus,
+                      inactiveStatus: Number(
+                        option.value,
+                      ) as unknown as EmployeeInactiveStatus,
                     },
                   }).unwrap();
                   toast.success("Status updated successfully");
