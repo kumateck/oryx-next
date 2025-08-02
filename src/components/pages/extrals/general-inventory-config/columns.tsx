@@ -1,4 +1,4 @@
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   InventoryClassificationEnum,
@@ -10,6 +10,7 @@ import {
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
+import { TableMenuAction } from "@/shared/table-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,21 +30,53 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
   const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer text-neutral-500"
-        onClick={() => {
-          // Handle edit action
-          router.push(
-            `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
-          );
-        }}
-      />
-      <Icon
-        name="Trash"
-        className="h-5 w-5 cursor-pointer text-red-500"
-        onClick={() => setIsDelete(true)}
-      />
+      <TableMenuAction>
+        <DropdownMenuItem>
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              router.push(
+                `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
+              );
+            }}
+          >
+            <Icon
+              name="Eye"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>View Details</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex w-full cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              router.push(
+                `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
+              );
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="group">
+          <div
+            className="flex text-red-500 cursor-pointer items-center justify-start gap-2"
+            onClick={() => setIsDelete(true)}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
+          </div>
+        </DropdownMenuItem>
+      </TableMenuAction>
+
       {isDelete && (
         <ConfirmDeleteDialog
           open={isDelete}
@@ -69,7 +102,7 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
 }
 export const columns: ColumnDef<InventoryDtoRead>[] = [
   {
-    accessorKey: "materialName",
+    accessorKey: "itemName",
     header: "Item Name",
     cell: ({ row }) => <div>{row.original?.materialName}</div>,
   },
@@ -78,15 +111,10 @@ export const columns: ColumnDef<InventoryDtoRead>[] = [
     header: "Item Code",
     cell: ({ row }) => <div>{row.original?.code}</div>,
   },
-  // TODO: Uncomment when the type is available
-  // {
-  //   accessorKey: "type",
-  //   header: "Item Type",
-  //   cell: ({ row }) => <div>{row.original?.inventoryType}</div>,
-  // },
+
   {
     accessorKey: "quantity",
-    header: "Item Quantity",
+    header: "Available Quantity",
     cell: ({ row }) => <div>{row.original?.initialStockQuantity}</div>,
   },
   {
@@ -101,11 +129,6 @@ export const columns: ColumnDef<InventoryDtoRead>[] = [
         }
       </div>
     ),
-  },
-  {
-    accessorKey: "department",
-    header: "Department",
-    cell: ({ row }) => <div>{row.original?.department?.name}</div>,
   },
   {
     id: "actions",

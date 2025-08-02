@@ -8,7 +8,7 @@ import {
   Option,
 } from "@/lib";
 import { useFieldArray, useForm } from "react-hook-form";
-import SpecificationForm from "../form";
+import InventoryForm from "../form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter } from "next/navigation";
 import {
@@ -21,7 +21,6 @@ import {
   usePostApiV1InventoriesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
-import PageTitle from "@/shared/title";
 import { CreateInventoryDto, CreateInventoryValidator } from "../types";
 import { useCodeGen } from "@/lib/code-gen";
 import { useEffect } from "react";
@@ -29,14 +28,14 @@ import { useEffect } from "react";
 function Page() {
   return (
     <ScrollablePageWrapper>
-      <MaterialSpecPage />
+      <CreateInventoryItem />
     </ScrollablePageWrapper>
   );
 }
 
 export default Page;
 
-export function MaterialSpecPage() {
+export function CreateInventoryItem() {
   const { data: departments } = useGetApiV1DepartmentQuery({
     page: 1,
     pageSize: 200,
@@ -131,10 +130,10 @@ export function MaterialSpecPage() {
         <Icon name="ArrowLeft" />
         <span>General Inventory List</span>
       </div>
-      <PageTitle title="Create General Configuration" />
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
         <div>
-          <SpecificationForm
+          <InventoryForm
             control={control}
             register={register}
             errors={errors}

@@ -76,6 +76,8 @@ export function Edit({ isOpen, onClose, details }: Props) {
     },
   });
 
+  console.log("details", details);
+
   useEffect(() => {
     loadCollection({
       body: [COLLECTION_TYPES.Country, COLLECTION_TYPES.Currency],
