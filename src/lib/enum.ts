@@ -193,6 +193,15 @@ export enum OperationAction {
   Ard = 8,
 }
 
+export enum ProductState {
+  Liquid,
+  Granules,
+  CompressedTablet,
+  FilledCapsules,
+  Ointment,
+  Coated,
+}
+
 export enum ExtraPackingStatus {
   Pending = 0,
   Approved = 1,
@@ -258,6 +267,7 @@ export enum CollectionTypes {
   TermsOfPayment = "TermsOfPayment",
   DeliveryMode = "DeliveryMode",
   ShiftCategory = "ShiftCategory",
+  ProductState = "ProductState",
 }
 
 export enum Status {

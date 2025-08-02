@@ -66,11 +66,11 @@ export function Edit({ isOpen, onClose, details }: Props) {
       phone: details?.phone as string,
       email: details?.email as string,
       countryId: {
-        value: details?.countryId,
+        value: details?.country?.id,
         label: details?.country?.name ?? "",
       },
       currencyId: {
-        value: details?.currencyId,
+        value: details?.currency?.id,
         label: details?.currency?.name ?? "",
       },
     },

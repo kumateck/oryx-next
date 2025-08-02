@@ -12,7 +12,6 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
 
   const handleNotification = useCallback((data: NotificationData) => {
-    console.log(data, " nofifications");
     setNotifications((prev) => [...prev, data]);
   }, []);
 

@@ -170,8 +170,9 @@ export function DataTableRowActions<
 >({ row }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
   const leftOverStock =
-    (row.original.material?.totalStock as number) -
-    (row.original.warehouseStock as number);
+    ((row.original.material?.totalStock as number) || 0) -
+    ((row.original.warehouseStock as number) || 0);
+
   const rowData = row?.original;
   const AllStockRow = {
     materialId: rowData?.material?.id as string,
@@ -193,7 +194,7 @@ export function DataTableRowActions<
           {leftOverStock}
         </div>
       ) : (
-        <div>{leftOverStock}</div>
+        <div>{leftOverStock ? leftOverStock : "0"}</div>
       )}
 
       {isOpen && (

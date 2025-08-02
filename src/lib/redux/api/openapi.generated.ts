@@ -13416,20 +13416,20 @@ export type NotificationDto = {
   sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
-export type State = 0 | 1 | 2 | 3 | 4 | 5;
 export type Status = 0 | 1 | 2;
 export type CreateAnalyticalTestRequest = {
   batchManufacturingRecordId?: string;
   productId?: string;
   productionScheduleId?: string;
-  sampledQuantity: string;
-  manufacturingDate: string;
-  expiryDate: string;
-  releasedAt: string;
-  releaseDate: string;
-  stage: TestStage;
-  state: State;
-  status: Status;
+  sampledQuantity?: string | null;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  releasedAt?: string | null;
+  releaseDate?: string;
+  stage?: TestStage;
+  status?: Status;
+  filled?: string | null;
+  stateId?: string;
 };
 export type AnalyticalTestRequestDto = {
   id?: string;
@@ -21377,11 +21377,9 @@ export type ServiceProviderDto = {
   address?: string | null;
   email?: string | null;
   phone?: string | null;
-  countryId?: string;
   country?: CountryDto;
-  currencyId?: string;
   currency?: CurrencyDto;
-  services?: ServiceProviderDto[] | null;
+  services?: ServiceDto[] | null;
 };
 export type ServiceProviderDtoIEnumerablePaginateable = {
   data?: ServiceProviderDto[] | null;
