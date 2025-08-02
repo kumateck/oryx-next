@@ -4,7 +4,6 @@ import { z } from "zod";
 const servicesSchema = z
   .object({
     name: z.string().min(1, "Name is required"),
-
     address: z.string().min(1, "Address is required"),
     phone: z
       .string({ required_error: "Phone number is required" })

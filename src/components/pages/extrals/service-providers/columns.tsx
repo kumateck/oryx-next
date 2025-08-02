@@ -3,7 +3,7 @@ import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   MaterialSpecificationDto,
   ServiceProviderDto,
-  useDeleteApiV1ServicesByIdMutation,
+  useDeleteApiV1ServiceProvidersByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ColumnDef, Row } from "@tanstack/react-table";
@@ -21,7 +21,7 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
   const [isDelete, setIsDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const dispatch = useDispatch();
-  const [deleteService] = useDeleteApiV1ServicesByIdMutation();
+  const [deleteServiceProvider] = useDeleteApiV1ServiceProvidersByIdMutation();
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon
@@ -42,14 +42,14 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
           onConfirm={async () => {
             if (!row?.original?.id) return;
             try {
-              await deleteService({
+              await deleteServiceProvider({
                 id: row.original.id as string,
               }).unwrap();
               setIsDelete(false);
               dispatch(commonActions.setTriggerReload());
-              toast.success("Service deleted successfully.");
+              toast.success("Service provider deleted successfully.");
             } catch (error) {
-              console.error("Error deleting service:", error);
+              console.error("Error deleting service provider:", error);
               toast.error(isErrorResponse(error as ErrorResponse)?.description);
             }
           }}
@@ -71,16 +71,6 @@ export const columns: ColumnDef<ServiceProviderDto>[] = [
     accessorKey: "name",
     header: "Service ProviderName",
     cell: ({ row }) => <div>{row.original.name}</div>,
-  },
-  {
-    accessorKey: "contactPerson",
-    header: "Contact Person",
-    cell: () => <div>n/a</div>,
-  },
-  {
-    accessorKey: "contactPersonNumber",
-    header: "Contact Person Number",
-    cell: () => <div>n/a</div>,
   },
   {
     accessorKey: "email",

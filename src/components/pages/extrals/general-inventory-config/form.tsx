@@ -1,5 +1,5 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Button, Card, CardContent, Icon } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, Icon } from "@/components/ui";
 import { InputTypes, InventoryClassificationEnum, Option } from "@/lib";
 import React from "react";
 import {
@@ -25,7 +25,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   append: UseFieldArrayAppend<CreateInventoryDto>;
   fields: FieldArrayWithId<CreateDepartmentDto[]>[];
 }
-const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
+const InventoryForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   remove,
@@ -39,7 +39,9 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   return (
     <div className="space-y-4">
       <Card>
-        {/* <CardHeader className="font-semibold">Material Information</CardHeader> */}
+        <CardHeader className="font-semibold">
+          Create General Configuration
+        </CardHeader>
         <CardContent>
           <div className="flex justify-start w-full gap-4">
             <FormWizard
@@ -56,7 +58,7 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 {
                   label: "Item Code",
                   type: InputTypes.TEXT,
-                  placeholder: "Item Code",
+                  placeholder: isLoadingCode ? "Generating..." : "Item code",
                   readOnly: true,
                   register: register("code" as Path<TFieldValues>),
                   description: isLoadingCode
@@ -238,4 +240,4 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   );
 };
 
-export default SpecificationForm;
+export default InventoryForm;
