@@ -15,14 +15,19 @@ import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
 import Create from "./create";
 import { useRouter } from "next/navigation";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
+
+  const searchValue = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [page, setPage] = useState(1);
+
+  const debounceValue = useDebounce(searchValue, 500);
 
   const [loadLeaveTypes, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1ShiftTypeQuery();
@@ -36,7 +41,7 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize, triggerReload, debounceValue]);
   const data = result?.data || [];
 
   return (

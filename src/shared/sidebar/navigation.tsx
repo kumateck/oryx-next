@@ -524,6 +524,12 @@ export const ROUTES: Route[] = [
         icon: "BaggageClaim",
         isActive: false,
       },
+      {
+        title: "Venders",
+        url: "/extrals/vendors",
+        icon: "BaggageClaim",
+        isActive: false,
+      },
     ],
   },
   {

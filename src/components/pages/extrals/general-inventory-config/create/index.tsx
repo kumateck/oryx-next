@@ -8,7 +8,7 @@ import {
   Option,
 } from "@/lib";
 import { useFieldArray, useForm } from "react-hook-form";
-import SpecificationForm from "../form";
+import InventoryForm from "../form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter } from "next/navigation";
 import {
@@ -19,7 +19,6 @@ import {
   usePostApiV1InventoriesMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
-import PageTitle from "@/shared/title";
 import { CreateInventoryDto, CreateInventoryValidator } from "../types";
 import { useCodeGen } from "@/lib/code-gen";
 import { useEffect } from "react";
@@ -27,14 +26,14 @@ import { useEffect } from "react";
 function Page() {
   return (
     <ScrollablePageWrapper>
-      <MaterialSpecPage />
+      <CreateInventoryItem />
     </ScrollablePageWrapper>
   );
 }
 
 export default Page;
 
-export function MaterialSpecPage() {
+export function CreateInventoryItem() {
   const { data: departments } = useGetApiV1DepartmentQuery({
     page: 1,
     pageSize: 200,
@@ -63,22 +62,11 @@ export function MaterialSpecPage() {
   });
   const onSubmit = async (data: CreateInventoryDto) => {
     const payload: CreateItemRequest = {
-      name: data.materialName,
-      type: data.inventoryTypeId,
-      // unitOfMeasureId: data.unitOfMeasureId.value,
-      // remarks: data.remarks,
-      // reorderRule: data.reorderRule.value as unknown as ReorderRules,
-      // initialStockQuantity: data.initialStockQuantity,
-      // departmentId: data.departmentId.value,
-      // isActive: data.isActive,
       description: data.description,
-      // classification: data.classification
-      //   .value as unknown as InventoryClassification,
     };
     try {
       const res = await createInventory({
         createItemRequest: payload,
-
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
@@ -129,10 +117,10 @@ export function MaterialSpecPage() {
         <Icon name="ArrowLeft" />
         <span>General Inventory List</span>
       </div>
-      <PageTitle title="Create General Configuration" />
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
         <div>
-          <SpecificationForm
+          <InventoryForm
             control={control}
             register={register}
             errors={errors}

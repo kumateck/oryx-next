@@ -46,6 +46,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     value: details?.form?.id as string,
     label: details?.form?.name as string,
   };
+  console.log(details);
 
   const defaultStpId = {
     value: details?.materialStandardTestProcedure?.id as string,

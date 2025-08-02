@@ -13,9 +13,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
 import {
-  CreateInventoryRequest,
-  InventoryClassification,
-  ReorderRules,
+  CreateItemRequest,
   useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
   useLazyGetApiV1InventoriesByIdQuery,
@@ -123,24 +121,13 @@ function EditInventory() {
   }, [inventoryDetails]);
 
   const onSubmit = async (data: CreateInventoryDto) => {
-    const payload: CreateInventoryRequest = {
-      materialName: data.materialName,
-      code: data.code,
-      inventoryTypeId: data.inventoryTypeId,
-      unitOfMeasureId: data.unitOfMeasureId.value,
-      remarks: data.remarks,
-      reorderRule: data.reorderRule.value as unknown as ReorderRules,
-      initialStockQuantity: data.initialStockQuantity,
-      departmentId: data.departmentId.value,
-      isActive: data.isActive,
+    const payload: CreateItemRequest = {
       description: data.description,
-      classification: data.classification
-        .value as unknown as InventoryClassification,
     };
     try {
       const res = await editInventory({
         id: id as string,
-        createInventoryRequest: payload,
+        createItemRequest: payload,
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
