@@ -1630,7 +1630,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/inventories`,
         method: "POST",
-        body: queryArg.createInventoryRequest,
+        body: queryArg.createItemRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -1686,7 +1686,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/inventories/${queryArg.id}`,
         method: "PUT",
-        body: queryArg.createInventoryRequest,
+        body: queryArg.createItemRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -8897,10 +8897,10 @@ export type PostApiV1InventoriesApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
-  createInventoryRequest: CreateInventoryRequest;
+  createItemRequest: CreateItemRequest;
 };
 export type GetApiV1InventoriesApiResponse =
-  /** status 200 OK */ InventoryDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ItemDtoIEnumerablePaginateableRead;
 export type GetApiV1InventoriesApiArg = {
   page?: number;
   pageSize?: number;
@@ -8919,7 +8919,7 @@ export type DeleteApiV1InventoriesApiArg = {
   subModule?: any;
 };
 export type GetApiV1InventoriesByIdApiResponse =
-  /** status 200 OK */ InventoryDtoRead;
+  /** status 200 OK */ ItemDtoRead;
 export type GetApiV1InventoriesByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -8928,14 +8928,14 @@ export type GetApiV1InventoriesByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1InventoriesByIdApiResponse =
-  /** status 204 No Content */ InventoryDtoRead;
+  /** status 204 No Content */ ItemDtoRead;
 export type PutApiV1InventoriesByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
-  createInventoryRequest: CreateInventoryRequest;
+  createItemRequest: CreateItemRequest;
 };
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
@@ -13416,20 +13416,20 @@ export type NotificationDto = {
   sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
-export type State = 0 | 1 | 2 | 3 | 4 | 5;
 export type Status = 0 | 1 | 2;
 export type CreateAnalyticalTestRequest = {
   batchManufacturingRecordId?: string;
   productId?: string;
   productionScheduleId?: string;
-  sampledQuantity: string;
-  manufacturingDate: string;
-  expiryDate: string;
-  releasedAt: string;
-  releaseDate: string;
-  stage: TestStage;
-  state: State;
-  status: Status;
+  sampledQuantity?: string | null;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  releasedAt?: string | null;
+  releaseDate?: string;
+  stage?: TestStage;
+  status?: Status;
+  filled?: string | null;
+  stateId?: string;
 };
 export type AnalyticalTestRequestDto = {
   id?: string;
@@ -13540,6 +13540,7 @@ export type DesignationDto = {
   description?: string | null;
   maximumLeaveDays?: number;
   departments?: DepartmentDto[] | null;
+  employees?: EmployeeDto[] | null;
 };
 export type DesignationDtoRead = {
   id?: string;
@@ -13549,6 +13550,7 @@ export type DesignationDtoRead = {
   description?: string | null;
   maximumLeaveDays?: number;
   departments?: DepartmentDtoRead[] | null;
+  employees?: EmployeeDto[] | null;
 };
 export type LifeStatus = 0 | 1;
 export type PersonDto = {
@@ -14321,21 +14323,6 @@ export type HolidayDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type InventoryClassification = 0 | 1;
-export type ReorderRules = 0 | 1 | 2;
-export type CreateInventoryRequest = {
-  materialName: string;
-  code: string;
-  classification: InventoryClassification;
-  inventoryTypeId?: string;
-  unitOfMeasureId: string;
-  hasBatchNumber?: boolean;
-  remarks?: string | null;
-  reorderRule?: ReorderRules;
-  initialStockQuantity?: number;
-  departmentId: string;
-  isActive: boolean;
-  description?: string | null;
-};
 export type MaterialCategory = {
   id?: string;
   createdAt?: string;
@@ -17940,7 +17927,7 @@ export type UserRead = {
   department?: DepartmentRead;
   signature?: string | null;
 };
-export type InventoryType = {
+export type ItemType = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -17953,7 +17940,7 @@ export type InventoryType = {
   lastDeletedBy?: User;
   name?: string | null;
 };
-export type InventoryTypeRead = {
+export type ItemTypeRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -17966,7 +17953,8 @@ export type InventoryTypeRead = {
   lastDeletedBy?: UserRead;
   name?: string | null;
 };
-export type InventoryDto = {
+export type ReorderRules = 0 | 1 | 2;
+export type ItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
@@ -17975,7 +17963,7 @@ export type InventoryDto = {
   code?: string | null;
   classification?: InventoryClassification;
   inventoryTypeId?: string;
-  inventoryType?: InventoryType;
+  itemType?: ItemType;
   unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
@@ -17987,7 +17975,7 @@ export type InventoryDto = {
   isActive?: boolean;
   description?: string | null;
 };
-export type InventoryDtoRead = {
+export type ItemDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
@@ -17996,7 +17984,7 @@ export type InventoryDtoRead = {
   code?: string | null;
   classification?: InventoryClassification;
   inventoryTypeId?: string;
-  inventoryType?: InventoryTypeRead;
+  itemType?: ItemTypeRead;
   unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
@@ -18008,8 +17996,8 @@ export type InventoryDtoRead = {
   isActive?: boolean;
   description?: string | null;
 };
-export type InventoryDtoIEnumerablePaginateable = {
-  data?: InventoryDto[] | null;
+export type ItemDtoIEnumerablePaginateable = {
+  data?: ItemDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -18017,8 +18005,8 @@ export type InventoryDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type InventoryDtoIEnumerablePaginateableRead = {
-  data?: InventoryDtoRead[] | null;
+export type ItemDtoIEnumerablePaginateableRead = {
+  data?: ItemDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -18911,7 +18899,7 @@ export type NonProductionSupplierDto = {
   country?: CountryDto;
   currencyId?: string;
   currency?: CurrencyDto;
-  inventory?: InventoryDto[] | null;
+  item?: ItemDto[] | null;
 };
 export type NonProductionSupplierDtoRead = {
   id?: string;
@@ -18925,7 +18913,7 @@ export type NonProductionSupplierDtoRead = {
   country?: CountryDto;
   currencyId?: string;
   currency?: CurrencyDto;
-  inventory?: InventoryDtoRead[] | null;
+  item?: ItemDtoRead[] | null;
 };
 export type CreateNonProductionSupplierRequest = {
   name: string;
@@ -18934,7 +18922,7 @@ export type CreateNonProductionSupplierRequest = {
   email: string;
   countryId: string;
   currencyId: string;
-  inventoryIds: string[];
+  itemIds: string[];
 };
 export type CreateOvertimeRequest = {
   code: string;
@@ -21389,11 +21377,9 @@ export type ServiceProviderDto = {
   address?: string | null;
   email?: string | null;
   phone?: string | null;
-  countryId?: string;
   country?: CountryDto;
-  currencyId?: string;
   currency?: CurrencyDto;
-  services?: ServiceProviderDto[] | null;
+  services?: ServiceDto[] | null;
 };
 export type ServiceProviderDtoIEnumerablePaginateable = {
   data?: ServiceProviderDto[] | null;

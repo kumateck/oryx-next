@@ -12,9 +12,7 @@ import SpecificationForm from "../form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useRouter } from "next/navigation";
 import {
-  CreateInventoryRequest,
-  InventoryClassification,
-  ReorderRules,
+  CreateItemRequest,
   useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
   useLazyGetApiV1ServicesQuery,
@@ -64,23 +62,23 @@ export function MaterialSpecPage() {
     name: "departments",
   });
   const onSubmit = async (data: CreateInventoryDto) => {
-    const payload: CreateInventoryRequest = {
-      materialName: data.materialName,
-      code: data.code,
-      inventoryTypeId: data.inventoryTypeId,
-      unitOfMeasureId: data.unitOfMeasureId.value,
-      remarks: data.remarks,
-      reorderRule: data.reorderRule.value as unknown as ReorderRules,
-      initialStockQuantity: data.initialStockQuantity,
-      departmentId: data.departmentId.value,
-      isActive: data.isActive,
+    const payload: CreateItemRequest = {
+      name: data.materialName,
+      type: data.inventoryTypeId,
+      // unitOfMeasureId: data.unitOfMeasureId.value,
+      // remarks: data.remarks,
+      // reorderRule: data.reorderRule.value as unknown as ReorderRules,
+      // initialStockQuantity: data.initialStockQuantity,
+      // departmentId: data.departmentId.value,
+      // isActive: data.isActive,
       description: data.description,
-      classification: data.classification
-        .value as unknown as InventoryClassification,
+      // classification: data.classification
+      //   .value as unknown as InventoryClassification,
     };
     try {
       const res = await createInventory({
-        createInventoryRequest: payload,
+        createItemRequest: payload,
+
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();

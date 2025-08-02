@@ -1,5 +1,5 @@
 "use client";
-import NotificationListener from "@/components/notification";
+// import NotificationListener from "@/components/notification";
 import React from "react";
 
 interface NotificationProviderProps {
@@ -9,7 +9,7 @@ const NotificationProvider = ({ children }: NotificationProviderProps) => {
   return (
     <div>
       {children}
-      <NotificationListener className="max-w-2xl" />
+      {/* <NotificationListener className="max-w-2xl" /> */}
     </div>
   );
 };

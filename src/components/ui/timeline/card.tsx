@@ -29,6 +29,7 @@ import Link from "next/link";
 import { TriangleAlertIcon } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "../alert";
+import AnalyticalTestRequest from "@/shared/atr";
 
 interface Props {
   item: TimelineItemProps;
@@ -103,9 +104,7 @@ const TimelineCard = ({
   const onDispatch = (id: string) => {
     console.log("first", id);
   };
-  const onAtr = (id: string) => {
-    console.log("first", id);
-  };
+
   const onFullReturn = (id: string) => {
     console.log("first", id);
   };
@@ -195,12 +194,12 @@ const TimelineCard = ({
               </Button>
             )}
 
-            {showAtr && (
+            {/* {showAtr && (
               <Button onClick={() => onAtr(activityId as string)}>
                 <Icon name="Navigation" />
                 <span>ATR</span>
               </Button>
-            )}
+            )} */}
 
             {showFullReturn && (
               <Button onClick={() => onFullReturn(activityId as string)}>
@@ -230,7 +229,12 @@ const TimelineCard = ({
               </Button>
             )}
           </div>
-
+          {showAtr && (
+            <AnalyticalTestRequest
+              scheduleId={scheduleId as string}
+              productId={productId as string}
+            />
+          )}
           {showFinishedGoods && (
             <FinishedGoodsTransfer
               scheduleId={scheduleId as string}
@@ -239,6 +243,7 @@ const TimelineCard = ({
             />
           )}
         </div>
+        {}
         {isPendingExtraPacking && (
           <div className="pt-2  w-full">
             <Alert variant={"warning"}>

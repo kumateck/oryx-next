@@ -5,7 +5,6 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  InventoryDtoRead,
   MaterialSpecificationDto,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -67,7 +66,7 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
     </section>
   );
 }
-export const columns: ColumnDef<InventoryDtoRead>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "materialName",
     header: "Item Name",
