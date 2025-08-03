@@ -448,6 +448,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "Analytical Test Requests",
+        url: "/atr",
+        icon: "ShieldCheck",
+        isActive: false,
+      },
+      {
         title: "Pending Approvals",
         url: "/qa/pending-approvals",
         icon: "CircleDotDashed",
