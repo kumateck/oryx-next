@@ -48,6 +48,7 @@ export const getColumns = (
         type: ColumnType.NUMBER,
         prefixText: currency,
         editable: true,
+        required: true,
         setItemLists,
       },
     },
