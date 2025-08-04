@@ -46,12 +46,28 @@ const AduseiEditor = ({
   const [editorState, setEditorState] = useState<Editor | null>(null);
   const [isFocused, setIsFocused] = useState(false); // Track focus state
 
+  // useEffect(() => {
+  //   if (editorState && !value) {
+  //     editorState.commands.clearContent(true);
+  //   }
+  // }, [editorState, value]);
+  // console.log("Editor content from main", value);
+
+  // Updated useEffect to handle both clearing and setting content
   useEffect(() => {
-    if (editorState && !value) {
-      editorState.commands.clearContent(true);
+    if (editorState) {
+      const currentContent = editorState.getHTML();
+
+      // Only update if the content is actually different
+      if (currentContent !== value) {
+        if (!value) {
+          editorState.commands.clearContent(true);
+        } else {
+          editorState.commands.setContent(value, false);
+        }
+      }
     }
   }, [editorState, value]);
-  // console.log("Editor content from main", value);
 
   const editor = useEditor({
     editorProps: {
