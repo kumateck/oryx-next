@@ -42,7 +42,7 @@ export const getColumns = (
   },
   {
     accessorKey: "price",
-    header: "Cost Price",
+    header: "Unit Price",
     meta: {
       edittableCell: {
         type: ColumnType.NUMBER,
