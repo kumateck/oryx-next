@@ -1,26 +1,40 @@
 import React from "react";
 import {
   Control,
+  FieldArrayWithId,
   FieldErrors,
   FieldValues,
   Path,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
   UseFormRegister,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { InputTypes } from "@/lib";
+import { Button, Icon } from "@/components/ui";
+import { StockRequisitionDto } from "./types";
+import { FetchOptionsResult } from "@/components/ui/async-select";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  inventoryItemsOptions: Option[];
+  fetchItems: (search: string, page: number) => Promise<FetchOptionsResult>;
+  isLoading: boolean;
+  append: UseFieldArrayAppend<StockRequisitionDto>;
+  fields: FieldArrayWithId<StockRequisitionDto>[];
+  remove: UseFieldArrayRemove;
 }
-const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
+const StockRequisition = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  inventoryItemsOptions,
+  fetchItems,
+  isLoading,
+  append,
+  remove,
+  fields,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-4">
@@ -29,9 +43,9 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
           fieldWrapperClassName="flex-grow"
           config={[
             {
-              register: register("name" as Path<TFieldValues>),
-              label: "Name",
-              placeholder: "Enter name",
+              register: register("code" as Path<TFieldValues>),
+              label: "Requisition ID",
+              placeholder: "Enter requisition ID",
               type: InputTypes.TEXT,
               required: true,
               errors,
@@ -42,10 +56,11 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
           fieldWrapperClassName="flex-grow"
           config={[
             {
-              register: register("code" as Path<TFieldValues>),
+              control: control as Control,
               label: "Code",
+              name: "deliveryDate",
               placeholder: "VED-001",
-              type: InputTypes.TEXT,
+              type: InputTypes.DATE,
               required: true,
               errors,
             },
@@ -56,74 +71,114 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
         fieldWrapperClassName="flex-grow"
         config={[
           {
-            register: register("email" as Path<TFieldValues>),
-            label: "Email",
-            placeholder: "Enter email",
-            type: InputTypes.EMAIL,
+            register: register("justification" as Path<TFieldValues>),
+            label: "Justification",
+            className: "h-20",
+            placeholder: "Enter justification",
+            type: InputTypes.TEXTAREA,
             required: true,
-            errors,
-          },
-
-          {
-            register: register("address" as Path<TFieldValues>),
-            label: "Address",
-            placeholder: "Enter address",
-            type: InputTypes.TEXT,
             errors,
           },
         ]}
       />
-      <div className="flex gap-2 w-full items-center justify-center">
-        <FormWizard
-          config={[
-            {
-              label: "Country",
-              className: "w-full",
-              control: control as Control,
-              type: InputTypes.SELECT,
-              name: "country",
-              required: true,
-              onModal: true,
-              placeholder: "Select country",
-              options: inventoryItemsOptions,
-              errors,
-            },
-          ]}
-        />
+      <div className="flex w-full justify-between items-center">
+        <h1>Items</h1>
+        <Button
+          variant={"ghost"}
+          type="button"
+          onClick={() =>
+            append({
+              itemId: {
+                label: "",
+                value: "",
+              },
+              orderQuantity: 0,
+              itemCode: "",
+              stockQuantity: 0,
+            })
+          }
+          className="flex items-center justify-center gap-1 w-fit"
+        >
+          <Icon name="Plus" />
+          <span className="text-sm">Add Item</span>
+        </Button>
       </div>
-
-      <div className="flex w-full items-center gap-2 justify-center">
-        <FormWizard
-          fieldWrapperClassName="flex-grow"
-          className="w-full"
-          config={[
-            {
-              register: register("contactPerson" as Path<TFieldValues>),
-              label: "Contact Person",
-              placeholder: "Enter contact person",
-              type: InputTypes.TEXT,
-              required: true,
-              errors,
-            },
-          ]}
-        />
-        <FormWizard
-          fieldWrapperClassName="flex-grow"
-          className="w-full"
-          config={[
-            {
-              register: register("contactNumber" as Path<TFieldValues>),
-              label: "Contact Number",
-              placeholder: "Enter telephone",
-              type: InputTypes.TEXT,
-              required: true,
-              errors,
-            },
-          ]}
-        />
+      <div className="space-y-4">
+        {fields?.map((item, id) => (
+          <div key={id + item.id} className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 flex-1">
+              <FormWizard
+                config={[
+                  {
+                    control: control as Control,
+                    name: `items.${id}.itemId`,
+                    label: "Item Name",
+                    fetchOptions: fetchItems,
+                    isLoading: isLoading,
+                    type: InputTypes.ASYNC_SELECT,
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `items.${id}.itemCode` as Path<TFieldValues>,
+                    ),
+                    label: "Item Code",
+                    readOnly: true,
+                    type: InputTypes.TEXT,
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `items.${id}.stockQuantity` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
+                    ),
+                    label: "Stock Quantity",
+                    readOnly: true,
+                    type: InputTypes.NUMBER,
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `items.${id}.orderQuantity` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
+                    ),
+                    label: "Request Quantity",
+                    type: InputTypes.NUMBER,
+                    required: true,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <Icon
+              name="Trash"
+              onClick={() => remove(id)}
+              className="cursor-pointer h-5 text-red-600 w-4"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default PurchaseRequisitionForm;
+export default StockRequisition;

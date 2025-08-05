@@ -201,6 +201,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1QaAnalyticalTestsActivityStepByActivityStepId: build.query<
+      GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse,
+      GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests/activity-step/${queryArg.activityStepId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Approval: build.mutation<
       PostApiV1ApprovalApiResponse,
       PostApiV1ApprovalApiArg
@@ -8135,6 +8147,15 @@ export type DeleteApiV1QaAnalyticalTestsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse =
+  /** status 200 OK */ AnalyticalTestRequestDto;
+export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg = {
+  activityStepId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ApprovalApiResponse = /** status 201 Created */ string;
 export type PostApiV1ApprovalApiArg = {
   /** The module this request falls under */
@@ -13900,6 +13921,84 @@ export type CreateAnalyticalTestRequest = {
   stateId?: string;
   productionActivityStepId?: string | null;
 };
+export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type OperationDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  order?: number;
+  action?: OperationAction;
+};
+export type ResourceDto = {
+  id?: string | null;
+  name?: string | null;
+  type?: string | null;
+  isAvailable?: boolean;
+};
+export type ProductionActivityStepResourceDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  resource?: ResourceDto;
+};
+export type ProductionActivityStepWorkCenterDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  workCenter?: CollectionItemDto;
+};
+export type AttachmentDto = {
+  link?: string | null;
+  name?: string | null;
+  id?: string;
+  reference?: string | null;
+};
+export type Stage = 0 | 1 | 2;
+export type ProductStandardTestProcedureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  stpNumber?: string | null;
+  product?: CollectionItemDto;
+};
+export type ProductAnalyticalRawDataDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  specNumber?: string | null;
+  stage?: Stage;
+  description?: string | null;
+  form?: CollectionItemDto;
+  productStandardTestProcedure?: ProductStandardTestProcedureDto;
+};
+export type ProductionActivityStepUserDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  user?: UserDto;
+  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
+  action?: OperationAction;
+};
+export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
+export type ProductionActivityStepDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionActivity?: CollectionItemDto;
+  operation?: OperationDto;
+  workFlow?: CollectionItemDto;
+  resources?: ProductionActivityStepResourceDto[] | null;
+  workCenters?: ProductionActivityStepWorkCenterDto[] | null;
+  responsibleUsers?: ProductionActivityStepUserDto[] | null;
+  status?: ProductionStatus;
+  startedAt?: string | null;
+  completedAt?: string | null;
+  order?: number;
+};
 export type AnalyticalTestRequestDto = {
   id?: string;
   createdBy?: UserDto;
@@ -13907,7 +14006,7 @@ export type AnalyticalTestRequestDto = {
   batchManufacturingRecord?: CollectionItemDto;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
-  productionActivityStep?: CollectionItemDto;
+  productionActivityStep?: ProductionActivityStepDto;
   manufacturingDate?: string;
   expiryDate?: string;
   releasedAt?: string | null;
@@ -13960,12 +14059,6 @@ export type ApprovalDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type AttachmentDto = {
-  link?: string | null;
-  name?: string | null;
-  id?: string;
-  reference?: string | null;
 };
 export type Gender = 0 | 1;
 export type MaritalStatus = 0 | 1;
@@ -16586,27 +16679,6 @@ export type ProductPackageDto = {
   directLinkMaterial?: CollectionItemDto;
   packingExcessMargin?: number;
 };
-export type Stage = 0 | 1 | 2;
-export type ProductStandardTestProcedureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  stpNumber?: string | null;
-  product?: CollectionItemDto;
-};
-export type ProductAnalyticalRawDataDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  specNumber?: string | null;
-  stage?: Stage;
-  description?: string | null;
-  form?: CollectionItemDto;
-  productStandardTestProcedure?: ProductStandardTestProcedureDto;
-};
-export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type RouteResponsibleUserDto = {
   user?: CollectionItemDto;
   productAnalyticalRawData?: ProductAnalyticalRawDataDto;
@@ -16919,7 +16991,6 @@ export type CreateProductionScheduleRequest = {
   products?: CreateProductionScheduleProduct[] | null;
   remarks?: string | null;
 };
-export type ProductionStatus = 0 | 1 | 2 | 3 | 4;
 export type ProductionScheduleProductDto = {
   product?: ProductListDto;
   quantity?: number;
@@ -17002,56 +17073,6 @@ export type ProductionScheduleProcurementPackageDto = {
   packingExcessMargin?: number;
   storageWarehouseId?: string;
   productionWarehouseId?: string;
-};
-export type OperationDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  description?: string | null;
-  order?: number;
-  action?: OperationAction;
-};
-export type ResourceDto = {
-  id?: string | null;
-  name?: string | null;
-  type?: string | null;
-  isAvailable?: boolean;
-};
-export type ProductionActivityStepResourceDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  resource?: ResourceDto;
-};
-export type ProductionActivityStepWorkCenterDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  workCenter?: CollectionItemDto;
-};
-export type ProductionActivityStepUserDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  user?: UserDto;
-  productAnalyticalRawData?: ProductAnalyticalRawDataDto;
-  action?: OperationAction;
-};
-export type ProductionActivityStepDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  productionActivity?: CollectionItemDto;
-  operation?: OperationDto;
-  workFlow?: CollectionItemDto;
-  resources?: ProductionActivityStepResourceDto[] | null;
-  workCenters?: ProductionActivityStepWorkCenterDto[] | null;
-  responsibleUsers?: ProductionActivityStepUserDto[] | null;
-  status?: ProductionStatus;
-  startedAt?: string | null;
-  completedAt?: string | null;
-  order?: number;
 };
 export type ProductionActivityLogDto = {
   id?: string;
@@ -18891,6 +18912,8 @@ export const {
   useLazyGetApiV1QaAnalyticalTestsByIdQuery,
   usePutApiV1QaAnalyticalTestsByIdMutation,
   useDeleteApiV1QaAnalyticalTestsByIdMutation,
+  useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
+  useLazyGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
   usePostApiV1ApprovalMutation,
   useGetApiV1ApprovalQuery,
   useLazyGetApiV1ApprovalQuery,

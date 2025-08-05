@@ -544,6 +544,11 @@ export const ROUTES: Route[] = [
             url: "/extrals/purchase-requisitions",
             icon: "Plug2",
           },
+          {
+            title: "Stock Requisition",
+            url: "/extrals/stock-requisitions",
+            icon: "Plug",
+          },
         ],
       },
     ],

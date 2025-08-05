@@ -18,7 +18,7 @@ const objectSchema = z.object({
 });
 
 export const CreatePurchaseRequisitionSchema = z.object({
-  justification: z.string().min(1, { message: "Name is required" }),
+  justification: z.string().min(1, { message: "Justification is required" }),
   code: z.string().min(1, { message: "Code is required" }),
   deliveryDate: z.date({
     message: "Delivery date is required",

@@ -189,7 +189,7 @@ export function DataTableRowStatus<TData extends SupplierDto>({
 export const columns: ColumnDef<SupplierDto>[] = [
   {
     accessorKey: "code",
-    header: "Requsition Id",
+    header: "Requisition ID",
 
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },

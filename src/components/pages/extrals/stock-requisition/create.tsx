@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import {
   Button,
   Dialog,
@@ -11,47 +10,49 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, COLLECTION_TYPES, Option } from "@/lib";
-import {
-  PostApiV1CollectionApiArg,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { cn, Option } from "@/lib";
+import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
 
-import { CreateVendorValidator, VendorRequestDto } from "./types";
-import PurchaseRequisitionForm from "./form";
+import { CreateStockRequisitionValidator, StockRequisitionDto } from "./types";
+import StockRequisition from "./form";
 
 interface VendorFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.Country, COLLECTION_TYPES.Currency],
-    } as PostApiV1CollectionApiArg).unwrap();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadItems({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
   const {
     register,
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<VendorRequestDto>({
-    resolver: CreateVendorValidator,
+  } = useForm<StockRequisitionDto>({
+    resolver: CreateStockRequisitionValidator,
     mode: "all",
   });
 
-  const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
 
-  const onSubmit = async (data: VendorRequestDto) => {
+  const onSubmit = async (data: StockRequisitionDto) => {
     console.log(data, "Venders form data");
   };
 
@@ -62,10 +63,14 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
           <DialogTitle>Edit Vendor</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <PurchaseRequisitionForm
-            inventoryItemsOptions={countryOptions}
+          <StockRequisition
+            fetchItems={loadDataOrSearch}
+            isLoading={loadingItems}
             errors={errors}
             register={register}
+            append={append}
+            remove={remove}
+            fields={fields}
             control={control}
           />
           <DialogFooter>

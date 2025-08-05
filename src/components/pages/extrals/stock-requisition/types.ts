@@ -13,12 +13,12 @@ const objectSchema = z.object({
     }),
   }),
   itemCode: z.string().optional(),
-  stockQuantity: z.string().optional(),
+  stockQuantity: z.number().nonnegative(),
   orderQuantity: z.number().nonnegative(),
 });
 
-export const CreatePurchaseRequisitionSchema = z.object({
-  justification: z.string().min(1, { message: "Name is required" }),
+export const CreateStockRequisitionSchema = z.object({
+  justification: z.string().min(1, { message: "Justification is required" }),
   code: z.string().min(1, { message: "Code is required" }),
   deliveryDate: z.date({
     message: "Delivery date is required",
@@ -28,7 +28,7 @@ export const CreatePurchaseRequisitionSchema = z.object({
   }),
 });
 
-export type VendorRequestDto = z.infer<typeof CreatePurchaseRequisitionSchema>;
-export const CreateVendorValidator = zodResolver(
-  CreatePurchaseRequisitionSchema,
+export type StockRequisitionDto = z.infer<typeof CreateStockRequisitionSchema>;
+export const CreateStockRequisitionValidator = zodResolver(
+  CreateStockRequisitionSchema,
 );
