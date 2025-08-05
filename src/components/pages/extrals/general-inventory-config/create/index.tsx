@@ -4,19 +4,22 @@ import {
   AuditModules,
   CODE_SETTINGS,
   ErrorResponse,
+  InventoryType,
   isErrorResponse,
   Option,
+  splitWords,
 } from "@/lib";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InventoryForm from "../form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
-  CreateItemRequest,
+  CreateItemsRequest,
+  InventoryClassification,
+  Store,
   useGetApiV1CollectionUomQuery,
-  useGetApiV1DepartmentQuery,
   useLazyGetApiV1ServicesQuery,
-  usePostApiV1InventoriesMutation,
+  usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import { CreateInventoryDto, CreateInventoryValidator } from "../types";
@@ -34,10 +37,6 @@ function Page() {
 export default Page;
 
 export function CreateInventoryItem() {
-  const { data: departments } = useGetApiV1DepartmentQuery({
-    page: 1,
-    pageSize: 200,
-  });
   const [loadCodeModelCount] = useLazyGetApiV1ServicesQuery();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
@@ -45,7 +44,9 @@ export function CreateInventoryItem() {
     subModule: AuditModules.general.collection,
   });
   const router = useRouter();
-  const [createInventory, { isLoading }] = usePostApiV1InventoriesMutation();
+  const searchParams = useSearchParams();
+  const storeType = searchParams.get("storeType");
+  const [createItem, { isLoading }] = usePostApiV1ItemsMutation();
   const {
     register,
     control,
@@ -56,22 +57,31 @@ export function CreateInventoryItem() {
     resolver: CreateInventoryValidator,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "departments",
-  });
   const onSubmit = async (data: CreateInventoryDto) => {
-    const payload: CreateItemRequest = {
+    const payload: CreateItemsRequest = {
       description: data.description,
+      isActive: data.isActive,
+      code: data.code,
+      name: data.materialName,
+      classification: Number(
+        data.classification.value,
+      ) as unknown as InventoryClassification,
+      store: Number(storeType) as unknown as Store,
+      unitOfMeasureId: data.unitOfMeasureId.value,
+      hasBatchNumber: data.isActive,
+      maximumLevel: data.maximumLevel,
+      minimumLevel: data.minimumLevel,
+      reorderLevel: data.reorderLevel,
     };
     try {
-      const res = await createInventory({
-        createItemRequest: payload,
+      const res = await createItem({
+        createItemsRequest: payload,
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
       console.log(res, "res");
       // console.log(res, "res");
+      router.back();
       toast.success("Inventory created successfully");
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -87,26 +97,33 @@ export function CreateInventoryItem() {
 
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
-  const { regenerateCode, loading } = useCodeGen(
+  const { regenerateCode } = useCodeGen(
     CODE_SETTINGS.modelTypes.GeneralInventory,
     fetchCount,
     setCodeToInput,
   );
   useEffect(() => {
+    if (!storeType) return;
+    setValue(
+      "storeType",
+      splitWords(InventoryType[storeType as unknown as InventoryType]) ??
+        "GeneralStore",
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeType]);
+  useEffect(() => {
     regenerateCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  //selection options
-  const departmentOptions = departments?.data?.map((dept) => ({
-    label: dept.name as string,
-    value: dept.id as string,
-  })) as Option[];
 
   const unitOfMeasureOptions = uomResponse?.map((uom) => ({
     label: uom.symbol,
     value: uom.id,
   })) as Option[];
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <>
@@ -124,12 +141,7 @@ export function CreateInventoryItem() {
             control={control}
             register={register}
             errors={errors}
-            departmentOptions={departmentOptions}
             unitOfMeasureOptions={unitOfMeasureOptions}
-            remove={remove}
-            isLoadingCode={loading}
-            fields={fields}
-            append={append}
           />
         </div>
         <div className="flex justify-end gap-4">

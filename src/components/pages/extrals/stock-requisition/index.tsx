@@ -1,45 +1,22 @@
 "use client";
 
 import { useState } from "react";
-// import { useDispatch } from "react-redux";
 import PageWrapper from "@/components/layout/wrapper";
-// import { commonActions } from "@/lib/redux/slices/common";
-// import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-
 import { columns } from "./column";
 import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useRouter } from "next/navigation";
-// import { useDebounce } from "@uidotdev/usehooks";
 import Create from "./create";
 import { Button, Icon } from "@/components/ui";
 
 const Page = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  // const dispatch = useDispatch();
-  // const triggerReload = useSelector((state) => state.common.triggerReload);
-  // const searchValue = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-
-  // const debouncedValue = useDebounce(searchValue, 500);
-
-  // useEffect(() => {
-  //   loadData({
-  //     page,
-  //     pageSize,
-  //     searchQuery: debouncedValue,
-  //   } as GetApiV1ProcurementSupplierApiArg);
-
-  //   if (triggerReload) {
-  //     dispatch(commonActions.unSetTriggerReload());
-  //   }
-
-  // }, [page, pageSize, triggerReload, debouncedValue]);
 
   const data = [];
   const { hasPermissionAccess } = useUserPermissions();
@@ -68,7 +45,7 @@ const Page = () => {
                 router.back();
               }}
             />
-            <PageTitle title={"Vendors"} />
+            <PageTitle title={"Stock Requisition"} />
           </div>
           <div className="flex items-center justify-end gap-2">
             {hasPermissionAccess(PermissionKeys.procurement.createVendor) && (

@@ -1,8 +1,8 @@
-import { FinishedProduct } from "@/lib/redux/api/openapi.generated";
+import { ProductDtoRead } from "@/lib/redux/api/openapi.generated";
 import { ListsTable } from "@/shared/datatable";
 
 interface IProps {
-  data: FinishedProduct[];
+  data: ProductDtoRead[];
 }
 
 export const FinishedGoods = ({ data }: IProps) => {
@@ -20,7 +20,7 @@ export const FinishedGoods = ({ data }: IProps) => {
           {
             accessorKey: "uom",
             header: "Unit of Measurement",
-            cell: (info) => info.row.original.uoM?.name,
+            cell: (info) => info.row.original.baseUoM?.name,
           },
           {
             accessorKey: "dosageForm",

@@ -5,8 +5,7 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  ItemDtoRead,
-  MaterialSpecificationDto,
+  ItemDto,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -20,7 +19,7 @@ import { toast } from "sonner";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends MaterialSpecificationDto>({
+export function DataTableRowActions<TData extends ItemDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
@@ -36,7 +35,7 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
             className="flex cursor-pointer items-center justify-start gap-2"
             onClick={() => {
               router.push(
-                `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
+                `/extrals/general-inventory-config/${row.original.id}`,
               );
             }}
           >
@@ -52,7 +51,7 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
             className="flex w-full cursor-pointer items-center justify-start gap-2"
             onClick={() => {
               router.push(
-                `/qc/material-specification/${row.original.id}/edit?kind=${row.original.material?.kind}`,
+                `/extrals/general-inventory-config/${row.original.id}/edit?storeType=${row.original.store}`,
               );
             }}
           >
@@ -100,22 +99,22 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
     </section>
   );
 }
-export const columns: ColumnDef<ItemDtoRead>[] = [
+export const columns: ColumnDef<ItemDto>[] = [
   {
     accessorKey: "itemName",
     header: "Item Name",
-    cell: ({ row }) => <div>{row.original?.materialName}</div>,
+    cell: ({ row }) => <div>{row.original?.name}</div>,
   },
   {
     accessorKey: "code",
     header: "Item Code",
     cell: ({ row }) => <div>{row.original?.code}</div>,
   },
-
+  //TODO: update this to use the correct item quantity
   {
     accessorKey: "quantity",
     header: "Available Quantity",
-    cell: ({ row }) => <div>{row.original?.initialStockQuantity}</div>,
+    cell: ({ row }) => <div>{row.original?.maximumLevel}</div>,
   },
   {
     accessorKey: "classification",
