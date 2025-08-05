@@ -580,3 +580,9 @@ export enum ReorderdRules {
   Reorder = 1,
   Maximum = 2,
 }
+
+export enum InventoryType {
+  EquipmentStore = 0,
+  GeneralStore = 1,
+  ITStore = 2,
+}

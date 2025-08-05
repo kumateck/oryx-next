@@ -14,23 +14,17 @@ import {
 import { cn, COLLECTION_TYPES, Option } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
-  useGetApiV1ServicesQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { CreateVendorValidator, VendorRequestDto } from "./types";
-import VendorForm from "./form";
+import PurchaseRequisitionForm from "./form";
 
 interface VendorFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
-  const { data: servicesData } = useGetApiV1ServicesQuery({
-    page: 1,
-    pageSize: 1002,
-  });
-
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
@@ -56,18 +50,6 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
       value: uom.id,
     }),
   ) as Option[];
-  const currencyOptions = collectionResponse?.[COLLECTION_TYPES.Currency]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
-  // Map services data to options
-  const services = servicesData?.data || [];
-  const servicesOptions = services.map((service) => ({
-    label: service.name,
-    value: service.id,
-  })) as Option[];
 
   const onSubmit = async (data: VendorRequestDto) => {
     console.log(data, "Venders form data");
@@ -77,14 +59,12 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
         <DialogHeader>
-          <DialogTitle>Create Vendor</DialogTitle>
+          <DialogTitle>Edit Vendor</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <VendorForm
-            countryOptions={countryOptions}
+          <PurchaseRequisitionForm
+            inventoryItemsOptions={countryOptions}
             errors={errors}
-            currencyOptions={currencyOptions}
-            servicesOptions={servicesOptions}
             register={register}
             control={control}
           />

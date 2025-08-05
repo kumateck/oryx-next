@@ -525,16 +525,26 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "General Inventory",
-        url: "/extrals/general-inventory-config",
-        icon: "BaggageClaim",
+        title: "Inventory",
+        icon: "Group",
         isActive: false,
-      },
-      {
-        title: "Venders",
-        url: "/extrals/vendors",
-        icon: "BaggageClaim",
-        isActive: false,
+        items: [
+          {
+            title: "General Inventory",
+            url: "/extrals/general-inventory-config",
+            icon: "BaggageClaim",
+          },
+          {
+            title: "Vendors",
+            url: "/extrals/vendors",
+            icon: "SmilePlus",
+          },
+          {
+            title: "Purchase Requisition",
+            url: "/extrals/purchase-requisitions",
+            icon: "Plug2",
+          },
+        ],
       },
     ],
   },
