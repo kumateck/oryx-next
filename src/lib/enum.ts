@@ -584,5 +584,5 @@ export enum ReorderdRules {
 export enum InventoryType {
   EquipmentStore = 0,
   GeneralStore = 1,
-  ITStore = 2,
+  "IT Store" = 2,
 }

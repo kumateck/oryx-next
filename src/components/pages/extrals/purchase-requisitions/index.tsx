@@ -63,6 +63,9 @@ const Page = () => {
           data={data}
           columns={columns}
           isLoading={false}
+          onRowClick={(row) =>
+            router.push(`/extrals/purchase-requisitions/${row.id}/details`)
+          }
           setPage={setPage}
           setPageSize={setPageSize}
           meta={{
