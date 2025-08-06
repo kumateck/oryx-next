@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { CreateATRDto, CreateATRValidator } from "./types";
 import { cn, CollectionTypes, Option } from "@/lib";
 import {
+  TestStage,
   usePostApiV1CollectionMutation,
   usePostApiV1QaAnalyticalTestsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -33,6 +34,7 @@ interface Props {
   onClose: () => void;
   productionScheduleId: string;
   productId: string;
+  productionActivityStepId: string;
   defaultValues?: DefaultProps;
 }
 const CreateATR = ({
@@ -40,6 +42,7 @@ const CreateATR = ({
   onClose,
   productionScheduleId,
   productId,
+  productionActivityStepId,
   defaultValues,
 }: Props) => {
   const [createATRMutation, { isLoading }] =
@@ -53,8 +56,6 @@ const CreateATR = ({
   } = useForm<CreateATRDto>({
     resolver: CreateATRValidator,
   });
-
-  console.log(errors, "errors");
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
@@ -77,10 +78,12 @@ const CreateATR = ({
       // Call the API to create the service provider
       await createATRMutation({
         createAnalyticalTestRequest: {
+          stage: Number(data.stage) as TestStage,
           stateId: data.state.value,
           filled: data.filledVolume,
           productId,
           productionScheduleId,
+          productionActivityStepId,
           batchManufacturingRecordId: defaultValues?.batchManufacturingRecordId,
           expiryDate: defaultValues?.expiryDate,
           manufacturingDate: defaultValues?.manufacturingDate,

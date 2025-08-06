@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/reprots/human-resources-report/index";
+export { default } from "@/components/pages/reports/human-resources-report/index";

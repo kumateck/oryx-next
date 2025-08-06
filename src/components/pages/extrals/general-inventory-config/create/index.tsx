@@ -16,7 +16,7 @@ import {
   useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
   useLazyGetApiV1ServicesQuery,
-  usePostApiV1InventoriesMutation,
+  // usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import { CreateInventoryDto, CreateInventoryValidator } from "../types";
@@ -32,7 +32,7 @@ function Page() {
 }
 
 export default Page;
-
+const isLoading = false; // Placeholder for loading state
 export function CreateInventoryItem() {
   const { data: departments } = useGetApiV1DepartmentQuery({
     page: 1,
@@ -45,7 +45,7 @@ export function CreateInventoryItem() {
     subModule: AuditModules.general.collection,
   });
   const router = useRouter();
-  const [createInventory, { isLoading }] = usePostApiV1InventoriesMutation();
+  // const [createInventory, { isLoading }] = usePostApiV1ItemsMutation();
   const {
     register,
     control,
@@ -64,13 +64,15 @@ export function CreateInventoryItem() {
     const payload: CreateItemRequest = {
       description: data.description,
     };
+    console.log(payload);
     try {
-      const res = await createInventory({
-        createItemRequest: payload,
-        module: AuditModules.extral.name,
-        subModule: AuditModules.extral.generalInventoryConfiguration,
-      }).unwrap();
-      console.log(res, "res");
+      // const res = await createInventory({
+
+      //   // createItemsRequest: payload,
+      //   module: AuditModules.extral.name,
+      //   subModule: AuditModules.extral.generalInventoryConfiguration,
+      // }).unwrap();
+      // console.log(res, "res");
       // console.log(res, "res");
       toast.success("Inventory created successfully");
     } catch (error) {

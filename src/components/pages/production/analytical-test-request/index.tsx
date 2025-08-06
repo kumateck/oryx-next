@@ -3,7 +3,6 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
@@ -15,24 +14,32 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 
 import NoAccess from "@/shared/no-access";
-import { PermissionKeys } from "@/lib";
+import { AnalyticalTestRequestStatus, PermissionKeys } from "@/lib";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useDispatch } from "react-redux";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
 
 const Page = () => {
-  const router = useRouter();
+  const dispatch = useDispatch();
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1QaAnalyticalTestsQuery();
 
+  const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   useEffect(() => {
     loadData({
       page,
       pageSize,
+      status: AnalyticalTestRequestStatus.Created,
     });
 
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, triggerReload]);
 
   //permissions checks
   const { hasPermissionAccess } = useUserPermissions();
@@ -58,9 +65,6 @@ const Page = () => {
       </div>
 
       <ServerDatatable
-        onRowClick={(row) => {
-          router.push(`/production/schedules/${row.id}/details`);
-        }}
         data={data}
         columns={columns}
         isLoading={isLoading || isFetching}
