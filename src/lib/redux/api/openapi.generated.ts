@@ -13996,6 +13996,8 @@ export type CreateAnalyticalTestRequest = {
   filled?: string | null;
   stateId?: string;
   productionActivityStepId?: string | null;
+  numberOfContainers?: number;
+  sampledAt?: string | null;
 };
 export type UnitOfMeasureDto = {
   id?: string;
@@ -14235,6 +14237,9 @@ export type AnalyticalTestRequestDto = {
   stage?: TestStage;
   state?: CollectionItemDto;
   status?: AnalyticalTestStatus;
+  numberOfContainers?: number;
+  sampledBy?: UserDto;
+  sampledAt?: string | null;
 };
 export type AnalyticalTestRequestDtoRead = {
   id?: string;
@@ -14253,6 +14258,9 @@ export type AnalyticalTestRequestDtoRead = {
   stage?: TestStage;
   state?: CollectionItemDto;
   status?: AnalyticalTestStatus;
+  numberOfContainers?: number;
+  sampledBy?: UserDto;
+  sampledAt?: string | null;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
   data?: AnalyticalTestRequestDto[] | null;

@@ -4,20 +4,21 @@ import {
   AuditModules,
   ErrorResponse,
   InventoryClassificationEnum,
+  InventoryType,
   isErrorResponse,
   Option,
-  ReorderdRules,
 } from "@/lib";
 import React, { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
 import {
-  CreateItemRequest,
+  CreateItemsRequest,
+  InventoryClassification,
+  Store,
   useGetApiV1CollectionUomQuery,
-  useGetApiV1DepartmentQuery,
-  useLazyGetApiV1InventoriesByIdQuery,
-  usePutApiV1InventoriesByIdMutation,
+  useLazyGetApiV1ItemsByIdQuery,
+  usePutApiV1ItemsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import SpecificationForm from "../form";
@@ -37,19 +38,15 @@ function EditInventory() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [editInventory, { isLoading }] = usePutApiV1InventoriesByIdMutation();
-  const { data: departments } = useGetApiV1DepartmentQuery({
-    page: 1,
-    pageSize: 200,
-  });
+  const [editItem, { isLoading }] = usePutApiV1ItemsByIdMutation();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
     module: AuditModules.general.name,
     subModule: AuditModules.general.collection,
   });
 
-  const [fetchInventoryDetails, { data: inventoryDetails }] =
-    useLazyGetApiV1InventoriesByIdQuery({});
+  const [fetchItemDetails, { data: inventoryDetails }] =
+    useLazyGetApiV1ItemsByIdQuery({});
 
   const {
     register,
@@ -60,14 +57,10 @@ function EditInventory() {
   } = useForm<CreateInventoryDto>({
     resolver: CreateInventoryValidator,
   });
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "departments",
-  });
 
   useEffect(() => {
     if (id) {
-      fetchInventoryDetails({ id: id as string });
+      fetchItemDetails({ id: id as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -75,59 +68,53 @@ function EditInventory() {
   useEffect(() => {
     if (inventoryDetails) {
       // Populate form with fetched inventory data
-      setValue("materialName", inventoryDetails?.materialName as string);
+      setValue("materialName", inventoryDetails?.name as string);
       setValue("code", inventoryDetails?.code as string);
       setValue("description", inventoryDetails?.description as string);
-
-      setValue("inventoryTypeId", inventoryDetails?.inventoryTypeId ?? "");
-      setValue("isActive", inventoryDetails?.isActive ?? false);
-      setValue("isActive", inventoryDetails?.isActive ?? false);
+      setValue("maximumLevel", inventoryDetails?.maximumLevel ?? 0);
+      setValue("reorderLevel", inventoryDetails?.reorderLevel ?? 0);
+      setValue("minimumLevel", inventoryDetails?.minimumLevel ?? 0);
+      setValue("unitOfMeasureId", {
+        label: inventoryDetails?.unitOfMeasure?.symbol,
+        value: String(inventoryDetails?.unitOfMeasure?.id),
+      } as Option);
       setValue(
-        "initialStockQuantity",
-        inventoryDetails?.initialStockQuantity ?? 0,
+        "storeType",
+        inventoryDetails?.store !== undefined
+          ? String(InventoryType[inventoryDetails.store])
+          : "",
       );
+      setValue("isActive", inventoryDetails?.isActive ?? false);
       setValue("classification", {
         value: String(inventoryDetails?.classification),
         label:
           InventoryClassificationEnum[inventoryDetails?.classification ?? ""] ||
           "",
       });
-      setValue("reorderRule", {
-        value: String(inventoryDetails?.reorderRule),
-        label: ReorderdRules[inventoryDetails?.reorderRule ?? ""] || "",
-      });
-      setValue("unitOfMeasureId", {
-        value: String(inventoryDetails?.unitOfMeasure?.id),
-        label: ReorderdRules[inventoryDetails?.unitOfMeasure?.name ?? ""] || "",
-      });
     }
-    // TODO: Populate departments field array with fetched data
-    // if (inventoryDetails?.departments) {
-    //   const departmentsData = inventoryDetails.departments.map((dept) => ({
-    //     departmentId: {
-    //       value: dept.departmentId,
-    //       label: dept.departmentName,
-    //     },
-    //     initialStockQuantity: dept.initialStockQuantity,
-    //     minimumLevel: dept.minimumLevel,
-    //     maximumLevel: dept.maximumLevel,
-    //     reorderLevel: dept.reorderLevel,
-    //   }));
-    //   // Set the departments field array with fetched data
-    //   fields.forEach((_, index) => remove(index));
-    //   departmentsData.forEach((dept) => append(dept));
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inventoryDetails]);
 
   const onSubmit = async (data: CreateInventoryDto) => {
-    const payload: CreateItemRequest = {
+    const payload: CreateItemsRequest = {
       description: data.description,
+      code: data.code,
+      name: data.materialName,
+      isActive: data.isActive,
+      classification: Number(
+        data.classification.value,
+      ) as unknown as InventoryClassification,
+      store: Number(data.storeType) as unknown as Store,
+      unitOfMeasureId: data.unitOfMeasureId.value,
+      hasBatchNumber: data.isActive,
+      maximumLevel: data.maximumLevel,
+      minimumLevel: data.minimumLevel,
+      reorderLevel: data.reorderLevel,
     };
     try {
-      const res = await editInventory({
+      const res = await editItem({
         id: id as string,
-        createItemRequest: payload,
+        createItemsRequest: payload,
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
@@ -138,12 +125,6 @@ function EditInventory() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
-  //selection options
-  const departmentOptions = departments?.data?.map((dept) => ({
-    label: dept.name as string,
-    value: dept.id as string,
-  })) as Option[];
 
   const unitOfMeasureOptions = uomResponse?.map((uom) => ({
     label: uom.symbol,
@@ -166,11 +147,7 @@ function EditInventory() {
             control={control}
             register={register}
             errors={errors}
-            departmentOptions={departmentOptions}
             unitOfMeasureOptions={unitOfMeasureOptions}
-            remove={remove}
-            fields={fields}
-            append={append}
           />
         </div>
         <div className="flex justify-end gap-4">

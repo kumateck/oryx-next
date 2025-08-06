@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 import {
   Button,
@@ -12,15 +11,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, COLLECTION_TYPES, Option } from "@/lib";
-import {
-  PostApiV1CollectionApiArg,
-  useGetApiV1ServicesQuery,
-  usePostApiV1CollectionMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { cn, Option } from "@/lib";
+import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
 
-import VendorForm from "./form";
 import { CreateVendorValidator, VendorRequestDto } from "./types";
+import PurchaseRequisitionForm from "./form";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -28,21 +23,7 @@ interface VendorFormProps {
 }
 
 const Edit = ({ isOpen, onClose }: VendorFormProps) => {
-  const { data: servicesData } = useGetApiV1ServicesQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-
-  const [loadCollection, { data: collectionResponse }] =
-    usePostApiV1CollectionMutation();
-
-  useEffect(() => {
-    loadCollection({
-      body: [COLLECTION_TYPES.Country, COLLECTION_TYPES.Currency],
-    } as PostApiV1CollectionApiArg).unwrap();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
   const {
     register,
     control,
@@ -54,24 +35,26 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
     mode: "all",
   });
 
-  const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
-  const currencyOptions = collectionResponse?.[COLLECTION_TYPES.Currency]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
+  const { append, fields, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
 
-  const services = servicesData?.data || [];
-  const servicesOptions = services.map((service) => ({
-    label: service.name,
-    value: service.id,
-  })) as Option[];
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadItems({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   const onSubmit = async (data: VendorRequestDto) => {
     console.log(data, "Venders form data");
@@ -83,14 +66,16 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
         <DialogHeader>
-          <DialogTitle>Edit Vendor</DialogTitle>
+          <DialogTitle>Edit Purchase Requisition</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <VendorForm
-            countryOptions={countryOptions}
+          <PurchaseRequisitionForm
+            fetcItems={loadDataOrSearch}
+            isLoading={loadingItems}
             errors={errors}
-            currencyOptions={currencyOptions}
-            servicesOptions={servicesOptions}
+            append={append}
+            fields={fields}
+            remove={remove}
             register={register}
             control={control}
           />
