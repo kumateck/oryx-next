@@ -18,7 +18,7 @@ const objectSchema = z.object({
 });
 
 export const CreatePurchaseRequisitionSchema = z.object({
-  justification: z.string().min(1, { message: "Justification is required" }),
+  remarks: z.string().min(1, { message: "Remarks are required" }),
   code: z.string().min(1, { message: "Code is required" }),
   deliveryDate: z.date({
     message: "Delivery date is required",
@@ -28,7 +28,9 @@ export const CreatePurchaseRequisitionSchema = z.object({
   }),
 });
 
-export type VendorRequestDto = z.infer<typeof CreatePurchaseRequisitionSchema>;
-export const CreateVendorValidator = zodResolver(
+export type CreatePurchaseRequisitionDto = z.infer<
+  typeof CreatePurchaseRequisitionSchema
+>;
+export const CreatePurchaseRequisitionValidator = zodResolver(
   CreatePurchaseRequisitionSchema,
 );
