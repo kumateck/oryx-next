@@ -127,7 +127,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
               Cancel
             </Button>
             <Button
-              disabled={isLoading || updating}
+              disabled={updating}
               type="submit"
               className="flex items-center gap-2"
             >
