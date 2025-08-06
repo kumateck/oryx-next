@@ -12,7 +12,16 @@ export enum SpecificationReference {
   PhInt,
   InHouse,
 }
-
+export enum AnalyticalTestRequestStatus {
+  Created,
+  Sampled,
+  Testing,
+}
+export enum AnalyticalTestRequestStage {
+  Intermediate,
+  Bulk,
+  Finished,
+}
 export enum BatchStatus {
   Received = 0,
   Quarantine = 1,

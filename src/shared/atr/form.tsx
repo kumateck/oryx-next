@@ -1,5 +1,5 @@
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { AnalyticalTestRequestStage, InputTypes, Option } from "@/lib";
 import React from "react";
 import {
   Control,
@@ -25,6 +25,20 @@ const AtrForm = <TFieldValues extends FieldValues, TContext>({
     <div>
       <FormWizard
         config={[
+          {
+            label: "Stage",
+            type: InputTypes.RADIO,
+            name: "stage",
+            options: Object.entries(AnalyticalTestRequestStage)
+              .filter(([, value]) => typeof value === "number")
+              .map(([key, value]) => ({
+                label: key,
+                value: value.toString(), // 0 or 1
+              })),
+            required: true,
+            control: control as Control,
+            errors,
+          },
           {
             name: `state`,
             label: "Product State",

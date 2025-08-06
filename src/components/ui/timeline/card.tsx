@@ -233,6 +233,7 @@ const TimelineCard = ({
             <AnalyticalTestRequest
               scheduleId={scheduleId as string}
               productId={productId as string}
+              productionActivityStepId={item?.id as string}
             />
           )}
           {showFinishedGoods && (

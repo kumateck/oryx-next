@@ -49,7 +49,8 @@ export const getColumns: ColumnDef<MaterialRequestDto>[] = [
         {
           <TableBadge
             className="rounded-full px-3 py-1 text-sm font-medium capitalize"
-            status={row.original?.materialStatus as unknown as MaterialStatus}
+            status={Number(row.original?.materialStatus)}
+            statusEnum={MaterialStatus}
           />
         }
       </div>

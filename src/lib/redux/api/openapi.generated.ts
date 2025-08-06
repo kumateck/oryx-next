@@ -1895,6 +1895,48 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    getApiV1ProcurementInventoryMemo: build.query<
+      GetApiV1ProcurementInventoryMemoApiResponse,
+      GetApiV1ProcurementInventoryMemoApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/memo`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProcurementInventoryMemoById: build.query<
+      GetApiV1ProcurementInventoryMemoByIdApiResponse,
+      GetApiV1ProcurementInventoryMemoByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/memo/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProcurementInventoryMemoItemByIdMarkPaid: build.mutation<
+      PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiResponse,
+      PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/memo-item/${queryArg.id}/mark-paid`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProcurementInventoryMemoCodeGenerate: build.query<
       GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse,
       GetApiV1ProcurementInventoryMemoCodeGenerateApiArg
@@ -8109,7 +8151,7 @@ export type PostApiV1QaAnalyticalTestsApiArg = {
   createAnalyticalTestRequest: CreateAnalyticalTestRequest;
 };
 export type GetApiV1QaAnalyticalTestsApiResponse =
-  /** status 200 OK */ AnalyticalTestRequestDtoIEnumerablePaginateable;
+  /** status 200 OK */ AnalyticalTestRequestDtoIEnumerablePaginateableRead;
 export type GetApiV1QaAnalyticalTestsApiArg = {
   page?: number;
   pageSize?: number;
@@ -8121,7 +8163,7 @@ export type GetApiV1QaAnalyticalTestsApiArg = {
   subModule?: any;
 };
 export type GetApiV1QaAnalyticalTestsByIdApiResponse =
-  /** status 200 OK */ AnalyticalTestRequestDto;
+  /** status 200 OK */ AnalyticalTestRequestDtoRead;
 export type GetApiV1QaAnalyticalTestsByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -8130,7 +8172,7 @@ export type GetApiV1QaAnalyticalTestsByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1QaAnalyticalTestsByIdApiResponse =
-  /** status 204 No Content */ AnalyticalTestRequestDto;
+  /** status 204 No Content */ AnalyticalTestRequestDtoRead;
 export type PutApiV1QaAnalyticalTestsByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -8148,7 +8190,7 @@ export type DeleteApiV1QaAnalyticalTestsByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse =
-  /** status 200 OK */ AnalyticalTestRequestDto;
+  /** status 200 OK */ AnalyticalTestRequestDtoRead;
 export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg = {
   activityStepId: string;
   /** The module this request falls under */
@@ -9283,7 +9325,7 @@ export type PostApiV1ProcurementInventoryMemoOpenMarketApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   /** A list of ProcessMemo objects to be processed. */
-  body: ProcessMemo[];
+  body: CreateMemoItem[];
 };
 export type PostApiV1ProcurementInventoryMemoTrustedVendorApiResponse = unknown;
 export type PostApiV1ProcurementInventoryMemoTrustedVendorApiArg = {
@@ -9292,7 +9334,7 @@ export type PostApiV1ProcurementInventoryMemoTrustedVendorApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   /** A list of ProcessMemo objects to be processed. */
-  body: ProcessMemo[];
+  body: CreateMemoItem[];
 };
 export type PostApiV1ProcurementInventoryVendorByVendorIdSendQuotationApiResponse =
   unknown;
@@ -9376,6 +9418,40 @@ export type PostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorI
     /** The sub module this request falls under */
     subModule?: any;
   };
+export type GetApiV1ProcurementInventoryMemoApiResponse =
+  /** status 200 OK */ MemoDtoIEnumerablePaginateableRead;
+export type GetApiV1ProcurementInventoryMemoApiArg = {
+  /** The current page number. */
+  page?: number;
+  /** The number of items per page. */
+  pageSize?: number;
+  /** Optional search query to filter by memo code. */
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProcurementInventoryMemoByIdApiResponse =
+  /** status 200 OK */ MemoDtoRead;
+export type GetApiV1ProcurementInventoryMemoByIdApiArg = {
+  /** The ID of the memo. */
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiResponse =
+  unknown;
+export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg = {
+  /** The ID of the memo item. */
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse =
   /** status 200 OK */ string;
 export type GetApiV1ProcurementInventoryMemoCodeGenerateApiArg = {
@@ -12289,7 +12365,7 @@ export type PostApiV1ProductSamplingsApiArg = {
   createProductSamplingRequest: CreateProductSamplingRequest;
 };
 export type GetApiV1ProductSamplingsByIdApiResponse =
-  /** status 200 OK */ ProductSamplingDto;
+  /** status 200 OK */ ProductSamplingDtoRead;
 export type GetApiV1ProductSamplingsByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -13920,6 +13996,151 @@ export type CreateAnalyticalTestRequest = {
   filled?: string | null;
   stateId?: string;
   productionActivityStepId?: string | null;
+  numberOfContainers?: number;
+  sampledAt?: string | null;
+};
+export type UnitOfMeasureDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+  isScalable?: boolean;
+  isRawMaterial?: boolean;
+};
+export type EquipmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  machineId?: string | null;
+  isStorage?: boolean;
+  capacityQuantity?: number;
+  uoM?: UnitOfMeasureDto;
+  relevanceCheck?: boolean;
+  department?: CollectionItemDto;
+  storageLocation?: string | null;
+};
+export type WarehouseType = 0 | 1 | 2 | 3;
+export type WarehouseDto = {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  locations?: CollectionItemDto[] | null;
+};
+export type DepartmentDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+  parentDepartment?: CollectionItemDto;
+};
+export type DepartmentDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  name?: string | null;
+  type?: DepartmentType;
+  description?: string | null;
+  warehouses?: WarehouseDto[] | null;
+  isBeta?: boolean;
+  parentDepartment?: CollectionItemDto;
+};
+export type Division = 0 | 1;
+export type ProductListDto = {
+  id?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  genericName?: string | null;
+  storageCondition?: string | null;
+  packageStyle?: string | null;
+  filledWeight?: string | null;
+  shelfLife?: string | null;
+  actionUse?: string | null;
+  fdaRegistrationNumber?: string | null;
+  masterFormulaNumber?: string | null;
+  primaryPackDescription?: string | null;
+  secondaryPackDescription?: string | null;
+  tertiaryPackDescription?: string | null;
+  category?: CollectionItemDto;
+  baseQuantity?: number;
+  basePackingQuantity?: number;
+  fullBatchSize?: number;
+  baseUoM?: UnitOfMeasureDto;
+  basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
+  department?: DepartmentDto;
+  createdAt?: string;
+  price?: number;
+  division?: Division;
+  packPerShipper?: number;
+  labelClaim?: string | null;
+};
+export type ProductListDtoRead = {
+  id?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  genericName?: string | null;
+  storageCondition?: string | null;
+  packageStyle?: string | null;
+  filledWeight?: string | null;
+  shelfLife?: string | null;
+  actionUse?: string | null;
+  fdaRegistrationNumber?: string | null;
+  masterFormulaNumber?: string | null;
+  primaryPackDescription?: string | null;
+  secondaryPackDescription?: string | null;
+  tertiaryPackDescription?: string | null;
+  category?: CollectionItemDto;
+  baseQuantity?: number;
+  basePackingQuantity?: number;
+  fullBatchSize?: number;
+  baseUoM?: UnitOfMeasureDto;
+  basePackingUoM?: UnitOfMeasureDto;
+  equipment?: EquipmentDto;
+  department?: DepartmentDtoRead;
+  createdAt?: string;
+  price?: number;
+  division?: Division;
+  packPerShipper?: number;
+  labelClaim?: string | null;
+};
+export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type BatchManufacturingRecordDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: ProductListDto;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  sampledQuantity?: number;
+};
+export type BatchManufacturingRecordDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionSchedule?: CollectionItemDto;
+  product?: ProductListDtoRead;
+  batchNumber?: string | null;
+  manufacturingDate?: string | null;
+  expiryDate?: string | null;
+  batchQuantity?: number;
+  status?: BatchManufacturingStatus;
+  expectedQuantity?: number;
+  sampledQuantity?: number;
 };
 export type OperationAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type OperationDto = {
@@ -14003,7 +14224,7 @@ export type AnalyticalTestRequestDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  batchManufacturingRecord?: CollectionItemDto;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
   product?: CollectionItemDto;
   productionSchedule?: CollectionItemDto;
   productionActivityStep?: ProductionActivityStepDto;
@@ -14016,9 +14237,42 @@ export type AnalyticalTestRequestDto = {
   stage?: TestStage;
   state?: CollectionItemDto;
   status?: AnalyticalTestStatus;
+  numberOfContainers?: number;
+  sampledBy?: UserDto;
+  sampledAt?: string | null;
+};
+export type AnalyticalTestRequestDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  product?: CollectionItemDto;
+  productionSchedule?: CollectionItemDto;
+  productionActivityStep?: ProductionActivityStepDto;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  releasedAt?: string | null;
+  filled?: string | null;
+  releaseDate?: string;
+  sampledQuantity?: string | null;
+  stage?: TestStage;
+  state?: CollectionItemDto;
+  status?: AnalyticalTestStatus;
+  numberOfContainers?: number;
+  sampledBy?: UserDto;
+  sampledAt?: string | null;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
   data?: AnalyticalTestRequestDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type AnalyticalTestRequestDtoIEnumerablePaginateableRead = {
+  data?: AnalyticalTestRequestDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -14064,37 +14318,6 @@ export type Gender = 0 | 1;
 export type MaritalStatus = 0 | 1;
 export type Religion = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type EmployeeType = 0 | 1;
-export type WarehouseType = 0 | 1 | 2 | 3;
-export type WarehouseDto = {
-  id?: string;
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  locations?: CollectionItemDto[] | null;
-};
-export type DepartmentDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-  parentDepartment?: CollectionItemDto;
-};
-export type DepartmentDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  name?: string | null;
-  type?: DepartmentType;
-  description?: string | null;
-  warehouses?: WarehouseDto[] | null;
-  isBeta?: boolean;
-  parentDepartment?: CollectionItemDto;
-};
 export type DesignationDto = {
   id?: string;
   createdBy?: UserDto;
@@ -14397,16 +14620,6 @@ export type CreateItemRequest = {
   type?: string | null;
   isAvailable?: boolean;
   materialKind?: MaterialKind;
-};
-export type UnitOfMeasureDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-  isScalable?: boolean;
-  isRawMaterial?: boolean;
 };
 export type PackageStyleDto = {
   id?: string;
@@ -15020,11 +15233,6 @@ export type CreateMemoItem = {
   uoMId?: string;
   quantity?: number;
 };
-export type ProcessMemo = {
-  vendorId?: string;
-  sourceInventoryRequisitionId?: string;
-  items?: CreateMemoItem[] | null;
-};
 export type CurrencyDto = {
   id?: string;
   createdBy?: UserDto;
@@ -15111,6 +15319,70 @@ export type CreateMarketRequisitionVendor = {
   termsOfPaymentId?: string;
   deliveryMode?: string | null;
   estimatedDeliveryDate?: string;
+};
+export type MemoItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  memo?: CollectionItemDto;
+  vendor?: CollectionItemDto;
+  item?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type MemoItemDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  memo?: CollectionItemDto;
+  vendor?: CollectionItemDto;
+  item?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  itemValue?: number;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type MemoDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  paid?: boolean;
+  items?: MemoItemDto[] | null;
+};
+export type MemoDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  paid?: boolean;
+  items?: MemoItemDtoRead[] | null;
+  totalValue?: number;
+};
+export type MemoDtoIEnumerablePaginateable = {
+  data?: MemoDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type MemoDtoIEnumerablePaginateableRead = {
+  data?: MemoDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
 };
 export type CreateItemsRequest = {
   name: string;
@@ -16524,7 +16796,6 @@ export type CreateFinishedProductRequest = {
   dosageForm?: string | null;
   strength?: string | null;
 };
-export type Division = 0 | 1;
 export type CreateProductRequest = {
   code?: string | null;
   name?: string | null;
@@ -16552,79 +16823,6 @@ export type CreateProductRequest = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
-};
-export type EquipmentDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  machineId?: string | null;
-  isStorage?: boolean;
-  capacityQuantity?: number;
-  uoM?: UnitOfMeasureDto;
-  relevanceCheck?: boolean;
-  department?: CollectionItemDto;
-  storageLocation?: string | null;
-};
-export type ProductListDto = {
-  id?: string;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  genericName?: string | null;
-  storageCondition?: string | null;
-  packageStyle?: string | null;
-  filledWeight?: string | null;
-  shelfLife?: string | null;
-  actionUse?: string | null;
-  fdaRegistrationNumber?: string | null;
-  masterFormulaNumber?: string | null;
-  primaryPackDescription?: string | null;
-  secondaryPackDescription?: string | null;
-  tertiaryPackDescription?: string | null;
-  category?: CollectionItemDto;
-  baseQuantity?: number;
-  basePackingQuantity?: number;
-  fullBatchSize?: number;
-  baseUoM?: UnitOfMeasureDto;
-  basePackingUoM?: UnitOfMeasureDto;
-  equipment?: EquipmentDto;
-  department?: DepartmentDto;
-  createdAt?: string;
-  price?: number;
-  division?: Division;
-  packPerShipper?: number;
-  labelClaim?: string | null;
-};
-export type ProductListDtoRead = {
-  id?: string;
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  genericName?: string | null;
-  storageCondition?: string | null;
-  packageStyle?: string | null;
-  filledWeight?: string | null;
-  shelfLife?: string | null;
-  actionUse?: string | null;
-  fdaRegistrationNumber?: string | null;
-  masterFormulaNumber?: string | null;
-  primaryPackDescription?: string | null;
-  secondaryPackDescription?: string | null;
-  tertiaryPackDescription?: string | null;
-  category?: CollectionItemDto;
-  baseQuantity?: number;
-  basePackingQuantity?: number;
-  fullBatchSize?: number;
-  baseUoM?: UnitOfMeasureDto;
-  basePackingUoM?: UnitOfMeasureDto;
-  equipment?: EquipmentDto;
-  department?: DepartmentDtoRead;
-  createdAt?: string;
-  price?: number;
-  division?: Division;
-  packPerShipper?: number;
-  labelClaim?: string | null;
 };
 export type ProductListDtoIEnumerablePaginateable = {
   data?: ProductListDto[] | null;
@@ -17157,34 +17355,6 @@ export type CreateBatchManufacturingRecord = {
   expiryDate?: string | null;
   batchQuantity?: number;
 };
-export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
-export type BatchManufacturingRecordDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: ProductListDto;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  status?: BatchManufacturingStatus;
-  sampledQuantity?: number;
-};
-export type BatchManufacturingRecordDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: ProductListDtoRead;
-  batchNumber?: string | null;
-  manufacturingDate?: string | null;
-  expiryDate?: string | null;
-  batchQuantity?: number;
-  status?: BatchManufacturingStatus;
-  expectedQuantity?: number;
-  sampledQuantity?: number;
-};
 export type BatchManufacturingRecordDtoIEnumerablePaginateable = {
   data?: BatchManufacturingRecordDto[] | null;
   pageIndex?: number;
@@ -17654,6 +17824,16 @@ export type ProductSamplingDto = {
   containersSampled?: number;
   sampleDate?: string;
   analyticalTestRequest?: AnalyticalTestRequestDto;
+};
+export type ProductSamplingDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  analyticalTestRequestId?: string;
+  sampleQuantity?: number;
+  containersSampled?: number;
+  sampleDate?: string;
+  analyticalTestRequest?: AnalyticalTestRequestDtoRead;
 };
 export type CreateProductSpecificationRequest = {
   specificationNumber: string;
@@ -19087,6 +19267,11 @@ export const {
   useLazyGetApiV1ProcurementInventoryMarketVendorsQuery,
   usePostApiV1ProcurementInventoryMarketVendorsMutation,
   usePostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirmMutation,
+  useGetApiV1ProcurementInventoryMemoQuery,
+  useLazyGetApiV1ProcurementInventoryMemoQuery,
+  useGetApiV1ProcurementInventoryMemoByIdQuery,
+  useLazyGetApiV1ProcurementInventoryMemoByIdQuery,
+  usePostApiV1ProcurementInventoryMemoItemByIdMarkPaidMutation,
   useGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   useLazyGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   usePostApiV1ItemsMutation,

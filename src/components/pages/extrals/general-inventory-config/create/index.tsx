@@ -73,6 +73,7 @@ export function CreateInventoryItem() {
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
     };
+    console.log(payload);
     try {
       const res = await createItem({
         createItemsRequest: payload,
