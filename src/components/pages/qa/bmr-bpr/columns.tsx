@@ -67,7 +67,9 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batchManufacturingRecord?.code}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batchManufacturingRecord?.batchNumber}</div>
+    ),
   },
   {
     accessorKey: "manufacturingDate",

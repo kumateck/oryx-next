@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/reprots/qc-qa-reports/material-list-reports/index";
+export { default } from "@/components/pages/reports/qc-qa-reports/material-list-reports/index";
