@@ -40,6 +40,7 @@ export function DataTableRowActions<
         name="Pencil"
         className="h-5 w-5 cursor-pointer text-neutral-700"
         onClick={() => {
+          console.log("origin data from", row.original.form?.name);
           setDetails(row.original);
           setIsEdit(true);
         }}

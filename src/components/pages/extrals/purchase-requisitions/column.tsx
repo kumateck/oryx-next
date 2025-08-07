@@ -17,12 +17,12 @@ import {
   ErrorResponse,
   // PermissionKeys,
   SupplierStatus,
-  SupplierType,
   SupplierTypeOptions,
   isErrorResponse,
   routes,
 } from "@/lib";
 import {
+  InventoryPurchaseRequisitionDto,
   MaterialDto,
   SupplierDto,
   useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
@@ -30,6 +30,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
+import { format } from "date-fns";
 // import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
@@ -110,9 +111,9 @@ export function DataTableRowActions<TData extends SupplierDto>({
     </div>
   );
 }
-export function DataTableRowStatus<TData extends SupplierDto>({
-  row,
-}: DataTableRowActionsProps<TData>) {
+export function DataTableRowStatus<
+  TData extends InventoryPurchaseRequisitionDto,
+>({ row }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
   const [updateMutation] =
     usePutApiV1ProcurementSupplierBySupplierIdStatusMutation();
@@ -186,10 +187,10 @@ export function DataTableRowStatus<TData extends SupplierDto>({
     </div>
   );
 }
-export const columns: ColumnDef<SupplierDto>[] = [
+export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   {
     accessorKey: "code",
-    header: "Requsition Id",
+    header: "Requisition Id",
 
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
@@ -203,10 +204,9 @@ export const columns: ColumnDef<SupplierDto>[] = [
     header: "Expected Delivery Date",
     cell: ({ row }) => (
       <div>
-        {" "}
-        {row.original.type !== undefined
-          ? SupplierType[row.original.type]
-          : "Unknown"}
+        {row.original.expectedDeliveryDate
+          ? format(new Date(row.original.expectedDeliveryDate), "dd/MM/yyyy")
+          : "N/A"}
       </div>
     ),
   },

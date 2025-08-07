@@ -10,17 +10,29 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, Option } from "@/lib";
-import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
+import { cn, ErrorResponse, isErrorResponse, Option } from "@/lib";
+import {
+  useLazyGetApiV1ItemsQuery,
+  usePostApiV1ProcurementInventoryMutation,
+} from "@/lib/redux/api/openapi.generated";
 
-import { CreateVendorValidator, VendorRequestDto } from "./types";
+import {
+  CreatePurchaseRequisitionDto,
+  CreatePurchaseRequisitionValidator,
+} from "./types";
 import PurchaseRequisitionForm from "./form";
+import { toast } from "sonner";
+import { useDispatch } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
 
-interface VendorFormProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-const Create = ({ isOpen, onClose }: VendorFormProps) => {
+const Create = ({ isOpen, onClose }: Props) => {
+  const [createPurchaseRequisition, { isLoading: creating }] =
+    usePostApiV1ProcurementInventoryMutation();
+  const dispatch = useDispatch();
   const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
 
   const {
@@ -28,8 +40,8 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<VendorRequestDto>({
-    resolver: CreateVendorValidator,
+  } = useForm<CreatePurchaseRequisitionDto>({
+    resolver: CreatePurchaseRequisitionValidator,
     mode: "all",
   });
 
@@ -54,8 +66,27 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     return response;
   };
 
-  const onSubmit = async (data: VendorRequestDto) => {
-    console.log(data, "Venders form data");
+  const onSubmit = async (data: CreatePurchaseRequisitionDto) => {
+    try {
+      await createPurchaseRequisition({
+        createInventoryPurchaseRequisition: {
+          code: data.code,
+          expectedDeliveryDate: data.deliveryDate?.toISOString(),
+          remarks: data.remarks,
+          items: data.items.map((item) => ({
+            itemId: item.itemId.value,
+            quantity: item.orderQuantity,
+            // uoMId: item.uoMId,
+          })),
+        },
+      }).unwrap();
+      dispatch(commonActions.setTriggerReload());
+      toast.success("Purchase requisition created successfully.");
+      onClose();
+    } catch (error) {
+      console.log("Error creating purchase requisition:", error);
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
   };
 
   return (
@@ -81,14 +112,14 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
                 Cancel
               </Button>
               <Button
-                // disabled={isLoading}
+                disabled={creating}
                 type="submit"
                 className="flex items-center gap-2"
               >
                 <Icon
-                  name={!true ? "LoaderCircle" : "Plus"}
+                  name={creating ? "LoaderCircle" : "Plus"}
                   className={cn("h-4 w-4", {
-                    "animate-spin": !true,
+                    "animate-spin": creating,
                   })}
                 />
                 <span>Save</span>

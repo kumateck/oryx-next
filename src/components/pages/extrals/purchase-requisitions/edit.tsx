@@ -11,18 +11,32 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, Option } from "@/lib";
-import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
+import { cn, ErrorResponse, isErrorResponse, Option } from "@/lib";
+import {
+  InventoryPurchaseRequisitionDto,
+  useLazyGetApiV1ItemsQuery,
+  usePutApiV1ProcurementInventoryByIdMutation,
+} from "@/lib/redux/api/openapi.generated";
 
-import { CreateVendorValidator, VendorRequestDto } from "./types";
+import {
+  CreatePurchaseRequisitionDto,
+  CreatePurchaseRequisitionValidator,
+} from "./types";
 import PurchaseRequisitionForm from "./form";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
-interface VendorFormProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
+  details: InventoryPurchaseRequisitionDto;
 }
 
-const Edit = ({ isOpen, onClose }: VendorFormProps) => {
+const Edit = ({ isOpen, onClose, details }: Props) => {
+  const [updatePurchaseRequisition, { isLoading: updating }] =
+    usePutApiV1ProcurementInventoryByIdMutation();
+  const dispatch = useDispatch();
   const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
   const {
     register,
@@ -30,9 +44,18 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<VendorRequestDto>({
-    resolver: CreateVendorValidator,
+  } = useForm<CreatePurchaseRequisitionDto>({
+    resolver: CreatePurchaseRequisitionValidator,
     mode: "all",
+    defaultValues: {
+      code: details.code as string,
+      deliveryDate: new Date(details.expectedDeliveryDate ?? ""),
+      remarks: details.remarks ?? "",
+      items: details?.items?.map((item) => ({
+        itemId: { label: item.item?.name ?? "", value: item.item?.id ?? "" },
+        orderQuantity: item.quantity,
+      })),
+    },
   });
 
   const { append, fields, remove } = useFieldArray({
@@ -56,7 +79,27 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
     return response;
   };
 
-  const onSubmit = async (data: VendorRequestDto) => {
+  const onSubmit = async (data: CreatePurchaseRequisitionDto) => {
+    try {
+      await updatePurchaseRequisition({
+        id: details.id as string,
+        createInventoryPurchaseRequisition: {
+          code: data.code,
+          expectedDeliveryDate: data.deliveryDate.toTimeString(),
+          remarks: data.remarks,
+          items: data.items.map((item) => ({
+            itemId: item.itemId.value,
+            quantity: item.orderQuantity,
+          })),
+        },
+      });
+      dispatch(commonActions.setTriggerReload());
+      toast.success("Purchase requisition updated successfully.");
+      reset();
+      onClose();
+    } catch (error) {
+      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
     console.log(data, "Venders form data");
     reset();
     onClose();
@@ -84,14 +127,14 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
               Cancel
             </Button>
             <Button
-              // disabled={isLoading}
+              disabled={updating}
               type="submit"
               className="flex items-center gap-2"
             >
               <Icon
-                name={!false ? "LoaderCircle" : "Plus"}
+                name={updating ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": !true,
+                  "animate-spin": updating,
                 })}
               />
               <span>Save</span>

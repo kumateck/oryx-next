@@ -120,14 +120,15 @@ export const columns: ColumnDef<ShiftTypeDto>[] = [
       </div>
     ),
   },
-  // This is a placeholder for the actual logic to get start and end time
   {
     accessorKey: "startTime",
     header: "Start & End Time",
     cell: ({ row }) => {
-      <div>
-        {row.original.endTime} @- {row.original.startTime}
-      </div>;
+      return (
+        <div>
+          {row.original.startTime} - {row.original.endTime}
+        </div>
+      );
     },
   },
   {

@@ -119,7 +119,7 @@ function Page() {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader>Documets</CardHeader>
+        <CardHeader>Documents</CardHeader>
       </Card>
     </ScrollablePageWrapper>
   );

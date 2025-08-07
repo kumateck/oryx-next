@@ -42,12 +42,6 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
-  const defaultFormId = {
-    value: details?.form?.id as string,
-    label: details?.form?.name as string,
-  };
-  console.log(details);
-
   const defaultStpId = {
     value: details?.materialStandardTestProcedure?.id as string,
     label: details?.materialStandardTestProcedure?.stpNumber as string,
@@ -65,7 +59,6 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     defaultValues: {
       description: details.description as string,
       stpId: defaultStpId,
-      formId: defaultFormId,
       specNumber: details.specNumber as string,
     },
   });
@@ -99,15 +92,14 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
           details.materialStandardTestProcedure?.stpNumber ||
           "",
       };
-      const defaultFormId = {
-        value: materialStpData?.form?.id || "",
-        label: materialStpData?.form?.name || "",
-      };
 
       reset({
         description: details.description || "",
         stpId: defaultStpId,
-        formId: defaultFormId,
+        formId: {
+          value: details.form?.id || "",
+          label: details.form?.name || "",
+        },
         specNumber: details.specNumber || "",
       });
     }

@@ -70,6 +70,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       startDate: new Date(details.startDate as string),
       endDate: new Date(details.endDate as string),
       justification: details.justification as string,
+      contactPerson: details.contactPerson as string,
+      contactPersonNumber: details.contactPersonNumber as string,
     },
   });
 

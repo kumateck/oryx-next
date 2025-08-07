@@ -201,6 +201,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    putApiV1QaAnalyticalTestsStatusById: build.mutation<
+      PutApiV1QaAnalyticalTestsStatusByIdApiResponse,
+      PutApiV1QaAnalyticalTestsStatusByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/qa/analytical-tests/status/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.updateAnalyticalTestRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1QaAnalyticalTestsActivityStepByActivityStepId: build.query<
       GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse,
       GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg
@@ -8189,6 +8203,16 @@ export type DeleteApiV1QaAnalyticalTestsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PutApiV1QaAnalyticalTestsStatusByIdApiResponse =
+  /** status 204 No Content */ AnalyticalTestRequestDtoRead;
+export type PutApiV1QaAnalyticalTestsStatusByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  updateAnalyticalTestRequest: UpdateAnalyticalTestRequest;
+};
 export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse =
   /** status 200 OK */ AnalyticalTestRequestDtoRead;
 export type GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg = {
@@ -13990,7 +14014,7 @@ export type CreateAnalyticalTestRequest = {
   manufacturingDate?: string;
   expiryDate?: string;
   releasedAt?: string | null;
-  releaseDate?: string;
+  releaseDate?: string | null;
   stage?: TestStage;
   status?: AnalyticalTestStatus;
   filled?: string | null;
@@ -14239,6 +14263,7 @@ export type AnalyticalTestRequestDto = {
   status?: AnalyticalTestStatus;
   numberOfContainers?: number;
   sampledBy?: UserDto;
+  releasedBy?: UserDto;
   sampledAt?: string | null;
 };
 export type AnalyticalTestRequestDtoRead = {
@@ -14260,6 +14285,7 @@ export type AnalyticalTestRequestDtoRead = {
   status?: AnalyticalTestStatus;
   numberOfContainers?: number;
   sampledBy?: UserDto;
+  releasedBy?: UserDto;
   sampledAt?: string | null;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
@@ -14279,6 +14305,13 @@ export type AnalyticalTestRequestDtoIEnumerablePaginateableRead = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type UpdateAnalyticalTestRequest = {
+  status?: AnalyticalTestStatus;
+  numberOfContainers?: number;
+  sampledQuantity?: string | null;
+  releaseDate?: string | null;
+  sampledAt?: string | null;
 };
 export type CreateApprovalStageRequest = {
   userId?: string | null;
@@ -15253,7 +15286,7 @@ export type VendorDto = {
   country?: CountryDto;
   currencyId?: string;
   currency?: CurrencyDto;
-  item?: ItemDto[] | null;
+  items?: ItemDto[] | null;
 };
 export type SourceInventoryRequisitionItemDto = {
   id?: string;
@@ -19092,6 +19125,7 @@ export const {
   useLazyGetApiV1QaAnalyticalTestsByIdQuery,
   usePutApiV1QaAnalyticalTestsByIdMutation,
   useDeleteApiV1QaAnalyticalTestsByIdMutation,
+  usePutApiV1QaAnalyticalTestsStatusByIdMutation,
   useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
   useLazyGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
   usePostApiV1ApprovalMutation,

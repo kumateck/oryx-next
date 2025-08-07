@@ -13,7 +13,7 @@ import {
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
 import { Button, FetchOptionsResult, Icon } from "@/components/ui";
-import { VendorRequestDto } from "./types";
+import { CreatePurchaseRequisitionDto } from "./types";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -21,8 +21,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   fetcItems: (search: string, page: number) => Promise<FetchOptionsResult>;
   isLoading: boolean;
-  append: UseFieldArrayAppend<VendorRequestDto>;
-  fields: FieldArrayWithId<VendorRequestDto[]>[];
+  append: UseFieldArrayAppend<CreatePurchaseRequisitionDto>;
+  fields: FieldArrayWithId<CreatePurchaseRequisitionDto[]>[];
   remove: UseFieldArrayRemove;
 }
 const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
@@ -70,14 +70,11 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
         fieldWrapperClassName="flex-grow"
         config={[
           {
-            control: control as Control,
-            name: "justification",
-            label: "Justification",
+            register: register("remarks" as Path<TFieldValues>),
+            label: "Remarks",
             className: "h-20",
-            suggestions: [],
-            placeholder: "Enter justification",
-            type: InputTypes.RICHTEXT,
-            required: true,
+            placeholder: "Enter remarks",
+            type: InputTypes.TEXTAREA,
             errors,
           },
         ]}
@@ -130,7 +127,6 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
                     label: "Item Code",
                     readOnly: true,
                     type: InputTypes.TEXT,
-                    required: true,
                     errors,
                   },
                 ]}
@@ -140,11 +136,13 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
                   {
                     register: register(
                       `items.${id}.stockQuantity` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
                     ),
                     label: "Stock Quantity",
                     readOnly: true,
                     type: InputTypes.NUMBER,
-                    required: true,
                     errors,
                   },
                 ]}
@@ -154,6 +152,9 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
                   {
                     register: register(
                       `items.${id}.orderQuantity` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
                     ),
                     label: "Order Quantity",
                     type: InputTypes.NUMBER,
