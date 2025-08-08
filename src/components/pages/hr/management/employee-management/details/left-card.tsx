@@ -1,12 +1,15 @@
 import { Card, CardContent, CardHeader, Separator } from "@/components/ui";
 import {
+  EmployeeActiveStatus,
+  EmployeeInactiveStatus,
   EmployeeStatusType,
   EmployeeType,
   Gender,
   MaritalStatus,
   Religions,
+  splitWords,
 } from "@/lib";
-import { EmployeeDto, EmployeeStatus } from "@/lib/redux/api/openapi.generated";
+import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import React from "react";
 
@@ -49,7 +52,25 @@ function LeftCard({ data }: Props) {
             </div>
             <div className="text-center sm:text-left">
               <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-3xl">
-                {EmployeeStatusType[data?.status as EmployeeStatus]}
+                {/* {EmployeeStatusType[data?.status as EmployeeStatus]} */}
+                {data?.status === EmployeeStatusType.Active
+                  ? data?.activeStatus !== null
+                    ? splitWords(
+                        EmployeeActiveStatus[
+                          data?.activeStatus as EmployeeActiveStatus
+                        ],
+                      )
+                    : EmployeeStatusType[data?.status as EmployeeStatusType]
+                  : ""}
+                {data?.status === EmployeeStatusType.Inactive
+                  ? data?.inactiveStatus !== null
+                    ? splitWords(
+                        EmployeeInactiveStatus[
+                          data?.inactiveStatus as EmployeeInactiveStatus
+                        ],
+                      )
+                    : EmployeeStatusType[data?.status as EmployeeStatusType]
+                  : ""}
               </span>
               <h2 className="font-bold text-xl">
                 {data?.firstName} {data?.lastName}

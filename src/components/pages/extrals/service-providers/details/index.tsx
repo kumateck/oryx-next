@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { ClientDatatable } from "@/shared/datatable";
 import { columns } from "./columns";
+import ServiceProviderDetailsSkeleton from "./loadingSkeleton";
 
 function Page() {
   const [openEdit, setOpenEdit] = useState(false);
@@ -45,7 +46,9 @@ function Page() {
   }, [id, triggerReload]);
 
   //TODO: Handle loading state and error handling
-  console.log("Service Details:", data, isLoading);
+  if (!isLoading) {
+    return <ServiceProviderDetailsSkeleton />;
+  }
   if (!data) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -69,7 +72,7 @@ function Page() {
             className="h-5 w-5 cursor-pointer"
             onClick={() => router.back()}
           />
-          <PageTitle title="Service Details" />
+          <PageTitle title="Service Provider Details" />
         </div>
         <Button
           onClick={() => setOpenEdit(true)}
@@ -157,6 +160,7 @@ function Page() {
             data={data.services || []}
             columns={columns}
             isLoading={isLoading}
+            normalTable={true}
           />
         </CardContent>
       </Card>

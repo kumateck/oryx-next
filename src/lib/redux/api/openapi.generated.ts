@@ -2030,6 +2030,76 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1ItemsStockRequisitions: build.mutation<
+      PostApiV1ItemsStockRequisitionsApiResponse,
+      PostApiV1ItemsStockRequisitionsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/stock-requisitions`,
+        method: "POST",
+        body: queryArg.createItemStockRequisitionRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ItemsStockRequisitions: build.query<
+      GetApiV1ItemsStockRequisitionsApiResponse,
+      GetApiV1ItemsStockRequisitionsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/stock-requisitions`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    deleteApiV1ItemsStockRequisitions: build.mutation<
+      DeleteApiV1ItemsStockRequisitionsApiResponse,
+      DeleteApiV1ItemsStockRequisitionsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/stock-requisitions`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ItemsStockRequisitionsById: build.query<
+      GetApiV1ItemsStockRequisitionsByIdApiResponse,
+      GetApiV1ItemsStockRequisitionsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ItemsStockRequisitionsById: build.mutation<
+      PutApiV1ItemsStockRequisitionsByIdApiResponse,
+      PutApiV1ItemsStockRequisitionsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.createItemStockRequisitionRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1LeaveEntitlement: build.mutation<
       PostApiV1LeaveEntitlementApiResponse,
       PostApiV1LeaveEntitlementApiArg
@@ -9528,6 +9598,53 @@ export type PutApiV1ItemsByIdApiArg = {
   subModule?: any;
   createItemsRequest: CreateItemsRequest;
 };
+export type PostApiV1ItemsStockRequisitionsApiResponse =
+  /** status 200 OK */ string;
+export type PostApiV1ItemsStockRequisitionsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createItemStockRequisitionRequest: CreateItemStockRequisitionRequest;
+};
+export type GetApiV1ItemsStockRequisitionsApiResponse =
+  /** status 200 OK */ ItemStockRequisitionDtoIEnumerablePaginateableRead;
+export type GetApiV1ItemsStockRequisitionsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type DeleteApiV1ItemsStockRequisitionsApiResponse = unknown;
+export type DeleteApiV1ItemsStockRequisitionsApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ItemsStockRequisitionsByIdApiResponse =
+  /** status 200 OK */ ItemDto;
+export type GetApiV1ItemsStockRequisitionsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1ItemsStockRequisitionsByIdApiResponse =
+  /** status 204 No Content */ ItemDto;
+export type PutApiV1ItemsStockRequisitionsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createItemStockRequisitionRequest: CreateItemStockRequisitionRequest;
+};
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
   /** The module this request falls under */
@@ -15274,6 +15391,15 @@ export type CurrencyDto = {
   symbol?: string | null;
   description?: string | null;
 };
+export type VendorItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  code?: string | null;
+  description?: string | null;
+  items?: ItemDto[] | null;
+};
 export type VendorDto = {
   id?: string;
   createdBy?: UserDto;
@@ -15286,7 +15412,7 @@ export type VendorDto = {
   country?: CountryDto;
   currencyId?: string;
   currency?: CurrencyDto;
-  items?: ItemDto[] | null;
+  items?: VendorItemDto[] | null;
 };
 export type SourceInventoryRequisitionItemDto = {
   id?: string;
@@ -15428,10 +15554,66 @@ export type CreateItemsRequest = {
   reorderLevel?: number;
   store: Store;
   isActive: boolean;
+  category?: string | null;
   description?: string | null;
 };
 export type ItemDtoIEnumerablePaginateable = {
   data?: ItemDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateItemStockRequisitionRequest = {
+  requisitionNo?: string | null;
+  requisitionDate: string;
+  requestedById: string;
+  departmentId: string;
+  justification?: string | null;
+  itemIds: string[];
+};
+export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type ItemStockRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  requisitionDate?: string;
+  requestedById?: string;
+  requestedBy?: UserDto;
+  departmentId?: string;
+  department?: DepartmentDto;
+  justification?: string | null;
+  items?: ItemDto[] | null;
+  status?: LeaveStatus;
+};
+export type ItemStockRequisitionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  requisitionDate?: string;
+  requestedById?: string;
+  requestedBy?: UserDto;
+  departmentId?: string;
+  department?: DepartmentDtoRead;
+  justification?: string | null;
+  items?: ItemDto[] | null;
+  status?: LeaveStatus;
+};
+export type ItemStockRequisitionDtoIEnumerablePaginateable = {
+  data?: ItemStockRequisitionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ItemStockRequisitionDtoIEnumerablePaginateableRead = {
+  data?: ItemStockRequisitionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -15485,7 +15667,6 @@ export type LeaveTypeDtoRead = {
   isActive?: boolean;
   designations?: DesignationDtoRead[] | null;
 };
-export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type LeaveRequestDto = {
   id?: string;
   createdBy?: UserDto;
@@ -19315,6 +19496,13 @@ export const {
   useGetApiV1ItemsByIdQuery,
   useLazyGetApiV1ItemsByIdQuery,
   usePutApiV1ItemsByIdMutation,
+  usePostApiV1ItemsStockRequisitionsMutation,
+  useGetApiV1ItemsStockRequisitionsQuery,
+  useLazyGetApiV1ItemsStockRequisitionsQuery,
+  useDeleteApiV1ItemsStockRequisitionsMutation,
+  useGetApiV1ItemsStockRequisitionsByIdQuery,
+  useLazyGetApiV1ItemsStockRequisitionsByIdQuery,
+  usePutApiV1ItemsStockRequisitionsByIdMutation,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,

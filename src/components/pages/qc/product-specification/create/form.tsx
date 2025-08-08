@@ -48,9 +48,9 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 errors,
               },
               {
-                label: "SPC Number",
+                label: "SPEC Number",
                 type: InputTypes.TEXT,
-                placeholder: "SPC Number",
+                placeholder: "SPEC Number",
                 register: register("specificationNumber" as Path<TFieldValues>),
                 required: true,
                 errors,

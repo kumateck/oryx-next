@@ -80,14 +80,16 @@ export function Edit({ isOpen, onClose, details }: Props) {
         subModule: AuditModules.extral.service,
         createServiceRequest: payload,
       }).unwrap();
+      console.log(serviceId);
 
       toast.success("Service updated successfully");
       dispatch(commonActions.setTriggerReload());
       onClose();
       reset();
       // If attachments are provided, upload them
-      if (serviceId && data.attachments) {
+      if (data.attachments) {
         const formData = new FormData();
+        console.log("uploading editted attachments:", data.attachments);
         const attachmentsArray = Array.isArray(data.attachments)
           ? data.attachments
           : Array.from(data.attachments); // Convert FileList to an array
@@ -97,7 +99,7 @@ export function Edit({ isOpen, onClose, details }: Props) {
 
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.Service,
-          modelId: (serviceId as ServiceDto).id as string,
+          modelId: details.id as string,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
