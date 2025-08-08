@@ -17,6 +17,7 @@ import {
   useLazyGetApiV1ProcurementInventoryByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import Edit from "../edit";
+import { format } from "date-fns";
 
 function Index() {
   const [isEdit, setIsEdit] = useState(false);
@@ -62,7 +63,9 @@ function Index() {
               <span className="text-xs bg-opacity-45 font-medium px-2 py-1 bg-gray-400 text-white w-fit rounded-full">
                 Pending
               </span>
-              <CardTitle className="font-bold text-gray-900">{id}</CardTitle>
+              <CardTitle className="font-bold text-gray-900">
+                {data?.code}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-3 grid-cols-1 w-full">
@@ -70,23 +73,38 @@ function Index() {
                   <span className="text-gray-500 whitespace-nowrap">
                     Requisition Date:
                   </span>
-                  <span className="text-gray-800">12 December, 2024</span>
+                  <span className="text-gray-800">
+                    {data?.createdAt
+                      ? format(new Date(data.createdAt), "MMMM dd, yyyy")
+                      : "N/A"}
+                  </span>
                 </div>
                 <div className="flex gap-2 text-lg">
                   <span className="text-gray-500 whitespace-nowrap">
                     Expected Delivery Date:
                   </span>
-                  <span className="text-gray-800">12 December, 2024</span>
+                  <span className="text-gray-800">
+                    {data?.expectedDeliveryDate
+                      ? format(
+                          new Date(data.expectedDeliveryDate),
+                          "MMMM dd, yyyy",
+                        )
+                      : "N/A"}
+                  </span>
                 </div>
                 <div className="flex gap-2 text-lg">
                   <span className="text-gray-500 whitespace-nowrap">
                     Total Order Item(s):
                   </span>
-                  <span className="text-gray-800">30</span>
+                  <span className="text-gray-800">
+                    {data?.items?.length || 0}
+                  </span>
                 </div>
                 <div className="flex gap-2 text-lg">
                   <span className="text-gray-500">Remarks:</span>
-                  <span className="text-gray-800">Low stock level</span>
+                  <span className="text-gray-800">
+                    {data?.remarks || "N/A"}
+                  </span>
                 </div>
               </div>
             </CardContent>

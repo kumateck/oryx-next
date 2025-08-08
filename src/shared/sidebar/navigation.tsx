@@ -535,6 +535,16 @@ export const ROUTES: Route[] = [
             icon: "BaggageClaim",
           },
           {
+            title: "Damage Items Management",
+            url: "/extrals/damage-items-management",
+            icon: "BadgeInfo",
+          },
+          {
+            title: "Missing Items Management",
+            url: "/extrals/missing-items-management",
+            icon: "BadgeInfo",
+          },
+          {
             title: "Vendors",
             url: "/extrals/vendors",
             icon: "SmilePlus",

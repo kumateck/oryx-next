@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-// import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
-// import { commonActions } from "@/lib/redux/slices/common";
-// import { useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -13,35 +10,37 @@ import { PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useRouter } from "next/navigation";
-// import { useDebounce } from "@uidotdev/usehooks";
 import Create from "./create";
 import { Button, Icon } from "@/components/ui";
+import { useLazyGetApiV1ProcurementInventoryMarketVendorsQuery } from "@/lib/redux/api/openapi.generated";
+import { useSelector } from "@/lib/redux/store";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 const Page = () => {
   const router = useRouter();
+  const [loadVenders, { data: vendersData, isLoading }] =
+    useLazyGetApiV1ProcurementInventoryMarketVendorsQuery({});
   const [isOpen, setIsOpen] = useState(false);
-  // const dispatch = useDispatch();
-  // const triggerReload = useSelector((state) => state.common.triggerReload);
-  // const searchValue = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  // const debouncedValue = useDebounce(searchValue, 500);
-
-  // useEffect(() => {
-  //   loadData({
-  //     page,
-  //     pageSize,
-  //     searchQuery: debouncedValue,
-  //   } as GetApiV1ProcurementSupplierApiArg);
-
-  //   if (triggerReload) {
-  //     dispatch(commonActions.unSetTriggerReload());
-  //   }
-
-  // }, [page, pageSize, triggerReload, debouncedValue]);
-
-  const data = [];
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchValue, 500);
+  useEffect(() => {
+    loadVenders({
+      page,
+      pageSize,
+    });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize, debouncedValue, triggerReload]);
+  const data = vendersData?.data || [];
   const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
   const hasAccess = hasPermissionAccess(
@@ -52,8 +51,6 @@ const Page = () => {
     //redirect to no access
     return <NoAccess />;
   }
-
-  console.log(page);
 
   return (
     <div>
@@ -85,7 +82,7 @@ const Page = () => {
         <ServerDatatable
           data={data}
           columns={columns}
-          isLoading={false}
+          isLoading={isLoading}
           setPage={setPage}
           setPageSize={setPageSize}
           meta={{

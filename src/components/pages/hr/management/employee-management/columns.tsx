@@ -225,31 +225,65 @@ export function StatusActions<TData extends EmployeeDto>({
           </span>
         </div>
       </DropdownMenuTrigger>
-      {row.original.status === EmployeeStatusType.Active ? (
-        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-          {activeStatusOptions.map((option) => {
-            return (
+      <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+        {row.original.status === EmployeeStatusType.Active
+          ? activeStatusOptions.map((option) => {
+              return (
+                <DropdownMenuItem
+                  key={option.value}
+                  className="group w-full cursor-pointer"
+                  disabled={
+                    isLoading ||
+                    String(row?.original?.activeStatus) === option.value
+                  }
+                  onClick={async () => {
+                    if (
+                      isLoading ||
+                      String(row?.original?.activeStatus) === option.value
+                    ) {
+                      return;
+                    }
+                    try {
+                      await updateStatus({
+                        id: row.original.id as string,
+                        updateEmployeeStatus: {
+                          activeStatus: Number(
+                            option.value,
+                          ) as unknown as EmployeeActiveStatus,
+                        },
+                      }).unwrap();
+                      toast.success("Status updated successfully");
+                      dispatch(commonActions.setTriggerReload());
+                    } catch (error) {
+                      console.error("Failed to update status:", error);
+                      toast.error(
+                        isErrorResponse(error as ErrorResponse)?.description,
+                      );
+                    }
+                  }}
+                >
+                  <span>{option.label}</span>
+                </DropdownMenuItem>
+              );
+            })
+          : inactiveStatusOptions.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                className="group w-full cursor-pointer"
-                disabled={
-                  isLoading ||
-                  String(row?.original?.activeStatus) === option.value
-                }
+                className="group cursor-pointer w-full"
                 onClick={async () => {
                   if (
                     isLoading ||
-                    String(row?.original?.activeStatus) === option.value
+                    String(row?.original?.inactiveStatus) === option.value
                   ) {
                     return;
                   }
                   try {
                     await updateStatus({
-                      id: row.original.id as string,
+                      id: row?.original?.id as string,
                       updateEmployeeStatus: {
-                        activeStatus: Number(
+                        inactiveStatus: Number(
                           option.value,
-                        ) as unknown as EmployeeActiveStatus,
+                        ) as unknown as EmployeeInactiveStatus,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");
@@ -262,48 +296,39 @@ export function StatusActions<TData extends EmployeeDto>({
                   }
                 }}
               >
-                <span>{option.label}</span>
+                {option.label}
               </DropdownMenuItem>
-            );
-          })}
-        </DropdownMenuContent>
-      ) : (
-        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-          {inactiveStatusOptions.map((option) => (
-            <DropdownMenuItem
-              key={option.value}
-              className="group cursor-pointer w-full"
-              onClick={async () => {
-                if (
-                  isLoading ||
-                  String(row?.original?.inactiveStatus) === option.value
-                ) {
-                  return;
-                }
-                try {
-                  await updateStatus({
-                    id: row?.original?.id as string,
-                    updateEmployeeStatus: {
-                      inactiveStatus: Number(
-                        option.value,
-                      ) as unknown as EmployeeInactiveStatus,
-                    },
-                  }).unwrap();
-                  toast.success("Status updated successfully");
-                  dispatch(commonActions.setTriggerReload());
-                } catch (error) {
-                  console.error("Failed to update status:", error);
-                  toast.error(
-                    isErrorResponse(error as ErrorResponse)?.description,
-                  );
-                }
-              }}
-            >
-              {option.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      )}
+            ))}
+        <DropdownMenuItem
+          className="group w-full cursor-pointer"
+          disabled={isLoading}
+          onClick={async () => {
+            const status =
+              row.original.status === EmployeeStatusType.Active
+                ? EmployeeStatusType.Inactive
+                : EmployeeStatusType.Active;
+            try {
+              await updateStatus({
+                id: row.original.id as string,
+                updateEmployeeStatus: {
+                  status: status,
+                },
+              }).unwrap();
+              toast.success("Status updated successfully");
+              dispatch(commonActions.setTriggerReload());
+            } catch (error) {
+              console.error("Failed to update status:", error);
+              toast.error(isErrorResponse(error as ErrorResponse)?.description);
+            }
+          }}
+        >
+          <span>
+            {row.original.status === EmployeeStatusType.Active
+              ? "Deactivate"
+              : "Activate"}
+          </span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

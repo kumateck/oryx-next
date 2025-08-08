@@ -63,7 +63,7 @@ function Page() {
             <div className="flex items-center justify-between flex-col md:flex-row">
               <div>
                 <div className="flex items-center justify-start gap-3">
-                  <span>SPC Number:</span>
+                  <span>SPEC Number:</span>
                   <span className="font-medium">
                     {materialData?.specificationNumber}
                   </span>
