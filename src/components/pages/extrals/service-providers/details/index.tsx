@@ -46,7 +46,7 @@ function Page() {
   }, [id, triggerReload]);
 
   //TODO: Handle loading state and error handling
-  if (!isLoading) {
+  if (isLoading) {
     return <ServiceProviderDetailsSkeleton />;
   }
   if (!data) {
