@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/extrals/general-inventory-config/edit/index";
+export { default } from "@/components/pages/extrals/general-inventory-config/details";

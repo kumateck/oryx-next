@@ -1,68 +1,76 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import PageWrapper from "@/components/layout/wrapper";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Skeleton,
+} from "@/components/ui";
 
-function MaterialSpecificationSkeleton() {
+function ItemsDetailsSkeleton() {
   return (
-    <PageWrapper>
-      <div className="flex items-center gap-2 mb-4 justify-between">
-        <Skeleton className="h-8 w-[200px]" />
-        <Skeleton className="h-8 w-[80px]" />
+    <div className="space-y-8">
+      {/* Header Skeleton */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-5 w-5 rounded-full" />
+          <Skeleton className="h-6 w-32" />
+        </div>
+        <Skeleton className="h-10 w-32 rounded-md" />
       </div>
 
-      <Skeleton className="h-6 w-72 mb-4" />
+      {/* Info Card */}
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-4 w-40" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-8 w-48" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Skeleton className="h-6 w-full col-span-1" />
+            <Skeleton className="h-6 w-full col-span-1" />
+            <Skeleton className="h-6 w-full col-span-2" />
+          </div>
+        </CardContent>
+      </Card>
 
-      <ScrollablePageWrapper>
-        {/* Material Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              <Skeleton className="h-5 w-60" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between flex-col md:flex-row gap-6">
-              {[...Array(3)].map((_, i) => (
-                <div className="space-y-3" key={i}>
-                  {[...Array(3)].map((_, j) => (
-                    <div className="flex items-center gap-3" key={j}>
-                      <Skeleton className="h-4 w-28" />
-                      <Skeleton className="h-4 w-40" />
-                    </div>
-                  ))}
+      {/* Attachments Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold uppercase">
+            Attachments
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Image placeholders */}
+          <div className="grid md:grid-cols-3 gap-2 sm:grid-cols-2 grid-cols-1">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="w-full min-h-40 md:min-h-48 h-full rounded-lg"
+              />
+            ))}
+          </div>
+
+          {/* Document placeholders */}
+          <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-2 grid-cols-1">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-2xl border px-4 py-4"
+              >
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <div className="flex flex-col w-full space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-24" />
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Test and Specifications */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-xl">
-              <Skeleton className="h-6 w-64" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-4 gap-4 mb-4">
-              {[...Array(4)].map((_, index) => (
-                <Skeleton key={index} className="h-4 w-full" />
-              ))}
-            </div>
-
-            {[...Array(3)].map((_, i) => (
-              <div className="grid grid-cols-4 gap-4 mb-2" key={i}>
-                {[...Array(4)].map((_, j) => (
-                  <Skeleton key={j} className="h-4 w-full" />
-                ))}
               </div>
             ))}
-          </CardContent>
-        </Card>
-      </ScrollablePageWrapper>
-    </PageWrapper>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
-export default MaterialSpecificationSkeleton;
+export default ItemsDetailsSkeleton;

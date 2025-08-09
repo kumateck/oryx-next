@@ -2,6 +2,7 @@
 import { Button, Icon } from "@/components/ui";
 import {
   AuditModules,
+  CODE_SETTINGS,
   ErrorResponse,
   InventoryClassificationEnum,
   InventoryType,
@@ -15,9 +16,11 @@ import { useParams, useRouter } from "next/navigation";
 import {
   CreateItemsRequest,
   InventoryClassification,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
   useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ItemsByIdQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1ItemsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -38,6 +41,8 @@ function EditInventory() {
   const { id } = useParams();
   const router = useRouter();
 
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
   const [editItem, { isLoading }] = usePutApiV1ItemsByIdMutation();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
@@ -47,7 +52,6 @@ function EditInventory() {
 
   const [fetchItemDetails, { data: inventoryDetails }] =
     useLazyGetApiV1ItemsByIdQuery({});
-
   const {
     register,
     control,
@@ -112,13 +116,27 @@ function EditInventory() {
       reorderLevel: data.reorderLevel,
     };
     try {
-      const res = await editItem({
+      await editItem({
         id: id as string,
         createItemsRequest: payload,
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
-      console.log(res, "res");
+      if (data?.attachments > 0) {
+        const formData = new FormData();
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.GeneralInventory,
+          modelId: id as string,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
       toast.success("Inventory updated successfully");
       router.back();
     } catch (error) {
@@ -153,17 +171,19 @@ function EditInventory() {
         <div className="flex justify-end gap-4">
           <Button
             onClick={() => router.back()}
-            disabled={isLoading}
+            disabled={isLoading || isUploadingAttachment}
             type="button"
             variant="outline"
           >
             Cancel
           </Button>
-          <Button disabled={isLoading} type="submit">
-            {isLoading && (
+          <Button disabled={isLoading || isUploadingAttachment} type="submit">
+            {(isLoading || isUploadingAttachment) && (
               <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
             )}
-            {isLoading ? "Submitting..." : "Save Changes"}
+            {isLoading || isUploadingAttachment
+              ? "Submitting..."
+              : "Save Changes"}
           </Button>
         </div>
       </form>

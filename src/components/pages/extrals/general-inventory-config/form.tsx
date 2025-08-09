@@ -166,6 +166,18 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
           </div>
         </CardContent>
       </Card>
+      <FormWizard
+        config={[
+          {
+            type: InputTypes.DRAGNDROP,
+            label: "",
+            name: `attachments`,
+            defaultValue: null,
+            control: control as Control,
+            errors,
+          },
+        ]}
+      />
     </div>
   );
 };
