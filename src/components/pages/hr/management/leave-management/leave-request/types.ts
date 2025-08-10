@@ -119,7 +119,10 @@ export const CreateLeaveSchema = z
         });
       }
 
-      if (!data.contactPerson) {
+      if (
+        !data.contactPerson &&
+        data.leaveCategory?.value !== String(LeaveCategories.OfficialDuty)
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Contact person is required",
@@ -127,7 +130,10 @@ export const CreateLeaveSchema = z
         });
       }
 
-      if (!data.contactPersonNumber) {
+      if (
+        !data.contactPersonNumber &&
+        data.leaveCategory?.value !== String(LeaveCategories.OfficialDuty)
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Contact person number is required",
