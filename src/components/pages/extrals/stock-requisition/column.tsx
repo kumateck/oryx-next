@@ -25,7 +25,7 @@ import {
 import {
   ItemStockRequisitionDtoRead,
   MaterialDto,
-  useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
+  useDeleteApiV1ItemsStockRequisitionsMutation,
   usePutApiV1ProcurementSupplierBySupplierIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -42,14 +42,10 @@ export function DataTableRowActions<TData extends ItemStockRequisitionDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [deleteMutation] =
-    useDeleteApiV1ProcurementSupplierBySupplierIdMutation();
+  const [deleteMutation] = useDeleteApiV1ItemsStockRequisitionsMutation();
   // const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  // check permissions access
-  // const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <div className="flex items-center justify-end gap-2">
@@ -80,6 +76,7 @@ export function DataTableRowActions<TData extends ItemStockRequisitionDtoRead>({
         <DropdownMenuItem className="group">
           <div
             onClick={() => {
+              console.log(row.original.id);
               setDetails(row.original);
               setIsDeleteOpen(true);
             }}
@@ -99,9 +96,9 @@ export function DataTableRowActions<TData extends ItemStockRequisitionDtoRead>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              supplierId: details.id as string,
+              id: details.id as string,
             }).unwrap();
-            toast.success("Supplier deleted successfully");
+            toast.success("Stock requisition deleted successfully");
             dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
