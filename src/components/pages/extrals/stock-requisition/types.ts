@@ -39,7 +39,7 @@ const objectSchema = z.object({
 export const CreateStockRequisitionSchema = z.object({
   justification: z.string().min(1, { message: "Justification is required" }),
   number: z.string().min(1, { message: "Code is required" }),
-  requsisitionDate: z.date({
+  requisitionDate: z.date({
     message: "Delivery date is required",
   }),
   items: z.array(objectSchema).min(1, {

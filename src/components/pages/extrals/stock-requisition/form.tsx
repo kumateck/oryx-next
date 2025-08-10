@@ -61,7 +61,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
             {
               control: control as Control,
               label: "Requisition Date",
-              name: "requsisitionDate",
+              name: "requisitionDate",
               placeholder: "Select requisition date",
               type: InputTypes.DATE,
               required: true,

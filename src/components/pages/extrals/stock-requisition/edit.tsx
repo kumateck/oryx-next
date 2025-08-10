@@ -83,16 +83,14 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
     mode: "all",
     defaultValues: {
       number: details.number ?? "",
-      requisitionDate: details.requisitionDate ?? "",
+      requisitionDate: details.requisitionDate
+        ? new Date(details.requisitionDate)
+        : undefined,
       justification: details.justification ?? "",
       departmentId: {
         label: details.department?.name ?? "",
         value: details.department?.id,
       },
-      // items: details.items.map((item) => ({
-      //   label: item.name,
-      //   value: item.id,
-      // })),
     },
   });
 
