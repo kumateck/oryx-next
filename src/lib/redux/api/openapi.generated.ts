@@ -7386,18 +7386,55 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getById: build.query<GetByIdApiResponse, GetByIdApiArg>({
+    postApiV1Vendors: build.mutation<
+      PostApiV1VendorsApiResponse,
+      PostApiV1VendorsApiArg
+    >({
       query: (queryArg) => ({
-        url: `/${queryArg.id}`,
+        url: `/api/v1/vendors`,
+        method: "POST",
+        body: queryArg.createVendorRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
       }),
     }),
-    putById: build.mutation<PutByIdApiResponse, PutByIdApiArg>({
+    getApiV1Vendors: build.query<
+      GetApiV1VendorsApiResponse,
+      GetApiV1VendorsApiArg
+    >({
       query: (queryArg) => ({
-        url: `/${queryArg.id}`,
+        url: `/api/v1/vendors`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1VendorsById: build.query<
+      GetApiV1VendorsByIdApiResponse,
+      GetApiV1VendorsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/vendors/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1VendorsById: build.mutation<
+      PutApiV1VendorsByIdApiResponse,
+      PutApiV1VendorsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/vendors/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createVendorRequest,
         headers: {
@@ -7406,9 +7443,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    deleteById: build.mutation<DeleteByIdApiResponse, DeleteByIdApiArg>({
+    deleteApiV1VendorsById: build.mutation<
+      DeleteApiV1VendorsByIdApiResponse,
+      DeleteApiV1VendorsByIdApiArg
+    >({
       query: (queryArg) => ({
-        url: `/${queryArg.id}`,
+        url: `/api/v1/vendors/${queryArg.id}`,
         method: "DELETE",
         headers: {
           Module: queryArg["module"],
@@ -13485,16 +13525,36 @@ export type GetApiV1UserToggleDisableByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetByIdApiResponse = /** status 200 OK */ VendorDto;
-export type GetByIdApiArg = {
+export type PostApiV1VendorsApiResponse = /** status 200 OK */ string;
+export type PostApiV1VendorsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createVendorRequest: CreateVendorRequest;
+};
+export type GetApiV1VendorsApiResponse =
+  /** status 200 OK */ VendorDtoIEnumerablePaginateable;
+export type GetApiV1VendorsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1VendorsByIdApiResponse = /** status 200 OK */ VendorDto;
+export type GetApiV1VendorsByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutByIdApiResponse = /** status 204 No Content */ VendorDto;
-export type PutByIdApiArg = {
+export type PutApiV1VendorsByIdApiResponse =
+  /** status 204 No Content */ VendorDto;
+export type PutApiV1VendorsByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -13502,8 +13562,8 @@ export type PutByIdApiArg = {
   subModule?: any;
   createVendorRequest: CreateVendorRequest;
 };
-export type DeleteByIdApiResponse = unknown;
-export type DeleteByIdApiArg = {
+export type DeleteApiV1VendorsByIdApiResponse = unknown;
+export type DeleteApiV1VendorsByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -14122,7 +14182,7 @@ export type NotificationDto = {
   sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
-export type AnalyticalTestStatus = 0 | 1 | 2;
+export type AnalyticalTestStatus = 0 | 1 | 2 | 3 | 4;
 export type CreateAnalyticalTestRequest = {
   batchManufacturingRecordId?: string;
   productId?: string;
@@ -14382,6 +14442,8 @@ export type AnalyticalTestRequestDto = {
   sampledBy?: UserDto;
   releasedBy?: UserDto;
   sampledAt?: string | null;
+  acknowledgedBy?: UserDto;
+  acknowledgedAt?: string | null;
 };
 export type AnalyticalTestRequestDtoRead = {
   id?: string;
@@ -14404,6 +14466,8 @@ export type AnalyticalTestRequestDtoRead = {
   sampledBy?: UserDto;
   releasedBy?: UserDto;
   sampledAt?: string | null;
+  acknowledgedBy?: UserDto;
+  acknowledgedAt?: string | null;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
   data?: AnalyticalTestRequestDto[] | null;
@@ -15567,7 +15631,7 @@ export type ItemDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateItemStockRequisitionRequest = {
-  requisitionNo?: string | null;
+  number?: string | null;
   requisitionDate: string;
   requestedById: string;
   departmentId: string;
@@ -15579,28 +15643,22 @@ export type ItemStockRequisitionDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  code?: string | null;
+  number?: string | null;
   requisitionDate?: string;
-  requestedById?: string;
   requestedBy?: UserDto;
-  departmentId?: string;
   department?: DepartmentDto;
   justification?: string | null;
-  items?: ItemDto[] | null;
   status?: LeaveStatus;
 };
 export type ItemStockRequisitionDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  code?: string | null;
+  number?: string | null;
   requisitionDate?: string;
-  requestedById?: string;
   requestedBy?: UserDto;
-  departmentId?: string;
   department?: DepartmentDtoRead;
   justification?: string | null;
-  items?: ItemDto[] | null;
   status?: LeaveStatus;
 };
 export type ItemStockRequisitionDtoIEnumerablePaginateable = {
@@ -18917,6 +18975,15 @@ export type CreateVendorRequest = {
   currencyId: string;
   itemIds: string[];
 };
+export type VendorDtoIEnumerablePaginateable = {
+  data?: VendorDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type WarehouseDtoIEnumerablePaginateable = {
   data?: WarehouseDto[] | null;
   pageIndex?: number;
@@ -20064,10 +20131,13 @@ export const {
   usePostApiV1UserSignatureByIdMutation,
   useGetApiV1UserToggleDisableByIdQuery,
   useLazyGetApiV1UserToggleDisableByIdQuery,
-  useGetByIdQuery,
-  useLazyGetByIdQuery,
-  usePutByIdMutation,
-  useDeleteByIdMutation,
+  usePostApiV1VendorsMutation,
+  useGetApiV1VendorsQuery,
+  useLazyGetApiV1VendorsQuery,
+  useGetApiV1VendorsByIdQuery,
+  useLazyGetApiV1VendorsByIdQuery,
+  usePutApiV1VendorsByIdMutation,
+  useDeleteApiV1VendorsByIdMutation,
   usePostApiV1WarehouseMutation,
   useGetApiV1WarehouseQuery,
   useLazyGetApiV1WarehouseQuery,

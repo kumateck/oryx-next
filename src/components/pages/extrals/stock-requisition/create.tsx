@@ -10,11 +10,20 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, Option } from "@/lib";
-import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
+import { cn, ErrorResponse, isErrorResponse, Option } from "@/lib";
+import { commonActions } from "@/lib/redux/slices/common";
+import {
+  CreateItemStockRequisitionRequest,
+  useLazyGetApiV1DepartmentQuery,
+  useLazyGetApiV1ItemsQuery,
+  usePostApiV1ItemsStockRequisitionsMutation,
+} from "@/lib/redux/api/openapi.generated";
 
 import { CreateStockRequisitionValidator, StockRequisitionDto } from "./types";
 import StockRequisition from "./form";
+import { toast } from "sonner";
+import { useSelector } from "@/lib/redux/store";
+import { useDispatch } from "react-redux";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -22,8 +31,33 @@ interface VendorFormProps {
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
+  const [loadDepartments, { isLoading: loadingDepartments }] =
+    useLazyGetApiV1DepartmentQuery();
+  const [createStockRequisition, { isLoading: creating }] =
+    usePostApiV1ItemsStockRequisitionsMutation();
+  const dispatch = useDispatch();
+
+  const currentUser = useSelector((state) => state.persistedReducer.auth);
   const loadDataOrSearch = async (searchQuery: string, page: number) => {
     const res = await loadItems({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
+  const loadDataOrSearchDepartments = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadDepartments({
       searchQuery,
       page,
     }).unwrap();
@@ -40,6 +74,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const {
     register,
     control,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<StockRequisitionDto>({
@@ -53,9 +88,31 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
   });
 
   const onSubmit = async (data: StockRequisitionDto) => {
-    console.log(data, "Venders form data");
+    console.log(data, "stock requisition form data");
+    if (!currentUser || !currentUser.userId) return;
+    try {
+      const payload: CreateItemStockRequisitionRequest = {
+        requisitionDate: data.requsisitionDate?.toISOString(),
+        justification: data.justification,
+        requestedById: currentUser.userId,
+        departmentId: data.departmentId.value,
+        itemIds: data.items.map((item) => item.value),
+      };
+      await createStockRequisition({
+        createItemStockRequisitionRequest: payload,
+      }).unwrap();
+      dispatch(commonActions.setTriggerReload());
+      toast.success("Stock requisition created successfully");
+      onClose();
+      reset();
+    } catch (error) {
+      console.error("Error creating stock requisition:", error);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Failed to create stock requisition. Please try again.",
+      );
+    }
   };
-
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
@@ -65,7 +122,9 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <StockRequisition
             fetchItems={loadDataOrSearch}
+            fetchDepartments={loadDataOrSearchDepartments}
             isLoading={loadingItems}
+            loadingDepartments={loadingDepartments}
             errors={errors}
             register={register}
             append={append}
@@ -84,9 +143,9 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
                 className="flex items-center gap-2"
               >
                 <Icon
-                  name={!true ? "LoaderCircle" : "Plus"}
+                  name={creating ? "LoaderCircle" : "Plus"}
                   className={cn("h-4 w-4", {
-                    "animate-spin": !true,
+                    "animate-spin": creating,
                   })}
                 />
                 <span>Save</span>

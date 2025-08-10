@@ -190,7 +190,7 @@ export function DataTableRowStatus<
 export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   {
     accessorKey: "code",
-    header: "Requisition Id",
+    header: "Requisition ID",
 
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },

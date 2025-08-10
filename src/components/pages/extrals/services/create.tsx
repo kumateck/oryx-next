@@ -96,7 +96,6 @@ export function CreateService({ isOpen, onClose }: CreateServiceProps) {
       onClose();
       toast.success("Service created successfully.");
       reset();
-      console.log("Service created successfully:", serviceId);
       // If attachments are provided, upload them
       if (serviceId && data.attachments) {
         const formData = new FormData();
@@ -106,7 +105,6 @@ export function CreateService({ isOpen, onClose }: CreateServiceProps) {
         attachmentsArray.forEach((attachment: File) => {
           formData.append("files", attachment, attachment.name);
         });
-
         await uploadAttachment({
           modelType: CODE_SETTINGS.modelTypes.Service,
           modelId: serviceId,
