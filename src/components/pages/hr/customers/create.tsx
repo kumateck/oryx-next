@@ -52,7 +52,7 @@ const Create = ({ isOpen, onClose }: Props) => {
 
       await createCustomer({
         createCustomerRequest: payload,
-      });
+      }).unwrap();
 
       toast.success("Customer created successfully");
       loadDesignations({ page: 1, pageSize: 10 });
