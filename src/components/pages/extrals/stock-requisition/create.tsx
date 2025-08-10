@@ -92,7 +92,8 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     if (!currentUser || !currentUser.userId) return;
     try {
       const payload: CreateItemStockRequisitionRequest = {
-        requisitionDate: data.requsisitionDate?.toISOString(),
+        requisitionDate: data.requisitionDate?.toISOString(),
+        number: data.number,
         justification: data.justification,
         requestedById: currentUser.userId,
         departmentId: data.departmentId.value,

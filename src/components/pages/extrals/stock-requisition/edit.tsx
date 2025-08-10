@@ -81,6 +81,19 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
   } = useForm<StockRequisitionDto>({
     resolver: CreateStockRequisitionValidator,
     mode: "all",
+    defaultValues: {
+      number: details.number ?? "",
+      requisitionDate: details.requisitionDate ?? "",
+      justification: details.justification ?? "",
+      departmentId: {
+        label: details.department?.name ?? "",
+        value: details.department?.id,
+      },
+      // items: details.items.map((item) => ({
+      //   label: item.name,
+      //   value: item.id,
+      // })),
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -93,8 +106,9 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
       await updateStockRequisition({
         id: details?.id as string,
         createItemStockRequisitionRequest: {
-          requisitionDate: data.requsisitionDate?.toISOString(),
+          requisitionDate: data.requisitionDate?.toISOString(),
           justification: data.justification,
+          number: data.number,
           requestedById: details?.requestedBy?.id as string,
           departmentId: data.departmentId.value,
           itemIds: data.items.map((item) => item.value),
