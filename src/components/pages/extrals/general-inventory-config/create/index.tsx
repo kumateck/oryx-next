@@ -16,9 +16,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   CreateItemsRequest,
   InventoryClassification,
+  PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
   useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ServicesQuery,
+  usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -37,6 +39,8 @@ function Page() {
 export default Page;
 
 export function CreateInventoryItem() {
+  const [uploadAttachment, { isLoading: isUploadingAttachment }] =
+    usePostApiV1FileByModelTypeAndModelIdMutation();
   const [loadCodeModelCount] = useLazyGetApiV1ServicesQuery();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
@@ -73,15 +77,27 @@ export function CreateInventoryItem() {
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
     };
-    console.log(payload);
     try {
-      const res = await createItem({
+      const itemId = await createItem({
         createItemsRequest: payload,
         module: AuditModules.extral.name,
         subModule: AuditModules.extral.generalInventoryConfiguration,
       }).unwrap();
-      console.log(res, "res");
-      // console.log(res, "res");
+      if (itemId && data?.attachments > 0) {
+        const formData = new FormData();
+        const attachmentsArray = Array.isArray(data.attachments)
+          ? data.attachments
+          : Array.from(data.attachments); // Convert FileList to an array
+        attachmentsArray.forEach((attachment: File) => {
+          formData.append("files", attachment, attachment.name);
+        });
+
+        await uploadAttachment({
+          modelType: CODE_SETTINGS.modelTypes.GeneralInventory,
+          modelId: itemId as string,
+          body: formData,
+        } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+      }
       router.back();
       toast.success("Inventory created successfully");
     } catch (error) {
@@ -95,7 +111,6 @@ export function CreateInventoryItem() {
   };
   const fetchCount = async () => {
     const countResponse = await loadCodeModelCount({}).unwrap();
-
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
   const { regenerateCode } = useCodeGen(
@@ -103,6 +118,11 @@ export function CreateInventoryItem() {
     fetchCount,
     setCodeToInput,
   );
+  useEffect(() => {
+    regenerateCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (!storeType) return;
     setValue(
@@ -112,19 +132,11 @@ export function CreateInventoryItem() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeType]);
-  useEffect(() => {
-    regenerateCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const unitOfMeasureOptions = uomResponse?.map((uom) => ({
     label: uom.symbol,
     value: uom.id,
   })) as Option[];
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   return (
     <>
@@ -148,7 +160,7 @@ export function CreateInventoryItem() {
         <div className="flex justify-end gap-4">
           <Button
             onClick={() => router.back()}
-            disabled={isLoading}
+            disabled={isLoading || isUploadingAttachment}
             type="button"
             variant="outline"
           >
@@ -158,7 +170,7 @@ export function CreateInventoryItem() {
             {isLoading && (
               <Icon name="LoaderCircle" className="animate-spin h-4 w-4 mr-2" />
             )}
-            {isLoading ? "Submitting..." : "Submit"}
+            {isLoading || isUploadingAttachment ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

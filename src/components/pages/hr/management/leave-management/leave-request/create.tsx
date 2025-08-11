@@ -1,6 +1,7 @@
 import { useForm, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 import {
   Button,
@@ -67,6 +68,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   ].includes(selectedCategory?.value ?? "");
 
   const onSubmit = async (data: LeaveRequestDto) => {
+    console.log(data);
     try {
       // 1. Create the leave request
       const payload = {
@@ -75,7 +77,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
         endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
-        contactPersonNumber: data.contactPersonNumber ?? "-",
+        contactPersonNumber: data.contactPersonNumber ?? "0554290614",
         destination: data.destination ?? "-",
         requestCategory: parseInt(
           data?.leaveCategory?.value ?? "0",
@@ -153,6 +155,10 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
       label: splitWords(key),
       value: String(value),
     }));
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

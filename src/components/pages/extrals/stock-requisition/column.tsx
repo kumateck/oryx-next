@@ -15,21 +15,22 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
+  LeaveStatus,
   // PermissionKeys,
   SupplierStatus,
-  SupplierType,
   SupplierTypeOptions,
   isErrorResponse,
   routes,
 } from "@/lib";
 import {
+  ItemStockRequisitionDtoRead,
   MaterialDto,
-  SupplierDto,
-  useDeleteApiV1ProcurementSupplierBySupplierIdMutation,
+  useDeleteApiV1ItemsStockRequisitionsMutation,
   usePutApiV1ProcurementSupplierBySupplierIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
+import { format } from "date-fns";
 // import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
@@ -37,18 +38,14 @@ import { TableMenuAction } from "@/shared/table-menu";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends SupplierDto>({
+export function DataTableRowActions<TData extends ItemStockRequisitionDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
-  const [deleteMutation] =
-    useDeleteApiV1ProcurementSupplierBySupplierIdMutation();
+  const [deleteMutation] = useDeleteApiV1ItemsStockRequisitionsMutation();
   // const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<MaterialDto>({} as MaterialDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  // check permissions access
-  // const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <div className="flex items-center justify-end gap-2">
@@ -79,6 +76,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
         <DropdownMenuItem className="group">
           <div
             onClick={() => {
+              console.log(row.original.id);
               setDetails(row.original);
               setIsDeleteOpen(true);
             }}
@@ -98,9 +96,9 @@ export function DataTableRowActions<TData extends SupplierDto>({
         onConfirm={async () => {
           try {
             await deleteMutation({
-              supplierId: details.id as string,
+              id: details.id as string,
             }).unwrap();
-            toast.success("Supplier deleted successfully");
+            toast.success("Stock requisition deleted successfully");
             dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -110,7 +108,7 @@ export function DataTableRowActions<TData extends SupplierDto>({
     </div>
   );
 }
-export function DataTableRowStatus<TData extends SupplierDto>({
+export function DataTableRowStatus<TData extends ItemStockRequisitionDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
@@ -186,34 +184,39 @@ export function DataTableRowStatus<TData extends SupplierDto>({
     </div>
   );
 }
-export const columns: ColumnDef<SupplierDto>[] = [
+export const columns: ColumnDef<ItemStockRequisitionDtoRead>[] = [
   {
     accessorKey: "code",
     header: "Requisition ID",
 
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <div>{row.original?.number ?? "N/A"}</div>,
   },
   {
     accessorKey: "requisitionDate",
     header: "Requisition Date",
-    cell: ({ row }) => <div>{row.getValue("venderCode")}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.createdAt
+          ? format(new Date(row.original.createdAt), "dd/MM/yyyy")
+          : "N/A"}
+      </div>
+    ),
   },
   {
     accessorKey: "deliveryDate",
     header: "Expected Delivery Date",
     cell: ({ row }) => (
       <div>
-        {" "}
-        {row.original.type !== undefined
-          ? SupplierType[row.original.type]
-          : "Unknown"}
+        {row.original.requisitionDate
+          ? format(new Date(row.original.requisitionDate), "dd/MM/yyyy")
+          : "N/A"}
       </div>
     ),
   },
   {
     accessorKey: "numberOfItems",
     header: "Number of items",
-    cell: ({ row }) => <div>{row.getValue("contactPerson")}</div>,
+    cell: ({ row }) => <div>{row.original && "N/A"}</div>,
   },
   {
     accessorKey: "status",
@@ -226,8 +229,10 @@ export const columns: ColumnDef<SupplierDto>[] = [
   },
 ];
 
-const statusColors: Record<SupplierStatus, string> = {
-  [SupplierStatus.New]: "bg-blue-100 text-blue-800",
-  [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
-  [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
+const statusColors: Record<LeaveStatus, string> = {
+  [LeaveStatus.Pending]: "bg-blue-100 text-blue-800",
+  [LeaveStatus.Approved]: "bg-yellow-100 text-yellow-800",
+  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+  [LeaveStatus.Expired]: "bg-gray-100 text-gray-800",
+  [LeaveStatus.Recalled]: "bg-gray-100 text-gray-800",
 };

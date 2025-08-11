@@ -43,7 +43,10 @@ export default Page;
 
 export function MaterialSpecPage() {
   const router = useRouter();
-  const { data: product } = useGetApiV1ProductQuery({});
+  const { data: product } = useGetApiV1ProductQuery({
+    page: 1,
+    pageSize: 1000,
+  });
   const [createProductSpecification, { isLoading }] =
     usePostApiV1ProductSpecificationsMutation();
 

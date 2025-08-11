@@ -12,7 +12,6 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
-import { Button, Icon } from "@/components/ui";
 import { StockRequisitionDto } from "./types";
 import { FetchOptionsResult } from "@/components/ui/async-select";
 
@@ -21,7 +20,12 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   fetchItems: (search: string, page: number) => Promise<FetchOptionsResult>;
+  fetchDepartments: (
+    search: string,
+    page: number,
+  ) => Promise<FetchOptionsResult>;
   isLoading: boolean;
+  loadingDepartments: boolean;
   append: UseFieldArrayAppend<StockRequisitionDto>;
   fields: FieldArrayWithId<StockRequisitionDto>[];
   remove: UseFieldArrayRemove;
@@ -30,11 +34,10 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  loadingDepartments,
   fetchItems,
   isLoading,
-  append,
-  remove,
-  fields,
+  fetchDepartments,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-4">
@@ -43,7 +46,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           fieldWrapperClassName="flex-grow"
           config={[
             {
-              register: register("code" as Path<TFieldValues>),
+              register: register("number" as Path<TFieldValues>),
               label: "Requisition ID",
               placeholder: "Enter requisition ID",
               type: InputTypes.TEXT,
@@ -57,9 +60,9 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           config={[
             {
               control: control as Control,
-              label: "Code",
-              name: "deliveryDate",
-              placeholder: "VED-001",
+              label: "Requisition Date",
+              name: "requisitionDate",
+              placeholder: "Select requisition date",
               type: InputTypes.DATE,
               required: true,
               errors,
@@ -67,6 +70,21 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           ]}
         />
       </div>
+      <FormWizard
+        fieldWrapperClassName="flex-grow"
+        config={[
+          {
+            control: control as Control,
+            name: `departmentId`,
+            label: "Department Name",
+            fetchOptions: fetchDepartments,
+            isLoading: loadingDepartments,
+            type: InputTypes.ASYNC_SELECT,
+            required: true,
+            errors,
+          },
+        ]}
+      />
       <FormWizard
         fieldWrapperClassName="flex-grow"
         config={[
@@ -81,7 +99,21 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <div className="flex w-full justify-between items-center">
+      <FormWizard
+        config={[
+          {
+            control: control as Control,
+            name: `items`,
+            label: "Item Name",
+            fetchOptions: fetchItems,
+            isLoading: isLoading,
+            type: InputTypes.ASYNC_MULTI,
+            required: true,
+            errors,
+          },
+        ]}
+      />
+      {/* <div className="flex w-full justify-between items-center">
         <h1>Items</h1>
         <Button
           variant={"ghost"}
@@ -176,7 +208,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
             />
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
