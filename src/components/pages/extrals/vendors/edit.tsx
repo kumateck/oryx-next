@@ -12,22 +12,35 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, COLLECTION_TYPES, Option } from "@/lib";
+import {
+  cn,
+  COLLECTION_TYPES,
+  ErrorResponse,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import {
   PostApiV1CollectionApiArg,
   useGetApiV1ServicesQuery,
   usePostApiV1CollectionMutation,
+  usePutApiV1VendorsByIdMutation,
+  VendorDto,
 } from "@/lib/redux/api/openapi.generated";
 
 import VendorForm from "./form";
 import { CreateVendorValidator, VendorRequestDto } from "./types";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface VendorFormProps {
   isOpen: boolean;
   onClose: () => void;
+  detail: VendorDto;
 }
 
-const Edit = ({ isOpen, onClose }: VendorFormProps) => {
+const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
+  const [updateVendor, { isLoading }] = usePutApiV1VendorsByIdMutation();
   const { data: servicesData } = useGetApiV1ServicesQuery({
     page: 1,
     pageSize: 1000,
@@ -35,6 +48,7 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     loadCollection({
@@ -52,6 +66,24 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
   } = useForm<VendorRequestDto>({
     resolver: CreateVendorValidator,
     mode: "all",
+    defaultValues: {
+      email: detail.email ?? "",
+      name: detail.name ?? "",
+      address: detail.address as string,
+      country: {
+        value: detail.country?.id ?? "",
+        label: detail.country?.name ?? "",
+      },
+      currency: {
+        value: detail.currency?.id ?? "",
+        label: detail.currency?.name ?? "",
+      },
+      contactNumber: detail?.phone ?? "",
+      services: detail?.items?.map((item) => ({
+        value: item?.id ?? "",
+        label: item?.name ?? "",
+      })),
+    },
   });
 
   const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
@@ -74,9 +106,30 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
   })) as Option[];
 
   const onSubmit = async (data: VendorRequestDto) => {
-    console.log(data, "Venders form data");
-    reset();
-    onClose();
+    try {
+      await updateVendor({
+        id: detail?.id as string,
+        createVendorRequest: {
+          address: data.address,
+          email: data.email,
+          countryId: data.country.value,
+          currencyId: data.currency.value,
+          name: data.name,
+          itemIds: data.services.map((service) => service.value),
+          phone: data.contactPerson,
+        },
+      }).unwrap();
+      dispatch(commonActions.setTriggerReload());
+      reset();
+      onClose();
+      toast.success("Vender updated successfully");
+    } catch (error) {
+      console.log(error, "thhis is error from edit vendor page");
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Something went wrong. Try again.",
+      );
+    }
   };
 
   return (
@@ -95,18 +148,23 @@ const Edit = ({ isOpen, onClose }: VendorFormProps) => {
             control={control}
           />
           <DialogFooter className="justify-end gap-4 py-6">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button
+              disabled={isLoading}
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+            >
               Cancel
             </Button>
             <Button
-              // disabled={isLoading}
+              disabled={isLoading}
               type="submit"
               className="flex items-center gap-2"
             >
               <Icon
-                name={!false ? "LoaderCircle" : "Plus"}
+                name={isLoading ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": !true,
+                  "animate-spin": isLoading,
                 })}
               />
               <span>Save</span>

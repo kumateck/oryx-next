@@ -11,21 +11,32 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, COLLECTION_TYPES, Option } from "@/lib";
+import {
+  cn,
+  COLLECTION_TYPES,
+  ErrorResponse,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import {
   PostApiV1CollectionApiArg,
   useGetApiV1ServicesQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1VendorsMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 import { CreateVendorValidator, VendorRequestDto } from "./types";
 import VendorForm from "./form";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import { toast } from "sonner";
 
 interface VendorFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
+  const [createVendor, { isLoading }] = usePostApiV1VendorsMutation();
   const { data: servicesData } = useGetApiV1ServicesQuery({
     page: 1,
     pageSize: 1002,
@@ -33,6 +44,8 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     loadCollection({
@@ -43,6 +56,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const {
     register,
     control,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<VendorRequestDto>({
@@ -70,7 +84,29 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
   })) as Option[];
 
   const onSubmit = async (data: VendorRequestDto) => {
-    console.log(data, "Venders form data");
+    try {
+      await createVendor({
+        createVendorRequest: {
+          address: data.address,
+          email: data.email,
+          countryId: data.country.value,
+          currencyId: data.currency.value,
+          name: data.name,
+          itemIds: data.services.map((service) => service.value),
+          phone: data.contactPerson,
+        },
+      }).unwrap();
+      dispatch(commonActions.setTriggerReload());
+      toast.success("Vendor created successfully");
+      onClose();
+      reset();
+    } catch (error) {
+      console.log("errro creating vendor", error);
+      toast.error(
+        isErrorResponse(error as ErrorResponse)?.description ||
+          "Something went wrong. Try again.",
+      );
+    }
   };
 
   return (
@@ -90,18 +126,23 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
           />
           <DialogFooter>
             <DialogFooter className="justify-end gap-4 py-6">
-              <Button type="button" variant="secondary" onClick={onClose}>
+              <Button
+                disabled={isLoading}
+                type="button"
+                variant="secondary"
+                onClick={onClose}
+              >
                 Cancel
               </Button>
               <Button
-                // disabled={isLoading}
+                disabled={isLoading}
                 type="submit"
                 className="flex items-center gap-2"
               >
                 <Icon
-                  name={!true ? "LoaderCircle" : "Plus"}
+                  name={isLoading ? "LoaderCircle" : "Plus"}
                   className={cn("h-4 w-4", {
-                    "animate-spin": !true,
+                    "animate-spin": isLoading,
                   })}
                 />
                 <span>Save</span>
