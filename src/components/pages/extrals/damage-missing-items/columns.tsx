@@ -1,13 +1,13 @@
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  ItemDto,
+  DamagedStockDtoRead,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -15,33 +15,16 @@ import { toast } from "sonner";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends ItemDto>({
+export function DataTableRowActions<TData extends DamagedStockDtoRead>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
   const dispatch = useDispatch();
   const [deleteMaterialSpecification] =
     useDeleteApiV1MaterialSpecificationsByIdMutation();
-  const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
       <TableMenuAction>
-        <DropdownMenuItem>
-          <div
-            className="flex cursor-pointer items-center justify-start gap-2"
-            onClick={() => {
-              router.push(
-                `/extrals/general-inventory-config/${row.original.id}`,
-              );
-            }}
-          >
-            <Icon
-              name="Eye"
-              className="h-5 w-5 cursor-pointer text-neutral-500"
-            />
-            <span>View Details</span>
-          </div>
-        </DropdownMenuItem>
         <DropdownMenuItem className="group">
           <div
             className="flex text-red-500 cursor-pointer items-center justify-start gap-2"
@@ -68,7 +51,7 @@ export function DataTableRowActions<TData extends ItemDto>({
               }).unwrap();
               setIsDelete(false);
               dispatch(commonActions.setTriggerReload());
-              toast.success("Missing item deleted successfully.");
+              toast.success("Damage item deleted successfully.");
             } catch (error) {
               console.error("Error deleting item:", error);
               toast.error(isErrorResponse(error as ErrorResponse)?.description);
@@ -79,41 +62,44 @@ export function DataTableRowActions<TData extends ItemDto>({
     </section>
   );
 }
-export const columns: ColumnDef<ItemDto>[] = [
+export const columns: ColumnDef<DamagedStockDtoRead>[] = [
   {
     accessorKey: "itemName",
     header: "Item Name",
-    cell: ({ row }) => <div>{row.original?.name}</div>,
+    cell: ({ row }) => <div>{row.original?.item?.name}</div>,
   },
   {
     accessorKey: "code",
     header: "Item Code",
-    cell: ({ row }) => <div>{row.original?.code}</div>,
+    cell: ({ row }) => <div>{row.original?.item?.code}</div>,
   },
   {
     accessorKey: "reportedDate",
     header: "Reported Date",
-    cell: () => <div>12th June, 2023</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.createdAt
+          ? format(new Date(row.original.createdAt), "dd MMMM, yyyy")
+          : "-"}
+      </div>
+    ),
   },
   {
-    accessorKey: "batchNumber",
-    header: "Batch Number",
-    cell: () => <div>BTC-39</div>,
-  },
-  {
-    accessorKey: "missingQuantity",
-    header: "Missing Quantity",
-    cell: () => <div>50</div>,
+    accessorKey: "damageQuantity",
+    header: "Damage Quantity",
+    cell: ({ row }) => <div>{row.original?.item?.maximumLevel}</div>,
   },
   {
     accessorKey: "remarks",
     header: "Remarks",
-    cell: () => <div>Remarks</div>,
+    cell: ({ row }) => <div>{row.original?.remarks}</div>,
   },
   {
     accessorKey: "reportedBy",
     header: "Reported By",
-    cell: () => <div> Ley Roy</div>,
+    cell: ({ row }) => (
+      <div>{`${row.original?.createdBy?.firstName} ${row.original?.createdBy?.lastName}`}</div>
+    ),
   },
   {
     id: "actions",
