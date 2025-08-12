@@ -97,7 +97,10 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
         justification: data.justification,
         requestedById: currentUser.userId,
         departmentId: data.departmentId.value,
-        stockItems: data.items.map((item) => item.value),
+        stockItems: data.items.map((item) => ({
+          itemId: item.value,
+          quantityRequested: item.orderQuantity,
+        })),
       };
       await createStockRequisition({
         createItemStockRequisitionRequest: payload,
