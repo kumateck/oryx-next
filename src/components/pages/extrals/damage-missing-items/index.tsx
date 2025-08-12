@@ -11,7 +11,7 @@ import { AuditModules, InventoryType, splitWords } from "@/lib";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { useLazyGetApiV1ItemsQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1DamagedGoodsQuery } from "@/lib/redux/api/openapi.generated";
 
 function Page() {
   const [page, setPage] = useState(1);
@@ -26,7 +26,7 @@ function Page() {
   const debounceValue = useDebounce(searchValue, 500);
 
   const [LoadData, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1ItemsQuery({});
+    useLazyGetApiV1DamagedGoodsQuery({});
 
   useEffect(() => {
     LoadData({
@@ -48,7 +48,7 @@ function Page() {
   return (
     <PageWrapper className="w-full space-y-4">
       <div className="flex w-full items-center justify-between">
-        <PageTitle title="Missing Managements - General Inventory" />
+        <PageTitle title="Damage/Missing Items" />
       </div>
       <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4 gap-6 rounded-none border-b border-b-neutral-300 bg-transparent p-0 py-0">

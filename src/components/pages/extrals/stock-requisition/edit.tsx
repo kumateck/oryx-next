@@ -109,7 +109,10 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
           number: data.number,
           requestedById: details?.requestedBy?.id as string,
           departmentId: data.departmentId.value,
-          itemIds: data.items.map((item) => item.value),
+          stockItems: data.items.map((item) => ({
+            itemId: item.value,
+            quantityRequested: item.orderQuantity,
+          })),
         },
       });
       dispatch(commonActions.setTriggerReload());

@@ -25,7 +25,7 @@ const objectSchema = z.object({
   // ),
   // itemCode: z.string().optional(),
   // stockQuantity: z.number().nonnegative(),
-  // orderQuantity: z.number().nonnegative(),
+  orderQuantity: z.number().nonnegative().optional(),
   value: z.string({
     required_error: "Item is required",
     message: "Item is required",
