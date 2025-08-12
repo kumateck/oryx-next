@@ -16,7 +16,6 @@ import {
   OvertimeRequestDtoRead,
   useGetApiV1DepartmentQuery,
   useGetApiV1EmployeeDepartmentsByIdQuery,
-  useLazyGetApiV1OvertimeRequestsQuery,
   usePutApiV1OvertimeRequestsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
@@ -65,18 +64,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       employeeIds: defaultEmployees,
     },
   });
-  const [loadOvertimeRequest] = useLazyGetApiV1OvertimeRequestsQuery();
 
   const [editOvertimeRequest, { isLoading }] =
     usePutApiV1OvertimeRequestsByIdMutation();
-
-  // const defaultDesignations =
-  //   details.designations?.map((dept) => ({
-  //     label: dept.name ?? "",
-  //     value: dept.id,
-  //   })) || [];
-
-  const pageSize = 30;
+  const pageSize = 1000;
   const page = 1;
 
   const { data: departmentResults } = useGetApiV1DepartmentQuery({
@@ -121,12 +112,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
           ...payload,
         },
       }).unwrap();
-      toast.success("Overtime request updated successfully");
       dispatch(commonActions.setTriggerReload());
-      loadOvertimeRequest({
-        page: 1,
-        pageSize: 10,
-      });
+      toast.success("Overtime request updated successfully");
       reset();
       onClose();
     } catch (error) {

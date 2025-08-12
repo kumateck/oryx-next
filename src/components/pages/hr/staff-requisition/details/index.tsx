@@ -59,13 +59,11 @@ const Page = () => {
               </p>
               <p>
                 Job Title:{" "}
-                <span className="font-semibold">{data?.qualification}</span>
+                <span className="font-semibold">{data?.designation?.name}</span>
               </p>
               <p>
                 Qualification:{" "}
-                <span className="font-semibold">
-                  {data?.educationalQualification}
-                </span>
+                <span className="font-semibold">{data?.qualification}</span>
               </p>
             </div>
             <div className="space-y-1">

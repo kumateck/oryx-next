@@ -165,8 +165,8 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {!isExitPass && !isOfficialDuty && (
-        <div className="w-full my-5 gap-4">
+      {!isExitPass && (
+        <div className="w-full flex items-center my-5 gap-4">
           <FormWizard
             config={[
               {

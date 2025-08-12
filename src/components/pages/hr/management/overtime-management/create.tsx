@@ -81,12 +81,6 @@ const Create = ({ isOpen, onClose }: Props) => {
 
   const selectedDepartmentId = watch("departmentId")?.value;
 
-  // const { data: employeeResults } = useGetApiV1EmployeeQuery({
-  //   page,
-  //   pageSize,
-  //   department: selectedDepartmentId,
-  // });
-
   const { data: employeeResultsById } = useGetApiV1EmployeeDepartmentsByIdQuery(
     {
       id: selectedDepartmentId,
@@ -143,11 +137,10 @@ const Create = ({ isOpen, onClose }: Props) => {
           ...payload,
         },
       }).unwrap();
-      toast.success("Overtime request created successfully");
       dispatch(commonActions.setTriggerReload());
-
-      reset(); // Reset the form after submission
-      onClose(); // Close the form/modal if applicable
+      toast.success("Overtime request created successfully");
+      reset();
+      onClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

@@ -114,9 +114,7 @@ function Page() {
                 {/* Row 3 */}
                 <div className="flex gap-2 items-center">
                   <span>Overtime Justification:</span>
-                  <span className="font-semibold">
-                    {data?.createdBy?.department?.name || "-"}
-                  </span>
+                  <span className="font-semibold">{data?.justification}</span>
                 </div>
               </div>
 

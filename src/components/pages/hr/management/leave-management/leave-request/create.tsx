@@ -1,7 +1,6 @@
 import { useForm, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
 import {
   Button,
@@ -93,11 +92,6 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
       dispatch(commonActions.setTriggerReload());
       toast.success("Leave Request created successfully");
-      // 2. Immediately reset & close the form
-
-      // 3. Refresh the table
-
-      // 4. Then, upload attachments in the background
       if (leaveRequestId && data.attachments) {
         const files = Array.isArray(data.attachments)
           ? data.attachments
@@ -155,10 +149,6 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
       label: splitWords(key),
       value: String(value),
     }));
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

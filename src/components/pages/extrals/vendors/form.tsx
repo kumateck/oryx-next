@@ -17,14 +17,14 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   countryOptions: Option[];
 
   currencyOptions: Option[];
-  servicesOptions: Option[];
+  itemsOptions: Option[];
 }
 const VendorForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   countryOptions,
-  servicesOptions,
+  itemsOptions,
   currencyOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -151,7 +151,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             label: "Services",
             name: "services",
             placeholder: "Enter services",
-            options: servicesOptions,
+            options: itemsOptions,
             type: InputTypes.MULTI,
             required: true,
             errors,

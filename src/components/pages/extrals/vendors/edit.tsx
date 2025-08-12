@@ -21,9 +21,9 @@ import {
 } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
-  useGetApiV1ServicesQuery,
   usePostApiV1CollectionMutation,
   usePutApiV1VendorsByIdMutation,
+  useGetApiV1ItemsQuery,
   VendorDto,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -41,7 +41,7 @@ interface VendorFormProps {
 
 const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
   const [updateVendor, { isLoading }] = usePutApiV1VendorsByIdMutation();
-  const { data: servicesData } = useGetApiV1ServicesQuery({
+  const { data: itemsData } = useGetApiV1ItemsQuery({
     page: 1,
     pageSize: 1000,
   });
@@ -99,10 +99,10 @@ const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
     }),
   ) as Option[];
 
-  const services = servicesData?.data || [];
-  const servicesOptions = services.map((service) => ({
-    label: service.name,
-    value: service.id,
+  const items = itemsData?.data || [];
+  const itemsOptions = items.map((item) => ({
+    label: item.name,
+    value: item.id,
   })) as Option[];
 
   const onSubmit = async (data: VendorRequestDto) => {
@@ -116,13 +116,13 @@ const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
           currencyId: data.currency.value,
           name: data.name,
           itemIds: data.services.map((service) => service.value),
-          phone: data.contactPerson,
+          phone: data.contactNumber,
         },
       }).unwrap();
       dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
-      toast.success("Vender updated successfully");
+      toast.success("Vendor updated successfully");
     } catch (error) {
       console.log(error, "thhis is error from edit vendor page");
       toast.error(
@@ -143,7 +143,7 @@ const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
             countryOptions={countryOptions}
             errors={errors}
             currencyOptions={currencyOptions}
-            servicesOptions={servicesOptions}
+            itemsOptions={itemsOptions}
             register={register}
             control={control}
           />

@@ -141,8 +141,8 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             await deleteMutation({
               id: details.id as string,
             }).unwrap();
-            toast.success("Overtime request deleted successfully");
             dispatch(commonActions.setTriggerReload());
+            toast.success("Overtime request deleted successfully");
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

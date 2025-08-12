@@ -20,7 +20,7 @@ import {
 } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
-  useGetApiV1ServicesQuery,
+  useGetApiV1ItemsQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1VendorsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -37,7 +37,7 @@ interface VendorFormProps {
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const [createVendor, { isLoading }] = usePostApiV1VendorsMutation();
-  const { data: servicesData } = useGetApiV1ServicesQuery({
+  const { data: itemsData } = useGetApiV1ItemsQuery({
     page: 1,
     pageSize: 1002,
   });
@@ -77,10 +77,10 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     }),
   ) as Option[];
   // Map services data to options
-  const services = servicesData?.data || [];
-  const servicesOptions = services.map((service) => ({
-    label: service.name,
-    value: service.id,
+  const items = itemsData?.data || [];
+  const itemsOptions = items.map((item) => ({
+    label: item.name,
+    value: item.id,
   })) as Option[];
 
   const onSubmit = async (data: VendorRequestDto) => {
@@ -93,7 +93,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
           currencyId: data.currency.value,
           name: data.name,
           itemIds: data.services.map((service) => service.value),
-          phone: data.contactPerson,
+          phone: data.contactNumber,
         },
       }).unwrap();
       dispatch(commonActions.setTriggerReload());
@@ -120,7 +120,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
             countryOptions={countryOptions}
             errors={errors}
             currencyOptions={currencyOptions}
-            servicesOptions={servicesOptions}
+            itemsOptions={itemsOptions}
             register={register}
             control={control}
           />
