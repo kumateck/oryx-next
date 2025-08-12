@@ -9,6 +9,7 @@ import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
 import { AuditModules, fullname, OperationAction } from "@/lib";
 import {
+  ProductionActivityDto,
   ProductionScheduleProductDtoRead,
   useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
   useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery,
@@ -29,7 +30,9 @@ const Board = () => {
   >([]);
   const [productInfo, setProductInfo] =
     React.useState<ProductionScheduleProductDtoRead>();
-  const [loadActivity, { data, isLoading, isFetching }] =
+  const [activityInfo, setActivityInfo] =
+    React.useState<ProductionActivityDto>();
+  const [loadActivity, { isLoading, isFetching }] =
     useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery();
   const [loadProductInfo] =
     useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery();
@@ -55,11 +58,12 @@ const Board = () => {
         productId: activity?.product?.id as string,
       }).unwrap();
       setProductInfo(product);
-      const steps = data?.steps;
+      setActivityInfo(activity);
+      const steps = activity?.steps;
       const activitySteps = steps?.map((step) => ({
         id: step.id as string,
         title: step.operation?.name as string,
-        isActive: step.id === data?.currentStep?.id,
+        isActive: step.id === activity?.currentStep?.id,
         status: step.status,
         order: step.order,
         description: step.operation?.description as string,
@@ -83,6 +87,7 @@ const Board = () => {
           formId: x?.productAnalyticalRawData?.id as string,
         })),
       })) as TimelineItemProps[];
+
       setActivitiesSteps(activitySteps);
     } catch (error) {
       console.log(error);
@@ -95,24 +100,26 @@ const Board = () => {
 
       <div className="flex flex-col gap-0.5">
         <span className="text-2xl font-medium text-primary-inverted">
-          {data?.product?.name}
+          {activityInfo?.product?.name}
         </span>
         <div>
           <ul className="flex items-center gap-4">
             <li>
               <span className="block text-sm font-normal">Product Code:</span>
               <span className="block font-semibold">
-                {data?.product?.code}{" "}
+                {activityInfo?.product?.code}{" "}
               </span>
             </li>{" "}
             <li>
               <span className="block">Schedule Code:</span>
-              <span className="block">{data?.productionSchedule?.code}</span>
+              <span className="block">
+                {activityInfo?.productionSchedule?.code}
+              </span>
             </li>
           </ul>
         </div>
         <span className="text-sm font-normal text-neutral-default">
-          {data?.product?.description}
+          {activityInfo?.product?.description}
         </span>
       </div>
       <ScrollablePageWrapper className="px-10 py-5">
@@ -120,8 +127,8 @@ const Board = () => {
           productInfo={productInfo}
           steps={activitiesSteps}
           activityId={activityId}
-          productId={data?.product?.id as string}
-          scheduleId={data?.productionSchedule?.id as string}
+          productId={activityInfo?.product?.id as string}
+          scheduleId={activityInfo?.productionSchedule?.id as string}
         />
       </ScrollablePageWrapper>
     </BgWrapper>
