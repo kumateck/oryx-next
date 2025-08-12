@@ -14,7 +14,6 @@ import {
   OvertimeRequestDtoRead,
   WarehouseLocationRackDto,
   useDeleteApiV1OvertimeRequestsByIdMutation,
-  useLazyGetApiV1OvertimeRequestsQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
@@ -46,7 +45,6 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
     {} as WarehouseLocationRackDto,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadOvertimeRequests] = useLazyGetApiV1OvertimeRequestsQuery();
   const dispatch = useDispatch();
   // check permissions here
   // const { hasPermissionAccess } = useUserPermissions();
@@ -145,9 +143,6 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             }).unwrap();
             toast.success("Overtime request deleted successfully");
             dispatch(commonActions.setTriggerReload());
-            loadOvertimeRequests({
-              pageSize: 30,
-            });
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

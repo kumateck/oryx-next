@@ -23,7 +23,7 @@ const SampleForm = <TFieldValues extends FieldValues>({
           {
             label: "No. of Containers Sampled",
             type: InputTypes.NUMBER,
-            register: register("containerSampled" as Path<TFieldValues>, {
+            register: register("numberOfContainers" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
             placeholder: "Enter number",

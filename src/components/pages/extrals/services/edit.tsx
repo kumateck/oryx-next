@@ -96,7 +96,7 @@ export function Edit({ isOpen, onClose, details }: Props) {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ProductStandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.Service,
           modelId: (serviceId as ServiceDto).id as string,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

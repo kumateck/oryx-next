@@ -1,4 +1,5 @@
 import { type LucideIconProps } from "@/components/ui";
+import { AnalyticalTestRequestStatus } from "@/lib";
 
 // Define the sub-item structure for nested menu items.
 interface SubItem {
@@ -396,39 +397,6 @@ export const ROUTES: Route[] = [
     ],
   },
   {
-    title: "Access Control",
-    menu: [
-      {
-        title: "Access Management",
-        icon: "Folder",
-        items: [
-          {
-            title: "Manage Roles",
-            url: "/access-management/roles",
-          },
-          {
-            title: "Manage Permissions",
-            url: "/access-management/permissions",
-          },
-        ],
-      },
-      {
-        title: "User Management",
-        icon: "Folder",
-        items: [
-          {
-            title: "Manage Users Directory",
-            url: "/access-management/users",
-          },
-          {
-            title: "Audit Trail",
-            url: "/access-management/audit-trail",
-          },
-        ],
-      },
-    ],
-  },
-  {
     title: "Quality Assurance",
     menu: [
       {
@@ -449,9 +417,8 @@ export const ROUTES: Route[] = [
       },
       {
         title: "Analytical Test Requests",
-        url: "/atr",
+        url: `/atr?type=${AnalyticalTestRequestStatus.New}`,
         icon: "ShieldCheck",
-        isActive: false,
       },
       {
         title: "Pending Approvals",
@@ -465,11 +432,18 @@ export const ROUTES: Route[] = [
     title: "Quality Control",
     menu: [
       {
+        title: "Analytical Test Requests",
+        url: `/atr?type=${AnalyticalTestRequestStatus.Sampled}`,
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
         title: "Material STP",
         url: "/qc/material-stp",
         icon: "BookUser",
         isActive: false,
       },
+
       {
         title: "Product STP",
         url: "/qc/products-stp",
@@ -506,6 +480,39 @@ export const ROUTES: Route[] = [
         url: "/qc/product-specification",
         isActive: false,
         icon: "BookUser",
+      },
+    ],
+  },
+  {
+    title: "Access Control",
+    menu: [
+      {
+        title: "Access Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Roles",
+            url: "/access-management/roles",
+          },
+          {
+            title: "Manage Permissions",
+            url: "/access-management/permissions",
+          },
+        ],
+      },
+      {
+        title: "User Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Users Directory",
+            url: "/access-management/users",
+          },
+          {
+            title: "Audit Trail",
+            url: "/access-management/audit-trail",
+          },
+        ],
       },
     ],
   },

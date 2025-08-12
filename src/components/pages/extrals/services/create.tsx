@@ -108,7 +108,7 @@ export function CreateService({ isOpen, onClose }: CreateServiceProps) {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ProductStandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.Service,
           modelId: serviceId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

@@ -8,7 +8,11 @@ import { useDispatch } from "react-redux";
 import { TimelineLayout } from "@/components/ui/timeline";
 import { TimelineItemProps } from "@/components/ui/timeline/type";
 import { AuditModules, fullname, OperationAction } from "@/lib";
-import { useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  ProductionScheduleProductDtoRead,
+  useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
+  useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
 import BgWrapper from "@/shared/bg-wrapper";
@@ -20,47 +24,71 @@ const Board = () => {
   const activityId = id as string;
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const [activitiesSteps, setActivitiesSteps] = React.useState<
+    TimelineItemProps[]
+  >([]);
+  const [productInfo, setProductInfo] =
+    React.useState<ProductionScheduleProductDtoRead>();
   const [loadActivity, { data, isLoading, isFetching }] =
     useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery();
-
+  const [loadProductInfo] =
+    useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery();
   useEffect(() => {
     if (activityId) {
-      loadActivity({
-        productionActivityId: activityId,
-        module: AuditModules.production.name,
-        subModule: AuditModules.production.activities,
-      }).unwrap();
+      handleLoadData(activityId);
     }
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityId, triggerReload]);
-  const steps = data?.steps;
-  const activitySteps = steps?.map((step) => ({
-    id: step.id as string,
-    title: step.operation?.name as string,
-    isActive: step.id === data?.currentStep?.id,
-    status: step.status,
-    order: step.order,
-    description: step.operation?.description as string,
-    imagesLabel: "Responsible Parties",
-    images: step?.responsibleUsers?.map((x) => ({
-      name: fullname(x?.user?.firstName as string, x?.user?.lastName as string),
-      url: x?.user?.avatar,
-    })),
-    actions: step?.responsibleUsers?.map((x) => ({
-      user: {
-        id: x?.user?.id as string,
-        fullname: fullname(
-          x?.user?.firstName as string,
-          x?.user?.lastName as string,
-        ),
-      },
-      action: x?.action as OperationAction,
-      formId: x?.productAnalyticalRawData?.id as string,
-    })),
-  })) as TimelineItemProps[];
+
+  const handleLoadData = async (activityId: string) => {
+    try {
+      const activity = await loadActivity({
+        productionActivityId: activityId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.activities,
+      }).unwrap();
+      const product = await loadProductInfo({
+        productionScheduleId: activity?.productionSchedule?.id as string,
+        productId: activity?.product?.id as string,
+      }).unwrap();
+      setProductInfo(product);
+      const steps = data?.steps;
+      const activitySteps = steps?.map((step) => ({
+        id: step.id as string,
+        title: step.operation?.name as string,
+        isActive: step.id === data?.currentStep?.id,
+        status: step.status,
+        order: step.order,
+        description: step.operation?.description as string,
+        imagesLabel: "Responsible Parties",
+        images: step?.responsibleUsers?.map((x) => ({
+          name: fullname(
+            x?.user?.firstName as string,
+            x?.user?.lastName as string,
+          ),
+          url: x?.user?.avatar,
+        })),
+        actions: step?.responsibleUsers?.map((x) => ({
+          user: {
+            id: x?.user?.id as string,
+            fullname: fullname(
+              x?.user?.firstName as string,
+              x?.user?.lastName as string,
+            ),
+          },
+          action: x?.action as OperationAction,
+          formId: x?.productAnalyticalRawData?.id as string,
+        })),
+      })) as TimelineItemProps[];
+      setActivitiesSteps(activitySteps);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <BgWrapper>
       {(isLoading || isFetching) && <SkeletonLoadingPage />}
@@ -89,7 +117,8 @@ const Board = () => {
       </div>
       <ScrollablePageWrapper className="px-10 py-5">
         <TimelineLayout
-          steps={activitySteps}
+          productInfo={productInfo}
+          steps={activitiesSteps}
           activityId={activityId}
           productId={data?.product?.id as string}
           scheduleId={data?.productionSchedule?.id as string}

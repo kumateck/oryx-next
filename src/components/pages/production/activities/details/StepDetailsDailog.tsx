@@ -136,7 +136,7 @@ function StepDetailsDailog({ isOpen, onClose, stepId }: DialogProps) {
       <DialogContent className="max-w-2xl w-full">
         <AlertDialogHeader>
           <DialogTitle className="text-lg">
-            Finished Goods Transfare Note
+            Finished Goods Transfer Note
           </DialogTitle>
           <DialogDescription>
             {data?.productionSchedule?.code}

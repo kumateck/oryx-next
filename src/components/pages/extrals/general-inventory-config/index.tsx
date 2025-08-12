@@ -89,7 +89,7 @@ function Page() {
               name: "IT Store",
               onClick: () => {
                 router.push(
-                  `/extrals/general-inventory-config/create?storeType=${InventoryType.ITStore}`,
+                  `/extrals/general-inventory-config/create?storeType=${InventoryType["IT Store"]}`,
                 );
               },
             },

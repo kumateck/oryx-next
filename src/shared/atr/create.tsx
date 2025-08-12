@@ -12,13 +12,16 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CreateATRDto, CreateATRValidator } from "./types";
-import { cn, CollectionTypes, Option } from "@/lib";
+import { cn, CollectionTypes, Option, ProductionStatus } from "@/lib";
 import {
   TestStage,
   usePostApiV1CollectionMutation,
   usePostApiV1QaAnalyticalTestsMutation,
+  usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import AtrForm from "./form";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 export interface DefaultProps {
   batchManufacturingRecordId: string;
@@ -45,8 +48,12 @@ const CreateATR = ({
   productionActivityStepId,
   defaultValues,
 }: Props) => {
+  const dispatch = useDispatch();
   const [createATRMutation, { isLoading }] =
     usePostApiV1QaAnalyticalTestsMutation();
+  const [updateActivity, { isLoading: isUpdating }] =
+    usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation();
+
   const {
     handleSubmit,
     register,
@@ -75,8 +82,7 @@ const CreateATR = ({
 
   const onSubmit = async (data: CreateATRDto) => {
     try {
-      // Call the API to create the service provider
-      await createATRMutation({
+      const atrPayload = {
         createAnalyticalTestRequest: {
           stage: Number(data.stage) as TestStage,
           stateId: data.state.value,
@@ -88,8 +94,18 @@ const CreateATR = ({
           expiryDate: defaultValues?.expiryDate,
           manufacturingDate: defaultValues?.manufacturingDate,
         },
-      });
+      };
+
+      const activityPayload = {
+        productionStepId: productionActivityStepId,
+        status: ProductionStatus.InProgress,
+      };
+      await Promise.all([
+        createATRMutation(atrPayload).unwrap(),
+        updateActivity(activityPayload).unwrap(),
+      ]);
       toast.success("ATR created successfully");
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
     } catch (error) {
@@ -139,9 +155,9 @@ const CreateATR = ({
               className="flex items-center gap-2"
             >
               <Icon
-                name={isLoading ? "LoaderCircle" : "Plus"}
+                name={isLoading || isUpdating ? "LoaderCircle" : "Plus"}
                 className={cn("h-4 w-4", {
-                  "animate-spin": isLoading,
+                  "animate-spin": isLoading || isUpdating,
                 })}
               />
               <span>Save</span>

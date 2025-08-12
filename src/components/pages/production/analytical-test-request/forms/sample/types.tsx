@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 const atrSchema = z.object({
-  containerSampled: z
+  numberOfContainers: z
     .number({
       required_error: "No. of Containers Sampled is required",
       invalid_type_error: "No. of Containers Sampled must be a number",

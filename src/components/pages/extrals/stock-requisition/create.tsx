@@ -60,7 +60,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
         <DialogHeader>
-          <DialogTitle>Edit Vendor</DialogTitle>
+          <DialogTitle>Create Stock Requisition</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <StockRequisition

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageWrapper from "@/components/layout/wrapper";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
@@ -11,6 +11,11 @@ import { useUserPermissions } from "@/hooks/use-permission";
 import { useRouter } from "next/navigation";
 import Create from "./create";
 import { Button, Icon } from "@/components/ui";
+import { useLazyGetApiV1ProcurementInventoryQuery } from "@/lib/redux/api/openapi.generated";
+import { useDispatch } from "react-redux";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useSelector } from "@/lib/redux/store";
+import { commonActions } from "@/lib/redux/slices/common";
 
 const Page = () => {
   const router = useRouter();
@@ -18,7 +23,26 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
-  const data = [];
+  const dispatch = useDispatch();
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debounceValue = useDebounce(searchValue, 500);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+
+  const [loadPurchaseRequisitions, { data: purchaseRequisitions, isLoading }] =
+    useLazyGetApiV1ProcurementInventoryQuery();
+
+  useEffect(() => {
+    loadPurchaseRequisitions({
+      page,
+      pageSize,
+      searchQuery: debounceValue,
+    });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize, debounceValue, triggerReload]);
+  const data = purchaseRequisitions?.data || [];
   const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
   const hasAccess = hasPermissionAccess(
@@ -29,8 +53,6 @@ const Page = () => {
     //redirect to no access
     return <NoAccess />;
   }
-
-  console.log(page);
 
   return (
     <div>
@@ -62,7 +84,10 @@ const Page = () => {
         <ServerDatatable
           data={data}
           columns={columns}
-          isLoading={false}
+          isLoading={isLoading}
+          onRowClick={(row) =>
+            router.push(`/extrals/purchase-requisitions/${row.id}/details`)
+          }
           setPage={setPage}
           setPageSize={setPageSize}
           meta={{
