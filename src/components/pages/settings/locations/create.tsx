@@ -69,7 +69,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       await createWarehouseLocation({
         createWarehouseLocationRequest: payload,
         warehouseId: data?.warehouseId?.value,
-      });
+      }).unwrap();
       toast.success("Location created successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission

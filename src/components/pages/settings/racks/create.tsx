@@ -14,13 +14,14 @@ import { Option, WarehouseType } from "@/lib";
 import {
   CreateWarehouseLocationRackRequest,
   useLazyGetApiV1WarehouseLocationQuery,
-  useLazyGetApiV1WarehouseRackQuery,
   usePostApiV1WarehouseByLocationIdRackMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import "./types";
 
@@ -29,7 +30,7 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const dispatch = useDispatch();
   const [createWarehouseLocationRack, { isLoading }] =
     usePostApiV1WarehouseByLocationIdRackMutation();
 
@@ -52,12 +53,9 @@ const Create = ({ isOpen, onClose }: Props) => {
       await createWarehouseLocationRack({
         locationId: data?.locationId.value,
         createWarehouseLocationRackRequest: payload,
-      });
+      }).unwrap();
       toast.success("Rack created successfully");
-      loadWarehouseLocationRacks({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {

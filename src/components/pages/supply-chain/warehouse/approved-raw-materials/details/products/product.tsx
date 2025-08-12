@@ -3,13 +3,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import {
-  ErrorResponse,
-  Units,
-  convertToLargestUnit,
-  isErrorResponse,
-  quantityAvailable,
-} from "@/lib";
+import { Units, convertToLargestUnit, quantityAvailable } from "@/lib";
 import {
   ProductionScheduleProductDto,
   useGetApiV1ProductByProductIdQuery,
@@ -23,6 +17,9 @@ import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import Purchase from "./purchase";
 import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import ThrowErrorMessage from "@/lib/throw-error";
 
 interface ProductProps {
   productId: string;
@@ -30,6 +27,7 @@ interface ProductProps {
   tab: ProductionScheduleProductDto;
 }
 const Product = ({ productId, scheduleId, tab }: ProductProps) => {
+  const dispatch = useDispatch();
   const [startProductionMutation, { isLoading: isProcessingStart }] =
     usePostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdMutation();
   const { data: activity } =
@@ -191,9 +189,10 @@ const Product = ({ productId, scheduleId, tab }: ProductProps) => {
         productionScheduleId: scheduleId,
       }).unwrap();
       toast.success("Production started successfully");
+      dispatch(commonActions.setTriggerReload());
       // router.push(`/production/schedules`);
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      ThrowErrorMessage(error);
     }
   };
   return (

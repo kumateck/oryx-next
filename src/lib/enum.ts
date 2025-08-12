@@ -13,9 +13,11 @@ export enum SpecificationReference {
   InHouse,
 }
 export enum AnalyticalTestRequestStatus {
-  Created,
+  New,
   Sampled,
+  Acknowledged,
   Testing,
+  Released,
 }
 export enum AnalyticalTestRequestStage {
   Intermediate,
@@ -100,6 +102,11 @@ export enum ProductionStatus {
   Completed,
   Delayed,
   Cancelled,
+}
+export enum ScheduleStatus {
+  New,
+  InProgress,
+  Completed,
 }
 export enum PurchaseOrderStatusList {
   New = 0,
@@ -311,6 +318,11 @@ export enum MaterialStatus {
   InHouse = 7,
 }
 
+export enum ProductBMRStatus {
+  Requested,
+  Issued,
+}
+
 export enum Units {
   ML = "ml",
   MG = "mg",
@@ -390,7 +402,10 @@ export enum ShipmentStatus {
   Arrived = 3,
   AtPort = 4,
 }
-
+export enum ShipmentDocumentType {
+  Document,
+  Waybill,
+}
 export enum WaybillStatus {
   New = 0,
   Cleared = 1,

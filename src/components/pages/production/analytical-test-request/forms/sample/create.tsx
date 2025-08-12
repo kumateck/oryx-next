@@ -11,7 +11,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import SampleForm from "./form";
 import { CreateATRDto, CreateATRValidator } from "./types";
-import { usePutApiV1QaAnalyticalTestsByIdMutation } from "@/lib/redux/api/openapi.generated";
+import { usePutApiV1QaAnalyticalTestsStatusByIdMutation } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { AnalyticalTestRequestStatus } from "@/lib";
@@ -34,17 +34,17 @@ export const TakeSample = ({ isOpen, onClose, id }: Props) => {
     resolver: CreateATRValidator,
   });
   const [updateMutation, { isLoading }] =
-    usePutApiV1QaAnalyticalTestsByIdMutation();
+    usePutApiV1QaAnalyticalTestsStatusByIdMutation();
   const onSubmit = async (data: CreateATRDto) => {
     try {
       // Call the API to create the service provider
       await updateMutation({
         // Assuming you have an ID to update
         id,
-        createAnalyticalTestRequest: {
+        updateAnalyticalTestRequest: {
           sampledQuantity: data.sampledQuantity,
+          numberOfContainers: data.numberOfContainers,
           status: AnalyticalTestRequestStatus.Sampled,
-          // containerSampled: data.containerSampled,
         },
       });
       toast.success("ATR Sampled Taken successfully");

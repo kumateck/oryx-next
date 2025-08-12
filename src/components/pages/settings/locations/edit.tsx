@@ -77,7 +77,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await editLocation({
         locationId: details.id as string,
         createWarehouseLocationRequest: payload,
-      });
+      }).unwrap();
       toast.success("Location updated successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
