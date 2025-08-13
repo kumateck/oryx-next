@@ -1,5 +1,12 @@
 import { FormWizard } from "@/components/form-inputs";
-import { Card, CardContent, CardHeader, Label, Switch } from "@/components/ui";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  FetchOptionsResult,
+  Label,
+  Switch,
+} from "@/components/ui";
 import { cn, InputTypes, Option } from "@/lib";
 import React from "react";
 import {
@@ -16,17 +23,21 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  productOptions: Option[];
-  userOptions: Option[];
+  fetchProducts: (search: string, page: number) => Promise<FetchOptionsResult>;
+  fetchUsers: (search: string, page: number) => Promise<FetchOptionsResult>;
   formOptions: Option[];
+  isLoadingProducts: boolean;
   assignSpec: boolean;
+  isLoadingUsers: boolean;
 }
 const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
-  productOptions,
+  fetchProducts,
+  isLoadingProducts,
   formOptions,
-  userOptions,
+  fetchUsers,
+  isLoadingUsers,
   errors,
   assignSpec,
 }: Props<TFieldValues, TContext>) => {
@@ -40,11 +51,12 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
             config={[
               {
                 label: "Product",
-                type: InputTypes.SELECT,
+                type: InputTypes.ASYNC_SELECT,
                 name: "productId",
                 control: control as Control,
                 placeholder: "Select Product",
-                options: productOptions,
+                isLoading: isLoadingProducts,
+                fetchOptions: fetchProducts,
                 errors,
               },
               {
@@ -186,10 +198,11 @@ const SpecificationForm = <TFieldValues extends FieldValues, TContext>({
                 {
                   label: "Assignee",
                   control: control as Control,
-                  type: InputTypes.SELECT,
+                  type: InputTypes.ASYNC_SELECT,
+                  fetchOptions: fetchUsers,
                   name: "userId",
                   placeholder: "Assignee",
-                  options: userOptions,
+                  isLoading: isLoadingUsers,
                   errors,
                 },
               ]}
