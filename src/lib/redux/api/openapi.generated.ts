@@ -3241,6 +3241,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1MaterialSpecificationsMaterialbyMaterialId: build.query<
+      GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiResponse,
+      GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-specifications/material${queryArg.materialId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1MaterialStps: build.mutation<
       PostApiV1MaterialStpsApiResponse,
       PostApiV1MaterialStpsApiArg
@@ -6133,6 +6145,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/product-specifications/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductSpecificationsProductByProductId: build.query<
+      GetApiV1ProductSpecificationsProductByProductIdApiResponse,
+      GetApiV1ProductSpecificationsProductByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-specifications/product/${queryArg.productId}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -10587,6 +10611,15 @@ export type DeleteApiV1MaterialSpecificationsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiResponse =
+  /** status 200 OK */ MaterialSpecificationDto;
+export type GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiArg = {
+  materialId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1MaterialStpsApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialStpsApiArg = {
   /** The module this request falls under */
@@ -12738,6 +12771,15 @@ export type PutApiV1ProductSpecificationsByIdApiArg = {
 export type DeleteApiV1ProductSpecificationsByIdApiResponse = unknown;
 export type DeleteApiV1ProductSpecificationsByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductSpecificationsProductByProductIdApiResponse =
+  /** status 200 OK */ ProductSpecificationDtoRead;
+export type GetApiV1ProductSpecificationsProductByProductIdApiArg = {
+  productId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -15859,7 +15901,7 @@ export type FormSectionRead = {
   fields?: FormFieldRead[] | null;
 };
 export type BatchSize = 0 | 1;
-export type MarketType = {
+export type Customer = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -15871,8 +15913,11 @@ export type MarketType = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
 };
-export type MarketTypeRead = {
+export type CustomerRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -15884,6 +15929,9 @@ export type MarketTypeRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
 };
 export type ProductionScheduleProduct = {
   id?: string;
@@ -15894,7 +15942,7 @@ export type ProductionScheduleProduct = {
   batchNumber?: string | null;
   batchSize?: BatchSize;
   marketTypeId?: string | null;
-  marketType?: MarketType;
+  marketType?: Customer;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -15908,7 +15956,7 @@ export type ProductionScheduleProductRead = {
   batchNumber?: string | null;
   batchSize?: BatchSize;
   marketTypeId?: string | null;
-  marketType?: MarketTypeRead;
+  marketType?: CustomerRead;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -21197,7 +21245,7 @@ export type CreateProductionOrderProduct = {
   volumePerPiece?: number;
 };
 export type CreateProductionOrderRequest = {
-  productionOrderCode?: string | null;
+  code?: string | null;
   customerId: string;
   products?: CreateProductionOrderProduct[] | null;
 };
@@ -21213,8 +21261,7 @@ export type ProductionOrderDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  productionOrderCode?: string | null;
-  customerId?: string;
+  code?: string | null;
   customer?: CustomerDto;
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
@@ -23515,6 +23562,8 @@ export const {
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
+  useGetApiV1MaterialSpecificationsMaterialbyMaterialIdQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialbyMaterialIdQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -23824,6 +23873,8 @@ export const {
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
   useDeleteApiV1ProductSpecificationsByIdMutation,
+  useGetApiV1ProductSpecificationsProductByProductIdQuery,
+  useLazyGetApiV1ProductSpecificationsProductByProductIdQuery,
   usePostApiV1ProductStpsMutation,
   useGetApiV1ProductStpsQuery,
   useLazyGetApiV1ProductStpsQuery,

@@ -93,7 +93,7 @@ const Page = () => {
         {type > 0 && (
           <AccessTabs
             handleTabClick={handleTabClick}
-            containerClassName="w-96"
+            containerClassName="w-full "
             type={type}
             tabs={[
               {
@@ -113,6 +113,10 @@ const Page = () => {
               {
                 label: "Under Test",
                 value: AnalyticalTestRequestStatus.Testing.toString(),
+              },
+              {
+                label: "Test Taken",
+                value: AnalyticalTestRequestStatus.TestTaken.toString(),
               },
             ]}
           />

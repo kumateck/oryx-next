@@ -69,7 +69,9 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
     );
   };
   const handleViewTestResponse = () => {
-    router.push(`/complete/form/${row.original.id}`);
+    router.push(
+      `/atr/${row.original.id}/${row.original.batchManufacturingRecord?.id}`,
+    );
   };
   return (
     <section className="flex items-center justify-end gap-2">

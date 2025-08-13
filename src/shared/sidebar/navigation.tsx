@@ -386,7 +386,7 @@ export const ROUTES: Route[] = [
           // },
           {
             title: "Shift Schedule Report Upload",
-            url: "/hr/shift-schedul-upload",
+            url: "/hr/shift-schedule-upload",
           },
         ],
       },

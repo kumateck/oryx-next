@@ -18,6 +18,7 @@ import {
   Units,
   convertToLargestUnit,
   isErrorResponse,
+  splitWords,
 } from "@/lib";
 import {
   BatchStatus,
@@ -239,9 +240,9 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[row.original.status as BatchStatus]}`}
+            className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[row.original.status as BatchStatus]}`}
           >
-            {BatchStatusEnum[row.original.status as BatchStatus]}
+            {splitWords(BatchStatusEnum[row.original.status as BatchStatus])}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
