@@ -1,12 +1,13 @@
 "use client";
-import { fileToBase64, FormComplete } from "@/lib";
+import { AnalyticalTestRequestStage, fileToBase64, FormComplete } from "@/lib";
 import {
   useLazyGetApiV1FormByFormIdQuery,
-  useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
+  useLazyGetApiV1ProductArdProductByProductIdQuery,
+  useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePostApiV1FormResponsesMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import FormSection from "./section";
@@ -24,15 +25,21 @@ const FormResponseForProduct = () => {
   const router = useRouter();
 
   const { id, form } = useParams();
+  const searchParams = useSearchParams();
+  const stage = searchParams.get(
+    "stage",
+  ) as unknown as AnalyticalTestRequestStage; // Extracts 'type' from URL
+
   const completeId = id as string;
   const completeForm = Number(form) as unknown as FormComplete;
 
   const [currentFormId, setCurrentFormId] = useState<string>("");
-
+  const [loadProductArd] = useLazyGetApiV1ProductArdProductByProductIdQuery();
   const [formResponseMutation, { isLoading }] =
     usePostApiV1FormResponsesMutation();
-  const [loadMaterialBatchData, { isLoading: isDataLoading }] =
-    useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery();
+
+  const [loadProductBatchData, { isLoading: isDataLoading }] =
+    useLazyGetApiV1ProductionScheduleManufacturingByIdQuery();
 
   const [loadSpecData, { isLoading: isSpecLoading }] =
     useLazyGetApiV1ProductSpecificationsByIdQuery();
@@ -42,17 +49,17 @@ const FormResponseForProduct = () => {
 
   useEffect(() => {
     if (completeForm === FormComplete.Batch) {
-      handleLoadMaterialBatchData(completeId);
+      handleLoadProductBatchData(completeId);
     }
 
     if (completeForm === FormComplete.Specification) {
-      handleMaterialSpecification(completeId);
+      handleProductSpecification(completeId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completeId, completeForm]);
 
-  const handleMaterialSpecification = async (id: string) => {
+  const handleProductSpecification = async (id: string) => {
     try {
       const response = await loadSpecData({
         id,
@@ -65,12 +72,18 @@ const FormResponseForProduct = () => {
     }
   };
 
-  const handleLoadMaterialBatchData = async (id: string) => {
+  const handleLoadProductBatchData = async (id: string) => {
     try {
-      const response = await loadMaterialBatchData({
-        materialBatchId: id,
+      const response = await loadProductBatchData({
+        id,
       }).unwrap();
-      const batchFormId = response?.form?.id as string;
+      const productResponse = await loadProductArd({
+        productId: response?.product?.id as string,
+      }).unwrap();
+      const findSpec = productResponse?.find(
+        (item) => Number(item.stage) === Number(stage),
+      );
+      const batchFormId = findSpec?.form?.id as string;
       setCurrentFormId(batchFormId);
       await handleLoadForm(batchFormId);
     } catch (error) {
