@@ -50,8 +50,8 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
         updateAnalyticalTestRequest: {
           status,
         },
-      }).unwrap(),
-        toast.success("ATR Updated successfully");
+      }).unwrap();
+      toast.success("ATR Updated successfully");
       dispatch(commonActions.setTriggerReload());
       setDetails(null);
       setIsStartTestModalOpen(false);
