@@ -56,13 +56,17 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
       setDetails(null);
       setIsStartTestModalOpen(false);
       if (status === AnalyticalTestRequestStatus.Testing) {
-        router.push(
-          `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
-        );
+        routerToFillForm();
       }
     } catch (error) {
       ThrowErrorMessage(error);
     }
+  };
+
+  const routerToFillForm = () => {
+    router.push(
+      `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}&stepId=${row.original.productionActivityStep?.id}`,
+    );
   };
 
   return (
@@ -105,9 +109,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
           <DropdownMenuItem
             className="group"
             onClick={() => {
-              router.push(
-                `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
-              );
+              routerToFillForm();
             }}
           >
             Complete Test
