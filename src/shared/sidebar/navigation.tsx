@@ -400,7 +400,7 @@ export const ROUTES: Route[] = [
     title: "Quality Assurance",
     menu: [
       {
-        title: "Issue BMR",
+        title: "Issue BMR/BPR",
         url: "/qa/issue-bmr",
         icon: "ShieldCheck",
         isActive: false,
