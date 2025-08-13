@@ -268,6 +268,8 @@ const ReviewSubmitStep = <TFieldValues extends FieldValues>({
           src={imagePreview}
           alt="Image Preview"
           className="w-full h-full object-cover"
+          width={180}
+          height={180}
         />
       </div>
       {sections.map((section) => (

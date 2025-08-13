@@ -72,7 +72,7 @@ interface TextInputProps<TFieldValues extends FieldValues>
 }
 
 interface FileInputProps extends BaseInputProps<FieldValues> {
-  type: InputTypes.IMAGE | InputTypes.COLOR;
+  type: InputTypes.COLOR;
   control: Control<FieldValues>;
   name: string;
   defaultValue?: string;

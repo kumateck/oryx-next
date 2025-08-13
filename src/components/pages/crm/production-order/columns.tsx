@@ -9,9 +9,7 @@ export const columns: ColumnDef<ProductionOrderDto>[] = [
     accessorKey: "productOrderCode",
     header: "Product Order Code",
     cell: ({ row }) => (
-      <div className="min-w-36">
-        {row.original.productionOrderCode ?? "N/A"}
-      </div>
+      <div className="min-w-36">{row.original.code ?? "N/A"}</div>
     ),
   },
   {
