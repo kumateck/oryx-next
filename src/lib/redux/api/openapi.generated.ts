@@ -2055,6 +2055,7 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          store: queryArg.store,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -2094,18 +2095,6 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/items/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createItemsRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ItemInventoryTransactions: build.query<
-      GetApiV1ItemInventoryTransactionsApiResponse,
-      GetApiV1ItemInventoryTransactionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/item-inventory-transactions`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -5822,6 +5811,19 @@ const injectedRtkApi = api.injectEndpoints({
       >({
         query: (queryArg) => ({
           url: `/api/v1/production-schedule/final-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
+    getApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductId:
+      build.query<
+        GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiResponse,
+        GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-requisition/raw/${queryArg.productionScheduleId}/${queryArg.productId}`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
@@ -9733,6 +9735,7 @@ export type PostApiV1ItemsApiArg = {
 export type GetApiV1ItemsApiResponse =
   /** status 200 OK */ ItemDtoIEnumerablePaginateable;
 export type GetApiV1ItemsApiArg = {
+  store?: Store;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -9765,15 +9768,6 @@ export type PutApiV1ItemsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   createItemsRequest: CreateItemsRequest;
-};
-export type GetApiV1ItemInventoryTransactionsApiResponse =
-  /** status 200 OK */ ItemInventoryTransactionDtoRead;
-export type GetApiV1ItemInventoryTransactionsApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
 };
 export type PostApiV1ItemsStockRequisitionsApiResponse =
   /** status 200 OK */ string;
@@ -12496,6 +12490,19 @@ export type GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProdu
     /** The sub module this request falls under */
     subModule?: any;
   };
+export type GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiResponse =
+  /** status 200 OK */ RequisitionDtoRead;
+export type GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiArg =
+  {
+    /** The Production Schedule ID. */
+    productionScheduleId: string;
+    /** The Product ID. */
+    productId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiResponse =
   /** status 200 OK */ RequisitionDtoRead;
 export type GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiArg =
@@ -15065,6 +15072,7 @@ export type DamageStatus = 0 | 1;
 export type CreateDamagedStockRequest = {
   itemId: string;
   damageStatus: DamageStatus;
+  quantityDamaged: number;
   remarks?: string | null;
 };
 export type InventoryClassification = 0 | 1;
@@ -15080,6 +15088,7 @@ export type ItemDto = {
   unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
+  batchNumber?: string | null;
   store?: Store;
   minimumLevel?: number;
   maximumLevel?: number;
@@ -19423,6 +19432,7 @@ export type CreateItemsRequest = {
   classification: InventoryClassification;
   unitOfMeasureId: string;
   hasBatchNumber?: boolean;
+  batchNumber?: string | null;
   minimumLevel?: number;
   maximumLevel?: number;
   reorderLevel?: number;
@@ -19439,28 +19449,6 @@ export type ItemDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
-};
-export type ItemInventoryTransactionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  date?: string;
-  memoId?: string;
-  memo?: MemoDto;
-  quantityReceived?: number;
-  quantityIssued?: number;
-  balanceQuantity?: number;
-};
-export type ItemInventoryTransactionDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  date?: string;
-  memoId?: string;
-  memo?: MemoDtoRead;
-  quantityReceived?: number;
-  quantityIssued?: number;
-  balanceQuantity?: number;
 };
 export type StockItemsList = {
   itemId?: string;
@@ -23393,8 +23381,6 @@ export const {
   useGetApiV1ItemsByIdQuery,
   useLazyGetApiV1ItemsByIdQuery,
   usePutApiV1ItemsByIdMutation,
-  useGetApiV1ItemInventoryTransactionsQuery,
-  useLazyGetApiV1ItemInventoryTransactionsQuery,
   usePostApiV1ItemsStockRequisitionsMutation,
   useGetApiV1ItemsStockRequisitionsQuery,
   useLazyGetApiV1ItemsStockRequisitionsQuery,
@@ -23790,6 +23776,8 @@ export const {
   useDeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdMutation,
   useGetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdQuery,
+  useLazyGetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdQuery,
   useGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleReturnBeforeProductionMutation,

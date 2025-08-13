@@ -45,7 +45,10 @@ const TemplateCards = () => {
   const fetchWorkflows = async () => {
     try {
       // Assuming your query accepts a page parameter (adjust if necessary)
-      const response = await loadTemplates({ page }).unwrap();
+      const response = await loadTemplates({
+        page,
+        pageSize: PAGE_SIZE,
+      }).unwrap();
       const loadedQuestions = response.data || [];
 
       // Append new questions to the existing list
@@ -117,10 +120,10 @@ const TemplateCards = () => {
   return (
     <div className="space-y-5">
       <div
+        className="w-full"
         id="scrollableDiv"
-        className="scrollbar-grey-red-600 scrollbar-track-grey-300 scrollbar-thin h-64 overflow-y-auto p-4 pb-20"
         style={{
-          height: "calc(100vh - 250px)",
+          height: "calc(100vh - 150px)",
           overflow: "auto",
         }}
       >

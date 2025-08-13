@@ -28,30 +28,28 @@ export const TimelineLayout = ({
   const cancelled = productInfo?.cancelled;
   const reason = productInfo?.reasonForCancellation;
 
+  // console.log(cancelled, "cancelled");
   // Render cancellation banner
   const renderCancellationBanner = () => {
-    if (!cancelled) return null;
+    if (cancelled) {
+      return (
+        <Card className="border-red-200 bg-red-50 p-4 mb-6">
+          <div className="flex items-center gap-2">
+            <Icon name="CircleX" className="h-5 w-5 text-red-600" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-red-800">
+                Production Cancelled
+              </h3>
+              {reason && (
+                <p className="text-sm text-red-700 mt-1">Reason: {reason}</p>
+              )}
+            </div>
+          </div>
+        </Card>
+      );
+    }
 
     return (
-      <Card className="border-red-200 bg-red-50 p-4 mb-6">
-        <div className="flex items-center gap-2">
-          <Icon name="CircleX" className="h-5 w-5 text-red-600" />
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-red-800">
-              Production Cancelled
-            </h3>
-            {reason && (
-              <p className="text-sm text-red-700 mt-1">Reason: {reason}</p>
-            )}
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
-  return (
-    <div className="mx-auto w-full pl-0 pr-0 sm:pl-2 md:pl-4 lg:pl-6 xl:pl-12 2xl:pl-24">
-      {renderCancellationBanner()}
       <ol className="relative border-s border-gray-200">
         {steps?.map((item, index) => {
           return (
@@ -71,6 +69,12 @@ export const TimelineLayout = ({
           );
         })}
       </ol>
+    );
+  };
+
+  return (
+    <div className="mx-auto w-full pl-0 pr-0 sm:pl-2 md:pl-4 lg:pl-6 xl:pl-12 2xl:pl-24">
+      {renderCancellationBanner()}
     </div>
   );
 };

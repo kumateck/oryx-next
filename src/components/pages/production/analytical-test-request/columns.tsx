@@ -45,16 +45,13 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
   ) => {
     try {
       // Run both async functions in parallel
-      await Promise.all([
-        updateMutation({
-          id,
-          updateAnalyticalTestRequest: {
-            status,
-          },
-        }),
-      ]);
-
-      toast.success("ATR Updated successfully");
+      await updateMutation({
+        id,
+        updateAnalyticalTestRequest: {
+          status,
+        },
+      }).unwrap(),
+        toast.success("ATR Updated successfully");
       dispatch(commonActions.setTriggerReload());
       setDetails(null);
       setIsStartTestModalOpen(false);
@@ -87,7 +84,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
             className="group"
             onClick={() => {
               setDetails(row.original);
-              setIsStartTestModalOpen(true);
+              setIsAckModalOpen(true);
             }}
           >
             Acknowlegde
