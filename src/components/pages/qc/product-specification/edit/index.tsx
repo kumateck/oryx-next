@@ -20,8 +20,8 @@ import {
   CreateProductSpecificationRequest,
   TestStage,
   useGetApiV1FormQuery,
-  useGetApiV1ProductQuery,
-  useGetApiV1UserQuery,
+  useLazyGetApiV1ProductQuery,
+  useLazyGetApiV1UserQuery,
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -46,12 +46,51 @@ export function EditMaterialSpecification() {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.userId,
   );
-  const { data: product } = useGetApiV1ProductQuery({});
+  const [loadProducts, { data: products, isLoading: isLoadingProducts }] =
+    useLazyGetApiV1ProductQuery();
+  const [loadUsers, { isLoading: isLoadingUsers }] = useLazyGetApiV1UserQuery();
   const [updateProductSpecification, { isLoading }] =
     usePutApiV1ProductSpecificationsByIdMutation();
 
   const [fetchProductSpecification, { data: productSpecification }] =
     useLazyGetApiV1ProductSpecificationsByIdQuery({});
+
+  const loadDataOrSearchForProducts = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadProducts({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
+  const loadDataOrSearchForUsers = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadUsers({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: `${item?.firstName} ${item?.lastName}`,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   const {
     register,
@@ -73,7 +112,7 @@ export function EditMaterialSpecification() {
   const productId = watch("productId");
   useEffect(() => {
     if (productId) {
-      const selectedProduct = product?.data?.find(
+      const selectedProduct = products?.data?.find(
         (option) => option.id === productId.value,
       );
       setValue("labelClaim", selectedProduct?.labelClaim || "Not availabel");
@@ -137,16 +176,6 @@ export function EditMaterialSpecification() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSpecification]);
 
-  const { data: userResults } = useGetApiV1UserQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const users = userResults?.data ?? [];
-  const userOptions = users?.map((user) => ({
-    label: `${user?.firstName} ${user?.lastName} `,
-    value: user.id,
-  })) as Option[];
-
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
@@ -164,12 +193,6 @@ export function EditMaterialSpecification() {
       value: form.id,
     };
   }) as Option[];
-
-  const productOptions =
-    product?.data?.map((product) => ({
-      label: product?.name as string,
-      value: product?.id as string,
-    })) || [];
 
   const onSubmit = async (data: CreateProductSpecificationDto) => {
     const payload: CreateProductSpecificationRequest = {
@@ -221,9 +244,11 @@ export function EditMaterialSpecification() {
           <SpecificationForm
             control={control}
             register={register}
-            userOptions={userOptions}
+            fetchProducts={loadDataOrSearchForProducts}
             formOptions={formOptions}
-            productOptions={productOptions}
+            fetchUsers={loadDataOrSearchForUsers}
+            isLoadingUsers={isLoadingUsers}
+            isLoadingProducts={isLoadingProducts}
             errors={errors}
             assignSpec={assignSpec}
           />

@@ -92,7 +92,7 @@ const Page = () => {
     !hasPermissionAccess(
       PermissionKeys.warehouse.issueRawMaterialStockTransfers,
     ) ||
-    hasPermissionAccess(
+    !hasPermissionAccess(
       PermissionKeys.warehouse.issuePackagingMaterialStockTransfers,
     )
   ) {

@@ -5,7 +5,6 @@ import {
   ErrorResponse,
   FormComplete,
   FormTypeEnum,
-  fullname,
   isErrorResponse,
   Option,
   WorkflowFormType,
@@ -22,8 +21,8 @@ import {
   CreateProductSpecificationRequest,
   TestStage,
   useGetApiV1FormQuery,
-  useGetApiV1ProductQuery,
-  useGetApiV1UserQuery,
+  useLazyGetApiV1ProductQuery,
+  useLazyGetApiV1UserQuery,
   usePostApiV1ProductSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
@@ -34,19 +33,24 @@ import { useSelector } from "@/lib/redux/store";
 function Page() {
   return (
     <ScrollablePageWrapper>
-      <MaterialSpecPage />
+      <ProductsSpecPage />
     </ScrollablePageWrapper>
   );
 }
 
 export default Page;
 
-export function MaterialSpecPage() {
+export function ProductsSpecPage() {
   const router = useRouter();
-  const { data: product } = useGetApiV1ProductQuery({
+
+  const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.Specification,
   });
+  const [loadProducts, { data: products, isLoading: isLoadingProducts }] =
+    useLazyGetApiV1ProductQuery();
+  const [loadUsers, { isLoading: isLoadingUsers }] = useLazyGetApiV1UserQuery();
   const [createProductSpecification, { isLoading }] =
     usePostApiV1ProductSpecificationsMutation();
 
@@ -61,28 +65,14 @@ export function MaterialSpecPage() {
     resolver: CreateProductSpecificationValidator,
   });
 
-  const { data: userResults } = useGetApiV1UserQuery({
-    page: 1,
-    pageSize: 1000,
-  });
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.userId,
   );
-  const users = userResults?.data ?? [];
-  const userOptions = users?.map((user) => ({
-    label: fullname(user?.firstName as string, user?.lastName as string),
-    value: user.id,
-  })) as Option[];
 
   const assignSpec = useWatch<CreateProductSpecificationDto>({
     name: "assignSpec",
     control,
   }) as boolean;
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.Specification,
-  });
 
   // Convert form templates to options
   const formData = formTemplates?.data || [];
@@ -92,17 +82,47 @@ export function MaterialSpecPage() {
       value: form.id,
     };
   }) as Option[];
-
-  const productOptions =
-    product?.data?.map((product) => ({
-      label: product?.name as string,
-      value: product?.id as string,
-    })) || [];
+  const loadDataOrSearchForProducts = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadProducts({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
+  const loadDataOrSearchForUsers = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadUsers({
+      searchQuery,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((item) => ({
+        label: `${item?.firstName} ${item?.lastName}`,
+        value: item.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   const productId = watch("productId");
   useEffect(() => {
     if (productId) {
-      const selectedProduct = product?.data?.find(
+      const selectedProduct = products?.data?.find(
         (option) => option.id === productId.value,
       );
       setValue("labelClaim", selectedProduct?.labelClaim || "Not availabel");
@@ -169,13 +189,14 @@ export function MaterialSpecPage() {
         <SpecificationForm
           control={control}
           register={register}
-          userOptions={userOptions}
           formOptions={formOptions}
-          productOptions={productOptions}
           errors={errors}
+          isLoadingProducts={isLoadingProducts}
+          isLoadingUsers={isLoadingUsers}
+          fetchProducts={loadDataOrSearchForProducts}
+          fetchUsers={loadDataOrSearchForUsers}
           assignSpec={assignSpec}
         />
-
         <div className="flex justify-end gap-4">
           <Button
             onClick={() => router.back()}
