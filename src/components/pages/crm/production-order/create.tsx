@@ -113,11 +113,9 @@ function CreateProductionOrder({ open, onClose }: Props) {
     }
   };
   const handleProductChange = (index: number, selected: string) => {
-    console.log("Selected product:", selected, index);
     const product = products?.data?.find((p) => p.id === selected);
-    console.log(product);
     if (product) {
-      setValue(`products.${index}.price`, product?.price ? 0 : 50);
+      setValue(`products.${index}.price`, product?.price ?? 0);
     }
   };
 
