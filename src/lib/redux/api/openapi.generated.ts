@@ -1588,22 +1588,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1FormGenerateCertificateProductByMaterialBatchId: build.mutation<
-      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse,
-      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/generate-certificate/product/${queryArg.materialBatchId}`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          batchManufacturingRecordId: queryArg.batchManufacturingRecordId,
-        },
+    postApiV1FormGenerateCertificateProductByBatchManufacturingRecordId:
+      build.mutation<
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse,
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
       }),
-    }),
     getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
@@ -3237,6 +3235,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/material-specifications/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1MaterialSpecificationsMaterialById: build.query<
+      GetApiV1MaterialSpecificationsMaterialByIdApiResponse,
+      GetApiV1MaterialSpecificationsMaterialByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material-specifications/material/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6141,6 +6151,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductSpecificationsProductById: build.query<
+      GetApiV1ProductSpecificationsProductByIdApiResponse,
+      GetApiV1ProductSpecificationsProductByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/product-specifications/product/${queryArg.id}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ProductStps: build.mutation<
       PostApiV1ProductStpsApiResponse,
       PostApiV1ProductStpsApiArg
@@ -7112,6 +7134,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/shift-schedules/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ShiftSchedulesDepartmentById: build.query<
+      GetApiV1ShiftSchedulesDepartmentByIdApiResponse,
+      GetApiV1ShiftSchedulesDepartmentByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/department/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -9394,17 +9428,17 @@ export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse =
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse =
   unknown;
-export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg = {
-  /** The ID of the batch manufacturing. */
-  batchManufacturingRecordId?: string;
-  materialBatchId: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-};
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg =
+  {
+    /** The ID of the batch manufacturing. */
+    batchManufacturingRecordId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse =
   /** status 200 OK */ FormResponseDto[];
 export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg = {
@@ -10583,6 +10617,15 @@ export type PutApiV1MaterialSpecificationsByIdApiArg = {
 };
 export type DeleteApiV1MaterialSpecificationsByIdApiResponse = unknown;
 export type DeleteApiV1MaterialSpecificationsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialSpecificationsMaterialByIdApiResponse =
+  /** status 200 OK */ MaterialSpecificationDto;
+export type GetApiV1MaterialSpecificationsMaterialByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -12745,6 +12788,15 @@ export type DeleteApiV1ProductSpecificationsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ProductSpecificationsProductByIdApiResponse =
+  /** status 200 OK */ ProductSpecificationDtoRead;
+export type GetApiV1ProductSpecificationsProductByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ProductStpsApiResponse = /** status 200 OK */ string;
 export type PostApiV1ProductStpsApiArg = {
   /** The module this request falls under */
@@ -13435,6 +13487,15 @@ export type DeleteApiV1ShiftSchedulesByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ShiftSchedulesDepartmentByIdApiResponse =
+  /** status 200 OK */ ShiftScheduleDtoRead;
+export type GetApiV1ShiftSchedulesDepartmentByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ShiftSchedulesByScheduleIdViewApiResponse =
   /** status 200 OK */ ShiftAssignmentDto[];
 export type GetApiV1ShiftSchedulesByScheduleIdViewApiArg = {
@@ -14114,7 +14175,7 @@ export type GetApiV1WarehouseGrnByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1WarehouseGrnsApiResponse =
-  /** status 200 OK */ GrnDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ GrnListDtoIEnumerablePaginateable;
 export type GetApiV1WarehouseGrnsApiArg = {
   page?: number;
   pageSize?: number;
@@ -14326,7 +14387,7 @@ export type NotificationDto = {
   sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
-export type AnalyticalTestStatus = 0 | 1 | 2 | 3 | 4;
+export type AnalyticalTestStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type CreateAnalyticalTestRequest = {
   batchManufacturingRecordId?: string;
   productId?: string;
@@ -15861,7 +15922,7 @@ export type FormSectionRead = {
   fields?: FormFieldRead[] | null;
 };
 export type BatchSize = 0 | 1;
-export type MarketType = {
+export type Customer = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -15873,8 +15934,11 @@ export type MarketType = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
 };
-export type MarketTypeRead = {
+export type CustomerRead = {
   id?: string;
   createdAt?: string;
   updatedAt?: string | null;
@@ -15886,6 +15950,9 @@ export type MarketTypeRead = {
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
   name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
 };
 export type ProductionScheduleProduct = {
   id?: string;
@@ -15896,7 +15963,7 @@ export type ProductionScheduleProduct = {
   batchNumber?: string | null;
   batchSize?: BatchSize;
   marketTypeId?: string | null;
-  marketType?: MarketType;
+  marketType?: Customer;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -15910,7 +15977,7 @@ export type ProductionScheduleProductRead = {
   batchNumber?: string | null;
   batchSize?: BatchSize;
   marketTypeId?: string | null;
-  marketType?: MarketTypeRead;
+  marketType?: CustomerRead;
   quantity?: number;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
@@ -20792,7 +20859,7 @@ export type ShipmentDiscrepancyDto = {
   items?: ShipmentDiscrepancyItemDto[] | null;
 };
 export type DocType = 0 | 1;
-export type ShipmentStatus = 0 | 1 | 2 | 3 | 4;
+export type ShipmentStatus = 0 | 1 | 3 | 4 | 5;
 export type ShipmentDocumentDto = {
   id?: string;
   createdBy?: UserDto;
@@ -21199,7 +21266,7 @@ export type CreateProductionOrderProduct = {
   volumePerPiece?: number;
 };
 export type CreateProductionOrderRequest = {
-  productionOrderCode?: string | null;
+  code?: string | null;
   customerId: string;
   products?: CreateProductionOrderProduct[] | null;
 };
@@ -21215,8 +21282,7 @@ export type ProductionOrderDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  productionOrderCode?: string | null;
-  customerId?: string;
+  code?: string | null;
   customer?: CustomerDto;
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
@@ -23053,17 +23119,17 @@ export type CreateGrnRequest = {
   grnNumber?: string | null;
   materialBatchIds?: string[] | null;
 };
-export type GrnDtoIEnumerablePaginateable = {
-  data?: GrnDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
+export type GrnListDto = {
+  id?: string;
+  createdAt?: string;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: CollectionItemDto[] | null;
 };
-export type GrnDtoIEnumerablePaginateableRead = {
-  data?: GrnDtoRead[] | null;
+export type GrnListDtoIEnumerablePaginateable = {
+  data?: GrnListDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -23341,7 +23407,7 @@ export const {
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
   usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
-  usePostApiV1FormGenerateCertificateProductByMaterialBatchIdMutation,
+  usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdMutation,
   useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
@@ -23517,6 +23583,8 @@ export const {
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
+  useGetApiV1MaterialSpecificationsMaterialByIdQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -23826,6 +23894,8 @@ export const {
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
   useDeleteApiV1ProductSpecificationsByIdMutation,
+  useGetApiV1ProductSpecificationsProductByIdQuery,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
   usePostApiV1ProductStpsMutation,
   useGetApiV1ProductStpsQuery,
   useLazyGetApiV1ProductStpsQuery,
@@ -23931,6 +24001,8 @@ export const {
   useLazyGetApiV1ShiftSchedulesByIdQuery,
   usePutApiV1ShiftSchedulesByIdMutation,
   useDeleteApiV1ShiftSchedulesByIdMutation,
+  useGetApiV1ShiftSchedulesDepartmentByIdQuery,
+  useLazyGetApiV1ShiftSchedulesDepartmentByIdQuery,
   useGetApiV1ShiftSchedulesByScheduleIdViewQuery,
   useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery,
   useGetApiV1ShiftSchedulesByScheduleIdDayQuery,
