@@ -174,8 +174,6 @@ export function ProductsSpecPage() {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
-
-  console.log(errors, "errors");
   return (
     <>
       <div

@@ -586,6 +586,12 @@ export const ROUTES: Route[] = [
         icon: "UserRound",
         isActive: false,
       },
+      {
+        title: "Production Order",
+        url: "/crm/production-order",
+        icon: "Presentation",
+        isActive: false,
+      },
       // {
       //   title: "string",
       //   url: "string",
