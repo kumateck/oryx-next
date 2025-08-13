@@ -1588,22 +1588,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1FormGenerateCertificateProductByMaterialBatchId: build.mutation<
-      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse,
-      PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/generate-certificate/product/${queryArg.materialBatchId}`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          batchManufacturingRecordId: queryArg.batchManufacturingRecordId,
-        },
+    postApiV1FormGenerateCertificateProductByBatchManufacturingRecordId:
+      build.mutation<
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse,
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
       }),
-    }),
     getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
       GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
@@ -9394,17 +9392,17 @@ export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiResponse =
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse =
   unknown;
-export type PostApiV1FormGenerateCertificateProductByMaterialBatchIdApiArg = {
-  /** The ID of the batch manufacturing. */
-  batchManufacturingRecordId?: string;
-  materialBatchId: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-};
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg =
+  {
+    /** The ID of the batch manufacturing. */
+    batchManufacturingRecordId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse =
   /** status 200 OK */ FormResponseDto[];
 export type GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg = {
@@ -14114,7 +14112,7 @@ export type GetApiV1WarehouseGrnByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1WarehouseGrnsApiResponse =
-  /** status 200 OK */ GrnDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ GrnListDtoIEnumerablePaginateable;
 export type GetApiV1WarehouseGrnsApiArg = {
   page?: number;
   pageSize?: number;
@@ -14326,7 +14324,7 @@ export type NotificationDto = {
   sentAt?: string;
 };
 export type TestStage = 0 | 1 | 2;
-export type AnalyticalTestStatus = 0 | 1 | 2 | 3 | 4;
+export type AnalyticalTestStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type CreateAnalyticalTestRequest = {
   batchManufacturingRecordId?: string;
   productId?: string;
@@ -20792,7 +20790,7 @@ export type ShipmentDiscrepancyDto = {
   items?: ShipmentDiscrepancyItemDto[] | null;
 };
 export type DocType = 0 | 1;
-export type ShipmentStatus = 0 | 1 | 2 | 3 | 4;
+export type ShipmentStatus = 0 | 1 | 3 | 4 | 5;
 export type ShipmentDocumentDto = {
   id?: string;
   createdBy?: UserDto;
@@ -23053,17 +23051,17 @@ export type CreateGrnRequest = {
   grnNumber?: string | null;
   materialBatchIds?: string[] | null;
 };
-export type GrnDtoIEnumerablePaginateable = {
-  data?: GrnDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
+export type GrnListDto = {
+  id?: string;
+  createdAt?: string;
+  carrierName?: string | null;
+  vehicleNumber?: string | null;
+  remarks?: string | null;
+  grnNumber?: string | null;
+  materialBatches?: CollectionItemDto[] | null;
 };
-export type GrnDtoIEnumerablePaginateableRead = {
-  data?: GrnDtoRead[] | null;
+export type GrnListDtoIEnumerablePaginateable = {
+  data?: GrnListDto[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -23341,7 +23339,7 @@ export const {
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
   usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
-  usePostApiV1FormGenerateCertificateProductByMaterialBatchIdMutation,
+  usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdMutation,
   useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,

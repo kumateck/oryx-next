@@ -68,7 +68,9 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
       `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}&stepId=${row.original.productionActivityStep?.id}`,
     );
   };
-
+  const handleViewTestResponse = () => {
+    router.push(`/complete/form/${row.original.id}`);
+  };
   return (
     <section className="flex items-center justify-end gap-2">
       {row.original.id === details?.id && isLoading && (
@@ -113,6 +115,16 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
             }}
           >
             Complete Test
+          </DropdownMenuItem>
+        )}
+        {row.original.status === AnalyticalTestRequestStatus.TestTaken && (
+          <DropdownMenuItem
+            className="group"
+            onClick={() => {
+              handleViewTestResponse();
+            }}
+          >
+            Check Test Result
           </DropdownMenuItem>
         )}
       </TableMenuAction>
