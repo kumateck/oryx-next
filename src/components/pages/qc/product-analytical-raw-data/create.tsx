@@ -16,7 +16,7 @@ import {
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
@@ -26,6 +26,7 @@ import {
   useGetApiV1ProductStpsQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProductArdMutation,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   ProductArdSchemaType,
@@ -44,9 +45,14 @@ type Props = {
 export const Create = ({ isOpen, onClose }: Props) => {
   const dispatch = useDispatch();
 
+  const [loadProductstpSpecification, { data }] =
+    useLazyGetApiV1ProductSpecificationsProductByIdQuery();
+
   const {
     handleSubmit,
     register,
+    setValue,
+    watch,
     control,
     reset,
     formState: { errors },
@@ -68,6 +74,19 @@ export const Create = ({ isOpen, onClose }: Props) => {
     pageSize: 1000,
     type: FormTypeEnum.Default,
   });
+
+  const stpId = watch("stpId");
+  useEffect(() => {
+    if (stpId) {
+      loadProductstpSpecification({ id: stpId.value });
+    }
+  }, [stpId, loadProductstpSpecification]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, reset]);
 
   const [createProductArdMutation, { isLoading }] =
     usePostApiV1ProductArdMutation();

@@ -19,6 +19,7 @@ import {
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialArdByIdMutation,
   useGetApiV1MaterialArdByIdQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
@@ -47,11 +48,17 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     label: details?.materialStandardTestProcedure?.stpNumber as string,
   };
   const dispatch = useDispatch();
+
+  const [loadMaterialstpSpecification, { data }] =
+    useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<MaterialArdSchemaType>({
     resolver: MaterialArdSchemaResolver,
@@ -62,6 +69,19 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       specNumber: details.specNumber as string,
     },
   });
+
+  const stpId = watch("stpId");
+  useEffect(() => {
+    if (stpId) {
+      loadMaterialstpSpecification({ id: stpId.value });
+    }
+  }, [stpId, loadMaterialstpSpecification]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();

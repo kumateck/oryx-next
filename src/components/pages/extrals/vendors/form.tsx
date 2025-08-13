@@ -148,9 +148,9 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
         config={[
           {
             control: control as Control,
-            label: "Services",
+            label: "Items",
             name: "services",
-            placeholder: "Enter services",
+            placeholder: "Select items",
             options: itemsOptions,
             type: InputTypes.MULTI,
             required: true,

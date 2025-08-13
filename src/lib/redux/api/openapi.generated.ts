@@ -3241,12 +3241,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1MaterialSpecificationsMaterialbyMaterialId: build.query<
-      GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiResponse,
-      GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiArg
+    getApiV1MaterialSpecificationsMaterialById: build.query<
+      GetApiV1MaterialSpecificationsMaterialByIdApiResponse,
+      GetApiV1MaterialSpecificationsMaterialByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/material-specifications/material${queryArg.materialId}`,
+        url: `/api/v1/material-specifications/material/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6151,12 +6151,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductSpecificationsProductByProductId: build.query<
-      GetApiV1ProductSpecificationsProductByProductIdApiResponse,
-      GetApiV1ProductSpecificationsProductByProductIdApiArg
+    getApiV1ProductSpecificationsProductById: build.query<
+      GetApiV1ProductSpecificationsProductByIdApiResponse,
+      GetApiV1ProductSpecificationsProductByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/product-specifications/product/${queryArg.productId}`,
+        url: `/api/v1/product-specifications/product/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -7134,6 +7134,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/shift-schedules/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ShiftSchedulesDepartmentById: build.query<
+      GetApiV1ShiftSchedulesDepartmentByIdApiResponse,
+      GetApiV1ShiftSchedulesDepartmentByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/shift-schedules/department/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -10611,10 +10623,10 @@ export type DeleteApiV1MaterialSpecificationsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiResponse =
+export type GetApiV1MaterialSpecificationsMaterialByIdApiResponse =
   /** status 200 OK */ MaterialSpecificationDto;
-export type GetApiV1MaterialSpecificationsMaterialbyMaterialIdApiArg = {
-  materialId: string;
+export type GetApiV1MaterialSpecificationsMaterialByIdApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -12776,10 +12788,10 @@ export type DeleteApiV1ProductSpecificationsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductSpecificationsProductByProductIdApiResponse =
+export type GetApiV1ProductSpecificationsProductByIdApiResponse =
   /** status 200 OK */ ProductSpecificationDtoRead;
-export type GetApiV1ProductSpecificationsProductByProductIdApiArg = {
-  productId: string;
+export type GetApiV1ProductSpecificationsProductByIdApiArg = {
+  id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -13469,6 +13481,15 @@ export type PutApiV1ShiftSchedulesByIdApiArg = {
 };
 export type DeleteApiV1ShiftSchedulesByIdApiResponse = unknown;
 export type DeleteApiV1ShiftSchedulesByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ShiftSchedulesDepartmentByIdApiResponse =
+  /** status 200 OK */ ShiftScheduleDtoRead;
+export type GetApiV1ShiftSchedulesDepartmentByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -19572,7 +19593,7 @@ export type LeaveEntitlementDtoIEnumerablePaginateable = {
 };
 export type RequestCategory = 0 | 1 | 2 | 3;
 export type CreateLeaveRequest = {
-  leaveTypeId: string;
+  leaveTypeId?: string | null;
   startDate: string;
   endDate: string;
   employeeId: string;
@@ -23562,8 +23583,8 @@ export const {
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
   usePutApiV1MaterialSpecificationsByIdMutation,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
-  useGetApiV1MaterialSpecificationsMaterialbyMaterialIdQuery,
-  useLazyGetApiV1MaterialSpecificationsMaterialbyMaterialIdQuery,
+  useGetApiV1MaterialSpecificationsMaterialByIdQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   usePostApiV1MaterialStpsMutation,
   useGetApiV1MaterialStpsQuery,
   useLazyGetApiV1MaterialStpsQuery,
@@ -23873,8 +23894,8 @@ export const {
   useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePutApiV1ProductSpecificationsByIdMutation,
   useDeleteApiV1ProductSpecificationsByIdMutation,
-  useGetApiV1ProductSpecificationsProductByProductIdQuery,
-  useLazyGetApiV1ProductSpecificationsProductByProductIdQuery,
+  useGetApiV1ProductSpecificationsProductByIdQuery,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
   usePostApiV1ProductStpsMutation,
   useGetApiV1ProductStpsQuery,
   useLazyGetApiV1ProductStpsQuery,
@@ -23980,6 +24001,8 @@ export const {
   useLazyGetApiV1ShiftSchedulesByIdQuery,
   usePutApiV1ShiftSchedulesByIdMutation,
   useDeleteApiV1ShiftSchedulesByIdMutation,
+  useGetApiV1ShiftSchedulesDepartmentByIdQuery,
+  useLazyGetApiV1ShiftSchedulesDepartmentByIdQuery,
   useGetApiV1ShiftSchedulesByScheduleIdViewQuery,
   useLazyGetApiV1ShiftSchedulesByScheduleIdViewQuery,
   useGetApiV1ShiftSchedulesByScheduleIdDayQuery,
