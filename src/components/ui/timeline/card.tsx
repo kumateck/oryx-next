@@ -330,6 +330,7 @@ import {
   ProductionScheduleProductDtoRead,
   ProductionStatus,
   useGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
+  useGetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdQuery,
   useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
   usePostApiV1ProductionScheduleReturnBeforeProductionMutation,
   usePutApiV1ProductionScheduleActivityStepByProductionStepIdStatusMutation,
@@ -418,6 +419,16 @@ const TimelineCard = ({
 
   const { data: stockPackageReq } =
     useGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery(
+      {
+        productionScheduleId: scheduleId as string,
+        productId: productId as string,
+      },
+      {
+        skip: !showStockRequisition || productInfo?.cancelled,
+      },
+    );
+  const { data: stockRawReq } =
+    useGetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdQuery(
       {
         productionScheduleId: scheduleId as string,
         productId: productId as string,
@@ -576,12 +587,19 @@ const TimelineCard = ({
 
             {showStockRequisition && (
               <div>
-                {stockPackageReq ? (
+                {stockPackageReq || stockRawReq ? (
                   <div>
                     <div className="flex flex-col">
-                      <span>Package Requisition:</span>
+                      <span>Packing Material Requisition:</span>
                       <TableBadge
-                        status={stockPackageReq.status as RequisitionStatus}
+                        status={stockPackageReq?.status as RequisitionStatus}
+                        statusEnum={RequisitionStatus}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span>Raw Material Requisition:</span>
+                      <TableBadge
+                        status={stockRawReq?.status as RequisitionStatus}
                         statusEnum={RequisitionStatus}
                       />
                     </div>
