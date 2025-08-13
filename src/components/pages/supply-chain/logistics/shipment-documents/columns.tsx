@@ -18,6 +18,7 @@ import {
   isErrorResponse,
   splitWords,
 } from "@/lib";
+import { ShipmentStatus as ShipmentStatusGen } from "@/lib/redux/api/openapi.generated";
 import {
   ShipmentDocumentDto,
   usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation,
@@ -36,11 +37,12 @@ export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
   const [updateMutation] =
     usePutApiV1ProcurementShipmentsByShipmentIdStatusMutation();
 
-  const handleStatusUpdate = async (status: ShipmentStatus) => {
+  const handleStatusUpdate = async (status: ShipmentStatus | undefined) => {
+    const genStatus = status as ShipmentStatusGen;
     try {
       await updateMutation({
         shipmentId: row.original.id as string,
-        updateShipmentStatusRequest: { status: status as ShipmentStatus },
+        updateShipmentStatusRequest: { status: genStatus },
       }).unwrap();
       dispatch(commonActions.setTriggerReload());
       toast.success("Status updated successfully");

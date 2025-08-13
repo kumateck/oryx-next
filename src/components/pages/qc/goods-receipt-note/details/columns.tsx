@@ -9,6 +9,7 @@ import {
   WorkflowFormType,
   convertToLargestUnit,
   getSmallestUnit,
+  splitWords,
 } from "@/lib";
 import {
   BatchStatus,
@@ -120,9 +121,9 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     header: "Status",
     cell: ({ row }) => (
       <div
-        className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[String(row.original?.status)]}`}
+        className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[String(row.original?.status)]}`}
       >
-        {BatchStatusEnum[row.original.status as BatchStatus]}
+        {splitWords(BatchStatusEnum[row.original.status as BatchStatus])}
       </div>
     ),
   },

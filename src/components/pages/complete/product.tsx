@@ -29,7 +29,7 @@ const FormResponseForProduct = () => {
   const stage = searchParams.get(
     "stage",
   ) as unknown as AnalyticalTestRequestStage; // Extracts 'type' from URL
-
+  const productionActivityStepId = searchParams.get("stepId") as string;
   const completeId = id as string;
   const completeForm = Number(form) as unknown as FormComplete;
 
@@ -150,6 +150,7 @@ const FormResponseForProduct = () => {
     try {
       await formResponseMutation({
         createResponseRequest: {
+          productionActivityStepId,
           formId: currentFormId,
           batchManufacturingRecordId:
             completeForm === FormComplete.Batch ? completeId : undefined,

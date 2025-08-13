@@ -13,11 +13,12 @@ export enum SpecificationReference {
   InHouse,
 }
 export enum AnalyticalTestRequestStatus {
-  New,
-  Sampled,
-  Acknowledged,
-  Testing,
-  Released,
+  New = 0,
+  Sampled = 1,
+  Acknowledged = 2,
+  Testing = 3,
+  TestTaken = 4,
+  Released = 5,
 }
 export enum AnalyticalTestRequestStage {
   Intermediate,

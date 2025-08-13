@@ -50,21 +50,29 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
         updateAnalyticalTestRequest: {
           status,
         },
-      }).unwrap(),
-        toast.success("ATR Updated successfully");
+      }).unwrap();
+      toast.success("ATR Updated successfully");
       dispatch(commonActions.setTriggerReload());
       setDetails(null);
       setIsStartTestModalOpen(false);
       if (status === AnalyticalTestRequestStatus.Testing) {
-        router.push(
-          `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
-        );
+        routerToFillForm();
       }
     } catch (error) {
       ThrowErrorMessage(error);
     }
   };
 
+  const routerToFillForm = () => {
+    router.push(
+      `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}&stepId=${row.original.productionActivityStep?.id}`,
+    );
+  };
+  const handleViewTestResponse = () => {
+    router.push(
+      `/atr/${row.original.id}/${row.original.batchManufacturingRecord?.id}`,
+    );
+  };
   return (
     <section className="flex items-center justify-end gap-2">
       {row.original.id === details?.id && isLoading && (
@@ -105,12 +113,20 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
           <DropdownMenuItem
             className="group"
             onClick={() => {
-              router.push(
-                `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
-              );
+              routerToFillForm();
             }}
           >
             Complete Test
+          </DropdownMenuItem>
+        )}
+        {row.original.status === AnalyticalTestRequestStatus.TestTaken && (
+          <DropdownMenuItem
+            className="group"
+            onClick={() => {
+              handleViewTestResponse();
+            }}
+          >
+            Check Test Result
           </DropdownMenuItem>
         )}
       </TableMenuAction>

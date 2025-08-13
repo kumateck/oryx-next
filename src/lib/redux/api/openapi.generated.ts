@@ -19593,7 +19593,7 @@ export type LeaveEntitlementDtoIEnumerablePaginateable = {
 };
 export type RequestCategory = 0 | 1 | 2 | 3;
 export type CreateLeaveRequest = {
-  leaveTypeId: string;
+  leaveTypeId?: string | null;
   startDate: string;
   endDate: string;
   employeeId: string;
