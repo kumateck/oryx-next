@@ -57,7 +57,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
       setIsStartTestModalOpen(false);
       if (status === AnalyticalTestRequestStatus.Testing) {
         router.push(
-          `/complete/${WorkflowFormType.Product}/${row.original.id}/${FormComplete.Batch}`,
+          `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
         );
       }
     } catch (error) {
@@ -99,6 +99,18 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
             }}
           >
             Start Test
+          </DropdownMenuItem>
+        )}
+        {row.original.status === AnalyticalTestRequestStatus.Testing && (
+          <DropdownMenuItem
+            className="group"
+            onClick={() => {
+              router.push(
+                `/complete/${WorkflowFormType.Product}/${row.original.batchManufacturingRecord?.id}/${FormComplete.Batch}?stage=${row.original.stage}`,
+              );
+            }}
+          >
+            Complete Test
           </DropdownMenuItem>
         )}
       </TableMenuAction>
