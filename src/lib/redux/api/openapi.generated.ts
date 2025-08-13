@@ -14522,6 +14522,86 @@ export type AttachmentDto = {
   reference?: string | null;
 };
 export type Stage = 0 | 1 | 2;
+export type FormType = 0 | 1;
+export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+export type QuestionValidationType = 0 | 1 | 2 | 3;
+export type QuestionOptionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  question?: CollectionItemDto;
+  name?: string | null;
+};
+export type QuestionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  label?: string | null;
+  type?: QuestionType;
+  validation?: QuestionValidationType;
+  isMultiSelect?: boolean;
+  reference?: string | null;
+  description?: string | null;
+  options?: QuestionOptionDto[] | null;
+};
+export type FormFieldDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  formSection?: CollectionItemDto;
+  question?: QuestionDto;
+  required?: boolean;
+  description?: string | null;
+  rank?: number;
+  assignee?: CollectionItemDto;
+  reviewer?: CollectionItemDto;
+};
+export type FormSectionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  name?: string | null;
+  description?: string | null;
+  instrument?: CollectionItemDto;
+  order?: number;
+  fields?: FormFieldDto[] | null;
+};
+export type FormResponseDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  formField?: FormFieldDto;
+  value?: string | null;
+  checkedBy?: UserDto;
+  checkedAt?: string | null;
+};
+export type FormAssigneeDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  user?: CollectionItemDto;
+};
+export type FormReviewerDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  user?: CollectionItemDto;
+};
+export type FormDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  type?: FormType;
+  sections?: FormSectionDto[] | null;
+  responses?: FormResponseDto[] | null;
+  assignees?: FormAssigneeDto[] | null;
+  reviewers?: FormReviewerDto[] | null;
+};
 export type ProductStandardTestProcedureDto = {
   id?: string;
   createdBy?: UserDto;
@@ -14538,7 +14618,7 @@ export type ProductAnalyticalRawDataDto = {
   specNumber?: string | null;
   stage?: Stage;
   description?: string | null;
-  form?: CollectionItemDto;
+  form?: FormDto;
   productStandardTestProcedure?: ProductStandardTestProcedureDto;
 };
 export type ProductionActivityStepUserDto = {
@@ -15598,7 +15678,6 @@ export type OperationRead = {
   order?: number;
   action?: OperationAction;
 };
-export type FormType = 0 | 1;
 export type Instrument = {
   id?: string;
   createdAt?: string;
@@ -15627,8 +15706,6 @@ export type InstrumentRead = {
   code?: string | null;
   name?: string | null;
 };
-export type QuestionType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
-export type QuestionValidationType = 0 | 1 | 2 | 3;
 export type QuestionOption = {
   id?: string;
   createdAt?: string;
@@ -16410,6 +16487,8 @@ export type Response = {
   batchManufacturingRecord?: BatchManufacturingRecord;
   materialBatchId?: string | null;
   materialBatch?: MaterialBatch;
+  productionActivityStepId?: string | null;
+  productionActivityStep?: ProductionActivityStep;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApproval[] | null;
   checkedById?: string | null;
@@ -16434,6 +16513,8 @@ export type ResponseRead = {
   batchManufacturingRecord?: BatchManufacturingRecordRead;
   materialBatchId?: string | null;
   materialBatch?: MaterialBatch;
+  productionActivityStepId?: string | null;
+  productionActivityStep?: ProductionActivityStepRead;
   formResponses?: FormResponse[] | null;
   approvals?: ResponseApprovalRead[] | null;
   checkedById?: string | null;
@@ -18990,83 +19071,6 @@ export type CreateFormRequest = {
   reviewers?: CreateFormReviewerRequest[] | null;
   type?: FormType;
 };
-export type QuestionOptionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  question?: CollectionItemDto;
-  name?: string | null;
-};
-export type QuestionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  label?: string | null;
-  type?: QuestionType;
-  validation?: QuestionValidationType;
-  isMultiSelect?: boolean;
-  reference?: string | null;
-  description?: string | null;
-  options?: QuestionOptionDto[] | null;
-};
-export type FormFieldDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  formSection?: CollectionItemDto;
-  question?: QuestionDto;
-  required?: boolean;
-  description?: string | null;
-  rank?: number;
-  assignee?: CollectionItemDto;
-  reviewer?: CollectionItemDto;
-};
-export type FormSectionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  name?: string | null;
-  description?: string | null;
-  instrument?: CollectionItemDto;
-  order?: number;
-  fields?: FormFieldDto[] | null;
-};
-export type FormResponseDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  formField?: FormFieldDto;
-  value?: string | null;
-  checkedBy?: UserDto;
-  checkedAt?: string | null;
-};
-export type FormAssigneeDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  user?: CollectionItemDto;
-};
-export type FormReviewerDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  user?: CollectionItemDto;
-};
-export type FormDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  type?: FormType;
-  sections?: FormSectionDto[] | null;
-  responses?: FormResponseDto[] | null;
-  assignees?: FormAssigneeDto[] | null;
-  reviewers?: FormReviewerDto[] | null;
-};
 export type FormDtoIEnumerablePaginateable = {
   data?: FormDto[] | null;
   pageIndex?: number;
@@ -19095,6 +19099,7 @@ export type CreateResponseRequest = {
   materialBatchId?: string | null;
   materialSpecificationId?: string | null;
   productSpecificationId?: string | null;
+  productionActivityStepId?: string | null;
   formResponses?: CreateFormResponseRequest[] | null;
 };
 export type ResponseDto = {
@@ -19816,6 +19821,16 @@ export type MaterialBatchReservedQuantityDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
+  materialBatch?: MaterialBatchDto;
+  warehouse?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type MaterialBatchReservedQuantityDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  materialBatch?: MaterialBatchDto;
   warehouse?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
   quantity?: number;
@@ -19974,7 +19989,7 @@ export type MaterialBatchDtoRead = {
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
-  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDtoRead[] | null;
   reservedQuantity?: number;
 };
 export type CreateSrRequest = {
