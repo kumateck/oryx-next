@@ -371,10 +371,6 @@ export const ROUTES: Route[] = [
             title: "Attendance Report Upload",
             url: "/hr/attendance-report-upload",
           },
-          {
-            title: "Customer Managements",
-            url: "/hr/customers",
-          },
 
           // {
           //   title: "Attendance Report Summary",
@@ -584,6 +580,12 @@ export const ROUTES: Route[] = [
   {
     title: "CRM",
     menu: [
+      {
+        title: "Customer",
+        url: "/crm/customers",
+        icon: "UserRound",
+        isActive: false,
+      },
       // {
       //   title: "string",
       //   url: "string",
