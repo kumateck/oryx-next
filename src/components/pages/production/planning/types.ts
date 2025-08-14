@@ -1,10 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-export enum Division {
-  "BETA LACTAM" = 0,
-  "NON-BETA LACTAM" = 1,
-}
 export const CreateFinishedProductSchema = z.object({
   name: z.string({ required_error: "Name is required" }).min(1, {
     message: "Name is required",

@@ -10,12 +10,14 @@ import PageWrapper from "@/components/layout/wrapper";
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   AuditModules,
+  Division,
   ErrorResponse,
   convertToLargestUnit,
   convertToSmallestUnit,
   getLargestUnit,
   getSmallestUnit,
   isErrorResponse,
+  splitWords,
 } from "@/lib";
 import { COLLECTION_TYPES, DepartmentType, Option, Units, routes } from "@/lib";
 import {
@@ -31,11 +33,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import ProductForm from "../../create/form";
-import {
-  CreateProductValidator,
-  Division,
-  ProductRequestDto,
-} from "../../types";
+import { CreateProductValidator, ProductRequestDto } from "../../types";
 
 export interface ProductDetailProps {
   code?: string | null;
@@ -46,11 +44,7 @@ export interface ProductDetailProps {
     value: string;
   };
 }
-// interface ProductInfoProps {
-//   productId?: string;
-//   productDetail?: ProductDetailProps;
-//   loadProductById: () => void;
-// }
+
 const ProductInfo = () => {
   const { id } = useParams();
   const productId = id as string;
@@ -127,11 +121,13 @@ const ProductInfo = () => {
       label: product?.basePackingUoM?.symbol as string,
       value: product?.basePackingUoM?.id as string,
     } as Option;
+
     setDefaultCategory(category);
     setDefaultUom(uom);
     setDefaultPackingUom(puom);
     setDefaultEquipment(equipment);
     setDefaultDepartment(department);
+
     const defaultProduct = {
       code: product?.code as string,
       name: product?.name as string,
@@ -157,13 +153,11 @@ const ProductInfo = () => {
         label: product?.equipment?.name as string,
         value: product?.equipment?.id as string,
       },
+      packPerShipper: product?.packPerShipper,
       price: product?.price,
       division: {
-        value: String(product?.division ?? ""),
-        label:
-          typeof product?.division === "number"
-            ? Division[product?.division]
-            : "",
+        value: product?.division?.toString() ?? "",
+        label: splitWords(Division[product?.division ?? ""]) || "",
       } as Option,
       department: {
         label: product?.department?.name as string,
@@ -181,6 +175,9 @@ const ProductInfo = () => {
     setValue("department", defaultProduct.department);
     setValue("filledWeight", defaultProduct.filledWeight);
     setValue("shelfLife", defaultProduct.shelfLife);
+    setValue("price", defaultProduct.price);
+    setValue("division", defaultProduct.division);
+    setValue("packPerShipper", defaultProduct.packPerShipper);
     setValue("storageCondition", defaultProduct.storageCondition);
     setValue("packageStyle", defaultProduct.packageStyle);
     setValue("genericName", defaultProduct.genericName);

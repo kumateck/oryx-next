@@ -12,6 +12,11 @@ export enum SpecificationReference {
   PhInt,
   InHouse,
 }
+
+export enum Division {
+  "BETALACTAM" = 0,
+  "NON-BETALACTAM" = 1,
+}
 export enum AnalyticalTestRequestStatus {
   New = 0,
   Sampled = 1,

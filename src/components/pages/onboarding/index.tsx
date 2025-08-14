@@ -89,7 +89,6 @@ export default function OnboardingForm() {
 
   const { type } = useParams();
   const etype = type as string;
-  console.log("Employee Type", etype);
   const {
     register,
     handleSubmit,
@@ -291,30 +290,21 @@ export default function OnboardingForm() {
         subModule: AuditModules.management.employeeManagement,
       } as PostApiV1EmployeeApiArg).unwrap();
 
-      console.log(employeeId, "employeeIId");
       toast.success("Form sent successfully");
-      // const employeeId = await createEmployee(payload).unwrap();
       //only after successful submission
       if (employeeId) {
         const formData = new FormData();
-        // Ensure attachments are an array
-        // const attachmentsArray = Array.isArray(data.passportPhoto)
-        //   ? data.passportPhoto
-        //   : Array.from(data.passportPhoto); // Convert FileList to an array
 
         if (data.passportPhoto) {
           formData.append("files", data.passportPhoto, data.passportPhoto.name);
-          const imagesRes = await uploadAttachment({
+          await uploadAttachment({
             modelType: CODE_SETTINGS.modelTypes.Employee,
             modelId: employeeId,
             body: formData,
             module: AuditModules.general.name,
             subModule: AuditModules.general.fileUpload,
           } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-          console.log(imagesRes, "res");
         }
-        // attachmentsArray.forEach((attachment: File) => {
-        // });
       }
 
       reset();

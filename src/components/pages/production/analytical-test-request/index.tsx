@@ -118,6 +118,10 @@ const Page = () => {
                 label: "Test Taken",
                 value: AnalyticalTestRequestStatus.TestTaken.toString(),
               },
+              {
+                label: "Released",
+                value: AnalyticalTestRequestStatus.Released.toString(),
+              },
             ]}
           />
         )}
