@@ -12,6 +12,7 @@ import { columns } from "./columns";
 import CreateProductionOrder from "./create";
 import { commonActions } from "@/lib/redux/slices/common";
 import { RowSelectionState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 
 function Index() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -20,6 +21,7 @@ function Index() {
   const [pageSize, setPageSize] = useState(10);
 
   const dispatch = useDispatch();
+  const router = useRouter();
   const searchValue = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const debouncedValue = useDebounce(searchValue, 500);
@@ -62,6 +64,7 @@ function Index() {
         setPage={setPage}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
+        onRowClick={(row) => router.push(`/crm/production-order/${row.id}`)}
         setPageSize={setPageSize}
         meta={{
           pageIndex: result?.pageIndex as number,
