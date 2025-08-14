@@ -68,7 +68,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Stock Requisitions" />
+        <PageTitle title="Issue Stock Requisitions" />
         {(hasPermissionAccess(
           PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
         ) ||

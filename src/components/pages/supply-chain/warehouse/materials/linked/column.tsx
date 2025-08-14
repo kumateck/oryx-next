@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { MaterialDepartmentWithWarehouseStockDto } from "@/lib/redux/api/openapi.generated";
+import { convertToLargestUnit, getSmallestUnit, Units } from "@/lib";
 // import { TableMenuAction } from "@/shared/table-menu";
 
 // import Edit from "./edit";
@@ -93,29 +94,96 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   },
   {
     accessorKey: "uom",
-    header: "UOM",
+    header: "Base UoM",
     cell: ({ row }) => <div>{row.original.uoM?.symbol}</div>,
   },
   {
     accessorKey: "reOrderLevel",
     header: "Re-Order Level",
-    cell: ({ row }) => <div>{row.original.reOrderLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.reOrderLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "minimumStockLevel",
     header: "Minimum Stock Level",
-    cell: ({ row }) => <div>{row.original.minimumStockLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.minimumStockLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "maximumStockLevel",
     header: "Maximum Stock Level",
-    cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.maximumStockLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "warehouseStock",
     header: "Stock in my Warehouse",
 
-    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.warehouseStock),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "totalStock",
@@ -125,15 +193,21 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
       const leftOverStock =
         (row.original.material?.totalStock as number) -
         (row.original.warehouseStock as number);
-      return <div>{leftOverStock}</div>;
+      const formattedStock = convertToLargestUnit(
+        Number(leftOverStock),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
     },
   },
-  // const totalStock = item?.material?.totalStock as number;
-  // const leftStock = totalStock - qtyOnHand;
-  // const leftOverStock = leftStock > 0 ? leftStock : 0;
-  // {
-  //   id: "actions",
-  //   meta: { omitRowClick: true },
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
 ];

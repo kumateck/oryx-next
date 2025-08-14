@@ -11,7 +11,12 @@ import { TableCheckbox } from "@/shared/datatable/table-check";
 
 import { useState } from "react";
 import AllStockByMaterial from "@/shared/all-stock";
-import { getLargestUnit, Units } from "@/lib";
+import {
+  convertToLargestUnit,
+  getLargestUnit,
+  getSmallestUnit,
+  Units,
+} from "@/lib";
 import { TableMenuAction } from "@/shared/table-menu";
 import { DropdownMenuItem } from "@/components/ui";
 import InternalTransfers from "../../schedule/product-requisition/internal-request";
@@ -99,30 +104,6 @@ export const getColumns =
         </div>
       ),
     },
-
-    // {
-    //   accessorKey: "uomId",
-    //   header: "UOM",
-    //   meta: {
-    //     edittableCell: {
-    //       type: ColumnType.COMBOBOX,
-    //       editable: true,
-    //       setItemLists,
-    //       options,
-    //     },
-    //   },
-    // },
-    // {
-    //   accessorKey: "quantity",
-    //   header: "Request Qty",
-    //   meta: {
-    //     edittableCell: {
-    //       type: ColumnType.NUMBER,
-    //       editable: true,
-    //       setItemLists,
-    //     },
-    //   },
-    // },
   ];
 
 export const getPurchaseColumns = (
@@ -174,16 +155,21 @@ export function DataTableRowActions<
     ((row.original.warehouseStock as number) || 0);
 
   const rowData = row?.original;
+
   const AllStockRow = {
     materialId: rowData?.material?.id as string,
     materialName: rowData?.material?.name as string,
     qtyNeeded: rowData?.material?.totalStock,
     quantityOnHand: rowData?.warehouseStock,
     quantityRequested: "0",
-    uom: "",
-    uomId: "",
+    uom: rowData?.uoM?.symbol as Units,
+    uomId: rowData?.uoM?.id,
     finalQuantityNeeded: "0",
   };
+  const formatLeftOverStock = convertToLargestUnit(
+    leftOverStock,
+    getSmallestUnit(AllStockRow?.uom),
+  );
   return (
     <section className="">
       {leftOverStock > 0 ? (
@@ -191,10 +177,14 @@ export function DataTableRowActions<
           className="cursor-pointer underline hover:text-primary-hover"
           onClick={() => setIsOpen(true)}
         >
-          {leftOverStock}
+          {formatLeftOverStock.value} {formatLeftOverStock.unit}
         </div>
       ) : (
-        <div>{leftOverStock ? leftOverStock : "0"}</div>
+        <div>
+          {leftOverStock
+            ? formatLeftOverStock.value + " " + formatLeftOverStock.unit
+            : "0"}
+        </div>
       )}
 
       {isOpen && (
@@ -233,26 +223,94 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
       <div>{getLargestUnit(row.original.uoM?.symbol as Units)}</div>
     ),
   },
+
   {
     accessorKey: "reOrderLevel",
     header: "Re-Order Level",
-    cell: ({ row }) => <div>{row.original.reOrderLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.reOrderLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "minimumStockLevel",
     header: "Minimum Stock Level",
-    cell: ({ row }) => <div>{row.original.minimumStockLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.minimumStockLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "maximumStockLevel",
     header: "Maximum Stock Level",
-    cell: ({ row }) => <div>{row.original.maximumStockLevel}</div>,
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.maximumStockLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "warehouseStock",
     header: "Stock in my Warehouse",
 
-    cell: ({ row }) => <div>{row.original.warehouseStock}</div>,
+    cell: ({ row }) => {
+      const formatWarehouseStock = convertToLargestUnit(
+        Number(row.original.warehouseStock),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formatWarehouseStock.value > 0 ? (
+            <div>
+              {formatWarehouseStock.value} {formatWarehouseStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     id: "totalStock",
