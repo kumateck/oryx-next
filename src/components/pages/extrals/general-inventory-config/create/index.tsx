@@ -43,7 +43,6 @@ export function CreateInventoryItem() {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [loadCodeModelCount] = useLazyGetApiV1ServicesQuery();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
     module: AuditModules.general.name,
     subModule: AuditModules.general.collection,
   });

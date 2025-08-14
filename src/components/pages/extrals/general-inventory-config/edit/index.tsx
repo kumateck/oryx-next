@@ -45,7 +45,6 @@ function EditInventory() {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [editItem, { isLoading }] = usePutApiV1ItemsByIdMutation();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
     module: AuditModules.general.name,
     subModule: AuditModules.general.collection,
   });
