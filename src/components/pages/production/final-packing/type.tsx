@@ -98,6 +98,7 @@ export type PackingRequestDto = z.infer<typeof CreateFinalPackingSchema>;
 export const CreatePackingValidator = zodResolver(CreateFinalPackingSchema);
 
 export interface MaterialMatrix {
+  uoMId: string;
   materialId: string;
   materialName: string;
   receivedQuantity: number;

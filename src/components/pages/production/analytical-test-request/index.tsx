@@ -88,7 +88,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Analytic Test Requests" />
+        <PageTitle title="Analytical Test Requests" />
 
         {type > 0 && (
           <AccessTabs

@@ -15,12 +15,14 @@ import {
 } from "@/components/ui";
 import {
   ErrorResponse,
-  LeaveStatus,
   // PermissionKeys,
   SupplierStatus,
   SupplierTypeOptions,
+  cn,
+  getEnumBadge,
   isErrorResponse,
   routes,
+  splitWords,
 } from "@/lib";
 import {
   ItemStockRequisitionDtoRead,
@@ -136,14 +138,20 @@ export function DataTableRowStatus<TData extends ItemStockRequisitionDtoRead>({
     }
   };
 
+  const status = row.original.status as SupplierStatus;
+  const { label, colorClass } = getEnumBadge(SupplierStatus, status);
+
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusColors[row.original.status as SupplierStatus]}`}
+            className={cn(
+              `inline-block rounded-full px-2 py-1 text-xs font-medium `,
+              colorClass,
+            )}
           >
-            {SupplierStatus[row.original.status as SupplierStatus]}
+            {splitWords(label)}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
@@ -229,10 +237,10 @@ export const columns: ColumnDef<ItemStockRequisitionDtoRead>[] = [
   },
 ];
 
-const statusColors: Record<LeaveStatus, string> = {
-  [LeaveStatus.Pending]: "bg-blue-100 text-blue-800",
-  [LeaveStatus.Approved]: "bg-yellow-100 text-yellow-800",
-  [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
-  [LeaveStatus.Expired]: "bg-gray-100 text-gray-800",
-  [LeaveStatus.Recalled]: "bg-gray-100 text-gray-800",
-};
+// const statusColors: Record<LeaveStatus, string> = {
+//   [LeaveStatus.Pending]: "bg-blue-100 text-blue-800",
+//   [LeaveStatus.Approved]: "bg-yellow-100 text-yellow-800",
+//   [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
+//   [LeaveStatus.Expired]: "bg-gray-100 text-gray-800",
+//   [LeaveStatus.Recalled]: "bg-gray-100 text-gray-800",
+// };

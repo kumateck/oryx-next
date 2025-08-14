@@ -3,12 +3,15 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 import { Icon } from "@/components/ui";
-import { RequisitionStatus, RequisitionType, routes } from "@/lib";
 import {
-  ProductDto,
-  RequestStatus,
-  RequisitionDto,
-} from "@/lib/redux/api/openapi.generated";
+  cn,
+  getEnumBadge,
+  RequisitionStatus,
+  RequisitionType,
+  routes,
+  splitWords,
+} from "@/lib";
+import { ProductDto, RequisitionDto } from "@/lib/redux/api/openapi.generated";
 
 // import Edit from "./edit";
 
@@ -91,12 +94,23 @@ export const columns: ColumnDef<RequisitionDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {RequisitionStatus[row.original?.status as RequestStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as RequisitionStatus;
+      const { label, colorClass } = getEnumBadge(RequisitionStatus, status);
+
+      return (
+        <div
+          className={cn(
+            `inline-block rounded-full px-2 py-1 text-xs font-medium text-center `,
+            colorClass,
+          )}
+        >
+          {splitWords(label)}
+        </div>
+      );
+    },
   },
+
   // {
   //   id: "actions",
   //   cell: ({ row }) => <DataTableRowActions row={row} />,

@@ -59,7 +59,7 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "Plane Shift",
+        title: "Planned Shift",
         url: "/plan-shift",
         icon: "NotebookPen",
         isActive: false,
@@ -386,8 +386,8 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "Pro-formal Invoice",
-        url: "/crm/pro-formal-invoice",
+        title: "Proforma Invoice",
+        url: "/crm/proforma-invoice",
         icon: "Sheet",
         isActive: false,
       },

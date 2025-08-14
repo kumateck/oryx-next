@@ -247,6 +247,7 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           <DropdownMenuItem
+            disabled={row.original.status === BatchStatusEnum.Available}
             onClick={() => {
               setDetails({
                 id: row.original.id as string,

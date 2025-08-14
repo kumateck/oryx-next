@@ -19,7 +19,7 @@ export const columns: ColumnDef<MaterialDetailsDto>[] = [
     header: "Quantity",
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
-        row.original.material?.totalStock as number,
+        row.original?.totalAvailableQuantity as number,
         row.original.unitOfMeasure?.symbol as Units,
       );
       return (

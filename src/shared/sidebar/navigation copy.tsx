@@ -595,8 +595,8 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "Pro-Formal Invoice",
-        url: "/crm/pro-formal-invoice",
+        title: "Proforma Invoice",
+        url: "/crm/proforma-invoice",
         icon: "Currency",
         isActive: false,
       },

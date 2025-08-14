@@ -1366,3 +1366,60 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+
+// utils/getEnumBadge.ts
+
+// Fixed Tailwind palette (light bg + dark text)
+const colorPalette = [
+  "bg-gray-100 text-gray-800",
+  "bg-red-100 text-red-800",
+  "bg-yellow-100 text-yellow-800",
+  "bg-green-100 text-green-800",
+  "bg-blue-100 text-blue-800",
+  "bg-indigo-100 text-indigo-800",
+  "bg-purple-100 text-purple-800",
+  "bg-pink-100 text-pink-800",
+  "bg-orange-100 text-orange-800",
+  "bg-teal-100 text-teal-800",
+];
+
+// Hash function to pick a color index
+function hashValue(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = value.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Given an enum and a value, returns:
+ * - label: the enum label (string)
+ * - colorClass: the TailwindCSS badge color
+ */
+export function getEnumBadge<T extends Record<string, string | number>>(
+  enumObj: T,
+  value: T[keyof T],
+): { label: string; colorClass: string } {
+  const label =
+    typeof value === "number"
+      ? (enumObj[value] as string) // numeric enum
+      : value.toString(); // string enum
+
+  const colorIndex = hashValue(label) % colorPalette.length;
+  return {
+    label,
+    colorClass: colorPalette[colorIndex],
+  };
+}
+
+export const omit = <T extends object, K extends keyof T>(
+  obj: T,
+  ...keys: K[]
+) => {
+  const clone = { ...obj };
+  keys.forEach((key) => {
+    delete clone[key];
+  });
+  return clone as Omit<T, K>;
+};
