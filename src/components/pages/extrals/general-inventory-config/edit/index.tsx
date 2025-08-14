@@ -132,7 +132,7 @@ function EditInventory() {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.GeneralInventory,
+          modelType: CODE_SETTINGS.modelTypes.Item,
           modelId: id as string,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

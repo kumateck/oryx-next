@@ -1,17 +1,17 @@
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
-import { AnalyticalTestStatus } from "@/lib";
+import { AnalyticalTestStatus, cn, getEnumBadge, splitWords } from "@/lib";
 import { AnalyticalTestRequestDto } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-const batchStatusColors: Record<AnalyticalTestStatus, string> = {
-  [AnalyticalTestStatus.Approved]: "bg-blue-100 text-blue-800",
-  [AnalyticalTestStatus.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [AnalyticalTestStatus.Under_Test]: "bg-purple-100 text-purple-800",
-  [AnalyticalTestStatus.Test_Completed]: "bg-green-100 text-green-800",
-  [AnalyticalTestStatus.Rejected]: "bg-red-100 text-red-800",
-};
+// const batchStatusColors: Record<AnalyticalTestStatus, string> = {
+//   [AnalyticalTestStatus.Approved]: "bg-blue-100 text-blue-800",
+//   [AnalyticalTestStatus.Quarantine]: "bg-yellow-100 text-yellow-800",
+//   [AnalyticalTestStatus.Under_Test]: "bg-purple-100 text-purple-800",
+//   [AnalyticalTestStatus.Test_Completed]: "bg-green-100 text-green-800",
+//   [AnalyticalTestStatus.Rejected]: "bg-red-100 text-red-800",
+// };
 
 export interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -94,16 +94,23 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`px-2 py-1 rounded-full text-center ${batchStatusColors[row.original.status as AnalyticalTestStatus]}`}
-      >
-        {AnalyticalTestStatus[row.original.status as number]
-          .split("_")
-          .join(" ")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as AnalyticalTestStatus;
+      const { label, colorClass } = getEnumBadge(AnalyticalTestStatus, status);
+
+      return (
+        <div
+          className={cn(
+            `inline-block rounded-full px-2 py-1 text-xs font-medium text-center `,
+            colorClass,
+          )}
+        >
+          {splitWords(label)}
+        </div>
+      );
+    },
   },
+
   {
     id: "actions",
     header: "Actions",

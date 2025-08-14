@@ -46,7 +46,7 @@ const ArdDetails = () => {
     <PageWrapper className="space-y-5">
       <div>
         <div className="pb-3 flex justify-between gap-4">
-          <PageTitle title="Analytic Raw Data" />
+          <PageTitle title="Analytical Raw Data" />
           <Button onClick={() => setIsOpen(true)}>Preview COA</Button>
         </div>
         <MaterialReportCard

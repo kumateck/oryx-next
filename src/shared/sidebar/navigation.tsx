@@ -59,7 +59,7 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "Plane Shift",
+        title: "Planned Shift",
         url: "/plan-shift",
         icon: "NotebookPen",
         isActive: false,

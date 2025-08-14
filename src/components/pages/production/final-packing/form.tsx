@@ -28,11 +28,11 @@ interface MaterialFormProps {
   errors: { [key: string]: string };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   formData: {
-    [key: string]: { [key: string]: number };
+    [key: string]: { [key: string]: number | string };
   };
   setFormData: React.Dispatch<
     React.SetStateAction<{
-      [key: string]: { [key: string]: number };
+      [key: string]: { [key: string]: number | string };
     }>
   >;
   isLoading?: boolean;
@@ -51,17 +51,17 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
       if (field === "subsequentDeliveredQuantity") {
         // console.log(updatedMaterial, " updatedMaterial");
         updatedMaterial.totalReceivedQuantity =
-          updatedMaterial.receivedQuantity +
+          Number(updatedMaterial.receivedQuantity) +
           value +
-          updatedMaterial.subsequentDeliveredQuantity;
+          Number(updatedMaterial.subsequentDeliveredQuantity);
       }
 
       // Auto-update `rejectedQuantity`
       updatedMaterial.rejectedQuantity =
-        updatedMaterial.totalReceivedQuantity -
-        (updatedMaterial.packedQuantity +
-          updatedMaterial.returnedQuantity +
-          updatedMaterial.sampledQuantity);
+        Number(updatedMaterial.totalReceivedQuantity) -
+        (Number(updatedMaterial.packedQuantity) +
+          Number(updatedMaterial.returnedQuantity) +
+          Number(updatedMaterial.sampledQuantity));
 
       // Auto-update `totalAccountedForQuantity`
       updatedMaterial.totalAccountedForQuantity =
@@ -69,11 +69,11 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
 
       // Auto-update `percentageLoss`
       updatedMaterial.percentageLoss =
-        updatedMaterial.totalAccountedForQuantity > 0
+        Number(updatedMaterial.totalAccountedForQuantity) > 0
           ? parseFloat(
               (
                 (updatedMaterial.rejectedQuantity /
-                  updatedMaterial.totalAccountedForQuantity) *
+                  Number(updatedMaterial.totalAccountedForQuantity)) *
                 100
               ).toFixed(2),
             )

@@ -21362,7 +21362,7 @@ export type ProductionScheduleProductDto = {
   quantity?: number;
   batchNumber?: string | null;
   batchSize?: BatchSize;
-  marketType?: CollectionItemDto;
+  marketType?: CustomerDto;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
 };
@@ -21371,7 +21371,7 @@ export type ProductionScheduleProductDtoRead = {
   quantity?: number;
   batchNumber?: string | null;
   batchSize?: BatchSize;
-  marketType?: CollectionItemDto;
+  marketType?: CustomerDto;
   cancelled?: boolean;
   reasonForCancellation?: string | null;
 };

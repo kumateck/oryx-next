@@ -4,7 +4,9 @@ import { format } from "date-fns";
 import {
   BatchStatus,
   Units,
+  cn,
   convertToLargestUnit,
+  getEnumBadge,
   getSmallestUnit,
 } from "@/lib";
 import { BatchToSupply } from "@/lib/redux/api/openapi.generated";
@@ -73,8 +75,20 @@ export const getColumns = (): ColumnDef<BatchToSupply>[] => [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div>{BatchStatus[row.original.batch?.status as number]}</div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original?.batch?.status as BatchStatus;
+      const { label, colorClass } = getEnumBadge(BatchStatus, status);
+
+      return (
+        <div
+          className={cn(
+            "inline-block rounded-full px-2 py-1 text-xs font-medium ",
+            colorClass,
+          )}
+        >
+          {label}
+        </div>
+      );
+    },
   },
 ];

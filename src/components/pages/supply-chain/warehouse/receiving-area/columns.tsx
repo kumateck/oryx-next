@@ -9,7 +9,9 @@ import {
   Option,
   PermissionKeys,
   Units,
+  cn,
   convertToLargestUnit,
+  getEnumBadge,
   routes,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
@@ -63,12 +65,12 @@ export function DataTableRowActions<
   );
 }
 
-const batchStatusColors: Record<DistributedMaterialStatus, string> = {
-  [DistributedMaterialStatus.Distributed]: "bg-blue-100 text-blue-800",
-  [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
-  [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
-  [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
-};
+// const batchStatusColors: Record<DistributedMaterialStatus, string> = {
+//   [DistributedMaterialStatus.Distributed]: "bg-blue-100 text-blue-800",
+//   [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
+//   [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
+//   [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
+// };
 
 export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
   TableCheckbox<DistributedRequisitionMaterialDto>({
@@ -130,15 +132,24 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as DistributedMaterialStatus;
+      const { label, colorClass } = getEnumBadge(
+        DistributedMaterialStatus,
+        status,
+      );
+
       return (
         <div
-          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
+          className={cn(
+            `inline-block rounded-full px-2 py-1 text-xs font-medium `,
+            colorClass,
+          )}
         >
-          {DistributedMaterialStatus[status]}
+          {label}
         </div>
       );
     },
   },
+
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

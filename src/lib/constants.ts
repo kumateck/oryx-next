@@ -69,8 +69,9 @@ export const CODE_SETTINGS = {
     ProductAnalyticalRawData: "ProductAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
     Service: "Service",
-    GeneralInventory: "GeneralInventory",
+    // GeneralInventory: "GeneralInventory",
     ProductionOrder: "ProductionOrder",
+    Item: "Item",
   },
   nameTypes: {
     Time: 2,
@@ -636,6 +637,7 @@ export const AuditModules = {
     extraPacking: "Extra Packing",
     bom: "BOM",
     packing: "Packing",
+    returns: "Returns",
     procedure: "Procedure",
   },
   management: {

@@ -15,6 +15,8 @@ import {
   ErrorResponse,
   ShipmentStatus,
   ShipmentStatusOptions,
+  cn,
+  getEnumBadge,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -50,17 +52,20 @@ export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const status = row.original.status as ShipmentStatus;
+  const { label, colorClass } = getEnumBadge(ShipmentStatus, status);
 
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
-              statusColors[row.original.status as ShipmentStatus]
-            }`}
+            className={cn(
+              `inline-block rounded-full px-2 py-1 text-xs font-medium `,
+              colorClass,
+            )}
           >
-            {splitWords(ShipmentStatus[row.original.status as ShipmentStatus])}
+            {splitWords(label)}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
@@ -165,10 +170,10 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   },
 ];
 
-const statusColors: Record<ShipmentStatus, string> = {
-  [ShipmentStatus.New]: "bg-blue-100 text-blue-800",
-  [ShipmentStatus.InTransit]: "bg-yellow-100 text-yellow-800",
-  [ShipmentStatus.Cleared]: "bg-purple-100 text-purple-800",
-  [ShipmentStatus.Arrived]: "bg-green-100 text-green-800",
-  [ShipmentStatus.AtPort]: "bg-orange-100 text-green-800",
-};
+// const statusColors: Record<ShipmentStatus, string> = {
+//   [ShipmentStatus.New]: "bg-blue-100 text-blue-800",
+//   [ShipmentStatus.InTransit]: "bg-yellow-100 text-yellow-800",
+//   [ShipmentStatus.Cleared]: "bg-purple-100 text-purple-800",
+//   [ShipmentStatus.Arrived]: "bg-green-100 text-green-800",
+//   [ShipmentStatus.AtPort]: "bg-orange-100 text-green-800",
+// };
