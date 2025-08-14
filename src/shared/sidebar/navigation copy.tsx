@@ -1,0 +1,656 @@
+import { type LucideIconProps } from "@/components/ui";
+import { AnalyticalTestRequestStatus } from "@/lib";
+
+// Define the sub-item structure for nested menu items.
+interface SubItem {
+  title: string;
+  url?: string;
+  icon?: LucideIconProps;
+  children?: SubItem[];
+}
+
+// Define the main menu item structure.
+export interface MenuItem {
+  title: string;
+  url?: string;
+  icon: LucideIconProps;
+  isActive?: boolean;
+  items?: SubItem[]; // Optional array of sub-items.
+}
+
+// Define the structure for each main route section.
+export interface Route {
+  title: string;
+  menu: MenuItem[];
+}
+
+export const ROUTES: Route[] = [
+  {
+    title: "Main",
+    menu: [
+      {
+        title: "Dashboard",
+        url: "/home",
+        icon: "LayoutDashboard",
+        isActive: false,
+      },
+      {
+        title: "HR Dashboard",
+        url: "/hr-dashboard",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
+        title: "QC Dashboard",
+        url: "/qa-qc-dashboard/qc",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
+        title: "QA Dashboard",
+        url: "/qa-qc-dashboard/qa",
+        icon: "PanelTopDashed",
+        isActive: false,
+      },
+      {
+        title: "Product Board",
+        url: "/production/activities",
+        icon: "SquareDashedKanban",
+        isActive: false,
+      },
+      {
+        title: "Plan Shift",
+        url: "/plan-shift",
+        icon: "SquareDashedKanban",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Supply Chain",
+    menu: [
+      {
+        title: "Logistics",
+        // url: "",
+        icon: "Forklift",
+        //    isActive: false,
+        items: [
+          {
+            title: "Available Stock",
+            url: "/stock/available",
+          },
+          {
+            title: "Shipment Invoices",
+            url: "/logistics/shipment-invoices",
+          },
+          {
+            title: "Shipment Documents",
+            url: "/logistics/shipment-documents",
+          },
+          {
+            title: "Shipment Discrepancy",
+            url: "/logistics/shipment-discrepancy",
+          },
+          {
+            title: "Billing Sheets",
+            url: "/logistics/billing-sheets",
+          },
+          {
+            title: "Waybill",
+            url: "/logistics/waybill",
+          },
+        ],
+      },
+      {
+        title: "Warehouse",
+        // url: "string",
+        icon: "Warehouse",
+        //    isActive: false,
+        items: [
+          // {
+          //   title: "Departments",
+          //   url: "/warehouse/departments",
+          // },
+          {
+            title: "Receiving Area",
+            url: "/warehouse/receiving-area",
+          },
+          {
+            title: "Quarantine Area/GRN",
+            url: "/warehouse/quarantine-area",
+          },
+          // {
+          //   title: "Warehouses",
+          //   url: "/warehouse/warehouses",
+          // },
+          // {
+          //   title: "Locations",
+          //   url: "/warehouse/locations",
+          // },
+          // {
+          //   title: "Racks",
+          //   url: "/warehouse/racks",
+          // },
+          // {
+          //   title: "Shelves",
+          //   url: "/warehouse/shelves",
+          // },
+          {
+            title: "Materials",
+            url: "/warehouse/materials",
+          },
+          {
+            title: "Unlink Materials",
+            url: "/warehouse/materials/unlink",
+          },
+          {
+            title: "Linked Materials",
+            url: "/warehouse/materials/linked",
+          },
+          // {
+          //   title: "Raw Materials Requests",
+          //   url: "/warehouse/raw-materials-requests",
+          // },
+          {
+            title: "Approved Materials",
+            url: "/warehouse/approved-materials",
+          },
+
+          {
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
+          },
+          // {
+          //   title: "Available Stock",
+          //   url: "/stock/available",
+          // },
+          {
+            title: "Issue Stock Requisition",
+            url: "/warehouse/stock-requisition",
+          },
+          {
+            title: "Extra Packing Requisitions",
+            url: "/warehouse/extra-packing",
+          },
+          {
+            title: "Stock Transfer issues",
+            url: "/warehouse/stock-transfer-requests",
+          },
+          {
+            title: "Location Chart Record",
+            url: "/warehouse/location-chart",
+          },
+          {
+            title: "Material Returns Note",
+            url: "/warehouse/material-returns",
+          },
+          {
+            title: "Finished Goods Transfer Note",
+            url: "/warehouse/finished-goods-transfer-notes",
+          },
+        ],
+      },
+      {
+        title: "Procurement",
+        // url: "string",
+        icon: "ShoppingCart",
+        //    isActive: false,
+        items: [
+          // {
+          //   title: "Manufacturers",
+          //   url: "/procurement/manufacturers",
+          // },
+          // {
+          //   title: "Suppliers",
+          //   url: "/procurement/suppliers",
+          // },
+
+          {
+            title: "Purchase Requisition",
+            url: "/procurement/requisition",
+          },
+          {
+            title: "Quotations Request",
+            url: "/procurement/quotations",
+          },
+
+          {
+            title: "Quotations Reponses",
+            url: "/procurement/sales-quotation",
+          },
+          {
+            title: "Price Comparison",
+            url: "/procurement/price-comparison",
+          },
+          {
+            title: "Awarded Quotations",
+            url: "/procurement/awarded-quotations",
+          },
+          {
+            title: "Profoma Responses",
+            url: "/procurement/profoma-responses",
+          },
+          {
+            title: "Create Purchase Orders",
+            url: "/procurement/purchase-orders",
+          },
+          {
+            title: "Purchase Order Lists",
+            url: "/procurement/purchase-order-lists",
+          },
+          {
+            title: "Material Distribution",
+            url: "/procurement/material-distribution",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Production",
+    menu: [
+      {
+        title: "Requisition",
+        // url: "",
+        icon: "ClipboardList",
+        //    isActive: false,
+        items: [
+          {
+            title: "Material Requisitions",
+            url: "/production/requisition/general",
+          },
+          {
+            title: "Create Purchase Requisitions",
+            url: "/production/requisition/create",
+          },
+          {
+            title: "Others",
+            url: "/production/stock-requisition/others",
+          },
+          // {
+          //   title: "Shipment Discrepancy",
+          //   url: "/logistics/shipment-discrepancy",
+          // },
+        ],
+      },
+      // {
+      //   title: "Stock Requisition",
+      //   // url: "/production/stock-requisition",
+      //   icon: "Notebook",
+      //   items: [
+      //     {
+      //       title: "Materials",
+      //       url: "/production/stock-requisition",
+      //     },
+      //     {
+      //       title: "Others",
+      //       url: "/production/stock-requisition/others",
+      //     },
+      //   ],
+      //   //    isActive: false,
+      // },
+      {
+        title: "Planning",
+        url: "/production/plannings",
+        icon: "Check",
+        //    isActive: false,
+      },
+      {
+        title: "Stock Transfer Requests",
+        url: "/production/stock-transfer-requests",
+        icon: "ALargeSmall",
+      },
+      // {
+      //   title: "Work Order",
+      //   url: "/production/work-order",
+      //   icon: "FolderKanban",
+      //   isActive: false,
+      // },
+      {
+        title: "Product Schedule",
+        url: "/production/schedules",
+        icon: "Calendar",
+        isActive: false,
+      },
+      // {
+      //   title: "Production Board",
+      //   url: "/production/schedules",
+      //   icon: "LayoutList",
+      //   isActive: false,
+      // },
+      // {
+      //   title: "Available Stock",
+      //   url: "/production/schedules",
+      //   icon: "TrendingUp",
+      //   isActive: false,
+      // },
+      // {
+      //   title: "Master Schedule",
+      //   url: "/production/master-schedule",
+      //   icon: "Bookmark",
+      //   isActive: false,
+      // },
+    ],
+  },
+  {
+    title: "Human Resource",
+    menu: [
+      {
+        title: " HR Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Employee Management",
+            url: "/hr/employee-management",
+          },
+          {
+            title: "Designation Management",
+            url: "/hr/designation-management",
+          },
+          {
+            title: "Leave Management",
+            url: "/hr/leave-management",
+          },
+          {
+            title: "Leave Type Configuration",
+            url: "/hr/leave-configuration",
+          },
+          {
+            title: "Overtime Management",
+            url: "/hr/overtime-management",
+          },
+          {
+            title: "Staff Requisition",
+            url: "/hr/staff-requisition",
+          },
+          {
+            title: "Attendance Report Upload",
+            url: "/hr/attendance-report-upload",
+          },
+
+          // {
+          //   title: "Attendance Report Summary",
+          //   url: "/hr/attendance-report-summary",
+          // },
+          // {
+          //   title: "Shift Schedule",
+          //   url: "/hr/shift-schedule",
+          // },
+          // {
+          //   title: "Shift Types",
+          //   url: "/hr/shift-types",
+          // },
+          {
+            title: "Shift Schedule Report Upload",
+            url: "/hr/shift-schedule-upload",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Quality Assurance",
+    menu: [
+      {
+        title: "Issue BMR/BPR",
+        url: "/qa/issue-bmr",
+        icon: "ShieldCheck",
+        isActive: false,
+        // items: [{
+        //   title: "string",
+        //   url: "string"
+        // }]
+      },
+      // {
+      //   title: "BMR/BPR Request",
+      //   url: "/qa/bmr-bpr",
+      //   icon: "ShieldCheck",
+      //   isActive: false,
+      // },
+      {
+        title: "Analytical Test Requests",
+        url: `/atr?type=${AnalyticalTestRequestStatus.New}`,
+        icon: "ShieldCheck",
+      },
+      {
+        title: "Pending Approvals",
+        url: "/qa/pending-approvals",
+        icon: "CircleDotDashed",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Quality Control",
+    menu: [
+      {
+        title: "Analytical Test Requests",
+        url: `/atr?type=${AnalyticalTestRequestStatus.Sampled}`,
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Material STP",
+        url: "/qc/material-stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+
+      {
+        title: "Product STP",
+        url: "/qc/products-stp",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Material ARD",
+        url: "/qc/analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Product ARD",
+        url: "/qc/product-analytical-raw-data",
+        icon: "BookUser",
+        isActive: false,
+      },
+      {
+        title: "Goods Receipt Note",
+        url: "/qc/goods-receipt-note",
+        icon: "BookUser",
+        isActive: false,
+      },
+
+      {
+        title: "Material Specification",
+        url: "/qc/material-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
+      {
+        title: "Product Specification",
+        url: "/qc/product-specification",
+        isActive: false,
+        icon: "BookUser",
+      },
+    ],
+  },
+  {
+    title: "Access Control",
+    menu: [
+      {
+        title: "Access Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Roles",
+            url: "/access-management/roles",
+          },
+          {
+            title: "Manage Permissions",
+            url: "/access-management/permissions",
+          },
+        ],
+      },
+      {
+        title: "User Management",
+        icon: "Folder",
+        items: [
+          {
+            title: "Manage Users Directory",
+            url: "/access-management/users",
+          },
+          {
+            title: "Audit Trail",
+            url: "/access-management/audit-trail",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Extrals",
+    menu: [
+      {
+        title: "Services",
+        url: "/extrals/services",
+        icon: "List",
+        isActive: false,
+      },
+      {
+        title: "Service Providers",
+        url: "/extrals/services-providers",
+        icon: "HandHelping",
+        isActive: false,
+      },
+      {
+        title: "Inventory",
+        icon: "Group",
+        isActive: false,
+        items: [
+          {
+            title: "General Inventory",
+            url: "/extrals/general-inventory-config",
+            icon: "BaggageClaim",
+          },
+          {
+            title: "Available Stocks",
+            url: "/extrals/available-stocks",
+            icon: "BaggageClaim",
+          },
+          {
+            title: "Damage/Missing Items",
+            url: "/extrals/damage-missing-items",
+            icon: "BadgeInfo",
+          },
+          {
+            title: "Vendors",
+            url: "/extrals/vendors",
+            icon: "SmilePlus",
+          },
+          {
+            title: "Purchase Requisition",
+            url: "/extrals/purchase-requisitions",
+            icon: "Plug2",
+          },
+          {
+            title: "Stock Requisition",
+            url: "/extrals/stock-requisitions",
+            icon: "Plug",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "System Settings",
+    menu: [
+      {
+        title: "Settings",
+        url: "/settings",
+        icon: "Settings",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "CRM",
+    menu: [
+      {
+        title: "Customer",
+        url: "/crm/customers",
+        icon: "UserRound",
+        isActive: false,
+      },
+      {
+        title: "Production Order",
+        url: "/crm/production-order",
+        icon: "Presentation",
+        isActive: false,
+      },
+      {
+        title: "Invoices",
+        url: "/crm/invoices",
+        icon: "Currency",
+        isActive: false,
+      },
+      {
+        title: "Proforma Invoice",
+        url: "/crm/proforma-invoice",
+        icon: "Currency",
+        isActive: false,
+      },
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "UserRound",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
+    ],
+  },
+  {
+    title: "Internal",
+    menu: [
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "ShieldCheck",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
+    ],
+  },
+  {
+    title: "Reports",
+    menu: [
+      // {
+      //   title: "string",
+      //   url: "string",
+      //   icon: "ClipboardPlus",
+      //   isActive: false,
+      //   // items: [{
+      //   //   title: "string",
+      //   //   url: "string"
+      //   // }]
+      // },
+      {
+        title: "Human Resources Report",
+        url: "/reports/human-resources-report",
+        icon: "Users",
+      },
+      {
+        title: "QC and QA Reports",
+        url: "/reports/qc-qa-reports",
+        isActive: false,
+        icon: "BookUser",
+      },
+    ],
+  },
+];

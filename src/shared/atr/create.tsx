@@ -116,7 +116,7 @@ const CreateATR = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Analytic Test Request</DialogTitle>
+          <DialogTitle>Create Analytical Test Request</DialogTitle>
         </DialogHeader>
         <ul className="bg-white p-4 rounded-xl shadow-sm text-sm text-gray-700 space-y-2 list-none">
           <li className="flex justify-between">

@@ -174,6 +174,7 @@ export function StatusActions<TData extends EmployeeDto>({
   const isInactiveStatus =
     row.original.inactiveStatus !== null &&
     row.original.inactiveStatus !== undefined;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>

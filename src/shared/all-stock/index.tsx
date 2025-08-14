@@ -74,13 +74,6 @@ const AllStockByMaterial = ({
                       className="flex gap-4 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                     >
                       {item.warehouse?.name}{" "}
-                      {/* {authUser?.department?.warehouses?.find(
-                        (d) => d?.id === item?.warehouse?.id,
-                      ) ? (
-                        <Icon name="House" />
-                      ) : (
-                        ""
-                      )} */}
                     </th>
                     <td className="px-6 py-4">
                       {

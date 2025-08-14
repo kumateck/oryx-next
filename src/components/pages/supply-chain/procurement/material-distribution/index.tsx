@@ -9,22 +9,24 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
 
 const MaterialDistribution = () => {
   const router = useRouter();
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1ProcurementShipmentDocumentArrivedQuery();
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   useEffect(() => {
     loadData({
       page,
       pageSize,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchInput]);
   const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">

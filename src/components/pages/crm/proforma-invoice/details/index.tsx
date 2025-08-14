@@ -39,7 +39,7 @@ function Index() {
           <div onClick={() => router.back()}>
             <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
           </div>
-          <PageTitle title="Pro-Formal Invoice Details" />
+          <PageTitle title="Proforma Invoice Details" />
         </div>
         <div className="flex items-center gap-2">
           <Button></Button>

@@ -92,7 +92,7 @@ export function CreateInventoryItem() {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.GeneralInventory,
+          modelType: CODE_SETTINGS.modelTypes.Item,
           modelId: itemId as string,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
@@ -113,7 +113,7 @@ export function CreateInventoryItem() {
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
   const { regenerateCode } = useCodeGen(
-    CODE_SETTINGS.modelTypes.GeneralInventory,
+    CODE_SETTINGS.modelTypes.Item,
     fetchCount,
     setCodeToInput,
   );

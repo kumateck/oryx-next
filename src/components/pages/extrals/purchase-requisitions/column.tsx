@@ -18,8 +18,11 @@ import {
   // PermissionKeys,
   SupplierStatus,
   SupplierTypeOptions,
+  cn,
+  getEnumBadge,
   isErrorResponse,
   routes,
+  splitWords,
 } from "@/lib";
 import {
   InventoryPurchaseRequisitionDto,
@@ -139,14 +142,21 @@ export function DataTableRowStatus<
     }
   };
 
+  const { label, colorClass } = getEnumBadge(
+    SupplierStatus,
+    row.original.status as SupplierStatus,
+  );
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusColors[row.original.status as SupplierStatus]}`}
+            className={cn(
+              `inline-block rounded-full px-2 py-1 text-xs font-medium `,
+              colorClass,
+            )}
           >
-            {SupplierStatus[row.original.status as SupplierStatus]}
+            {splitWords(label)}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
@@ -226,8 +236,8 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   },
 ];
 
-const statusColors: Record<SupplierStatus, string> = {
-  [SupplierStatus.New]: "bg-blue-100 text-blue-800",
-  [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
-  [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
-};
+// const statusColors: Record<SupplierStatus, string> = {
+//   [SupplierStatus.New]: "bg-blue-100 text-blue-800",
+//   [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
+//   [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
+// };

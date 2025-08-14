@@ -10,7 +10,12 @@ import {
   useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-import { AnalyticalTestRequestStatus, AuditModules, cn } from "@/lib";
+import {
+  AnalyticalTestRequestStatus,
+  AuditModules,
+  cn,
+  getEnumBadge,
+} from "@/lib";
 import CreateATR from "./create";
 
 interface Props {
@@ -57,6 +62,11 @@ function AnalyticalTestRequest({
     productName: productResponse?.name as string,
     batchManufacturingRecordId: bmrResponse?.id as string,
   };
+  const status = activityATRData?.status as AnalyticalTestRequestStatus;
+  const { label, colorClass } = getEnumBadge(
+    AnalyticalTestRequestStatus,
+    status,
+  );
   return (
     <div>
       <div className="flex justify-end">
@@ -75,24 +85,12 @@ function AnalyticalTestRequest({
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
             <span className="text-gray-500">ATR:</span>
             <span
-              className={cn("px-2 py-1 rounded-2xl text-xs font-semibold", {
-                "bg-gray-100 text-gray-800":
-                  activityATRData.status === AnalyticalTestRequestStatus.New,
-                "bg-yellow-100 text-yellow-800":
-                  activityATRData.status ===
-                  AnalyticalTestRequestStatus.Sampled,
-                "bg-blue-100 text-blue-800":
-                  activityATRData.status ===
-                  AnalyticalTestRequestStatus.Acknowledged,
-                "bg-red-100 text-red-800":
-                  activityATRData.status ===
-                  AnalyticalTestRequestStatus.Testing,
-                "bg-green-100 text-green-800":
-                  activityATRData.status ===
-                  AnalyticalTestRequestStatus.Released,
-              })}
+              className={cn(
+                "px-2 py-1 rounded-2xl text-xs font-semibold",
+                colorClass,
+              )}
             >
-              {AnalyticalTestRequestStatus[Number(activityATRData.status)]}
+              {label}
             </span>
           </div>
         )}

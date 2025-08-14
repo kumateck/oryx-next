@@ -13,6 +13,7 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -20,6 +21,7 @@ const Page = () => {
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const searchInput = useSelector((state) => state.common.searchInput);
 
   const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1RequisitionDepartmentQuery();
@@ -30,10 +32,11 @@ const Page = () => {
       pageSize,
       type: RequisitionType.StockVoucher,
       kind: kind || EMaterialKind.Raw,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, kind]);
+  }, [page, pageSize, kind, searchInput]);
 
   const data = result?.data || [];
 
@@ -68,7 +71,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Stock Requisitions" />
+        <PageTitle title="Issue Stock Requisitions" />
         {(hasPermissionAccess(
           PermissionKeys.warehouse.viewPackagingMaterialRequisitions,
         ) ||

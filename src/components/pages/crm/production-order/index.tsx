@@ -46,7 +46,7 @@ function Index() {
         <div className="flex items-center ml-auto gap-2">
           <Button className="flex items-center gap-2">
             <Icon name="Plus" />
-            <span>Pro-Formal Invoice</span>
+            <span>Proforma Invoice</span>
           </Button>
         </div>
         <Button
