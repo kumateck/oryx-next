@@ -13,6 +13,7 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import { useSelector } from "@/lib/redux/store";
 
 const GRNPage = () => {
   const { hasPermissionAccess } = useUserPermissions();
@@ -21,7 +22,7 @@ const GRNPage = () => {
   const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1WarehouseGrnsQuery();
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   useEffect(() => {
@@ -29,10 +30,11 @@ const GRNPage = () => {
       page,
       pageSize,
       kind: kind || EMaterialKind.Raw,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, kind]);
+  }, [page, pageSize, kind, searchInput]);
   const data = result?.data || [];
 
   const pathname = usePathname();

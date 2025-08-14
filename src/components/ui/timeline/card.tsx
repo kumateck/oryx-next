@@ -614,10 +614,12 @@ const TimelineCard = ({
             )}
             {showBmrAndBprRequisition && (
               <div>
-                <BMRStatus
-                  status={bmrStatus as ProductBMRStatus}
-                  title="BMR & BPR"
-                />
+                {bmrStatus && (
+                  <BMRStatus
+                    status={bmrStatus as ProductBMRStatus}
+                    title="BMR & BPR"
+                  />
+                )}
               </div>
             )}
             {showDispatch && (
