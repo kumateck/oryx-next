@@ -111,8 +111,8 @@ function Index() {
   const shiftScheduleOptions = shiftSchedules
     ? [
         {
-          label: shiftSchedules?.scheduleName as string,
-          value: shiftSchedules?.id as string,
+          label: shiftSchedules?.scheduleName ?? "",
+          value: shiftSchedules?.id ?? "",
         },
       ]
     : [];
