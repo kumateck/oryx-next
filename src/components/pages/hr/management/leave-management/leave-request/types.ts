@@ -50,6 +50,7 @@ const imageValidationSchema = z.any().refine(
 );
 
 export const CreateLeaveSchema = z.object({
+  code: z.string().min(1, { message: "Code is required" }),
   leaveTypeId: z
     .object(
       {
