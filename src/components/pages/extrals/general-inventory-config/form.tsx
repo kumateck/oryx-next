@@ -25,8 +25,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 const InventoryForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
-
-  isLoadingCode = false,
   errors,
   unitOfMeasureOptions,
 }: Props<TFieldValues, TContext>) => {
@@ -52,12 +50,8 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                 {
                   label: "Item Code",
                   type: InputTypes.TEXT,
-                  placeholder: isLoadingCode ? "Generating..." : "Item code",
-                  readOnly: true,
+                  placeholder: "Item code",
                   register: register("code" as Path<TFieldValues>),
-                  description: isLoadingCode
-                    ? "Generating..."
-                    : "Unique code for the item",
                   required: true,
                   errors,
                 },

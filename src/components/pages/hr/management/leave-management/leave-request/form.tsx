@@ -16,7 +16,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   leaveTypesOptions: Option[];
   employeeOptions: Option[];
-  categoryOptions: Option[];
   defaultValues?: TFieldValues;
   isExitPass: boolean;
   isOfficialDuty: boolean;
@@ -29,34 +28,29 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
   errors,
   leaveTypesOptions,
   employeeOptions,
-  categoryOptions,
   isOfficialDuty,
   defaultValues,
   isExitPass,
   // isLeaveOrAbsence,
 }: Props<TFieldValues, TContext>) => {
+  console.log(isOfficialDuty);
   return (
-    <div className="w-full">
+    <div className="w-full space-y-3">
+      <FormWizard
+        className="w-full space-y-5"
+        config={[
+          {
+            readOnly: true,
+            label: "Leave Category",
+            register: register("leaveCategory" as Path<TFieldValues>),
+            type: InputTypes.TEXT,
+            required: true,
+            // placeholder: "Enter official duty location",
+            errors,
+          },
+        ]}
+      />
       {!isOfficialDuty && (
-        <FormWizard
-          className="w-full space-y-5"
-          config={[
-            {
-              label: "Leave Category",
-              control: control as Control,
-              type: InputTypes.SELECT,
-              name: "leaveCategory",
-              required: true,
-              defaultValue: defaultValues?.leaveCategory,
-              placeholder: "Select leave category",
-              options: categoryOptions,
-              errors,
-            },
-          ]}
-        />
-      )}
-
-      {!isExitPass && (
         <div className="w-full my-5">
           <FormWizard
             className="w-full space-y-5"
@@ -76,78 +70,82 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           />
         </div>
       )}
-      {!isExitPass && (
-        <div className="w-full my-5 gap-4 grid grid-cols-2">
-          <FormWizard
-            config={[
-              {
-                label: "Start Date",
-                control: control as Control,
-                type: InputTypes.DATE,
-                name: "startDate",
-                required: true,
-                placeholder: "Select start date",
-                errors,
-              },
-            ]}
-          />
-          <FormWizard
-            config={[
-              {
-                label: "End Date",
-                control: control as Control,
-                type: InputTypes.DATE,
-                name: "endDate",
-                required: true,
-                placeholder: "Select end date",
-                errors,
-              },
-            ]}
-          />
-        </div>
-      )}
-      {isExitPass && (
-        <div className="w-full my-5 gap-4">
-          <FormWizard
-            className="w-full"
-            config={[
-              {
-                label: "Date",
-                control: control as Control,
-                type: InputTypes.DATE,
-                name: "startDate",
-                required: true,
-                placeholder: "Select date",
-                errors,
-              },
-            ]}
-          />
-        </div>
-      )}
-      {isExitPass && (
+
+      <div className="w-full my-5 gap-4 grid grid-cols-2">
         <FormWizard
-          className="w-full my-5 gap-4 grid grid-cols-2"
           config={[
             {
-              label: "Time In",
+              label: "Start Date",
               control: control as Control,
-              type: InputTypes.TIME,
-              name: "timeIn",
+              type: InputTypes.DATE,
+              name: "startDate",
               required: true,
-              placeholder: "Select time in",
-              errors,
-            },
-            {
-              label: "Time Out",
-              control: control as Control,
-              type: InputTypes.TIME,
-              name: "timeOut",
-              required: true,
-              placeholder: "Select time out",
+              placeholder: "Select start date",
               errors,
             },
           ]}
         />
+        <FormWizard
+          config={[
+            {
+              label: "End Date",
+              control: control as Control,
+              type: InputTypes.DATE,
+              name: "endDate",
+              required: true,
+              placeholder: "Select end date",
+              errors,
+            },
+          ]}
+        />
+      </div>
+      <div className="w-full my-5 gap-4">
+        <FormWizard
+          className="w-full"
+          config={[
+            {
+              label: "Date",
+              control: control as Control,
+              type: InputTypes.DATE,
+              name: "startDate",
+              required: true,
+              placeholder: "Select date",
+              errors,
+            },
+          ]}
+        />
+      </div>
+      {isExitPass && (
+        <div className="flex w-full items-center gap-2">
+          <FormWizard
+            className=""
+            config={[
+              {
+                label: "Time In",
+                control: control as Control,
+                type: InputTypes.TIME,
+                name: "timeIn",
+                required: true,
+                placeholder: "Select time in",
+                errors,
+              },
+            ]}
+          />
+          <FormWizard
+            className=""
+            config={[
+              {
+                label: "Time Out",
+                control: control as Control,
+                type: InputTypes.TIME,
+                name: "timeOut",
+                required: true,
+                placeholder: "Select time out",
+                errors,
+              },
+            ]}
+          />
+        </div>
       )}
       <FormWizard
         className="w-full space-y-5"
@@ -165,7 +163,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {!isExitPass && (
+      {(!isOfficialDuty || !isExitPass) && (
         <div className="w-full flex items-center my-5 gap-4">
           <FormWizard
             config={[
@@ -177,6 +175,10 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 required: true,
                 errors,
               },
+            ]}
+          />
+          <FormWizard
+            config={[
               {
                 register: register("contactPersonNumber" as Path<TFieldValues>),
                 label: "Contact Person Number",
@@ -189,21 +191,19 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           />
         </div>
       )}
-      {isOfficialDuty && (
-        <FormWizard
-          className="w-full my-5 gap-4"
-          config={[
-            {
-              label: "Destination",
-              register: register("destination" as Path<TFieldValues>),
-              type: InputTypes.TEXT,
-              required: true,
-              placeholder: "Enter official duty location",
-              errors,
-            },
-          ]}
-        />
-      )}
+      <FormWizard
+        className="w-full my-5 gap-4"
+        config={[
+          {
+            label: "Destination",
+            register: register("destination" as Path<TFieldValues>),
+            type: InputTypes.TEXT,
+            required: true,
+            placeholder: "Enter official duty location",
+            errors,
+          },
+        ]}
+      />
       <FormWizard
         className="w-full space-y-5 my-5"
         config={[

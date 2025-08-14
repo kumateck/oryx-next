@@ -10,21 +10,26 @@ import LeaveRequest from "./leave-request/create";
 import { ServerDatatable } from "@/shared/datatable";
 import { useLazyGetApiV1LeaveRequestQuery } from "@/lib/redux/api/openapi.generated";
 import { columns } from "./columns";
-// import { useRouter } from "next/navigation";
-import { Button, Icon } from "@/components/ui";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useSelector } from "@/lib/redux/store";
-import { AuditModules, PermissionKeys } from "@/lib";
+import {
+  AuditModules,
+  LeaveCategories,
+  PermissionKeys,
+  splitWords,
+} from "@/lib";
+import DropdownBtns from "@/shared/btns/drop-btn";
 
 const Page = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [pageSize, setPageSize] = useState(30);
   const triggerReload = useSelector((state) => state.common.triggerReload);
-  const searchValue = useSelector(state=>state.common.searchInput)
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const [selectedCategory, setSelectedCategory] = useState<LeaveCategories>();
   const [page, setPage] = useState(1);
 
   const [loadLeaveRequests, { data: result, isLoading, isFetching }] =
@@ -45,6 +50,13 @@ const Page = () => {
   }, [page, pageSize, searchValue, triggerReload]);
   const data = result?.data || [];
 
+  const categoryOptions = Object.entries(LeaveCategories)
+    .filter(([key]) => isNaN(Number(key)))
+    .map(([key, value]) => ({
+      label: splitWords(key),
+      value: String(value),
+    }));
+
   //Check Permision
   const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
@@ -59,8 +71,12 @@ const Page = () => {
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
-      {isOpen && (
-        <LeaveRequest onClose={() => setIsOpen(false)} isOpen={isOpen} />
+      {isOpen && selectedCategory && (
+        <LeaveRequest
+          onClose={() => setIsOpen(false)}
+          isOpen={isOpen}
+          selectedCategory={selectedCategory}
+        />
       )}
 
       <div className="flex items-center justify-between py-2">
@@ -69,9 +85,19 @@ const Page = () => {
           {hasPermissionAccess(
             PermissionKeys.humanResources.createLeaveRequest,
           ) && (
-            <Button onClick={() => setIsOpen(true)}>
-              <Icon name="Plus" className="h-4 w-4" /> Request Leave
-            </Button>
+            <DropdownBtns
+              icon="Plus"
+              title="Request Leave"
+              menus={categoryOptions.map((option) => ({
+                name: option.label,
+                onClick: () => {
+                  setSelectedCategory(
+                    option.value as unknown as LeaveCategories,
+                  );
+                  setIsOpen(true);
+                },
+              }))}
+            />
           )}
         </div>
       </div>
