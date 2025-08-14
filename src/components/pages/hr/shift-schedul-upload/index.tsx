@@ -16,7 +16,7 @@ import ThrowErrorMessage from "@/lib/throw-error";
 import { useEffect, useState } from "react";
 import {
   useGetApiV1DepartmentQuery,
-  useGetApiV1ShiftSchedulesQuery,
+  useLazyGetApiV1ShiftSchedulesDepartmentByIdQuery,
   usePostApiV1ShiftSchedulesAssignImportMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { Button, Icon } from "@/components/ui";
@@ -26,12 +26,10 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 function Index() {
   const [results, setResults] = useState<Record<string, any>[]>([]);
+  const [loadShiftSchedules, { data: shiftSchedules }] =
+    useLazyGetApiV1ShiftSchedulesDepartmentByIdQuery();
 
   const { data: departments } = useGetApiV1DepartmentQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const { data: shiftSchedules } = useGetApiV1ShiftSchedulesQuery({
     page: 1,
     pageSize: 1000,
   });
@@ -46,6 +44,16 @@ function Index() {
   } = useForm<ShiftScheduleUploadDto>({
     resolver: zodResolver(ShiftScheduleUploadSchema),
   });
+
+  const departmentId = watch("departmentId");
+  useEffect(() => {
+    if (departmentId.value) {
+      loadShiftSchedules({
+        id: departmentId.value as string,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [departmentId.value]);
 
   const onSubmit = async (data: ShiftScheduleUploadDto) => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
@@ -98,11 +106,16 @@ function Index() {
       label: d.name as string,
       value: d.id as string,
     })) || [];
-  const shiftScheduleOptions =
-    shiftSchedules?.data?.map((shift) => ({
-      label: shift.scheduleName as string,
-      value: shift.id as string,
-    })) || [];
+
+  //TODO: implement shift schedule options mapping
+  const shiftScheduleOptions = shiftSchedules
+    ? [
+        {
+          label: shiftSchedules.scheduleName as string,
+          value: shiftSchedules.id as string,
+        },
+      ]
+    : [];
 
   return (
     <PageWrapper>
