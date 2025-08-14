@@ -70,6 +70,7 @@ export const CODE_SETTINGS = {
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
     Service: "Service",
     GeneralInventory: "GeneralInventory",
+    ProductionOrder: "ProductionOrder",
   },
   nameTypes: {
     Time: 2,
