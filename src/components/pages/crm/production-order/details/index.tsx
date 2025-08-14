@@ -1,7 +1,6 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -9,20 +8,20 @@ import {
   CardTitle,
   Icon,
 } from "@/components/ui";
-import { useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProductionOrdersByIdQuery } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import LoadingSkeleton from "./loadingSkeleton";
 import { format } from "date-fns";
-import { columns } from "./columns";
 import { ListsTable } from "@/shared/datatable";
+import { columns } from "./columns";
 
 function Index() {
   const router = useRouter();
   const { id } = useParams();
   const [loadProFormalInvoiceDetial, { data, isLoading }] =
-    useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery();
+    useLazyGetApiV1ProductionOrdersByIdQuery();
 
   useEffect(() => {
     if (id) {
@@ -34,56 +33,44 @@ function Index() {
   if (isLoading) return <LoadingSkeleton />;
   return (
     <PageWrapper className="space-y-4">
-      <div>
-        <div className="flex items-center gap-2">
-          <div onClick={() => router.back()}>
-            <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
-          </div>
-          <PageTitle title="Pro-Formal Invoice Details" />
+      <div className="flex items-center gap-2">
+        <div onClick={() => router.back()}>
+          <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
         </div>
-        <div className="flex items-center gap-2">
-          <Button></Button>
-        </div>
+        <PageTitle title="Production Order Details" />
       </div>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-start gap-4 ">
             <div className="pr-2 border-r-2 border-r-gray-700">
-              {data?.productionOrder?.code}
+              {data?.code}
             </div>
             <div className="pr-2 flex gap-2 items-center border-r-2 border-r-gray-700">
               <span>Created on:</span>
               <span>
-                {data?.productionOrder?.createdAt &&
-                  format(data?.productionOrder?.createdAt, "dd MMMM, yyyy")}
+                {data?.createdAt && format(data?.createdAt, "dd MMMM, yyyy")}
               </span>
             </div>
             <div className="pr-2 flex items-center gap-2">
               <span>By:</span>
-              <span>{`${data?.productionOrder?.createdBy?.firstName} ${data?.productionOrder?.createdBy?.lastName}`}</span>
+              <span>{`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}</span>
             </div>
           </div>
           <div className="mt-6">
-            <CardTitle>{data?.productionOrder?.customer?.name}</CardTitle>
+            <CardTitle>{data?.customer?.name}</CardTitle>
             <CardDescription>
               <div className="flex w-full items-center justify-between gap-2">
                 <div className="space-x-1">
                   <span>Email: </span>
-                  <span className="text-gray-800">
-                    {data?.productionOrder?.customer?.email}
-                  </span>
+                  <span className="text-gray-800">{data?.customer?.email}</span>
                 </div>
                 <div className="space-x-1">
                   <span>Phone: </span>
-                  <span className="text-gray-800">
-                    {data?.productionOrder?.customer?.phone}
-                  </span>
+                  <span className="text-gray-800">{data?.customer?.phone}</span>
                 </div>
                 <div className="space-x-1">
                   <span>Address: </span>
-                  <span className="text-gray-800">
-                    {data?.productionOrder?.customer?.phone}
-                  </span>
+                  <span className="text-gray-800">{data?.customer?.phone}</span>
                 </div>
               </div>
             </CardDescription>
