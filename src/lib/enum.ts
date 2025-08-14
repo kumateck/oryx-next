@@ -611,3 +611,8 @@ export enum InventoryType {
   GeneralStore = 1,
   "IT Store" = 2,
 }
+
+export enum ProductionOrderType {
+  Pending = 0,
+  Paid = 1,
+}

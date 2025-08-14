@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductionOrderDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
+// import { ProductionOrderType } from "@/lib";
 
 export const columns: ColumnDef<ProductionOrderDto>[] = [
   {
@@ -25,7 +26,7 @@ export const columns: ColumnDef<ProductionOrderDto>[] = [
     cell: ({ row }) => (
       <div className="min-w-36">
         {row.original?.createdAt
-          ? format(new Date(row.original.createdAt), "yyyy-MM-dd")
+          ? format(new Date(row.original.createdAt), "dd MMMM, yyyy")
           : "N/A"}
       </div>
     ),
@@ -42,6 +43,15 @@ export const columns: ColumnDef<ProductionOrderDto>[] = [
     header: "Total Value",
     cell: ({ row }) => (
       <div className="min-w-36">{row.original?.totalValue ?? "N/A"}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div className=" px-2 py-1 text-xs rounded-3xl bg-gray-200">
+        {row && "Pending"}
+      </div>
     ),
   },
 ];

@@ -17,7 +17,7 @@ import {
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
@@ -27,6 +27,7 @@ import {
   PostApiV1MaterialArdApiArg,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   PostApiV1FileByModelTypeAndModelIdApiArg,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
 import { toast } from "sonner";
@@ -42,10 +43,15 @@ type Props = {
 export const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
 
+  const [loadMaterialstpSpecification, { data }] =
+    useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
+    watch,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<MaterialArdSchemaType>({
@@ -73,6 +79,20 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
+
+  const stpIds = watch("stpId");
+  useEffect(() => {
+    if (stpIds) {
+      loadMaterialstpSpecification({ id: stpIds.value });
+    }
+    //
+  }, [stpIds, loadMaterialstpSpecification]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, reset]);
 
   //fuction fro creating material analytical raw data
   const onSubmit = async (data: MaterialArdSchemaType) => {

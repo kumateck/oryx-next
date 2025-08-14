@@ -21,6 +21,7 @@ import {
   useGetApiV1ProductStpsQuery,
   usePutApiV1ProductArdByIdMutation,
   useGetApiV1ProductArdByIdQuery,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
@@ -43,12 +44,16 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
-  console.log("details", details);
   const dispatch = useDispatch();
+  const [loadProductstpSpecification, { data }] =
+    useLazyGetApiV1ProductSpecificationsProductByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
+    setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm<ProductArdSchemaType>({
@@ -62,6 +67,19 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       stage: details.stage,
     },
   });
+  const stpId = watch("stpId");
+  useEffect(() => {
+    if (stpId) {
+      loadProductstpSpecification({ id: stpId.value });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   //get stp
   const { data: productStps } = useGetApiV1ProductStpsQuery({
@@ -77,7 +95,6 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   });
 
   useEffect(() => {
-    console.log("product ard by ard id", productArd);
     if (productArd) {
       reset({
         description: productArd?.description ?? "",
