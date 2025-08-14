@@ -31,7 +31,6 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   details: LeaveRequestDto;
-  selectedCategory: LeaveCategories;
 }
 
 const Edit = ({ isOpen, onClose, details }: Props) => {
