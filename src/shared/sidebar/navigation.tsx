@@ -405,12 +405,12 @@ export const ROUTES: Route[] = [
         //   url: "string"
         // }]
       },
-      {
-        title: "BMR/BPR Request",
-        url: "/qa/bmr-bpr",
-        icon: "ShieldCheck",
-        isActive: false,
-      },
+      // {
+      //   title: "BMR/BPR Request",
+      //   url: "/qa/bmr-bpr",
+      //   icon: "ShieldCheck",
+      //   isActive: false,
+      // },
       {
         title: "Analytical Test Requests",
         url: `/atr?type=${AnalyticalTestRequestStatus.New}`,

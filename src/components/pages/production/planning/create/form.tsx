@@ -8,8 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
-import { Division } from "../types";
+import { DivisionOptions, InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -191,12 +190,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             name: "division",
             required: true,
             placeholder: "Select Division",
-            options: Object.entries(Division)
-              .filter(([key]) => isNaN(Number(key)))
-              .map(([label, value]) => ({
-                label,
-                value: String(value),
-              })),
+            options: DivisionOptions,
             errors,
           },
           {

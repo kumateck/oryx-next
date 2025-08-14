@@ -3,6 +3,7 @@ import {
   ApprovalDocument,
   BatchSizeType,
   BatchStatus,
+  Division,
   FloorType,
   FormType,
   OperationAction,
@@ -69,6 +70,19 @@ export const SupplierTypeOptions = Object.values(SupplierStatus)
   .map((enumValue) => {
     // Convert the numeric value back to the string enum key
     const enumKey = SupplierStatus[enumValue as SupplierStatus];
+    return {
+      label: splitWords(enumKey), // e.g., "Full"
+      value: String(enumValue), // e.g., "0"
+    };
+  }) as Option[];
+
+export const DivisionOptions = Object.values(Division)
+  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
+  .filter((enumValue) => typeof enumValue === "number")
+  // Then map the numeric value to an object
+  .map((enumValue) => {
+    // Convert the numeric value back to the string enum key
+    const enumKey = Division[enumValue as Division];
     return {
       label: splitWords(enumKey), // e.g., "Full"
       value: String(enumValue), // e.g., "0"
