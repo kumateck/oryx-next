@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { GrnDto } from "@/lib/redux/api/openapi.generated";
+import { GrnListDto } from "@/lib/redux/api/openapi.generated";
 
-export const columns: ColumnDef<GrnDto>[] = [
+export const columns: ColumnDef<GrnListDto>[] = [
   {
     accessorKey: "grnNumber",
     header: "GRN Number",
