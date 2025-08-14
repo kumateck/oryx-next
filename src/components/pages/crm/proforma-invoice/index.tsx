@@ -31,7 +31,7 @@ function Index() {
   }, [page, pageSize, triggerReload, debouncedValue]);
   return (
     <PageWrapper className="space-y-4">
-      <PageTitle title="Pro-Formal Invoices" />
+      <PageTitle title="Profoma Invoices" />
       <ServerDatatable
         columns={columns}
         data={result?.data ?? []}
