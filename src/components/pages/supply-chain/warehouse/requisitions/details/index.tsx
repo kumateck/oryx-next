@@ -70,6 +70,7 @@ const IssueStockRequistions = () => {
           {(hasAccessToRawMaterialReQuests ||
             hasAccessToPackageMaterialRequests) && (
             <Button
+              disabled={Number(requisition?.items?.length || 0) === 0}
               onClick={onIssue}
               variant={"default"}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-500"

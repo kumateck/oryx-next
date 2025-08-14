@@ -7,6 +7,7 @@ import { ColumnType } from "@/shared/datatable";
 // import { Option } from "@/lib";
 // import Edit from "./edit";
 import { MaterialRequestDto } from "./type";
+import { Units } from "@/lib";
 
 export const getColumns =
   () // setItemLists?: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>,
@@ -113,6 +114,7 @@ export function DataRowAllStock<TData extends MaterialRequestDto>({
             onClose={() => setIsOpen(false)}
             materialId={row.original.materialId}
             materialName={row.original.materialName as string}
+            uomName={row.original.uom as Units}
           />
         )}
       </div>

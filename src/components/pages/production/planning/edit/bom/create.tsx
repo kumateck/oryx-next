@@ -53,7 +53,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     handleSubmit,
   } = form;
 
-  console.log(errors, "errors");
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
@@ -65,6 +64,7 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     subModule: AuditModules.warehouse.materials,
   });
 
+  console.log(materialResponse, "materialResponse");
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     isRawMaterial: true,
     module: AuditModules.general.name,
@@ -117,7 +117,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   }, [isOpen, loadCollection]);
 
   const onSubmit = (data: BomRequestDto) => {
-    console.log(data, "data");
     const success = onAddItem(data);
     if (success) {
       toast.success("BOM item added successfully");
