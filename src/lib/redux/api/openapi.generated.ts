@@ -12588,7 +12588,7 @@ export type PostApiV1ProductionScheduleReturnAfterProductionApiArg = {
   body: PartialMaterialToReturn[];
 };
 export type GetApiV1ProductionScheduleMaterialReturnNoteApiResponse =
-  /** status 200 OK */ MaterialReturnNoteDtoIEnumerablePaginateable;
+  /** status 200 OK */ MaterialReturnNoteDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleMaterialReturnNoteApiArg = {
   /** The current page number. */
   page?: number;
@@ -12602,7 +12602,7 @@ export type GetApiV1ProductionScheduleMaterialReturnNoteApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiResponse =
-  /** status 200 OK */ MaterialReturnNoteDto;
+  /** status 200 OK */ MaterialReturnNoteDtoRead;
 export type GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiArg =
   {
     /** The ID of the Material Return Note. */
@@ -13488,7 +13488,7 @@ export type DeleteApiV1ShiftSchedulesByIdApiArg = {
   subModule?: any;
 };
 export type GetApiV1ShiftSchedulesDepartmentByIdApiResponse =
-  /** status 200 OK */ ShiftScheduleDtoRead;
+  /** status 200 OK */ ShiftScheduleDtoRead[];
 export type GetApiV1ShiftSchedulesDepartmentByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -14716,9 +14716,8 @@ export type AnalyticalTestRequestDto = {
   productionActivityStep?: ProductionActivityStepDto;
   manufacturingDate?: string;
   expiryDate?: string;
-  releasedAt?: string | null;
   filled?: string | null;
-  releaseDate?: string;
+  releasedAt?: string | null;
   sampledQuantity?: string | null;
   stage?: TestStage;
   state?: CollectionItemDto;
@@ -14729,6 +14728,7 @@ export type AnalyticalTestRequestDto = {
   sampledAt?: string | null;
   acknowledgedBy?: UserDto;
   acknowledgedAt?: string | null;
+  arNumber?: string | null;
 };
 export type AnalyticalTestRequestDtoRead = {
   id?: string;
@@ -14740,9 +14740,8 @@ export type AnalyticalTestRequestDtoRead = {
   productionActivityStep?: ProductionActivityStepDto;
   manufacturingDate?: string;
   expiryDate?: string;
-  releasedAt?: string | null;
   filled?: string | null;
-  releaseDate?: string;
+  releasedAt?: string | null;
   sampledQuantity?: string | null;
   stage?: TestStage;
   state?: CollectionItemDto;
@@ -14753,6 +14752,7 @@ export type AnalyticalTestRequestDtoRead = {
   sampledAt?: string | null;
   acknowledgedBy?: UserDto;
   acknowledgedAt?: string | null;
+  arNumber?: string | null;
 };
 export type AnalyticalTestRequestDtoIEnumerablePaginateable = {
   data?: AnalyticalTestRequestDto[] | null;
@@ -14773,6 +14773,7 @@ export type AnalyticalTestRequestDtoIEnumerablePaginateableRead = {
   stopPageIndex?: number;
 };
 export type UpdateAnalyticalTestRequest = {
+  arNumber?: string | null;
   status?: AnalyticalTestStatus;
   numberOfContainers?: number;
   sampledQuantity?: string | null;
@@ -21904,8 +21905,30 @@ export type MaterialReturnNoteDto = {
   fullReturns?: MaterialReturnNoteFullReturnDto[] | null;
   partialReturns?: MaterialReturnNotePartialReturnDto[] | null;
 };
+export type MaterialReturnNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  returnDate?: string;
+  batchNumber?: string | null;
+  productionSchedule?: CollectionItemDto;
+  product?: CollectionItemDto;
+  status?: MaterialReturnStatus;
+  fullReturns?: MaterialReturnNoteFullReturnDto[] | null;
+  partialReturns?: MaterialReturnNotePartialReturnDto[] | null;
+  isFullReturn?: boolean;
+};
 export type MaterialReturnNoteDtoIEnumerablePaginateable = {
   data?: MaterialReturnNoteDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type MaterialReturnNoteDtoIEnumerablePaginateableRead = {
+  data?: MaterialReturnNoteDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;

@@ -10,7 +10,7 @@ import {
 } from "./types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileUpload } from "./FileUpload";
-import { AuditModules } from "@/lib";
+import { AuditModules, Option } from "@/lib";
 import { toast } from "sonner";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { useEffect, useState } from "react";
@@ -47,13 +47,13 @@ function Index() {
 
   const departmentId = watch("departmentId");
   useEffect(() => {
-    if (departmentId.value) {
+    if (departmentId?.value) {
       loadShiftSchedules({
         id: departmentId.value as string,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [departmentId.value]);
+  }, [departmentId?.value]);
 
   const onSubmit = async (data: ShiftScheduleUploadDto) => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
@@ -108,14 +108,13 @@ function Index() {
     })) || [];
 
   //TODO: implement shift schedule options mapping
-  const shiftScheduleOptions = shiftSchedules
-    ? [
-        {
-          label: shiftSchedules?.scheduleName ?? "",
-          value: shiftSchedules?.id ?? "",
-        },
-      ]
-    : [];
+
+  const shiftScheduleOptions = shiftSchedules?.map((item) => {
+    return {
+      label: item.scheduleName as string,
+      value: item.id as string,
+    };
+  }) as Option[];
 
   return (
     <PageWrapper>

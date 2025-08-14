@@ -23,6 +23,7 @@ import {
 import { useCodeGen } from "@/lib/code-gen";
 import {
   PostApiV1ProductionScheduleApiArg,
+  useGetApiV1CustomersQuery,
   useLazyGetApiV1ProductByProductIdQuery,
   useLazyGetApiV1ProductQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -37,6 +38,14 @@ import { CreateScheduleValidator, ScheduleRequestDto } from "./type";
 const Page = () => {
   const router = useRouter();
 
+  const { data: customerData } = useGetApiV1CustomersQuery({
+    pageSize: 1000,
+  });
+  const customers = customerData?.data ?? [];
+  const marketOptions = customers?.map((customer) => ({
+    label: customer.name,
+    value: customer.id,
+  })) as Option[];
   const [
     loadProduct,
     { isLoading: isLoadingProducts, isFetching: isFetchingProducts },
@@ -81,6 +90,10 @@ const Page = () => {
             label: "",
             value: "",
           },
+          marketTypeId: {
+            label: "",
+            value: "",
+          },
         },
       ],
     },
@@ -120,6 +133,7 @@ const Page = () => {
           productId: item.productId?.value,
           quantity,
           batchSize: sizeType,
+          marketTypeId: item.marketTypeId?.value,
         };
       }),
     );
@@ -193,6 +207,7 @@ const Page = () => {
         <ScheduleForm
           register={register}
           control={control}
+          marketOptions={marketOptions}
           fields={fields}
           append={append}
           remove={remove}
