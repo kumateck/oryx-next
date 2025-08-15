@@ -2099,6 +2099,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ItemInventoryTransactionsByMemoId: build.query<
+      GetApiV1ItemInventoryTransactionsByMemoIdApiResponse,
+      GetApiV1ItemInventoryTransactionsByMemoIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/item-inventory-transactions/${queryArg.memoId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1ItemsStockRequisitions: build.mutation<
       PostApiV1ItemsStockRequisitionsApiResponse,
       PostApiV1ItemsStockRequisitionsApiArg
@@ -2169,6 +2181,36 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisition:
+      build.mutation<
+        PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiResponse,
+        PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/issue-stock-against-requisition`,
+          method: "POST",
+          body: queryArg.issueStockAgainstRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
+    postApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisition:
+      build.mutation<
+        PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiResponse,
+        PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/partial-issue-stock-against-requisition`,
+          method: "POST",
+          body: queryArg.issueStockAgainstRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
     postApiV1LeaveEntitlement: build.mutation<
       PostApiV1LeaveEntitlementApiResponse,
       PostApiV1LeaveEntitlementApiArg
@@ -9803,6 +9845,15 @@ export type PutApiV1ItemsByIdApiArg = {
   subModule?: any;
   createItemsRequest: CreateItemsRequest;
 };
+export type GetApiV1ItemInventoryTransactionsByMemoIdApiResponse =
+  /** status 200 OK */ ItemInventoryTransactionDtoRead;
+export type GetApiV1ItemInventoryTransactionsByMemoIdApiArg = {
+  memoId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ItemsStockRequisitionsApiResponse =
   /** status 200 OK */ string;
 export type PostApiV1ItemsStockRequisitionsApiArg = {
@@ -9850,6 +9901,28 @@ export type PutApiV1ItemsStockRequisitionsByIdApiArg = {
   subModule?: any;
   createItemStockRequisitionRequest: CreateItemStockRequisitionRequest;
 };
+export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiResponse =
+  /** status 204 No Content */ IssueItemStockRequisitionDtoRead;
+export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiArg =
+  {
+    stockRequisitionId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+    issueStockAgainstRequisitionRequest: IssueStockAgainstRequisitionRequest;
+  };
+export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiResponse =
+  /** status 204 No Content */ IssueItemStockRequisitionDtoRead;
+export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiArg =
+  {
+    stockRequisitionId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+    issueStockAgainstRequisitionRequest: IssueStockAgainstRequisitionRequest;
+  };
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
   /** The module this request falls under */
@@ -12444,7 +12517,7 @@ export type PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg
     subModule?: any;
   };
 export type GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiResponse =
-  /** status 200 OK */ BatchToSupplyRead[];
+  /** status 200 OK */ BatchToSupply[];
 export type GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiArg =
   {
     stockTransferId: string;
@@ -12534,7 +12607,7 @@ export type GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProdu
     subModule?: any;
   };
 export type GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ RequisitionDtoRead;
+  /** status 200 OK */ RequisitionDto;
 export type GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiArg =
   {
     /** The Production Schedule ID. */
@@ -12547,7 +12620,7 @@ export type GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdA
     subModule?: any;
   };
 export type GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiResponse =
-  /** status 200 OK */ RequisitionDtoRead;
+  /** status 200 OK */ RequisitionDto;
 export type GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiArg =
   {
     /** The Production Schedule ID. */
@@ -12677,7 +12750,7 @@ export type GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleI
     subModule?: any;
   };
 export type GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiResponse =
-  /** status 200 OK */ BatchToSupplyRead[];
+  /** status 200 OK */ BatchToSupply[];
 export type GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiArg =
   {
     /** The ID of the Extra Packing Material. */
@@ -13029,7 +13102,7 @@ export type PostApiV1RequisitionApiArg = {
   createRequisitionRequest: CreateRequisitionRequest;
 };
 export type GetApiV1RequisitionApiResponse =
-  /** status 200 OK */ RequisitionDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ RequisitionDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionApiArg = {
   /** The current page number. */
   page?: number;
@@ -13047,7 +13120,7 @@ export type GetApiV1RequisitionApiArg = {
   subModule?: any;
 };
 export type GetApiV1RequisitionDepartmentApiResponse =
-  /** status 200 OK */ RequisitionDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ RequisitionDtoIEnumerablePaginateable;
 export type GetApiV1RequisitionDepartmentApiArg = {
   /** The current page number. */
   page?: number;
@@ -13066,7 +13139,7 @@ export type GetApiV1RequisitionDepartmentApiArg = {
   subModule?: any;
 };
 export type GetApiV1RequisitionByRequisitionIdApiResponse =
-  /** status 200 OK */ RequisitionDtoRead;
+  /** status 200 OK */ RequisitionDto;
 export type GetApiV1RequisitionByRequisitionIdApiArg = {
   /** The ID of the Stock Requisition. */
   requisitionId: string;
@@ -15230,13 +15303,13 @@ export type ItemDto = {
   unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
-  batchNumber?: string | null;
   store?: Store;
   minimumLevel?: number;
   maximumLevel?: number;
   reorderLevel?: number;
   isActive?: boolean;
   description?: string | null;
+  availableQuantity?: number;
 };
 export type MaterialCategory = {
   id?: string;
@@ -17165,6 +17238,8 @@ export type FinishedGoodsTransferNote = {
   uoM?: UnitOfMeasure;
   isApproved?: boolean;
   totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
   batchManufacturingRecord?: BatchManufacturingRecord;
@@ -17194,6 +17269,8 @@ export type FinishedGoodsTransferNoteRead = {
   uoM?: UnitOfMeasureRead;
   isApproved?: boolean;
   totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
   qarNumber?: string | null;
   batchManufacturingRecordId?: string;
   batchManufacturingRecord?: BatchManufacturingRecordRead;
@@ -19505,7 +19582,6 @@ export type CreateItemsRequest = {
   classification: InventoryClassification;
   unitOfMeasureId: string;
   hasBatchNumber?: boolean;
-  batchNumber?: string | null;
   minimumLevel?: number;
   maximumLevel?: number;
   reorderLevel?: number;
@@ -19523,10 +19599,30 @@ export type ItemDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type StockItemsList = {
+export type ItemInventoryTransactionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  date?: string;
+  memoId?: string;
+  memo?: MemoDto;
+  quantityReceived?: number;
+  quantityIssued?: number;
+  balanceQuantity?: number;
+};
+export type ItemInventoryTransactionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  date?: string;
+  memoId?: string;
+  memo?: MemoDtoRead;
+  quantityReceived?: number;
+  quantityIssued?: number;
+  balanceQuantity?: number;
+};
+export type StockItems = {
   itemId?: string;
-  itemName?: string | null;
-  itemCode?: string | null;
   quantityRequested?: number;
 };
 export type CreateItemStockRequisitionRequest = {
@@ -19535,7 +19631,7 @@ export type CreateItemStockRequisitionRequest = {
   requestedById: string;
   departmentId: string;
   justification?: string | null;
-  stockItems: StockItemsList[];
+  stockItems: StockItems[];
 };
 export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type ItemStockRequisitionDto = {
@@ -19577,6 +19673,27 @@ export type ItemStockRequisitionDtoIEnumerablePaginateableRead = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type IssueItemStockRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemStockRequisitionId?: string;
+  itemStockRequisition?: ItemStockRequisitionDto;
+  quantityIssued?: number;
+};
+export type IssueItemStockRequisitionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemStockRequisitionId?: string;
+  itemStockRequisition?: ItemStockRequisitionDtoRead;
+  quantityIssued?: number;
+};
+export type IssueStockAgainstRequisitionRequest = {
+  quantitiesToIssue?: {
+    [key: string]: number | null;
+  } | null;
 };
 export type LeaveEntitlementDto = {
   employeeId: string;
@@ -19760,12 +19877,30 @@ export type MaterialDtoIEnumerablePaginateable = {
 export type UpdateReOrderLevelRequest = {
   reOrderLevel?: number;
 };
-export type BatchToSupply = {
-  batch?: MaterialBatchDto;
-  quantityToTake?: number;
+export type MaterialBatchListDto = {
+  id?: string;
+  material?: CollectionItemDto;
+  code?: string | null;
+  batchNumber?: string | null;
+  uoM?: UnitOfMeasureDto;
+  numberOfContainers?: number;
+  containerPackageStyle?: PackageStyleDto;
+  quantityPerContainer?: number;
+  status?: BatchStatus;
+  dateReceived?: string;
+  dateApproved?: string | null;
+  quantityAssigned?: number;
+  quantityUnassigned?: number;
+  totalQuantity?: number;
+  consumedQuantity?: number;
+  remainingQuantity?: number;
+  sampledQuantity?: number;
+  expiryDate?: string | null;
+  manufacturingDate?: string | null;
+  retestDate?: string | null;
 };
-export type BatchToSupplyRead = {
-  batch?: MaterialBatchDto;
+export type BatchToSupply = {
+  batch?: MaterialBatchListDto;
   quantityToTake?: number;
 };
 export type RequisitionItemDto = {
@@ -20021,8 +20156,6 @@ export type MaterialBatchDto = {
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
-  events?: MaterialBatchEventDto[] | null;
-  movements?: MaterialBatchMovementDto[] | null;
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
@@ -20052,8 +20185,6 @@ export type MaterialBatchDtoRead = {
   expiryDate?: string | null;
   manufacturingDate?: string | null;
   retestDate?: string | null;
-  events?: MaterialBatchEventDto[] | null;
-  movements?: MaterialBatchMovementDto[] | null;
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
@@ -20860,7 +20991,7 @@ export type ShipmentDiscrepancyDto = {
   items?: ShipmentDiscrepancyItemDto[] | null;
 };
 export type DocType = 0 | 1;
-export type ShipmentStatus = 0 | 1 | 3 | 4 | 5;
+export type ShipmentStatus = 0 | 1 | 2 | 3 | 4;
 export type ShipmentDocumentDto = {
   id?: string;
   createdBy?: UserDto;
@@ -21562,6 +21693,8 @@ export type FinishedGoodsTransferNoteDto = {
   packageStyle?: PackageStyleDto;
   uoM?: UnitOfMeasureDto;
   totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
   qarNumber?: string | null;
   batchManufacturingRecord?: BatchManufacturingRecordDto;
   productionActivityStep?: ProductionActivityStepDto;
@@ -21577,6 +21710,8 @@ export type FinishedGoodsTransferNoteDtoRead = {
   packageStyle?: PackageStyleDto;
   uoM?: UnitOfMeasureDto;
   totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
   qarNumber?: string | null;
   batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
   productionActivityStep?: ProductionActivityStepDto;
@@ -21601,6 +21736,7 @@ export type FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead = {
 };
 export type ApproveTransferNoteRequest = {
   quantityReceived?: number;
+  notes?: string | null;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -21836,45 +21972,19 @@ export type FinalPackingDtoIEnumerablePaginateable = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
-export type RequisitionApprovalDto = {
-  user?: CollectionItemDto;
-  role?: RoleDto;
-  required?: boolean;
-  isApproved?: boolean;
-  approvalTime?: string | null;
-  comments?: string | null;
-  order?: number;
-};
 export type RequisitionDto = {
   id?: string;
   code?: string | null;
   requisitionType?: RequisitionType;
   status?: RequestStatus;
-  requestedBy?: UserDto;
-  department?: DepartmentDto;
+  requestedBy?: CollectionItemDto;
+  department?: CollectionItemDto;
   items?: RequisitionItemDto[] | null;
   approved?: boolean;
-  approvals?: RequisitionApprovalDto[] | null;
   expectedDelivery?: string | null;
   createdAt?: string;
   productionSchedule?: CollectionItemDto;
-  product?: ProductDto;
-  comments?: string | null;
-};
-export type RequisitionDtoRead = {
-  id?: string;
-  code?: string | null;
-  requisitionType?: RequisitionType;
-  status?: RequestStatus;
-  requestedBy?: UserDto;
-  department?: DepartmentDtoRead;
-  items?: RequisitionItemDto[] | null;
-  approved?: boolean;
-  approvals?: RequisitionApprovalDto[] | null;
-  expectedDelivery?: string | null;
-  createdAt?: string;
-  productionSchedule?: CollectionItemDto;
-  product?: ProductDtoRead;
+  product?: CollectionItemDto;
   comments?: string | null;
 };
 export type PartialMaterialToReturn = {
@@ -22437,15 +22547,6 @@ export type CreateRequisitionRequest = {
 };
 export type RequisitionDtoIEnumerablePaginateable = {
   data?: RequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type RequisitionDtoIEnumerablePaginateableRead = {
-  data?: RequisitionDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -23485,6 +23586,8 @@ export const {
   useGetApiV1ItemsByIdQuery,
   useLazyGetApiV1ItemsByIdQuery,
   usePutApiV1ItemsByIdMutation,
+  useGetApiV1ItemInventoryTransactionsByMemoIdQuery,
+  useLazyGetApiV1ItemInventoryTransactionsByMemoIdQuery,
   usePostApiV1ItemsStockRequisitionsMutation,
   useGetApiV1ItemsStockRequisitionsQuery,
   useLazyGetApiV1ItemsStockRequisitionsQuery,
@@ -23492,6 +23595,8 @@ export const {
   useGetApiV1ItemsStockRequisitionsByIdQuery,
   useLazyGetApiV1ItemsStockRequisitionsByIdQuery,
   usePutApiV1ItemsStockRequisitionsByIdMutation,
+  usePostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionMutation,
+  usePostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionMutation,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,

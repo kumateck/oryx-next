@@ -16,13 +16,16 @@ import {
   BatchStatus as BatchStatusEnum,
   ErrorResponse,
   Units,
+  cn,
   convertToLargestUnit,
+  getEnumBadge,
   isErrorResponse,
   splitWords,
 } from "@/lib";
 import {
   BatchStatus,
   MaterialBatchDto,
+  MaterialBatch,
   usePutApiV1MaterialBatchByBatchIdApproveMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -76,21 +79,21 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   );
 }
 
-const batchStatusColors: Record<BatchStatus, string> = {
-  [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
-  [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
-  [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
-  [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
-  [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
-};
+// const batchStatusColors: Record<BatchStatus, string> = {
+//   [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
+//   [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
+//   [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
+//   [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
+//   [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
+//   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
+//   [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
+//   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
+//   [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
+//   [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
+//   [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
+// };
 
-export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
+export const getColumns = (): ColumnDef<MaterialBatch>[] => [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
@@ -235,14 +238,19 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
     }
   };
 
+  const status = row.original.status as BatchStatus;
+  const { label, colorClass } = getEnumBadge(BatchStatusEnum, status);
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div
-            className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[row.original.status as BatchStatus]}`}
+            className={cn(
+              `inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium`,
+              colorClass,
+            )}
           >
-            {splitWords(BatchStatusEnum[row.original.status as BatchStatus])}
+            {splitWords(label)}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
