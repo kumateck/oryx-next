@@ -43,7 +43,7 @@ export const columns: ColumnDef<ProformaInvoiceDto>[] = [
   {
     accessorKey: "price",
     header: "Price",
-    cell: ({ row }) => <div className="">{row.original && "N/A"}</div>,
+    cell: ({ row }) => <div className="">{row.original.products && "N/A"}</div>,
   },
   {
     accessorKey: "status",

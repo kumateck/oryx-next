@@ -56,8 +56,10 @@ function Index() {
               <span>{`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}</span>
             </div>
           </div>
-          <div className="mt-6">
-            <CardTitle>{data?.customer?.name}</CardTitle>
+          <div className="mt-10 space-y-4">
+            <CardTitle className="text-xl font-semibold">
+              {data?.customer?.name}
+            </CardTitle>
             <CardDescription>
               <div className="flex w-full items-center justify-between gap-2">
                 <div className="space-x-1">

@@ -1,130 +1,30 @@
 import React from "react";
-import {
-  Control,
-  FieldErrors,
-  FieldValues,
-  UseFormRegister,
-} from "react-hook-form";
+import { Control, FieldErrors, FieldValues } from "react-hook-form";
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
-import { FetchOptionsResult } from "@/components/ui";
 
-interface Props<TFieldValues extends FieldValues, TContext> {
-  control: Control<TFieldValues, TContext>;
-  register: UseFormRegister<TFieldValues>;
+interface Props<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  fetchProducts: (search: string, page: number) => Promise<FetchOptionsResult>;
-  fetchCustomers: (search: string, page: number) => Promise<FetchOptionsResult>;
-  handleProductChange: (index: number, selected: string) => void;
-  loadingProducts: boolean;
-  loadingCustomers: boolean;
 }
-export const Form = <TFieldValues extends FieldValues, TContext>({
+export const Form = <TFieldValues extends FieldValues>({
   control,
   // register,
   errors,
-  // loadingProducts,
-  loadingCustomers,
-  fetchCustomers,
-}: Props<TFieldValues, TContext>) => {
+}: Props<TFieldValues>) => {
   return (
-    <div className="space-y-4">
-      <FormWizard
-        config={[
-          {
-            name: "customerId",
-            control: control as Control,
-            label: "Customer",
-            placeholder: "Select Customer",
-            isLoading: loadingCustomers,
-            type: InputTypes.ASYNC_SELECT,
-            fetchOptions: fetchCustomers,
-            errors,
-          },
-        ]}
-      />
-
-      {/* <div className="ml-auto flex w-full">
-        <Button
-          onClick={() => {
-            append({
-              price: 0,
-              productId: {
-                label: "",
-                value: "",
-              },
-              quantity: 0,
-            });
-          }}
-          className="flex items-center gap-1"
-          type="button"
-          variant={"outline"}
-        >
-          <Icon name="Plus" />
-          <span>Add</span>
-        </Button>
-      </div>
-      <div>
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="flex items-center gap-2 mb-2 justify-center"
-          >
-            <FormWizard
-              config={[
-                {
-                  name: `products.${index}.productId`,
-                  control: control as Control,
-                  label: "Product",
-                  onChange: (value) => {
-                    handleProductChange(index, value.value);
-                  },
-                  placeholder: "Select Product",
-                  isLoading: loadingProducts,
-                  type: InputTypes.ASYNC_SELECT,
-                  fetchOptions: fetchProducts,
-                  errors,
-                },
-              ]}
-            />
-            <FormWizard
-              config={[
-                {
-                  register: register(
-                    `products.${index}.quantity` as Path<TFieldValues>,
-                    { valueAsNumber: true },
-                  ),
-                  label: "Quantity",
-                  type: InputTypes.NUMBER,
-                  errors,
-                },
-              ]}
-            />
-            <FormWizard
-              config={[
-                {
-                  register: register(
-                    `products.${index}.price` as Path<TFieldValues>,
-                    {
-                      valueAsNumber: true,
-                    },
-                  ),
-                  readOnly: true,
-                  label: "Price",
-                  type: InputTypes.NUMBER,
-                  errors,
-                },
-              ]}
-            />
-            <Icon
-              name="Trash2"
-              className="cursor-pointer size-14 ml-auto text-red-500"
-              onClick={() => remove(index)}
-            />
-          </div>
-        ))}
-      </div> */}
-    </div>
+    <FormWizard
+      config={[
+        {
+          type: InputTypes.DRAGNDROP,
+          label: "Attach Documents",
+          name: `attachments`,
+          defaultValue: null,
+          control: control as Control,
+          errors,
+        },
+      ]}
+    />
   );
 };
 
