@@ -1386,7 +1386,8 @@ const colorPalette = [
 // Hash function to pick a color index
 function hashValue(value: string): number {
   let hash = 0;
-  for (let i = 0; i < value.length; i++) {
+  const length = value?.length || 0;
+  for (let i = 0; i < length; i++) {
     hash = value.charCodeAt(i) + ((hash << 5) - hash);
   }
   return Math.abs(hash);
