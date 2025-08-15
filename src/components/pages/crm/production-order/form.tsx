@@ -26,6 +26,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   handleProductChange: (index: number, selected: string) => void;
   loadingProducts: boolean;
   loadingCustomers: boolean;
+  isLoadingCode: boolean;
 }
 export const Form = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -35,6 +36,7 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
   loadingCustomers,
   fetchCustomers,
   handleProductChange,
+  isLoadingCode,
   fetchProducts,
   append,
   remove,
@@ -52,6 +54,13 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
             isLoading: loadingCustomers,
             type: InputTypes.ASYNC_SELECT,
             fetchOptions: fetchCustomers,
+            errors,
+          },
+          {
+            label: "Code",
+            register: register("code" as Path<TFieldValues>),
+            placeholder: isLoadingCode ? "Generating" : "Enter order code",
+            type: InputTypes.TEXT,
             errors,
           },
         ]}

@@ -3,9 +3,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductionOrderDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
+import { TableCheckbox } from "@/shared/datatable/table-check";
 // import { ProductionOrderType } from "@/lib";
 
 export const columns: ColumnDef<ProductionOrderDto>[] = [
+  TableCheckbox<ProductionOrderDto>({}),
   {
     accessorKey: "productOrderCode",
     header: "Product Order Code",
@@ -49,7 +51,7 @@ export const columns: ColumnDef<ProductionOrderDto>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className=" px-2 py-1 text-xs rounded-3xl bg-gray-200">
+      <div className=" px-2 py-1 text-center text-xs rounded-3xl bg-gray-200">
         {row && "Pending"}
       </div>
     ),

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 const ProductionOrderShema = z.object({
+  code: z.string().min(1, "Code is required"),
   customerId: z.object(
     {
       label: z.string(),

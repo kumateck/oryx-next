@@ -7,7 +7,7 @@ import {
   Button,
   Icon,
 } from "@/components/ui";
-import React from "react";
+import { useEffect } from "react";
 import Form from "./form";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
@@ -18,11 +18,13 @@ import {
   useLazyGetApiV1CustomersQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1ProductionOrdersMutation,
+  useLazyGetApiV1ServicesQuery,
 } from "@/lib/redux/api/openapi.generated";
-import { isErrorResponse, ErrorResponse, Option } from "@/lib";
+import { isErrorResponse, ErrorResponse, Option, CODE_SETTINGS } from "@/lib";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 import { toast } from "sonner";
+import { useCodeGen } from "@/lib/code-gen";
 
 interface Props {
   open: boolean;
@@ -36,6 +38,8 @@ function CreateProductionOrder({ open, onClose }: Props) {
 
   const [createProductionOrder, { isLoading: isCreating }] =
     usePostApiV1ProductionOrdersMutation();
+  const [loadCodeModelCount, { isLoading: isLoadingCode }] =
+    useLazyGetApiV1ServicesQuery();
 
   const dispatch = useDispatch();
 
@@ -75,6 +79,7 @@ function CreateProductionOrder({ open, onClose }: Props) {
     };
     return response;
   };
+
   const {
     handleSubmit,
     register,
@@ -89,6 +94,25 @@ function CreateProductionOrder({ open, onClose }: Props) {
     control,
     name: "products",
   });
+
+  //code configuration
+  const setCodeToInput = (code: string) => {
+    setValue("code", code ?? "");
+  };
+  const fetchCount = async () => {
+    console.log("generating code now");
+    const countResponse = await loadCodeModelCount({}).unwrap();
+    return { totalRecordCount: countResponse?.totalRecordCount };
+  };
+  const { regenerateCode } = useCodeGen(
+    CODE_SETTINGS.modelTypes.ProductionOrder,
+    fetchCount,
+    setCodeToInput,
+  );
+  useEffect(() => {
+    regenerateCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit = async (data: CreateProductionSchemaOrders) => {
     // Handle form submission
@@ -119,6 +143,15 @@ function CreateProductionOrder({ open, onClose }: Props) {
     }
   };
 
+  append({
+    price: 0,
+    productId: {
+      label: "",
+      value: "",
+    },
+    quantity: 0,
+  });
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
@@ -128,6 +161,7 @@ function CreateProductionOrder({ open, onClose }: Props) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Form
             append={append}
+            isLoadingCode={isLoadingCode}
             remove={remove}
             fields={fields}
             fetchProducts={loadDataOrSearchFProducts}

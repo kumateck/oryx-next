@@ -404,9 +404,9 @@ export enum TransferType {
 export enum ShipmentStatus {
   New = 0,
   InTransit = 1,
-  Cleared = 2,
-  Arrived = 3,
-  AtPort = 4,
+  AtPort = 2,
+  Cleared = 3,
+  Arrived = 4,
 }
 export enum ShipmentDocumentType {
   Document,

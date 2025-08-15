@@ -12,15 +12,17 @@ import {
 import { useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LoadingSkeleton from "./loadingSkeleton";
 import { format } from "date-fns";
 import { columns } from "./columns";
 import { ListsTable } from "@/shared/datatable";
+import PrintPreview from "./print/printPreview";
 
 function Index() {
   const router = useRouter();
   const { id } = useParams();
+  const [open, setOpen] = useState(false);
   const [loadProFormalInvoiceDetial, { data, isLoading }] =
     useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery();
 
@@ -34,7 +36,14 @@ function Index() {
   if (isLoading) return <LoadingSkeleton />;
   return (
     <PageWrapper className="space-y-4">
-      <div>
+      {open && (
+        <PrintPreview
+          isOpen={open}
+          id={id as string}
+          onClose={() => setOpen(false)}
+        />
+      )}
+      <div className="flex items-center justify-between gap-2 w-full">
         <div className="flex items-center gap-2">
           <div onClick={() => router.back()}>
             <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
@@ -42,7 +51,17 @@ function Index() {
           <PageTitle title="Proforma Invoice Details" />
         </div>
         <div className="flex items-center gap-2">
-          <Button></Button>
+          <Button className="flex items-center gap-2">
+            <Icon name="Plus" className="h-4 w-4" />
+            <span>Create Shipment</span>
+          </Button>
+          <Button
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Icon name="Plus" className="h-4 w-4" />
+            <span>Generate Invoice</span>
+          </Button>
         </div>
       </div>
       <Card>
@@ -63,8 +82,10 @@ function Index() {
               <span>{`${data?.productionOrder?.createdBy?.firstName} ${data?.productionOrder?.createdBy?.lastName}`}</span>
             </div>
           </div>
-          <div className="mt-6">
-            <CardTitle>{data?.productionOrder?.customer?.name}</CardTitle>
+          <div className="mt-10 space-y-4">
+            <CardTitle className="text-xl font-semibold">
+              {data?.productionOrder?.customer?.name}
+            </CardTitle>
             <CardDescription>
               <div className="flex w-full items-center justify-between gap-2">
                 <div className="space-x-1">
