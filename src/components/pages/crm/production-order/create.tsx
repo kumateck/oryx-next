@@ -79,7 +79,17 @@ function CreateProductionOrder({ open, onClose }: Props) {
     };
     return response;
   };
-
+  useEffect(() => {
+    append({
+      price: 0,
+      productId: {
+        label: "",
+        value: "",
+      },
+      quantity: 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const {
     handleSubmit,
     register,
@@ -120,6 +130,7 @@ function CreateProductionOrder({ open, onClose }: Props) {
       await createProductionOrder({
         createProductionOrderRequest: {
           customerId: data.customerId.value,
+          code: data.code,
           products: data.products.map((product) => ({
             productId: product.productId.value,
             quantity: product.quantity,
@@ -142,15 +153,6 @@ function CreateProductionOrder({ open, onClose }: Props) {
       setValue(`products.${index}.price`, product?.price ?? 0);
     }
   };
-
-  append({
-    price: 0,
-    productId: {
-      label: "",
-      value: "",
-    },
-    quantity: 0,
-  });
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
