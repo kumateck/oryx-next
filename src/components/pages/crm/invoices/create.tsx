@@ -7,7 +7,7 @@ import {
   Button,
   Icon,
 } from "@/components/ui";
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "./form";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
@@ -119,11 +119,23 @@ function CreateProductionOrder({ open, onClose }: Props) {
     }
   };
 
+  useEffect(() => {
+    append({
+      price: 0,
+      productId: {
+        label: "",
+        value: "",
+      },
+      quantity: 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Product Order</DialogTitle>
+          <DialogTitle>Create Production Order</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Form
