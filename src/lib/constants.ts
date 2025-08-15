@@ -648,6 +648,7 @@ export const AuditModules = {
     leaveTypeConfiguration: "Leave Type",
     overTimeMangement: "Over Time",
     staffRequisition: "Staff Requisition",
+    shiftUpload: "Shift Upload",
   },
 
   accessManagement: {

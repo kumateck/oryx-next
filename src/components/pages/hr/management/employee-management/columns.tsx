@@ -357,6 +357,13 @@ export const columns: ColumnDef<EmployeeDto>[] = [
     cell: ({ row }) => <div className="min-w-36">{row.original.email}</div>,
   },
   {
+    accessorKey: "department",
+    header: "Department",
+    cell: ({ row }) => (
+      <div className="min-w-36">{row.original.department?.name}</div>
+    ),
+  },
+  {
     accessorKey: "type",
     header: "Employee Type",
     cell: ({ row }) => <EmployeeTypeColumn row={row} />,
