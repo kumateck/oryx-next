@@ -85,6 +85,9 @@ const Create = ({ isOpen, onClose }: Props) => {
     {
       id: selectedDepartmentId,
     },
+    {
+      skip: !selectedDepartmentId,
+    },
   );
 
   const employeeOptions = employeeResultsById?.map((employee) => ({

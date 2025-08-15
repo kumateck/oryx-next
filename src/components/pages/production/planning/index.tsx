@@ -13,12 +13,13 @@ import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1ProductQuery();
 
@@ -26,10 +27,11 @@ const Page = () => {
     loadData({
       page,
       pageSize,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchInput]);
 
   // check permissions access
   const { hasPermissionAccess } = useUserPermissions();

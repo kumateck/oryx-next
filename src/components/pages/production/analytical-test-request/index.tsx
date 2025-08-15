@@ -29,7 +29,7 @@ const Page = () => {
   const type = searchParams.get(
     "type",
   ) as unknown as AnalyticalTestRequestStatus; // Extracts 'type' from URL
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const pathname = usePathname();
 
   // Get a new searchParams string by merging the current
@@ -55,13 +55,14 @@ const Page = () => {
       page,
       pageSize,
       status: type || AnalyticalTestRequestStatus.New,
+      searchQuery: searchInput,
     });
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, page, pageSize, triggerReload]);
+  }, [type, page, pageSize, searchInput, triggerReload]);
 
   //permissions checks
   const { hasPermissionAccess } = useUserPermissions();

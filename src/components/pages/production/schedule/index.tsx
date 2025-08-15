@@ -18,22 +18,24 @@ import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
 import { PermissionKeys } from "@/lib";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1ProductionScheduleQuery();
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   useEffect(() => {
     loadData({
       page,
       pageSize,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchInput]);
 
   //permissions checks
   const { hasPermissionAccess } = useUserPermissions();

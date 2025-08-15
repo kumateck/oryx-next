@@ -17,6 +17,7 @@ import { getColumns } from "./columns";
 import TransferTable from "./table";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const Page = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as unknown as TransferType; // Extracts 'type' from URL
   const pathname = usePathname();
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const [
@@ -52,6 +53,7 @@ const Page = () => {
         page,
         pageSize,
         status: StockTransfer.Approved,
+        searchQuery: searchInput,
       });
     }
 
@@ -60,10 +62,11 @@ const Page = () => {
         page,
         pageSize,
         status: StockTransfer.Approved,
+        searchQuery: searchInput,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchInput]);
 
   // Get a new searchParams string by merging the current
   // searchParams with a provided key/value pair
