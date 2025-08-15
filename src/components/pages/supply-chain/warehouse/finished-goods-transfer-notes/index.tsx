@@ -4,9 +4,8 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
-import { useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery } from "@/lib/redux/api/openapi.generated";
 import { useSelector } from "@/lib/redux/store";
-import { AuditModules } from "@/lib";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 
@@ -19,21 +18,19 @@ function Page() {
   const dispatch = useDispatch();
 
   const [loadData, { data: result, isFetching, isLoading }] =
-    useLazyGetApiV1WarehouseFinishedGoodsDetailsQuery();
+    useLazyGetApiV1ProductionScheduleFinishedGoodsTransferNoteQuery();
 
   useEffect(() => {
     loadData({
       page,
       pageSize,
       searchQuery: searchValue,
-      module: AuditModules.warehouse.name,
-      subModule: AuditModules.warehouse.QaGrn,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, loadData, searchValue]);
+  }, [page, pageSize, searchValue]);
 
   const data = result?.data || [];
   return (

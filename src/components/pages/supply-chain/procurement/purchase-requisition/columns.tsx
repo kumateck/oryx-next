@@ -58,11 +58,11 @@ export const columns: ColumnDef<RequisitionDto>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "department",
-    header: "Requested Department",
-    cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
-  },
+  // {
+  //   accessorKey: "department",
+  //   header: "Requested Department",
+  //   cell: ({ row }) => <div>{row.original.requestedBy?.department?.name}</div>,
+  // },
   // {
   //   accessorKey: "total",
   //   header: "Total Items Requested",
