@@ -1404,7 +1404,7 @@ export function getEnumBadge<T extends Record<string, string | number>>(
   const label =
     typeof value === "number"
       ? (enumObj[value] as string) // numeric enum
-      : value.toString(); // string enum
+      : value?.toString(); // string enum
 
   const colorIndex = hashValue(label) % colorPalette.length;
   return {

@@ -22,7 +22,7 @@ const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as unknown as SupplierType; // Extracts 'type' from URL
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const pathname = usePathname();
 
   // Get a new searchParams string by merging the current
@@ -54,12 +54,13 @@ const Page = () => {
       pageSize,
       status: PurchaseOrderStatusList.Pending,
       type: type ?? SupplierType.Foreign,
+      searchQuery: searchInput,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, type, triggerReload]);
+  }, [page, pageSize, type, searchInput, triggerReload]);
 
   const data = result?.data || [];
 
