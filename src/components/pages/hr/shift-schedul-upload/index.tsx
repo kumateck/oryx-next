@@ -58,10 +58,9 @@ function Index() {
   const onSubmit = async (data: ShiftScheduleUploadDto) => {
     const files = Array.isArray(data.file) ? data.file : Array.from(data.file);
     const file = files[0];
+    console.log(file);
     const formData = new FormData();
-    // files.forEach((file) => {
-    // });
-    formData.append("attendance", file, file.name);
+    formData.append("file", file, file.name);
     try {
       const result = await uploadShiftSchedule({
         body: formData as unknown as {
@@ -69,9 +68,24 @@ function Index() {
         },
         departmentId: data.departmentId.value,
         shiftId: data.shiftScheduleId.value,
-        module: AuditModules.warehouse.name,
-        subModule: AuditModules.warehouse.attendanceReport,
+        module: AuditModules.management.name,
+        subModule: AuditModules.management.shiftUpload,
       });
+
+      //  const formData = new FormData();
+      //         const attachmentsArray = Array.isArray(data.attachments)
+      //           ? data.attachments
+      //           : Array.from(data.attachments); // Convert FileList to an array
+      //         attachmentsArray.forEach((attachment: File) => {
+      //           formData.append("files", attachment, attachment.name);
+      //         });
+
+      //         await uploadAttachment({
+      //           modelType: CODE_SETTINGS.modelTypes.Item,
+      //           modelId: itemId as string,
+      //           body: formData,
+      //         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
+
       if (!result.error) {
         toast.success("Shift schedule uploaded successfully");
         console.log(result);
