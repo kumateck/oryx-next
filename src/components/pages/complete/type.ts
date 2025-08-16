@@ -17,7 +17,7 @@ const allowedMimeTypes = [
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
 ];
 
-// File validation schema
+//TODO: File validation schema
 const imageValidationSchema = z.any().refine(
   (image: Blob[] | FileList) => {
     // If it's an array of blobs, validate each blob

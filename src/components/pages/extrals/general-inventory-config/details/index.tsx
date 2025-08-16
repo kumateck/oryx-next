@@ -58,7 +58,7 @@ function Page() {
   }
   return (
     <ScrollablePageWrapper className="space-y-8">
-      {data && (
+      {data ? (
         <>
           <div className="flex items-center justify-between gap-2">
             <div className="flex cursor-pointer items-center gap-2">
@@ -227,6 +227,10 @@ function Page() {
             </CardContent>
           </Card>
         </>
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <span className="text-gray-500">No data available.</span>
+        </div>
       )}
     </ScrollablePageWrapper>
   );
