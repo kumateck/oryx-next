@@ -73,7 +73,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await editDesignation({
         id: details.id as string,
         createDesignationRequest: payload,
-      });
+      }).unwrap();
       toast.success("Designation updated successfully");
       reset();
       onClose();

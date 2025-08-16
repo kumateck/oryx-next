@@ -14,6 +14,8 @@ import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,6 +30,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const dispatch = useDispatch();
 
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
@@ -100,6 +103,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
               rackId: details.id as string,
             }).unwrap();
             toast.success("Rack deleted successfully");
+            dispatch(commonActions.setTriggerReload());
             loadWarehouseLocationRacks({
               pageSize: 30,
             });

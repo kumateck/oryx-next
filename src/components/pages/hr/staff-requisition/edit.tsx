@@ -159,7 +159,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         createStaffRequisitionRequest: payload,
         module: AuditModules.management.name,
         subModule: AuditModules.management.staffRequisition,
-      });
+      }).unwrap();
       toast.success("Staff request updated successfully");
       dispatch(commonActions.setTriggerReload());
       reset();

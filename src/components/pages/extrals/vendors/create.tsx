@@ -15,12 +15,13 @@ import {
   cn,
   COLLECTION_TYPES,
   ErrorResponse,
+  InventoryType,
   isErrorResponse,
   Option,
 } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
-  useGetApiV1ItemsQuery,
+  useLazyGetApiV1ItemsQuery,
   usePostApiV1CollectionMutation,
   usePostApiV1VendorsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -37,10 +38,7 @@ interface VendorFormProps {
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const [createVendor, { isLoading }] = usePostApiV1VendorsMutation();
-  const { data: itemsData } = useGetApiV1ItemsQuery({
-    page: 1,
-    pageSize: 1002,
-  });
+  const [loadItems, { data: itemsData }] = useLazyGetApiV1ItemsQuery({});
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
@@ -57,12 +55,23 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     register,
     control,
     reset,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm<VendorRequestDto>({
     resolver: CreateVendorValidator,
     mode: "all",
   });
+  const storeType = watch("storyType");
+  useEffect(() => {
+    loadItems({
+      page: 1,
+      pageSize: 1002,
+      store:
+        (Number(storeType?.value) as unknown as InventoryType) ??
+        InventoryType["IT Store"],
+    });
+  }, [loadItems, storeType]);
 
   const countryOptions = collectionResponse?.[COLLECTION_TYPES.Country]?.map(
     (uom) => ({

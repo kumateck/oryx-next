@@ -119,7 +119,7 @@ function StepDetailsDailog({ isOpen, onClose, stepId }: DialogProps) {
       } as CreateFinishedGoodsTransferNoteRequest;
       await createTransferNote({
         createFinishedGoodsTransferNoteRequest: payload,
-      });
+      }).unwrap();
       toast.success("Transfer note created successfully.");
       onClose();
       reset();

@@ -34,19 +34,15 @@ const Page = () => {
     // });
     formData.append("attendance", file, file.name);
     try {
-      const result = await uploadAttendance({
+      await uploadAttendance({
         body: formData as unknown as {
           attendance: Blob;
         },
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.attendanceReport,
-      });
-      if (!result.error) {
-        toast.success("Attendance report uploaded successfully");
-        router.push("/hr/attendance-report-summary");
-        return;
-      }
-      toast.error("Failed to upload attendance report");
+      }).unwrap();
+      toast.success("Attendance report uploaded successfully");
+      router.push("/hr/attendance-report-summary");
     } catch (error) {
       ThrowErrorMessage(error);
       console.error("Error uploading attendance report:", error);
