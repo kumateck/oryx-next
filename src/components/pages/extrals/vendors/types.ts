@@ -25,7 +25,6 @@ export const CreateVendorSchema = z.object({
     value: z.string(),
     label: z.string(),
   }),
-
   currency: objectSchema("Currency is required"),
   services: z.array(objectSchema("Service is required")).min(1, {
     message: "At least one service is required",
