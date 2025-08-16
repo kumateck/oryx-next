@@ -9,7 +9,6 @@ import {
   Option,
   PermissionKeys,
   Units,
-  cn,
   convertToLargestUnit,
   getEnumBadge,
   routes,
@@ -18,6 +17,7 @@ import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.gener
 import { TableCheckbox } from "@/shared/datatable/table-check";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
 import { useUserPermissions } from "@/hooks/use-permission";
+import StatusBadge from "@/shared/status-badge";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -137,16 +137,7 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
         status,
       );
 
-      return (
-        <div
-          className={cn(
-            `inline-block rounded-full px-2 py-1 text-xs font-medium `,
-            colorClass,
-          )}
-        >
-          {label}
-        </div>
-      );
+      return <StatusBadge label={label} colorClass={colorClass} />;
     },
   },
 

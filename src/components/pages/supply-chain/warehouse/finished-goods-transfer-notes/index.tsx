@@ -25,6 +25,7 @@ function Page() {
       page,
       pageSize,
       searchQuery: searchValue,
+      onlyApproved: false,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());

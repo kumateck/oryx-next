@@ -3,11 +3,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import {
   DistributedMaterialStatus,
   Units,
-  cn,
   convertToLargestUnit,
   getEnumBadge,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
 // const batchStatusColors: Record<DistributedMaterialStatus, string> = {
 //   [DistributedMaterialStatus.Distributed]: "bg-blue-100 text-blue-800",
@@ -61,16 +61,7 @@ export const getColumns =
           status,
         );
 
-        return (
-          <div
-            className={cn(
-              `inline-block rounded-full px-2 py-1 text-xs font-medium `,
-              colorClass,
-            )}
-          >
-            {label}
-          </div>
-        );
+        return <StatusBadge label={label} colorClass={colorClass} />;
       },
     },
   ];

@@ -54,7 +54,7 @@ export const CreateSampleMaterial = ({
           arNumber: data.arNumber,
           sampleQuantity: Number(data.sampleQuantity),
         },
-      });
+      }).unwrap();
       toast.success("Material sampling created successfully");
       dispatch(commonActions.setTriggerReload());
       onClose();

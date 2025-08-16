@@ -91,6 +91,12 @@ export enum ApprovalDocument {
   Response = "Response",
 }
 
+export enum GRNStatus {
+  Pending = 0,
+  Partial = 1,
+  Completed = 2,
+}
+
 export enum InterestType {
   User = "User",
   Role = "Role",
@@ -476,11 +482,6 @@ export enum ApprovalStatus {
   Pending = 0,
   Approved = 1,
   Rejected = 2,
-}
-export enum GRNStatus {
-  Pending = 0,
-  IN_PROGRESS = 1,
-  Completed = 2,
 }
 
 export enum ShiftFrequency {

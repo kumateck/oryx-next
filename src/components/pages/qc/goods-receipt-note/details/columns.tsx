@@ -8,8 +8,8 @@ import {
   Units,
   WorkflowFormType,
   convertToLargestUnit,
+  getEnumBadge,
   getSmallestUnit,
-  splitWords,
 } from "@/lib";
 import {
   BatchStatus,
@@ -22,22 +22,10 @@ import { CreateSampleMaterial } from "./create-sample";
 import { useParams, useRouter } from "next/navigation";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import StatusBadge from "@/shared/status-badge";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-const batchStatusColors: Record<BatchStatus, string> = {
-  [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
-  [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
-  [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
-  [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
-  [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
-};
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
@@ -48,9 +36,7 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => (
-      <div>{row.original.checklist?.material?.name ?? "-"}</div>
-    ),
+    cell: ({ row }) => <div>{row.original?.material?.name ?? "-"}</div>,
   },
   {
     accessorKey: "manufacturerName",
@@ -119,13 +105,11 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[String(row.original?.status)]}`}
-      >
-        {splitWords(BatchStatusEnum[row.original.status as BatchStatus])}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as BatchStatus;
+      const { label, colorClass } = getEnumBadge(BatchStatusEnum, status);
+      return <StatusBadge label={label} colorClass={colorClass} />;
+    },
   },
   {
     id: "actions",

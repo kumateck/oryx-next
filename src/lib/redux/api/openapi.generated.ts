@@ -1161,12 +1161,12 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          status: queryArg.status,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
           designation: queryArg.designation,
           department: queryArg.department,
-          status: queryArg.status,
         },
       }),
     }),
@@ -2868,7 +2868,6 @@ const injectedRtkApi = api.injectEndpoints({
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
           kind: queryArg.kind,
-          departmentId: queryArg.departmentId,
         },
       }),
     }),
@@ -8249,6 +8248,7 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          status: queryArg.status,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -9172,12 +9172,12 @@ export type PostApiV1EmployeeApiArg = {
 export type GetApiV1EmployeeApiResponse =
   /** status 200 OK */ EmployeeDtoIEnumerablePaginateableRead;
 export type GetApiV1EmployeeApiArg = {
+  status?: EmployeeStatus;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
   designation?: string;
   department?: string;
-  status?: EmployeeStatus;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10429,8 +10429,6 @@ export type GetApiV1MaterialDepartmentApiArg = {
   searchQuery?: string;
   /** The material kind to filter */
   kind?: MaterialKind;
-  /** Optional department ID filter. */
-  departmentId?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10670,7 +10668,7 @@ export type PostApiV1MaterialSamplingsApiArg = {
   createMaterialSamplingRequest: CreateMaterialSamplingRequest;
 };
 export type GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiResponse =
-  /** status 200 OK */ MaterialSamplingDtoRead;
+  /** status 200 OK */ MaterialSamplingDto;
 export type GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiArg = {
   grnId: string;
   batchId: string;
@@ -12818,7 +12816,7 @@ export type GetApiV1ProductionScheduleApprovedProductsApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse =
-  /** status 200 OK */ ApprovedProductDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg = {
   productId: string;
   /** The module this request falls under */
@@ -14291,8 +14289,7 @@ export type PostApiV1WarehouseGrnApiArg = {
   subModule?: any;
   createGrnRequest: CreateGrnRequest;
 };
-export type GetApiV1WarehouseGrnByIdApiResponse =
-  /** status 200 OK */ GrnDtoRead;
+export type GetApiV1WarehouseGrnByIdApiResponse = /** status 200 OK */ GrnDto;
 export type GetApiV1WarehouseGrnByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -14303,6 +14300,7 @@ export type GetApiV1WarehouseGrnByIdApiArg = {
 export type GetApiV1WarehouseGrnsApiResponse =
   /** status 200 OK */ GrnListDtoIEnumerablePaginateable;
 export type GetApiV1WarehouseGrnsApiArg = {
+  status?: Status;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -19940,40 +19938,6 @@ export type MaterialDtoIEnumerablePaginateable = {
 export type UpdateReOrderLevelRequest = {
   reOrderLevel?: number;
 };
-export type MaterialBatchListDto = {
-  id?: string;
-  material?: CollectionItemDto;
-  code?: string | null;
-  batchNumber?: string | null;
-  uoM?: UnitOfMeasureDto;
-  numberOfContainers?: number;
-  containerPackageStyle?: PackageStyleDto;
-  quantityPerContainer?: number;
-  status?: BatchStatus;
-  dateReceived?: string;
-  dateApproved?: string | null;
-  quantityAssigned?: number;
-  quantityUnassigned?: number;
-  totalQuantity?: number;
-  consumedQuantity?: number;
-  remainingQuantity?: number;
-  sampledQuantity?: number;
-  expiryDate?: string | null;
-  manufacturingDate?: string | null;
-  retestDate?: string | null;
-};
-export type BatchToSupply = {
-  batch?: MaterialBatchListDto;
-  quantityToTake?: number;
-};
-export type RequisitionItemDto = {
-  id?: string;
-  material?: MaterialDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  status?: RequestStatus;
-  batches?: BatchToSupply[] | null;
-};
 export type ManufacturerMaterialDto = {
   material?: CollectionItemDto;
 };
@@ -20039,6 +20003,51 @@ export type ShipmentInvoiceDto = {
   totalCost?: number;
   currency?: CurrencyDto;
   paidAt?: string | null;
+};
+export type MaterialBatchChecklistDto = {
+  checkedAt?: string | null;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+};
+export type MaterialBatchListDto = {
+  id?: string;
+  material?: CollectionItemDto;
+  code?: string | null;
+  batchNumber?: string | null;
+  uoM?: UnitOfMeasureDto;
+  numberOfContainers?: number;
+  containerPackageStyle?: PackageStyleDto;
+  quantityPerContainer?: number;
+  status?: BatchStatus;
+  dateReceived?: string;
+  dateApproved?: string | null;
+  quantityAssigned?: number;
+  quantityUnassigned?: number;
+  totalQuantity?: number;
+  consumedQuantity?: number;
+  remainingQuantity?: number;
+  sampledQuantity?: number;
+  expiryDate?: string | null;
+  manufacturingDate?: string | null;
+  retestDate?: string | null;
+  checklist?: MaterialBatchChecklistDto;
+};
+export type BatchToSupply = {
+  batch?: MaterialBatchListDto;
+  quantityToTake?: number;
+};
+export type RequisitionItemDto = {
+  id?: string;
+  material?: MaterialDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  status?: RequestStatus;
+  batches?: BatchToSupply[] | null;
 };
 export type MaterialItemDistributionDto = {
   shipmentInvoiceItem?: ShipmentInvoiceItemDto;
@@ -20564,27 +20573,10 @@ export type GrnDto = {
   vehicleNumber?: string | null;
   remarks?: string | null;
   grnNumber?: string | null;
-  materialBatches?: MaterialBatchDto[] | null;
-};
-export type GrnDtoRead = {
-  id?: string;
-  createdAt?: string;
-  carrierName?: string | null;
-  vehicleNumber?: string | null;
-  remarks?: string | null;
-  grnNumber?: string | null;
-  materialBatches?: MaterialBatchDtoRead[] | null;
+  materialBatches?: MaterialBatchListDto[] | null;
 };
 export type MaterialSamplingDto = {
   grnDto?: GrnDto;
-  materialBatch?: CollectionItemDto;
-  arNumber?: string | null;
-  grnId?: string;
-  sampleQuantity?: number;
-  sampleDate?: string;
-};
-export type MaterialSamplingDtoRead = {
-  grnDto?: GrnDtoRead;
   materialBatch?: CollectionItemDto;
   arNumber?: string | null;
   grnId?: string;
@@ -23397,6 +23389,7 @@ export type GrnListDto = {
   remarks?: string | null;
   grnNumber?: string | null;
   materialBatches?: CollectionItemDto[] | null;
+  status?: Status;
 };
 export type GrnListDtoIEnumerablePaginateable = {
   data?: GrnListDto[] | null;
