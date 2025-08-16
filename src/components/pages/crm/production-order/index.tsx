@@ -13,13 +13,12 @@ import CreateProductionOrder from "./create";
 import { commonActions } from "@/lib/redux/slices/common";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import CreateProFormalInvoice from "./pro-formal-invoice";
 
 function Index() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
+  // const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
   const [pageSize, setPageSize] = useState(10);
 
   const dispatch = useDispatch();
@@ -44,7 +43,7 @@ function Index() {
       {open && (
         <CreateProductionOrder open={open} onClose={() => setOpen(false)} />
       )}
-      {createInvoiceOpen && (
+      {/* {createInvoiceOpen && (
         <CreateProFormalInvoice
           isOpen={createInvoiceOpen}
           productionsOrderOpt={
@@ -55,12 +54,12 @@ function Index() {
           }
           onClose={() => setCreateInvoiceOpen(false)}
         />
-      )}
+      )} */}
       <div className="flex items-center w-full justify-between gap-3">
         <PageTitle title="Production Orders" />
         <div className="flex items-center ml-auto gap-2">
           <Button
-            onClick={() => setCreateInvoiceOpen(true)}
+            // onClick={() => setCreateInvoiceOpen(true)}
             className="flex items-center gap-2"
           >
             <Icon name="Plus" />

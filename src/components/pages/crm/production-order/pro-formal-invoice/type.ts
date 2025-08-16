@@ -1,20 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 const createInvoiceShema = z.object({
-  productionOrderId: z.object({
-    value: z.string().min(1, { message: "Production order is required" }),
-    label: z.string(),
-  }),
+  productionOrderId: z
+    .string()
+    .min(1, { message: "Production order is required" }),
+  productionOrderName: z.string().optional(),
   products: z.array(
     z.object({
-      productId: z.object(
-        {
-          value: z.string().min(1, { message: "Product is required" }),
-          label: z.string(),
-        },
-        { message: "Product is required" },
-      ),
-      quantity: z.number().min(1),
+      productId: z.string().min(1, { message: "Product is required" }),
+      productName: z.string().optional(),
+      quantity: z.number(),
     }),
   ),
 });

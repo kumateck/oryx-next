@@ -232,6 +232,9 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   },
   {
     id: "actions",
+    meta: {
+      omitRowClick: true,
+    },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
