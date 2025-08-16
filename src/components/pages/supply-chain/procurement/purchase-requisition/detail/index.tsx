@@ -12,7 +12,7 @@ import {
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
-  fullname,
+  // fullname,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -156,8 +156,8 @@ const Page = () => {
               </li>
               <li>
                 <span className="text-sm font-semibold">Deparment:</span>{" "}
-                <span>{requisition?.requestedBy?.department?.name}</span>
-                <span>
+                {/* <span>{requisition?.requestedBy?.department?.name}</span> */}
+                {/* <span>
                   {" "}
                   by: (
                   {fullname(
@@ -165,7 +165,7 @@ const Page = () => {
                     requisition?.requestedBy?.lastName as string,
                   )}
                   )
-                </span>
+                </span> */}
               </li>
               <li>
                 <span className="text-sm font-semibold">Comments</span>

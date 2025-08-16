@@ -81,12 +81,13 @@ function CreateProductionOrder({ open, onClose }: Props) {
   };
   useEffect(() => {
     append({
-      price: 0,
+      totalOrderQuantity: 0,
       productId: {
         label: "",
         value: "",
       },
-      quantity: 0,
+      volumePerPiece: 0,
+      price: 0,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -133,8 +134,8 @@ function CreateProductionOrder({ open, onClose }: Props) {
           code: data.code,
           products: data.products.map((product) => ({
             productId: product.productId.value,
-            quantity: product.quantity,
-            price: String(product.price),
+            totalOrderQuantity: Number(product.totalOrderQuantity),
+            volumePerPiece: Number(product.volumePerPiece),
           })),
         },
       }).unwrap();
@@ -156,7 +157,7 @@ function CreateProductionOrder({ open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Create Product Order</DialogTitle>
         </DialogHeader>

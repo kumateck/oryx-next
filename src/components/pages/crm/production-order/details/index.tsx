@@ -1,6 +1,7 @@
 "use client";
 import PageWrapper from "@/components/layout/wrapper";
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
@@ -33,12 +34,24 @@ function Index() {
   if (isLoading) return <LoadingSkeleton />;
   return (
     <PageWrapper className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div onClick={() => router.back()}>
-          <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
+      <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <div onClick={() => router.back()}>
+            <Icon name="ArrowLeft" className="h-5 w-5 cursor-pointer" />
+          </div>
+          <PageTitle title="Production Order Details" />
         </div>
-        <PageTitle title="Production Order Details" />
+        <div className="flex items-center ml-auto gap-2">
+          <Button
+            onClick={() => console.log(id)}
+            className="flex items-center gap-2"
+          >
+            <Icon name="Plus" />
+            <span>Allocation</span>
+          </Button>
+        </div>
       </div>
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-start gap-4 ">

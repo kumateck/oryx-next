@@ -3,10 +3,9 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { ProductionOrderDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
-import { TableCheckbox } from "@/shared/datatable/table-check";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useState } from "react";
-import { DropdownMenuItem, Icon, Button } from "@/components/ui";
+import { DropdownMenuItem, Button } from "@/components/ui";
 import { CreateInvoiceSchema } from "./pro-formal-invoice/type";
 import CreateProFormalInvoice from "./pro-formal-invoice";
 // import { ProductionOrderType } from "@/lib";
@@ -22,42 +21,42 @@ export function DataTableRowActions<TData extends ProductionOrderDto>({
     {} as CreateInvoiceSchema,
   );
   return (
-    <TableMenuAction>
-      {isOpen && (
-        <CreateProFormalInvoice
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          details={details}
-        />
-      )}
-      <DropdownMenuItem className="group">
-        <Button
-          variant="ghost"
-          className="w-full gap-1 text-center items-center justify-center"
-          onClick={() => {
-            setDetails({
-              productionOrderId: row.original.id as string,
-              productionOrderName: row.original.code as string,
-              products:
-                row.original?.products?.map((product) => ({
-                  productId: product.product?.id as string,
-                  productName: product.product?.name as string,
-                  quantity: product.totalOrderQuantity as number,
-                })) || ([] as CreateInvoiceSchema["products"]),
-            });
-            setIsOpen(true);
-          }}
-        >
-          <Icon name="Upload" className="h-5 w-5 text-neutral-500" />
-          <span>Attach Purchase Order</span>
-        </Button>
-      </DropdownMenuItem>
-    </TableMenuAction>
+    <section>
+      <TableMenuAction>
+        {isOpen && (
+          <CreateProFormalInvoice
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            details={details}
+          />
+        )}
+        <DropdownMenuItem className="group">
+          <Button
+            variant="ghost"
+            className="w-full gap-1 text-center items-center justify-center"
+            onClick={() => {
+              setDetails({
+                productionOrderId: row.original.id as string,
+                productionOrderName: row.original.code as string,
+                products:
+                  row.original?.products?.map((product) => ({
+                    productId: product.product?.id as string,
+                    productName: product.product?.name as string,
+                    quantity: product.totalOrderQuantity as number,
+                  })) || ([] as CreateInvoiceSchema["products"]),
+              });
+              setIsOpen(true);
+            }}
+          >
+            <span>Create Pro-formal Invoice</span>
+          </Button>
+        </DropdownMenuItem>
+      </TableMenuAction>
+    </section>
   );
 }
 
 export const columns: ColumnDef<ProductionOrderDto>[] = [
-  TableCheckbox<ProductionOrderDto>({}),
   {
     accessorKey: "productOrderCode",
     header: "Product Order Code",
@@ -106,11 +105,11 @@ export const columns: ColumnDef<ProductionOrderDto>[] = [
       </div>
     ),
   },
-  {
-    id: "action",
-    meta: {
-      omitRowClick: true,
-    },
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: "action",
+  //   meta: {
+  //     omitRowClick: true,
+  //   },
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];
