@@ -118,7 +118,7 @@ const LeaveRequest = ({
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
-          "Failed to create leave request.",
+          "Failed to create leave request. Try again",
       );
     }
   };

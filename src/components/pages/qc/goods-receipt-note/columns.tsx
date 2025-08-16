@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { GrnListDto } from "@/lib/redux/api/openapi.generated";
+import { getEnumBadge, GRNStatus } from "@/lib";
+import StatusBadge from "@/shared/status-badge";
 
 export const columns: ColumnDef<GrnListDto>[] = [
   {
@@ -24,17 +26,14 @@ export const columns: ColumnDef<GrnListDto>[] = [
       </div>
     ),
   },
-  // {
-  //   id: "status",
-  //   header: "Status",
-  //   cell: ({ row }) => (
-  //     <div
-  //       className={`${
-  //         row.original?.remarks ? batchStatusColors(row.original.remarks) : ""
-  //       } rounded-full px-2 py-1 w-fit text-center`}
-  //     >
-  //       {row.original?.carrierName}
-  //     </div>
-  //   ),
-  // },
+  {
+    id: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status as GRNStatus;
+      const { label, colorClass } = getEnumBadge(GRNStatus, status);
+
+      return <StatusBadge label={label} colorClass={colorClass} />;
+    },
+  },
 ];

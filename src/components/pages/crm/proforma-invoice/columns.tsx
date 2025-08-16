@@ -4,30 +4,31 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { ProformaInvoiceDto } from "@/lib/redux/api/openapi.generated";
 import { DropdownMenuItem, Icon } from "@/components/ui";
 import { TableMenuAction } from "@/shared/table-menu";
+import { useState } from "react";
+import AttachProductionOrder from "./attech-production-order";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<
-  TData extends ProformaInvoiceDto,
->({}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<TData extends ProformaInvoiceDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <TableMenuAction>
-      <DropdownMenuItem className="group flex items-center justify-center gap-1">
-        <Icon name="Download" className="h-5 w-5 text-neutral-500" />
-        <span>Download</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem className="group flex items-center justify-center gap-1">
-        <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
-        <span>Edit</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem className="group flex items-center justify-center gap-1">
-        <Icon name="ChartBarStacked" className="h-5 w-5 text-neutral-500" />
-        <span>Mark as paid</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem className="group flex items-center justify-center gap-1">
-        <Icon name="Truck" className="h-5 w-5 text-neutral-500" />
-        <span>Create shipment</span>
+      {isOpen && (
+        <AttachProductionOrder
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          id={row.original.id as string}
+        />
+      )}
+      <DropdownMenuItem
+        onClick={() => setIsOpen(true)}
+        className="group flex items-center justify-center gap-1"
+      >
+        <Icon name="Upload" className="h-5 w-5 text-neutral-500" />
+        <span>Attach Purchase Order</span>
       </DropdownMenuItem>
     </TableMenuAction>
   );

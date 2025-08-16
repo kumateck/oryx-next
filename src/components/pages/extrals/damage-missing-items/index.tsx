@@ -32,7 +32,8 @@ function Page() {
     LoadData({
       page,
       pageSize,
-      // inventoryType: activeTab as InventoryType,
+      // store: activeTab as InventoryType,
+
       module: AuditModules.production.name,
       subModule: AuditModules.production.materialSpecification,
       searchQuery: debounceValue,

@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui";
-import { fullname, RequisitionType } from "@/lib";
+import { RequisitionType } from "@/lib";
 import { useGetApiV1RequisitionByRequisitionIdQuery } from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import React from "react";
@@ -34,15 +34,15 @@ const PurchaseRequisition = ({ id }: Props) => {
               </li>
               <li>
                 <span className="text-sm font-semibold">Deparment:</span>{" "}
-                <span>{requisition?.requestedBy?.department?.name}</span>
+                {/* <span>{requisition?.requestedBy?.department?.name}</span> */}
                 <span>
                   {" "}
                   by: (
-                  {fullname(
+                  {/* {fullname(
                     requisition?.requestedBy?.firstName as string,
                     requisition?.requestedBy?.lastName as string,
                   )}
-                  )
+                  ) */}
                 </span>
               </li>
               <li>

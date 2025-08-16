@@ -4,13 +4,16 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { InvoiceDto } from "@/lib/redux/api/openapi.generated";
 import { DropdownMenuItem, Icon } from "@/components/ui";
 import { TableMenuAction } from "@/shared/table-menu";
+import { useRouter } from "next/navigation";
+import { TableCheckbox } from "@/shared/datatable/table-check";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<
-  TData extends InvoiceDto,
->({}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<TData extends InvoiceDto>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const router = useRouter();
   return (
     <TableMenuAction>
       <DropdownMenuItem className="group flex items-center justify-center gap-1">
@@ -25,15 +28,23 @@ export function DataTableRowActions<
         <Icon name="ChartBarStacked" className="h-5 w-5 text-neutral-500" />
         <span>Mark as paid</span>
       </DropdownMenuItem>
+      <DropdownMenuItem
+        onClick={() => router.push(`/crm/invoices/${row.original.id}/waybill`)}
+        className="group flex items-center justify-center gap-1"
+      >
+        <Icon name="Truck" className="h-5 w-5 text-neutral-500" />
+        <span>Create Waybill</span>
+      </DropdownMenuItem>
       <DropdownMenuItem className="group flex items-center justify-center gap-1">
         <Icon name="Truck" className="h-5 w-5 text-neutral-500" />
-        <span>Create shipment</span>
+        <span>Create Shipment</span>
       </DropdownMenuItem>
     </TableMenuAction>
   );
 }
 
 export const columns: ColumnDef<InvoiceDto>[] = [
+  TableCheckbox<InvoiceDto>({}),
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",

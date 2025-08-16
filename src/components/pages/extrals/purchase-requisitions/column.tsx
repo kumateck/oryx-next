@@ -18,11 +18,9 @@ import {
   // PermissionKeys,
   SupplierStatus,
   SupplierTypeOptions,
-  cn,
   getEnumBadge,
   isErrorResponse,
   routes,
-  splitWords,
 } from "@/lib";
 import {
   InventoryPurchaseRequisitionDto,
@@ -34,6 +32,7 @@ import {
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 import { format } from "date-fns";
+import StatusBadge from "@/shared/status-badge";
 // import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
@@ -150,14 +149,7 @@ export function DataTableRowStatus<
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <div
-            className={cn(
-              `inline-block rounded-full px-2 py-1 text-xs font-medium `,
-              colorClass,
-            )}
-          >
-            {splitWords(label)}
-          </div>
+          <StatusBadge label={label} colorClass={colorClass} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {SupplierTypeOptions?.map((opt, index) => {
@@ -232,6 +224,9 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   },
   {
     id: "actions",
+    meta: {
+      omitRowClick: true,
+    },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

@@ -1,6 +1,7 @@
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
-import { AnalyticalTestStatus, cn, getEnumBadge, splitWords } from "@/lib";
+import { AnalyticalTestStatus, getEnumBadge } from "@/lib";
 import { AnalyticalTestRequestDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 import { TableMenuAction } from "@/shared/table-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
@@ -98,16 +99,7 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
       const status = row.original.status as AnalyticalTestStatus;
       const { label, colorClass } = getEnumBadge(AnalyticalTestStatus, status);
 
-      return (
-        <div
-          className={cn(
-            `inline-block rounded-full px-2 py-1 text-xs font-medium text-center `,
-            colorClass,
-          )}
-        >
-          {splitWords(label)}
-        </div>
-      );
+      return <StatusBadge label={label} colorClass={colorClass} />;
     },
   },
 

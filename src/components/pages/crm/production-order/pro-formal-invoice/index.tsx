@@ -8,48 +8,52 @@ import {
   Icon,
 } from "@/components/ui";
 import ProFormalInvoiceForm from "./form";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { CreateInvoiceSchema, CreateInvoiceSchemaValidator } from "./type";
-import { isErrorResponse, ErrorResponse, Option } from "@/lib";
+import { isErrorResponse, ErrorResponse } from "@/lib";
 import { usePostApiV1ProductionOrdersProformaInvoicesMutation } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  productionsOrderOpt: Option[];
+  details: CreateInvoiceSchema;
 }
-function CreateProFormalInvoice({
-  isOpen,
-  onClose,
-  productionsOrderOpt,
-}: Props) {
-  const [CreateProFormalInvoice, { isLoading }] =
+function CreateProFormalInvoice({ isOpen, onClose, details }: Props) {
+  const [createProFormalInvoice, { isLoading }] =
     usePostApiV1ProductionOrdersProformaInvoicesMutation();
 
   const {
     register,
     control,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<CreateInvoiceSchema>({
     resolver: CreateInvoiceSchemaValidator,
+    defaultValues: details,
   });
 
-  const onSubmit = (data: CreateInvoiceSchema) => {
+  const { fields } = useFieldArray({
+    control,
+    name: "products",
+  });
+
+  const onSubmit = async (data: CreateInvoiceSchema) => {
     try {
-      CreateProFormalInvoice({
+      await createProFormalInvoice({
         createProformaInvoice: {
-          productionOrderId: data.productionOrderId.value,
+          productionOrderId: data.productionOrderId,
           products: data.products.map((product) => ({
-            productId: product.productId.value,
+            productId: product.productId,
             quantity: product.quantity,
           })),
         },
-      });
+      }).unwrap();
+      toast.success("Pro-formal invoice created successfully");
+      onClose();
+      reset();
     } catch (error) {
-      console.error(error);
-      console.log(error);
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
           "Error occurred while creating pro-formal invoice. Try again later.",
@@ -65,7 +69,7 @@ function CreateProFormalInvoice({
         <form onSubmit={handleSubmit(onSubmit)}>
           <ProFormalInvoiceForm
             control={control}
-            productionsOrderOpt={productionsOrderOpt}
+            fields={fields}
             register={register}
             errors={errors}
           />

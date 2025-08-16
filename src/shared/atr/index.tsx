@@ -10,13 +10,9 @@ import {
   useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-import {
-  AnalyticalTestRequestStatus,
-  AuditModules,
-  cn,
-  getEnumBadge,
-} from "@/lib";
+import { AnalyticalTestRequestStatus, AuditModules, getEnumBadge } from "@/lib";
 import CreateATR from "./create";
+import StatusBadge from "../status-badge";
 
 interface Props {
   scheduleId: string;
@@ -84,14 +80,7 @@ function AnalyticalTestRequest({
         ) : (
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
             <span className="text-gray-500">ATR:</span>
-            <span
-              className={cn(
-                "px-2 py-1 rounded-2xl text-xs font-semibold",
-                colorClass,
-              )}
-            >
-              {label}
-            </span>
+            <StatusBadge label={label} colorClass={colorClass} />
           </div>
         )}
       </div>
