@@ -5476,6 +5476,7 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          onlyApproved: queryArg.onlyApproved,
           page: queryArg.page,
           pageSize: queryArg.pageSize,
           searchQuery: queryArg.searchQuery,
@@ -6061,6 +6062,36 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    getApiV1ProductionScheduleApprovedProducts: build.query<
+      GetApiV1ProductionScheduleApprovedProductsApiResponse,
+      GetApiV1ProductionScheduleApprovedProductsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/approved-products`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          includePending: queryArg.includePending,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleApprovedProductsByProductId: build.query<
+      GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse,
+      GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/approved-products/${queryArg.productId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleSummaryReport: build.query<
       GetApiV1ProductionScheduleSummaryReportApiResponse,
       GetApiV1ProductionScheduleSummaryReportApiArg
@@ -11931,7 +11962,7 @@ export type PostApiV1ProductionOrdersProformaInvoicesApiArg = {
   createProformaInvoice: CreateProformaInvoice;
 };
 export type GetApiV1ProductionOrdersProformaInvoicesApiResponse =
-  /** status 200 OK */ ProformaInvoiceDtoIEnumerablePaginateable;
+  /** status 200 OK */ ProformaInvoiceDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
   page?: number;
   pageSize?: number;
@@ -11942,7 +11973,7 @@ export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersProformaInvoicesByIdApiResponse =
-  /** status 200 OK */ ProformaInvoiceDto;
+  /** status 200 OK */ ProformaInvoiceDtoRead;
 export type GetApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -11978,7 +12009,7 @@ export type PostApiV1ProductionOrdersInvoicesApiArg = {
   createInvoice: CreateInvoice;
 };
 export type GetApiV1ProductionOrdersInvoicesApiResponse =
-  /** status 200 OK */ InvoiceDtoIEnumerablePaginateable;
+  /** status 200 OK */ InvoiceDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionOrdersInvoicesApiArg = {
   page?: number;
   pageSize?: number;
@@ -11989,7 +12020,7 @@ export type GetApiV1ProductionOrdersInvoicesApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersInvoicesByIdApiResponse =
-  /** status 200 OK */ InvoiceDto;
+  /** status 200 OK */ InvoiceDtoRead;
 export type GetApiV1ProductionOrdersInvoicesByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -12318,6 +12349,7 @@ export type PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse =
   /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg = {
+  onlyApproved?: boolean;
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -12773,6 +12805,27 @@ export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPacki
     /** The list of batches for approval. */
     body: BatchTransferRequest[];
   };
+export type GetApiV1ProductionScheduleApprovedProductsApiResponse =
+  /** status 200 OK */ ApprovedProductDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleApprovedProductsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  includePending?: boolean;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse =
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
+export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg = {
+  productId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProductionScheduleSummaryReportApiResponse =
   /** status 200 OK */ ProductionScheduleReportDtoRead[];
 export type GetApiV1ProductionScheduleSummaryReportApiArg = {
@@ -15284,33 +15337,6 @@ export type CustomerDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type DamageStatus = 0 | 1;
-export type CreateDamagedStockRequest = {
-  itemId: string;
-  damageStatus: DamageStatus;
-  quantityDamaged: number;
-  remarks?: string | null;
-};
-export type InventoryClassification = 0 | 1;
-export type Store = 0 | 1 | 2;
-export type ItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  name?: string | null;
-  code?: string | null;
-  classification?: InventoryClassification;
-  unitOfMeasureId?: string;
-  unitOfMeasure?: UnitOfMeasureDto;
-  hasBatch?: boolean;
-  store?: Store;
-  minimumLevel?: number;
-  maximumLevel?: number;
-  reorderLevel?: number;
-  isActive?: boolean;
-  description?: string | null;
-  availableQuantity?: number;
-};
 export type MaterialCategory = {
   id?: string;
   createdAt?: string;
@@ -17245,6 +17271,7 @@ export type FinishedGoodsTransferNote = {
   batchManufacturingRecord?: BatchManufacturingRecord;
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStep;
+  loose?: number;
 };
 export type FinishedGoodsTransferNoteRead = {
   id?: string;
@@ -17276,6 +17303,7 @@ export type FinishedGoodsTransferNoteRead = {
   batchManufacturingRecord?: BatchManufacturingRecordRead;
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStepRead;
+  loose?: number;
 };
 export type DistributedFinishedProductStatus = 0 | 1;
 export type DistributedFinishedProduct = {
@@ -18954,6 +18982,41 @@ export type DamagedStockBatchRead = {
   lastDeletedBy?: UserRead;
   batchNumber?: string | null;
   quantity?: number;
+};
+export type CreateDamagedStockRequest = {
+  itemId: string;
+  damageStatus: DamageStatus;
+  quantityDamaged: number;
+  remarks?: string | null;
+  batches?: DamagedStockBatch[] | null;
+};
+export type CreateDamagedStockRequestRead = {
+  itemId: string;
+  damageStatus: DamageStatus;
+  quantityDamaged: number;
+  remarks?: string | null;
+  batches?: DamagedStockBatchRead[] | null;
+};
+export type InventoryClassification = 0 | 1;
+export type Store = 0 | 1 | 2;
+export type ItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  name?: string | null;
+  code?: string | null;
+  classification?: InventoryClassification;
+  unitOfMeasureId?: string;
+  unitOfMeasure?: UnitOfMeasureDto;
+  hasBatch?: boolean;
+  store?: Store;
+  minimumLevel?: number;
+  maximumLevel?: number;
+  reorderLevel?: number;
+  isActive?: boolean;
+  description?: string | null;
+  availableQuantity?: number;
 };
 export type DamagedStockDto = {
   id?: string;
@@ -21436,15 +21499,45 @@ export type CreateProformaInvoice = {
   productionOrderId?: string;
   products?: CreateProformaInvoiceProduct[] | null;
 };
+export type ProformaInvoiceProductDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  product?: ProductDto;
+  quantity?: number;
+};
+export type ProformaInvoiceProductDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  product?: ProductDtoRead;
+  quantity?: number;
+};
 export type ProformaInvoiceDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
   productionOrder?: ProductionOrderDto;
-  products?: ProformaInvoiceDto[] | null;
+  products?: ProformaInvoiceProductDto[] | null;
+};
+export type ProformaInvoiceDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrder?: ProductionOrderDto;
+  products?: ProformaInvoiceProductDtoRead[] | null;
 };
 export type ProformaInvoiceDtoIEnumerablePaginateable = {
   data?: ProformaInvoiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ProformaInvoiceDtoIEnumerablePaginateableRead = {
+  data?: ProformaInvoiceDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -21466,8 +21559,26 @@ export type InvoiceDto = {
   customerPoNumber?: string | null;
   status?: InvoiceStatus;
 };
+export type InvoiceDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  proformaInvoice?: ProformaInvoiceDtoRead;
+  customerPoNumber?: string | null;
+  status?: InvoiceStatus;
+};
 export type InvoiceDtoIEnumerablePaginateable = {
   data?: InvoiceDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type InvoiceDtoIEnumerablePaginateableRead = {
+  data?: InvoiceDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -21698,6 +21809,8 @@ export type FinishedGoodsTransferNoteDto = {
   qarNumber?: string | null;
   batchManufacturingRecord?: BatchManufacturingRecordDto;
   productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
 };
 export type FinishedGoodsTransferNoteDtoRead = {
   id?: string;
@@ -21715,6 +21828,8 @@ export type FinishedGoodsTransferNoteDtoRead = {
   qarNumber?: string | null;
   batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
   productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
 };
 export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
   data?: FinishedGoodsTransferNoteDto[] | null;
@@ -21737,6 +21852,7 @@ export type FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead = {
 export type ApproveTransferNoteRequest = {
   quantityReceived?: number;
   notes?: string | null;
+  loose?: number;
 };
 export type UpdateBatchManufacturingRecord = {
   batchNumber?: string | null;
@@ -22066,6 +22182,36 @@ export type ProductionExtraPackingWithBatchesDto = {
 };
 export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
   data?: ProductionExtraPackingWithBatchesDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ApprovedProductDto = {
+  product?: ProductListDto;
+  totalQuantity?: number;
+  totalQuantityPerPack?: number;
+  totalLoose?: number;
+};
+export type ApprovedProductDtoRead = {
+  product?: ProductListDtoRead;
+  totalQuantity?: number;
+  totalQuantityPerPack?: number;
+  totalLoose?: number;
+};
+export type ApprovedProductDtoIEnumerablePaginateable = {
+  data?: ApprovedProductDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ApprovedProductDtoIEnumerablePaginateableRead = {
+  data?: ApprovedProductDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -24008,6 +24154,10 @@ export const {
   useGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   useLazyGetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdQuery,
   usePostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdMutation,
+  useGetApiV1ProductionScheduleApprovedProductsQuery,
+  useLazyGetApiV1ProductionScheduleApprovedProductsQuery,
+  useGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
+  useLazyGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,

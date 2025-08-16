@@ -56,6 +56,7 @@ export const ApproveTransferNote = ({
         approveTransferNoteRequest: {
           quantityReceived: Number(data.quantityReceived),
           notes: data.notes,
+          loose: Number(data.loose) || 0,
         },
       }).unwrap();
       toast.success("Finished goods transfer note approved successfully");
@@ -86,6 +87,14 @@ export const ApproveTransferNote = ({
                 label: "Physical Quantity Received",
                 type: InputTypes.NUMBER,
                 register: register("quantityReceived"),
+                required: true,
+                placeholder: "Enter quantity",
+                errors,
+              },
+              {
+                label: "Loose/Pack",
+                type: InputTypes.NUMBER,
+                register: register("loose"),
                 required: true,
                 placeholder: "Enter quantity",
                 errors,
