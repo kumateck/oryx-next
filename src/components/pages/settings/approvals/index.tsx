@@ -35,7 +35,7 @@ const Page = () => {
     try {
       await deleteApproval({
         approvalId: id,
-      });
+      }).unwrap();
       toast.success("Deleted successfully");
     } catch (error) {
       ThrowErrorMessage(error);

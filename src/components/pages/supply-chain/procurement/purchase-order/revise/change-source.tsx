@@ -95,7 +95,7 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
       // console.log(payload, "payload");
       await saveMutation({
         createSourceRequisitionRequest: payload,
-      } as PostApiV1RequisitionSourceApiArg);
+      } as PostApiV1RequisitionSourceApiArg).unwrap();
       await saveChangesMutation({
         purchaseOrderId,
         body: [
@@ -109,7 +109,7 @@ const ChangeSource = ({ isOpen, onClose, details, sourceType }: Props) => {
             purchaseOrderItemId: details.purchaseOrderItemId,
           },
         ],
-      });
+      }).unwrap();
       toast.success("Sourcing created successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission

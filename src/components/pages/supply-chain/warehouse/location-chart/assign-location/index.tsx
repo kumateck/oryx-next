@@ -141,21 +141,13 @@ const AssignLocationDialog = ({
           note: location.note || "",
         })),
       } satisfies MoveShelfMaterialBatchRequest;
-
-      console.log(payload);
-      const response = await moveShelf({
+      await moveShelf({
         moveShelfMaterialBatchRequest: payload,
-      });
+      }).unwrap();
 
-      if ("error" in response) {
-        toast.error(
-          isErrorResponse(response.error as ErrorResponse)?.description,
-        );
-      } else {
-        toast.success("Material moved successfully");
-        onSuccess();
-        handleClose();
-      }
+      toast.success("Material moved successfully");
+      onSuccess();
+      handleClose();
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

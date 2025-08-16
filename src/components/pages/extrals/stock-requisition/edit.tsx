@@ -114,7 +114,7 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
             quantityRequested: item.orderQuantity,
           })),
         },
-      });
+      }).unwrap();
       dispatch(commonActions.setTriggerReload());
       toast.success("Stock requisition updated successfully");
       reset();

@@ -70,7 +70,7 @@ function Index() {
         shiftId: data.shiftScheduleId.value,
         module: AuditModules.management.name,
         subModule: AuditModules.management.shiftUpload,
-      });
+      }).unwrap();
 
       //  const formData = new FormData();
       //         const attachmentsArray = Array.isArray(data.attachments)
@@ -86,13 +86,9 @@ function Index() {
       //           body: formData,
       //         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
 
-      if (!result.error) {
-        toast.success("Shift schedule uploaded successfully");
-        console.log(result);
-        setResults(result as unknown as ShiftsReportSummary[]);
-        return;
-      }
+      toast.success("Shift schedule uploaded successfully");
       console.log(result);
+      setResults(result as unknown as ShiftsReportSummary[]);
     } catch (error) {
       ThrowErrorMessage(error);
       console.error("Error uploading shift schedule:", error);

@@ -72,7 +72,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await editDepartment({
         departmentId: details.id as string,
         createDepartmentRequest: payload,
-      });
+      }).unwrap();
       toast.success("Department updated successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission

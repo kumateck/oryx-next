@@ -112,7 +112,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await updateEquipment({
         equipmentId: details?.id as string,
         createEquipmentRequest: payload,
-      });
+      }).unwrap();
       toast.success("Equipment updated successfully");
 
       dispatch(commonActions.setTriggerReload());

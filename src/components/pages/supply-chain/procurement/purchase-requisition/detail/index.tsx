@@ -95,7 +95,7 @@ const Page = () => {
       // console.log(payload, "payload");
       await saveMutation({
         createSourceRequisitionRequest: payload,
-      } as PostApiV1RequisitionSourceApiArg);
+      } as PostApiV1RequisitionSourceApiArg).unwrap();
       toast.success("Sourcing created successfully");
       router.push("/procurement/requisition");
       // reset(); // Reset the form after submission

@@ -89,7 +89,6 @@ export function Edit({ isOpen, onClose, details }: Props) {
       // If attachments are provided, upload them
       if (data.attachments) {
         const formData = new FormData();
-        console.log("uploading editted attachments:", data.attachments);
         const attachmentsArray = Array.isArray(data.attachments)
           ? data.attachments
           : Array.from(data.attachments); // Convert FileList to an array

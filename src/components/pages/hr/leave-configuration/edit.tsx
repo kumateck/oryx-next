@@ -86,7 +86,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         createLeaveTypeRequest: payload,
         module: AuditModules.management.name,
         subModule: AuditModules.management.leaveTypeConfiguration,
-      });
+      }).unwrap();
       toast.success("Leave Type updated successfully");
       dispatch(commonActions.setTriggerReload());
       reset();

@@ -6,7 +6,7 @@ import {
 } from "@/lib";
 import {
   ItemDto,
-  useDeleteApiV1MaterialSpecificationsByIdMutation,
+  useDeleteApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
@@ -24,8 +24,7 @@ export function DataTableRowActions<TData extends ItemDto>({
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
   const dispatch = useDispatch();
-  const [deleteMaterialSpecification] =
-    useDeleteApiV1MaterialSpecificationsByIdMutation();
+  const [deleteMaterialSpecification] = useDeleteApiV1ItemsMutation();
   const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
