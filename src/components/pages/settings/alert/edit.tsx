@@ -73,18 +73,13 @@ export function EditAlert({
         ),
         timeFrame: data.timeFrame?.split(" ")[0],
       };
-      const result = await editAlert({
+      await editAlert({
         alertId: id,
         createAlertRequest: payload,
-      });
-      if (!result?.error) {
-        console.log("Alert edited successfully", result);
-        toast.success("Alert edited successfully");
-        onClose();
-        dispatch(commonActions.setTriggerReload());
-        return;
-      }
-      toast.error("Failed to edit alert");
+      }).unwrap();
+      toast.success("Alert edited successfully");
+      onClose();
+      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       console.error("Error editing alert:", error);
       toast.error("Failed to edit alert");

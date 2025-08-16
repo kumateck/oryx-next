@@ -46,7 +46,7 @@ export const TakeSample = ({ isOpen, onClose, id }: Props) => {
           numberOfContainers: data.numberOfContainers,
           status: AnalyticalTestRequestStatus.Sampled,
         },
-      });
+      }).unwrap();
       toast.success("ATR Sampled Taken successfully");
       dispatch(commonActions.setTriggerReload());
       reset();

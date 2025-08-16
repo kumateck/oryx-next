@@ -92,7 +92,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await createMaterial({
         materialId: details.id as string,
         createMaterialRequest: payload,
-      });
+      }).unwrap();
       toast.success("Material updated successfully");
       dispatch(commonActions.setTriggerReload());
 

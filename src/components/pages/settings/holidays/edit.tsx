@@ -60,7 +60,7 @@ export const Edit = ({ isOpen, onClose, details }: Props) => {
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.holidays,
         createHolidayRequest: payload as PayloadType,
-      });
+      }).unwrap();
       reset();
       onClose();
       toast.success("Holiday updated successfully");

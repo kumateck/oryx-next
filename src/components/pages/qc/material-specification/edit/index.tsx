@@ -128,7 +128,6 @@ export function EditMaterialSpecification() {
         ? (data?.userId?.value as string)
         : (currentUser as string),
     };
-    console.log("Submitting data", payload);
     if (!id) return;
     try {
       await updateMaterialSpecification({

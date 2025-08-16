@@ -42,7 +42,7 @@ const Breakdown = ({ isOpen, onClose, details }: BreakdownProps) => {
       await confirmDistribution({
         shipmentDocumentId,
         materialId,
-      });
+      }).unwrap();
       toast.success("Distribution confirmed successfully");
       onClose();
       dispatch(commonActions.setTriggerReload());

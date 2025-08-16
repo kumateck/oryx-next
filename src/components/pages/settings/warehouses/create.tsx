@@ -17,7 +17,6 @@ import {
   // NamingType,
   // useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
   // useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1WarehouseQuery,
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -29,6 +28,8 @@ import {
 
 import WarehousesForm from "./form";
 import { CreateWarehouseValidator, WarehouseRequestDto } from "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import "./types";
 
@@ -37,12 +38,13 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
   // const [loadCodeSettings] =
   //   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   // const [loadCodeMyModel] =
   //   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
   const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
+
+  const dispatch = useDispatch();
   const {
     register,
     control,
@@ -96,12 +98,9 @@ const Create = ({ isOpen, onClose }: Props) => {
       } satisfies CreateWarehouseRequest;
       await createWarehouse({
         createWarehouseRequest: payload,
-      });
+      }).unwrap();
       toast.success("Warehouse created successfully");
-      loadWarehouses({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {

@@ -81,10 +81,9 @@ const Create = ({ isOpen, onClose }: Props) => {
           ) as unknown as EmployeeType,
         })),
       };
-      console.log("Submitting payload:", payload);
       await createEmployee({
         onboardEmployeeDto: payload,
-      });
+      }).unwrap();
       toast.success("Employee(s) registered successfully");
       dispatch(commonActions.setTriggerReload());
       reset();

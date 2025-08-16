@@ -8,14 +8,13 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { InputTypes, InventoryType, Option, splitWords } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   countryOptions: Option[];
-
   currencyOptions: Option[];
   itemsOptions: Option[];
 }
@@ -68,7 +67,6 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             errors,
           },
-
           {
             register: register("address" as Path<TFieldValues>),
             label: "Address",
@@ -101,6 +99,7 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
               label: "Currency",
               control: control as Control,
               type: InputTypes.SELECT,
+
               name: "currency",
               required: true,
               onModal: true,
@@ -146,6 +145,21 @@ const VendorForm = <TFieldValues extends FieldValues, TContext>({
       <FormWizard
         className="w-full"
         config={[
+          {
+            control: control as Control,
+            label: "Items Store",
+            name: "storyType",
+            placeholder: "Select items",
+            options: Object.entries(InventoryType)
+              .filter(([, value]) => typeof value === "number")
+              .map(([key, value]) => ({
+                label: splitWords(key),
+                value: value.toString(),
+              })),
+            type: InputTypes.SELECT,
+            required: true,
+            errors,
+          },
           {
             control: control as Control,
             label: "Items",

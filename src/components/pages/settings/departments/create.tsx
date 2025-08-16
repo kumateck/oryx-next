@@ -115,7 +115,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       } satisfies CreateDepartmentRequest;
       await createDepartment({
         createDepartmentRequest: payload,
-      });
+      }).unwrap();
       toast.success("Department created successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission

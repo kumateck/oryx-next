@@ -92,7 +92,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             quantity: item.orderQuantity,
           })),
         },
-      });
+      }).unwrap();
       dispatch(commonActions.setTriggerReload());
       toast.success("Purchase requisition updated successfully.");
       reset();

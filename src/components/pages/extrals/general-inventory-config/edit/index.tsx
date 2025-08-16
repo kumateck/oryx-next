@@ -107,7 +107,7 @@ function EditInventory() {
       classification: Number(
         data.classification.value,
       ) as unknown as InventoryClassification,
-      store: Number(data.storeType) as unknown as Store,
+      store: inventoryDetails?.store as Store,
       unitOfMeasureId: data.unitOfMeasureId.value,
       hasBatchNumber: data.isActive,
       maximumLevel: data.maximumLevel,

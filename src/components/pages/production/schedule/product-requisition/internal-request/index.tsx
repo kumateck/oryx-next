@@ -118,7 +118,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
             };
           }),
         },
-      });
+      }).unwrap();
       toast.success("Transfer created successfully");
       dispatch(commonActions.setTriggerReload());
       onClose();

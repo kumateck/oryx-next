@@ -71,15 +71,10 @@ export const AlertItem = ({ alert }: AlertItemProps) => {
           onClose={() => setIsDelete(false)}
           onConfirm={async () => {
             try {
-              const result = await deleteAlert({ id: alert.id as string });
-              if (!result.error) {
-                toast.success("Alert deleted successfully");
-                // Reset the form
-                dispatch(commonActions.unSetTriggerReload());
-                return;
-              }
-              console.log("Error deleting alert:", result.error);
-              toast.error("Failed to delete alert");
+              await deleteAlert({ id: alert.id as string }).unwrap();
+              toast.success("Alert deleted successfully");
+              // Reset the form
+              dispatch(commonActions.unSetTriggerReload());
             } catch (error) {
               toast.error(isErrorResponse(error as ErrorResponse)?.description);
             } finally {

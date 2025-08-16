@@ -77,7 +77,7 @@ export function AlertRecipient({
       await editAlert({
         alertId: id,
         createAlertRequest: payload,
-      });
+      }).unwrap();
       toast.success("Alert edited successfully");
       onClose();
       dispatch(commonActions.setTriggerReload());

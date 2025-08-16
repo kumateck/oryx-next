@@ -57,20 +57,16 @@ function SignatureSettings() {
     console.log(data);
     if (!userId) return;
     try {
-      const result = await createSignature({
+      await createSignature({
         id: userId as string,
         module: AuditModules.settings.name,
         uploadFileRequest: {
           file: data.signature,
         } as UploadFileRequest,
         subModule: AuditModules.settings.signature,
-      });
-      if (!result.error) {
-        toast.success("Signature saved successfully!");
-        setSignature(data.signature);
-        return;
-      }
-      throw result.error;
+      }).unwrap();
+      toast.success("Signature saved successfully!");
+      setSignature(data.signature);
     } catch (error) {
       console.error("Error submitting signature:", error);
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
