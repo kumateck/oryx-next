@@ -43,7 +43,7 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
   fields,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <FormWizard
         config={[
           {
@@ -66,19 +66,20 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
         ]}
       />
 
-      <div className="ml-auto flex w-full">
+      <div className="justify-items-end flex w-full">
         <Button
           onClick={() => {
             append({
-              price: 0,
+              totalOrderQuantity: 0,
               productId: {
                 label: "",
                 value: "",
               },
-              quantity: 0,
+              volumePerPiece: 0,
+              price: 0,
             });
           }}
-          className="flex items-center gap-1"
+          className="flex ml-auto items-center gap-1"
           type="button"
           variant={"outline"}
         >
@@ -88,61 +89,79 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
       </div>
       <div>
         {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="flex items-center gap-2 mb-2 justify-center"
-          >
-            <FormWizard
-              config={[
-                {
-                  name: `products.${index}.productId`,
-                  control: control as Control,
-                  label: "Product",
-                  onChange: (value) => {
-                    handleProductChange(index, value.value);
-                  },
-                  placeholder: "Select Product",
-                  isLoading: loadingProducts,
-                  type: InputTypes.ASYNC_SELECT,
-                  fetchOptions: fetchProducts,
-                  errors,
-                },
-              ]}
-            />
-            <FormWizard
-              config={[
-                {
-                  register: register(
-                    `products.${index}.quantity` as Path<TFieldValues>,
-                    { valueAsNumber: true },
-                  ),
-                  label: "Quantity",
-                  type: InputTypes.NUMBER,
-                  errors,
-                },
-              ]}
-            />
-            <FormWizard
-              config={[
-                {
-                  register: register(
-                    `products.${index}.price` as Path<TFieldValues>,
-                    {
-                      valueAsNumber: true,
+          <div key={field.id} className="relative flex">
+            <div className="flex items-center gap-2 mb-2 justify-center mr-10">
+              <FormWizard
+                config={[
+                  {
+                    name: `products.${index}.productId`,
+                    control: control as Control,
+                    label: "Product",
+                    onChange: (value) => {
+                      handleProductChange(index, value.value);
                     },
-                  ),
-                  readOnly: true,
-                  label: "Price",
-                  type: InputTypes.NUMBER,
-                  errors,
-                },
-              ]}
-            />
-            <Icon
-              name="Trash2"
-              className="cursor-pointer size-14 ml-auto text-red-500"
-              onClick={() => remove(index)}
-            />
+                    placeholder: "Select Product",
+                    isLoading: loadingProducts,
+                    type: InputTypes.ASYNC_SELECT,
+                    fetchOptions: fetchProducts,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `products.${index}.totalOrderQuantity` as Path<TFieldValues>,
+                      { valueAsNumber: true },
+                    ),
+                    required: true,
+                    label: "Order Quantity",
+                    type: InputTypes.NUMBER,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `products.${index}.volumePerPiece` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
+                    ),
+                    label: "Volume Per Piece",
+                    required: true,
+                    type: InputTypes.NUMBER,
+                    errors,
+                  },
+                ]}
+              />
+              <FormWizard
+                config={[
+                  {
+                    register: register(
+                      `products.${index}.price` as Path<TFieldValues>,
+                      {
+                        valueAsNumber: true,
+                      },
+                    ),
+                    readOnly: true,
+                    label: "Product Price",
+                    type: InputTypes.NUMBER,
+                    errors,
+                  },
+                ]}
+              />
+            </div>
+            <div className="flex items-center absolute right-0 top-6 justify-center">
+              <Icon
+                name="Trash2"
+                className="cursor-pointer size-5 ml-auto text-red-500"
+                onClick={() => remove(index)}
+              />
+            </div>
           </div>
         ))}
       </div>
