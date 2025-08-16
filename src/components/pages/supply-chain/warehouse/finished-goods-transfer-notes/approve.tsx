@@ -86,7 +86,7 @@ export const ApproveTransferNote = ({
               {
                 label: "Physical Quantity Received",
                 type: InputTypes.NUMBER,
-                register: register("quantityReceived"),
+                register: register("quantityReceived", { valueAsNumber: true }),
                 required: true,
                 placeholder: "Enter quantity",
                 errors,
@@ -94,8 +94,7 @@ export const ApproveTransferNote = ({
               {
                 label: "Loose/Pack",
                 type: InputTypes.NUMBER,
-                register: register("loose"),
-                required: true,
+                register: register("loose", { valueAsNumber: true }),
                 placeholder: "Enter quantity",
                 errors,
               },

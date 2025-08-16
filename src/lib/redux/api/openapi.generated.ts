@@ -6071,12 +6071,6 @@ const injectedRtkApi = api.injectEndpoints({
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          includePending: queryArg.includePending,
-        },
       }),
     }),
     getApiV1ProductionScheduleApprovedProductsByProductId: build.query<
@@ -12804,19 +12798,15 @@ export type PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPacki
     body: BatchTransferRequest[];
   };
 export type GetApiV1ProductionScheduleApprovedProductsApiResponse =
-  /** status 200 OK */ ApprovedProductDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ApprovedProductDtoRead[];
 export type GetApiV1ProductionScheduleApprovedProductsApiArg = {
-  page?: number;
-  pageSize?: number;
-  searchQuery?: string;
-  includePending?: boolean;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
 export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse =
-  /** status 200 OK */ FinishedGoodsTransferNoteDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ FinishedGoodsTransferNoteDtoRead[];
 export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg = {
   productId: string;
   /** The module this request falls under */
@@ -22184,32 +22174,14 @@ export type ProductionExtraPackingWithBatchesDtoIEnumerablePaginateable = {
 export type ApprovedProductDto = {
   product?: ProductListDto;
   totalQuantity?: number;
-  totalQuantityPerPack?: number;
+  quantityPerPack?: number;
   totalLoose?: number;
 };
 export type ApprovedProductDtoRead = {
   product?: ProductListDtoRead;
   totalQuantity?: number;
-  totalQuantityPerPack?: number;
+  quantityPerPack?: number;
   totalLoose?: number;
-};
-export type ApprovedProductDtoIEnumerablePaginateable = {
-  data?: ApprovedProductDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ApprovedProductDtoIEnumerablePaginateableRead = {
-  data?: ApprovedProductDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
 };
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
