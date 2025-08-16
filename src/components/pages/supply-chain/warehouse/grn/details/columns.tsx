@@ -2,36 +2,33 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toast } from "sonner";
 
 import {
   ConfirmDialog,
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   Icon,
 } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
-  ErrorResponse,
   Units,
-  cn,
   convertToLargestUnit,
   getEnumBadge,
-  isErrorResponse,
-  splitWords,
+  getSmallestUnit,
+  sanitizeNumber,
 } from "@/lib";
 import {
   BatchStatus,
   MaterialBatchDto,
-  MaterialBatch,
-  usePutApiV1MaterialBatchByBatchIdApproveMutation,
+
+  // usePutApiV1MaterialBatchByBatchIdApproveMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 
 import AssignLocationDialog from "./assign-location";
+import StatusBadge from "@/shared/status-badge";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -79,21 +76,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   );
 }
 
-// const batchStatusColors: Record<BatchStatus, string> = {
-//   [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
-//   [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
-//   [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
-//   [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
-//   [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
-//   [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-//   [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
-//   [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
-//   [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
-//   [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
-//   [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
-// };
-
-export const getColumns = (): ColumnDef<MaterialBatch>[] => [
+export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
@@ -102,9 +85,7 @@ export const getColumns = (): ColumnDef<MaterialBatch>[] => [
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => (
-      <div>{row.original.checklist?.material?.name ?? "-"}</div>
-    ),
+    cell: ({ row }) => <div>{row.original.material?.name ?? "-"}</div>,
   },
   {
     accessorKey: "manufacturerName",
@@ -126,8 +107,8 @@ export const getColumns = (): ColumnDef<MaterialBatch>[] => [
     cell: ({ row }) => {
       const totqty = row.original.totalQuantity ?? 0;
       const qty = convertToLargestUnit(
-        totqty,
-        row.original.uoM?.symbol as Units,
+        sanitizeNumber(totqty),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
       );
       return (
         <div>
@@ -141,14 +122,9 @@ export const getColumns = (): ColumnDef<MaterialBatch>[] => [
     accessorKey: "allocatedQuantity",
     header: "Allocated Quantity",
     cell: ({ row }) => {
-      const totqty =
-        row.original.events?.reduce(
-          (accumulator, event) => accumulator + (event?.quantity ?? 0),
-          0,
-        ) ?? 0;
       const qty = convertToLargestUnit(
-        totqty,
-        row.original.uoM?.symbol as Units,
+        sanitizeNumber(row.original.quantityAssigned),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
       );
       return (
         <div>
@@ -218,25 +194,25 @@ export const getColumns = (): ColumnDef<MaterialBatch>[] => [
 export function DataTableRowStatus<TData extends MaterialBatchDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const dispatch = useDispatch();
-  const [updateMutation] = usePutApiV1MaterialBatchByBatchIdApproveMutation();
+  // const dispatch = useDispatch();
+  // const [updateMutation] = usePutApiV1MaterialBatchByBatchIdApproveMutation();
   // const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<{
-    id: string;
-  }>();
+  // const [details, setDetails] = useState<{
+  //   id: string;
+  // }>();
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
-  const handleUpdate = async () => {
-    try {
-      await updateMutation({
-        batchId: details?.id as string,
-      }).unwrap();
-      toast.success("Status updated successfully");
-      dispatch(commonActions.setTriggerReload());
-    } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
-    }
-  };
+  // const handleUpdate = async () => {
+  //   try {
+  //     await updateMutation({
+  //       batchId: details?.id as string,
+  //     }).unwrap();
+  //     toast.success("Status updated successfully");
+  //     dispatch(commonActions.setTriggerReload());
+  //   } catch (error) {
+  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
+  //   }
+  // };
 
   const status = row.original.status as BatchStatus;
   const { label, colorClass } = getEnumBadge(BatchStatusEnum, status);
@@ -244,16 +220,9 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <div
-            className={cn(
-              `inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium`,
-              colorClass,
-            )}
-          >
-            {splitWords(label)}
-          </div>
+          <StatusBadge label={label} colorClass={colorClass} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
+        {/* <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           <DropdownMenuItem
             disabled={row.original.status === BatchStatusEnum.Available}
             onClick={() => {
@@ -266,7 +235,7 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
           >
             <span>{BatchStatusEnum[BatchStatusEnum.Approved]}</span>
           </DropdownMenuItem>
-        </DropdownMenuContent>
+        </DropdownMenuContent> */}
       </DropdownMenu>
 
       <ConfirmDialog
@@ -277,7 +246,7 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
         confirmText="Update"
         description={`Are you sure you want to update status to ${BatchStatusEnum[BatchStatusEnum.Approved]}?`}
         onConfirm={() => {
-          handleUpdate();
+          // handleUpdate();
         }}
       />
     </div>

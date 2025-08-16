@@ -4,13 +4,13 @@ import Link from "next/link";
 
 import { Icon } from "@/components/ui";
 import {
-  cn,
   getEnumBadge,
   RequisitionStatus,
   RequisitionType,
   routes,
 } from "@/lib";
 import { ProductDto, RequisitionDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
 // import Edit from "./edit";
 
@@ -97,16 +97,7 @@ export const columns: ColumnDef<RequisitionDto>[] = [
       const status = row.original?.status as RequisitionStatus;
       const { label, colorClass } = getEnumBadge(RequisitionStatus, status);
 
-      return (
-        <div
-          className={cn(
-            "inline-block rounded-full px-2 py-1 text-xs font-medium ",
-            colorClass,
-          )}
-        >
-          {label}
-        </div>
-      );
+      return <StatusBadge label={label} colorClass={colorClass} />;
     },
   },
   // {

@@ -17,7 +17,7 @@ import { getColumns } from "./columns";
 interface Props {
   lists: MaterialBatchDto[];
   setItemLists?: React.Dispatch<React.SetStateAction<MaterialBatchDto[]>>;
-  defaultColumns?: ColumnDef<MaterialBatch>[];
+  defaultColumns?: ColumnDef<MaterialBatchDto>[];
   isLoading?: boolean;
 }
 const TableForData = ({ lists, defaultColumns, isLoading }: Props) => {

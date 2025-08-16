@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { MaterialReturnNoteDtoRead } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
-import { cn, getEnumBadge, MaterialReturnsStatus } from "@/lib";
+import { getEnumBadge, MaterialReturnsStatus } from "@/lib";
+import StatusBadge from "@/shared/status-badge";
 
 // const batchStatusColors: Record<MaterialReturnsStatus, string> = {
 //   [MaterialReturnsStatus.Pending]: "bg-gray-500 text-white",
@@ -62,16 +63,7 @@ export const columns: ColumnDef<MaterialReturnNoteDtoRead>[] = [
     cell: ({ row }) => {
       const status = row.original.status as MaterialReturnsStatus;
       const { label, colorClass } = getEnumBadge(MaterialReturnsStatus, status);
-      return (
-        <div
-          className={cn(
-            `inline-block rounded-full px-2 py-1 text-xs font-medium `,
-            colorClass,
-          )}
-        >
-          {label}
-        </div>
-      );
+      return <StatusBadge label={label} colorClass={colorClass} />;
     },
   },
 ];

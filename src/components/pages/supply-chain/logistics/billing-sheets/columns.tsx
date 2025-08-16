@@ -1,8 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { BillingSheetStatus, cn, getEnumBadge, splitWords } from "@/lib";
+import { BillingSheetStatus, getEnumBadge } from "@/lib";
 import { BillingSheetDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
 // const batchStatusColors: Record<BillingSheetStatus, string> = {
 //   [BillingSheetStatus.Pending]: "bg-yellow-100 text-yellow-800",
@@ -80,16 +81,7 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
       const status = row.original.status as BillingSheetStatus;
       const { label, colorClass } = getEnumBadge(BillingSheetStatus, status);
 
-      return (
-        <div
-          className={cn(
-            `inline-block rounded-full px-2 py-1 text-xs font-medium `,
-            colorClass,
-          )}
-        >
-          {splitWords(label)}
-        </div>
-      );
+      return <StatusBadge label={label} colorClass={colorClass} />;
     },
   },
   // {
