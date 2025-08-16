@@ -63,10 +63,12 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     mode: "all",
   });
   const storeType = watch("storyType");
+
   useEffect(() => {
+    if (!storeType) return;
     loadItems({
       page: 1,
-      pageSize: 1002,
+      pageSize: 1000,
       store:
         (Number(storeType?.value) as unknown as InventoryType) ??
         InventoryType["IT Store"],

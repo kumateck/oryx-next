@@ -24,7 +24,7 @@ export function DataTableRowActions<TData extends ItemDto>({
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
   const dispatch = useDispatch();
-  const [deleteMaterialSpecification] = useDeleteApiV1ItemsMutation();
+  const [deleteItem] = useDeleteApiV1ItemsMutation();
   const router = useRouter();
   return (
     <section className="flex items-center justify-end gap-2">
@@ -81,8 +81,9 @@ export function DataTableRowActions<TData extends ItemDto>({
           onClose={() => setIsDelete(false)}
           onConfirm={async () => {
             if (!row?.original?.id) return;
+            console.log(row.original.id);
             try {
-              await deleteMaterialSpecification({
+              await deleteItem({
                 id: row.original.id as string,
               }).unwrap();
               setIsDelete(false);
