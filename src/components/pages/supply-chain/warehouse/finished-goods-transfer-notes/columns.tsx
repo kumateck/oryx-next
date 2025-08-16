@@ -129,15 +129,7 @@ export const columns: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "packageStyle",
-  //   header: "Packing Style",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.totalQuantity} {row.original.}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "totalQuantity",
     header: "Total Qty Transfer",

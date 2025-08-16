@@ -1,4 +1,4 @@
-import { convertToLargestUnit, getSmallestUnit, Units } from "@/lib";
+import { sanitizeNumber } from "@/lib";
 import {
   BinCardInformationDtoRead,
   FinishedGoodsTransferNoteDtoRead,
@@ -15,19 +15,19 @@ export const generalColumn: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
     ),
   },
   {
-    accessorKey: "quantity",
-    header: "Quantity",
-    cell: ({ row }) => <div>{row.original.totalQuantity}</div>,
+    accessorKey: "qarNumber",
+    header: "QAR #",
+    cell: ({ row }) => <div>{row.original?.qarNumber}</div>,
   },
   {
-    accessorKey: "manufactureData",
-    header: "Manufacture Date",
+    accessorKey: "manufacturingDate",
+    header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
         {row.original.batchManufacturingRecord?.manufacturingDate
           ? format(
               row.original.batchManufacturingRecord?.manufacturingDate,
-              "MMM d, yyyy",
+              "MMMM dd, yyyy",
             )
           : "-"}
       </div>
@@ -38,13 +38,49 @@ export const generalColumn: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {row.original?.batchManufacturingRecord?.expiryDate &&
-          format(
-            row.original.batchManufacturingRecord?.expiryDate ?? "",
-            "MMM d, yyyy",
-          )}
+        {row.original.batchManufacturingRecord?.expiryDate
+          ? format(
+              row.original.batchManufacturingRecord?.expiryDate,
+              "MMMM dd, yyyy",
+            )
+          : "-"}
       </div>
     ),
+  },
+  {
+    accessorKey: "quantityPerPack",
+    header: "Qty Per Pack",
+    cell: ({ row }) => <div>{row.original.quantityPerPack}</div>,
+  },
+  {
+    accessorKey: "packageStyle",
+    header: "Packing Style",
+    cell: ({ row }) => (
+      <div>
+        {row.original.totalQuantity} {row.original.packageStyle?.name}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "loose",
+    header: "Loose/Pack",
+    cell: ({ row }) => <div>{row.original.loose}</div>,
+  },
+  {
+    accessorKey: "totalQuantity",
+    header: "Total Qty Transfer",
+    cell: ({ row }) => {
+      const total =
+        sanitizeNumber(row.original.quantityPerPack) *
+          sanitizeNumber(row.original.totalQuantity) +
+        sanitizeNumber(row.original.loose);
+
+      return (
+        <div>
+          {total} {row.original.uoM?.symbol}
+        </div>
+      );
+    },
   },
 ];
 
@@ -53,38 +89,41 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => (
-      <div>{format(row.original.createdAt ?? "", "MMM d, yyyy")}</div>
+      <div>
+        {row.original?.createdAt
+          ? format(row.original?.createdAt, "MMM d, yyyy")
+          : "-"}
+      </div>
     ),
   },
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => <div>{row.original?.description}</div>,
   },
   {
     accessorKey: "wayBill",
     header: "Waybill",
-    cell: ({ row }) => <div>{row.original.wayBill}</div>,
+    cell: ({ row }) => <div>{row.original?.wayBill}</div>,
   },
   {
     accessorKey: "materialBatch",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.materialBatch?.batchNumber}</div>,
+    cell: ({ row }) => <div>{row.original?.materialBatch?.batchNumber}</div>,
   },
   {
     accessorKey: "arNumber",
     header: "AR No.",
-    cell: ({ row }) => <div>{row.original.arNumber}</div>,
+    cell: ({ row }) => <div>{row.original?.arNumber}</div>,
   },
   {
     accessorKey: "manufacturingDate",
     header: "Manufacturing Date",
     cell: ({ row }) => (
       <div>
-        {format(
-          row.original.materialBatch?.manufacturingDate ?? "",
-          "MMM d, yyyy",
-        )}
+        {row.original.materialBatch?.manufacturingDate
+          ? format(row.original.materialBatch?.manufacturingDate, "MMM d, yyyy")
+          : "-"}
       </div>
     ),
   },
@@ -93,7 +132,9 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     header: "Expiry Date",
     cell: ({ row }) => (
       <div>
-        {format(row.original.materialBatch?.expiryDate ?? "", "MMM d, yyyy")}
+        {row.original.materialBatch?.expiryDate
+          ? format(row.original.materialBatch?.expiryDate, "MMM d, yyyy")
+          : "-"}
       </div>
     ),
   },
@@ -101,14 +142,8 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     accessorKey: "quantityReceived",
     header: "Quantity Received",
     cell: ({ row }) => {
-      const qty = convertToLargestUnit(
-        row.original.quantityReceived as number,
-        getSmallestUnit(row.original.materialBatch?.uoM?.symbol as Units),
-      );
       return (
-        <div className=" text-green-700 ">
-          {qty.value} {qty.unit}
-        </div>
+        <div className=" text-green-700 ">{row.original.quantityReceived}</div>
       );
     },
   },
@@ -116,13 +151,9 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     accessorKey: "quantityIssued",
     header: "Quantity Issued",
     cell: ({ row }) => {
-      const qty = convertToLargestUnit(
-        row.original.quantityIssued as number,
-        getSmallestUnit(row.original.uoM?.symbol as Units),
-      );
       return (
         <div className="w-full text-red-700 ">
-          {qty.value} {qty.unit}
+          {row.original.quantityIssued}
         </div>
       );
     },
@@ -131,20 +162,7 @@ export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
     accessorKey: "balanceQuantity",
     header: "Balance Quantity",
     cell: ({ row }) => {
-      const qty = convertToLargestUnit(
-        row.original.balanceQuantity as number,
-        getSmallestUnit(row.original.uoM?.symbol as Units),
-      );
-      return (
-        <div>
-          {qty.value} {qty.unit}
-        </div>
-      );
+      return <div>{row.original.balanceQuantity}</div>;
     },
-  },
-  {
-    accessorKey: "productName",
-    header: "Product Name",
-    cell: ({ row }) => <div>{row.original.product?.name}</div>,
   },
 ];
