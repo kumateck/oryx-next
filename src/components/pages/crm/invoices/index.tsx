@@ -42,7 +42,7 @@ function Index() {
     <PageWrapper className="space-y-4">
       <div className="flex items-center w-full justify-between gap-3">
         <PageTitle title="Invoices" />
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <Checkbox
               checked={Object.keys(rowSelection).length > 0}

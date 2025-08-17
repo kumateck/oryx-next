@@ -175,6 +175,8 @@ export function StatusActions<TData extends EmployeeDto>({
     row.original.inactiveStatus !== null &&
     row.original.inactiveStatus !== undefined;
 
+  const isNewStatus = row.original.status === EmployeeStatusType.New;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading} asChild>
@@ -221,81 +223,86 @@ export function StatusActions<TData extends EmployeeDto>({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-        {row.original.status === EmployeeStatusType.Active
-          ? activeStatusOptions.map((option) => {
-              return (
-                <DropdownMenuItem
-                  key={option.value}
-                  className="group w-full cursor-pointer"
-                  disabled={
-                    isLoading ||
-                    String(row?.original?.activeStatus) === option.value
-                  }
-                  onClick={async () => {
-                    if (
-                      isLoading ||
-                      String(row?.original?.activeStatus) === option.value
-                    ) {
-                      return;
-                    }
-                    try {
-                      await updateStatus({
-                        id: row.original.id as string,
-                        updateEmployeeStatus: {
-                          activeStatus: Number(
-                            option.value,
-                          ) as unknown as EmployeeActiveStatus,
-                          status: EmployeeStatusType.Active,
-                        },
-                      }).unwrap();
-                      toast.success("Status updated successfully");
-                      dispatch(commonActions.setTriggerReload());
-                    } catch (error) {
-                      console.error("Failed to update status:", error);
-                      toast.error(
-                        isErrorResponse(error as ErrorResponse)?.description,
-                      );
-                    }
-                  }}
-                >
-                  <span>{option.label}</span>
-                </DropdownMenuItem>
-              );
-            })
-          : inactiveStatusOptions.map((option) => (
-              <DropdownMenuItem
-                key={option.value}
-                className="group cursor-pointer w-full"
-                onClick={async () => {
-                  if (
-                    isLoading ||
-                    String(row?.original?.inactiveStatus) === option.value
-                  ) {
-                    return;
-                  }
-                  try {
-                    await updateStatus({
-                      id: row?.original?.id as string,
-                      updateEmployeeStatus: {
-                        inactiveStatus: Number(
-                          option.value,
-                        ) as unknown as EmployeeInactiveStatus,
-                        status: EmployeeStatusType.Inactive,
-                      },
-                    }).unwrap();
-                    toast.success("Status updated successfully");
-                    dispatch(commonActions.setTriggerReload());
-                  } catch (error) {
-                    console.error("Failed to update status:", error);
-                    toast.error(
-                      isErrorResponse(error as ErrorResponse)?.description,
-                    );
-                  }
-                }}
-              >
-                {option.label}
-              </DropdownMenuItem>
-            ))}
+        {!isNewStatus && (
+          <>
+            {row.original.status === EmployeeStatusType.Active
+              ? activeStatusOptions.map((option) => {
+                  return (
+                    <DropdownMenuItem
+                      key={option.value}
+                      className="group w-full cursor-pointer"
+                      disabled={
+                        isLoading ||
+                        String(row?.original?.activeStatus) === option.value
+                      }
+                      onClick={async () => {
+                        if (
+                          isLoading ||
+                          String(row?.original?.activeStatus) === option.value
+                        ) {
+                          return;
+                        }
+                        try {
+                          await updateStatus({
+                            id: row.original.id as string,
+                            updateEmployeeStatus: {
+                              activeStatus: Number(
+                                option.value,
+                              ) as unknown as EmployeeActiveStatus,
+                              status: EmployeeStatusType.Active,
+                            },
+                          }).unwrap();
+                          toast.success("Status updated successfully");
+                          dispatch(commonActions.setTriggerReload());
+                        } catch (error) {
+                          console.error("Failed to update status:", error);
+                          toast.error(
+                            isErrorResponse(error as ErrorResponse)
+                              ?.description,
+                          );
+                        }
+                      }}
+                    >
+                      <span>{option.label}</span>
+                    </DropdownMenuItem>
+                  );
+                })
+              : inactiveStatusOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    className="group cursor-pointer w-full"
+                    onClick={async () => {
+                      if (
+                        isLoading ||
+                        String(row?.original?.inactiveStatus) === option.value
+                      ) {
+                        return;
+                      }
+                      try {
+                        await updateStatus({
+                          id: row?.original?.id as string,
+                          updateEmployeeStatus: {
+                            inactiveStatus: Number(
+                              option.value,
+                            ) as unknown as EmployeeInactiveStatus,
+                            status: EmployeeStatusType.Inactive,
+                          },
+                        }).unwrap();
+                        toast.success("Status updated successfully");
+                        dispatch(commonActions.setTriggerReload());
+                      } catch (error) {
+                        console.error("Failed to update status:", error);
+                        toast.error(
+                          isErrorResponse(error as ErrorResponse)?.description,
+                        );
+                      }
+                    }}
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+          </>
+        )}
         <DropdownMenuItem
           className="group w-full cursor-pointer"
           disabled={isLoading}

@@ -79,17 +79,14 @@ const EmployeeManagement = () => {
     //redirect to no access
     return <NoAccess />;
   }
-  console.log("these are the data", data);
+
   return (
     <ScrollablePageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Employee Management" />
-        <div className="flex items-center justify-end gap-2">
-          {/* <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" />{" "}
-            <span>Register Employee</span>
-          </Button> */}
+
+        <div className="flex items-center w-fit gap-2">
           <AccessTabs
             handleTabClick={handleTabClick}
             type={status}
@@ -101,6 +98,10 @@ const EmployeeManagement = () => {
               {
                 label: EmployeeStatusType[EmployeeStatusType.Inactive],
                 value: EmployeeStatusType.Inactive.toString(),
+              },
+              {
+                label: EmployeeStatusType[EmployeeStatusType.New],
+                value: EmployeeStatusType.New.toString(),
               },
             ]}
           />

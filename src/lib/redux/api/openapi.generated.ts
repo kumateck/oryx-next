@@ -2980,6 +2980,24 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1MaterialRejects: build.query<
+      GetApiV1MaterialRejectsApiResponse,
+      GetApiV1MaterialRejectsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/rejects`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
     postApiV1MaterialArd: build.mutation<
       PostApiV1MaterialArdApiResponse,
       PostApiV1MaterialArdApiArg
@@ -6085,6 +6103,20 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    postApiV1ProductionScheduleAllocateProducts: build.mutation<
+      PostApiV1ProductionScheduleAllocateProductsApiResponse,
+      PostApiV1ProductionScheduleAllocateProductsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/allocate-products`,
+        method: "POST",
+        body: queryArg.allocateProductionOrderRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProductionScheduleSummaryReport: build.query<
       GetApiV1ProductionScheduleSummaryReportApiResponse,
       GetApiV1ProductionScheduleSummaryReportApiArg
@@ -6293,6 +6325,32 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/product-stps/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postV1RecoverableItemsReports: build.mutation<
+      PostV1RecoverableItemsReportsApiResponse,
+      PostV1RecoverableItemsReportsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/v1/recoverable-items-reports`,
+        method: "POST",
+        body: queryArg.createRecoverableItemReportRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getV1RecoverableItemsReports: build.query<
+      GetV1RecoverableItemsReportsApiResponse,
+      GetV1RecoverableItemsReportsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/v1/recoverable-items-reports`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -10514,6 +10572,18 @@ export type GetApiV1MaterialMaterialSpecsNotLinkedApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1MaterialRejectsApiResponse =
+  /** status 200 OK */ MaterialDto[];
+export type GetApiV1MaterialRejectsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1MaterialArdApiResponse = /** status 200 OK */ string;
 export type PostApiV1MaterialArdApiArg = {
   /** The module this request falls under */
@@ -11907,7 +11977,7 @@ export type PostApiV1ProductionOrdersApiArg = {
   createProductionOrderRequest: CreateProductionOrderRequest;
 };
 export type GetApiV1ProductionOrdersApiResponse =
-  /** status 200 OK */ ProductionOrderDtoIEnumerablePaginateable;
+  /** status 200 OK */ ProductionOrderDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionOrdersApiArg = {
   page?: number;
   pageSize?: number;
@@ -11918,7 +11988,7 @@ export type GetApiV1ProductionOrdersApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersByIdApiResponse =
-  /** status 200 OK */ ProductionOrderDto;
+  /** status 200 OK */ ProductionOrderDtoRead;
 export type GetApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -11927,7 +11997,7 @@ export type GetApiV1ProductionOrdersByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1ProductionOrdersByIdApiResponse =
-  /** status 204 No Content */ ProductionOrderDto;
+  /** status 204 No Content */ ProductionOrderDtoRead;
 export type PutApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -12814,6 +12884,14 @@ export type GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1ProductionScheduleAllocateProductsApiResponse = unknown;
+export type PostApiV1ProductionScheduleAllocateProductsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  allocateProductionOrderRequest: AllocateProductionOrderRequest;
+};
 export type GetApiV1ProductionScheduleSummaryReportApiResponse =
   /** status 200 OK */ ProductionScheduleReportDtoRead[];
 export type GetApiV1ProductionScheduleSummaryReportApiArg = {
@@ -12952,6 +13030,23 @@ export type PutApiV1ProductStpsByIdApiArg = {
 export type DeleteApiV1ProductStpsByIdApiResponse = unknown;
 export type DeleteApiV1ProductStpsByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostV1RecoverableItemsReportsApiResponse =
+  /** status 200 OK */ string;
+export type PostV1RecoverableItemsReportsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createRecoverableItemReportRequest: CreateRecoverableItemReportRequest;
+};
+export type GetV1RecoverableItemsReportsApiResponse =
+  /** status 200 OK */ RecoverableItemReportDto[];
+export type GetV1RecoverableItemsReportsApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -14987,7 +15082,7 @@ export type EmploymentHistoryDto = {
   position?: string | null;
 };
 export type EmployeeLevel = 0 | 1 | 2;
-export type EmployeeStatus = 0 | 1;
+export type EmployeeStatus = 0 | 1 | 2;
 export type EmployeeActiveStatus = 0 | 1 | 2 | 3;
 export type EmployeeInactiveStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type EmployeeDto = {
@@ -17260,6 +17355,7 @@ export type FinishedGoodsTransferNote = {
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStep;
   loose?: number;
+  allocatedQuantity?: number;
 };
 export type FinishedGoodsTransferNoteRead = {
   id?: string;
@@ -17292,6 +17388,8 @@ export type FinishedGoodsTransferNoteRead = {
   productionActivityStepId?: string | null;
   productionActivityStep?: ProductionActivityStepRead;
   loose?: number;
+  allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type DistributedFinishedProductStatus = 0 | 1;
 export type DistributedFinishedProduct = {
@@ -18985,6 +19083,10 @@ export type CreateDamagedStockRequestRead = {
 };
 export type InventoryClassification = 0 | 1;
 export type Store = 0 | 1 | 2;
+export type ItemCategoryDto = {
+  id?: string;
+  name?: string | null;
+};
 export type ItemDto = {
   id?: string;
   createdBy?: UserDto;
@@ -18993,7 +19095,6 @@ export type ItemDto = {
   name?: string | null;
   code?: string | null;
   classification?: InventoryClassification;
-  unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
   store?: Store;
@@ -19002,6 +19103,8 @@ export type ItemDto = {
   reorderLevel?: number;
   isActive?: boolean;
   description?: string | null;
+  itemCategoryId?: string;
+  itemCategory?: ItemCategoryDto;
   availableQuantity?: number;
 };
 export type DamagedStockDto = {
@@ -19477,10 +19580,7 @@ export type VendorItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  name?: string | null;
-  code?: string | null;
-  description?: string | null;
-  items?: ItemDto[] | null;
+  item?: ItemDto;
 };
 export type VendorDto = {
   id?: string;
@@ -19636,7 +19736,7 @@ export type CreateItemsRequest = {
   reorderLevel?: number;
   store: Store;
   isActive: boolean;
-  category?: string | null;
+  itemCategoryId?: string | null;
   description?: string | null;
 };
 export type ItemDtoIEnumerablePaginateable = {
@@ -21443,6 +21543,56 @@ export type CreateProductionOrderRequest = {
   customerId: string;
   products?: CreateProductionOrderProduct[] | null;
 };
+export type FinishedGoodsTransferNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
+  productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
+  allocatedQuantity?: number;
+  remainingQuantity?: number;
+};
+export type FinishedGoodsTransferNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
+  allocatedQuantity?: number;
+  remainingQuantity?: number;
+};
+export type ProductionOrderProductQuantityDto = {
+  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
+  quantity?: number;
+};
+export type ProductionOrderProductQuantityDtoRead = {
+  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDtoRead;
+  quantity?: number;
+};
 export type ProductionOrderProductsDto = {
   product?: CollectionItemDto;
   totalOrderQuantity?: number;
@@ -21450,6 +21600,18 @@ export type ProductionOrderProductsDto = {
   totalVolume?: number;
   totalBatches?: number;
   totalValue?: number;
+  fulfilledQuantities?: ProductionOrderProductQuantityDto[] | null;
+  fulfilled?: boolean;
+};
+export type ProductionOrderProductsDtoRead = {
+  product?: CollectionItemDto;
+  totalOrderQuantity?: number;
+  volumePerPiece?: number;
+  totalVolume?: number;
+  totalBatches?: number;
+  totalValue?: number;
+  fulfilledQuantities?: ProductionOrderProductQuantityDtoRead[] | null;
+  fulfilled?: boolean;
 };
 export type ProductionOrderDto = {
   id?: string;
@@ -21460,8 +21622,26 @@ export type ProductionOrderDto = {
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
 };
+export type ProductionOrderDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  customer?: CustomerDto;
+  products?: ProductionOrderProductsDtoRead[] | null;
+  totalValue?: number;
+};
 export type ProductionOrderDtoIEnumerablePaginateable = {
   data?: ProductionOrderDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ProductionOrderDtoIEnumerablePaginateableRead = {
+  data?: ProductionOrderDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -21502,7 +21682,7 @@ export type ProformaInvoiceDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  productionOrder?: ProductionOrderDto;
+  productionOrder?: ProductionOrderDtoRead;
   products?: ProformaInvoiceProductDtoRead[] | null;
 };
 export type ProformaInvoiceDtoIEnumerablePaginateable = {
@@ -21770,44 +21950,6 @@ export type CreateFinishedGoodsTransferNoteRequest = {
   totalQuantity?: number;
   uoMId?: string | null;
   qarNumber?: string | null;
-};
-export type FinishedGoodsTransferNoteDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  transferNoteNumber?: string | null;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  quantityReceived?: number;
-  notes?: string | null;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDto;
-  productionActivityStep?: ProductionActivityStepDto;
-  isApproved?: boolean;
-  loose?: number;
-};
-export type FinishedGoodsTransferNoteDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  transferNoteNumber?: string | null;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  quantityReceived?: number;
-  notes?: string | null;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
-  productionActivityStep?: ProductionActivityStepDto;
-  isApproved?: boolean;
-  loose?: number;
 };
 export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
   data?: FinishedGoodsTransferNoteDto[] | null;
@@ -22179,6 +22321,18 @@ export type ApprovedProductDtoRead = {
   quantityPerPack?: number;
   totalLoose?: number;
 };
+export type AllocateProductQuantityRequest = {
+  finishedGoodsTransferNoteId?: string;
+  quantity?: number;
+};
+export type AllocateProductionOrderProductRequest = {
+  productId?: string;
+  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
+};
+export type AllocateProductionOrderRequest = {
+  productionOrderId?: string;
+  products?: AllocateProductionOrderProductRequest[] | null;
+};
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
   unitPrice?: number;
@@ -22327,6 +22481,19 @@ export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type CreateRecoverableItemReportRequest = {
+  itemId: string;
+  quantity?: number;
+  reason?: string | null;
+};
+export type RecoverableItemReportDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  item?: ItemDto;
+  quantity?: number;
+  reason?: string | null;
 };
 export type ProductionReportDto = {
   numberOfPurchaseRequisitions?: number;
@@ -23371,7 +23538,7 @@ export type GrnListDtoIEnumerablePaginateable = {
 export type BinCardInformationDto = {
   id?: string;
   createdAt?: string;
-  materialBatch?: MaterialBatchDto;
+  materialBatch?: MaterialBatchListDto;
   description?: string | null;
   wayBill?: string | null;
   arNumber?: string | null;
@@ -23379,12 +23546,12 @@ export type BinCardInformationDto = {
   quantityIssued?: number;
   balanceQuantity?: number;
   uoM?: UnitOfMeasureDto;
-  product?: ProductDto;
+  product?: ProductListDto;
 };
 export type BinCardInformationDtoRead = {
   id?: string;
   createdAt?: string;
-  materialBatch?: MaterialBatchDtoRead;
+  materialBatch?: MaterialBatchListDto;
   description?: string | null;
   wayBill?: string | null;
   arNumber?: string | null;
@@ -23392,7 +23559,7 @@ export type BinCardInformationDtoRead = {
   quantityIssued?: number;
   balanceQuantity?: number;
   uoM?: UnitOfMeasureDto;
-  product?: ProductDtoRead;
+  product?: ProductListDtoRead;
 };
 export type BinCardInformationDtoIEnumerablePaginateable = {
   data?: BinCardInformationDto[] | null;
@@ -23786,6 +23953,8 @@ export const {
   useLazyGetApiV1MaterialBatchesExpiredQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1MaterialRejectsQuery,
+  useLazyGetApiV1MaterialRejectsQuery,
   usePostApiV1MaterialArdMutation,
   useGetApiV1MaterialArdQuery,
   useLazyGetApiV1MaterialArdQuery,
@@ -24119,6 +24288,7 @@ export const {
   useLazyGetApiV1ProductionScheduleApprovedProductsQuery,
   useGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
   useLazyGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
+  usePostApiV1ProductionScheduleAllocateProductsMutation,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,
@@ -24142,6 +24312,9 @@ export const {
   useLazyGetApiV1ProductStpsByIdQuery,
   usePutApiV1ProductStpsByIdMutation,
   useDeleteApiV1ProductStpsByIdMutation,
+  usePostV1RecoverableItemsReportsMutation,
+  useGetV1RecoverableItemsReportsQuery,
+  useLazyGetV1RecoverableItemsReportsQuery,
   useGetApiV1ReportProductionQuery,
   useLazyGetApiV1ReportProductionQuery,
   useGetApiV1ReportProductionMaterialsBelowMinimumQuery,
