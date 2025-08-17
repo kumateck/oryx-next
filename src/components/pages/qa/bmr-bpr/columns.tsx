@@ -1,5 +1,5 @@
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
-import { AnalyticalTestStatus, getEnumBadge } from "@/lib";
+import { AnalyticalTestStatus, getEnumBadgeWithHexColors } from "@/lib";
 import { AnalyticalTestRequestDto } from "@/lib/redux/api/openapi.generated";
 import StatusBadge from "@/shared/status-badge";
 import { TableMenuAction } from "@/shared/table-menu";
@@ -97,9 +97,12 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as AnalyticalTestStatus;
-      const { label, colorClass } = getEnumBadge(AnalyticalTestStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(
+        AnalyticalTestStatus,
+        status,
+      );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
 

@@ -10,7 +10,11 @@ import {
   useGetApiV1QaAnalyticalTestsActivityStepByActivityStepIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 
-import { AnalyticalTestRequestStatus, AuditModules, getEnumBadge } from "@/lib";
+import {
+  AnalyticalTestRequestStatus,
+  AuditModules,
+  getEnumBadgeWithHexColors,
+} from "@/lib";
 import CreateATR from "./create";
 import StatusBadge from "../status-badge";
 
@@ -59,7 +63,7 @@ function AnalyticalTestRequest({
     batchManufacturingRecordId: bmrResponse?.id as string,
   };
   const status = activityATRData?.status as AnalyticalTestRequestStatus;
-  const { label, colorClass } = getEnumBadge(
+  const { label, style } = getEnumBadgeWithHexColors(
     AnalyticalTestRequestStatus,
     status,
   );
@@ -80,7 +84,7 @@ function AnalyticalTestRequest({
         ) : (
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
             <span className="text-gray-500">ATR:</span>
-            <StatusBadge label={label} colorClass={colorClass} />
+            <StatusBadge label={label} style={style} />
           </div>
         )}
       </div>

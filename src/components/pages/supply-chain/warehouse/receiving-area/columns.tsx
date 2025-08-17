@@ -10,7 +10,7 @@ import {
   PermissionKeys,
   Units,
   convertToLargestUnit,
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   routes,
 } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
@@ -132,12 +132,12 @@ export const columns: ColumnDef<DistributedRequisitionMaterialDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as DistributedMaterialStatus;
-      const { label, colorClass } = getEnumBadge(
+      const { label, style } = getEnumBadgeWithHexColors(
         DistributedMaterialStatus,
         status,
       );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
 
