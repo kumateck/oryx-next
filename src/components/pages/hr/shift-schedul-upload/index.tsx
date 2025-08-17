@@ -23,6 +23,7 @@ import { Button, Icon } from "@/components/ui";
 import { parseExcelFile } from "./parseExcelfile";
 import { ExcelPreviewTable } from "./table";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import { useRouter } from "next/router";
 
 function Index() {
   const [results, setResults] = useState<Record<string, any>[]>([]);
