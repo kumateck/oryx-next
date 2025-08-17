@@ -597,7 +597,7 @@ export enum EmployeeInactiveStatus {
   Transfer = 5,
 }
 export enum FormTypeEnum {
-  Default = 0,
+  ARD = 0,
   Specification = 1,
 }
 
