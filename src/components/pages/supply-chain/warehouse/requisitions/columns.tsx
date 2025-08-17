@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Icon } from "@/components/ui";
 import {
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   RequisitionStatus,
   RequisitionType,
   routes,
@@ -95,9 +95,12 @@ export const columns: ColumnDef<RequisitionDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original?.status as RequisitionStatus;
-      const { label, colorClass } = getEnumBadge(RequisitionStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(
+        RequisitionStatus,
+        status,
+      );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
   // {

@@ -15,7 +15,7 @@ import {
   ErrorResponse,
   ShipmentStatus,
   ShipmentStatusOptions,
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -53,13 +53,13 @@ export function DataTableRowStatus<TData extends ShipmentDocumentDto>({
     }
   };
   const status = row.original.status as ShipmentStatus;
-  const { label, colorClass } = getEnumBadge(ShipmentStatus, status);
+  const { label, style } = getEnumBadgeWithHexColors(ShipmentStatus, status);
 
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <StatusBadge label={label} colorClass={colorClass} />
+          <StatusBadge label={label} style={style} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {ShipmentStatusOptions?.map((opt) => (
