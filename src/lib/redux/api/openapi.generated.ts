@@ -6110,7 +6110,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/production-schedule/allocate-products`,
         method: "POST",
-        body: queryArg.allocateProductionOrder,
+        body: queryArg.allocateProductionOrderRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -12890,7 +12890,7 @@ export type PostApiV1ProductionScheduleAllocateProductsApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
-  allocateProductionOrder: AllocateProductionOrder;
+  allocateProductionOrderRequest: AllocateProductionOrderRequest;
 };
 export type GetApiV1ProductionScheduleSummaryReportApiResponse =
   /** status 200 OK */ ProductionScheduleReportDtoRead[];
@@ -19580,7 +19580,6 @@ export type VendorItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  itemId?: string;
   item?: ItemDto;
 };
 export type VendorDto = {
@@ -21563,6 +21562,7 @@ export type FinishedGoodsTransferNoteDto = {
   isApproved?: boolean;
   loose?: number;
   allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type FinishedGoodsTransferNoteDtoRead = {
   id?: string;
@@ -21583,6 +21583,7 @@ export type FinishedGoodsTransferNoteDtoRead = {
   isApproved?: boolean;
   loose?: number;
   allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type ProductionOrderProductQuantityDto = {
   finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
@@ -22320,17 +22321,17 @@ export type ApprovedProductDtoRead = {
   quantityPerPack?: number;
   totalLoose?: number;
 };
-export type AllocateProductQuantity = {
+export type AllocateProductQuantityRequest = {
   finishedGoodsTransferNoteId?: string;
   quantity?: number;
 };
-export type AllocateProductionOrderProduct = {
+export type AllocateProductionOrderProductRequest = {
   productId?: string;
-  fulfilledQuantites?: AllocateProductQuantity[] | null;
+  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
 };
-export type AllocateProductionOrder = {
+export type AllocateProductionOrderRequest = {
   productionOrderId?: string;
-  products?: AllocateProductionOrderProduct[] | null;
+  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
@@ -22490,7 +22491,6 @@ export type RecoverableItemReportDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  itemId?: string;
   item?: ItemDto;
   quantity?: number;
   reason?: string | null;
