@@ -37,12 +37,14 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   const [updatePurchaseRequisition, { isLoading: updating }] =
     usePutApiV1ProcurementInventoryByIdMutation();
   const dispatch = useDispatch();
-  const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
+  const [loadItems, { data: items, isLoading: loadingItems }] =
+    useLazyGetApiV1ItemsQuery();
   const {
     register,
     control,
     formState: { errors },
     reset,
+    setValue,
     handleSubmit,
   } = useForm<CreatePurchaseRequisitionDto>({
     resolver: CreatePurchaseRequisitionValidator,
@@ -105,6 +107,17 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     onClose();
   };
 
+  const handleItemsChange = (index: number, selecte: { value: string }) => {
+    const item = items?.data?.filter((item) => item.id === selecte.value)[0];
+    if (item) {
+      setValue(
+        `items.${index}.stockQuantity`,
+        item.availableQuantity as number,
+      );
+      setValue(`items.${index}.itemCode`, item.code as string);
+    }
+  };
+
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
@@ -116,6 +129,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             fetcItems={loadDataOrSearch}
             isLoading={loadingItems}
             errors={errors}
+            handleItemsChange={handleItemsChange}
             append={append}
             fields={fields}
             remove={remove}
