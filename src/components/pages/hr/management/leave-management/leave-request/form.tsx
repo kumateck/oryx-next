@@ -99,22 +99,6 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           ]}
         />
       </div>
-      <div className="w-full my-5 gap-4">
-        <FormWizard
-          className="w-full"
-          config={[
-            {
-              label: "Date",
-              control: control as Control,
-              type: InputTypes.DATE,
-              name: "startDate",
-              required: true,
-              placeholder: "Select date",
-              errors,
-            },
-          ]}
-        />
-      </div>
       {isExitPass && (
         <div className="flex w-full items-center gap-2">
           <FormWizard
