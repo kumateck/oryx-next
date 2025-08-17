@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 import { Icon } from "@/components/ui";
-import { getEnumBadge, RequisitionStatus, routes } from "@/lib";
+import { getEnumBadgeWithHexColors, RequisitionStatus, routes } from "@/lib";
 import { ProductDto, RequisitionDto } from "@/lib/redux/api/openapi.generated";
 import StatusBadge from "@/shared/status-badge";
 
@@ -80,9 +80,12 @@ export const columns: ColumnDef<RequisitionDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as RequisitionStatus;
-      const { label, colorClass } = getEnumBadge(RequisitionStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(
+        RequisitionStatus,
+        status,
+      );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
 

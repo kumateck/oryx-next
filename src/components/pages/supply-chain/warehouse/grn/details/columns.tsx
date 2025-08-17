@@ -14,7 +14,6 @@ import {
   BatchStatus as BatchStatusEnum,
   Units,
   convertToLargestUnit,
-  getEnumBadge,
   getSmallestUnit,
   sanitizeNumber,
 } from "@/lib";
@@ -29,6 +28,7 @@ import { TableMenuAction } from "@/shared/table-menu";
 
 import AssignLocationDialog from "./assign-location";
 import StatusBadge from "@/shared/status-badge";
+import { getEnumBadgeWithHexColors } from "@/lib/colors";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -215,12 +215,12 @@ export function DataTableRowStatus<TData extends MaterialBatchDto>({
   // };
 
   const status = row.original.status as BatchStatus;
-  const { label, colorClass } = getEnumBadge(BatchStatusEnum, status);
+  const { label, style } = getEnumBadgeWithHexColors(BatchStatusEnum, status);
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <StatusBadge label={label} colorClass={colorClass} />
+          <StatusBadge label={label} style={style} />
         </DropdownMenuTrigger>
         {/* <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           <DropdownMenuItem

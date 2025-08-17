@@ -19,7 +19,7 @@ import {
   SupplierStatus,
   SupplierType,
   SupplierTypeOptions,
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -135,13 +135,13 @@ export function DataTableRowStatus<TData extends SupplierDto>({
     }
   };
   const status = row.original.status as SupplierStatus;
-  const { label, colorClass } = getEnumBadge(SupplierStatus, status);
+  const { label, style } = getEnumBadgeWithHexColors(SupplierStatus, status);
 
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <StatusBadge label={label} colorClass={colorClass} />
+          <StatusBadge label={label} style={style} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {SupplierTypeOptions?.map((opt, index) => {

@@ -2,8 +2,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 import { GrnListDto } from "@/lib/redux/api/openapi.generated";
-import { getEnumBadge, GRNStatus } from "@/lib";
+import { GRNStatus } from "@/lib";
 import StatusBadge from "@/shared/status-badge";
+import { getEnumBadgeWithHexColors } from "@/lib/colors";
 
 export const columns: ColumnDef<GrnListDto>[] = [
   {
@@ -33,9 +34,8 @@ export const columns: ColumnDef<GrnListDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as GRNStatus;
-      const { label, colorClass } = getEnumBadge(GRNStatus, status);
-
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      const { label, style } = getEnumBadgeWithHexColors(GRNStatus, status);
+      return <StatusBadge label={label} style={style} />;
     },
   },
 ];

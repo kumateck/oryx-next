@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { BillingSheetStatus, getEnumBadge } from "@/lib";
+import { BillingSheetStatus, getEnumBadgeWithHexColors } from "@/lib";
 import { BillingSheetDto } from "@/lib/redux/api/openapi.generated";
 import StatusBadge from "@/shared/status-badge";
 
@@ -79,9 +79,12 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as BillingSheetStatus;
-      const { label, colorClass } = getEnumBadge(BillingSheetStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(
+        BillingSheetStatus,
+        status,
+      );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
   // {

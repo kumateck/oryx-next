@@ -1,7 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { ShipmentDocumentDto } from "@/lib/redux/api/openapi.generated";
-import { getEnumBadge, ShipmentDocumentType, ShipmentStatus } from "@/lib";
+import {
+  getEnumBadgeWithHexColors,
+  ShipmentDocumentType,
+  ShipmentStatus,
+} from "@/lib";
 import StatusBadge from "@/shared/status-badge";
 
 export const columns: ColumnDef<ShipmentDocumentDto>[] = [
@@ -29,9 +33,12 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     header: "Document Status",
     cell: ({ row }) => {
       const status = row.original.status as ShipmentStatus;
-      const { label, colorClass } = getEnumBadge(ShipmentStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(
+        ShipmentStatus,
+        status,
+      );
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
 ];

@@ -5,7 +5,7 @@ import {
   BatchStatus,
   Units,
   convertToLargestUnit,
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   getSmallestUnit,
 } from "@/lib";
 import { BatchToSupply } from "@/lib/redux/api/openapi.generated";
@@ -77,9 +77,9 @@ export const getColumns = (): ColumnDef<BatchToSupply>[] => [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original?.batch?.status as BatchStatus;
-      const { label, colorClass } = getEnumBadge(BatchStatus, status);
+      const { label, style } = getEnumBadgeWithHexColors(BatchStatus, status);
 
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      return <StatusBadge label={label} style={style} />;
     },
   },
 ];

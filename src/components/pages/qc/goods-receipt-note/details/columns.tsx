@@ -8,7 +8,7 @@ import {
   Units,
   WorkflowFormType,
   convertToLargestUnit,
-  getEnumBadge,
+  getEnumBadgeWithHexColors,
   getSmallestUnit,
 } from "@/lib";
 import {
@@ -23,6 +23,7 @@ import { useParams, useRouter } from "next/navigation";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
 import StatusBadge from "@/shared/status-badge";
+
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -107,8 +108,11 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as BatchStatus;
-      const { label, colorClass } = getEnumBadge(BatchStatusEnum, status);
-      return <StatusBadge label={label} colorClass={colorClass} />;
+      const { label, style } = getEnumBadgeWithHexColors(
+        BatchStatusEnum,
+        status,
+      );
+      return <StatusBadge label={label} style={style} />;
     },
   },
   {
