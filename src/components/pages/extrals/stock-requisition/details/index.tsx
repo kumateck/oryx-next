@@ -62,45 +62,46 @@ function Index() {
           data={data as ItemDto}
           id={id as string}
         />
-      )} */}
+      )} */}{" "}
+      <div className="w-full flex items-center justify-between">
+        <div className="w-fit flex items-center gap-2">
+          <Icon
+            name="ArrowLeft"
+            onClick={() => router.back()}
+            className="h-5 w-5 text-black hover:cursor-pointer"
+          />
+          <PageTitle title={`Stock Requisition Details`} />
+        </div>
+        {data && !isLoading && (
+          <div className="flex items-center gap-2">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-1"
+              variant={"success"}
+              onClick={handleIssue}
+            >
+              <Icon
+                className={cn("h-4 w-4", {
+                  "animate-spin": isSubmitting,
+                })}
+                name={isSubmitting ? "LoaderCircle" : "Check"}
+              />
+              <span>Issue</span>
+            </Button>
+            <Button
+              className="flex items-center gap-2"
+              variant={"destructive"}
+              // onClick={() => setIsIssue(true)}
+            >
+              <Icon name="X" />
+              <span>Reject</span>
+            </Button>
+          </div>
+        )}
+      </div>
       {data && !isLoading ? (
         <>
-          {" "}
-          <div className="w-full flex items-center justify-between">
-            <div className="w-fit flex items-center gap-2">
-              <Icon
-                name="ArrowLeft"
-                onClick={() => router.back()}
-                className="h-5 w-5 text-black hover:cursor-pointer"
-              />
-              <PageTitle title={`Stock Requisition Details`} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex items-center gap-1"
-                variant={"success"}
-                onClick={handleIssue}
-              >
-                <Icon
-                  className={cn("h-4 w-4", {
-                    "animate-spin": isSubmitting,
-                  })}
-                  name={isSubmitting ? "LoaderCircle" : "Check"}
-                />
-                <span>Issue</span>
-              </Button>
-              <Button
-                className="flex items-center gap-2"
-                variant={"destructive"}
-                // onClick={() => setIsIssue(true)}
-              >
-                <Icon name="X" />
-                <span>Reject</span>
-              </Button>
-            </div>
-          </div>
           <Card>
             <CardHeader>
               <span className="text-xs bg-opacity-45 font-medium px-2 py-1 bg-gray-400 text-white w-fit rounded-full">
