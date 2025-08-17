@@ -251,6 +251,7 @@ export function StatusActions<TData extends EmployeeDto>({
                           activeStatus: Number(
                             option.value,
                           ) as unknown as EmployeeActiveStatus,
+                          status: EmployeeStatusType.Active,
                         },
                       }).unwrap();
                       toast.success("Status updated successfully");
@@ -285,6 +286,7 @@ export function StatusActions<TData extends EmployeeDto>({
                         inactiveStatus: Number(
                           option.value,
                         ) as unknown as EmployeeInactiveStatus,
+                        status: EmployeeStatusType.Inactive,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");

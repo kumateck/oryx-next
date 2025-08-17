@@ -2060,19 +2060,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    deleteApiV1Items: build.mutation<
-      DeleteApiV1ItemsApiResponse,
-      DeleteApiV1ItemsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
     getApiV1ItemsById: build.query<
       GetApiV1ItemsByIdApiResponse,
       GetApiV1ItemsByIdApiArg
@@ -2093,6 +2080,19 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/v1/items/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createItemsRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1ItemsById: build.mutation<
+      DeleteApiV1ItemsByIdApiResponse,
+      DeleteApiV1ItemsByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/items/${queryArg.id}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -9845,14 +9845,6 @@ export type GetApiV1ItemsApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type DeleteApiV1ItemsApiResponse = unknown;
-export type DeleteApiV1ItemsApiArg = {
-  id: string;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-};
 export type GetApiV1ItemsByIdApiResponse = /** status 200 OK */ ItemDto;
 export type GetApiV1ItemsByIdApiArg = {
   id: string;
@@ -9869,6 +9861,14 @@ export type PutApiV1ItemsByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
   createItemsRequest: CreateItemsRequest;
+};
+export type DeleteApiV1ItemsByIdApiResponse = unknown;
+export type DeleteApiV1ItemsByIdApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
 };
 export type GetApiV1ItemInventoryTransactionsByMemoIdApiResponse =
   /** status 200 OK */ ItemInventoryTransactionDtoRead;
@@ -18511,7 +18511,6 @@ export type MaterialBatch = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
-  code?: string | null;
   materialId?: string;
   material?: Material;
   checklistId?: string | null;
@@ -18554,7 +18553,6 @@ export type MaterialBatchRead = {
   deletedAt?: string | null;
   lastDeletedById?: string | null;
   lastDeletedBy?: User;
-  code?: string | null;
   materialId?: string;
   material?: MaterialRead;
   checklistId?: string | null;
@@ -20198,7 +20196,6 @@ export type MaterialBatchStockTransferSourceDtoRead = {
 export type MaterialBatchDto = {
   id?: string;
   material?: CollectionItemDto;
-  code?: string | null;
   batchNumber?: string | null;
   checklist?: BatchChecklistDto;
   stockTransferSource?: MaterialBatchStockTransferSourceDto;
@@ -20227,7 +20224,6 @@ export type MaterialBatchDto = {
 export type MaterialBatchDtoRead = {
   id?: string;
   material?: CollectionItemDto;
-  code?: string | null;
   batchNumber?: string | null;
   checklist?: BatchChecklistDto;
   stockTransferSource?: MaterialBatchStockTransferSourceDtoRead;
@@ -20259,7 +20255,6 @@ export type CreateSrRequest = {
   uoMId?: string | null;
 };
 export type CreateMaterialBatchRequest = {
-  code?: string | null;
   materialId?: string;
   totalQuantity?: number;
   batchNumber?: string | null;
@@ -20417,6 +20412,7 @@ export type MaterialDepartmentWithWarehouseStockDto = {
   maximumStockLevel?: number;
   warehouseStock?: number;
   pendingStockTransferQuantity?: number;
+  reservedQuantity?: number;
 };
 export type MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable = {
   data?: MaterialDepartmentWithWarehouseStockDto[] | null;
@@ -23693,10 +23689,10 @@ export const {
   usePostApiV1ItemsMutation,
   useGetApiV1ItemsQuery,
   useLazyGetApiV1ItemsQuery,
-  useDeleteApiV1ItemsMutation,
   useGetApiV1ItemsByIdQuery,
   useLazyGetApiV1ItemsByIdQuery,
   usePutApiV1ItemsByIdMutation,
+  useDeleteApiV1ItemsByIdMutation,
   useGetApiV1ItemInventoryTransactionsByMemoIdQuery,
   useLazyGetApiV1ItemInventoryTransactionsByMemoIdQuery,
   usePostApiV1ItemsStockRequisitionsMutation,

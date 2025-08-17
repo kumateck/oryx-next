@@ -110,8 +110,8 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
           requestedById: details?.requestedBy?.id as string,
           departmentId: data.departmentId.value,
           stockItems: data.items.map((item) => ({
-            itemId: item.value,
-            quantityRequested: item.orderQuantity,
+            itemId: item.itemId.value,
+            quantityRequested: item.quantity,
           })),
         },
       }).unwrap();

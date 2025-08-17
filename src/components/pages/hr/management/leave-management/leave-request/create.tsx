@@ -150,7 +150,9 @@ const LeaveRequest = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Staff Leave Request Form</DialogTitle>
+          <DialogTitle>
+            {splitWords(LeaveCategories[category])} Request Form
+          </DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>

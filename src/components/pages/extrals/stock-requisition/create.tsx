@@ -10,7 +10,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { cn, ErrorResponse, isErrorResponse, Option } from "@/lib";
+import {
+  cn,
+  ErrorResponse,
+  InventoryType,
+  isErrorResponse,
+  Option,
+} from "@/lib";
 import { commonActions } from "@/lib/redux/slices/common";
 import {
   CreateItemStockRequisitionRequest,
@@ -42,6 +48,9 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     const res = await loadItems({
       searchQuery,
       page,
+      store:
+        (Number(storeType?.value) as unknown as InventoryType) ??
+        InventoryType["IT Store"],
     }).unwrap();
     const response = {
       options: res?.data?.map((item) => ({
@@ -75,6 +84,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     register,
     control,
     reset,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm<StockRequisitionDto>({
@@ -82,10 +92,23 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     mode: "all",
   });
 
+  const storeType = watch("storyType");
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "items",
   });
+
+  //   useEffect(() => {
+  //     if (!storeType) return;
+  //     loadItems({
+  //       page: 1,
+  //       pageSize: 1000,
+  //       store:
+  //         (Number(storeType?.value) as unknown as InventoryType) ??
+  //         InventoryType["IT Store"],
+  //     });
+  //   }, [loadItems, storeType]);
 
   const onSubmit = async (data: StockRequisitionDto) => {
     console.log(data, "stock requisition form data");
@@ -98,8 +121,8 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
         requestedById: currentUser.userId,
         departmentId: data.departmentId.value,
         stockItems: data.items.map((item) => ({
-          itemId: item.value,
-          quantityRequested: item.orderQuantity,
+          itemId: item.itemId.value,
+          quantityRequested: item.quantity,
         })),
       };
       await createStockRequisition({
