@@ -55,7 +55,6 @@ function Page() {
     [searchParams],
   );
   const data = result?.data || [];
-  console.log(data, "data");
   const handleTabClick = (tabType: EMaterialKind) => {
     router.push(pathname + "?" + createQueryString("kind", tabType.toString()));
   };

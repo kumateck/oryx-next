@@ -10,13 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import {
-  cn,
-  ErrorResponse,
-  InventoryType,
-  isErrorResponse,
-  Option,
-} from "@/lib";
+import { cn, ErrorResponse, isErrorResponse, Option } from "@/lib";
 import { commonActions } from "@/lib/redux/slices/common";
 import {
   CreateItemStockRequisitionRequest,
@@ -30,6 +24,7 @@ import StockRequisition from "./form";
 import { toast } from "sonner";
 import { useSelector } from "@/lib/redux/store";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -37,7 +32,7 @@ interface VendorFormProps {
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
-  const [loadDepartments, { isLoading: loadingDepartments }] =
+  const [loadDepartments, { data: items, isLoading: loadingDepartments }] =
     useLazyGetApiV1DepartmentQuery();
   const [createStockRequisition, { isLoading: creating }] =
     usePostApiV1ItemsStockRequisitionsMutation();
@@ -48,9 +43,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     const res = await loadItems({
       searchQuery,
       page,
-      store:
-        (Number(storeType?.value) as unknown as InventoryType) ??
-        InventoryType["IT Store"],
+      store: 2,
     }).unwrap();
     const response = {
       options: res?.data?.map((item) => ({
@@ -84,7 +77,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     register,
     control,
     reset,
-    watch,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm<StockRequisitionDto>({
@@ -92,26 +85,12 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     mode: "all",
   });
 
-  const storeType = watch("storyType");
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "items",
   });
 
-  //   useEffect(() => {
-  //     if (!storeType) return;
-  //     loadItems({
-  //       page: 1,
-  //       pageSize: 1000,
-  //       store:
-  //         (Number(storeType?.value) as unknown as InventoryType) ??
-  //         InventoryType["IT Store"],
-  //     });
-  //   }, [loadItems, storeType]);
-
   const onSubmit = async (data: StockRequisitionDto) => {
-    console.log(data, "stock requisition form data");
     if (!currentUser || !currentUser.userId) return;
     try {
       const payload: CreateItemStockRequisitionRequest = {
@@ -140,6 +119,20 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
       );
     }
   };
+
+  const handleProductChange = (index: number, selected: { value: string }) => {
+    const product = items?.data?.find((p) => p.id === selected.value);
+    if (product) {
+      setValue(`items.${index}.itemCode`, product?.code ?? "");
+    }
+  };
+
+  useEffect(() => {
+    if (errors) {
+      console.log(errors);
+    }
+  }, [errors]);
+
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
@@ -154,6 +147,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
             loadingDepartments={loadingDepartments}
             errors={errors}
             register={register}
+            handleProductChange={handleProductChange}
             append={append}
             remove={remove}
             fields={fields}

@@ -27,6 +27,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   ) => Promise<FetchOptionsResult>;
   isLoading: boolean;
   loadingDepartments: boolean;
+  handleProductChange: (index: number, selected: { value: string }) => void;
   append: UseFieldArrayAppend<StockRequisitionDto>;
   fields: FieldArrayWithId<StockRequisitionDto>[];
   remove: UseFieldArrayRemove;
@@ -38,6 +39,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
   loadingDepartments,
   fetchItems,
   fields,
+  handleProductChange,
   append,
   remove,
   isLoading,
@@ -74,6 +76,20 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           ]}
         />
       </div>
+      <FormWizard
+        fieldWrapperClassName="flex-grow"
+        config={[
+          {
+            control: control as Control,
+            label: "requisitionDate",
+            name: "requisitionDate",
+            placeholder: "Select requisition date",
+            type: InputTypes.DATE,
+            required: true,
+            errors,
+          },
+        ]}
+      />
       <FormWizard
         fieldWrapperClassName="flex-grow"
         config={[
@@ -118,7 +134,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
         ]}
       /> */}
       <div className="flex w-full justify-between m-10 items-center">
-        <h1>Items</h1>
+        <h1 className="text-gray">Items</h1>
         <Button
           variant={"ghost"}
           type="button"
@@ -150,6 +166,8 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
                     label: "Item Name",
                     fetchOptions: fetchItems,
                     isLoading: isLoading,
+                    onChange: (selected) =>
+                      handleProductChange(id, selected as { value: string }),
                     type: InputTypes.ASYNC_SELECT,
                     required: true,
                     errors,
