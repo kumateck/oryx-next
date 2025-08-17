@@ -75,6 +75,7 @@ export function CreateInventoryItem() {
       maximumLevel: data.maximumLevel,
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
+      itemCategoryId: data.category,
     };
     try {
       const itemId = await createItem({

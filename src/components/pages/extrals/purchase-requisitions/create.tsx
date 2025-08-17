@@ -33,12 +33,14 @@ const Create = ({ isOpen, onClose }: Props) => {
   const [createPurchaseRequisition, { isLoading: creating }] =
     usePostApiV1ProcurementInventoryMutation();
   const dispatch = useDispatch();
-  const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
+  const [loadItems, { data: items, isLoading: loadingItems }] =
+    useLazyGetApiV1ItemsQuery();
 
   const {
     register,
     control,
     formState: { errors },
+    setValue,
     handleSubmit,
   } = useForm<CreatePurchaseRequisitionDto>({
     resolver: CreatePurchaseRequisitionValidator,
@@ -84,14 +86,24 @@ const Create = ({ isOpen, onClose }: Props) => {
       toast.success("Purchase requisition created successfully.");
       onClose();
     } catch (error) {
-      console.log("Error creating purchase requisition:", error);
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
+    }
+  };
+
+  const handleItemsChange = (index: number, selecte: { value: string }) => {
+    const item = items?.data?.filter((item) => item.id === selecte.value)[0];
+    if (item) {
+      setValue(
+        `items.${index}.stockQuantity`,
+        item.availableQuantity as number,
+      );
+      setValue(`items.${index}.itemCode`, item.code as string);
     }
   };
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
-      <DialogContent className="max-w-2xl w-full">
+      <DialogContent className="max-w-3xl w-full">
         <DialogHeader>
           <DialogTitle>Create Purchase Requisition</DialogTitle>
         </DialogHeader>
@@ -102,6 +114,7 @@ const Create = ({ isOpen, onClose }: Props) => {
             append={append}
             fields={fields}
             isLoading={loadingItems}
+            handleItemsChange={handleItemsChange}
             errors={errors}
             register={register}
             control={control}

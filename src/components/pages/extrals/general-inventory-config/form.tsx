@@ -101,6 +101,13 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                     errors,
                   },
                   {
+                    label: "Category",
+                    type: InputTypes.TEXT,
+                    placeholder: "Category(Optional)",
+                    register: register("category" as Path<TFieldValues>),
+                    errors,
+                  },
+                  {
                     label: "Classification",
                     type: InputTypes.SELECT,
                     placeholder: "Classification",

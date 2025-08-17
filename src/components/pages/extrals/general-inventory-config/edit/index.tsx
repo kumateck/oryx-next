@@ -77,6 +77,7 @@ function EditInventory() {
       setValue("maximumLevel", inventoryDetails?.maximumLevel ?? 0);
       setValue("reorderLevel", inventoryDetails?.reorderLevel ?? 0);
       setValue("minimumLevel", inventoryDetails?.minimumLevel ?? 0);
+      setValue("category", inventoryDetails?.itemCategoryId ?? "");
       setValue("unitOfMeasureId", {
         label: inventoryDetails?.unitOfMeasure?.symbol,
         value: String(inventoryDetails?.unitOfMeasure?.id),
@@ -113,6 +114,7 @@ function EditInventory() {
       maximumLevel: data.maximumLevel,
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
+      itemCategoryId: data.category,
     };
     try {
       await editItem({
