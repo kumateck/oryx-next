@@ -1371,18 +1371,18 @@ export function fileToBase64(file: File): Promise<string> {
 
 // Fixed Tailwind palette (light bg + dark text)
 const colorPalette = [
-  "bg-gray-100 text-gray-800",
-  "bg-red-100 text-red-800",
-  "bg-yellow-100 text-yellow-800",
-  "bg-green-100 text-green-800",
-  "bg-blue-100 text-blue-800",
-  "bg-indigo-100 text-indigo-800",
-  "bg-purple-100 text-purple-800",
-  "bg-pink-100 text-pink-800",
-  "bg-orange-100 text-orange-800",
-  "bg-teal-100 text-teal-800",
+  "bg-blue-100 text-blue-800 border-blue-200",
+  "bg-orange-100 text-orange-800 border-orange-200",
+  "bg-purple-100 text-purple-800 border-purple-200",
+  "bg-green-100 text-green-800 border-green-200",
+  "bg-red-100 text-red-800 border-red-200",
+  "bg-yellow-100 text-yellow-800 border-yellow-200",
+  "bg-gray-100 text-gray-800 border-gray-200",
+  "bg-gray-200 text-gray-900 border-gray-300",
+  "bg-emerald-100 text-emerald-800 border-emerald-200",
+  "bg-teal-100 text-teal-800 border-teal-200",
+  "bg-indigo-100 text-indigo-800 border-indigo-200",
 ];
-
 // Hash function to pick a color index
 function hashValue(value: string): number {
   let hash = 0;
@@ -1408,6 +1408,7 @@ export function getEnumBadge<T extends Record<string, string | number>>(
       : value?.toString(); // string enum
 
   const colorIndex = hashValue(label) % colorPalette.length;
+
   return {
     label,
     colorClass: colorPalette[colorIndex],

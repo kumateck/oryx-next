@@ -80,7 +80,7 @@ const Edit = ({ isOpen, onClose, detail }: VendorFormProps) => {
       contactNumber: detail?.phone ?? "",
       services: detail?.items?.map((item) => ({
         value: item?.id ?? "",
-        label: item?.name ?? "",
+        label: item?.item?.name ?? "",
       })),
     },
   });
