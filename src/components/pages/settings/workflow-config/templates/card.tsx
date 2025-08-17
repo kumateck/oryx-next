@@ -3,8 +3,9 @@ import { useRouter } from "next/navigation";
 
 import { Button, Icon } from "@/components/ui";
 import { FormDto } from "@/lib/redux/api/openapi.generated";
-import { PermissionKeys } from "@/lib";
+import { FormTypeEnum, getEnumBadge, PermissionKeys } from "@/lib";
 import { useUserPermissions } from "@/hooks/use-permission";
+import StatusBadge from "@/shared/status-badge";
 
 interface Props {
   template: FormDto;
@@ -16,19 +17,19 @@ interface Props {
 const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
   const navigate = useRouter();
   const { hasPermissionAccess } = useUserPermissions();
+  const templateType = template.type as FormTypeEnum;
+  const { label, colorClass } = getEnumBadge(FormTypeEnum, templateType);
   return (
     <div className="mt-2 w-full">
       <div className="rounded-lg border border-neutral-light bg-white px-8 py-4">
         <div className="flex items-center justify-between">
-          <div className="text-left">
+          <div className="text-left space-y-3">
             <div className="text-primary-500 flex flex-1 gap-1 text-sm">
               <span>{number}.</span>
               <span className="capitalize">{template?.name}</span>
             </div>
             <div>
-              <span className="text-sm text-neutral-400">
-                {/* {template?.sections?} */}
-              </span>
+              <StatusBadge label={label} colorClass={colorClass} />
             </div>
           </div>
 

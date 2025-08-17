@@ -120,7 +120,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
-    type: FormTypeEnum.Default,
+    type: FormTypeEnum.ARD,
   });
 
   const formOptionsData = formTemplates?.data || [];
