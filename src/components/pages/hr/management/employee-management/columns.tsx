@@ -199,12 +199,6 @@ export function StatusActions<TData extends EmployeeDto>({
             <Icon name="AlignJustify" size={15} />
           )}
           <span>
-            {/* {row.original?.status &&
-              getDisplayStatus(
-                row.original?.status,
-                row.original?.activeStatus,
-                row.original?.inactiveStatus,
-              )} */}
             {row.original.status === EmployeeStatusType.Active
               ? row?.original?.activeStatus !== null
                 ? splitWords(
@@ -251,6 +245,7 @@ export function StatusActions<TData extends EmployeeDto>({
                           activeStatus: Number(
                             option.value,
                           ) as unknown as EmployeeActiveStatus,
+                          status: EmployeeStatusType.Active,
                         },
                       }).unwrap();
                       toast.success("Status updated successfully");
@@ -285,6 +280,7 @@ export function StatusActions<TData extends EmployeeDto>({
                         inactiveStatus: Number(
                           option.value,
                         ) as unknown as EmployeeInactiveStatus,
+                        status: EmployeeStatusType.Inactive,
                       },
                     }).unwrap();
                     toast.success("Status updated successfully");
@@ -313,12 +309,15 @@ export function StatusActions<TData extends EmployeeDto>({
                 id: row.original.id as string,
                 updateEmployeeStatus: {
                   status: status,
+                  activeStatus: undefined,
+                  inactiveStatus: undefined,
                 },
               }).unwrap();
               toast.success("Status updated successfully");
               dispatch(commonActions.setTriggerReload());
             } catch (error) {
               console.error("Failed to update status:", error);
+              ThrowErrorMessage(error);
               toast.error(isErrorResponse(error as ErrorResponse)?.description);
             }
           }}

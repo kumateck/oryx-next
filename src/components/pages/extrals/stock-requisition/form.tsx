@@ -14,6 +14,7 @@ import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
 import { StockRequisitionDto } from "./types";
 import { FetchOptionsResult } from "@/components/ui/async-select";
+import { Button, Icon } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -26,6 +27,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   ) => Promise<FetchOptionsResult>;
   isLoading: boolean;
   loadingDepartments: boolean;
+  handleProductChange: (index: number, selected: { value: string }) => void;
   append: UseFieldArrayAppend<StockRequisitionDto>;
   fields: FieldArrayWithId<StockRequisitionDto>[];
   remove: UseFieldArrayRemove;
@@ -36,6 +38,10 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
   errors,
   loadingDepartments,
   fetchItems,
+  fields,
+  handleProductChange,
+  append,
+  remove,
   isLoading,
   fetchDepartments,
 }: Props<TFieldValues, TContext>) => {
@@ -60,9 +66,9 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           config={[
             {
               control: control as Control,
-              label: "Requisition Date",
-              name: "requisitionDate",
-              placeholder: "Select requisition date",
+              label: "Delivery Date",
+              name: "deliveryDate",
+              placeholder: "Select delivery date",
               type: InputTypes.DATE,
               required: true,
               errors,
@@ -75,8 +81,22 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
         config={[
           {
             control: control as Control,
+            label: "requisitionDate",
+            name: "requisitionDate",
+            placeholder: "Select requisition date",
+            type: InputTypes.DATE,
+            required: true,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        fieldWrapperClassName="flex-grow"
+        config={[
+          {
+            control: control as Control,
             name: `departmentId`,
-            label: "Department Name",
+            label: "Requested Department",
             fetchOptions: fetchDepartments,
             isLoading: loadingDepartments,
             type: InputTypes.ASYNC_SELECT,
@@ -99,7 +119,7 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      <FormWizard
+      {/* <FormWizard
         config={[
           {
             control: control as Control,
@@ -112,9 +132,9 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
         ]}
-      />
-      {/* <div className="flex w-full justify-between items-center">
-        <h1>Items</h1>
+      /> */}
+      <div className="flex w-full justify-between m-10 items-center">
+        <h1 className="text-gray">Items</h1>
         <Button
           variant={"ghost"}
           type="button"
@@ -124,9 +144,8 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
                 label: "",
                 value: "",
               },
-              orderQuantity: 0,
               itemCode: "",
-              stockQuantity: 0,
+              quantity: 0,
             })
           }
           className="flex items-center justify-center gap-1 w-fit"
@@ -135,10 +154,10 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           <span className="text-sm">Add Item</span>
         </Button>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-2">
         {fields?.map((item, id) => (
           <div key={id + item.id} className="flex items-center gap-2">
-            <div className="flex items-center justify-center gap-2 flex-1">
+            <div className="flex items-center justify-center gap-1 flex-1">
               <FormWizard
                 config={[
                   {
@@ -147,6 +166,8 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
                     label: "Item Name",
                     fetchOptions: fetchItems,
                     isLoading: isLoading,
+                    onChange: (selected) =>
+                      handleProductChange(id, selected as { value: string }),
                     type: InputTypes.ASYNC_SELECT,
                     required: true,
                     errors,
@@ -171,29 +192,12 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
                 config={[
                   {
                     register: register(
-                      `items.${id}.stockQuantity` as Path<TFieldValues>,
+                      `items.${id}.quantity` as Path<TFieldValues>,
                       {
                         valueAsNumber: true,
                       },
                     ),
-                    label: "Stock Quantity",
-                    readOnly: true,
-                    type: InputTypes.NUMBER,
-                    required: true,
-                    errors,
-                  },
-                ]}
-              />
-              <FormWizard
-                config={[
-                  {
-                    register: register(
-                      `items.${id}.orderQuantity` as Path<TFieldValues>,
-                      {
-                        valueAsNumber: true,
-                      },
-                    ),
-                    label: "Request Quantity",
+                    label: "Quantity",
                     type: InputTypes.NUMBER,
                     required: true,
                     errors,
@@ -204,11 +208,11 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
             <Icon
               name="Trash"
               onClick={() => remove(id)}
-              className="cursor-pointer h-5 text-red-600 w-4"
+              className="cursor-pointer mt-3 h-5 text-red-600 w-4"
             />
           </div>
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };

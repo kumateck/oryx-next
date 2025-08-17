@@ -23,6 +23,7 @@ import { Button, Icon } from "@/components/ui";
 import { parseExcelFile } from "./parseExcelfile";
 import { ExcelPreviewTable } from "./table";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
+import { useRouter } from "next/navigation";
 
 function Index() {
   const [results, setResults] = useState<Record<string, any>[]>([]);
@@ -34,10 +35,13 @@ function Index() {
     pageSize: 1000,
   });
 
+  const router = useRouter();
+
   const [uploadShiftSchedule, { isLoading }] =
     usePostApiV1ShiftSchedulesAssignImportMutation({});
   const {
     handleSubmit,
+    reset,
     control,
     watch,
     formState: { errors },
@@ -72,23 +76,10 @@ function Index() {
         subModule: AuditModules.management.shiftUpload,
       }).unwrap();
 
-      //  const formData = new FormData();
-      //         const attachmentsArray = Array.isArray(data.attachments)
-      //           ? data.attachments
-      //           : Array.from(data.attachments); // Convert FileList to an array
-      //         attachmentsArray.forEach((attachment: File) => {
-      //           formData.append("files", attachment, attachment.name);
-      //         });
-
-      //         await uploadAttachment({
-      //           modelType: CODE_SETTINGS.modelTypes.Item,
-      //           modelId: itemId as string,
-      //           body: formData,
-      //         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
-
       toast.success("Shift schedule uploaded successfully");
-      console.log(result);
       setResults(result as unknown as ShiftsReportSummary[]);
+      router.push("/hr/shift-schedule");
+      reset();
     } catch (error) {
       ThrowErrorMessage(error);
       console.error("Error uploading shift schedule:", error);

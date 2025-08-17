@@ -35,7 +35,8 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
     usePutApiV1ItemsStockRequisitionsByIdMutation();
   const [loadDepartments, { isLoading: loadingDepartments }] =
     useLazyGetApiV1DepartmentQuery();
-  const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
+  const [loadItems, { data: items, isLoading: loadingItems }] =
+    useLazyGetApiV1ItemsQuery();
 
   const dispatch = useDispatch();
 
@@ -77,6 +78,7 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
     control,
     formState: { errors },
     reset,
+    setValue,
     handleSubmit,
   } = useForm<StockRequisitionDto>({
     resolver: CreateStockRequisitionValidator,
@@ -99,6 +101,13 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
     name: "items",
   });
 
+  const handleProductChange = (index: number, selected: { value: string }) => {
+    const item = items?.data?.find((p) => p.id === selected.value);
+    if (item) {
+      setValue(`items.${index}.itemCode`, item?.code ?? "");
+    }
+  };
+
   const onSubmit = async (data: StockRequisitionDto) => {
     try {
       await updateStockRequisition({
@@ -110,8 +119,8 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
           requestedById: details?.requestedBy?.id as string,
           departmentId: data.departmentId.value,
           stockItems: data.items.map((item) => ({
-            itemId: item.value,
-            quantityRequested: item.orderQuantity,
+            itemId: item.itemId.value,
+            quantityRequested: item.quantity,
           })),
         },
       }).unwrap();
@@ -141,6 +150,7 @@ const Edit = ({ isOpen, onClose, details }: VendorFormProps) => {
             errors={errors}
             register={register}
             isLoading={loadingItems}
+            handleProductChange={handleProductChange}
             append={append}
             remove={remove}
             fields={fields}

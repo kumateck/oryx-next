@@ -524,7 +524,7 @@ export enum LeaveCategories {
   LeaveRequest = 0,
   AbsenceRequest = 1,
   ExitPassRequest = 2,
-  OfficialDuty = 3,
+  OfficialDutyRequest = 3,
 }
 
 export enum ShiftFrequency {
@@ -624,4 +624,10 @@ export enum InventoryType {
 export enum ProductionOrderType {
   Pending = 0,
   Paid = 1,
+}
+
+export enum IssueItemStockRequisitionStatus {
+  Pending = 0,
+  Partial = 1,
+  Completed = 2,
 }

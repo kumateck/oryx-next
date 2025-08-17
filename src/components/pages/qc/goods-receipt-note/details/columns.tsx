@@ -216,7 +216,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
           materialBatchId: row.original.id as string,
           materialName: row.original.material?.name ?? "",
           batchNumber: row.original.batchNumber ?? "",
-          arNumber: "",
+          arNumber: row.original?.batchNumber ?? "",
           quantity: `${qty.value} ${qty.unit}`,
           sampleQuantity: "",
           baseUnit,

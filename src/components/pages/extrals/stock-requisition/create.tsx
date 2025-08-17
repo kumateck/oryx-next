@@ -24,6 +24,7 @@ import StockRequisition from "./form";
 import { toast } from "sonner";
 import { useSelector } from "@/lib/redux/store";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ interface VendorFormProps {
 }
 const Create = ({ isOpen, onClose }: VendorFormProps) => {
   const [loadItems, { isLoading: loadingItems }] = useLazyGetApiV1ItemsQuery();
-  const [loadDepartments, { isLoading: loadingDepartments }] =
+  const [loadDepartments, { data: items, isLoading: loadingDepartments }] =
     useLazyGetApiV1DepartmentQuery();
   const [createStockRequisition, { isLoading: creating }] =
     usePostApiV1ItemsStockRequisitionsMutation();
@@ -42,6 +43,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     const res = await loadItems({
       searchQuery,
       page,
+      store: 2,
     }).unwrap();
     const response = {
       options: res?.data?.map((item) => ({
@@ -75,6 +77,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     register,
     control,
     reset,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm<StockRequisitionDto>({
@@ -88,7 +91,6 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
   });
 
   const onSubmit = async (data: StockRequisitionDto) => {
-    console.log(data, "stock requisition form data");
     if (!currentUser || !currentUser.userId) return;
     try {
       const payload: CreateItemStockRequisitionRequest = {
@@ -98,8 +100,8 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
         requestedById: currentUser.userId,
         departmentId: data.departmentId.value,
         stockItems: data.items.map((item) => ({
-          itemId: item.value,
-          quantityRequested: item.orderQuantity,
+          itemId: item.itemId.value,
+          quantityRequested: item.quantity,
         })),
       };
       await createStockRequisition({
@@ -117,6 +119,20 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
       );
     }
   };
+
+  const handleProductChange = (index: number, selected: { value: string }) => {
+    const product = items?.data?.find((p) => p.id === selected.value);
+    if (product) {
+      setValue(`items.${index}.itemCode`, product?.code ?? "");
+    }
+  };
+
+  useEffect(() => {
+    if (errors) {
+      console.log(errors);
+    }
+  }, [errors]);
+
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent className="max-w-2xl w-full">
@@ -131,6 +147,7 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
             loadingDepartments={loadingDepartments}
             errors={errors}
             register={register}
+            handleProductChange={handleProductChange}
             append={append}
             remove={remove}
             fields={fields}
