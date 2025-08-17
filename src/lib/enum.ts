@@ -17,32 +17,7 @@ export enum Division {
   "BETALACTAM" = 0,
   "NON-BETALACTAM" = 1,
 }
-export enum AnalyticalTestRequestStatus {
-  New = 0,
-  Sampled = 1,
-  Acknowledged = 2,
-  Testing = 3,
-  TestTaken = 4,
-  Released = 5,
-}
-export enum AnalyticalTestRequestStage {
-  Intermediate,
-  Bulk,
-  Finished,
-}
-export enum BatchStatus {
-  Received = 0,
-  Quarantine = 1,
-  Testing = 2,
-  Available = 3,
-  Rejected = 4,
-  Retest = 5,
-  Frozen = 6,
-  Consumed = 7,
-  Approved = 8,
-  TestTaken = 9,
-  Checked = 10,
-}
+
 export enum ExpressionKind {
   Expression,
   Evaluation,
@@ -89,51 +64,13 @@ export enum ApprovalDocument {
   LeaveRequest = "LeaveRequest",
   OvertimeRequest = "OvertimeRequest",
   Response = "Response",
+  AllocateProductionOrder = "AllocateProductionOrder",
 }
-
-export enum GRNStatus {
-  Pending = 0,
-  Partial = 1,
-  Completed = 2,
-}
-
 export enum InterestType {
   User = "User",
   Role = "Role",
 }
 
-export enum StockTransfer {
-  New = 0,
-  Approved = 1,
-  Issued = 2,
-  Rejected = 3,
-}
-export enum ProductionStatus {
-  New,
-  InProgress,
-  Completed,
-  Delayed,
-  Cancelled,
-}
-export enum ScheduleStatus {
-  New,
-  InProgress,
-  Completed,
-}
-export enum PurchaseOrderStatusList {
-  New = 0,
-  Pending = 1,
-  Delivered = 2,
-  Attached = 3,
-  Completed = 4,
-}
-export enum RequisitionStatus {
-  New = 0,
-  Pending = 1,
-  Sourced = 2,
-  Completed = 3,
-  Rejected = 4,
-}
 export enum RequisitionType {
   StockVoucher,
   Purchase,
@@ -175,14 +112,6 @@ export enum SupplierType {
   Foreign = 0,
   Local = 1,
   // Other = 3,
-}
-export enum ActivityStepStatus {
-  New = 0,
-  InProgress = 1,
-  Completed = 2,
-  Delayed = 3,
-  Cancelled = 4,
-  Active = 5,
 }
 
 export enum FORM_BUILDER_CONFIG {
@@ -228,12 +157,6 @@ export enum ProductState {
   FilledCapsules,
   Ointment,
   Coated,
-}
-
-export enum ExtraPackingStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
 }
 
 export enum InputTypes {
@@ -298,17 +221,6 @@ export enum CollectionTypes {
   ProductState = "ProductState",
 }
 
-export enum Status {
-  Open = "Open",
-  InProgress = "In Progress",
-  New = "New",
-  Closed = "Closed",
-  Rejected = "Rejected",
-  Resolved = "Resolved",
-  Overdue = "Overdue",
-  NonCompliant = "Non Compliant",
-}
-
 export enum TimeType {
   Time = "time",
   Moment = "moment",
@@ -318,21 +230,6 @@ export enum TimeType {
 export enum ProcurementType {
   Local = "Local",
   Foreign = "Foreign",
-}
-export enum MaterialStatus {
-  NoSource = 0,
-  StockTransfer = 1,
-  PurchaseRequisition = 2,
-  LocalProcurement = 3,
-  ForeignProcurement = 4,
-  StockRequisition = 5,
-  IssuedRequisition = 6,
-  InHouse = 7,
-}
-
-export enum ProductBMRStatus {
-  Requested,
-  Issued,
 }
 
 export enum Units {
@@ -376,12 +273,6 @@ export enum DepartmentType {
   NonProduction = 1,
 }
 
-export enum SupplierStatus {
-  New,
-  Approved,
-  UnApproved,
-}
-
 export enum FloorType {
   Ground = "Ground",
   First = "First",
@@ -407,6 +298,116 @@ export enum TransferType {
   Outgoing,
 }
 
+export enum StockTransfer {
+  New = 0,
+  Approved = 1,
+  Issued = 2,
+  Rejected = 3,
+}
+
+export enum AnalyticalTestRequestStatus {
+  New = 0,
+  Sampled = 1,
+  Acknowledged = 2,
+  Testing = 3,
+  TestTaken = 4,
+  Released = 5,
+}
+export enum AnalyticalTestRequestStage {
+  Intermediate,
+  Bulk,
+  Finished,
+}
+export enum BatchStatus {
+  Received = 0,
+  Quarantine = 1,
+  Testing = 2,
+  Available = 3,
+  Rejected = 4,
+  Retest = 5,
+  Frozen = 6,
+  Consumed = 7,
+  Approved = 8,
+  TestTaken = 9,
+  Checked = 10,
+}
+export enum GRNStatus {
+  Pending = 0,
+  Partial = 1,
+  Completed = 2,
+}
+
+export enum ProductionStatus {
+  New,
+  InProgress,
+  Completed,
+  Delayed,
+  Cancelled,
+}
+export enum ScheduleStatus {
+  New,
+  InProgress,
+  Completed,
+}
+export enum PurchaseOrderStatusList {
+  New = 0,
+  Pending = 1,
+  Delivered = 2,
+  Attached = 3,
+  Completed = 4,
+}
+export enum RequisitionStatus {
+  New = 0,
+  Pending = 1,
+  Sourced = 2,
+  Completed = 3,
+  Rejected = 4,
+}
+export enum ActivityStepStatus {
+  New = 0,
+  InProgress = 1,
+  Completed = 2,
+  Delayed = 3,
+  Cancelled = 4,
+  Active = 5,
+}
+export enum ExtraPackingStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum Status {
+  Open = "Open",
+  InProgress = "In Progress",
+  New = "New",
+  Closed = "Closed",
+  Rejected = "Rejected",
+  Resolved = "Resolved",
+  Overdue = "Overdue",
+  NonCompliant = "Non Compliant",
+}
+export enum MaterialStatus {
+  NoSource = 0,
+  StockTransfer = 1,
+  PurchaseRequisition = 2,
+  LocalProcurement = 3,
+  ForeignProcurement = 4,
+  StockRequisition = 5,
+  IssuedRequisition = 6,
+  InHouse = 7,
+}
+
+export enum ProductBMRStatus {
+  Requested,
+  Issued,
+}
+
+export enum SupplierStatus {
+  New,
+  Approved,
+  UnApproved,
+}
 export enum ShipmentStatus {
   New = 0,
   InTransit = 1,
@@ -414,10 +415,7 @@ export enum ShipmentStatus {
   Cleared = 3,
   Arrived = 4,
 }
-export enum ShipmentDocumentType {
-  Document,
-  Waybill,
-}
+
 export enum WaybillStatus {
   New = 0,
   Cleared = 1,
@@ -433,6 +431,40 @@ export enum MaritalStatus {
   Married,
 }
 
+export enum LeaveStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+  Expired = 3,
+  Recalled = 4,
+}
+
+export enum ApprovalStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum FormType {
+  Default,
+  Specification,
+}
+
+export enum MaterialReturnsStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+export enum OvertimeStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+export enum ShipmentDocumentType {
+  Document,
+  Waybill,
+}
 export enum Gender {
   Male,
   Female,
@@ -443,6 +475,34 @@ export enum LifeStatus {
   Deceased,
 }
 
+export enum AnalyticalTestStatus {
+  Approved = 0,
+  Quarantine = 1,
+  Under_Test = 2,
+  Rejected = 3,
+  Test_Completed = 4,
+}
+
+export enum EmployeeStatusType {
+  Active = 0,
+  Inactive = 1,
+}
+
+export enum EmployeeActiveStatus {
+  Question = 0,
+  Warning = 1,
+  FinalWarning = 2,
+  Suspension = 3,
+}
+
+export enum EmployeeInactiveStatus {
+  Resignation = 0,
+  VacatedPost = 1,
+  Deceased = 2,
+  SummaryDismissed = 3,
+  Termination = 4,
+  Transfer = 5,
+}
 export enum Religions {
   Christianity,
   Islam,
@@ -459,29 +519,12 @@ export enum EmployeeType {
   Casual = 0,
   Permanent = 1,
 }
-export enum FormType {
-  Default,
-  Specification,
-}
+
 export enum LeaveCategories {
   LeaveRequest = 0,
   AbsenceRequest = 1,
   ExitPassRequest = 2,
   OfficialDuty = 3,
-}
-
-export enum LeaveStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
-  Expired = 3,
-  Recalled = 4,
-}
-
-export enum ApprovalStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
 }
 
 export enum ShiftFrequency {
@@ -516,18 +559,6 @@ export enum DayOfWeek {
   Thursday = 4,
   Friday = 5,
   Saturday = 6,
-}
-
-export enum MaterialReturnsStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
-}
-
-export enum OvertimeStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
 }
 
 export enum StaffRequisitionType {
@@ -568,34 +599,6 @@ export enum AlertType {
   InApp = 1,
 }
 
-export enum AnalyticalTestStatus {
-  Approved = 0,
-  Quarantine = 1,
-  Under_Test = 2,
-  Rejected = 3,
-  Test_Completed = 4,
-}
-
-export enum EmployeeStatusType {
-  Active = 0,
-  Inactive = 1,
-}
-
-export enum EmployeeActiveStatus {
-  Question = 0,
-  Warning = 1,
-  FinalWarning = 2,
-  Suspension = 3,
-}
-
-export enum EmployeeInactiveStatus {
-  Resignation = 0,
-  VacatedPost = 1,
-  Deceased = 2,
-  SummaryDismissed = 3,
-  Termination = 4,
-  Transfer = 5,
-}
 export enum FormTypeEnum {
   ARD = 0,
   Specification = 1,

@@ -568,6 +568,73 @@ export const PermissionKeys = {
       delete: "CanDeleteTemplates",
     },
   },
+  qualityControl: {
+    materialStp: {
+      view: "CanViewMaterialSTPs",
+      create: "CanCreateMaterialSTP",
+      edit: "CanEditMaterialSTP",
+      delete: "CanDeleteMaterialSTP",
+    },
+    productStp: {
+      view: "CanViewProductSTPs",
+      create: "CanCreateProductSTP",
+      edit: "CanEditProductSTP",
+      delete: "CanDeleteProductSTP",
+    },
+    materialArd: {
+      view: "CanViewMaterialARDs",
+      create: "CanCreateMaterialARD",
+      edit: "CanEditMaterialARD",
+      delete: "CanDeleteMaterialARD",
+    },
+    productArd: {
+      view: "CanViewProductARDs",
+      create: "CanCreateProductARD",
+      edit: "CanEditProductARD",
+      delete: "CanDeleteProductARD",
+    },
+    goodsReceipt: "CanViewGoodsReceiptNotes",
+    sample: "CanTakeSample",
+    startTest: "CanStartTest",
+    materialSpecification: {
+      view: "CanViewMaterialSpecifications",
+      create: "CanCreateMaterialSpecification",
+      edit: "CanEditMaterialSpecification",
+      delete: "CanDeleteMaterialSpecification",
+    },
+    productSpecification: {
+      view: "CanViewProductSpecifications",
+      create: "CanCreateProductSpecification",
+      edit: "CanEditProductSpecification",
+      delete: "CanDeleteProductSpecification",
+    },
+  },
+  qualityAssurance: {
+    bmr: {
+      viewIssued: "CanViewIssuedBMRs",
+      issue: "CanIssueBMR",
+    },
+    bmrbpr: {
+      viewRequests: "CanViewBMRBPRRequests",
+      createRequest: "CanCreateBMRBPRRequest",
+      approveOrReject: "CanApproveOrRejectBMRBPRRequest",
+    },
+    analyticalTest: {
+      view: "CanViewAnalyticalTestRequests",
+      create: "CanCreateAnalyticalTestRequest",
+      takeSamples: "CanTakeSamples",
+      startTest: "CanStartTestAnalytical",
+    },
+    pendingApprovals: "CanViewPendingApprovals",
+  },
+  inventory: {
+    vendors: {
+      view: "CanViewVendorsInventory",
+      create: "CanCreateVendorInventory",
+      edit: "CanEditVendorInventory",
+      // delete missing in C# snippet but may exist
+    },
+  },
 };
 
 export const AuditModules = {
