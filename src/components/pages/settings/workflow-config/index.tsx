@@ -12,7 +12,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { FORM_BUILDER_CONFIG, PermissionKeys } from "@/lib";
+import { FORM_BUILDER_CONFIG, FormTypeEnum, PermissionKeys } from "@/lib";
 
 import QuestionCards from "./questions";
 
@@ -22,9 +22,13 @@ import { useUserPermissions } from "@/hooks/use-permission";
 import PageTitle from "@/shared/title";
 import { useRouter } from "next/navigation";
 import LoadQuestionTypes from "./questions/question-types/types-loader";
+import AccessTabs from "@/shared/access";
+import { FormType } from "@/lib/redux/api/openapi.generated";
 
 const FormBuilder = () => {
   const router = useRouter();
+  const [activeTemTab, setActiveTemTab] = useState<number>(99);
+
   const tabLists = [
     {
       name: FORM_BUILDER_CONFIG.QUESTIONS,
@@ -69,6 +73,9 @@ const FormBuilder = () => {
     return <NoAccess />;
   }
 
+  const handleTabClick = (tabName: number) => {
+    setActiveTemTab(tabName);
+  };
   return (
     <div className="w-full space-y-6">
       <div className="flex w-full items-center justify-between">
@@ -136,7 +143,32 @@ const FormBuilder = () => {
           <QuestionCards />
         </TabsContent>
         <TabsContent value={FORM_BUILDER_CONFIG.TEMPLATES}>
-          <TemplateCards />
+          <AccessTabs
+            containerClassName="w-full"
+            handleTabClick={handleTabClick}
+            tabs={[
+              {
+                label: "All",
+                value: "99",
+              },
+              {
+                label: FormTypeEnum[FormTypeEnum.ARD],
+                value: FormTypeEnum.ARD.toString(),
+              },
+              {
+                label: FormTypeEnum[FormTypeEnum.Specification],
+                value: FormTypeEnum.Specification.toString(),
+              },
+            ]}
+            type={activeTemTab}
+          />
+          <TemplateCards
+            type={
+              activeTemTab === 99
+                ? undefined
+                : (activeTemTab as FormType | undefined)
+            }
+          />
         </TabsContent>
       </Tabs>
       {isOpenQuestion && (

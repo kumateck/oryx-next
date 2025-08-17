@@ -50,17 +50,36 @@ const EditQuestionTypes = ({ details, isOpen, onClose }: Props) => {
     name: "type",
   });
 
+  // useEffect(() => {
+  //   if (
+  //     Number(typeWatch?.value) === QuestionType.SingleChoice ||
+  //     Number(typeWatch?.value) === QuestionType.Checkbox ||
+  //     Number(typeWatch?.value) === QuestionType.Dropdown
+  //   ) {
+  //     setValue("options", [{ name: "Option 1" }]);
+  //   } else {
+  //     setValue("options", []);
+  //   }
+  // }, [typeWatch, setValue]);
   useEffect(() => {
-    if (
+    const isChoiceType =
       Number(typeWatch?.value) === QuestionType.SingleChoice ||
       Number(typeWatch?.value) === QuestionType.Checkbox ||
-      Number(typeWatch?.value) === QuestionType.Dropdown
-    ) {
-      setValue("options", [{ name: "Option 1" }]);
+      Number(typeWatch?.value) === QuestionType.Dropdown;
+
+    if (isChoiceType) {
+      // Only seed default option when creating
+      if (!details.id) {
+        const currentOptions = control._formValues.options;
+        if (!currentOptions || currentOptions.length === 0) {
+          setValue("options", [{ name: "Option 1" }]);
+        }
+      }
     } else {
       setValue("options", []);
     }
-  }, [typeWatch, setValue]);
+  }, [typeWatch, setValue, control, details.id]);
+
   const onSubmit = async (data: QuestionRequestDto) => {
     const createQuestionRequest = {
       label: data.label,
