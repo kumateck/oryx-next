@@ -622,3 +622,9 @@ export enum ProductionOrderType {
   Pending = 0,
   Paid = 1,
 }
+
+export enum IssueItemStockRequisitionStatus {
+  Pending = 0,
+  Partial = 1,
+  Completed = 2,
+}

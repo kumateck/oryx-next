@@ -4,34 +4,23 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
-import {
-  ConfirmDeleteDialog,
-  ConfirmDialog,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  Icon,
-} from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   ErrorResponse,
+  IssueItemStockRequisitionStatus,
   // PermissionKeys,
-  SupplierStatus,
-  SupplierTypeOptions,
-  getEnumBadge,
   isErrorResponse,
   routes,
+  splitWords,
 } from "@/lib";
 import {
   ItemStockRequisitionDtoRead,
   MaterialDto,
   useDeleteApiV1ItemsStockRequisitionsMutation,
-  usePutApiV1ProcurementSupplierBySupplierIdStatusMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 import { format } from "date-fns";
-import StatusBadge from "@/shared/status-badge";
 // import { useUserPermissions } from "@/hooks/use-permission";
 
 // import Edit from "./edit";
@@ -109,81 +98,6 @@ export function DataTableRowActions<TData extends ItemStockRequisitionDtoRead>({
     </div>
   );
 }
-export function DataTableRowStatus<TData extends ItemStockRequisitionDtoRead>({
-  row,
-}: DataTableRowActionsProps<TData>) {
-  const dispatch = useDispatch();
-  const [updateMutation] =
-    usePutApiV1ProcurementSupplierBySupplierIdStatusMutation();
-  // const [isOpen, setIsOpen] = useState(false);
-  const [details, setDetails] = useState<{
-    id: string;
-    status: SupplierStatus;
-  }>();
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-
-  const handleUpdate = async (supplierId: string, status: SupplierStatus) => {
-    try {
-      await updateMutation({
-        supplierId,
-        updateSupplierStatusRequest: {
-          status,
-        },
-      }).unwrap();
-      toast.success("Status updated successfully");
-      dispatch(commonActions.setTriggerReload());
-    } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
-    }
-  };
-
-  const status = row.original.status as SupplierStatus;
-  const { label, colorClass } = getEnumBadge(SupplierStatus, status);
-
-  return (
-    <div className="flex items-center justify-start gap-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <StatusBadge label={label} colorClass={colorClass} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
-          {SupplierTypeOptions?.map((opt, index) => {
-            return (
-              <DropdownMenuItem
-                key={index}
-                onClick={() => {
-                  setDetails({
-                    id: row.original.id as string,
-                    status: Number(opt.value) as SupplierStatus,
-                  });
-                  setIsUpdateOpen(true);
-                }}
-                className="group flex cursor-pointer items-center justify-start gap-2"
-              >
-                <span>{opt.label}</span>
-              </DropdownMenuItem>
-            );
-          })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <ConfirmDialog
-        open={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
-        icon="Info"
-        title="Update Status"
-        confirmText="Update"
-        description={`Are you sure you want to update status to ${SupplierStatus[Number(details?.status)]}?`}
-        onConfirm={() => {
-          handleUpdate(
-            details?.id as string,
-            details?.status as SupplierStatus,
-          );
-        }}
-      />
-    </div>
-  );
-}
 export const columns: ColumnDef<ItemStockRequisitionDtoRead>[] = [
   {
     accessorKey: "code",
@@ -221,7 +135,17 @@ export const columns: ColumnDef<ItemStockRequisitionDtoRead>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <DataTableRowStatus row={row} />,
+    cell: ({ row }) => (
+      <div
+        className={`${requisitionStatus[row.original.status as IssueItemStockRequisitionStatus]}`}
+      >
+        {splitWords(
+          IssueItemStockRequisitionStatus[
+            row.original.status as IssueItemStockRequisitionStatus
+          ],
+        )}
+      </div>
+    ),
   },
   {
     id: "actions",
@@ -229,10 +153,8 @@ export const columns: ColumnDef<ItemStockRequisitionDtoRead>[] = [
   },
 ];
 
-// const statusColors: Record<LeaveStatus, string> = {
-//   [LeaveStatus.Pending]: "bg-blue-100 text-blue-800",
-//   [LeaveStatus.Approved]: "bg-yellow-100 text-yellow-800",
-//   [LeaveStatus.Rejected]: "bg-red-100 text-red-800",
-//   [LeaveStatus.Expired]: "bg-gray-100 text-gray-800",
-//   [LeaveStatus.Recalled]: "bg-gray-100 text-gray-800",
-// };
+const requisitionStatus: Record<IssueItemStockRequisitionStatus, string> = {
+  [IssueItemStockRequisitionStatus.Pending]: "bg-blue-100 text-blue-800",
+  [IssueItemStockRequisitionStatus.Completed]: "bg-green-100 text-green-800",
+  [IssueItemStockRequisitionStatus.Partial]: "bg-yellow-100 text-yellow-800",
+};
