@@ -301,40 +301,42 @@ export function StatusActions<TData extends EmployeeDto>({
                     {option.label}
                   </DropdownMenuItem>
                 ))}
+            <DropdownMenuItem
+              className="group w-full cursor-pointer"
+              disabled={isLoading}
+              onClick={async () => {
+                const status =
+                  row.original.status === EmployeeStatusType.Active
+                    ? EmployeeStatusType.Inactive
+                    : EmployeeStatusType.Active;
+                try {
+                  await updateStatus({
+                    id: row.original.id as string,
+                    updateEmployeeStatus: {
+                      status: status,
+                      activeStatus: undefined,
+                      inactiveStatus: undefined,
+                    },
+                  }).unwrap();
+                  toast.success("Status updated successfully");
+                  dispatch(commonActions.setTriggerReload());
+                } catch (error) {
+                  console.error("Failed to update status:", error);
+                  ThrowErrorMessage(error);
+                  toast.error(
+                    isErrorResponse(error as ErrorResponse)?.description,
+                  );
+                }
+              }}
+            >
+              <span>
+                {row.original.status === EmployeeStatusType.Active
+                  ? "Deactivate"
+                  : "Activate"}
+              </span>
+            </DropdownMenuItem>
           </>
         )}
-        <DropdownMenuItem
-          className="group w-full cursor-pointer"
-          disabled={isLoading}
-          onClick={async () => {
-            const status =
-              row.original.status === EmployeeStatusType.Active
-                ? EmployeeStatusType.Inactive
-                : EmployeeStatusType.Active;
-            try {
-              await updateStatus({
-                id: row.original.id as string,
-                updateEmployeeStatus: {
-                  status: status,
-                  activeStatus: undefined,
-                  inactiveStatus: undefined,
-                },
-              }).unwrap();
-              toast.success("Status updated successfully");
-              dispatch(commonActions.setTriggerReload());
-            } catch (error) {
-              console.error("Failed to update status:", error);
-              ThrowErrorMessage(error);
-              toast.error(isErrorResponse(error as ErrorResponse)?.description);
-            }
-          }}
-        >
-          <span>
-            {row.original.status === EmployeeStatusType.Active
-              ? "Deactivate"
-              : "Activate"}
-          </span>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

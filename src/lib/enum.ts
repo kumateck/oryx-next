@@ -486,6 +486,7 @@ export enum AnalyticalTestStatus {
 export enum EmployeeStatusType {
   Active = 0,
   Inactive = 1,
+  New = 2,
 }
 
 export enum EmployeeActiveStatus {
