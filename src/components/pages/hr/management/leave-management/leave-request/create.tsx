@@ -64,7 +64,7 @@ const LeaveRequest = ({
   const isExitPass =
     category.toString() === LeaveCategories.ExitPassRequest.toString();
   const isOfficialDuty =
-    category.toString() === LeaveCategories.OfficialDuty.toString();
+    category.toString() === LeaveCategories.OfficialDutyRequest.toString();
   const isLeaveOrAbsence = [
     LeaveCategories.LeaveRequest,
     LeaveCategories.AbsenceRequest,
@@ -151,7 +151,7 @@ const LeaveRequest = ({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {splitWords(LeaveCategories[category])} Request Form
+            {splitWords(LeaveCategories[category])} Form
           </DialogTitle>
         </DialogHeader>
 

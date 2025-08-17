@@ -28,7 +28,7 @@ const PurchaseForm = <TFieldValues extends FieldValues, TContext>({
         config={[
           {
             register: register("code" as Path<TFieldValues>),
-            label: "Purchase Requisition Code",
+            label: "Stock Requisition Code",
             readOnly: true,
             required: true,
             description: (

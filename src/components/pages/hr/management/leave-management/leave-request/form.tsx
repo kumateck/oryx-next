@@ -33,7 +33,8 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
   isExitPass,
   // isLeaveOrAbsence,
 }: Props<TFieldValues, TContext>) => {
-  console.log(isOfficialDuty);
+  console.log("is offical duety?", isOfficialDuty);
+  console.log("is isExit pass request?", isExitPass);
   return (
     <div className="w-full space-y-3">
       <FormWizard
@@ -50,7 +51,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {(!isOfficialDuty || !isExitPass) && (
+      {!isOfficialDuty && !isExitPass && (
         <div className="w-full my-5">
           <FormWizard
             className="w-full space-y-5"
@@ -163,7 +164,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {(!isOfficialDuty || !isExitPass) && (
+      {!isOfficialDuty && !isExitPass && (
         <div className="w-full flex items-center my-5 gap-4">
           <FormWizard
             config={[
