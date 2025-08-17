@@ -14,7 +14,7 @@ import { IssueFormValues } from "./types";
 interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   fields: FieldArrayWithId<IssueFormValues>[];
-  control: Control<TFieldValues, TContext>;
+  control?: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
 }
 const IssueForm = <TFieldValues extends FieldValues, TContext>({
