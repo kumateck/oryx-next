@@ -80,7 +80,7 @@ const LeaveRequest = ({
         endDate: data?.endDate ? data.endDate.toISOString() : "",
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
-        contactPersonNumber: data.contactPersonNumber ?? "0554290614",
+        contactPersonNumber: data.contactPersonNumber ?? "",
         destination: data.destination ?? "-",
         requestCategory: parseInt(
           data?.leaveCategory ?? "0",

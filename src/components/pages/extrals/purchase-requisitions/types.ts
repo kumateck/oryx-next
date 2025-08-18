@@ -23,9 +23,22 @@ export const CreatePurchaseRequisitionSchema = z.object({
   deliveryDate: z.date({
     message: "Delivery date is required",
   }),
-  items: z.array(objectSchema).min(1, {
-    message: "At least one service is required",
-  }),
+  items: z
+    .array(objectSchema)
+    .min(1, {
+      message: "At least one service is required",
+    })
+    .default([
+      {
+        itemId: {
+          value: "",
+          label: "",
+        },
+        itemCode: "",
+        stockQuantity: 0,
+        orderQuantity: 0,
+      },
+    ]),
 });
 
 export type CreatePurchaseRequisitionDto = z.infer<

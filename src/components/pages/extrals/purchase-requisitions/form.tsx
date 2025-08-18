@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Control,
   FieldArrayWithId,
@@ -37,6 +37,20 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
   handleItemsChange,
   fields,
 }: Props<TFieldValues, TContext>) => {
+  const stableAppend = useCallback(append, [append]);
+  useEffect(() => {
+    if (fields.length > 1) return;
+    stableAppend({
+      itemId: {
+        label: "",
+        value: "",
+      },
+      orderQuantity: 0,
+      itemCode: "",
+      stockQuantity: 0,
+    });
+  }, [fields.length, stableAppend]);
+
   return (
     <div className="w-full space-y-4">
       <div className="flex gap-2 w-full items-center justify-center">
@@ -158,11 +172,13 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
                     },
                   ]}
                 />
-                <Icon
-                  name="Trash"
-                  onClick={() => remove(id)}
-                  className="cursor-pointer text-red-600 w-fit"
-                />
+                {fields.length > 1 && (
+                  <Icon
+                    name="Trash"
+                    onClick={() => remove(id)}
+                    className="cursor-pointer text-red-600 w-fit"
+                  />
+                )}
                 {fields[fields.length - 1]?.id === item.id && (
                   <Icon
                     onClick={() =>

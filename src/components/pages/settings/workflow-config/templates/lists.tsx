@@ -16,6 +16,7 @@ import { useSelector } from "@/lib/redux/store";
 
 import TemplateCard from "./card";
 import PageWrapper from "@/components/layout/wrapper";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const PAGE_SIZE = 10; // or whatever your API page size is
 interface Props {
@@ -24,6 +25,8 @@ interface Props {
 const TemplateCards = ({ type }: Props) => {
   const [hasMore, setHasMore] = useState(true);
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchValue, 500);
 
   const [workflowForms, setWorkflowForms] = useState<FormDto[]>([]);
   // const [state, setState] = useState<TResult<FormTemplate> | null>();
@@ -52,6 +55,7 @@ const TemplateCards = ({ type }: Props) => {
       const response = await loadTemplates({
         page,
         pageSize: PAGE_SIZE,
+        searchQuery: debouncedValue,
         type,
       }).unwrap();
       const loadedQuestions = response.data || [];
