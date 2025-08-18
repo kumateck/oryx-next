@@ -67,6 +67,7 @@ export enum CodeModelTypes {
   ProductBatchNumber = "ProductBatchNumber",
   ProductionOrder = "ProductionOrder",
   Item = "Item",
+  ArNumber = "ArNumber",
 }
 
 export enum ApprovalDocument {

@@ -80,7 +80,9 @@ function Page() {
 
       <ServerDatatable
         onRowClick={(row) => {
-          router.push(`/qc/goods-receipt-note/${row.id}`);
+          router.push(
+            `/qc/goods-receipt-note/${row.id}?type=${kind || EMaterialKind.Raw}`,
+          );
         }}
         data={data}
         columns={columns}

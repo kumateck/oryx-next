@@ -15,7 +15,7 @@ import {
   CreateWarehouseRequest,
   WarehouseType, // GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   // NamingType,
-  // useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  // useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   // useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   usePostApiV1WarehouseMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -41,7 +41,7 @@ const Create = ({ isOpen, onClose }: Props) => {
   // const [loadCodeSettings] =
   //   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
   // const [loadCodeMyModel] =
-  //   useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  //   useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const [createWarehouse, { isLoading }] = usePostApiV1WarehouseMutation();
 
   const dispatch = useDispatch();

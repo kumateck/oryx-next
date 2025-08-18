@@ -16,11 +16,10 @@ import {
 import { CODE_SETTINGS, COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
   CreateMaterialRequest,
-  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   MaterialKind,
   NamingType,
   useGetApiV1CollectionByItemTypeQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   usePostApiV1MaterialMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -48,8 +47,7 @@ const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  const [loadCodeMyModel] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   const [createMaterial, { isLoading }] = usePostApiV1MaterialMutation();
   const { data } = useGetApiV1CollectionByItemTypeQuery({
@@ -110,7 +108,7 @@ const Create = ({ isOpen, onClose, kind }: Props) => {
           ? CODE_SETTINGS.modelTypes.RawMaterial
           : CODE_SETTINGS.modelTypes.PackageMaterial,
       prefix: codePrefix,
-    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+    };
 
     const res = await loadCodeMyModel(payload).unwrap();
     const generatePayload: GenerateCodeOptions = {

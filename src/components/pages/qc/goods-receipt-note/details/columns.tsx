@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
+  CodeModelTypes,
+  EMaterialKind,
   FormComplete,
   Units,
   WorkflowFormType,
@@ -14,15 +16,18 @@ import {
 import {
   BatchStatus,
   MaterialBatchDto,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { CreateSampleMaterial } from "./create-sample";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
 import StatusBadge from "@/shared/status-badge";
+import { generateARNumber, getArNumberPrefix } from "@/lib/batch-gen";
+import { CreateSampleFormData } from "./types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -126,12 +131,19 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
 }: DataTableRowActionsProps<TData>) {
   const { id } = useParams();
   const grnId = id as string;
+  const searchParams = useSearchParams();
+  const kind = searchParams.get("type") as unknown as EMaterialKind; // Extracts 'type' from URL
+
   const router = useRouter();
   const [startTestMutation] =
     usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation();
   const [checkSTPLinked] =
     useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery();
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const [openSample, setOpenSample] = useState(false);
+  const [details, setDetails] = useState<CreateSampleFormData>(
+    {} as CreateSampleFormData,
+  );
   const totqty = row.original.totalQuantity ?? 0;
   const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
   const qty = convertToLargestUnit(totqty, baseUnit);
@@ -150,6 +162,38 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
       );
     } catch (error) {
       ThrowErrorMessage(error);
+    }
+  };
+
+  const handlePickSample = async (payload: MaterialBatchDto) => {
+    try {
+      const dept = "QCD";
+
+      console.log(kind, "kind");
+      const type = Number(kind) === EMaterialKind.Raw ? "RM" : "PM";
+
+      const year = new Date().getFullYear();
+      const prefix = getArNumberPrefix(dept, type, year);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.ArNumber,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateARNumber({ dept, type, year, serial });
+      const data = {
+        materialBatchId: payload.id as string,
+        materialName: payload.material?.name as string,
+        batchNumber: payload.batchNumber as string,
+        arNumber: code,
+        quantity: `${qty.value} ${qty.unit}`,
+        sampleQuantity: "",
+        baseUnit,
+      };
+
+      setDetails(data);
+      setOpenSample(true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -199,7 +243,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
           <Button
             variant="ghost"
             className="flex cursor-pointer items-start justify-center gap-2"
-            onClick={() => setOpenSample(true)}
+            onClick={() => handlePickSample(row.original)}
             disabled={row.original.status !== BatchStatusEnum.Quarantine}
           >
             <Icon
@@ -210,19 +254,13 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
           </Button>
         </DropdownMenuItem>
       </TableMenuAction>
-      <CreateSampleMaterial
-        isOpen={openSample}
-        details={{
-          materialBatchId: row.original.id as string,
-          materialName: row.original.material?.name ?? "",
-          batchNumber: row.original.batchNumber ?? "",
-          arNumber: row.original?.batchNumber ?? "",
-          quantity: `${qty.value} ${qty.unit}`,
-          sampleQuantity: "",
-          baseUnit,
-        }}
-        onClose={() => setOpenSample(false)}
-      />
+      {openSample && (
+        <CreateSampleMaterial
+          isOpen={openSample}
+          details={details}
+          onClose={() => setOpenSample(false)}
+        />
+      )}
     </section>
   );
 }

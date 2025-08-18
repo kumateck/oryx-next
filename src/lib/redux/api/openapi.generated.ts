@@ -805,15 +805,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ConfigurationByModelTypeAndPrefix: build.query<
-      GetApiV1ConfigurationByModelTypeAndPrefixApiResponse,
-      GetApiV1ConfigurationByModelTypeAndPrefixApiArg
+    getApiV1ConfigurationByModelTypeCount: build.query<
+      GetApiV1ConfigurationByModelTypeCountApiResponse,
+      GetApiV1ConfigurationByModelTypeCountApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.modelType}/${queryArg.prefix}`,
+        url: `/api/v1/configuration/${queryArg.modelType}/count`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
+        },
+        params: {
+          prefix: queryArg.prefix,
         },
       }),
     }),
@@ -9049,13 +9052,13 @@ export type GetApiV1ConfigurationNamingTypesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ConfigurationByModelTypeAndPrefixApiResponse =
+export type GetApiV1ConfigurationByModelTypeCountApiResponse =
   /** status 200 OK */ number;
-export type GetApiV1ConfigurationByModelTypeAndPrefixApiArg = {
+export type GetApiV1ConfigurationByModelTypeCountApiArg = {
   /** The model type of which the count is need */
   modelType: string;
   /** The prefix of the particular model */
-  prefix: string;
+  prefix?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -23909,8 +23912,8 @@ export const {
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useGetApiV1ConfigurationNamingTypesQuery,
   useLazyGetApiV1ConfigurationNamingTypesQuery,
-  useGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useGetApiV1ConfigurationByModelTypeCountQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useGetApiV1CountriesQuery,
   useLazyGetApiV1CountriesQuery,
   usePostApiV1CustomersMutation,

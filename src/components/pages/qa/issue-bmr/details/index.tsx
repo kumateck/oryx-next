@@ -15,7 +15,7 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
   usePutApiV1ProductionScheduleManufacturingIssueByIdMutation,
@@ -43,8 +43,7 @@ const IssueDetails = () => {
 
   const [IssueBMR, { isLoading: isIssueBmrLoading }] =
     usePutApiV1ProductionScheduleManufacturingIssueByIdMutation();
-  const [loadCountConfig] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const [productId, setProductId] = useState<string>("");
   const [scheduleId, setScheduleId] = useState<string>("");
   const {

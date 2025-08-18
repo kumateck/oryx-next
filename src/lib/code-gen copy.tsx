@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   NamingType,
   useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
 } from "./redux/api/openapi.generated";
 import { GenerateCodeOptions, generateCode } from "./utils";
 
@@ -25,8 +25,7 @@ export const useCodeGen = (
       modelType,
     });
 
-  const [loadCountConfig] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const generate = async () => {
     if (!codeConfig) return null;
 

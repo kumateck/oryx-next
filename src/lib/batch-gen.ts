@@ -71,3 +71,37 @@ export const getBatchPrefix = (productCode: string, year: number) => {
 
   return `${productPart}${yearCode}`;
 };
+
+type MaterialType = "RM" | "PM";
+type Stage = "BP" | "IP" | "FP";
+
+interface ARNumberOptions {
+  dept: string; // e.g. "QCD"
+  type: MaterialType | Stage; // e.g. "RM" or "FP"
+  year: number; // e.g. 2025
+  serial: number; // e.g. 1, auto-incremented externally
+}
+
+export function generateARNumber({
+  dept,
+  type,
+  year,
+  serial,
+}: ARNumberOptions): string {
+  // Last 2 digits of year
+  const yearCode = year.toString().slice(-2);
+
+  // Series padded to 4 digits
+  const series = serial.toString().padStart(4, "0");
+
+  return `${dept}/${type}/${yearCode}/${series}`;
+}
+
+export const getArNumberPrefix = (
+  dept: string,
+  type: MaterialType | Stage,
+  year: number,
+): string => {
+  const yearCode = year.toString().slice(-2);
+  return `${dept}/${type}/${yearCode}`;
+};

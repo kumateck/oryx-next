@@ -16,10 +16,9 @@ import {
 import { CODE_SETTINGS } from "@/lib";
 import {
   CreateDepartmentRequest,
-  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   NamingType,
   useGetApiV1DepartmentQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   usePostApiV1DepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -51,9 +50,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     page: 1,
     pageSize: 1000,
   });
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-  // const [loadCodeModelCount] = useLazyGetApiV1DepartmentQuery();
+  const [loadCodeMyModel] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   const {
     register,
@@ -88,7 +85,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     const payload = {
       modelType: CODE_SETTINGS.modelTypes.Department,
       prefix: codePrefix,
-    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+    };
     const res = await loadCodeMyModel(payload).unwrap();
     const generatePayload: GenerateCodeOptions = {
       maxlength: Number(getCodeSettings?.maximumNameLength),
