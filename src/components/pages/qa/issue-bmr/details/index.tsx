@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
+  CodeModelTypes,
   ErrorResponse,
   Units,
   convertToLargestUnit,
@@ -14,7 +15,8 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  useGetApiV1ProductionScheduleManufacturingByIdQuery,
+  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
   usePutApiV1ProductionScheduleManufacturingIssueByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -25,6 +27,7 @@ import { CreateIssueValidator, IssueRequestDto } from "../types";
 import IssueForm from "./form";
 import { MaterialRequestDto } from "./type";
 import ProductView from "./view";
+import { generateBatchNumber, getBatchPrefix } from "@/lib/batch-gen";
 
 const IssueDetails = () => {
   const router = useRouter();
@@ -32,16 +35,18 @@ const IssueDetails = () => {
   const bmrId = id as string;
   const [rawLists, setRawLists] = useState<MaterialRequestDto[]>([]);
   const [packageLists, setPackageLists] = useState<MaterialRequestDto[]>([]);
-  const { data } = useGetApiV1ProductionScheduleManufacturingByIdQuery({
-    id: bmrId,
-  });
+  const [loadProductBMR] =
+    useLazyGetApiV1ProductionScheduleManufacturingByIdQuery();
 
   const [updateManufacturingRecord, { isLoading }] =
     usePutApiV1ProductionScheduleManufacturingByIdMutation();
 
   const [IssueBMR, { isLoading: isIssueBmrLoading }] =
     usePutApiV1ProductionScheduleManufacturingIssueByIdMutation();
-
+  const [loadCountConfig] =
+    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
+  const [productId, setProductId] = useState<string>("");
+  const [scheduleId, setScheduleId] = useState<string>("");
   const {
     control,
     handleSubmit,
@@ -51,23 +56,42 @@ const IssueDetails = () => {
   } = useForm<IssueRequestDto>({
     resolver: CreateIssueValidator,
     mode: "all",
-    defaultValues: {
-      batchQuantity: data?.batchQuantity?.toString(),
-    },
   });
 
   useEffect(() => {
-    if (data) {
+    loadBatchInfo(bmrId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bmrId]);
+
+  const loadBatchInfo = async (id: string) => {
+    try {
+      const data = await loadProductBMR({ id }).unwrap();
       const batch = convertToLargestUnit(
         data?.batchQuantity as number,
         data?.product?.baseUoM?.symbol as Units,
       );
       setValue("batchQuantity", batch?.value?.toString());
       setValue("uom", batch?.unit?.toString());
-    }
+      setProductId(data?.product?.id as string);
+      setScheduleId(data?.productionSchedule?.id as string);
+      const productCode = data?.product?.code as string;
+      const year = new Date().getFullYear();
+      const prefix = getBatchPrefix(productCode, year);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.ProductBatchNumber,
+        prefix,
+      }).unwrap();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.batchQuantity]);
+      const batchNumer = generateBatchNumber(
+        productCode,
+        year,
+        countConfigResponse + 1,
+      );
+      setValue("batchNumber", batchNumer);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onSubmit = async (data: IssueRequestDto) => {
     try {
@@ -115,10 +139,10 @@ const IssueDetails = () => {
             <IssueForm register={register} control={control} errors={errors} />
           </CardContent>
         </Card>
-        {data?.product?.id && (
+        {productId && scheduleId && (
           <ProductView
-            productId={data?.product?.id as string}
-            scheduleId={data?.productionSchedule?.id as string}
+            productId={productId}
+            scheduleId={scheduleId}
             rawLists={rawLists}
             packageLists={packageLists}
             setRawLists={setRawLists}

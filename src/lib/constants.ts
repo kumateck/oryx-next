@@ -69,7 +69,7 @@ export const CODE_SETTINGS = {
     ProductAnalyticalRawData: "ProductAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
     Service: "Service",
-    // GeneralInventory: "GeneralInventory",
+    ProductBatchNumber: "ProductBatchNumber",
     ProductionOrder: "ProductionOrder",
     Item: "Item",
   },
