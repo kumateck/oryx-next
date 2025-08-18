@@ -10,6 +10,8 @@ import {
   getSmallestUnit,
 } from "@/lib";
 import { DepartmentStockTransferDtoRead } from "@/lib/redux/api/openapi.generated";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 export const getColumns = (
   type: TransferType,
@@ -65,6 +67,26 @@ export const getColumns = (
           {formattedQty.value}
           {formattedQty.unit}
         </div>
+      );
+    },
+  },
+  {
+    accessorKey: "reason",
+    header: "Reason",
+    cell: ({ row }) => {
+      const reason = row.original.reason as string;
+
+      return (
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className="max-w-[200px] truncate cursor-pointer text-sm text-neutral-default text-ellipsis">
+              <TheAduseiEditorViewer content={reason} />
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-96 ">
+            <TheAduseiEditorViewer content={reason} />
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },

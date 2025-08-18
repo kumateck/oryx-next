@@ -15,6 +15,7 @@ import {
   convertToLargestUnit,
   getLargestUnit,
   getSmallestUnit,
+  sanitizeNumber,
   Units,
 } from "@/lib";
 import { TableMenuAction } from "@/shared/table-menu";
@@ -33,10 +34,11 @@ export function PurchaseDataTableRowActions<
       {} as MaterialDepartmentWithWarehouseStockDto,
     );
 
-  const difference = row.original?.material?.totalStock ?? 0;
+  const difference =
+    sanitizeNumber(row.original?.material?.totalStock) -
+    sanitizeNumber(row.original?.warehouseStock);
 
   const canTransferStock = difference > 0;
-
   return (
     <div className="flex items-center justify-end gap-2">
       {canTransferStock && (
