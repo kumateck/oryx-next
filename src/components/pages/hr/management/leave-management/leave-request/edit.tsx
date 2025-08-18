@@ -77,7 +77,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
-        startDate: data.startDate.toISOString(),
+        startDate: data.startDate ? data.startDate.toISOString() : "",
         endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson as string,

@@ -418,8 +418,8 @@ export enum ShipmentStatus {
 
 export enum WaybillStatus {
   New = 0,
-  Cleared = 1,
-  Arrived = 3,
+  Cleared = 3,
+  Arrived = 4,
 }
 export enum BillingSheetStatus {
   Pending,

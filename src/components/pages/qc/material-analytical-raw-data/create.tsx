@@ -111,7 +111,6 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
         stpId: data.stpId.value,
         formId: data.formId.value,
       };
-      console.log("this is payload", payload);
       // 1. Create the material analytical raw data
       const ardId = await createMaterialArdMutation({
         module: AuditModules.warehouse.name,

@@ -76,8 +76,8 @@ const LeaveRequest = ({
       // 1. Create the leave request
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate?.toISOString() as string,
+        startDate: data?.startDate ? data.startDate.toISOString() : "",
+        endDate: data?.endDate ? data.endDate.toISOString() : "",
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "0554290614",

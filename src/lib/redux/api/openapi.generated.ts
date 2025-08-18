@@ -2019,6 +2019,44 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProcurementInventoryPurchasedItems: build.query<
+      GetApiV1ProcurementInventoryPurchasedItemsApiResponse,
+      GetApiV1ProcurementInventoryPurchasedItemsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/purchased-items`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProcurementInventoryItemsByIdApprove: build.mutation<
+      PostApiV1ProcurementInventoryItemsByIdApproveApiResponse,
+      PostApiV1ProcurementInventoryItemsByIdApproveApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/items/${queryArg.id}/approve`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProcurementInventoryItemsByIdReject: build.mutation<
+      PostApiV1ProcurementInventoryItemsByIdRejectApiResponse,
+      PostApiV1ProcurementInventoryItemsByIdRejectApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/items/${queryArg.id}/reject`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProcurementInventoryMemoCodeGenerate: build.query<
       GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse,
       GetApiV1ProcurementInventoryMemoCodeGenerateApiArg
@@ -9869,6 +9907,30 @@ export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiResponse =
   unknown;
 export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg = {
   /** The ID of the memo item. */
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProcurementInventoryPurchasedItemsApiResponse =
+  /** status 200 OK */ StockEntryDtoRead[];
+export type GetApiV1ProcurementInventoryPurchasedItemsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProcurementInventoryItemsByIdApproveApiResponse = unknown;
+export type PostApiV1ProcurementInventoryItemsByIdApproveApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProcurementInventoryItemsByIdRejectApiResponse = unknown;
+export type PostApiV1ProcurementInventoryItemsByIdRejectApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -19725,6 +19787,28 @@ export type MemoDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type StockEntryDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDto;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
+export type StockEntryDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDtoRead;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
 export type CreateItemsRequest = {
   name: string;
   code: string;
@@ -23851,6 +23935,10 @@ export const {
   useGetApiV1ProcurementInventoryMemoByIdQuery,
   useLazyGetApiV1ProcurementInventoryMemoByIdQuery,
   usePostApiV1ProcurementInventoryMemoItemByIdMarkPaidMutation,
+  useGetApiV1ProcurementInventoryPurchasedItemsQuery,
+  useLazyGetApiV1ProcurementInventoryPurchasedItemsQuery,
+  usePostApiV1ProcurementInventoryItemsByIdApproveMutation,
+  usePostApiV1ProcurementInventoryItemsByIdRejectMutation,
   useGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   useLazyGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   usePostApiV1ItemsMutation,
