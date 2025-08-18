@@ -77,10 +77,14 @@ export const Create = ({ isOpen, onClose }: Props) => {
 
   const stpId = watch("stpId");
   useEffect(() => {
-    if (stpId) {
-      loadProductstpSpecification({ id: stpId.value });
+    const productStp = productStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    if (productStp) {
+      loadProductstpSpecification({ id: productStp?.product?.id as string });
     }
-  }, [stpId, loadProductstpSpecification]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
   useEffect(() => {
     if (data) {
       setValue("specNumber", data.specificationNumber ?? "");
@@ -96,7 +100,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   //fuction for creating product analytical raw data
   const onSubmit = async (data: ProductArdSchemaType) => {
     const productStp = productStps?.data?.find(
-      (stp) => stp.id === data.stpId.value,
+      (stp) => stp?.id === data.stpId.value,
     );
     if (!productStp || !productStp.stpNumber) {
       toast.error("Product STP not found. Please select a valid STP.");
