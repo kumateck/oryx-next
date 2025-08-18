@@ -1,0 +1,73 @@
+// utils/batchNumber.ts
+const yearCodeMap: Record<number, string> = {
+  2018: "A",
+  2019: "B",
+  2020: "C",
+  2021: "D",
+  2022: "E",
+  2023: "F",
+  2024: "G",
+  2025: "J",
+  2026: "K",
+  2027: "L",
+  2028: "M",
+  2029: "N",
+  2030: "P",
+  2031: "R",
+  2032: "S",
+  2033: "T",
+  2034: "U",
+  2035: "V",
+  2036: "W",
+  2037: "Y",
+  2038: "Z",
+};
+
+function transformProductCode(productCode: string): string {
+  // Matches patterns like HH-003, NT-088, P-001, etc.
+  const match = productCode.match(/^([A-Z]{1,2})-R?(\d{3})$/i);
+  if (!match) {
+    throw new Error(`Invalid product code format: ${productCode}`);
+  }
+
+  const [, letters, digits] = match;
+
+  let letterPart: string;
+  if (letters.length === 2) {
+    // Take second letter if two are given
+    letterPart = letters[1];
+  } else {
+    // Take first if only one given
+    letterPart = letters[0];
+  }
+
+  return (letterPart + digits).toUpperCase();
+}
+
+export function generateBatchNumber(
+  productCode: string,
+  year: number,
+  serial: number,
+): string {
+  const productPart = transformProductCode(productCode);
+
+  const yearCode = yearCodeMap[year];
+  if (!yearCode) {
+    throw new Error(`Year ${year} not supported`);
+  }
+
+  const serialPart = serial.toString().padStart(3, "0");
+
+  return `${productPart}${yearCode}${serialPart}`;
+}
+
+export const getBatchPrefix = (productCode: string, year: number) => {
+  const productPart = transformProductCode(productCode);
+
+  const yearCode = yearCodeMap[year];
+  if (!yearCode) {
+    throw new Error(`Year ${year} not supported`);
+  }
+
+  return `${productPart}${yearCode}`;
+};
