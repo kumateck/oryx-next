@@ -20,17 +20,14 @@ import {
   AuditModules,
   CodeModelTypes,
   EMaterialKind,
-  ErrorResponse,
   Option,
   Units,
   convertToSmallestUnit,
   getLargestUnit,
-  isErrorResponse,
 } from "@/lib";
 import { useCodeGen } from "@/lib/code-gen";
 import {
-  ProductionScheduleProcurementDto,
-  ProductionScheduleProcurementPackageDto,
+  MaterialDepartmentWithWarehouseStockDto,
   useLazyGetApiV1MaterialByMaterialIdDepartmentStockAndQuantityQuery,
   usePostApiV1ProductionScheduleStockTransferMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -39,13 +36,13 @@ import { commonActions } from "@/lib/redux/slices/common";
 import TransferForm from "./form";
 import { CreateTransferValidator, TransferRequestDto } from "./type";
 import useCurrentUser from "@/hooks/use-current";
+import ThrowErrorMessage from "@/lib/throw-error";
+import MaterialInfo from "./material";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  materialInfo:
-    | ProductionScheduleProcurementDto
-    | ProductionScheduleProcurementPackageDto;
+  materialInfo: MaterialDepartmentWithWarehouseStockDto;
 }
 
 const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
@@ -55,7 +52,6 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
   const productId = pid as string;
   const { user } = useCurrentUser();
   const myDepartment = user?.department?.id;
-  // const [loadCodeModelCount] = useLazyGetApiV1RequisitionQuery();
 
   const [saveMutation, { isLoading }] =
     usePostApiV1ProductionScheduleStockTransferMutation();
@@ -105,15 +101,14 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
           productionScheduleId: scheduleId,
           productId,
           reason: data.reason,
-          requiredQuantity: materialInfo.quantityNeeded,
           materialId: materialInfo.material?.id as string,
-          uoMId: materialInfo.baseUoM?.id as string,
+          uoMId: materialInfo.uoM?.id as string,
           sources: data.sources?.map((item) => {
             return {
               fromDepartmentId: item.department?.value as string,
               quantity: convertToSmallestUnit(
                 item.quantity,
-                getLargestUnit(materialInfo.baseUoM?.symbol as Units),
+                getLargestUnit(materialInfo.uoM?.symbol as Units),
               ).value,
             };
           }),
@@ -123,7 +118,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
       dispatch(commonActions.setTriggerReload());
       onClose();
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      ThrowErrorMessage(error);
     }
   };
   const { fields, append, remove } = useFieldArray({
@@ -150,7 +145,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
     handleAllEligibles(
       sources,
       materialInfo?.material?.id as string,
-      materialInfo?.baseUoM?.symbol as Units,
+      materialInfo?.uoM?.symbol as Units,
       materialInfo?.material?.kind as EMaterialKind,
     );
 
@@ -215,6 +210,7 @@ const InternalTransfers = ({ isOpen, onClose, materialInfo }: Props) => {
         <DialogHeader>
           <DialogTitle>Stock Transfer Request</DialogTitle>
         </DialogHeader>
+        <MaterialInfo data={materialInfo} />
         <form onSubmit={handleSubmit(onSubmit)}>
           <TransferForm
             register={register}

@@ -35,20 +35,3 @@ export const CreateTransferValidator = zodResolver(CreateTransferSchema);
 export type DepartmentMap = {
   [key: string]: Option[];
 };
-
-// {
-//   "code": "string",
-//   "materialId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//   "reason": "string",
-//   "requiredQuantity": 0,
-//   "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//   "productionScheduleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//   "productionActivityStepId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//   "sources": [
-//     {
-//       "fromDepartmentId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//       "quantity": 0,
-//       "uoMId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-//     }
-//   ]
-// }
