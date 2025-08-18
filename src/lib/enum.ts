@@ -417,7 +417,7 @@ export enum ShipmentStatus {
 }
 
 export enum WaybillStatus {
-  new = 0,
+  New = 0,
   Cleared = 3,
   Arrived = 4,
 }
