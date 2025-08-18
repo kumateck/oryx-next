@@ -2249,6 +2249,32 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    postApiV1JobRequests: build.mutation<
+      PostApiV1JobRequestsApiResponse,
+      PostApiV1JobRequestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/job-requests`,
+        method: "POST",
+        body: queryArg.createJobRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1JobRequests: build.query<
+      GetApiV1JobRequestsApiResponse,
+      GetApiV1JobRequestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/job-requests`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1LeaveEntitlement: build.mutation<
       PostApiV1LeaveEntitlementApiResponse,
       PostApiV1LeaveEntitlementApiArg
@@ -10068,6 +10094,22 @@ export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStock
     subModule?: any;
     issueStockAgainstRequisitionRequest: IssueStockAgainstRequisitionRequest;
   };
+export type PostApiV1JobRequestsApiResponse = /** status 200 OK */ string;
+export type PostApiV1JobRequestsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createJobRequest: CreateJobRequest;
+};
+export type GetApiV1JobRequestsApiResponse =
+  /** status 200 OK */ JobRequestRead[];
+export type GetApiV1JobRequestsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
   /** The module this request falls under */
@@ -19928,6 +19970,63 @@ export type IssueStockAgainstRequisitionRequest = {
     [key: string]: number | null;
   } | null;
 };
+export type JobStatus = 0 | 1 | 2 | 3 | 4;
+export type CreateJobRequest = {
+  departmentId: string;
+  location?: string | null;
+  equipmentId?: string;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById: string;
+};
+export type JobRequest = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  departmentId?: string;
+  department?: Department;
+  location?: string | null;
+  equipmentId?: string;
+  equipment?: Equipment;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById?: string;
+  issuedBy?: User;
+};
+export type JobRequestRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  departmentId?: string;
+  department?: DepartmentRead;
+  location?: string | null;
+  equipmentId?: string;
+  equipment?: EquipmentRead;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById?: string;
+  issuedBy?: UserRead;
+};
 export type LeaveEntitlementDto = {
   employeeId: string;
   year: number;
@@ -20629,7 +20728,7 @@ export type MaterialWithWarehouseStockDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateMaterialAnalyticalRawDataRequest = {
-  specNumber: string;
+  specNumber?: string | null;
   description?: string | null;
   stpId: string;
   formId: string;
@@ -22568,7 +22667,7 @@ export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
 };
 export type CreateRecoverableItemReportRequest = {
   itemId: string;
-  quantity?: number;
+  quantity: number;
   reason?: string | null;
 };
 export type RecoverableItemReportDto = {
@@ -23959,6 +24058,9 @@ export const {
   usePutApiV1ItemsStockRequisitionsByIdMutation,
   usePostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionMutation,
   usePostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionMutation,
+  usePostApiV1JobRequestsMutation,
+  useGetApiV1JobRequestsQuery,
+  useLazyGetApiV1JobRequestsQuery,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,

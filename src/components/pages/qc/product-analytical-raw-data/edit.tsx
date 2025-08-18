@@ -69,8 +69,11 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   });
   const stpId = watch("stpId");
   useEffect(() => {
-    if (stpId) {
-      loadProductstpSpecification({ id: stpId.value });
+    const productStp = productStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    if (productStp) {
+      loadProductstpSpecification({ id: productStp?.product?.id as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stpId]);

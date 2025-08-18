@@ -80,13 +80,16 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
 
-  const stpIds = watch("stpId");
+  const stpId = watch("stpId");
   useEffect(() => {
-    if (stpIds) {
-      loadMaterialstpSpecification({ id: stpIds.value });
+    if (!stpId?.value) return;
+    const material = materialStps?.data?.find((stp) => stp.id === stpId?.value);
+    console.log(material);
+    if (material) {
+      loadMaterialstpSpecification({ id: material?.material?.id as string });
     }
-    //
-  }, [stpIds, loadMaterialstpSpecification]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId, loadMaterialstpSpecification]);
   useEffect(() => {
     if (data) {
       setValue("specNumber", data.specificationNumber ?? "");

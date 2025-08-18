@@ -72,10 +72,15 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
 
   const stpId = watch("stpId");
   useEffect(() => {
-    if (stpId) {
-      loadMaterialstpSpecification({ id: stpId.value });
+    const material = materialStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    console.log(material);
+    if (material) {
+      loadMaterialstpSpecification({ id: material?.material?.id as string });
     }
-  }, [stpId, loadMaterialstpSpecification]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
   useEffect(() => {
     if (data) {
       setValue("specNumber", data.specificationNumber ?? "");

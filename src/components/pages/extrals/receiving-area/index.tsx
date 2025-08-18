@@ -42,7 +42,7 @@ function Page() {
   return (
     <PageWrapper className="w-full space-y-4">
       <div className="flex w-full items-center justify-between">
-        <PageTitle title="Available Stocks" />
+        <PageTitle title="Receiving Area" />
       </div>
       <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4 gap-6 rounded-none border-b border-b-neutral-300 bg-transparent p-0 py-0">

@@ -408,7 +408,7 @@ export const ROUTES: Route[] = [
         items: [
           {
             title: "Receiving Area",
-            url: "/warehouse/receiving-area",
+            url: "/extrals/receiving-area",
           },
           {
             title: "Available Stocks",
