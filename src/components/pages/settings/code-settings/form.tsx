@@ -8,23 +8,19 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { CodeModelTypesOptions, CodeNameTypeOptions, InputTypes } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  codeModelTypesOptions: Option[];
-  codeNameTypesOptions: Option[];
   defaultValues?: TFieldValues;
 }
 const CodeSettingsForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  codeModelTypesOptions,
   defaultValues,
-  codeNameTypesOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -41,7 +37,7 @@ const CodeSettingsForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             onModal: true,
             placeholder: "Select item",
-            options: codeModelTypesOptions,
+            options: CodeModelTypesOptions,
             errors,
           },
           {
@@ -53,7 +49,7 @@ const CodeSettingsForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             onModal: true,
             placeholder: "Select name",
-            options: codeNameTypesOptions,
+            options: CodeNameTypeOptions,
             errors,
           },
 

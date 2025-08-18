@@ -137,6 +137,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
           id={row.original.id as string}
         />
       )}
+
       {isStartTestModalOpen && (
         <ConfirmDialog
           open={isStartTestModalOpen}

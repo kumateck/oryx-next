@@ -805,15 +805,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ConfigurationByModelTypeAndPrefix: build.query<
-      GetApiV1ConfigurationByModelTypeAndPrefixApiResponse,
-      GetApiV1ConfigurationByModelTypeAndPrefixApiArg
+    getApiV1ConfigurationByModelTypeCount: build.query<
+      GetApiV1ConfigurationByModelTypeCountApiResponse,
+      GetApiV1ConfigurationByModelTypeCountApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.modelType}/${queryArg.prefix}`,
+        url: `/api/v1/configuration/${queryArg.modelType}/count`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
+        },
+        params: {
+          prefix: queryArg.prefix,
         },
       }),
     }),
@@ -2019,6 +2022,44 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProcurementInventoryPurchasedItems: build.query<
+      GetApiV1ProcurementInventoryPurchasedItemsApiResponse,
+      GetApiV1ProcurementInventoryPurchasedItemsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/purchased-items`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProcurementInventoryItemsByIdApprove: build.mutation<
+      PostApiV1ProcurementInventoryItemsByIdApproveApiResponse,
+      PostApiV1ProcurementInventoryItemsByIdApproveApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/items/${queryArg.id}/approve`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProcurementInventoryItemsByIdReject: build.mutation<
+      PostApiV1ProcurementInventoryItemsByIdRejectApiResponse,
+      PostApiV1ProcurementInventoryItemsByIdRejectApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/inventory/items/${queryArg.id}/reject`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     getApiV1ProcurementInventoryMemoCodeGenerate: build.query<
       GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse,
       GetApiV1ProcurementInventoryMemoCodeGenerateApiArg
@@ -2211,6 +2252,32 @@ const injectedRtkApi = api.injectEndpoints({
           },
         }),
       }),
+    postApiV1JobRequests: build.mutation<
+      PostApiV1JobRequestsApiResponse,
+      PostApiV1JobRequestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/job-requests`,
+        method: "POST",
+        body: queryArg.createJobRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1JobRequests: build.query<
+      GetApiV1JobRequestsApiResponse,
+      GetApiV1JobRequestsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/job-requests`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1LeaveEntitlement: build.mutation<
       PostApiV1LeaveEntitlementApiResponse,
       PostApiV1LeaveEntitlementApiArg
@@ -2976,6 +3043,24 @@ const injectedRtkApi = api.injectEndpoints({
           SubModule: queryArg.subModule,
         },
         params: {
+          materialKind: queryArg.materialKind,
+        },
+      }),
+    }),
+    getApiV1MaterialRejects: build.query<
+      GetApiV1MaterialRejectsApiResponse,
+      GetApiV1MaterialRejectsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/rejects`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
           materialKind: queryArg.materialKind,
         },
       }),
@@ -6092,7 +6177,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/v1/production-schedule/allocate-products`,
         method: "POST",
-        body: queryArg.allocateProductionOrder,
+        body: queryArg.allocateProductionOrderRequest,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -8967,13 +9052,13 @@ export type GetApiV1ConfigurationNamingTypesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ConfigurationByModelTypeAndPrefixApiResponse =
+export type GetApiV1ConfigurationByModelTypeCountApiResponse =
   /** status 200 OK */ number;
-export type GetApiV1ConfigurationByModelTypeAndPrefixApiArg = {
+export type GetApiV1ConfigurationByModelTypeCountApiArg = {
   /** The model type of which the count is need */
   modelType: string;
   /** The prefix of the particular model */
-  prefix: string;
+  prefix?: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -9857,6 +9942,30 @@ export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1ProcurementInventoryPurchasedItemsApiResponse =
+  /** status 200 OK */ StockEntryDtoRead[];
+export type GetApiV1ProcurementInventoryPurchasedItemsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProcurementInventoryItemsByIdApproveApiResponse = unknown;
+export type PostApiV1ProcurementInventoryItemsByIdApproveApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProcurementInventoryItemsByIdRejectApiResponse = unknown;
+export type PostApiV1ProcurementInventoryItemsByIdRejectApiArg = {
+  id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse =
   /** status 200 OK */ string;
 export type GetApiV1ProcurementInventoryMemoCodeGenerateApiArg = {
@@ -9988,6 +10097,22 @@ export type PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStock
     subModule?: any;
     issueStockAgainstRequisitionRequest: IssueStockAgainstRequisitionRequest;
   };
+export type PostApiV1JobRequestsApiResponse = /** status 200 OK */ string;
+export type PostApiV1JobRequestsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createJobRequest: CreateJobRequest;
+};
+export type GetApiV1JobRequestsApiResponse =
+  /** status 200 OK */ JobRequestRead[];
+export type GetApiV1JobRequestsApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1LeaveEntitlementApiResponse = /** status 200 OK */ string;
 export type PostApiV1LeaveEntitlementApiArg = {
   /** The module this request falls under */
@@ -10548,6 +10673,18 @@ export type GetApiV1MaterialBatchesExpiredApiArg = {
 export type GetApiV1MaterialMaterialSpecsNotLinkedApiResponse =
   /** status 200 OK */ MaterialDto[];
 export type GetApiV1MaterialMaterialSpecsNotLinkedApiArg = {
+  materialKind?: MaterialKind;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1MaterialRejectsApiResponse =
+  /** status 200 OK */ MaterialDto[];
+export type GetApiV1MaterialRejectsApiArg = {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
   materialKind?: MaterialKind;
   /** The module this request falls under */
   module?: any;
@@ -12860,7 +12997,7 @@ export type PostApiV1ProductionScheduleAllocateProductsApiArg = {
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
-  allocateProductionOrder: AllocateProductionOrder;
+  allocateProductionOrderRequest: AllocateProductionOrderRequest;
 };
 export type GetApiV1ProductionScheduleSummaryReportApiResponse =
   /** status 200 OK */ ProductionScheduleReportDtoRead[];
@@ -15052,7 +15189,7 @@ export type EmploymentHistoryDto = {
   position?: string | null;
 };
 export type EmployeeLevel = 0 | 1 | 2;
-export type EmployeeStatus = 0 | 1;
+export type EmployeeStatus = 0 | 1 | 2;
 export type EmployeeActiveStatus = 0 | 1 | 2 | 3;
 export type EmployeeInactiveStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type EmployeeDto = {
@@ -19053,6 +19190,10 @@ export type CreateDamagedStockRequestRead = {
 };
 export type InventoryClassification = 0 | 1;
 export type Store = 0 | 1 | 2;
+export type ItemCategoryDto = {
+  id?: string;
+  name?: string | null;
+};
 export type ItemDto = {
   id?: string;
   createdBy?: UserDto;
@@ -19061,7 +19202,6 @@ export type ItemDto = {
   name?: string | null;
   code?: string | null;
   classification?: InventoryClassification;
-  unitOfMeasureId?: string;
   unitOfMeasure?: UnitOfMeasureDto;
   hasBatch?: boolean;
   store?: Store;
@@ -19070,6 +19210,8 @@ export type ItemDto = {
   reorderLevel?: number;
   isActive?: boolean;
   description?: string | null;
+  itemCategoryId?: string;
+  itemCategory?: ItemCategoryDto;
   availableQuantity?: number;
 };
 export type DamagedStockDto = {
@@ -19545,7 +19687,6 @@ export type VendorItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  itemId?: string;
   item?: ItemDto;
 };
 export type VendorDto = {
@@ -19691,6 +19832,28 @@ export type MemoDtoIEnumerablePaginateableRead = {
   startPageIndex?: number;
   stopPageIndex?: number;
 };
+export type StockEntryDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDto;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
+export type StockEntryDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDtoRead;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
 export type CreateItemsRequest = {
   name: string;
   code: string;
@@ -19702,7 +19865,7 @@ export type CreateItemsRequest = {
   reorderLevel?: number;
   store: Store;
   isActive: boolean;
-  category?: string | null;
+  itemCategoryId?: string | null;
   description?: string | null;
 };
 export type ItemDtoIEnumerablePaginateable = {
@@ -19809,6 +19972,63 @@ export type IssueStockAgainstRequisitionRequest = {
   quantitiesToIssue?: {
     [key: string]: number | null;
   } | null;
+};
+export type JobStatus = 0 | 1 | 2 | 3 | 4;
+export type CreateJobRequest = {
+  departmentId: string;
+  location?: string | null;
+  equipmentId?: string;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById: string;
+};
+export type JobRequest = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  departmentId?: string;
+  department?: Department;
+  location?: string | null;
+  equipmentId?: string;
+  equipment?: Equipment;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById?: string;
+  issuedBy?: User;
+};
+export type JobRequestRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: UserRead;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: UserRead;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: UserRead;
+  departmentId?: string;
+  department?: DepartmentRead;
+  location?: string | null;
+  equipmentId?: string;
+  equipment?: EquipmentRead;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById?: string;
+  issuedBy?: UserRead;
 };
 export type LeaveEntitlementDto = {
   employeeId: string;
@@ -20511,7 +20731,7 @@ export type MaterialWithWarehouseStockDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateMaterialAnalyticalRawDataRequest = {
-  specNumber: string;
+  specNumber?: string | null;
   description?: string | null;
   stpId: string;
   formId: string;
@@ -21528,6 +21748,7 @@ export type FinishedGoodsTransferNoteDto = {
   isApproved?: boolean;
   loose?: number;
   allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type FinishedGoodsTransferNoteDtoRead = {
   id?: string;
@@ -21548,6 +21769,7 @@ export type FinishedGoodsTransferNoteDtoRead = {
   isApproved?: boolean;
   loose?: number;
   allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type ProductionOrderProductQuantityDto = {
   finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
@@ -22285,17 +22507,17 @@ export type ApprovedProductDtoRead = {
   quantityPerPack?: number;
   totalLoose?: number;
 };
-export type AllocateProductQuantity = {
+export type AllocateProductQuantityRequest = {
   finishedGoodsTransferNoteId?: string;
   quantity?: number;
 };
-export type AllocateProductionOrderProduct = {
+export type AllocateProductionOrderProductRequest = {
   productId?: string;
-  fulfilledQuantites?: AllocateProductQuantity[] | null;
+  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
 };
-export type AllocateProductionOrder = {
+export type AllocateProductionOrderRequest = {
   productionOrderId?: string;
-  products?: AllocateProductionOrderProduct[] | null;
+  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
@@ -22448,14 +22670,13 @@ export type ProductStandardTestProcedureDtoIEnumerablePaginateable = {
 };
 export type CreateRecoverableItemReportRequest = {
   itemId: string;
-  quantity?: number;
+  quantity: number;
   reason?: string | null;
 };
 export type RecoverableItemReportDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  itemId?: string;
   item?: ItemDto;
   quantity?: number;
   reason?: string | null;
@@ -23691,8 +23912,8 @@ export const {
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   useGetApiV1ConfigurationNamingTypesQuery,
   useLazyGetApiV1ConfigurationNamingTypesQuery,
-  useGetApiV1ConfigurationByModelTypeAndPrefixQuery,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useGetApiV1ConfigurationByModelTypeCountQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useGetApiV1CountriesQuery,
   useLazyGetApiV1CountriesQuery,
   usePostApiV1CustomersMutation,
@@ -23816,6 +24037,10 @@ export const {
   useGetApiV1ProcurementInventoryMemoByIdQuery,
   useLazyGetApiV1ProcurementInventoryMemoByIdQuery,
   usePostApiV1ProcurementInventoryMemoItemByIdMarkPaidMutation,
+  useGetApiV1ProcurementInventoryPurchasedItemsQuery,
+  useLazyGetApiV1ProcurementInventoryPurchasedItemsQuery,
+  usePostApiV1ProcurementInventoryItemsByIdApproveMutation,
+  usePostApiV1ProcurementInventoryItemsByIdRejectMutation,
   useGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   useLazyGetApiV1ProcurementInventoryMemoCodeGenerateQuery,
   usePostApiV1ItemsMutation,
@@ -23836,6 +24061,9 @@ export const {
   usePutApiV1ItemsStockRequisitionsByIdMutation,
   usePostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionMutation,
   usePostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionMutation,
+  usePostApiV1JobRequestsMutation,
+  useGetApiV1JobRequestsQuery,
+  useLazyGetApiV1JobRequestsQuery,
   usePostApiV1LeaveEntitlementMutation,
   useGetApiV1LeaveEntitlementQuery,
   useLazyGetApiV1LeaveEntitlementQuery,
@@ -23918,6 +24146,8 @@ export const {
   useLazyGetApiV1MaterialBatchesExpiredQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useLazyGetApiV1MaterialMaterialSpecsNotLinkedQuery,
+  useGetApiV1MaterialRejectsQuery,
+  useLazyGetApiV1MaterialRejectsQuery,
   usePostApiV1MaterialArdMutation,
   useGetApiV1MaterialArdQuery,
   useLazyGetApiV1MaterialArdQuery,

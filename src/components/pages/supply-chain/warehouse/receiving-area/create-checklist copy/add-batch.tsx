@@ -16,7 +16,7 @@ import {
 } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 
-import { ChecklistBatchDto, checklistBatchRequestSchema } from "./types";
+import { checklistBatchRequestSchema } from "./types";
 
 interface AddBatchDialogProps {
   isOpen: boolean;
@@ -43,19 +43,19 @@ const AddBatchDialog = ({
     control,
     reset,
     formState: { errors },
-  } = useForm<ChecklistBatchDto>({
+  } = useForm({
     resolver: zodResolver(checklistBatchRequestSchema),
     mode: "all",
   });
 
-  const onSubmit = (data: ChecklistBatchDto) => {
+  const onSubmit = (data: any) => {
     if (data.numberOfContainers * data.quantityPerContainer > remainingQty) {
       toast.error("Material quantity exceeds remaining quantity");
       return;
     }
     try {
       const filteredWeights = data.weights.filter(
-        (weight) => weight.srNumber && weight.grossWeight,
+        (weight: any) => weight.srNumber && weight.grossWeight,
       );
 
       if (filteredWeights.length === 0) {
@@ -115,9 +115,7 @@ const AddBatchDialog = ({
             fieldWrapperClassName="flex-grow"
             config={[
               {
-                register: register("numberOfContainers", {
-                  valueAsNumber: true,
-                }),
+                register: register("numberOfContainers"),
                 label: "Number of Containers/Bags/Shippers",
                 type: InputTypes.NUMBER,
                 errors,
@@ -127,15 +125,13 @@ const AddBatchDialog = ({
                 name: "numberOfContainersUom",
                 label: "Unit of Measure",
                 type: InputTypes.SELECT,
-                control: control as unknown as Control,
+                control: control as Control,
                 required: true,
                 options: packingUomOptions,
                 errors,
               },
               {
-                register: register("quantityPerContainer", {
-                  valueAsNumber: true,
-                }),
+                register: register("quantityPerContainer"),
                 label: "Quantity per Container/bag/shipper",
                 type: InputTypes.NUMBER,
                 errors,
@@ -161,7 +157,7 @@ const AddBatchDialog = ({
             config={[
               {
                 label: "Manufacturing Date",
-                control: control as unknown as Control,
+                control: control as Control,
                 type: InputTypes.DATE,
                 name: "manufacturingDate",
                 required: true,
@@ -173,7 +169,7 @@ const AddBatchDialog = ({
               },
               {
                 label: "Expiry Date",
-                control: control as unknown as Control,
+                control: control as Control,
                 type: InputTypes.DATE,
                 name: "expiryDate",
                 required: true,
@@ -186,7 +182,7 @@ const AddBatchDialog = ({
 
               {
                 label: "Retest Date",
-                control: control as unknown as Control,
+                control: control as Control,
                 type: InputTypes.DATE,
                 name: "retestDate",
                 disabled: {

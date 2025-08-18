@@ -3,6 +3,8 @@ import {
   ApprovalDocument,
   BatchSizeType,
   BatchStatus,
+  CodeModelTypes,
+  CodeNameTypes,
   Division,
   FloorType,
   FormType,
@@ -150,6 +152,22 @@ export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
   value: PackLocationType[key as keyof typeof PackLocationType],
 })) as Option[];
 
+export const CodeModelTypesOptions = Object.keys(CodeModelTypes).map((key) => ({
+  label: splitWords(key),
+  value: CodeModelTypes[key as keyof typeof CodeModelTypes],
+})) as Option[];
+
+export const CodeNameTypeOptions = Object.values(CodeNameTypes)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = CodeNameTypes[enumValue as CodeNameTypes];
+    return {
+      label: splitWords(enumKey), // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
+
+//
 export const ShipmentStatusOptions = Object.values(ShipmentStatus)
   .filter((enumValue) => typeof enumValue === "number")
   .map((enumValue) => {
