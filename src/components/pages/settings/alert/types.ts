@@ -6,7 +6,6 @@ import { z } from "zod";
 export const alertTypeLabels: Record<AlertType, string> = {
   [AlertType.InApp]: "In-App",
   [AlertType.Email]: "Email",
-  [AlertType.Sms]: "Sms",
 } as const;
 
 export const NotificationTypeLabels: Record<NotificationType, string> = {
@@ -54,21 +53,25 @@ export const AlertSchema = z.object({
 
   alertType: z
     .array(
-      z.nativeEnum(AlertType, {
-        errorMap: () => ({ message: "Invalid alert type" }),
+      z.object({
+        value: z.string().min(1, "Alert type is required"),
+        label: z.string(),
       }),
-      { required_error: "At least one alert type is required" },
+      { message: "At least one channels must be selected" },
     )
-    .min(1, "At least one alert type must be selected"),
+    .min(1, "At least one channels must be selected"),
 
   timeFrame: z
     .string({ required_error: "Time frame is required" })
     .min(1, "Time frame is required"),
 
-  notificationType: z.nativeEnum(NotificationType, {
-    errorMap: () => ({ message: "Invalid notification type" }),
-  }),
-
+  notificationType: z.object(
+    {
+      value: z.nativeEnum(NotificationType),
+      label: z.string(),
+    },
+    { message: "Notification type is required" },
+  ),
   roleIds: z
     .array(
       z.object({
@@ -81,8 +84,7 @@ export const AlertSchema = z.object({
       }),
       { required_error: "At least one role must be selected" },
     )
-    .min(1, "At least one role must be selected"),
-
+    .optional(),
   userIds: z
     .array(
       z.object({
@@ -95,7 +97,7 @@ export const AlertSchema = z.object({
       }),
       { required_error: "At least one user must be selected" },
     )
-    .min(1, "At least one user must be selected"),
+    .optional(),
 });
 
 export type CreateAlertDto = z.infer<typeof AlertSchema>;

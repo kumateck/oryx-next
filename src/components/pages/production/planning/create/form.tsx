@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { DivisionOptions, InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -184,6 +184,24 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            label: "Division",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "division",
+            required: true,
+            placeholder: "Select Division",
+            options: DivisionOptions,
+            errors,
+          },
+          {
+            register: register("price" as Path<TFieldValues>),
+            label: "Price",
+            placeholder: "Enter price",
+            type: InputTypes.NUMBER,
+            required: true,
+            errors,
+          },
+          {
             register: register("filledWeight" as Path<TFieldValues>),
             label: "Filled Volume",
             placeholder: "Enter filled volume",
@@ -197,12 +215,18 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.TEXT,
             errors,
           },
-
           {
             register: register("description" as Path<TFieldValues>),
             label: "Label Claims",
             placeholder: "Enter label claims",
             type: InputTypes.TEXTAREA,
+            errors,
+          },
+          {
+            register: register("packPerShipper" as Path<TFieldValues>),
+            label: "Pack Per Shipper",
+            placeholder: "Enter pack per shipper",
+            type: InputTypes.NUMBER,
             errors,
           },
         ]}

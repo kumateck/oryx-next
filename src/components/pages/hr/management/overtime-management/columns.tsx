@@ -2,7 +2,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { Button, ConfirmDeleteDialog, Icon } from "@/components/ui";
 import {
   ErrorResponse,
   isErrorResponse,
@@ -14,13 +14,15 @@ import {
   OvertimeRequestDtoRead,
   WarehouseLocationRackDto,
   useDeleteApiV1OvertimeRequestsByIdMutation,
-  useLazyGetApiV1OvertimeRequestsQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import Edit from "./edit";
 import { format } from "date-fns";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { TableMenuAction } from "@/shared/table-menu";
+import { useRouter } from "next/navigation";
 
 // import { useUserPermissions } from "@/hooks/use-permission";
 
@@ -38,11 +40,11 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
 }: DataTableRowActionsProps<TData>) {
   const [deleteMutation] = useDeleteApiV1OvertimeRequestsByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const [details, setDetails] = useState<WarehouseLocationRackDto>(
     {} as WarehouseLocationRackDto,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadOvertimeRequests] = useLazyGetApiV1OvertimeRequestsQuery();
   const dispatch = useDispatch();
   // check permissions here
   // const { hasPermissionAccess } = useUserPermissions();
@@ -81,23 +83,48 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             <span>Delete</span>
           </div>
         </DropdownMenuItem>
+        
       </TableMenuAction> */}
-      <Icon
-        name="Pencil"
-        className="h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsOpen(true);
-        }}
-      />
-      <Icon
-        name="Trash2"
-        className="text-danger-500 h-5 w-5 cursor-pointer"
-        onClick={() => {
-          setDetails(row.original);
-          setIsDeleteOpen(true);
-        }}
-      />
+      <TableMenuAction>
+        <DropdownMenuItem>
+          <Button
+            onClick={() =>
+              router.push(`/hr/overtime-management/${row.original.id}/details`)
+            }
+            variant="ghost"
+          >
+            <Icon name="Eye" className="h-5 w-5 cursor-pointer" />
+            <span>View Details</span>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
+          >
+            <Icon name="Pencil" className="h-5 w-5 cursor-pointer" />
+            <span>Edit</span>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
+          </Button>
+        </DropdownMenuItem>
+      </TableMenuAction>
 
       {details.id && isOpen && (
         <Edit
@@ -114,11 +141,8 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
             await deleteMutation({
               id: details.id as string,
             }).unwrap();
-            toast.success("Overtime request deleted successfully");
             dispatch(commonActions.setTriggerReload());
-            loadOvertimeRequests({
-              pageSize: 30,
-            });
+            toast.success("Overtime request deleted successfully");
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

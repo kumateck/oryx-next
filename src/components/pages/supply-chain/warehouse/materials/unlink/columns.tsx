@@ -16,7 +16,7 @@ export const getColumns = (
   },
   {
     accessorKey: "uomId",
-    header: "Unit of Measurement",
+    header: "Base UoM",
     meta: {
       edittableCell: {
         type: ColumnType.SELECT,

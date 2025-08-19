@@ -12,12 +12,13 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
+import { useSelector } from "@/lib/redux/store";
 
 const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const router = useRouter();
-
+  const searchInput = useSelector((state) => state.common.searchInput);
   const { data: result, isLoading } = useGetApiV1RequisitionQuery({
     page,
     pageSize,
@@ -29,10 +30,11 @@ const Page = () => {
     loadData({
       page,
       pageSize,
+      searchQuery: searchInput,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, searchInput]);
 
   const data = result?.data || [];
   return (

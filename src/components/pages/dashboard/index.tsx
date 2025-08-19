@@ -5,7 +5,7 @@ import { fullname } from "@/lib";
 import BgWrapper from "@/shared/bg-wrapper";
 
 import useCurrentUser from "@/hooks/use-current";
-import FormularBuilder from "@/components/formular/evaluate";
+// import FormularBuilder from "@/components/formular/evaluate";
 
 const Page = () => {
   const { user, isLoading } = useCurrentUser();
@@ -26,7 +26,7 @@ const Page = () => {
         </span>
       </div>
 
-      <FormularBuilder />
+      {/* <FormularBuilder /> */}
     </BgWrapper>
   );
 };

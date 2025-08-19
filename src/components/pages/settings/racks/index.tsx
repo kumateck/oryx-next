@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const Page = () => {
   const router = useRouter();
@@ -33,19 +34,20 @@ const Page = () => {
     pageSize,
   });
   const [loadRacks, { isFetching }] = useLazyGetApiV1WarehouseRackQuery();
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchValue, 500);
 
   useEffect(() => {
     loadRacks({
       page,
       pageSize,
+      searchQuery: debouncedValue,
     });
-
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload]);
+  }, [page, pageSize, triggerReload, debouncedValue]);
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 

@@ -60,7 +60,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: `Insurance (${currency})`,
             placeholder: "Enter Insurance Amount",
             type: InputTypes.NUMBER,
-            required: true,
+            // required: true,
             errors,
           },
           {
@@ -70,7 +70,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             label: "Freight",
             placeholder: "Enter Freight Amount",
             type: InputTypes.NUMBER,
-            required: true,
+            // required: true,
             errors,
           },
           {
@@ -118,6 +118,7 @@ const Form = <TFieldValues extends FieldValues, TContext>({
             control: control as Control,
             type: InputTypes.DATE,
             name: "estimatedDeliveryDate",
+            disabled: { before: new Date() },
             required: true,
             placeholder: "Select Estimated Delivery Date",
             errors,

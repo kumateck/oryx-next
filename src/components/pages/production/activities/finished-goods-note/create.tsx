@@ -105,7 +105,7 @@ const Create = ({
           uoMId: data.uom.value,
           qarNumber: data.qarNumber,
         },
-      });
+      }).unwrap();
       dispatch(commonActions.setTriggerReload());
       reset();
       onClose();

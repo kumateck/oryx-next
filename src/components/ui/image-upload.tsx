@@ -68,6 +68,8 @@ export function ImageUpload({ onChange, defaultValue, name }: Props) {
               src={imagePreview}
               alt="Image Preview"
               className="w-full h-full object-cover"
+              width={180}
+              height={180}
             />
           </div>
           <button

@@ -178,11 +178,9 @@ const AssignLocationDialog = ({
           note: location.note || "",
         })),
       } satisfies SupplyMaterialBatchRequest;
-
-      console.log(payload);
       await supplyShelf({
         supplyMaterialBatchRequest: payload,
-      });
+      }).unwrap();
 
       toast.success("Location assigned successfully");
       onSuccess();

@@ -29,7 +29,6 @@ const ScheduleDetail = () => {
     loadSchedule({
       scheduleId,
     });
-
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }

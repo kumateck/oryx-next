@@ -16,9 +16,9 @@ import {
 import { CODE_SETTINGS } from "@/lib";
 import {
   CreateDepartmentRequest,
-  GetApiV1ConfigurationByModelTypeAndPrefixApiArg,
   NamingType,
-  useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery,
+  useGetApiV1DepartmentQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery,
   usePostApiV1DepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -46,9 +46,11 @@ const Create = ({ isOpen, onClose }: Props) => {
   const [createDepartment, { isLoading }] = usePostApiV1DepartmentMutation();
   const [loadCodeSettings] =
     useLazyGetApiV1ConfigurationByModelTypeByModelTypeQuery();
-  const [loadCodeMyModel] =
-    useLazyGetApiV1ConfigurationByModelTypeAndPrefixQuery();
-  // const [loadCodeModelCount] = useLazyGetApiV1DepartmentQuery();
+  const { data: departments } = useGetApiV1DepartmentQuery({
+    page: 1,
+    pageSize: 1000,
+  });
+  const [loadCodeMyModel] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   const {
     register,
@@ -83,7 +85,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     const payload = {
       modelType: CODE_SETTINGS.modelTypes.Department,
       prefix: codePrefix,
-    } as GetApiV1ConfigurationByModelTypeAndPrefixApiArg;
+    };
     const res = await loadCodeMyModel(payload).unwrap();
     const generatePayload: GenerateCodeOptions = {
       maxlength: Number(getCodeSettings?.maximumNameLength),
@@ -93,6 +95,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       seriesCounter: res + 1,
     };
     const code = await generateCode(generatePayload);
+    console.log(code, "this is the generated code");
     setValue("code", code);
   };
 
@@ -105,10 +108,11 @@ const Create = ({ isOpen, onClose }: Props) => {
     try {
       const payload = {
         ...data,
+        parentDepartmentId: data.parentDepartmentId?.value,
       } satisfies CreateDepartmentRequest;
       await createDepartment({
         createDepartmentRequest: payload,
-      });
+      }).unwrap();
       toast.success("Department created successfully");
       dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
@@ -127,6 +131,13 @@ const Create = ({ isOpen, onClose }: Props) => {
   //   setValue("code", code ?? "");
   // };
   // useCodeGen(CODE_SETTINGS.modelTypes.Department, fetchCount, setCodeToInput);
+  const departmentOptions =
+    departments?.data?.map((department) => {
+      return {
+        value: department.id as string,
+        label: department.name as string,
+      };
+    }) || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -140,6 +151,7 @@ const Create = ({ isOpen, onClose }: Props) => {
             control={control}
             register={register}
             errors={errors}
+            departmentOptions={departmentOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

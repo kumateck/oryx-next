@@ -39,6 +39,7 @@ export const COLLECTION_TYPES = {
   TermsOfPayment: "TermsOfPayment",
   DeliveryMode: "DeliveryMode",
   ShiftCategory: "ShiftCategory",
+  ProductState: "ProductState",
 };
 
 export const CODE_SETTINGS = {
@@ -65,7 +66,12 @@ export const CODE_SETTINGS = {
     LeaveRequest: "LeaveRequest",
     Overtime: "Overtime",
     MaterialAnalyticalRawData: "MaterialAnalyticalRawData",
+    ProductAnalyticalRawData: "ProductAnalyticalRawData",
     FinishedGoodsTransferNote: "FinishedGoodsTransferNote",
+    Service: "Service",
+    ProductBatchNumber: "ProductBatchNumber",
+    ProductionOrder: "ProductionOrder",
+    Item: "Item",
   },
   nameTypes: {
     Time: 2,
@@ -110,8 +116,8 @@ export const routes = {
   editPackingOrder: () => `packing-order`,
   rawMaterials: () => "/warehouse/materials",
   viewMaterial: (id: string) => `/warehouse/materials/${id}/details`,
-  suppliers: () => `/procurement/suppliers`,
-  editSupplier: (id: string) => `/procurement/suppliers/${id}/edit`,
+  // suppliers: () => `/procurement/suppliers`,
+  // editSupplier: (id: string) => `/procurement/suppliers/${id}/edit`,
   viewScheduleRequisition: (scheduleId: string, productId: string) =>
     `/production/schedules/${scheduleId}/product/${productId}/requisition`,
 
@@ -124,6 +130,9 @@ export const routes = {
   newRegulation: () => "/compliance/external/regulations/create",
   newInspection: () => "/inspections/create",
   newAudit: () => "/audits/create",
+  suppliers: () => "/settings/suppliers",
+  newSupplier: () => "/settings/suppliers/create",
+  editSupplier: (id: string) => `/settings/suppliers/${id}/edit`,
   approvals: () => "/settings/approvals",
   newApproval: () => "/settings/approvals/create",
   editApproval: (params: { id: string }) =>
@@ -559,6 +568,73 @@ export const PermissionKeys = {
       delete: "CanDeleteTemplates",
     },
   },
+  qualityControl: {
+    materialStp: {
+      view: "CanViewMaterialSTPs",
+      create: "CanCreateMaterialSTP",
+      edit: "CanEditMaterialSTP",
+      delete: "CanDeleteMaterialSTP",
+    },
+    productStp: {
+      view: "CanViewProductSTPs",
+      create: "CanCreateProductSTP",
+      edit: "CanEditProductSTP",
+      delete: "CanDeleteProductSTP",
+    },
+    materialArd: {
+      view: "CanViewMaterialARDs",
+      create: "CanCreateMaterialARD",
+      edit: "CanEditMaterialARD",
+      delete: "CanDeleteMaterialARD",
+    },
+    productArd: {
+      view: "CanViewProductARDs",
+      create: "CanCreateProductARD",
+      edit: "CanEditProductARD",
+      delete: "CanDeleteProductARD",
+    },
+    goodsReceipt: "CanViewGoodsReceiptNotes",
+    sample: "CanTakeSample",
+    startTest: "CanStartTest",
+    materialSpecification: {
+      view: "CanViewMaterialSpecifications",
+      create: "CanCreateMaterialSpecification",
+      edit: "CanEditMaterialSpecification",
+      delete: "CanDeleteMaterialSpecification",
+    },
+    productSpecification: {
+      view: "CanViewProductSpecifications",
+      create: "CanCreateProductSpecification",
+      edit: "CanEditProductSpecification",
+      delete: "CanDeleteProductSpecification",
+    },
+  },
+  qualityAssurance: {
+    bmr: {
+      viewIssued: "CanViewIssuedBMRs",
+      issue: "CanIssueBMR",
+    },
+    bmrbpr: {
+      viewRequests: "CanViewBMRBPRRequests",
+      createRequest: "CanCreateBMRBPRRequest",
+      approveOrReject: "CanApproveOrRejectBMRBPRRequest",
+    },
+    analyticalTest: {
+      view: "CanViewAnalyticalTestRequests",
+      create: "CanCreateAnalyticalTestRequest",
+      takeSamples: "CanTakeSamples",
+      startTest: "CanStartTestAnalytical",
+    },
+    pendingApprovals: "CanViewPendingApprovals",
+  },
+  inventory: {
+    vendors: {
+      view: "CanViewVendorsInventory",
+      create: "CanCreateVendorInventory",
+      edit: "CanEditVendorInventory",
+      // delete missing in C# snippet but may exist
+    },
+  },
 };
 
 export const AuditModules = {
@@ -616,6 +692,8 @@ export const AuditModules = {
     createPurchaseRequisitions: "Create Purchase Requisitions",
     others: "Others",
     planning: "Product Planning",
+    productSpecification: "Product Specification",
+    materialSpecification: "Material Specification",
     stockTransferRequests: "Stock Transfer Requests",
     productSchedule: "Product Schedule",
     activities: "Activities",
@@ -626,6 +704,7 @@ export const AuditModules = {
     extraPacking: "Extra Packing",
     bom: "BOM",
     packing: "Packing",
+    returns: "Returns",
     procedure: "Procedure",
   },
   management: {
@@ -636,6 +715,7 @@ export const AuditModules = {
     leaveTypeConfiguration: "Leave Type",
     overTimeMangement: "Over Time",
     staffRequisition: "Staff Requisition",
+    shiftUpload: "Shift Upload",
   },
 
   accessManagement: {
@@ -678,6 +758,7 @@ export const AuditModules = {
     holidays: "Holidays",
     suppliers: "Suppliers",
     alerts: "Alerts",
+    signature: "Signature",
   },
   authentication: {
     name: "Authentication",
@@ -687,5 +768,11 @@ export const AuditModules = {
     logout: "Logout",
     setPassword: "Set Password",
     changePassword: "Change Password",
+  },
+  extral: {
+    name: "Extral",
+    service: "Service",
+    serviceProviders: "Service Providers",
+    generalInventoryConfiguration: "General Inventory Configuration",
   },
 };

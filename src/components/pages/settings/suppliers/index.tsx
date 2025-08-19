@@ -17,7 +17,7 @@ import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
 import { columns } from "./column";
-import { PermissionKeys } from "@/lib";
+import { PermissionKeys, routes } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useRouter } from "next/navigation";
@@ -80,7 +80,7 @@ const Page = () => {
           </div>
           <div className="flex items-center justify-end gap-2">
             {hasPermissionAccess(PermissionKeys.procurement.createVendor) && (
-              <Link href={"/procurement/suppliers/create"}>
+              <Link href={routes.newSupplier()}>
                 <Button
                   variant="default"
                   size={"sm"}

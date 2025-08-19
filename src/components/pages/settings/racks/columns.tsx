@@ -13,6 +13,9 @@ import { TableMenuAction } from "@/shared/table-menu";
 
 import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,6 +30,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loadWarehouseLocationRacks] = useLazyGetApiV1WarehouseRackQuery();
+  const dispatch = useDispatch();
 
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
@@ -99,6 +103,7 @@ export function DataTableRowActions<TData extends WarehouseLocationRackDto>({
               rackId: details.id as string,
             }).unwrap();
             toast.success("Rack deleted successfully");
+            dispatch(commonActions.setTriggerReload());
             loadWarehouseLocationRacks({
               pageSize: 30,
             });
@@ -118,6 +123,13 @@ export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
     cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
+    accessorKey: "warehouse",
+    header: "Warehouse",
+    cell: ({ row }) => (
+      <div>{row.original?.warehouseLocation?.warehouse?.name}</div>
+    ),
+  },
+  {
     accessorKey: "location",
     header: "Location",
     cell: ({ row }) => <div>{row.original.warehouseLocation?.name}</div>,
@@ -125,7 +137,11 @@ export const columns: ColumnDef<WarehouseLocationRackDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <div>
+        {<TheAduseiEditorViewer content={row?.original?.description ?? ""} />}
+      </div>
+    ),
   },
 
   {

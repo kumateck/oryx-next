@@ -13,10 +13,11 @@ import {
   CODE_SETTINGS,
   EMaterialKind,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
@@ -26,6 +27,7 @@ import {
   PostApiV1MaterialArdApiArg,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   PostApiV1FileByModelTypeAndModelIdApiArg,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
 import { toast } from "sonner";
@@ -41,10 +43,15 @@ type Props = {
 export const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
 
+  const [loadMaterialstpSpecification, { data }] =
+    useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
+    watch,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<MaterialArdSchemaType>({
@@ -64,6 +71,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.ARD,
   });
 
   const [createMaterialArdMutation, { isLoading }] =
@@ -71,6 +79,23 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
+
+  const stpId = watch("stpId");
+  useEffect(() => {
+    if (!stpId?.value) return;
+    const material = materialStps?.data?.find((stp) => stp.id === stpId?.value);
+    console.log(material);
+    if (material) {
+      loadMaterialstpSpecification({ id: material?.material?.id as string });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId, loadMaterialstpSpecification]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, reset]);
 
   //fuction fro creating material analytical raw data
   const onSubmit = async (data: MaterialArdSchemaType) => {
@@ -89,7 +114,6 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
         stpId: data.stpId.value,
         formId: data.formId.value,
       };
-      console.log("this is payload", payload);
       // 1. Create the material analytical raw data
       const ardId = await createMaterialArdMutation({
         module: AuditModules.warehouse.name,
@@ -109,7 +133,7 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.MaterialStandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.MaterialAnalyticalRawData,
           modelId: ardId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

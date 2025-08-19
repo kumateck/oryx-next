@@ -21,11 +21,13 @@ import {
   useGetApiV1ProductStpsQuery,
   usePutApiV1ProductArdByIdMutation,
   useGetApiV1ProductArdByIdQuery,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
   cn,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
@@ -42,12 +44,16 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
-  console.log("details", details);
   const dispatch = useDispatch();
+  const [loadProductstpSpecification, { data }] =
+    useLazyGetApiV1ProductSpecificationsProductByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
+    setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm<ProductArdSchemaType>({
@@ -61,6 +67,22 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
       stage: details.stage,
     },
   });
+  const stpId = watch("stpId");
+  useEffect(() => {
+    const productStp = productStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    if (productStp) {
+      loadProductstpSpecification({ id: productStp?.product?.id as string });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   //get stp
   const { data: productStps } = useGetApiV1ProductStpsQuery({
@@ -76,7 +98,6 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   });
 
   useEffect(() => {
-    console.log("product ard by ard id", productArd);
     if (productArd) {
       reset({
         description: productArd?.description ?? "",
@@ -102,6 +123,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.ARD,
   });
 
   const formOptionsData = formTemplates?.data || [];

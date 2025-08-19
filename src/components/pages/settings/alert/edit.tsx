@@ -10,27 +10,37 @@ import {
 } from "@/components/ui/dialog";
 import AlertForm from "./form";
 import {
+  AlertType,
   CreateAlertRequest,
+  NotificationType,
   useGetApiV1RoleQuery,
+  useGetApiV1UserQuery,
   usePutApiV1AlertByAlertIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { useForm } from "react-hook-form";
 import { CreateAlertDto, CreateAlertDtoValidator } from "./types";
-import { Option } from "@/lib";
+import { toast } from "sonner";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 interface CreateAlertProps {
   open: boolean;
   onClose: () => void;
   details: CreateAlertDto;
-  alertId: string;
+  id: string;
+  isUpdateRecipient?: boolean;
 }
 export function EditAlert({
   open,
   onClose,
   details,
-  alertId,
+  id,
+  isUpdateRecipient,
 }: CreateAlertProps) {
   const [editAlert, { isLoading }] = usePutApiV1AlertByAlertIdMutation();
+  const { data: usersData } = useGetApiV1UserQuery({});
+  const dispatch = useDispatch();
+  console.log("EditAlert", details);
   const { data: rolesData, isLoading: isLoadingRoles } = useGetApiV1RoleQuery(
     {},
   );
@@ -41,43 +51,78 @@ export function EditAlert({
     formState: { errors },
   } = useForm<CreateAlertDto>({
     resolver: CreateAlertDtoValidator,
-    defaultValues: { ...details },
+    defaultValues: {
+      alertType: details.alertType,
+      title: details.title,
+      notificationType: details.notificationType,
+      roleIds: details.roleIds,
+      userIds: details.userIds,
+      timeFrame: details.timeFrame?.split(" ")[0],
+    },
   });
 
   const onSubmit = async (data: CreateAlertDto) => {
-    const payload: CreateAlertRequest = {
-      title: data.title,
-      notificationType: data.notificationType,
-      roleIds: data.roleIds.map((role) => role.value),
-      userIds: data.userIds.map((user) => user.value),
-      alertTypes: data.alertType,
-      timeFrame: data.timeFrame,
-    };
-    await editAlert({
-      alertId: alertId,
-      createAlertRequest: payload,
-    });
+    try {
+      const payload: CreateAlertRequest = {
+        title: data.title,
+        notificationType: data.notificationType.value as NotificationType,
+        roleIds: data?.roleIds?.map((role) => role.value) || [],
+        userIds: data?.userIds?.map((user) => user.value) || [],
+        alertTypes: data.alertType.map(
+          (type) => Number(type.value) as AlertType,
+        ),
+        timeFrame: data.timeFrame?.split(" ")[0],
+      };
+      await editAlert({
+        alertId: id,
+        createAlertRequest: payload,
+      }).unwrap();
+      toast.success("Alert edited successfully");
+      onClose();
+      dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      console.error("Error editing alert:", error);
+      toast.error("Failed to edit alert");
+    }
   };
-  console.log("EditAlert", rolesData);
+
+  // formatted roles data to match the expected format
   const roleOptions =
-    (rolesData?.map((role) => ({
+    rolesData?.map((role) => ({
       value: role.id as string,
       label: role.name as string,
-    })) as Option[]) || [];
+    })) || [];
+  //Formated users data to match the expected format
+  const usersOptions =
+    usersData?.data?.map((user) => ({
+      value: user.id as string,
+      label: `${user.firstName} ${user.lastName}` as string,
+    })) || [];
+
+  const alertType =
+    (details?.roleIds?.length ?? 0) > 0
+      ? "roles"
+      : (details?.userIds?.length ?? 0) > 0
+        ? "users"
+        : "roles";
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader className="py-4">
             <DialogTitle>Edit Alert</DialogTitle>
           </DialogHeader>
           <AlertForm
             errors={errors}
             register={register}
             control={control}
+            isUpdateRecipient={isUpdateRecipient}
+            alertType={alertType}
             roleOptions={roleOptions}
+            usersOptions={usersOptions}
           />
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
@@ -86,8 +131,8 @@ export function EditAlert({
               <span>Save changes</span>
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }

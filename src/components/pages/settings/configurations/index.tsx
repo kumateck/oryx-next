@@ -7,12 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import {
-  COLLECTION_TYPES,
-  CollectionTypes,
-  EMaterialKind,
-  PermissionKeys,
-} from "@/lib";
+import { CollectionTypes, EMaterialKind, PermissionKeys } from "@/lib";
 import { splitWords } from "@/lib";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -78,19 +73,19 @@ const FormOptionTabs: TabProps[] = [
     views: [
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.ProductCategory,
-        title: "ProductCategory",
+        modelType: CollectionTypes.ProductCategory,
+        title: "Product Category",
       },
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.MaterialCategory,
-        title: "RawCategory",
+        modelType: CollectionTypes.MaterialCategory,
+        title: "Raw Category",
         kind: EMaterialKind.Raw,
       },
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.MaterialCategory,
-        title: "PackageCategory",
+        modelType: CollectionTypes.MaterialCategory,
+        title: "Package Category",
         kind: EMaterialKind.Packing,
       },
     ],
@@ -100,18 +95,18 @@ const FormOptionTabs: TabProps[] = [
     views: [
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.Resource,
+        modelType: CollectionTypes.Resource,
         title: "Resource",
       },
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.Operation,
+        modelType: CollectionTypes.Operation,
         title: "Operation",
       },
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.WorkCenter,
-        title: "WorkCenter",
+        modelType: CollectionTypes.WorkCenter,
+        title: "Work Center",
       },
     ],
   },
@@ -120,14 +115,24 @@ const FormOptionTabs: TabProps[] = [
     views: [
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.MaterialType,
-        title: "MaterialType",
+        modelType: CollectionTypes.MaterialType,
+        title: "Material Type",
       },
 
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.UnitOfMeasure,
-        title: "UnitOfMeasure",
+        modelType: CollectionTypes.UnitOfMeasure,
+        title: "UOM",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.PackageStyle,
+        title: "Package Style",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.ProductState,
+        title: "Product State",
       },
     ],
   },
@@ -136,7 +141,7 @@ const FormOptionTabs: TabProps[] = [
     views: [
       {
         icon: "Tag",
-        modelType: COLLECTION_TYPES.Country,
+        modelType: CollectionTypes.Country,
         title: "Country",
       },
     ],
@@ -148,6 +153,26 @@ const FormOptionTabs: TabProps[] = [
         icon: "Tag",
         modelType: CollectionTypes.ShiftCategory,
         title: "Shift Category",
+      },
+    ],
+  },
+  {
+    title: "Payments",
+    views: [
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.TermsOfPayment,
+        title: "Terms of Payment",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.DeliveryMode,
+        title: "Delivery Mode",
+      },
+      {
+        icon: "Tag",
+        modelType: CollectionTypes.Charge,
+        title: "Charges",
       },
     ],
   },

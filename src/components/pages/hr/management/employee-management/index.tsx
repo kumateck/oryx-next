@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useLazyGetApiV1EmployeeQuery } from "@/lib/redux/api/openapi.generated";
 import DropdownBtns from "@/shared/btns/drop-btn";
@@ -11,12 +11,13 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import Create from "./create";
-import { PermissionKeys } from "@/lib";
+import { EmployeeStatusType, PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import AccessTabs from "@/shared/access";
 
 const EmployeeManagement = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -24,7 +25,28 @@ const EmployeeManagement = () => {
 
   const dispatch = useDispatch();
   const searchValue = useSelector((state) => state.common.searchInput);
-  const triggerReload = useSelector(state => state.common.triggerReload);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status") as unknown as EmployeeStatusType;
+
+  const pathname = usePathname();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const handleTabClick = (tabType: EmployeeStatusType) => {
+    router.push(
+      pathname + "?" + createQueryString("status", tabType.toString()),
+    );
+  };
 
   const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1EmployeeQuery();
@@ -34,12 +56,13 @@ const EmployeeManagement = () => {
       searchQuery: searchValue,
       page,
       pageSize,
+      status: status || EmployeeStatusType.Active,
     });
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, searchValue]);
+  }, [page, pageSize, searchValue, status, triggerReload]);
 
   const data = result?.data || [];
   const router = useRouter();
@@ -62,11 +85,26 @@ const EmployeeManagement = () => {
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
         <PageTitle title="Employee Management" />
-        <div className="flex items-center justify-end gap-2">
-          {/* <Button variant="default" size={"sm"} onClick={() => setIsOpen(true)}>
-            <Icon name="Plus" className="h-4 w-4" />{" "}
-            <span>Register Employee</span>
-          </Button> */}
+
+        <div className="flex items-center w-fit gap-2">
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={status}
+            tabs={[
+              {
+                label: EmployeeStatusType[EmployeeStatusType.Active],
+                value: EmployeeStatusType.Active.toString(),
+              },
+              {
+                label: EmployeeStatusType[EmployeeStatusType.Inactive],
+                value: EmployeeStatusType.Inactive.toString(),
+              },
+              {
+                label: EmployeeStatusType[EmployeeStatusType.New],
+                value: EmployeeStatusType.New.toString(),
+              },
+            ]}
+          />
           {hasPermissionAccess(
             PermissionKeys.humanResources.registerEmployee,
           ) && (

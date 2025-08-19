@@ -14,13 +14,14 @@ import {
   CreateWarehouseRequest,
   WarehouseDto,
   WarehouseType,
-  useLazyGetApiV1WarehouseQuery,
   usePutApiV1WarehouseByWarehouseIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import WarehousesForm from "./form";
 import { CreateWarehouseValidator, WarehouseRequestDto } from "./types";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 // import "./types";
 
@@ -30,10 +31,9 @@ interface Props {
   details: WarehouseDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadWarehouses] = useLazyGetApiV1WarehouseQuery();
-
   const [createWarehouse, { isLoading }] =
     usePutApiV1WarehouseByWarehouseIdMutation();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -60,12 +60,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await createWarehouse({
         warehouseId: details.id as string,
         createWarehouseRequest: payload,
-      });
+      }).unwrap();
       toast.success("Warehouse updated successfully");
-      loadWarehouses({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {

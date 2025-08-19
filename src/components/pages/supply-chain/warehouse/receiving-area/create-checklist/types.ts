@@ -21,7 +21,14 @@ export const batchWeightsRequestSchema = z
 
 export const checklistBatchRequestSchema = z.object({
   batchNumber: z.string().optional(), //.min(1, { message: "Batch Number is required" }),
-  numberOfContainers: z.string(),
+  numberOfContainers: z
+    .number({
+      required_error: "Number of Containers is required",
+      invalid_type_error: "Number of Containers must be a number",
+    })
+    .positive({
+      message: "Number of Containers must be greater than 0",
+    }),
   numberOfContainersUom: z.object(
     {
       value: z.string().min(1, { message: "Unit of Measurement is required" }),
@@ -32,17 +39,13 @@ export const checklistBatchRequestSchema = z.object({
     },
   ),
   quantityPerContainer: z
-    .string()
-    .min(1, { message: "Quantity per container is required" }),
-  // uom: z.object(
-  //   {
-  //     value: z.string().min(1, { message: "Unit of Measurement is required" }),
-  //     label: z.string(),
-  //   },
-  //   {
-  //     message: "Unit of Measurement is required",
-  //   },
-  // ),
+    .number({
+      required_error: "Quantity per container is required",
+      invalid_type_error: "Quantity per container must be a number",
+    })
+    .positive({
+      message: "Quantity per container must be greater than 0",
+    }),
   expiryDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
     z.date({
@@ -61,8 +64,8 @@ export const checklistBatchRequestSchema = z.object({
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
       z.date({
-        required_error: "Restest date is required",
-        invalid_type_error: "Restest date must be a valid date",
+        required_error: "Retest date is required",
+        invalid_type_error: "Retest date must be a valid date",
       }),
     )
     .optional(),
@@ -80,11 +83,6 @@ export const CreateChecklistSchema = z.object({
     .min(1, {
       message: "Material name is required",
     }),
-  // supplierStatus:  z
-  //   .number({ required_error: "Supplier Status is required" })
-  //   .min(1, {
-  //     message: "Supplier Status is required",
-  //   }),
   materialId: z.string().optional(),
   manufacturerId: z.string().optional(),
   supplierStatusId: z.number().optional(),

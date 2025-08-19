@@ -29,7 +29,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  // productOptions: OptionsUpdate[];
+  marketOptions: Option[];
   defaultValues?: TFieldValues;
   fields: FieldArrayWithId<TFieldValues>[];
   remove: UseFieldArrayRemove;
@@ -42,9 +42,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
 const defaultAssociated: ProductRequestDto = {
   productId: { label: "", value: "" },
   sizeType: { label: "", value: "" },
-
-  // quantity: 0,
-  // uom: "",
+  marketTypeId: { label: "", value: "" },
 };
 const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   control,
@@ -57,6 +55,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
   loading,
   isLoading,
   fetchOptions,
+  marketOptions,
 }: Props<TFieldValues, TContext>) => {
   console.log(batchSizeTypeOptions, "batchSizeTypeOptions");
   return (
@@ -170,22 +169,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                         isLoading: isLoading,
                         errors,
                       },
-                      // {
-                      //   label: "Product",
-                      //   control: control as Control,
-                      //   type: InputTypes.SELECT,
-                      //   name: `products.${index}.productId`,
-                      //   required: true,
-                      //   placeholder: "Product",
-                      //   defaultValue: defaultValues?.products[index]?.productId,
-                      //   options: productOptions?.filter(
-                      //     (item2) =>
-                      //       !associateProducts?.some(
-                      //         (item1) => item1.productId.value === item2.value,
-                      //       ),
-                      //   ),
-                      //   errors,
-                      // },
+
                       {
                         label: "Batch Size",
                         control: control as Control,
@@ -197,26 +181,18 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                         options: batchSizeTypeOptions,
                         errors,
                       },
-                      // {
-                      //   label: "Quantity",
-                      //   register: register(
-                      //     `products.${index}.quantity` as Path<TFieldValues>,
-                      //     {
-                      //       valueAsNumber: true,
-                      //     },
-                      //   ),
-                      //   type: InputTypes.NUMBER,
-                      //   required: true,
-                      //   placeholder: "Quantity",
-                      //   errors,
-                      // },
-                      // {
-                      //   label: "UOM",
-                      //   type: InputTypes.LABEL,
-                      //   title: renderUOM(productOptions, index),
-                      //   className:
-                      //     "border border-neutral-input rounded-2xl px-2 py-1 text-sm font-semibold text-neutral-secondary",
-                      // },
+                      {
+                        label: "Market Type",
+                        control: control as Control,
+                        type: InputTypes.SELECT,
+                        name: `products.${index}.marketTypeId`,
+                        required: true,
+                        placeholder: "Select Type",
+                        defaultValue:
+                          defaultValues?.products[index]?.marketTypeId,
+                        options: marketOptions,
+                        errors,
+                      },
                     ]}
                   />
                 </CardContent>

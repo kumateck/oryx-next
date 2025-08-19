@@ -79,7 +79,6 @@ const TransferForm = <TFieldValues extends FieldValues, TContext>({
         {fields.map((field, index) => {
           const listId = typeValues[index];
           const currentDepartmentOptions = departmentOptionsMap[listId] || []; // Get the options for the selected material
-
           return (
             <div key={field.id} className="relative rounded-2xl border p-2">
               <div className="absolute right-2 top-2">
@@ -149,10 +148,10 @@ const TransferForm = <TFieldValues extends FieldValues, TContext>({
               label: "Justification",
               control: control as Control<FieldValues>,
               type: InputTypes.RICHTEXT,
-              name: "note",
+              name: "reason",
               required: true,
               autoFocus: false,
-              placeholder: "Enter Remarks",
+              placeholder: "Enter justification",
               suggestions: [],
               errors,
             },

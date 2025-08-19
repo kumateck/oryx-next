@@ -99,6 +99,22 @@ export const CreateProductSchema = z.object({
       message: "Category is required",
     },
   ),
+  division: z.object(
+    {
+      value: z.string().min(1, { message: "Division is required" }),
+      label: z.string(),
+    },
+    {
+      message: "Division is required",
+    },
+  ),
+  packPerShipper: z.string().transform((value) => Number(value)),
+  price: z
+    .string({
+      required_error: "Price is required",
+      invalid_type_error: "Price is invalid",
+    })
+    .transform((value) => Number(value)),
   equipment: z.object(
     {
       value: z.string().min(1, { message: "Equipment is required" }),

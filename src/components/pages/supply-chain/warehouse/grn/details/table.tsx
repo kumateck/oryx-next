@@ -1,6 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
+import {
+  MaterialBatch,
+  MaterialBatchDto,
+} from "@/lib/redux/api/openapi.generated";
 // import { useEffect } from "react";
 import { ListsTable } from "@/shared/datatable";
 
@@ -24,7 +27,7 @@ const TableForData = ({ lists, defaultColumns, isLoading }: Props) => {
     <div className="w-full">
       <ListsTable
         isLoading={isLoading}
-        data={lists}
+        data={lists as MaterialBatch[]}
         columns={defaultColumns || columns}
       />
     </div>

@@ -17,7 +17,6 @@ import {
   CreateWarehouseLocationShelfRequest,
   WarehouseLocationShelfDto,
   useGetApiV1WarehouseRackQuery,
-  useLazyGetApiV1WarehouseRackQuery,
   usePutApiV1WarehouseShelfByShelfIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -29,8 +28,8 @@ import {
 
 import ShelfForm from "./form";
 import { CreateShelfValidator, ShelfRequestDto } from "./types";
-
-// import "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface Props {
   isOpen: boolean;
@@ -38,7 +37,7 @@ interface Props {
   details: WarehouseLocationShelfDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
+  const dispatch = useDispatch();
   const { data: result } = useGetApiV1WarehouseRackQuery({
     page: 1,
     pageSize: 100,
@@ -95,7 +94,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     label: item?.warehouseLocation?.name + "-" + item.name,
     value: item.id,
   })) as Option[];
-  console.log(data, "Racks");
 
   const onSubmit = async (data: ShelfRequestDto) => {
     try {
@@ -105,12 +103,10 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       await editRack({
         shelfId: details.id as string,
         createWarehouseLocationShelfRequest: payload,
-      });
+      }).unwrap();
       toast.success("Rack updated successfully");
-      loadLocationRack({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
+
       reset();
       onClose();
     } catch (error) {

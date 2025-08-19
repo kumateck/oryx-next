@@ -1,4 +1,4 @@
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -27,14 +27,21 @@ import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
 import { CreateLeaveValidator, LeaveRequestDto } from "./types";
 import LeaveRequestForm from "./form";
+import { useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
+  selectedCategory: LeaveCategories;
   onClose: () => void;
 }
 
-const LeaveRequest = ({ isOpen, onClose }: Props) => {
+const LeaveRequest = ({
+  isOpen,
+  onClose,
+  selectedCategory: category,
+}: Props) => {
   const dispatch = useDispatch();
+  console.log(category, "this is the category");
 
   const [createLeaveRequest, { isLoading: creating }] =
     usePostApiV1LeaveRequestMutation();
@@ -50,31 +57,34 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
   } = useForm<LeaveRequestDto>({
     resolver: CreateLeaveValidator,
     mode: "all",
-  });
-
-  const selectedCategory = useWatch({
-    control,
-    name: "leaveCategory",
+    defaultValues: {
+      leaveCategory: splitWords(LeaveCategories[category]),
+    },
   });
 
   const isExitPass =
-    selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
+    category.toString() === LeaveCategories.ExitPassRequest.toString();
+  const isOfficialDuty =
+    category.toString() === LeaveCategories.OfficialDutyRequest.toString();
   const isLeaveOrAbsence = [
-    String(LeaveCategories.LeaveRequest),
-    String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
+    LeaveCategories.LeaveRequest,
+    LeaveCategories.AbsenceRequest,
+  ].includes(category);
 
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
       // 1. Create the leave request
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate?.toISOString() as string,
+        startDate: data?.startDate ? data.startDate.toISOString() : "",
+        endDate: data?.endDate ? data.endDate.toISOString() : "",
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
-        contactPersonNumber: data.contactPersonNumber ?? "-",
-        requestCategory: parseInt(data.leaveCategory.value) as RequestCategory,
+        contactPersonNumber: data.contactPersonNumber ?? "",
+        destination: data.destination ?? "-",
+        requestCategory: parseInt(
+          data?.leaveCategory ?? "0",
+        ) as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
@@ -86,11 +96,6 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
 
       dispatch(commonActions.setTriggerReload());
       toast.success("Leave Request created successfully");
-      // 2. Immediately reset & close the form
-
-      // 3. Refresh the table
-
-      // 4. Then, upload attachments in the background
       if (leaveRequestId && data.attachments) {
         const files = Array.isArray(data.attachments)
           ? data.attachments
@@ -114,7 +119,7 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||
-          "Failed to create leave request.",
+          "Failed to create leave request. Try again",
       );
     }
   };
@@ -142,18 +147,19 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
     value: lt.id,
   })) as Option[];
 
-  const categoryOptions = Object.entries(LeaveCategories)
-    .filter(([key]) => isNaN(Number(key)))
-    .map(([key, value]) => ({
-      label: splitWords(key),
-      value: String(value),
-    }));
+  useEffect(() => {
+    if (errors) {
+      console.log(errors, "errors in useEffect");
+    }
+  }, [errors]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Staff Leave Request Form</DialogTitle>
+          <DialogTitle>
+            {splitWords(LeaveCategories[category])} Form
+          </DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -163,8 +169,8 @@ const LeaveRequest = ({ isOpen, onClose }: Props) => {
             errors={errors}
             employeeOptions={employeeOptions}
             leaveTypesOptions={leaveTypesOptions}
-            categoryOptions={categoryOptions}
             isExitPass={isExitPass}
+            isOfficialDuty={isOfficialDuty}
             isLeaveOrAbsence={isLeaveOrAbsence}
           />
 

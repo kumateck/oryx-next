@@ -35,7 +35,7 @@ export const ChangePasswordForm = () => {
           // currentPassword: data.currentPassword,
           newPassword: data.newPassword,
         },
-      });
+      }).unwrap();
       toast.success("Password changed successfully");
       reset();
     } catch (error: unknown) {

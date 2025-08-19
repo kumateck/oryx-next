@@ -8,7 +8,7 @@ import { templateQuestions } from "../templates/type";
 import { Container } from "./container";
 
 interface Props {
-  questions: QuestionDto[];
+  questions: templateQuestions[];
   highlightedQuestion?: QuestionDto;
   setHighlightedQuestion: React.Dispatch<
     React.SetStateAction<QuestionDto | undefined>

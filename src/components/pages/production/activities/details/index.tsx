@@ -112,15 +112,15 @@ const Details = () => {
                   avatars={stepData?.responsibleUsers?.map((item) => ({
                     name: getInitials(
                       fullname(
-                        item?.createdBy?.firstName as string,
-                        item?.createdBy?.lastName as string,
+                        item?.user?.firstName as string,
+                        item?.user?.lastName as string,
                       ),
                     ),
                     fullname: fullname(
-                      item?.createdBy?.firstName as string,
-                      item?.createdBy?.lastName as string,
+                      item?.user?.firstName as string,
+                      item?.user?.lastName as string,
                     ),
-                    url: item?.createdBy?.avatar as string,
+                    url: item?.user?.avatar as string,
                   }))}
                 />
               )}

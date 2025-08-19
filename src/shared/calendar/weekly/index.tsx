@@ -633,7 +633,8 @@ const WeeklyFullCalendar: React.FC<CalendarGridProps> = ({
                           key={aid}
                           component={
                             <div className="text-sm inline-block px-2 py-1 rounded cursor-pointer text-white bg-primary-default">
-                              {assignment.shiftCategory?.name}
+                              {assignment.shiftCategory?.name} (
+                              {assignment.employees?.length})
                             </div>
                           }
                         >

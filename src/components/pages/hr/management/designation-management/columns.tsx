@@ -2,18 +2,17 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog, Icon } from "@/components/ui";
+import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
+import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   DesignationDto,
   useDeleteApiV1DesignationByIdMutation,
   useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
-
-// import { TableMenuAction } from "@/shared/table-menu";
 import Edit from "./edit";
-import { useUserPermissions } from "@/hooks/use-permission";
+import { TableMenuAction } from "@/shared/table-menu";
+import { DetailsDialog } from "./detailsDailog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -25,14 +24,30 @@ export function DataTableRowActions<TData extends DesignationDto>({
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<DesignationDto>({} as DesignationDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   //permisions checks
-  const { hasPermissionAccess } = useUserPermissions();
+  // const { hasPermissionAccess } = useUserPermissions();
 
   return (
     <section className="flex items-center justify-end gap-2">
-      {/* <TableMenuAction>
+      <TableMenuAction>
+        <DropdownMenuItem>
+          <div
+            className="flex cursor-pointer items-center justify-start gap-2"
+            onClick={() => {
+              setDetails(row.original);
+              setOpenDetailsDialog(true);
+            }}
+          >
+            <Icon
+              name="Eye"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>View Details</span>
+          </div>
+        </DropdownMenuItem>
         <DropdownMenuItem className="group">
           <div
             className="flex cursor-pointer items-center justify-start gap-2"
@@ -63,8 +78,8 @@ export function DataTableRowActions<TData extends DesignationDto>({
             <span>Delete</span>
           </div>
         </DropdownMenuItem>
-      </TableMenuAction> */}
-      {hasPermissionAccess(PermissionKeys.humanResources.editDesignation) && (
+      </TableMenuAction>
+      {/* {hasPermissionAccess(PermissionKeys.humanResources.editDesignation) && (
         <Icon
           name="Pencil"
           className="h-5 w-5 cursor-pointer text-neutral-500"
@@ -83,7 +98,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
             setIsDeleteOpen(true);
           }}
         />
-      )}
+      )} */}
 
       {details.name && isOpen && (
         <Edit
@@ -92,6 +107,11 @@ export function DataTableRowActions<TData extends DesignationDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
+      <DetailsDialog
+        open={openDetailsDialog}
+        setOpen={() => setOpenDetailsDialog(false)}
+        designation={row.original}
+      />
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}

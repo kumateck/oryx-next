@@ -17,9 +17,6 @@ import { Option } from "@/lib";
 import {
   CreateWarehouseLocationShelfRequest,
   useGetApiV1WarehouseRackQuery,
-  // useGetApiV1WarehouseLocationByLocationIdQuery,
-  // useGetApiV1WarehouseRackByRackIdQuery,
-  useLazyGetApiV1WarehouseShelfQuery,
   usePostApiV1WarehouseByRackIdShelfMutation,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -31,6 +28,8 @@ import {
 
 import ShelfForm from "./form";
 import { CreateShelfValidator, ShelfRequestDto } from "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 // import "./types";
 
@@ -39,7 +38,7 @@ interface Props {
   onClose: () => void;
 }
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadShelves] = useLazyGetApiV1WarehouseShelfQuery();
+  const dispatch = useDispatch();
   const { data: result } = useGetApiV1WarehouseRackQuery({
     page: 1,
     pageSize: 100,
@@ -93,12 +92,9 @@ const Create = ({ isOpen, onClose }: Props) => {
       await createShelf({
         rackId: data.rackId.value,
         createWarehouseLocationShelfRequest: payload,
-      });
+      }).unwrap();
       toast.success("Shelf created successfully");
-      loadShelves({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset(); // Reset the form after submission
       onClose(); // Close the form/modal if applicable
     } catch (error) {

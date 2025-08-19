@@ -20,7 +20,9 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
+  AssignEmployeeDto,
   EmployeeDto,
+  EmployeeLevel as EmployeeLevelEnum,
   useGetApiV1DepartmentQuery,
   useGetApiV1DesignationDepartmentByIdQuery,
   useGetApiV1UserQuery,
@@ -28,9 +30,15 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 
 import AssignUserForm from "./form";
-import { EmployeeInfoRequestDto, EmployeeInfoValidator } from "./type";
+import {
+  EmployeeInfoRequestDto,
+  EmployeeInfoValidator,
+  EmployeeLevel,
+} from "./type";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface AssignLocationDialogProps {
   open: boolean;
@@ -54,6 +62,8 @@ const UserDialog = ({
     [selectedEmployee?.department?.name, selectedEmployee?.department?.id],
   );
 
+  const dispatch = useDispatch();
+
   const defaultDesignation = useMemo(
     () => ({
       label: selectedEmployee?.designation?.name as string,
@@ -66,6 +76,7 @@ const UserDialog = ({
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<EmployeeInfoRequestDto>({
@@ -118,6 +129,13 @@ const UserDialog = ({
         departmentId: defaultDepartment,
         designationId: defaultDesignation,
         staffNumber: selectedEmployee.staffNumber as string,
+        // reportingManagerId: selectedEmployee.re
+        employeeLevel: selectedEmployee.level
+          ? {
+              value: selectedEmployee.level.toString(),
+              label: EmployeeLevel[selectedEmployee.level],
+            }
+          : undefined,
       });
     }
   }, [open, selectedEmployee, reset, defaultDepartment, defaultDesignation]);
@@ -143,14 +161,16 @@ const UserDialog = ({
         toast.error("No employee selected");
         return;
       }
-      console.log("Data", data);
 
       const payload = {
         designationId: data.designationId?.value,
         departmentId: data.departmentId?.value,
-        staffNumber: data.staffNumber,
         reportingManagerId: data.reportingManagerId?.value,
-      };
+        staffNumber: data.staffNumber,
+        employeeLevel: Number(
+          data.employeeLevel?.value,
+        ) as unknown as EmployeeLevelEnum,
+      } as AssignEmployeeDto;
 
       await assignUser({
         id: selectedEmployee.id as string,
@@ -158,6 +178,7 @@ const UserDialog = ({
       }).unwrap();
 
       toast.success("Employee assigned successfully");
+      dispatch(commonActions.setTriggerReload());
       onSuccess();
       handleClose();
     } catch (error) {
@@ -187,7 +208,7 @@ const UserDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[80vh] min-h-[400px] max-w-2xl flex-col">
-        <DialogTitle>Edit Employee Info</DialogTitle>
+        <DialogTitle>Assign Employee Designation</DialogTitle>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -197,6 +218,7 @@ const UserDialog = ({
             <AssignUserForm
               control={control}
               register={register}
+              watch={watch}
               errors={errors}
               departmentOptions={departmentOptions}
               designationOptions={designationOptions}
@@ -207,10 +229,19 @@ const UserDialog = ({
           {/* Fixed footer */}
           <div className="sticky bottom-0 bg-background pt-4">
             <div className="flex justify-end gap-2 border-t pt-4">
-              <Button type="button" variant="secondary" onClick={handleClose}>
+              <Button
+                disabled={isLoading}
+                type="button"
+                variant="secondary"
+                onClick={handleClose}
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="flex items-center gap-2">
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="flex items-center gap-2"
+              >
                 <Icon name="Plus" className="h-4 w-4" />
                 <span>{isLoading ? "Assigning..." : "Assign"}</span>
               </Button>

@@ -35,6 +35,7 @@ const IssueForm = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Enter number",
             type: InputTypes.TEXT,
             required: true,
+            readOnly: true,
             errors,
           },
           {
@@ -60,7 +61,7 @@ const IssueForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             disabled: {
               before: new Date(),
-              after: new Date(2027, 0, 1),
+              after: new Date(2035, 0, 1),
             },
             errors,
           },

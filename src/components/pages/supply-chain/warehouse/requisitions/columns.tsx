@@ -3,12 +3,14 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 import { Icon } from "@/components/ui";
-import { RequisitionStatus, RequisitionType, routes } from "@/lib";
 import {
-  ProductDto,
-  RequestStatus,
-  RequisitionDto,
-} from "@/lib/redux/api/openapi.generated";
+  getEnumBadgeWithHexColors,
+  RequisitionStatus,
+  RequisitionType,
+  routes,
+} from "@/lib";
+import { ProductDto, RequisitionDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
 // import Edit from "./edit";
 
@@ -91,11 +93,15 @@ export const columns: ColumnDef<RequisitionDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {RequisitionStatus[row.original?.status as RequestStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original?.status as RequisitionStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        RequisitionStatus,
+        status,
+      );
+
+      return <StatusBadge label={label} style={style} />;
+    },
   },
   // {
   //   id: "actions",

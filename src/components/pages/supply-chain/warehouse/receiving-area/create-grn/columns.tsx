@@ -1,14 +1,20 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DistributedMaterialStatus, Units, convertToLargestUnit } from "@/lib";
+import {
+  DistributedMaterialStatus,
+  Units,
+  convertToLargestUnit,
+  getEnumBadgeWithHexColors,
+} from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
-const batchStatusColors: Record<DistributedMaterialStatus, string> = {
-  [DistributedMaterialStatus.Distributed]: "bg-blue-100 text-blue-800",
-  [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
-  [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
-  [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
-};
+// const batchStatusColors: Record<DistributedMaterialStatus, string> = {
+//   [DistributedMaterialStatus.Distributed]: "bg-blue-100 text-blue-800",
+//   [DistributedMaterialStatus.Arrived]: "bg-yellow-100 text-yellow-800",
+//   [DistributedMaterialStatus.Checked]: "bg-green-100 text-green-800",
+//   [DistributedMaterialStatus.GrnGenerated]: "bg-orange-100 text-orange-800",
+// };
 
 export const getColumns =
   (): ColumnDef<DistributedRequisitionMaterialDto>[] => [
@@ -50,13 +56,12 @@ export const getColumns =
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status as DistributedMaterialStatus;
-        return (
-          <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-          >
-            {DistributedMaterialStatus[status]}
-          </div>
+        const { label, style } = getEnumBadgeWithHexColors(
+          DistributedMaterialStatus,
+          status,
         );
+
+        return <StatusBadge label={label} style={style} />;
       },
     },
   ];

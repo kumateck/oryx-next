@@ -8,6 +8,9 @@ import {
   Button,
   ConfirmDeleteDialog,
   ConfirmDialog,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
   Icon,
 } from "@/components/ui";
 import {
@@ -27,6 +30,7 @@ import {
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 export const getColumns = (
   type: TransferType,
@@ -74,6 +78,26 @@ export const getColumns = (
           {qty.value}
           {qty.unit}
         </div>
+      );
+    },
+  },
+  {
+    accessorKey: "reason",
+    header: "Reason",
+    cell: ({ row }) => {
+      const reason = row.original.reason as string;
+
+      return (
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className="max-w-[200px] truncate cursor-pointer text-sm text-neutral-default text-ellipsis">
+              <TheAduseiEditorViewer content={reason} />
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-96 ">
+            <TheAduseiEditorViewer content={reason} />
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },

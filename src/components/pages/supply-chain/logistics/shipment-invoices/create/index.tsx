@@ -97,11 +97,17 @@ const Page = () => {
       array2Values.includes(item?.id as string),
     );
 
-    // console.log(filteredArray, "filteredArray");
     const formatArray = filteredArray?.map((item) => {
       const items = item.items?.map((x) => {
-        const converted = convertToLargestUnit(
+        const remainingQuantity =
+          (x?.quantity || 0) - (x?.receivedQuantity || 0);
+
+        const initialQuantity = convertToLargestUnit(
           x.quantity as number,
+          x.uom?.symbol as Units,
+        );
+        const converted = convertToLargestUnit(
+          remainingQuantity as number,
           x.uom?.symbol as Units,
         );
 
@@ -125,6 +131,7 @@ const Page = () => {
           expectedQuantity: converted.value,
           uomName: converted.unit,
           receivedQuantity: converted.value,
+          initialQuantity: initialQuantity.value,
           reason: "",
           manufacturerId: {
             label: defaultManufacturer?.manufacturer?.name,
@@ -150,39 +157,6 @@ const Page = () => {
     setPoLists(formatArray);
     // }
   }, [purchaseOrderIds, purchaseOrders]);
-
-  // const handleLoadPO = async () => {
-  //   // const res = await loadPurchaseOrder({}).unwrap();
-  // };
-  // useEffect(() => {
-  //   if (poOptions?.value) {
-  //     loadPurchaseOrderDetailsHandler(poOptions.value);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [poOptions]);
-
-  // const loadPurchaseOrderDetailsHandler = async (poId: string) => {
-  //   const res = await loadPurchaseOrder({
-  //     purchaseOrderId: poId,
-  //   }).unwrap();
-
-  //   const payload = res?.items?.map((item) => ({
-  //     materialId: item.material?.id as string,
-  //     uomId: item.uom?.id as string,
-  //     expectedQuantity: item.quantity as number,
-  //     materialName: item.material?.name as string,
-  //     uomName: item.uom?.name as string,
-  //     receivedQuantity: item.quantity as number,
-  //     reason: "",
-  //     code: item.material?.code as string,
-  //     costPrice: item.price?.toString(),
-  //     options: item.manufacturers?.map((item) => ({
-  //       label: item.name,
-  //       value: item.id,
-  //     })),
-  //   })) as MaterialRequestDto[];
-  //   setMaterialLists(payload);
-  // };
 
   const onSubmit = async (data: InvoiceRequestDto) => {
     const flatItems = poLists.flatMap((obj) => obj.items);
@@ -242,6 +216,13 @@ const Page = () => {
     <ScrollablePageWrapper className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex w-full items-center justify-between space-y-4">
+          <div
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <Icon name="ArrowLeft" />
+            <div>Back to Shipment Invoice List</div>
+          </div>
           <PageTitle title="Create Shipment Invoice" />
           <Button>
             {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}

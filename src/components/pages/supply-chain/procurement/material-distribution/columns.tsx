@@ -1,6 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { ShipmentDocumentDto } from "@/lib/redux/api/openapi.generated";
+import {
+  getEnumBadgeWithHexColors,
+  ShipmentDocumentType,
+  ShipmentStatus,
+} from "@/lib";
+import StatusBadge from "@/shared/status-badge";
 
 export const columns: ColumnDef<ShipmentDocumentDto>[] = [
   {
@@ -14,5 +20,25 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     cell: ({ row }) => (
       <div>{row.original.shipmentInvoice?.supplier?.name}</div>
     ),
+  },
+  {
+    accessorKey: "type",
+    header: "Document Type",
+    cell: ({ row }) => (
+      <div>{ShipmentDocumentType[Number(row.original.type)]}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Document Status",
+    cell: ({ row }) => {
+      const status = row.original.status as ShipmentStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        ShipmentStatus,
+        status,
+      );
+
+      return <StatusBadge label={label} style={style} />;
+    },
   },
 ];

@@ -1,4 +1,5 @@
 import { type LucideIconProps } from "@/components/ui";
+import { AnalyticalTestRequestStatus } from "@/lib";
 
 // Define the sub-item structure for nested menu items.
 interface SubItem {
@@ -34,32 +35,44 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
-        title: "Product Board",
-        url: "/production/activities",
-        icon: "SquareDashedKanban",
+        title: "HR Dashboard",
+        url: "/hr-dashboard",
+        icon: "ChartBarBig",
         isActive: false,
       },
       {
-        title: "Plan Shift",
+        title: "QC Dashboard",
+        url: "/qa-qc-dashboard/qc",
+        icon: "Table2",
+        isActive: false,
+      },
+      {
+        title: "QA Dashboard",
+        url: "/qa-qc-dashboard/qa",
+        icon: "TableProperties",
+        isActive: false,
+      },
+      {
+        title: "Product Board",
+        url: "/production/activities",
+        icon: "SquareChartGantt",
+        isActive: false,
+      },
+      {
+        title: "Planned Shift",
         url: "/plan-shift",
-        icon: "SquareDashedKanban",
+        icon: "NotebookPen",
         isActive: false,
       },
     ],
   },
   {
-    title: "Supply Chain",
+    title: "Logistics",
     menu: [
       {
-        title: "Logistics",
-        // url: "",
+        title: "Shipment Management",
         icon: "Forklift",
-        //    isActive: false,
         items: [
-          {
-            title: "Available Stock",
-            url: "/stock/available",
-          },
           {
             title: "Shipment Invoices",
             url: "/logistics/shipment-invoices",
@@ -83,15 +96,24 @@ export const ROUTES: Route[] = [
         ],
       },
       {
-        title: "Warehouse",
-        // url: "string",
-        icon: "Warehouse",
-        //    isActive: false,
+        title: "Stock Information",
+        icon: "Boxes",
         items: [
-          // {
-          //   title: "Departments",
-          //   url: "/warehouse/departments",
-          // },
+          {
+            title: "Available Stock",
+            url: "/stock/available",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Warehouse Management",
+    menu: [
+      {
+        title: "Material Intake",
+        icon: "Warehouse",
+        items: [
           {
             title: "Receiving Area",
             url: "/warehouse/receiving-area",
@@ -100,25 +122,9 @@ export const ROUTES: Route[] = [
             title: "Quarantine Area/GRN",
             url: "/warehouse/quarantine-area",
           },
-          // {
-          //   title: "Warehouses",
-          //   url: "/warehouse/warehouses",
-          // },
-          // {
-          //   title: "Locations",
-          //   url: "/warehouse/locations",
-          // },
-          // {
-          //   title: "Racks",
-          //   url: "/warehouse/racks",
-          // },
-          // {
-          //   title: "Shelves",
-          //   url: "/warehouse/shelves",
-          // },
           {
-            title: "Materials",
-            url: "/warehouse/materials",
+            title: "Approved Materials",
+            url: "/warehouse/approved-materials",
           },
           {
             title: "Unlink Materials",
@@ -128,31 +134,34 @@ export const ROUTES: Route[] = [
             title: "Linked Materials",
             url: "/warehouse/materials/linked",
           },
-          // {
-          //   title: "Raw Materials Requests",
-          //   url: "/warehouse/raw-materials-requests",
-          // },
           {
-            title: "Approved Materials",
-            url: "/warehouse/approved-materials",
+            title: "Materials",
+            url: "/warehouse/materials",
           },
-
+        ],
+      },
+      {
+        title: "Material Requests",
+        icon: "FilePenLine",
+        items: [
           {
-            title: "Approved Products",
-            url: "/warehouse/approved-products",
-          },
-          // {
-          //   title: "Available Stock",
-          //   url: "/stock/available",
-          // },
-          {
-            title: "Stock Requisitions",
+            title: "Issue Stock Requisition",
             url: "/warehouse/stock-requisition",
           },
           {
             title: "Extra Packing Requisitions",
             url: "/warehouse/extra-packing",
           },
+          {
+            title: "Material Returns Note",
+            url: "/warehouse/material-returns",
+          },
+        ],
+      },
+      {
+        title: "Stock Movement",
+        icon: "PackageMinus",
+        items: [
           {
             title: "Stock Transfer issues",
             url: "/warehouse/stock-transfer-requests",
@@ -162,34 +171,24 @@ export const ROUTES: Route[] = [
             url: "/warehouse/location-chart",
           },
           {
-            title: "Material Returns Note",
-            url: "/warehouse/material-returns",
+            title: "Approved Products",
+            url: "/warehouse/approved-products",
           },
           {
             title: "Finished Goods Transfer Note",
             url: "/warehouse/finished-goods-transfer-notes",
           },
-          // {
-          //   title: "Packaging Materials Receiving Area",
-          //   url: "/warehouse/packaging-receiving-area",
-          // },
         ],
       },
+    ],
+  },
+  {
+    title: "Procurement",
+    menu: [
       {
-        title: "Procurement",
-        // url: "string",
+        title: "Requests",
         icon: "ShoppingCart",
-        //    isActive: false,
         items: [
-          // {
-          //   title: "Manufacturers",
-          //   url: "/procurement/manufacturers",
-          // },
-          // {
-          //   title: "Suppliers",
-          //   url: "/procurement/suppliers",
-          // },
-
           {
             title: "Purchase Requisition",
             url: "/procurement/requisition",
@@ -198,23 +197,30 @@ export const ROUTES: Route[] = [
             title: "Quotations Request",
             url: "/procurement/quotations",
           },
-
-          {
-            title: "Quotations Reponses",
-            url: "/procurement/sales-quotation",
-          },
           {
             title: "Price Comparison",
             url: "/procurement/price-comparison",
+          },
+        ],
+      },
+      {
+        title: "Quotations",
+        icon: "FileSpreadsheet",
+        items: [
+          {
+            title: "Quotations Responses",
+            url: "/procurement/sales-quotation",
           },
           {
             title: "Awarded Quotations",
             url: "/procurement/awarded-quotations",
           },
-          {
-            title: "Profoma Responses",
-            url: "/procurement/profoma-responses",
-          },
+        ],
+      },
+      {
+        title: "Orders",
+        icon: "Package",
+        items: [
           {
             title: "Create Purchase Orders",
             url: "/procurement/purchase-orders",
@@ -223,9 +229,19 @@ export const ROUTES: Route[] = [
             title: "Purchase Order Lists",
             url: "/procurement/purchase-order-lists",
           },
+        ],
+      },
+      {
+        title: "Distribution",
+        icon: "Forklift",
+        items: [
           {
             title: "Material Distribution",
             url: "/procurement/material-distribution",
+          },
+          {
+            title: "Profoma Responses",
+            url: "/procurement/profoma-responses",
           },
         ],
       },
@@ -236,9 +252,7 @@ export const ROUTES: Route[] = [
     menu: [
       {
         title: "Requisition",
-        // url: "",
-        icon: "ClipboardList",
-        //    isActive: false,
+        icon: "FilePenLine",
         items: [
           {
             title: "Material Requisitions",
@@ -252,77 +266,214 @@ export const ROUTES: Route[] = [
             title: "Others",
             url: "/production/stock-requisition/others",
           },
-          // {
-          //   title: "Shipment Discrepancy",
-          //   url: "/logistics/shipment-discrepancy",
-          // },
         ],
       },
-      // {
-      //   title: "Stock Requisition",
-      //   // url: "/production/stock-requisition",
-      //   icon: "Notebook",
-      //   items: [
-      //     {
-      //       title: "Materials",
-      //       url: "/production/stock-requisition",
-      //     },
-      //     {
-      //       title: "Others",
-      //       url: "/production/stock-requisition/others",
-      //     },
-      //   ],
-      //   //    isActive: false,
-      // },
       {
         title: "Planning",
         url: "/production/plannings",
-        icon: "Check",
-        //    isActive: false,
+        icon: "CalendarRange",
+        isActive: false,
       },
-      {
-        title: "Stock Transfer Requests",
-        url: "/production/stock-transfer-requests",
-        icon: "ALargeSmall",
-      },
-      // {
-      //   title: "Work Order",
-      //   url: "/production/work-order",
-      //   icon: "FolderKanban",
-      //   isActive: false,
-      // },
       {
         title: "Product Schedule",
         url: "/production/schedules",
         icon: "Calendar",
         isActive: false,
       },
-      // {
-      //   title: "Production Board",
-      //   url: "/production/schedules",
-      //   icon: "LayoutList",
-      //   isActive: false,
-      // },
-      // {
-      //   title: "Available Stock",
-      //   url: "/production/schedules",
-      //   icon: "TrendingUp",
-      //   isActive: false,
-      // },
-      // {
-      //   title: "Master Schedule",
-      //   url: "/production/master-schedule",
-      //   icon: "Bookmark",
-      //   isActive: false,
-      // },
+      {
+        title: "Stock Transfer Requests",
+        url: "/production/stock-transfer-requests",
+        icon: "PackageMinus",
+      },
+    ],
+  },
+  {
+    title: "Quality Assurance",
+    menu: [
+      {
+        title: "Issue BMR/BPR",
+        url: "/qa/issue-bmr",
+        icon: "ShieldCheck",
+        isActive: false,
+      },
+      {
+        title: "Analytical Test Requests",
+        url: `/atr?type=${AnalyticalTestRequestStatus.New}`,
+        icon: "FlaskConical",
+      },
+      {
+        title: "Pending Approvals",
+        url: "/qa/pending-approvals",
+        icon: "Hourglass",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Quality Control",
+    menu: [
+      {
+        title: "Testing",
+        icon: "FlaskRound",
+        items: [
+          {
+            title: "Analytical Test Requests",
+            url: `/atr?type=${AnalyticalTestRequestStatus.Sampled}`,
+          },
+          {
+            title: "Goods Receipt Note",
+            url: "/qc/goods-receipt-note",
+          },
+        ],
+      },
+      {
+        title: "StandardTest Procedures",
+        icon: "ChartNoAxesGantt",
+        items: [
+          {
+            title: "Material",
+            url: "/qc/material-stp",
+          },
+          {
+            title: "Product",
+            url: "/qc/products-stp",
+          },
+        ],
+      },
+      {
+        title: "Specifications",
+        icon: "ClipboardList",
+        items: [
+          {
+            title: "Material",
+            url: "/qc/material-specification",
+          },
+          {
+            title: "Product",
+            url: "/qc/product-specification",
+          },
+        ],
+      },
+      {
+        title: "Analytical Raw Data",
+        icon: "FileText",
+        items: [
+          {
+            title: "Material",
+            url: "/qc/analytical-raw-data",
+          },
+          {
+            title: "Product",
+            url: "/qc/product-analytical-raw-data",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "CRM",
+    menu: [
+      {
+        title: "Customer",
+        url: "/crm/customers",
+        icon: "UserRound",
+        isActive: false,
+      },
+      {
+        title: "Production Order",
+        url: "/crm/production-order",
+        icon: "Factory",
+        isActive: false,
+      },
+      {
+        title: "Proforma Invoice",
+        url: "/crm/proforma-invoice",
+        icon: "Sheet",
+        isActive: false,
+      },
+      {
+        title: "Invoice",
+        url: "/crm/invoices",
+        icon: "FileSpreadsheet",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Inventory & Stores",
+    menu: [
+      {
+        title: "Stores",
+        icon: "Boxes",
+        items: [
+          {
+            title: "Receiving Area",
+            url: "/extrals/receiving-area",
+          },
+          {
+            title: "Available Stocks",
+            url: "/extrals/available-stocks",
+          },
+          {
+            title: "Purchase Requisition",
+            url: "/extrals/purchase-requisitions",
+          },
+          {
+            title: "Purchase Requisition Sourcing",
+            url: "/extrals/purchase-requisition-sourcing",
+          },
+          {
+            title: "Stock Requisition",
+            url: "/extrals/stock-requisitions",
+          },
+          {
+            title: "Damage/Missing Items",
+            url: "/extrals/damage-missing-items",
+          },
+          {
+            title: "Vendors",
+            url: "/extrals/vendors",
+          },
+          {
+            title: "Vendor Memo",
+            url: "/extrals/vendors-memo",
+          },
+          {
+            title: "Open Market Quotation",
+            url: "/extrals/open-market-quotation",
+          },
+          {
+            title: "Price Comparison",
+            url: "/extrals/price-comparison",
+          },
+        ],
+      },
+      {
+        title: "Service",
+        icon: "Wrench",
+        items: [
+          {
+            title: "Services",
+            url: "/extrals/services",
+          },
+          {
+            title: "Service Providers",
+            url: "/extrals/services-providers",
+          },
+          {
+            title: "General Inventory",
+            url: "/extrals/general-inventory-config",
+          },
+        ],
+      },
     ],
   },
   {
     title: "Human Resource",
     menu: [
       {
-        title: " HR Management",
-        icon: "Folder",
+        title: "Employee Management",
+        icon: "UserCog",
         items: [
           {
             title: "Employee Management",
@@ -333,6 +484,16 @@ export const ROUTES: Route[] = [
             url: "/hr/designation-management",
           },
           {
+            title: "Staff Requisition",
+            url: "/hr/staff-requisition",
+          },
+        ],
+      },
+      {
+        title: "Leave Management",
+        icon: "CalendarRange",
+        items: [
+          {
             title: "Leave Management",
             url: "/hr/leave-management",
           },
@@ -340,54 +501,34 @@ export const ROUTES: Route[] = [
             title: "Leave Type Configuration",
             url: "/hr/leave-configuration",
           },
-          {
-            title: "Overtime Management",
-            url: "/hr/overtime-management",
-          },
-          {
-            title: "Staff Requisition",
-            url: "/hr/staff-requisition",
-          },
+        ],
+      },
+      {
+        title: "Attendance & Schedule",
+        icon: "Calendar",
+        items: [
           {
             title: "Attendance Report Upload",
             url: "/hr/attendance-report-upload",
           },
           {
-            title: "Attendance Report Summary",
-            url: "/hr/attendance-report-summary",
+            title: "Shift Schedule Report Upload",
+            url: "/hr/shift-schedule-upload",
           },
-          // {
-          //   title: "Shift Schedule",
-          //   url: "/hr/shift-schedule",
-          // },
-          // {
-          //   title: "Shift Types",
-          //   url: "/hr/shift-types",
-          // },
+          {
+            title: "Overtime Management",
+            url: "/hr/overtime-management",
+          },
         ],
       },
     ],
   },
   {
-    title: "Access Control",
+    title: "IT Support",
     menu: [
       {
-        title: "Access Management",
-        icon: "Folder",
-        items: [
-          {
-            title: "Manage Roles",
-            url: "/access-management/roles",
-          },
-          {
-            title: "Manage Permissions",
-            url: "/access-management/permissions",
-          },
-        ],
-      },
-      {
         title: "User Management",
-        icon: "Folder",
+        icon: "UserPlus",
         items: [
           {
             title: "Manage Users Directory",
@@ -399,67 +540,19 @@ export const ROUTES: Route[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    title: "Quality Assurance",
-    menu: [
       {
-        title: "Issue BMR",
-        url: "/qa/issue-bmr",
-        icon: "ShieldCheck",
-        isActive: false,
-        // items: [{
-        //   title: "string",
-        //   url: "string"
-        // }]
-      },
-      {
-        title: "BMR/BPR Request",
-        url: "/qa/bmr-bpr",
-        icon: "ShieldCheck",
-        isActive: false,
-      },
-      {
-        title: "Pending Approvals",
-        url: "/qa/pending-approvals",
-        icon: "CircleDotDashed",
-        isActive: false,
-      },
-    ],
-  },
-  {
-    title: "Quality Control",
-    menu: [
-      {
-        title: "Material STP",
-        url: "/qc/material-stp",
-        icon: "BookUser",
-        isActive: false,
-      },
-      {
-        title: "Product STP",
-        url: "/qc/products-stp",
-        icon: "BookUser",
-        isActive: false,
-      },
-      {
-        title: "Material ARD",
-        url: "/qc/analytical-raw-data",
-        icon: "BookUser",
-        isActive: false,
-      },
-      {
-        title: "Product ARD",
-        url: "/qc/product-analytical-raw-data",
-        icon: "BookUser",
-        isActive: false,
-      },
-      {
-        title: "Goods Receipt Note",
-        url: "/qc/goods-receipt-note",
-        icon: "BookUser",
-        isActive: false,
+        title: "Access Management",
+        icon: "Key",
+        items: [
+          {
+            title: "Manage Roles",
+            url: "/access-management/roles",
+          },
+          {
+            title: "Manage Permissions",
+            url: "/access-management/permissions",
+          },
+        ],
       },
     ],
   },
@@ -467,56 +560,32 @@ export const ROUTES: Route[] = [
     title: "System Settings",
     menu: [
       {
-        title: "Settings",
+        title: "System Configuration",
         url: "/settings",
-        icon: "Settings",
+        icon: "Cog",
         isActive: false,
       },
     ],
   },
   {
-    title: "CRM",
-    menu: [
-      // {
-      //   title: "string",
-      //   url: "string",
-      //   icon: "UserRound",
-      //   isActive: false,
-      //   // items: [{
-      //   //   title: "string",
-      //   //   url: "string"
-      //   // }]
-      // },
-    ],
-  },
-  {
-    title: "Internal",
-    menu: [
-      // {
-      //   title: "string",
-      //   url: "string",
-      //   icon: "ShieldCheck",
-      //   isActive: false,
-      //   // items: [{
-      //   //   title: "string",
-      //   //   url: "string"
-      //   // }]
-      // },
-    ],
-  },
-  {
     title: "Reports",
     menu: [
-      // {
-      //   title: "string",
-      //   url: "string",
-      //   icon: "ClipboardPlus",
-      //   isActive: false,
-      //   // items: [{
-      //   //   title: "string",
-      //   //   url: "string"
-      //   // }]
-      // },
+      {
+        title: "Human Resources Report",
+        url: "/reports/human-resources-report",
+        icon: "Users",
+      },
+      {
+        title: "Inventory Report",
+        url: "/reports/inventory-report",
+        icon: "ClipboardList",
+      },
+      {
+        title: "QC and QA Report",
+        url: "/reports/qc-qa-reports",
+        isActive: false,
+        icon: "FileCheck2",
+      },
     ],
   },
 ];

@@ -1,15 +1,21 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { MaterialReturnNoteDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialReturnNoteDtoRead } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
-import { MaterialReturnsStatus } from "@/lib";
+import { getEnumBadgeWithHexColors, MaterialReturnsStatus } from "@/lib";
+import StatusBadge from "@/shared/status-badge";
 
-const batchStatusColors: Record<MaterialReturnsStatus, string> = {
-  [MaterialReturnsStatus.Pending]: "bg-gray-500 text-white",
-  [MaterialReturnsStatus.Approved]: "bg-green-100 text-green-800",
-  [MaterialReturnsStatus.Rejected]: "bg-red-100 text-red-800",
-};
+// const batchStatusColors: Record<MaterialReturnsStatus, string> = {
+//   [MaterialReturnsStatus.Pending]: "bg-gray-500 text-white",
+//   [MaterialReturnsStatus.Approved]: "bg-green-100 text-green-800",
+//   [MaterialReturnsStatus.Rejected]: "bg-red-100 text-red-800",
+// };
 
-export const columns: ColumnDef<MaterialReturnNoteDto>[] = [
+export const columns: ColumnDef<MaterialReturnNoteDtoRead>[] = [
+  {
+    accessorKey: "productionSchedule",
+    header: "Production Schedule",
+    cell: ({ row }) => <div>{row.original.productionSchedule?.code}</div>,
+  },
   {
     accessorKey: "name",
     header: "Product Name",
@@ -19,6 +25,24 @@ export const columns: ColumnDef<MaterialReturnNoteDto>[] = [
     accessorKey: "batchNumber",
     header: "Batch Number",
     cell: ({ row }) => <div>{row.original.batchNumber}</div>,
+  },
+  {
+    accessorKey: "returnType",
+    header: "Return Type",
+    cell: ({ row }) => {
+      const isFull = row.original.isFullReturn;
+      return (
+        <span
+          className={`px-2 py-1 text-xs font-medium rounded-full ${
+            isFull
+              ? "bg-green-100 text-green-700"
+              : "bg-amber-100 text-amber-700"
+          }`}
+        >
+          {isFull ? "Full" : "Partial"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "returnDate",
@@ -31,23 +55,18 @@ export const columns: ColumnDef<MaterialReturnNoteDto>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "productionSchedule",
-    header: "Production Schedule",
-    cell: ({ row }) => <div>{row.original.productionSchedule?.code}</div>,
-  },
+  //isFullReturn
+
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as MaterialReturnsStatus;
-      return (
-        <div
-          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-        >
-          {MaterialReturnsStatus[status]}
-        </div>
+      const { label, style } = getEnumBadgeWithHexColors(
+        MaterialReturnsStatus,
+        status,
       );
+      return <StatusBadge label={label} style={style} />;
     },
   },
 ];

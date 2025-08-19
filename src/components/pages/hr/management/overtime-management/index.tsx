@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1OvertimeRequestsQuery,
-  useLazyGetApiV1OvertimeRequestsQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1OvertimeRequestsQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -18,25 +15,19 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { AuditModules } from "@/lib";
-import { useRouter } from "next/navigation";
-// import { PermissionKeys } from "@/lib";
-// import NoAccess from "@/shared/no-access";
-// import { useUserPermissions } from "@/hooks/use-permission";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const Page = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const router = useRouter();
 
   const searchValue = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchValue, 500);
 
-  const { data: result, isLoading } = useGetApiV1OvertimeRequestsQuery({
-    page,
-    pageSize,
-  });
-  const [loadOvertimeRequests, { isFetching }] =
+  const [loadOvertimeRequests, { data: result, isLoading, isFetching }] =
     useLazyGetApiV1OvertimeRequestsQuery();
 
   useEffect(() => {
@@ -51,28 +42,14 @@ const Page = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, triggerReload, searchValue]);
+  }, [page, pageSize, triggerReload, debouncedValue]);
   const data = result?.data || [];
-  const [isOpen, setIsOpen] = useState(false);
-  console.log("Overtime Management Page Rendered", data);
-
-  //Check Permission
-
-  // const { hasPermissionAccess } = useUserPermissions();
-  // const hasAccess = hasPermissionAccess(
-  //   PermissionKeys.humanResources.viewOvertimeRequests,
-  // );
-
-  // if (!hasAccess) {
-  //   //redirect to no access
-  //   return <NoAccess />;
-  // }
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       {isOpen && <Create onClose={() => setIsOpen(false)} isOpen={isOpen} />}
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Overtime Management" />
+        <PageTitle title="Overtime Managements" />
         <div className="flex items-center justify-end gap-2">
           {/* {hasPermissionAccess(PermissionKeys.humanResources.) && (
             <Button
@@ -93,9 +70,6 @@ const Page = () => {
 
       <ServerDatatable
         data={data}
-        onRowClick={(row) =>
-          router.push(`/hr/overtime-management/${row.id}/details`)
-        }
         columns={columns}
         isLoading={isLoading || isFetching}
         setPage={setPage}

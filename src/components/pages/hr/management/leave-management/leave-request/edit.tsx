@@ -1,4 +1,4 @@
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -44,10 +44,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     value: details?.employee?.id as string,
   };
 
-  const defaultCategory = {
-    value: details.requestCategory?.toString() as string,
-    label: splitWords(LeaveCategories[details.requestCategory ?? 0]) || "",
-  };
+  const defaultCategory =
+    splitWords(LeaveCategories[details.requestCategory ?? 0]) || "";
 
   const defaultLeaveType = {
     label: details?.leaveType?.name as string,
@@ -66,32 +64,25 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     defaultValues: {
       employeeId: defaultEmployee,
       leaveCategory: defaultCategory,
-      contactPerson: details.contactPerson as string,
-      contactPersonNumber: details.contactPersonNumber as string,
       leaveTypeId: defaultLeaveType,
       startDate: new Date(details.startDate as string),
       endDate: new Date(details.endDate as string),
       justification: details.justification as string,
+      contactPerson: details.contactPerson as string,
+      contactPersonNumber: details.contactPersonNumber as string,
     },
-  });
-
-  const selectedCategory = useWatch({
-    control,
-    name: "leaveCategory",
   });
 
   const onSubmit = async (data: LeaveRequest) => {
     try {
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
-        startDate: data.startDate.toISOString(),
+        startDate: data.startDate ? data.startDate.toISOString() : "",
         endDate: data.endDate?.toISOString() as string,
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson as string,
         contactPersonNumber: data.contactPersonNumber as string,
-        requestCategory: parseInt(
-          data.leaveCategory.value,
-        ) as unknown as RequestCategory,
+        requestCategory: details.requestCategory as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
@@ -135,6 +126,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   });
 
   const employees = employeesResponse?.data ?? [];
+  const category = details?.requestCategory as LeaveCategories;
 
   const employeeOptions = employees?.map((item) => {
     return {
@@ -160,24 +152,21 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
   }) as Option[];
 
   const isExitPass =
-    selectedCategory?.value === String(LeaveCategories.ExitPassRequest);
+    category.toString() === LeaveCategories.ExitPassRequest.toString();
+  const isOfficialDuty =
+    category.toString() === LeaveCategories.OfficialDutyRequest.toString();
   const isLeaveOrAbsence = [
-    String(LeaveCategories.LeaveRequest),
-    String(LeaveCategories.AbsenceRequest),
-  ].includes(selectedCategory?.value);
-
-  const categoryOptions = Object.entries(LeaveCategories)
-    .filter(([key]) => isNaN(Number(key)))
-    .map(([key, value]) => ({
-      label: splitWords(key),
-      value: String(value),
-    }));
+    LeaveCategories.LeaveRequest,
+    LeaveCategories.AbsenceRequest,
+  ].includes(category);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>Staff Leave Request Form</DialogTitle>
+          <DialogTitle>
+            Edit {splitWords(LeaveCategories[category])} Form
+          </DialogTitle>
         </DialogHeader>
 
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -187,8 +176,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
             errors={errors}
             employeeOptions={employeeOptions}
             leaveTypesOptions={leaveTypesOptions}
-            categoryOptions={categoryOptions}
             isExitPass={isExitPass}
+            isOfficialDuty={isOfficialDuty}
             isLeaveOrAbsence={isLeaveOrAbsence}
           />
           <DialogFooter className="justify-end gap-4 py-6">

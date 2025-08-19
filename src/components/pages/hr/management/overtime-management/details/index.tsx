@@ -8,6 +8,7 @@ import { useGetApiV1OvertimeRequestsByIdQuery } from "@/lib/redux/api/openapi.ge
 import { AuditModules } from "@/lib";
 import { format, addHours } from "date-fns";
 import { OvertimeDetailsSkeleton } from "./LoadingSkeleton";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 // import Link from "next/link";
 
 function Page() {
@@ -115,7 +116,9 @@ function Page() {
                 <div className="flex gap-2 items-center">
                   <span>Overtime Justification:</span>
                   <span className="font-semibold">
-                    {data?.createdBy?.department?.name || "-"}
+                    <TheAduseiEditorViewer
+                      content={data?.justification as string}
+                    />
                   </span>
                 </div>
               </div>

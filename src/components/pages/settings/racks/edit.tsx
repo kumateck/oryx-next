@@ -16,15 +16,14 @@ import {
   CreateWarehouseLocationRackRequest,
   WarehouseLocationRackDto,
   useLazyGetApiV1WarehouseLocationQuery,
-  useLazyGetApiV1WarehouseRackQuery,
   usePutApiV1WarehouseRackByRackIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, cn, isErrorResponse, splitWords } from "@/lib/utils";
 
 import RackForm from "./form";
 import { CreateRackValidator, RackRequestDto } from "./types";
-
-// import "./types";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface Props {
   isOpen: boolean;
@@ -32,8 +31,7 @@ interface Props {
   details: WarehouseLocationRackDto;
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
-  const [loadLocationRack] = useLazyGetApiV1WarehouseRackQuery();
-
+  const dispatch = useDispatch();
   const [editRack, { isLoading }] = usePutApiV1WarehouseRackByRackIdMutation();
 
   const defaultLocation = {
@@ -59,18 +57,13 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
 
   const onSubmit = async (data: RackRequestDto) => {
     try {
-      const payload = {
-        ...data,
-      } satisfies CreateWarehouseLocationRackRequest;
+      const payload = data satisfies CreateWarehouseLocationRackRequest;
       await editRack({
         rackId: details.id as string,
         createWarehouseLocationRackRequest: payload,
-      });
+      }).unwrap();
       toast.success("Rack updated successfully");
-      loadLocationRack({
-        page: 1,
-        pageSize: 10,
-      });
+      dispatch(commonActions.setTriggerReload());
       reset();
       onClose();
     } catch (error) {

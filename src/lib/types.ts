@@ -52,3 +52,20 @@ export type Attachment = {
 //   isActive: boolean;
 //   children: PermissionChild[];
 // }
+
+export interface NotificationData {
+  id?: string;
+  message?: {
+    message: string;
+    recipients: string[];
+  };
+  timestamp?: string;
+  type?: string;
+  userId?: string;
+  [key: string]: any;
+}
+
+export interface SocketHookReturn {
+  socket: any; // Socket instance
+  isConnected: boolean;
+}

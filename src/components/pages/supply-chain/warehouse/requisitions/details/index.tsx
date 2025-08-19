@@ -5,7 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button, Card, CardContent, CardTitle, Icon } from "@/components/ui";
-import { ErrorResponse, isErrorResponse, PermissionKeys } from "@/lib";
+import {
+  ErrorResponse,
+  isErrorResponse,
+  PermissionKeys,
+  RequisitionStatus,
+} from "@/lib";
 import {
   useGetApiV1RequisitionByRequisitionIdQuery,
   usePostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdMutation,
@@ -70,6 +75,10 @@ const IssueStockRequistions = () => {
           {(hasAccessToRawMaterialReQuests ||
             hasAccessToPackageMaterialRequests) && (
             <Button
+              disabled={
+                Number(requisition?.items?.length || 0) === 0 ||
+                requisition?.status === RequisitionStatus.Completed
+              }
               onClick={onIssue}
               variant={"default"}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-500"

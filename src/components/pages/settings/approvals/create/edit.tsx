@@ -53,7 +53,6 @@ const EditApproval = () => {
     const response = await loadApprovalById({
       approvalId: id,
     }).unwrap();
-    console.log(response, "response");
 
     const approvalStages = response?.approvalStages?.map((stage) => ({
       type: stage.role?.id ? InterestType.Role : InterestType.User,

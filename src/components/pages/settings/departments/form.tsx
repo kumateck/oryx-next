@@ -8,17 +8,19 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { DepartmentType, InputTypes } from "@/lib";
+import { DepartmentType, InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
+  departmentOptions: Option[];
 }
 const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
+  departmentOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -27,7 +29,7 @@ const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("code" as Path<TFieldValues>),
             label: "Department Code",
-            placeholder: "Enter name",
+            placeholder: "Generating code",
             type: InputTypes.TEXT,
 
             readOnly: true,
@@ -38,6 +40,15 @@ const DepartmentForm = <TFieldValues extends FieldValues, TContext>({
               </span>
             ),
 
+            errors,
+          },
+          {
+            label: "Parent Department",
+            control: control as unknown as Control,
+            type: InputTypes.SELECT,
+            name: "parentDepartmentId",
+            placeholder: "Select Parent Department",
+            options: departmentOptions,
             errors,
           },
           {

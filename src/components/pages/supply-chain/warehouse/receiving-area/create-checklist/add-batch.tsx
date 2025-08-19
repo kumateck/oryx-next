@@ -16,7 +16,7 @@ import {
 } from "@/components/ui";
 import { InputTypes, Option } from "@/lib";
 
-import { checklistBatchRequestSchema } from "./types";
+import { ChecklistBatchDto, checklistBatchRequestSchema } from "./types";
 
 interface AddBatchDialogProps {
   isOpen: boolean;
@@ -39,37 +39,49 @@ const AddBatchDialog = ({
 }: AddBatchDialogProps) => {
   const {
     register,
-    handleSubmit,
     control,
     reset,
+    trigger,
+    getValues,
     formState: { errors },
-  } = useForm({
+  } = useForm<ChecklistBatchDto>({
     resolver: zodResolver(checklistBatchRequestSchema),
-    mode: "all",
+    mode: "onSubmit",
   });
 
-  const onSubmit = (data: any) => {
-    try {
-      const filteredWeights = data.weights.filter(
-        (weight: any) => weight.srNumber && weight.grossWeight,
-      );
+  const onSubmit = async () => {
+    const isValid = await trigger();
 
-      if (filteredWeights.length === 0) {
-        toast.error("At least one SR Number and Gross Weight pair is required");
+    if (isValid) {
+      const data = getValues() as ChecklistBatchDto;
+      if (data.numberOfContainers * data.quantityPerContainer > remainingQty) {
+        toast.error("Material quantity exceeds remaining quantity");
         return;
       }
+      try {
+        const filteredWeights = data.weights.filter(
+          (weight) => weight.srNumber && weight.grossWeight,
+        );
 
-      const validatedData = checklistBatchRequestSchema.parse({
-        ...data,
-        weights: filteredWeights,
-      });
+        if (filteredWeights.length === 0) {
+          toast.error(
+            "At least one SR Number and Gross Weight pair is required",
+          );
+          return;
+        }
 
-      onSave(validatedData);
-      reset();
-      onClose();
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error("Please fix validation errors before submitting");
+        const validatedData = checklistBatchRequestSchema.parse({
+          ...data,
+          weights: filteredWeights,
+        });
+
+        onSave(validatedData);
+        reset();
+        onClose();
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast.error("Please fix validation errors before submitting");
+        }
       }
     }
   };
@@ -86,12 +98,7 @@ const AddBatchDialog = ({
             {qtyUnit}
           </p>
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)(e);
-          }}
-        >
+        <form>
           <FormWizard
             className="w-full gap-x-2 space-y-0"
             fieldWrapperClassName="flex-grow"
@@ -111,7 +118,9 @@ const AddBatchDialog = ({
             fieldWrapperClassName="flex-grow"
             config={[
               {
-                register: register("numberOfContainers"),
+                register: register("numberOfContainers", {
+                  valueAsNumber: true,
+                }),
                 label: "Number of Containers/Bags/Shippers",
                 type: InputTypes.NUMBER,
                 errors,
@@ -121,13 +130,15 @@ const AddBatchDialog = ({
                 name: "numberOfContainersUom",
                 label: "Unit of Measure",
                 type: InputTypes.SELECT,
-                control: control as Control,
+                control: control as unknown as Control,
                 required: true,
                 options: packingUomOptions,
                 errors,
               },
               {
-                register: register("quantityPerContainer"),
+                register: register("quantityPerContainer", {
+                  valueAsNumber: true,
+                }),
                 label: "Quantity per Container/bag/shipper",
                 type: InputTypes.NUMBER,
                 errors,
@@ -153,37 +164,37 @@ const AddBatchDialog = ({
             config={[
               {
                 label: "Manufacturing Date",
-                control: control as Control,
+                control: control as unknown as Control,
                 type: InputTypes.DATE,
                 name: "manufacturingDate",
                 required: true,
                 disabled: {
                   before: new Date(2023, 0, 1),
-                  after: new Date(2027, 0, 1),
+                  after: new Date(2035, 0, 1),
                 },
                 errors,
               },
               {
                 label: "Expiry Date",
-                control: control as Control,
+                control: control as unknown as Control,
                 type: InputTypes.DATE,
                 name: "expiryDate",
                 required: true,
                 disabled: {
                   before: new Date(),
-                  after: new Date(2027, 0, 1),
+                  after: new Date(2035, 0, 1),
                 },
                 errors,
               },
 
               {
-                label: "Restest Date",
-                control: control as Control,
+                label: "Retest Date",
+                control: control as unknown as Control,
                 type: InputTypes.DATE,
                 name: "retestDate",
                 disabled: {
                   before: new Date(),
-                  after: new Date(2027, 0, 1),
+                  after: new Date(2035, 0, 1),
                 },
                 errors,
               },
@@ -228,7 +239,7 @@ const AddBatchDialog = ({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="button" onClick={handleSubmit(onSubmit)}>
+            <Button type="button" onClick={onSubmit}>
               Add
             </Button>
           </div>

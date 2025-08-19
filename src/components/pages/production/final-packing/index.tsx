@@ -22,12 +22,11 @@ import {
 } from "@/components/ui";
 import {
   AuditModules,
-  ErrorResponse,
   Units,
   cn,
   convertToLargestUnit,
   getSmallestUnit,
-  isErrorResponse,
+  omit,
   routes,
   sanitizeNumber,
 } from "@/lib";
@@ -39,6 +38,7 @@ import {
   useLazyGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   usePostApiV1ProductionScheduleFinalPackingMutation,
   useLazyGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery,
+  usePostApiV1ProductionScheduleReturnAfterProductionMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 
@@ -52,6 +52,7 @@ import {
   getMaterialSchema,
 } from "./type";
 import YieldPacking from "./yield";
+import ThrowErrorMessage from "@/lib/throw-error";
 
 const FinalPacking = () => {
   const router = useRouter();
@@ -75,6 +76,8 @@ const FinalPacking = () => {
   const [loadProduct] = useLazyGetApiV1ProductByProductIdQuery();
 
   const [loadSchedule] = useLazyGetApiV1ProductionScheduleByScheduleIdQuery();
+  const [returnsMutation, { isLoading: isLoadingReturns }] =
+    usePostApiV1ProductionScheduleReturnAfterProductionMutation();
   const [finalPackingMutation, { isLoading: isLoadingSaveFinalPacking }] =
     usePostApiV1ProductionScheduleFinalPackingMutation();
   const [loadFinalPacking, { isLoading: isLoadingFinalPacking }] =
@@ -190,7 +193,6 @@ const FinalPacking = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yieldTotalQuantityPacked, leftOver]);
 
-  // console.log(isLoadingActivity, isLoadingFinalPacking);
   const handleFinalPacking = async (activityId: string) => {
     try {
       const response = await loadActivity({
@@ -261,6 +263,7 @@ const FinalPacking = () => {
       const materialForMatrix = packingResponse?.items?.map((item) => ({
         materialId: item.material?.id as string,
         materialName: item.material?.name as string,
+        uoMId: item.uoM?.id as string,
         // receivedQuantity: item.quantity as number,
 
         //i have to convert to largest and also i have to make sure that everything is converted to smallest for saving
@@ -283,9 +286,12 @@ const FinalPacking = () => {
       })) as MaterialMatrix[];
       setMaterialMatrix(materialForMatrix);
 
-      const initialFormData: { [key: string]: { [key: string]: number } } = {};
+      const initialFormData: {
+        [key: string]: { [key: string]: number | string };
+      } = {};
       materialForMatrix.forEach((material) => {
         initialFormData[material.materialId] = {
+          uoMId: material.uoMId, // Remain as string
           receivedQuantity: sanitizeNumber(material.receivedQuantity), // Read-only
           subsequentDeliveredQuantity: sanitizeNumber(
             material.subsequentDeliveredQuantity,
@@ -303,6 +309,7 @@ const FinalPacking = () => {
           percentageLoss: 0,
         };
       });
+
       setFormData(initialFormData);
     } catch (error) {
       console.error(error);
@@ -315,14 +322,14 @@ const FinalPacking = () => {
   );
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState<{
-    [key: string]: { [key: string]: number };
+    [key: string]: { [key: string]: number | string };
   }>({});
   // 🔹 Validation before submitting
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
     materialMatrix.forEach((material) => {
       const schema = getMaterialSchema(
-        formData[material.materialId].totalReceivedQuantity,
+        Number(formData[material.materialId].totalReceivedQuantity),
       );
       const result = schema.safeParse(formData[material.materialId]);
 
@@ -337,19 +344,46 @@ const FinalPacking = () => {
     return Object.keys(newErrors).length === 0;
   };
   const onSubmit = async (data: PackingRequestDto) => {
-    // console.log(data, validateForm(), errors);
     if (validateForm()) {
       const materialArray = Object.entries(formData).map(
         ([materialId, values]) => ({
           materialId,
+          uoMId: values.uoMId,
+          returnedQuantity: Number(values.returnedQuantity) || 0, // Ensure returnedQuantity exists
+
           ...values,
         }),
       );
+
+      const returnedMaterials = materialArray
+        .filter((material) => Number(material.returnedQuantity) > 0)
+        .map((material) => ({
+          materialId: material.materialId,
+          quantity: Number(material.returnedQuantity),
+          uoMId: material.uoMId as string,
+        }));
+
+      // const materials = materialArray?.map(
+      //   ({ uoMId: _, materialId, ...rest }) => ({
+      //     materialId,
+      //     ...Object.fromEntries(
+      //       Object.entries(rest).map(([key, val]) => [key, Number(val) || 0]),
+      //     ),
+      //   }),
+      // );
+      const materials = materialArray?.map((material) => ({
+        materialId: material.materialId,
+        ...Object.fromEntries(
+          Object.entries(omit(material, "uoMId", "materialId")).map(
+            ([key, val]) => [key, Number(val) || 0],
+          ),
+        ),
+      }));
       const payload = {
         productionScheduleId: scheduleId,
         productId: productId,
         productionActivityStepId: currentStepId,
-        materials: materialArray,
+        materials,
         numberOfBottlesPerShipper: data.numberOfBottlesPerShipper,
         nUmberOfFullShipperPacked: data.nUmberOfFullShipperPacked,
         leftOver: data.leftOver,
@@ -365,16 +399,28 @@ const FinalPacking = () => {
         totalNumberOfBottles: data.totalNumberOfBottles,
         totalGainOrLoss: data.totalGainOrLoss,
       };
+
+      const payloadForReturns = {
+        body: returnedMaterials,
+        productionScheduleId: scheduleId,
+        productId: productId,
+        module: AuditModules.production.name,
+        subModule: AuditModules.production.returns,
+      };
+
       try {
-        await finalPackingMutation({
-          createFinalPacking: payload,
-          module: AuditModules.production.name,
-          subModule: AuditModules.production.finalPacking,
-        }).unwrap();
+        await Promise.all([
+          finalPackingMutation({
+            createFinalPacking: payload,
+            module: AuditModules.production.name,
+            subModule: AuditModules.production.finalPacking,
+          }).unwrap(),
+          returnsMutation(payloadForReturns).unwrap(),
+        ]);
         toast.success("Final Packing updated successfully");
         router.push(routes.viewBoard(activityId));
       } catch (error) {
-        toast.error(isErrorResponse(error as ErrorResponse)?.description);
+        ThrowErrorMessage(error);
       }
     } else {
       console.log("❌ Validation Errors:", errors);
@@ -387,7 +433,7 @@ const FinalPacking = () => {
         <div className="flex items-center justify-between gap-4">
           <PageTitle title="Final Packing" />
           <Button type="submit" className="flex items-center gap-2">
-            {isLoadingSaveFinalPacking && (
+            {(isLoadingSaveFinalPacking || isLoadingReturns) && (
               <Icon name="LoaderCircle" className="size-4 animate-spin" />
             )}{" "}
             <span>Save Changes</span>

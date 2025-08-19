@@ -19,7 +19,7 @@ const AccessTabs = ({
       {
         <div
           className={cn(
-            "flex h-10 w-48 items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
+            "flex h-10 w-fit items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
             containerClassName,
           )}
         >
@@ -27,7 +27,7 @@ const AccessTabs = ({
             <button
               key={idx}
               onClick={() => handleTabClick(Number(tab.value))}
-              className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 ${
+              className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                 Number(type) === Number(tab.value)
                   ? "h-full bg-primary-default text-white shadow-md"
                   : "text-neutral-default"
@@ -36,16 +36,6 @@ const AccessTabs = ({
               {tab.label}
             </button>
           ))}
-          {/* <button
-            onClick={() => handleTabClick(SupplierType.Local)}
-            className={`w-full rounded-full px-4 py-1 text-sm font-medium transition-all duration-300 ${
-              Number(type) === SupplierType.Local
-                ? "h-full bg-primary-default text-white shadow-md"
-                : "text-neutral-default"
-            }`}
-          >
-            {ProcurementType.Local}
-          </button> */}
         </div>
       }
     </div>

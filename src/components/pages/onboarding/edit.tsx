@@ -346,7 +346,7 @@ export default function EditEmployeeForm() {
 
       await updateEmployee({
         id: employeeId,
-        createEmployeeRequest: payload,
+        updateEmployeeRequest: payload,
         module: AuditModules.management.name,
         subModule: AuditModules.management.employeeManagement,
       }).unwrap();

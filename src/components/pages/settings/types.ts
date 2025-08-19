@@ -109,6 +109,11 @@ export const settingCategories: SettingCategory[] = [
     items: [
       { name: "Approvals", path: "/settings/approvals", icon: "ClipboardList" },
       {
+        name: "Signature Settings",
+        path: "/settings/signature",
+        icon: "Key",
+      },
+      {
         name: "Change Password",
         path: "/settings/change-password",
         icon: "Key",

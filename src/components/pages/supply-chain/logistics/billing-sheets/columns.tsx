@@ -1,13 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { BillingSheetStatus } from "@/lib";
+import { BillingSheetStatus, getEnumBadgeWithHexColors } from "@/lib";
 import { BillingSheetDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 
-const batchStatusColors: Record<BillingSheetStatus, string> = {
-  [BillingSheetStatus.Pending]: "bg-yellow-100 text-yellow-800",
-  [BillingSheetStatus.Paid]: "bg-green-100 text-green-800",
-};
+// const batchStatusColors: Record<BillingSheetStatus, string> = {
+//   [BillingSheetStatus.Pending]: "bg-yellow-100 text-yellow-800",
+//   [BillingSheetStatus.Paid]: "bg-green-100 text-green-800",
+// };
 
 export const columns: ColumnDef<BillingSheetDto>[] = [
   {
@@ -78,13 +79,12 @@ export const columns: ColumnDef<BillingSheetDto>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status as BillingSheetStatus;
-      return (
-        <div
-          className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[status]}`}
-        >
-          {BillingSheetStatus[status]}
-        </div>
+      const { label, style } = getEnumBadgeWithHexColors(
+        BillingSheetStatus,
+        status,
       );
+
+      return <StatusBadge label={label} style={style} />;
     },
   },
   // {

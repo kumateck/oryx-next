@@ -101,7 +101,7 @@ const BOM = () => {
     const data = (await getValues()) as BomFormData;
     try {
       if (!data.items.length) {
-        toast.error("Please add BOM items");
+        toast.error("Please add at least one item to the BOM");
         return;
       }
 

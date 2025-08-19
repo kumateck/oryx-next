@@ -19,12 +19,14 @@ import {
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialArdByIdMutation,
   useGetApiV1MaterialArdByIdQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   AuditModules,
   cn,
   CODE_SETTINGS,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
@@ -41,21 +43,22 @@ interface Props {
 }
 
 export function Edit({ isOpen, id, onClose, details }: Props) {
-  const defaultFormId = {
-    value: details?.form?.id as string,
-    label: details?.form?.name as string,
-  };
-
   const defaultStpId = {
     value: details?.materialStandardTestProcedure?.id as string,
     label: details?.materialStandardTestProcedure?.stpNumber as string,
   };
   const dispatch = useDispatch();
+
+  const [loadMaterialstpSpecification, { data }] =
+    useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+
   const {
     handleSubmit,
     register,
     control,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<MaterialArdSchemaType>({
     resolver: MaterialArdSchemaResolver,
@@ -63,10 +66,27 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     defaultValues: {
       description: details.description as string,
       stpId: defaultStpId,
-      formId: defaultFormId,
       specNumber: details.specNumber as string,
     },
   });
+
+  const stpId = watch("stpId");
+  useEffect(() => {
+    const material = materialStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    console.log(material);
+    if (material) {
+      loadMaterialstpSpecification({ id: material?.material?.id as string });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
@@ -97,15 +117,14 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
           details.materialStandardTestProcedure?.stpNumber ||
           "",
       };
-      const defaultFormId = {
-        value: materialStpData?.form?.id || "",
-        label: materialStpData?.form?.name || "",
-      };
 
       reset({
         description: details.description || "",
         stpId: defaultStpId,
-        formId: defaultFormId,
+        formId: {
+          value: details.form?.id || "",
+          label: details.form?.name || "",
+        },
         specNumber: details.specNumber || "",
       });
     }
@@ -116,6 +135,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.ARD,
   });
 
   const formOptionsData = formTemplates?.data || [];

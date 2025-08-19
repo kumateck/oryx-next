@@ -31,6 +31,7 @@ const ReceivingArea = () => {
 
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [loadData, { data: result, isFetching, isLoading }] =
     useLazyGetApiV1WarehouseDistributedRequisitionMaterialsQuery();
@@ -44,20 +45,16 @@ const ReceivingArea = () => {
       page,
       pageSize,
       kind: kind ?? EMaterialKind.Raw,
+      searchQuery: searchValue,
     });
     if (triggerReload) {
       setRowSelection({});
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, page, pageSize, triggerReload]);
+  }, [kind, page, pageSize, searchValue, triggerReload]);
 
-  const data = (result?.data || []).map(
-    (item: DistributedRequisitionMaterialDto) => ({
-      ...item,
-      // id: item.id || "",
-    }),
-  );
+  const data = result?.data || [];
   const selectedIds = getMatchingIds(data, rowSelection);
 
   const selectedData = data.filter((item: DistributedRequisitionMaterialDto) =>
@@ -145,7 +142,7 @@ const ReceivingArea = () => {
             onGRNClose={() => setIsGRNOpen(false)}
             isGRNOpen={isGRNOpen}
             selectedIds={selectedIds}
-            data={data}
+            selectedMaterials={selectedData}
           />
         )}
       </div>

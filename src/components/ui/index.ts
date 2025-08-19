@@ -6,6 +6,7 @@ export * from "./async-select";
 export * from "./animate-text";
 export * from "./avatar-stack";
 export * from "./avatar";
+export * from "./badge";
 export * from "./breadcrumb";
 export * from "./button";
 export * from "./calendar";

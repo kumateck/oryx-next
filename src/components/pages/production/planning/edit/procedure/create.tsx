@@ -78,11 +78,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
-  // const typeValues = useWatch({
-  //   control,
-  //   name: "type",
-  // }) as ProcedureType;
-
   useEffect(() => {
     if (isOpen) {
       loadCollection({

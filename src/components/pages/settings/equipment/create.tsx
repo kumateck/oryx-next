@@ -91,7 +91,7 @@ const Create = ({ isOpen, onClose }: Props) => {
       } satisfies CreateEquipmentRequest;
       await createEquipment({
         createEquipmentRequest: payload,
-      });
+      }).unwrap();
       toast.success("Equipment created successfully");
 
       dispatch(commonActions.setTriggerReload());

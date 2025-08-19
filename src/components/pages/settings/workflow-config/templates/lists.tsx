@@ -7,6 +7,7 @@ import { ConfirmDeleteDialog, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   FormDto,
+  FormType,
   useDeleteApiV1FormByFormIdMutation,
   useLazyGetApiV1FormQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -14,12 +15,18 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { useSelector } from "@/lib/redux/store";
 
 import TemplateCard from "./card";
+import PageWrapper from "@/components/layout/wrapper";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const PAGE_SIZE = 10; // or whatever your API page size is
-
-const TemplateCards = () => {
+interface Props {
+  type?: FormType;
+}
+const TemplateCards = ({ type }: Props) => {
   const [hasMore, setHasMore] = useState(true);
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchValue, 500);
 
   const [workflowForms, setWorkflowForms] = useState<FormDto[]>([]);
   // const [state, setState] = useState<TResult<FormTemplate> | null>();
@@ -45,7 +52,12 @@ const TemplateCards = () => {
   const fetchWorkflows = async () => {
     try {
       // Assuming your query accepts a page parameter (adjust if necessary)
-      const response = await loadTemplates({ page }).unwrap();
+      const response = await loadTemplates({
+        page,
+        pageSize: PAGE_SIZE,
+        searchQuery: debouncedValue,
+        type,
+      }).unwrap();
       const loadedQuestions = response.data || [];
 
       // Append new questions to the existing list
@@ -69,39 +81,30 @@ const TemplateCards = () => {
       setHasMore(false);
     }
   };
-  // Load initial questions when component mounts
+  // // Load initial questions when component mounts
+  // useEffect(() => {
+  //   fetchInitialWorkflows();
+
+  //   if (triggerReload) {
+  //     dispatch(commonActions.unSetTriggerReload());
+  //   }
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [triggerReload, type]);
+
   useEffect(() => {
+    // Reset everything when type or triggerReload changes
+    setPage(1);
+    setWorkflowForms([]);
+    setHasMore(true);
     fetchInitialWorkflows();
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerReload]);
+  }, [triggerReload, type]); // 👈 add type here
 
-  // const handleRemoveType = (type: string) => {
-  //   const normalizedFormType = type.trim().toLowerCase();
-  //   if (!selectedFormType) {
-  //     return;
-  //   }
-  //   const typesArray = selectedFormType
-  //     .split(",")
-  //     .map((item) => item.trim().toLowerCase()); // Converts the string into an array of lowercase strings
-  //   // Filter out the removed type, checking for exact match
-  //   const updatedTypesArray = typesArray.filter(
-  //     (item) => item !== normalizedFormType,
-  //   );
-  //   // If the updated array is empty, return an empty string (no types selected)
-  //   if (updatedTypesArray.length === 0) {
-  //     dispatch(commonActions.updateFormTypes(""));
-  //     return;
-  //   }
-  //   // Join the array back into a string, ensuring no leading/trailing commas
-  //   const updatedTypes = updatedTypesArray.join(",");
-  //   // Dispatch the updated comma-separated string
-  //   dispatch(commonActions.updateFormTypes(updatedTypes));
-  // };
   const onDelete = async () => {
     try {
       await deleteMutation({
@@ -115,12 +118,12 @@ const TemplateCards = () => {
     }
   };
   return (
-    <div className="space-y-5">
+    <PageWrapper className="space-y-5">
       <div
+        className="w-full"
         id="scrollableDiv"
-        className="scrollbar-grey-red-600 scrollbar-track-grey-300 scrollbar-thin h-64 overflow-y-auto p-4 pb-20"
         style={{
-          height: "calc(100vh - 250px)",
+          height: "calc(100vh - 150px)",
           overflow: "auto",
         }}
       >
@@ -156,7 +159,7 @@ const TemplateCards = () => {
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={onDelete}
       />
-    </div>
+    </PageWrapper>
   );
 };
 export default TemplateCards;

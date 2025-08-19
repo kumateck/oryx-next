@@ -35,6 +35,8 @@ const Products = ({ products, scheduleId }: Props) => {
             return (
               <TabsContent key={idx} value={tab.product?.id as string}>
                 <Product
+                  cancelled={tab.cancelled}
+                  reason={tab.reasonForCancellation as string}
                   scheduleId={scheduleId}
                   tab={tab}
                   productId={tab.product?.id as string}

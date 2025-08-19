@@ -58,7 +58,7 @@ function SampleForm<TFieldValues extends FieldValues>({
             label: "AR Number",
             type: InputTypes.TEXT,
             register: register("arNumber" as Path<TFieldValues>),
-            // readOnly: true,
+            readOnly: true,
             errors,
           },
         ]}

@@ -12,7 +12,7 @@ import {
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
-  fullname,
+  // fullname,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -28,6 +28,7 @@ import TableForData from "./table";
 import { MaterialRequestDto } from "./type";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 const Page = () => {
   const { id } = useParams();
@@ -59,10 +60,21 @@ const Page = () => {
         options: [],
       })) as unknown as MaterialRequestDto[];
       setPurchaseLists(items);
+      console.log(items, "items itmes from requisition");
     }
   }, [requisition]);
 
   const onSubmit = async () => {
+    const hasEmptySuppliers = purchaseLists?.some(
+      (item) =>
+        item.sourceSuppliers?.length === 0 ||
+        item.sourceSuppliers === undefined,
+    );
+
+    if (hasEmptySuppliers) {
+      toast.warning("One or more items are missing supplier selection.");
+      return; // stop execution if needed
+    }
     try {
       const payload = {
         requisitionId: id as string,
@@ -79,10 +91,11 @@ const Page = () => {
           uoMId: item.uomId,
         })),
       } satisfies CreateSourceRequisitionRequest;
+
       // console.log(payload, "payload");
       await saveMutation({
         createSourceRequisitionRequest: payload,
-      } as PostApiV1RequisitionSourceApiArg);
+      } as PostApiV1RequisitionSourceApiArg).unwrap();
       toast.success("Sourcing created successfully");
       router.push("/procurement/requisition");
       // reset(); // Reset the form after submission
@@ -107,7 +120,17 @@ const Page = () => {
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full justify-between gap-4">
-        <span className="text-2xl font-semibold">Requisition Sourcing</span>
+        <div
+          onClick={() => router.back()}
+          className="flex hover:underline items-center w-full gap-2"
+        >
+          <Icon
+            name="ArrowLeft"
+            className="h-5 w-5 cursor-pointer text-neutral-500"
+          />
+          <span className="text-2xl font-semibold">Requisition Sourcing</span>
+        </div>
+
         <Button className="flex gap-2" onClick={onSubmit}>
           {isLoading && <Icon name="LoaderCircle" className="animate-spin" />}
           <span>Save</span>
@@ -133,8 +156,8 @@ const Page = () => {
               </li>
               <li>
                 <span className="text-sm font-semibold">Deparment:</span>{" "}
-                <span>{requisition?.requestedBy?.department?.name}</span>
-                <span>
+                {/* <span>{requisition?.requestedBy?.department?.name}</span> */}
+                {/* <span>
                   {" "}
                   by: (
                   {fullname(
@@ -142,11 +165,15 @@ const Page = () => {
                     requisition?.requestedBy?.lastName as string,
                   )}
                   )
-                </span>
+                </span> */}
               </li>
               <li>
                 <span className="text-sm font-semibold">Comments</span>
-                <p>{requisition?.comments}</p>
+                <p>
+                  <TheAduseiEditorViewer
+                    content={requisition?.comments as string}
+                  />
+                </p>
               </li>
             </ul>
           </div>

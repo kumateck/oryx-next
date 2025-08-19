@@ -12,10 +12,11 @@ import {
   cn,
   CODE_SETTINGS,
   ErrorResponse,
+  FormTypeEnum,
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
@@ -25,6 +26,7 @@ import {
   useGetApiV1ProductStpsQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ProductArdMutation,
+  useLazyGetApiV1ProductSpecificationsProductByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   ProductArdSchemaType,
@@ -43,9 +45,14 @@ type Props = {
 export const Create = ({ isOpen, onClose }: Props) => {
   const dispatch = useDispatch();
 
+  const [loadProductstpSpecification, { data }] =
+    useLazyGetApiV1ProductSpecificationsProductByIdQuery();
+
   const {
     handleSubmit,
     register,
+    setValue,
+    watch,
     control,
     reset,
     formState: { errors },
@@ -65,7 +72,25 @@ export const Create = ({ isOpen, onClose }: Props) => {
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
     pageSize: 1000,
+    type: FormTypeEnum.ARD,
   });
+
+  const stpId = watch("stpId");
+  useEffect(() => {
+    const productStp = productStps?.data?.find(
+      (stp) => stp?.id === stpId?.value,
+    );
+    if (productStp) {
+      loadProductstpSpecification({ id: productStp?.product?.id as string });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stpId]);
+  useEffect(() => {
+    if (data) {
+      setValue("specNumber", data.specificationNumber ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, reset]);
 
   const [createProductArdMutation, { isLoading }] =
     usePostApiV1ProductArdMutation();
@@ -75,7 +100,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
   //fuction for creating product analytical raw data
   const onSubmit = async (data: ProductArdSchemaType) => {
     const productStp = productStps?.data?.find(
-      (stp) => stp.id === data.stpId.value,
+      (stp) => stp?.id === data.stpId.value,
     );
     if (!productStp || !productStp.stpNumber) {
       toast.error("Product STP not found. Please select a valid STP.");
@@ -113,7 +138,7 @@ export const Create = ({ isOpen, onClose }: Props) => {
         });
 
         await uploadAttachment({
-          modelType: CODE_SETTINGS.modelTypes.ProductStandardTestProcedure,
+          modelType: CODE_SETTINGS.modelTypes.ProductAnalyticalRawData,
           modelId: productArdId,
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();

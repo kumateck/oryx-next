@@ -33,23 +33,22 @@ export const getColumns = (
     header: "Unit of Measurement",
     cell: ({ row }) => (
       <div>
-        {
-          convertToLargestUnit(
-            row.original.quantity as number,
-            row.original.uom as Units,
-          ).unit
-        }
+        {convertToLargestUnit(
+          row.original.quantity as number,
+          row.original.uom as Units,
+        ).unit ?? row.original.uom}
       </div>
     ),
   },
   {
     accessorKey: "price",
-    header: "Cost Price",
+    header: "Unit Price",
     meta: {
       edittableCell: {
         type: ColumnType.NUMBER,
         prefixText: currency,
         editable: true,
+        required: true,
         setItemLists,
       },
     },

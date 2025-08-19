@@ -19,6 +19,7 @@ import {
   SupplierStatus,
   SupplierType,
   SupplierTypeOptions,
+  getEnumBadgeWithHexColors,
   isErrorResponse,
   routes,
 } from "@/lib";
@@ -31,6 +32,7 @@ import {
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
 import { useUserPermissions } from "@/hooks/use-permission";
+import StatusBadge from "@/shared/status-badge";
 
 // import Edit from "./edit";
 
@@ -132,16 +134,14 @@ export function DataTableRowStatus<TData extends SupplierDto>({
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+  const status = row.original.status as SupplierStatus;
+  const { label, style } = getEnumBadgeWithHexColors(SupplierStatus, status);
 
   return (
     <div className="flex items-center justify-start gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <div
-            className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusColors[row.original.status as SupplierStatus]}`}
-          >
-            {SupplierStatus[row.original.status as SupplierStatus]}
-          </div>
+          <StatusBadge label={label} style={style} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" className="rounded-2xl">
           {SupplierTypeOptions?.map((opt, index) => {
@@ -244,8 +244,8 @@ export const columns: ColumnDef<SupplierDto>[] = [
   },
 ];
 
-const statusColors: Record<SupplierStatus, string> = {
-  [SupplierStatus.New]: "bg-blue-100 text-blue-800",
-  [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
-  [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
-};
+// const statusColors: Record<SupplierStatus, string> = {
+//   [SupplierStatus.New]: "bg-blue-100 text-blue-800",
+//   [SupplierStatus.Approved]: "bg-yellow-100 text-yellow-800",
+//   [SupplierStatus.UnApproved]: "bg-green-100 text-green-800",
+// };

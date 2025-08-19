@@ -10,14 +10,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS, Option } from "@/lib";
 import {
   CreateConfigurationRequest,
   NamingType,
   useLazyGetApiV1ConfigurationQuery,
   usePostApiV1ConfigurationMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
+import { ErrorResponse, isErrorResponse } from "@/lib/utils";
 
 import CodeSettingsForm from "./form";
 import { CodeRequestDto, CreateCodeValidator } from "./types";
@@ -30,22 +29,6 @@ const CreateCode = ({ isOpen, onClose }: Props) => {
   const [codeMutation, { isLoading }] = usePostApiV1ConfigurationMutation();
   const [loadCodes] = useLazyGetApiV1ConfigurationQuery();
 
-  const modelTypes = CODE_SETTINGS.modelTypes;
-  const nameTypes = CODE_SETTINGS.nameTypes;
-
-  const codeModelTypesOptions = Object.values(modelTypes).map((modelType) => {
-    return {
-      label: splitWords(modelType),
-      value: modelType,
-    };
-  }) as Option[];
-
-  const codeNameTypesOptions = Object.entries(nameTypes).map(([key, value]) => {
-    return {
-      label: splitWords(key),
-      value: value.toString(),
-    };
-  }) as Option[];
   const {
     register,
     control,
@@ -91,8 +74,6 @@ const CreateCode = ({ isOpen, onClose }: Props) => {
               control={control}
               register={register}
               errors={errors}
-              codeModelTypesOptions={codeModelTypesOptions}
-              codeNameTypesOptions={codeNameTypesOptions}
             />
           </div>
           <DialogFooter className="justify-end">

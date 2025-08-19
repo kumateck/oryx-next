@@ -8,9 +8,11 @@ import { MaterialRequestDto } from "./type";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
+  setItemLists: React.Dispatch<React.SetStateAction<MaterialRequestDto[]>>;
 }
 export function DataTableRowActions<TData extends MaterialRequestDto>({
   row,
+  setItemLists,
 }: DataTableRowActionsProps<TData>) {
   return (
     <section className="flex items-center justify-end gap-2">
@@ -19,6 +21,9 @@ export function DataTableRowActions<TData extends MaterialRequestDto>({
         className="h-5 w-5 cursor-pointer text-red-500"
         onClick={() => {
           console.log(row.original);
+          setItemLists((prev) =>
+            prev.filter((item) => item.materialId !== row.original.materialId),
+          );
         }}
       />
     </section>
@@ -43,6 +48,10 @@ export const getColumns = (
   {
     accessorKey: "costPrice",
     header: "Price per Unit",
+  },
+  {
+    accessorKey: "initialQuantity",
+    header: "Initial Quantity",
   },
   {
     accessorKey: "expectedQuantity",
@@ -91,6 +100,8 @@ export const getColumns = (
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions row={row} setItemLists={setItemLists} />
+    ),
   },
 ];

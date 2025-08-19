@@ -14,6 +14,7 @@ export const CreateWarehouseSchema = z.object({
     }
     return numValue;
   }),
+  location: z.string().min(1, { message: "Location is required" }),
   // .refine(
   //   (value) =>
   //     value === WarehouseType.Storage || value === WarehouseType.Production,

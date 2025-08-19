@@ -17,7 +17,7 @@ const allowedMimeTypes = [
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
 ];
 
-// File validation schema
+//TODO: File validation schema
 const imageValidationSchema = z.any().refine(
   (image: Blob[] | FileList) => {
     // If it's an array of blobs, validate each blob
@@ -161,7 +161,28 @@ const buildFieldSchema = (field: FormFieldDto): z.ZodTypeAny => {
               label: z.string().optional(),
             })
             .optional();
-
+    case QuestionType.Specification:
+      return isRequired
+        ? z.object(
+            {
+              value: z
+                .string({
+                  required_error: `${typeTitle} is required`,
+                  message: `${typeTitle} is required`,
+                })
+                .min(1, { message: "Select an option" }),
+              label: z.string(),
+            },
+            {
+              message: "Select an option",
+            },
+          )
+        : z
+            .object({
+              value: z.string().optional(),
+              label: z.string().optional(),
+            })
+            .optional();
     case QuestionType.SingleChoice:
       return isRequired
         ? z

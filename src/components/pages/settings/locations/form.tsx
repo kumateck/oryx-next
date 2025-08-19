@@ -1,5 +1,11 @@
 import React from "react";
-import { Control, FieldErrors, FieldValues } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { FetchOptionsResult } from "@/components/ui";
@@ -16,7 +22,9 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   warehouseType?: number;
   defaultValues?: TFieldValues;
+  register: UseFormRegister<TFieldValues>;
   isLoading: boolean;
+  isEdit?: boolean;
   fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const LocationForm = <TFieldValues extends FieldValues, TContext>({
@@ -24,43 +32,83 @@ const LocationForm = <TFieldValues extends FieldValues, TContext>({
   warehouseType,
   errors,
   isLoading,
+  register,
   fetchOptions,
   defaultValues,
+  isEdit = false,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-5">
-      <FormWizard
-        className="grid w-full grid-cols-2 gap-10 space-y-0"
-        fieldWrapperClassName="flex-grow"
-        config={[
-          {
-            label: "Warehouse Name",
-            control: control as Control,
-            type: InputTypes.ASYNC_SELECT,
-            name: "warehouseId",
-            required: true,
-            defaultValue: defaultValues?.warehouseId,
-            placeholder: "Select warehouse",
-            fetchOptions: fetchOptions,
-            isLoading: isLoading,
-            errors,
-          },
-          {
-            label: "Location",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "name",
-            defaultValue: defaultValues?.name,
-            required: true,
-            placeholder: "Select name",
-            options:
-              warehouseType === WarehouseType.RawMaterial
-                ? RawLocationOptions
-                : PackLocationOptions,
-            errors,
-          },
-        ]}
-      />
+      <div className="flex items-center gap-2">
+        {isEdit ? (
+          <div aria-disabled className="w-full">
+            <FormWizard
+              className="grid w-full grid-cols-2 gap-10 space-y-0"
+              fieldWrapperClassName="flex-grow"
+              config={[
+                {
+                  label: "Warehouse Name",
+                  register: register("isEdit" as Path<TFieldValues>),
+                  type: InputTypes.TEXT,
+                  required: true,
+                  // placeholder: "Select warehouse",
+                  readOnly: true,
+                  errors,
+                },
+                {
+                  label: "Location",
+                  control: control as Control,
+                  type: InputTypes.SELECT,
+                  name: "name",
+                  defaultValue: defaultValues?.name,
+                  required: true,
+                  placeholder: "Select name",
+                  options:
+                    warehouseType === WarehouseType.RawMaterial
+                      ? RawLocationOptions
+                      : PackLocationOptions,
+                  errors,
+                },
+              ]}
+            />
+          </div>
+        ) : (
+          <FormWizard
+            className="grid w-full grid-cols-2 gap-10 space-y-0"
+            fieldWrapperClassName="flex-grow"
+            config={[
+              {
+                label: "Warehouse Name",
+                control: control as Control,
+                type: InputTypes.ASYNC_SELECT,
+                name: "warehouseId",
+                required: true,
+                readOnly: isEdit,
+                defaultValue: defaultValues?.warehouseId,
+                placeholder: "Select warehouse",
+                fetchOptions: fetchOptions,
+                isLoading: isLoading,
+                errors,
+              },
+              {
+                label: "Location",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "name",
+                defaultValue: defaultValues?.name,
+                required: true,
+                placeholder: "Select name",
+                options:
+                  warehouseType === WarehouseType.RawMaterial
+                    ? RawLocationOptions
+                    : PackLocationOptions,
+                errors,
+              },
+            ]}
+          />
+        )}
+      </div>
+
       <FormWizard
         config={[
           {

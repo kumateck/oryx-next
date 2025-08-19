@@ -1,7 +1,6 @@
 import { cva } from "class-variance-authority";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod";
 
 import { OptionsUpdate } from "@/components/pages/production/schedule/create/form";
 
@@ -13,39 +12,14 @@ import {
   scales,
   tens,
 } from "./constants";
-import {
-  ApprovalDocument,
-  BatchSizeType,
-  BatchStatus,
-  FloorType,
-  MaterialStatus,
-  OperationAction,
-  PackLocationType,
-  QuestionType,
-  RawLocationType,
-  ShipmentStatus,
-  SupplierStatus,
-  Units,
-  WaybillStatus,
-} from "./enum";
-// import { Quotations } from "@/components/pages/supply-chain/procurement/price-comparison/type";
-// import {
-//   APP_NAME,
-//   BatchSizeType,
-//   CODE_SETTINGS,
-//   FloorType,
-//   MaterialStatus,
-//   Option,
-//   PackLocationType,
-//   RawLocationType,
-//   SupplierStatus,
-//   Units,
-// } from "./";
+import { MaterialStatus, Units } from "./enum";
+
 import {
   NamingType,
   ProductionScheduleProcurementDto,
 } from "./redux/api/openapi.generated";
 import { Quotations, RecordItem, Section } from "./types";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -211,6 +185,22 @@ export const getStatusColor = (status: MaterialStatus) => {
       return "bg-white text-neutral-dark";
   }
 };
+
+export function areAllMaterialsAvailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  return materials.every(
+    (item) => Number(item.quantityOnHand) >= Number(item.quantityNeeded),
+  );
+}
+
+export function areAnyMaterialsUnavailable(
+  materials: ProductionScheduleProcurementDto[],
+): boolean {
+  return materials.some(
+    (item) => Number(item.quantityOnHand) < Number(item.quantityNeeded),
+  );
+}
 
 export function isStockUnAvailable(
   materials: ProductionScheduleProcurementDto[],
@@ -631,7 +621,6 @@ export function convertToSmallestUnit(
     (valueInBaseline / smallestUnit.factor).toFixed(2),
   );
 
-  console.log(finalValue, smallestUnit.name);
   return { value: finalValue, unit: smallestUnit.name };
 }
 
@@ -829,98 +818,6 @@ export const objectSchema = (msg: string) =>
     }),
   });
 
-export type OptionMap = {
-  [key: string]: Option[];
-};
-
-// Each item in the result will look like: { label: "Full", value: "0" }
-export const batchSizeTypeOptions = Object.values(BatchSizeType)
-  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
-  .filter((enumValue) => typeof enumValue === "number")
-  // Then map the numeric value to an object
-  .map((enumValue) => {
-    // Convert the numeric value back to the string enum key
-    const enumKey = BatchSizeType[enumValue as BatchSizeType];
-    return {
-      label: enumKey, // e.g., "Full"
-      value: String(enumValue), // e.g., "0"
-    };
-  });
-
-export const SupplierTypeOptions = Object.values(SupplierStatus)
-  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
-  .filter((enumValue) => typeof enumValue === "number")
-  // Then map the numeric value to an object
-  .map((enumValue) => {
-    // Convert the numeric value back to the string enum key
-    const enumKey = SupplierStatus[enumValue as SupplierStatus];
-    return {
-      label: enumKey, // e.g., "Full"
-      value: String(enumValue), // e.g., "0"
-    };
-  }) as Option[];
-
-export const BatchStatusOptions = Object.values(BatchStatus)
-  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
-  .filter((enumValue) => typeof enumValue === "number")
-  // Then map the numeric value to an object
-  .map((enumValue) => {
-    // Convert the numeric value back to the string enum key
-    const enumKey = SupplierStatus[enumValue as BatchStatus];
-    return {
-      label: enumKey, // e.g., "Full"
-      value: String(enumValue), // e.g., "0"
-    };
-  }) as Option[];
-
-export const QuestionTypeOptions = Object.values(QuestionType)
-  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
-  .filter((enumValue) => typeof enumValue === "number")
-  // Then map the numeric value to an object
-  .map((enumValue) => {
-    // Convert the numeric value back to the string enum key
-    const enumKey = QuestionType[enumValue as QuestionType];
-    return {
-      label: splitWords(enumKey), // e.g., "Full"
-      value: String(enumValue), // e.g., "0"
-    };
-  }) as Option[];
-
-export const OperationActionOptions = Object.values(OperationAction)
-  // First filter out the reverse lookup strings, so we only keep numeric values (0, 1, ...)
-  .filter((enumValue) => typeof enumValue === "number")
-  // Then map the numeric value to an object
-  .map((enumValue) => {
-    // Convert the numeric value back to the string enum key
-    const enumKey = OperationAction[enumValue as OperationAction];
-    return {
-      label: splitWords(enumKey), // e.g., "Full"
-      value: String(enumValue), // e.g., "0"
-    };
-  }) as Option[];
-
-export const FloorTypeOptions = Object.keys(FloorType).map((key) => ({
-  label: key,
-  value: FloorType[key as keyof typeof FloorType],
-})) as Option[];
-
-export const ApprovalDocumentOptions = Object.keys(ApprovalDocument).map(
-  (key) => ({
-    label: splitWords(key),
-    value: ApprovalDocument[key as keyof typeof ApprovalDocument],
-  }),
-) as Option[];
-
-export const RawLocationOptions = Object.keys(RawLocationType).map((key) => ({
-  label: key,
-  value: RawLocationType[key as keyof typeof RawLocationType],
-})) as Option[];
-
-export const PackLocationOptions = Object.keys(PackLocationType).map((key) => ({
-  label: key,
-  value: PackLocationType[key as keyof typeof PackLocationType],
-})) as Option[];
-
 export function waitForTimeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -941,29 +838,6 @@ export function toSentenceCase(text: string | undefined): string {
 
   return trimmedText.charAt(0).toUpperCase() + trimmedText.slice(1);
 }
-
-export const ShipmentStatusOptions = Object.values(ShipmentStatus)
-  .filter((enumValue) => typeof enumValue === "number")
-  .map((enumValue) => {
-    const enumKey = ShipmentStatus[enumValue as ShipmentStatus];
-    return {
-      label: enumKey, // e.g., "New", "InTransit"
-      value: String(enumValue), // e.g., "0", "1"
-    };
-  }) as Option[];
-
-export const capitalizeFirstWord = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
-export const WaybillStatusOptions = Object.values(WaybillStatus)
-  .filter((enumValue) => typeof enumValue === "number")
-  .map((enumValue) => {
-    const enumKey = WaybillStatus[enumValue as WaybillStatus];
-    return {
-      label: enumKey, // e.g., "New", "InTransit"
-      value: String(enumValue), // e.g., "0", "1"
-    };
-  }) as Option[];
 
 export const numberToWords = (num: number): string => {
   const convertHundreds = (n: number): string => {
@@ -1492,3 +1366,66 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+
+// utils/getEnumBadge.ts
+
+// Fixed Tailwind palette (light bg + dark text)
+const colorPalette = [
+  "bg-blue-100 text-blue-800 border-blue-200",
+  "bg-orange-100 text-orange-800 border-orange-200",
+  "bg-purple-100 text-purple-800 border-purple-200",
+  "bg-green-100 text-green-800 border-green-200",
+  "bg-red-100 text-red-800 border-red-200",
+  "bg-yellow-100 text-yellow-800 border-yellow-200",
+  "bg-gray-100 text-gray-800 border-gray-200",
+  "bg-gray-200 text-gray-900 border-gray-300",
+  "bg-emerald-100 text-emerald-800 border-emerald-200",
+  "bg-teal-100 text-teal-800 border-teal-200",
+  "bg-indigo-100 text-indigo-800 border-indigo-200",
+];
+// Hash function to pick a color index
+function hashValue(value: string): number {
+  let hash = 0;
+  const length = value?.length || 0;
+  for (let i = 0; i < length; i++) {
+    hash = value.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Given an enum and a value, returns:
+ * - label: the enum label (string)
+ * - colorClass: the TailwindCSS badge color
+ */
+export function getEnumBadge<T extends Record<string, string | number>>(
+  enumObj: T,
+  value: T[keyof T],
+): { label: string; colorClass: string } {
+  const label =
+    typeof value === "number"
+      ? (enumObj[value] as string) // numeric enum
+      : value?.toString(); // string enum
+
+  const colorIndex = hashValue(label) % colorPalette.length;
+
+  return {
+    label,
+    colorClass: colorPalette[colorIndex],
+  };
+}
+
+export const omit = <T extends object, K extends keyof T>(
+  obj: T,
+  ...keys: K[]
+) => {
+  const clone = { ...obj };
+  keys.forEach((key) => {
+    delete clone[key];
+  });
+  return clone as Omit<T, K>;
+};
+
+export const getNameInBeta = (name: string) => {
+  return /beta/i.test(name);
+};

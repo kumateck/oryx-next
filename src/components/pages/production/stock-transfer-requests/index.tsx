@@ -24,6 +24,7 @@ const Page = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
+  const searchInput = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as unknown as TransferType; // Extracts 'type' from URL
@@ -55,6 +56,7 @@ const Page = () => {
         page,
         pageSize,
         status: StockTransfer.New,
+        searchQuery: searchInput,
       });
     }
 
@@ -63,13 +65,14 @@ const Page = () => {
         page,
         pageSize,
         status: StockTransfer.Approved,
+        searchQuery: searchInput,
       });
     }
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, type, triggerReload]);
+  }, [page, pageSize, type, searchInput, triggerReload]);
 
   const pathname = usePathname();
 

@@ -42,12 +42,19 @@ export const getColumns = (): ColumnDef<ShipmentInvoiceItemDto>[] => [
   {
     accessorKey: "totalCost",
     header: "Total Cost",
-    cell: ({ row }) => (
-      <div>
-        {row.original.price !== undefined
-          ? (row.original.receivedQuantity as number) * row.original.price
-          : "-"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const qty = convertToLargestUnit(
+        row.original.receivedQuantity as number,
+        row.original.uoM?.symbol as Units,
+      );
+      return <div className="">{qty.value * (row.original.price ?? 0)}</div>;
+    },
+    // cell: ({ row }) => (
+    //   <div>
+    //     {row.original.price !== undefined
+    //       ? (row.original.receivedQuantity as number) * row.original.price
+    //       : "-"}
+    //   </div>
+    // ),
   },
 ];

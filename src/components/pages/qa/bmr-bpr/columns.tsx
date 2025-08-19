@@ -1,17 +1,18 @@
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
-import { AnalyticalTestStatus } from "@/lib";
+import { AnalyticalTestStatus, getEnumBadgeWithHexColors } from "@/lib";
 import { AnalyticalTestRequestDto } from "@/lib/redux/api/openapi.generated";
+import StatusBadge from "@/shared/status-badge";
 import { TableMenuAction } from "@/shared/table-menu";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-const batchStatusColors: Record<AnalyticalTestStatus, string> = {
-  [AnalyticalTestStatus.Approved]: "bg-blue-100 text-blue-800",
-  [AnalyticalTestStatus.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [AnalyticalTestStatus.Under_Test]: "bg-purple-100 text-purple-800",
-  [AnalyticalTestStatus.Test_Completed]: "bg-green-100 text-green-800",
-  [AnalyticalTestStatus.Rejected]: "bg-red-100 text-red-800",
-};
+// const batchStatusColors: Record<AnalyticalTestStatus, string> = {
+//   [AnalyticalTestStatus.Approved]: "bg-blue-100 text-blue-800",
+//   [AnalyticalTestStatus.Quarantine]: "bg-yellow-100 text-yellow-800",
+//   [AnalyticalTestStatus.Under_Test]: "bg-purple-100 text-purple-800",
+//   [AnalyticalTestStatus.Test_Completed]: "bg-green-100 text-green-800",
+//   [AnalyticalTestStatus.Rejected]: "bg-red-100 text-red-800",
+// };
 
 export interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -67,7 +68,9 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
   {
     accessorKey: "batchNumber",
     header: "Batch Number",
-    cell: ({ row }) => <div>{row.original.batchManufacturingRecord?.code}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.batchManufacturingRecord?.batchNumber}</div>
+    ),
   },
   {
     accessorKey: "manufacturingDate",
@@ -92,16 +95,17 @@ export const columns: ColumnDef<AnalyticalTestRequestDto>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`px-2 py-1 rounded-full text-center ${batchStatusColors[row.original.status as AnalyticalTestStatus]}`}
-      >
-        {AnalyticalTestStatus[row.original.status as number]
-          .split("_")
-          .join(" ")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as AnalyticalTestStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        AnalyticalTestStatus,
+        status,
+      );
+
+      return <StatusBadge label={label} style={style} />;
+    },
   },
+
   {
     id: "actions",
     header: "Actions",

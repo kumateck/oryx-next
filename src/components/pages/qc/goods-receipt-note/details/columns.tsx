@@ -4,38 +4,34 @@ import { useState } from "react";
 import { Button, DropdownMenuItem, Icon } from "@/components/ui";
 import {
   BatchStatus as BatchStatusEnum,
+  CodeModelTypes,
+  EMaterialKind,
+  FormComplete,
   Units,
   WorkflowFormType,
   convertToLargestUnit,
+  getEnumBadgeWithHexColors,
   getSmallestUnit,
 } from "@/lib";
 import {
   BatchStatus,
   MaterialBatchDto,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { CreateSampleMaterial } from "./create-sample";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import StatusBadge from "@/shared/status-badge";
+import { generateARNumber, getArNumberPrefix } from "@/lib/batch-gen";
+import { CreateSampleFormData } from "./types";
+
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-const batchStatusColors: Record<BatchStatus, string> = {
-  [BatchStatusEnum.Received]: "bg-blue-100 text-blue-800",
-  [BatchStatusEnum.Quarantine]: "bg-yellow-100 text-yellow-800",
-  [BatchStatusEnum.Testing]: "bg-purple-100 text-purple-800",
-  [BatchStatusEnum.Available]: "bg-green-100 text-green-800",
-  [BatchStatusEnum.Rejected]: "bg-red-100 text-red-800",
-  [BatchStatusEnum.Retest]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Frozen]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Consumed]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Approved]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.TestTaken]: "bg-orange-100 text-orange-800",
-  [BatchStatusEnum.Checked]: "bg-orange-100 text-orange-800",
-};
 
 export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
@@ -46,9 +42,7 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "materialName",
     header: "Material Name",
-    cell: ({ row }) => (
-      <div>{row.original.checklist?.material?.name ?? "-"}</div>
-    ),
+    cell: ({ row }) => <div>{row.original?.material?.name ?? "-"}</div>,
   },
   {
     accessorKey: "manufacturerName",
@@ -117,13 +111,14 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${batchStatusColors[String(row.original?.status)]}`}
-      >
-        {BatchStatusEnum[row.original.status as BatchStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as BatchStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        BatchStatusEnum,
+        status,
+      );
+      return <StatusBadge label={label} style={style} />;
+    },
   },
   {
     id: "actions",
@@ -136,13 +131,20 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
 }: DataTableRowActionsProps<TData>) {
   const { id } = useParams();
   const grnId = id as string;
+  const searchParams = useSearchParams();
+  const kind = searchParams.get("type") as unknown as EMaterialKind; // Extracts 'type' from URL
+
   const router = useRouter();
   const [startTestMutation] =
     usePutApiV1MaterialArdStartTestByMaterialBatchIdMutation();
   const [checkSTPLinked] =
     useLazyGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery();
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const [openSample, setOpenSample] = useState(false);
-  const totqty = row.original.totalQuantity ?? 0;
+  const [details, setDetails] = useState<CreateSampleFormData>(
+    {} as CreateSampleFormData,
+  );
+  const totqty = row.original.totalQuantity || 0;
   const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
   const qty = convertToLargestUnit(totqty, baseUnit);
   const handleStartTest = async () => {
@@ -155,9 +157,40 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
         materialBatchId,
       }).unwrap();
       toast.success("Test started successfully");
-      router.push(`/complete/${WorkflowFormType.Material}/${row.original.id}`);
+      router.push(
+        `/complete/${WorkflowFormType.Material}/${row.original.id}/${FormComplete.Batch}`,
+      );
     } catch (error) {
       ThrowErrorMessage(error);
+    }
+  };
+
+  const handlePickSample = async (payload: MaterialBatchDto) => {
+    try {
+      const dept = "QCD";
+      const type = Number(kind) === EMaterialKind.Raw ? "RM" : "PM";
+      const year = new Date().getFullYear();
+      const prefix = getArNumberPrefix(dept, type, year);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.ArNumberMaterial,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateARNumber({ dept, type, year, serial });
+      const data = {
+        materialBatchId: payload.id as string,
+        materialName: payload.material?.name as string,
+        batchNumber: payload.batchNumber as string,
+        arNumber: code,
+        quantity: `${qty.value} ${qty.unit}`,
+        sampleQuantity: "",
+        baseUnit,
+      };
+
+      setDetails(data);
+      setOpenSample(true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -207,7 +240,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
           <Button
             variant="ghost"
             className="flex cursor-pointer items-start justify-center gap-2"
-            onClick={() => setOpenSample(true)}
+            onClick={() => handlePickSample(row.original)}
             disabled={row.original.status !== BatchStatusEnum.Quarantine}
           >
             <Icon
@@ -218,19 +251,13 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
           </Button>
         </DropdownMenuItem>
       </TableMenuAction>
-      <CreateSampleMaterial
-        isOpen={openSample}
-        details={{
-          materialBatchId: row.original.id as string,
-          materialName: row.original.material?.name ?? "",
-          batchNumber: row.original.batchNumber ?? "",
-          arNumber: row.original?.code ?? "",
-          quantity: `${qty.value} ${qty.unit}`,
-          sampleQuantity: "",
-          baseUnit,
-        }}
-        onClose={() => setOpenSample(false)}
-      />
+      {openSample && (
+        <CreateSampleMaterial
+          isOpen={openSample}
+          details={details}
+          onClose={() => setOpenSample(false)}
+        />
+      )}
     </section>
   );
 }

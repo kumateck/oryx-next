@@ -1,12 +1,14 @@
 "use client";
-import { fileToBase64 } from "@/lib";
+import { AnalyticalTestRequestStage, fileToBase64, FormComplete } from "@/lib";
 import {
-  useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormByFormIdQuery,
+  useLazyGetApiV1ProductArdProductByProductIdQuery,
+  useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
+  useLazyGetApiV1ProductSpecificationsByIdQuery,
   usePostApiV1FormResponsesMutation,
 } from "@/lib/redux/api/openapi.generated";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 import FormSection from "./section";
 import { useForm } from "react-hook-form";
@@ -18,30 +20,76 @@ import PageWrapper from "@/components/layout/wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { toast } from "sonner";
+import PageTitle from "@/shared/title";
 const FormResponseForProduct = () => {
   const router = useRouter();
 
-  const { id } = useParams();
-  const materialBatchId = id as string;
+  const { id, form } = useParams();
+  const searchParams = useSearchParams();
+  const stage = searchParams.get(
+    "stage",
+  ) as unknown as AnalyticalTestRequestStage; // Extracts 'type' from URL
+  const productionActivityStepId = searchParams.get("stepId") as string;
+  const completeId = id as string;
+  const completeForm = Number(form) as unknown as FormComplete;
 
+  const [currentFormId, setCurrentFormId] = useState<string>("");
+  const [loadProductArd] = useLazyGetApiV1ProductArdProductByProductIdQuery();
   const [formResponseMutation, { isLoading }] =
     usePostApiV1FormResponsesMutation();
-  const { data, isLoading: isDataLoading } =
-    useGetApiV1MaterialArdMaterialBatchByMaterialBatchIdQuery({
-      materialBatchId,
-    });
-  const batchFormId = data?.form?.id as string;
+
+  const [loadProductBatchData, { isLoading: isDataLoading }] =
+    useLazyGetApiV1ProductionScheduleManufacturingByIdQuery();
+
+  const [loadSpecData, { isLoading: isSpecLoading }] =
+    useLazyGetApiV1ProductSpecificationsByIdQuery();
+
   const [loadFormData, { data: formTemplate, isLoading: isFormLoading }] =
     useLazyGetApiV1FormByFormIdQuery();
 
   useEffect(() => {
-    if (data) {
-      const formId = data?.form?.id as string;
-      handleLoadForm(formId);
+    if (completeForm === FormComplete.Batch) {
+      handleLoadProductBatchData(completeId);
+    }
+
+    if (completeForm === FormComplete.Specification) {
+      handleProductSpecification(completeId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [completeId, completeForm]);
+
+  const handleProductSpecification = async (id: string) => {
+    try {
+      const response = await loadSpecData({
+        id,
+      }).unwrap();
+      const batchFormId = response?.form?.id as string;
+      setCurrentFormId(batchFormId);
+      await handleLoadForm(batchFormId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLoadProductBatchData = async (id: string) => {
+    try {
+      const response = await loadProductBatchData({
+        id,
+      }).unwrap();
+      const productResponse = await loadProductArd({
+        productId: response?.product?.id as string,
+      }).unwrap();
+      const findSpec = productResponse?.find(
+        (item) => Number(item.stage) === Number(stage),
+      );
+      const batchFormId = findSpec?.form?.id as string;
+      setCurrentFormId(batchFormId);
+      await handleLoadForm(batchFormId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLoadForm = async (formId: string) => {
     try {
@@ -62,7 +110,7 @@ const FormResponseForProduct = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data, "data");
+    // console.log(data, "data");
     const formResponse: FormResponse[] = Object.entries(data).map(
       ([key, value]) => ({
         formFieldId: key,
@@ -102,21 +150,37 @@ const FormResponseForProduct = () => {
     try {
       await formResponseMutation({
         createResponseRequest: {
-          formId: batchFormId,
-          materialBatchId,
+          productionActivityStepId,
+          formId: currentFormId,
+          batchManufacturingRecordId:
+            completeForm === FormComplete.Batch ? completeId : undefined,
+          productSpecificationId:
+            completeForm === FormComplete.Specification
+              ? completeId
+              : undefined,
           formResponses: formData,
         },
       }).unwrap();
       toast.success("Form Completed Successfully");
-      router.back();
+      if (completeForm === FormComplete.Specification) {
+        router.push(`/qc/product-specification`);
+      } else {
+        router.back();
+      }
     } catch (error) {
       ThrowErrorMessage(error);
     }
   };
+  console.log(formTemplate, "formf tem");
   return (
     <PageWrapper>
-      {(isDataLoading || isFormLoading) && <SkeletonLoadingPage />}
+      {(isDataLoading || isSpecLoading || isFormLoading) && (
+        <SkeletonLoadingPage />
+      )}
       <ScrollableWrapper>
+        <div className="pb-3">
+          <PageTitle title={formTemplate?.name as string} />
+        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-5">
             {formTemplate?.sections?.map((section, idx) => (
@@ -159,3 +223,5 @@ const FormResponseForProduct = () => {
 };
 
 export default FormResponseForProduct;
+
+//

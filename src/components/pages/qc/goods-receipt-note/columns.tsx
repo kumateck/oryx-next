@@ -1,8 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { GrnDtoRead } from "@/lib/redux/api/openapi.generated";
+import { GrnListDto } from "@/lib/redux/api/openapi.generated";
+import { getEnumBadgeWithHexColors, GRNStatus } from "@/lib";
+import StatusBadge from "@/shared/status-badge";
 
-export const columns: ColumnDef<GrnDtoRead>[] = [
+export const columns: ColumnDef<GrnListDto>[] = [
   {
     accessorKey: "grnNumber",
     header: "GRN Number",
@@ -24,17 +26,14 @@ export const columns: ColumnDef<GrnDtoRead>[] = [
       </div>
     ),
   },
-  // {
-  //   id: "status",
-  //   header: "Status",
-  //   cell: ({ row }) => (
-  //     <div
-  //       className={`${
-  //         row.original?.remarks ? batchStatusColors(row.original.remarks) : ""
-  //       } rounded-full px-2 py-1 w-fit text-center`}
-  //     >
-  //       {row.original?.carrierName}
-  //     </div>
-  //   ),
-  // },
+  {
+    id: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status as GRNStatus;
+      const { label, style } = getEnumBadgeWithHexColors(GRNStatus, status);
+
+      return <StatusBadge label={label} style={style} />;
+    },
+  },
 ];

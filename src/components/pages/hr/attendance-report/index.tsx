@@ -40,7 +40,7 @@ const Page = () => {
         },
         module: AuditModules.warehouse.name,
         subModule: AuditModules.warehouse.attendanceReport,
-      });
+      }).unwrap();
       toast.success("Attendance report uploaded successfully");
       router.push("/hr/attendance-report-summary");
     } catch (error) {
