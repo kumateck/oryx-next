@@ -419,6 +419,10 @@ export const ROUTES: Route[] = [
             url: "/extrals/purchase-requisitions",
           },
           {
+            title: "Purchase Requisition Sourcing",
+            url: "/extrals/purchase-requisition-sourcing",
+          },
+          {
             title: "Stock Requisition",
             url: "/extrals/stock-requisitions",
           },
@@ -429,6 +433,18 @@ export const ROUTES: Route[] = [
           {
             title: "Vendors",
             url: "/extrals/vendors",
+          },
+          {
+            title: "Vendor Memo",
+            url: "/extrals/vendors-memo",
+          },
+          {
+            title: "Open Market Quotation",
+            url: "/extrals/open-market-quotation",
+          },
+          {
+            title: "Price Comparison",
+            url: "/extrals/price-comparison",
           },
         ],
       },

@@ -117,10 +117,6 @@ export const columns: ColumnDef<ProductAnalyticalRawDataDto>[] = [
     accessorKey: "stage",
     header: "Stage",
     cell: ({ row }) => {
-      console.log(
-        "row.original.stage",
-        stageLabels[row.original?.stage as Stage],
-      );
       return <div>{stageLabels[row.original?.stage as Stage]}</div>;
     },
   },
