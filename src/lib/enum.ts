@@ -433,8 +433,8 @@ export enum ShipmentStatus {
 
 export enum WaybillStatus {
   New = 0,
-  Cleared = 1,
-  Arrived = 3,
+  Cleared = 3,
+  Arrived = 4,
 }
 export enum BillingSheetStatus {
   Pending,
@@ -501,6 +501,7 @@ export enum AnalyticalTestStatus {
 export enum EmployeeStatusType {
   Active = 0,
   Inactive = 1,
+  New = 2,
 }
 
 export enum EmployeeActiveStatus {

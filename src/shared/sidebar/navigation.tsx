@@ -408,7 +408,7 @@ export const ROUTES: Route[] = [
         items: [
           {
             title: "Receiving Area",
-            url: "/warehouse/receiving-area",
+            url: "/extrals/receiving-area",
           },
           {
             title: "Available Stocks",
@@ -417,6 +417,10 @@ export const ROUTES: Route[] = [
           {
             title: "Purchase Requisition",
             url: "/extrals/purchase-requisitions",
+          },
+          {
+            title: "Purchase Requisition Sourcing",
+            url: "/extrals/purchase-requisition-sourcing",
           },
           {
             title: "Stock Requisition",
@@ -429,6 +433,18 @@ export const ROUTES: Route[] = [
           {
             title: "Vendors",
             url: "/extrals/vendors",
+          },
+          {
+            title: "Vendor Memo",
+            url: "/extrals/vendors-memo",
+          },
+          {
+            title: "Open Market Quotation",
+            url: "/extrals/open-market-quotation",
+          },
+          {
+            title: "Price Comparison",
+            url: "/extrals/price-comparison",
           },
         ],
       },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Control,
   FieldArrayWithId,
@@ -14,7 +14,7 @@ import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
 import { StockRequisitionDto } from "./types";
 import { FetchOptionsResult } from "@/components/ui/async-select";
-import { Button, Icon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -45,6 +45,19 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
   isLoading,
   fetchDepartments,
 }: Props<TFieldValues, TContext>) => {
+  const stableAppend = useCallback(append, [append]);
+  useEffect(() => {
+    if (fields.length > 1) return;
+    stableAppend({
+      itemId: {
+        value: "",
+        label: "",
+      },
+      itemCode: "",
+      quantity: 0,
+    });
+  }, [fields.length, stableAppend]);
+
   return (
     <div className="w-full space-y-4">
       <div className="flex gap-2 w-full items-center justify-center">
@@ -119,68 +132,44 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {/* <FormWizard
-        config={[
-          {
-            control: control as Control,
-            name: `items`,
-            label: "Item Name",
-            fetchOptions: fetchItems,
-            isLoading: isLoading,
-            type: InputTypes.ASYNC_MULTI,
-            required: true,
-            errors,
-          },
-        ]}
-      /> */}
-      <div className="flex w-full justify-between m-10 items-center">
-        <h1 className="text-gray">Items</h1>
-        <Button
-          variant={"ghost"}
-          type="button"
-          onClick={() =>
-            append({
-              itemId: {
-                label: "",
-                value: "",
-              },
-              itemCode: "",
-              quantity: 0,
-            })
-          }
-          className="flex items-center justify-center gap-1 w-fit"
-        >
-          <Icon name="Plus" />
-          <span className="text-sm">Add Item</span>
-        </Button>
+      <div className="flex w-full justify-between mt-10 items-center">
+        <div className="grid w-full grid-cols-4 gap-1 text-white bg-primary-default border-t-3">
+          <div className="col-span-2 p-2">Item Name</div>
+          <div className="col-span-1 p-2">Item Code</div>
+          <div className="col-span-1 p-2">Quantity</div>
+        </div>
       </div>
       <div className="space-y-2">
         {fields?.map((item, id) => (
           <div key={id + item.id} className="flex items-center gap-2">
-            <div className="flex items-center justify-center gap-1 flex-1">
+            <div className="grid grid-cols-4 gap-1">
+              <div className="col-span-2">
+                <FormWizard
+                  config={[
+                    {
+                      control: control as Control,
+                      name: `items.${id}.itemId`,
+                      label: "",
+                      fetchOptions: fetchItems,
+                      isLoading: isLoading,
+                      onChange: (selected) =>
+                        handleProductChange(id, selected as { value: string }),
+                      type: InputTypes.ASYNC_SELECT,
+                      required: true,
+                      errors,
+                    },
+                  ]}
+                />
+              </div>
+
               <FormWizard
-                config={[
-                  {
-                    control: control as Control,
-                    name: `items.${id}.itemId`,
-                    label: "Item Name",
-                    fetchOptions: fetchItems,
-                    isLoading: isLoading,
-                    onChange: (selected) =>
-                      handleProductChange(id, selected as { value: string }),
-                    type: InputTypes.ASYNC_SELECT,
-                    required: true,
-                    errors,
-                  },
-                ]}
-              />
-              <FormWizard
+                className="col-span-1"
                 config={[
                   {
                     register: register(
                       `items.${id}.itemCode` as Path<TFieldValues>,
                     ),
-                    label: "Item Code",
+                    label: "",
                     readOnly: true,
                     type: InputTypes.TEXT,
                     required: true,
@@ -188,28 +177,48 @@ const StockRequisition = <TFieldValues extends FieldValues, TContext>({
                   },
                 ]}
               />
-              <FormWizard
-                config={[
-                  {
-                    register: register(
-                      `items.${id}.quantity` as Path<TFieldValues>,
-                      {
-                        valueAsNumber: true,
-                      },
-                    ),
-                    label: "Quantity",
-                    type: InputTypes.NUMBER,
-                    required: true,
-                    errors,
-                  },
-                ]}
-              />
+              <div className="flex col-span-1 items-center gap-2">
+                <FormWizard
+                  config={[
+                    {
+                      register: register(
+                        `items.${id}.quantity` as Path<TFieldValues>,
+                        {
+                          valueAsNumber: true,
+                        },
+                      ),
+                      label: "",
+                      type: InputTypes.NUMBER,
+                      required: true,
+                      errors,
+                    },
+                  ]}
+                />
+                {fields.length > 1 && (
+                  <Icon
+                    name="Trash"
+                    onClick={() => remove(id)}
+                    className="cursor-pointer text-red-600 w-fit"
+                  />
+                )}
+                {fields[fields.length - 1]?.id === item.id && (
+                  <Icon
+                    onClick={() =>
+                      append({
+                        itemId: {
+                          value: "",
+                          label: "",
+                        },
+                        itemCode: "",
+                        quantity: 0,
+                      })
+                    }
+                    className="cursor-pointer text-lg"
+                    name="Plus"
+                  />
+                )}
+              </div>
             </div>
-            <Icon
-              name="Trash"
-              onClick={() => remove(id)}
-              className="cursor-pointer mt-3 h-5 text-red-600 w-4"
-            />
           </div>
         ))}
       </div>

@@ -85,11 +85,6 @@ export const columns: ColumnDef<VendorDto>[] = [
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "venderCode",
-    header: "Vendor Code",
-    cell: ({ row }) => <div>{row.getValue("venderCode")}</div>,
-  },
-  {
     accessorKey: "type",
     header: "Vendor Type",
     cell: ({ row }) => (
@@ -117,18 +112,12 @@ export const columns: ColumnDef<VendorDto>[] = [
       <div>
         {row.original.currency && (
           <span>
-            {" "}
             {row.original.currency?.name} ({row.original.currency?.symbol})
           </span>
         )}
       </div>
     ),
   },
-  // {
-  //   accessorKey: "status",
-  //   header: "Status",
-  //   cell: ({ row }) => <DataTableRowStatus row={row.original.items} />,
-  // },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

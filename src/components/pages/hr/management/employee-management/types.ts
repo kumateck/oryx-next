@@ -11,6 +11,7 @@ export const StatusColorsOptions = {
   statusColors: {
     [EmployeeStatusType.Active]: "bg-green-600 text-white",
     [EmployeeStatusType.Inactive]: "bg-yellow-500 text-white",
+    [EmployeeStatusType.New]: "bg-blue-500 text-white",
   },
   inactiveStatus: {
     [EmployeeInactiveStatus.Deceased]: "bg-blue-500 text-white",

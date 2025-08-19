@@ -19,7 +19,7 @@ const AccessTabs = ({
       {
         <div
           className={cn(
-            "flex h-10 w-48 items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
+            "flex h-10 w-fit items-center gap-1 space-x-1 rounded-full border border-neutral-input bg-white p-1",
             containerClassName,
           )}
         >

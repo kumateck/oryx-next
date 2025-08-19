@@ -50,7 +50,6 @@ const imageValidationSchema = z.any().refine(
 );
 
 export const CreateLeaveSchema = z.object({
-  code: z.string().min(1, { message: "Code is required" }),
   leaveTypeId: z
     .object(
       {
@@ -62,10 +61,12 @@ export const CreateLeaveSchema = z.object({
     .optional(),
   startDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-    z.date({
-      required_error: "Start date is required",
-      invalid_type_error: "Start date must be a valid date",
-    }),
+    z
+      .date({
+        required_error: "Start date is required",
+        invalid_type_error: "Start date must be a valid date",
+      })
+      .optional(),
   ),
   endDate: z.preprocess(
     (arg) => (typeof arg === "string" ? new Date(arg) : arg),

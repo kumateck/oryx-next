@@ -27,6 +27,7 @@ import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
 import { CreateLeaveValidator, LeaveRequestDto } from "./types";
 import LeaveRequestForm from "./form";
+import { useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -75,11 +76,11 @@ const LeaveRequest = ({
       // 1. Create the leave request
       const payload = {
         leaveTypeId: data.leaveTypeId?.value as string,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate?.toISOString() as string,
+        startDate: data?.startDate ? data.startDate.toISOString() : "",
+        endDate: data?.endDate ? data.endDate.toISOString() : "",
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson ?? "-",
-        contactPersonNumber: data.contactPersonNumber ?? "0554290614",
+        contactPersonNumber: data.contactPersonNumber ?? "",
         destination: data.destination ?? "-",
         requestCategory: parseInt(
           data?.leaveCategory ?? "0",
@@ -145,6 +146,12 @@ const LeaveRequest = ({
     label: lt.name,
     value: lt.id,
   })) as Option[];
+
+  useEffect(() => {
+    if (errors) {
+      console.log(errors, "errors in useEffect");
+    }
+  }, [errors]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

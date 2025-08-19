@@ -47,7 +47,6 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             register: register("specNumber" as Path<TFieldValues>),
             type: InputTypes.TEXT,
             required: true,
-            readOnly: true,
             placeholder: "Enter Spec Number",
             errors,
           },

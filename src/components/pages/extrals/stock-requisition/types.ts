@@ -23,9 +23,21 @@ export const CreateStockRequisitionSchema = z.object({
   requisitionDate: z.date({
     message: "Requisition date is required",
   }),
-  items: z.array(objectSchema).min(1, {
-    message: "At least one service is required",
-  }),
+  items: z
+    .array(objectSchema)
+    .min(1, {
+      message: "At least one service is required",
+    })
+    .default([
+      {
+        itemId: {
+          value: "",
+          label: "",
+        },
+        itemCode: "",
+        quantity: 0,
+      },
+    ]),
   storyType: z
     .object({
       value: z.string(),

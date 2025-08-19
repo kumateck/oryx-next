@@ -2,11 +2,16 @@
 import PageWrapper from "@/components/layout/wrapper";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { columns } from "./columns";
-import { InventoryType, splitWords } from "@/lib";
+import { AuditModules, InventoryType, splitWords } from "@/lib";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
+import { useLazyGetApiV1ProcurementInventoryPurchasedItemsQuery } from "@/lib/redux/api/openapi.generated";
+import { useSelector } from "@/lib/redux/store";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDebounce } from "@uidotdev/usehooks";
 
 function Page() {
   const [page, setPage] = useState(1);
@@ -15,28 +20,24 @@ function Page() {
     InventoryType.GeneralStore.toString(),
   );
 
-  // const searchValue = useSelector((state) => state.common.searchInput);
-  // const triggerReload = useSelector((state) => state.common.triggerReload);
-  // const dispatch = useDispatch();
-  // const debounceValue = useDebounce(searchValue, 500);
+  const [loadAvailableStocks, { data, isLoading }] =
+    useLazyGetApiV1ProcurementInventoryPurchasedItemsQuery({});
 
-  // useEffect(() => {
-  //   LoadData({
-  //     page,
-  //     pageSize,
-  //     // inventoryType: activeTab as InventoryType,
-  //     module: AuditModules.production.name,
-  //     subModule: AuditModules.production.materialSpecification,
-  //     searchQuery: debounceValue,
-  //   });
-  //   if (triggerReload) {
-  //     dispatch(commonActions.unSetTriggerReload());
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [debounceValue, page, pageSize, triggerReload, activeTab]);
+  const searchValue = useSelector((state) => state.common.searchInput);
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const dispatch = useDispatch();
+  const debounceValue = useDebounce(searchValue, 500);
 
-  // const data = result?.data ?? [];
-  console.log(page, pageSize, activeTab);
+  useEffect(() => {
+    loadAvailableStocks({
+      module: AuditModules.production.name,
+      subModule: AuditModules.production.materialSpecification,
+    });
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounceValue, page, pageSize, triggerReload, activeTab]);
 
   return (
     <PageWrapper className="w-full space-y-4">
@@ -60,9 +61,9 @@ function Page() {
         </TabsList>
         <TabsContent value={activeTab}>
           <ServerDatatable
-            data={[]}
+            data={data || []}
             columns={columns}
-            isLoading={false}
+            isLoading={isLoading}
             setPage={setPage}
             setPageSize={setPageSize}
             meta={{
