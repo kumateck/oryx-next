@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -13,11 +13,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { Option } from "@/lib";
+import { EmployeeStatusType, Option } from "@/lib";
 import {
   EmployeeDtoRead,
-  useGetApiV1EmployeeQuery,
   useGetApiV1RoleQuery,
+  useLazyGetApiV1EmployeeQuery,
   // useLazyGetApiV1UserQuery,
   usePostApiV1EmployeeUserMutation, // CreateUserRequest,
   // usePostApiV1UserMutation,
@@ -34,7 +34,7 @@ import { CreateUserValidator, UserRequestDto } from "./types";
 import UserForm from "./form";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -77,12 +77,6 @@ const Create = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const { data: employeesResponse } = useGetApiV1EmployeeQuery({
-    page: 1,
-    pageSize: 1000,
-  });
-  const employees = employeesResponse?.data ?? [];
-
   const { data: rolesResponse } = useGetApiV1RoleQuery({});
 
   const roleOptions = rolesResponse?.map((item) => {
@@ -91,6 +85,51 @@ const Create = ({ isOpen, onClose }: Props) => {
       value: item?.id,
     };
   }) as Option[];
+
+  const [loadedEmployees, setLoadedEmployees] = useState<EmployeeDtoRead[]>([]);
+  const selectedEmployee = useWatch({
+    control,
+    name: "employeeId",
+  }) as Option;
+
+  useEffect(() => {
+    const searchEmp = loadedEmployees.find(
+      (emp) => emp.id === selectedEmployee?.value,
+    );
+    if (searchEmp) {
+      setValue("email", searchEmp?.email as string);
+      setValue(
+        "department",
+        searchEmp.department?.name ?? "This employee has no department",
+      );
+      setUser(searchEmp);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadedEmployees, selectedEmployee]);
+  const [
+    loadMaterials,
+    { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },
+  ] = useLazyGetApiV1EmployeeQuery();
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadMaterials({
+      searchQuery,
+      page,
+      status: EmployeeStatusType.Active,
+      isNotUser: true,
+    }).unwrap();
+
+    const employees = res?.data as EmployeeDtoRead[];
+    setLoadedEmployees(employees);
+    const response = {
+      options: employees?.map((item) => ({
+        label: fullname(item?.firstName as string, item?.lastName as string),
+        value: item?.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -112,11 +151,10 @@ const Create = ({ isOpen, onClose }: Props) => {
           <UserForm
             register={register}
             control={control}
-            setUser={setUser}
-            setValue={setValue}
             errors={errors}
             roleOptions={roleOptions}
-            employees={employees}
+            fetchOptions={loadDataOrSearch}
+            isLoading={isLoadingMaterials || isFetchingMaterials}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

@@ -4,40 +4,33 @@ import {
   FieldValues,
   Path,
   UseFormRegister,
-  UseFormSetValue,
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
-import { EmployeeDtoRead } from "@/lib/redux/api/openapi.generated";
-import { UserRequestDto } from "./types";
+
+import { FetchOptionsResult } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
-  setValue: UseFormSetValue<UserRequestDto>;
-  employees: EmployeeDtoRead[];
-  setUser: (user: EmployeeDtoRead | null) => void;
+
   errors: FieldErrors<TFieldValues>;
   roleOptions: Option[];
   defaultValues?: TFieldValues;
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const UserForm = <TFieldValues extends FieldValues, TContext>({
   control,
   errors,
-  employees,
   register,
-  setUser,
-  setValue,
+
   roleOptions,
   defaultValues,
+  fetchOptions,
+  isLoading,
 }: Props<TFieldValues, TContext>) => {
-  const employeeOptions = employees?.map((item) => {
-    return {
-      label: item.firstName + " " + item.lastName,
-      value: item?.id,
-    };
-  }) as Option[];
   return (
     <div className="w-full">
       <FormWizard
@@ -46,26 +39,14 @@ const UserForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Employee Name",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "employeeId",
             required: true,
+            onModal: true,
             defaultValue: defaultValues?.employeeId,
             placeholder: "Select employee",
-            onChange: (value) => {
-              const selectedEmployee = employees.find(
-                (emp) => emp.id === value?.value,
-              );
-              if (selectedEmployee) {
-                setValue("email", selectedEmployee.email as string);
-                setValue(
-                  "department",
-                  selectedEmployee.department?.name ??
-                    "This employee has no department",
-                );
-                setUser(selectedEmployee);
-              }
-            },
-            options: employeeOptions,
+            fetchOptions: fetchOptions,
+            isLoading: isLoading,
             errors,
           },
           {
