@@ -5,9 +5,6 @@ import PageWrapper from "@/components/layout/wrapper";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./column";
-import { PermissionKeys } from "@/lib";
-import NoAccess from "@/shared/no-access";
-import { useUserPermissions } from "@/hooks/use-permission";
 import { useRouter } from "next/navigation";
 import Create from "./create";
 import { Button, Icon } from "@/components/ui";
@@ -28,7 +25,7 @@ const Page = () => {
   const debounceValue = useDebounce(searchValue, 500);
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
-  const [loadPurchaseRequisitions, { data: purchaseRequisitions, isLoading }] =
+  const [loadPurchaseRequisitions, { data: result, isLoading }] =
     useLazyGetApiV1ProcurementInventoryQuery();
 
   useEffect(() => {
@@ -42,17 +39,7 @@ const Page = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, debounceValue, triggerReload]);
-  const data = purchaseRequisitions?.data || [];
-  const { hasPermissionAccess } = useUserPermissions();
-  // check permissions access
-  const hasAccess = hasPermissionAccess(
-    PermissionKeys.procurement.sendQuotationRequest,
-  );
-
-  if (!hasAccess) {
-    //redirect to no access
-    return <NoAccess />;
-  }
+  const data = result?.data || [];
 
   return (
     <div>
@@ -70,15 +57,13 @@ const Page = () => {
             <PageTitle title={"Purchase Requisition"} />
           </div>
           <div className="flex items-center justify-end gap-2">
-            {hasPermissionAccess(PermissionKeys.procurement.createVendor) && (
-              <Button
-                variant="default"
-                size={"sm"}
-                onClick={() => setIsOpen(true)}
-              >
-                <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
-              </Button>
-            )}
+            <Button
+              variant="default"
+              size={"sm"}
+              onClick={() => setIsOpen(true)}
+            >
+              <Icon name="Plus" className="h-4 w-4" /> <span>Create</span>
+            </Button>
           </div>
         </div>
         <ServerDatatable
@@ -91,12 +76,12 @@ const Page = () => {
           setPage={setPage}
           setPageSize={setPageSize}
           meta={{
-            pageIndex: 1,
-            pageCount: 1,
-            totalRecordCount: 0,
-            numberOfPagesToShow: 1,
-            startPageIndex: 1,
-            stopPageIndex: 1,
+            pageIndex: result?.pageIndex as number,
+            pageCount: result?.pageCount as number,
+            totalRecordCount: result?.totalRecordCount as number,
+            numberOfPagesToShow: result?.numberOfPagesToShow as number,
+            startPageIndex: result?.startPageIndex as number,
+            stopPageIndex: result?.stopPageIndex as number,
             pageSize,
           }}
         />
