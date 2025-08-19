@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
-import { useLazyGetApiV1ProcurementInventoryMarketVendorsQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProcurementInventoryMemoQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { useSelector } from "@/lib/redux/store";
@@ -17,7 +17,7 @@ const Page = () => {
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
   const [loadeOpenMarketQuotation, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1ProcurementInventoryMarketVendorsQuery();
+    useLazyGetApiV1ProcurementInventoryMemoQuery();
 
   useEffect(() => {
     loadeOpenMarketQuotation({
@@ -31,7 +31,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Purchase Requisitions" />
+        <PageTitle title="Open Sources Market Memos" />
       </div>
 
       <ServerDatatable

@@ -647,3 +647,8 @@ export enum IssueItemStockRequisitionStatus {
   Partial = 1,
   Completed = 2,
 }
+
+export enum InventoryRequisitionSource {
+  TrustedVendor = 0,
+  OpenMarket = 1,
+}
