@@ -3,12 +3,15 @@ import { format } from "date-fns";
 
 import {
   AnalyticalTestRequestDto,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   usePutApiV1QaAnalyticalTestsStatusByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { TableMenuAction } from "@/shared/table-menu";
 import { ConfirmDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import {
+  AnalyticalTestRequestStage,
   AnalyticalTestRequestStatus,
+  CodeModelTypes,
   FormComplete,
   fullname,
   WorkflowFormType,
@@ -21,6 +24,7 @@ import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { generateARNumber, getArNumberPrefix } from "@/lib/batch-gen";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -33,6 +37,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
   const [isStartTestModalOpen, setIsStartTestModalOpen] = useState(false);
   const [isAckModalOpen, setIsAckModalOpen] = useState(false);
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   const [details, setDetails] = useState<AnalyticalTestRequestDto | null>(null);
 
@@ -42,6 +47,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
   const handleUpdate = async (
     id: string,
     status: AnalyticalTestRequestStatus,
+    arNumber?: string,
   ) => {
     try {
       // Run both async functions in parallel
@@ -49,6 +55,7 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
         id,
         updateAnalyticalTestRequest: {
           status,
+          arNumber,
         },
       }).unwrap();
       toast.success("ATR Updated successfully");
@@ -72,6 +79,30 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
     router.push(
       `/atr/${row.original.id}/${row.original.batchManufacturingRecord?.id}`,
     );
+  };
+
+  const handleGenerateArNumber = async (stage: AnalyticalTestRequestStage) => {
+    try {
+      const dept = "QCD";
+      const type =
+        stage === AnalyticalTestRequestStage.Intermediate
+          ? "IP"
+          : details?.stage === AnalyticalTestRequestStage.Bulk
+            ? "BP"
+            : "FP";
+      const year = new Date().getFullYear();
+      const prefix = getArNumberPrefix(dept, type, year);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.ArNumberProduct,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateARNumber({ dept, type, year, serial });
+      return code;
+    } catch (error) {
+      console.log(error);
+      return "";
+    }
   };
   return (
     <section className="flex items-center justify-end gap-2">
@@ -162,10 +193,15 @@ export function DataTableRowActions<TData extends AnalyticalTestRequestDto>({
           title="Receive Sample"
           confirmText="Accept"
           description={`Are you sure you want to Receive the Sample ?`}
-          onConfirm={() => {
+          onConfirm={async () => {
+            const arNumber = await handleGenerateArNumber(
+              Number(details?.stage) as AnalyticalTestRequestStage,
+            );
+            // console.log(arNumber);
             handleUpdate(
               details?.id as string,
               AnalyticalTestRequestStatus.Acknowledged,
+              arNumber,
             );
           }}
         />

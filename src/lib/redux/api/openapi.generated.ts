@@ -1591,13 +1591,13 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1FormGenerateCertificateProductByBatchManufacturingRecordId:
+    postApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepId:
       build.mutation<
-        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse,
-        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiResponse,
+        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}`,
+          url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}/${queryArg.productionActivityStepId}`,
           method: "POST",
           headers: {
             Module: queryArg["module"],
@@ -9620,12 +9620,14 @@ export type PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiResponse =
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiResponse =
   unknown;
-export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdApiArg =
+export type PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiArg =
   {
     /** The ID of the batch manufacturing. */
     batchManufacturingRecordId: string;
+    /** The id of production activity step */
+    productionActivityStepId: string;
     /** The module this request falls under */
     module?: any;
     /** The sub module this request falls under */
@@ -23991,7 +23993,7 @@ export const {
   usePutApiV1FormQuestionByQuestionIdMutation,
   useDeleteApiV1FormQuestionByQuestionIdMutation,
   usePostApiV1FormGenerateCertificateByMaterialBatchIdMutation,
-  usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdMutation,
+  usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdMutation,
   useGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,

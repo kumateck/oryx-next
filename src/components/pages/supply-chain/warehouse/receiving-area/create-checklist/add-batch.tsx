@@ -39,41 +39,49 @@ const AddBatchDialog = ({
 }: AddBatchDialogProps) => {
   const {
     register,
-    handleSubmit,
     control,
     reset,
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<ChecklistBatchDto>({
     resolver: zodResolver(checklistBatchRequestSchema),
-    mode: "all",
+    mode: "onSubmit",
   });
 
-  const onSubmit = (data: ChecklistBatchDto) => {
-    if (data.numberOfContainers * data.quantityPerContainer > remainingQty) {
-      toast.error("Material quantity exceeds remaining quantity");
-      return;
-    }
-    try {
-      const filteredWeights = data.weights.filter(
-        (weight) => weight.srNumber && weight.grossWeight,
-      );
+  const onSubmit = async () => {
+    const isValid = await trigger();
 
-      if (filteredWeights.length === 0) {
-        toast.error("At least one SR Number and Gross Weight pair is required");
+    if (isValid) {
+      const data = getValues() as ChecklistBatchDto;
+      if (data.numberOfContainers * data.quantityPerContainer > remainingQty) {
+        toast.error("Material quantity exceeds remaining quantity");
         return;
       }
+      try {
+        const filteredWeights = data.weights.filter(
+          (weight) => weight.srNumber && weight.grossWeight,
+        );
 
-      const validatedData = checklistBatchRequestSchema.parse({
-        ...data,
-        weights: filteredWeights,
-      });
+        if (filteredWeights.length === 0) {
+          toast.error(
+            "At least one SR Number and Gross Weight pair is required",
+          );
+          return;
+        }
 
-      onSave(validatedData);
-      reset();
-      onClose();
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error("Please fix validation errors before submitting");
+        const validatedData = checklistBatchRequestSchema.parse({
+          ...data,
+          weights: filteredWeights,
+        });
+
+        onSave(validatedData);
+        reset();
+        onClose();
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast.error("Please fix validation errors before submitting");
+        }
       }
     }
   };
@@ -90,12 +98,7 @@ const AddBatchDialog = ({
             {qtyUnit}
           </p>
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)(e);
-          }}
-        >
+        <form>
           <FormWizard
             className="w-full gap-x-2 space-y-0"
             fieldWrapperClassName="flex-grow"
@@ -236,12 +239,7 @@ const AddBatchDialog = ({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              type="button"
-              onClick={() => {
-                handleSubmit(onSubmit);
-              }}
-            >
+            <Button type="button" onClick={onSubmit}>
               Add
             </Button>
           </div>

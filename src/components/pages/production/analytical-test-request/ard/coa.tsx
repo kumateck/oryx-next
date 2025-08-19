@@ -7,7 +7,7 @@ import {
   Icon,
 } from "@/components/ui";
 import { cn } from "@/lib";
-import { usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdMutation } from "@/lib/redux/api/openapi.generated";
+import { usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdMutation } from "@/lib/redux/api/openapi.generated";
 import ThrowErrorMessage from "@/lib/throw-error";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
@@ -18,17 +18,25 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   productBatchId: string;
+  productionActivityStepId: string;
   children: React.ReactNode;
 }
-const PreviewCoa = ({ isOpen, onClose, children, productBatchId }: Props) => {
+const PreviewCoa = ({
+  isOpen,
+  onClose,
+  children,
+  productBatchId,
+  productionActivityStepId,
+}: Props) => {
   const router = useRouter();
   const [genereateCertificate, { isLoading }] =
-    usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdMutation();
+    usePostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdMutation();
 
   const handleGenerate = async () => {
     try {
       await genereateCertificate({
         batchManufacturingRecordId: productBatchId,
+        productionActivityStepId,
       }).unwrap();
       toast.success("COA generated successfully");
       onClose();
