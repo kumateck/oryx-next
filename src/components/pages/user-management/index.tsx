@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1UserQuery,
-  useLazyGetApiV1UserQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1UserQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -23,11 +20,9 @@ const Page = () => {
   // const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1UserQuery({
-    page,
-    pageSize,
-  });
-  const [loadUsers, { isFetching }] = useLazyGetApiV1UserQuery();
+
+  const [loadUsers, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1UserQuery();
   const searchValue = useSelector((state) => state.common.searchInput);
 
   useEffect(() => {
