@@ -19749,6 +19749,15 @@ export type MarketRequisitionVendorDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
+  vendorName?: string | null;
+  vendorAddress?: string | null;
+  vendorPhoneNumber?: string | null;
+  pricePerUnit?: number;
+  modeOfPayment?: string | null;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+  complete?: boolean;
 };
 export type MarketRequisitionVendorDtoIEnumerablePaginateable = {
   data?: MarketRequisitionVendorDto[] | null;

@@ -8,31 +8,27 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-// import { FetchOptionsResult } from "@/components/ui/paginated-select";
+
 import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   materialTypeOptions: Option[];
-  materialOptions: Option[];
-  // materialOptions: (
-  //   search: string,
-  //   page: number,
-  // ) => Promise<FetchOptionsResult>;
-
-  uomOptions: Option[];
   defaultValues?: TFieldValues;
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const BomForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
   materialTypeOptions,
-  materialOptions,
   defaultValues,
-  uomOptions,
+  fetchOptions,
+  isLoading,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -55,25 +51,22 @@ const BomForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Material",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "materialId",
-            defaultValue: defaultValues?.materialId,
             required: true,
             onModal: true,
-            placeholder: "Select Material",
-            options: materialOptions,
+            defaultValue: defaultValues?.materialId,
+            placeholder: "Select material",
+            fetchOptions: fetchOptions,
+            isLoading: isLoading,
             errors,
           },
           {
+            register: register("baseUoMId.label" as Path<TFieldValues>),
             label: "Base UOM",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "baseUoMId",
-            defaultValue: defaultValues?.baseUoMId,
-            required: true,
-            onModal: true,
-            placeholder: "Select UOM",
-            options: uomOptions,
+            placeholder: "Enter Base UOM",
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {

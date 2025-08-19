@@ -29,7 +29,7 @@ export const columns: ColumnDef<ApprovedProductDtoRead>[] = [
     },
   },
   {
-    accessorKey: "totalQuantity",
+    accessorKey: "packingQuantity",
     header: "Packing Quantity",
     cell: ({ row }) => {
       return <div className="">{row.original.totalQuantity}</div>;
