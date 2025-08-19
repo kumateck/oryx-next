@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Control,
   FieldErrors,
@@ -11,7 +11,8 @@ import { FormWizard } from "@/components/form-inputs";
 import { InputTypes } from "@/lib";
 import { DistributedRequisitionMaterialDto } from "@/lib/redux/api/openapi.generated";
 
-import TableForData from "./table";
+import { ListsTable } from "@/shared/datatable";
+import { getColumns } from "./columns";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
@@ -26,15 +27,7 @@ const GRNForm = <TFieldValues extends FieldValues, TContext>({
   errors,
   filteredData,
 }: Props<TFieldValues, TContext>) => {
-  const [packageLists, setPackageLists] = useState<
-    DistributedRequisitionMaterialDto[]
-  >([]);
-
-  useEffect(() => {
-    if (filteredData?.length) {
-      setPackageLists(filteredData);
-    }
-  }, [filteredData]);
+  const columns = getColumns();
 
   return (
     <div className="w-full">
@@ -62,9 +55,10 @@ const GRNForm = <TFieldValues extends FieldValues, TContext>({
             {
               register: register("grnNumber" as Path<TFieldValues>),
               label: "GRN Number",
-              placeholder: "GRN-BWH-001",
+              placeholder: "code",
               type: InputTypes.TEXT,
               required: true,
+              readOnly: true,
               errors,
             },
           ]}
@@ -87,7 +81,7 @@ const GRNForm = <TFieldValues extends FieldValues, TContext>({
       </div>
 
       <div className="mt-4">
-        <TableForData lists={packageLists} setItemLists={setPackageLists} />
+        <ListsTable data={filteredData} columns={columns} />
       </div>
     </div>
   );

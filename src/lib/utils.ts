@@ -1425,3 +1425,7 @@ export const omit = <T extends object, K extends keyof T>(
   });
   return clone as Omit<T, K>;
 };
+
+export const getNameInBeta = (name: string) => {
+  return /beta/i.test(name);
+};

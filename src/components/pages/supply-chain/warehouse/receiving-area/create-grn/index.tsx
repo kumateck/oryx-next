@@ -14,45 +14,41 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { CODE_SETTINGS } from "@/lib";
+import { CodeModelTypes, EMaterialKind } from "@/lib";
 import {
   CreateGrnRequest,
+  DistributedRequisitionMaterialDto,
   MaterialBatchDtoRead,
-  NamingType,
-  useGetApiV1ConfigurationByModelTypeByModelTypeQuery,
-  useLazyGetApiV1ProductionScheduleQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation,
   usePostApiV1WarehouseGrnMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
-import {
-  ErrorResponse,
-  GenerateCodeOptions,
-  cn,
-  generateCode,
-  isErrorResponse,
-} from "@/lib/utils";
+import { ErrorResponse, cn, getNameInBeta, isErrorResponse } from "@/lib/utils";
 
 import GRNForm from "./form";
 import { CreateGRNValidator, GRNRequestDto } from "./types";
+import { generateGRNNumber, getGRNPrefix } from "@/lib/batch-gen";
 
 interface Props {
   isGRNOpen: boolean;
   onGRNClose: () => void;
   selectedIds: string[];
-  data: any[];
+  selectedMaterials: DistributedRequisitionMaterialDto[];
 }
 
-const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
+const CreateGRN = ({
+  isGRNOpen,
+  onGRNClose,
+  selectedIds,
+  selectedMaterials,
+}: Props) => {
   const dispatch = useDispatch();
   const [createGRN, { isLoading }] = usePostApiV1WarehouseGrnMutation();
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
+
   const [getBatchDetails, { isLoading: isBatchLoading }] =
     usePostApiV1WarehouseDistributedMaterialMaterialBatchMutation();
-  const { data: codeConfig } =
-    useGetApiV1ConfigurationByModelTypeByModelTypeQuery({
-      modelType: CODE_SETTINGS.modelTypes.GRNNumber,
-    });
-  const [loadProduct] = useLazyGetApiV1ProductionScheduleQuery();
 
   const {
     register,
@@ -66,23 +62,19 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
     mode: "all",
   });
 
-  const filteredData = data?.filter((item) => selectedIds?.includes(item.id));
-
   const onSubmit = async (data: GRNRequestDto) => {
     try {
-      const selectedMaterialIds = filteredData.map((item) => item.id);
-
       const batchDetails = await getBatchDetails({
-        body: selectedMaterialIds,
+        body: selectedIds,
       }).unwrap();
 
       const materialBatchIds = batchDetails.map(
         (detail: MaterialBatchDtoRead) => detail.id,
       ) as string[];
-      console.log("Material Batch Ids:::", materialBatchIds);
-
+      const grnNumber = await handleLoadCode();
       const payload = {
         ...data,
+        grnNumber,
         materialBatchIds,
       } satisfies CreateGrnRequest;
 
@@ -100,28 +92,35 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
   };
 
   useEffect(() => {
-    const loadCodes = async () => {
-      const generatePayload: GenerateCodeOptions = {
-        maxlength: Number(codeConfig?.maximumNameLength),
-        minlength: Number(codeConfig?.minimumNameLength),
-        prefix: codeConfig?.prefix as string,
-        type: codeConfig?.namingType as NamingType,
-      };
-      const productsResponse = await loadProduct({
-        page: 1,
-        pageSize: 1,
-      }).unwrap();
-
-      const products = productsResponse?.totalRecordCount ?? 0;
-      generatePayload.seriesCounter = products + 1;
-      const code = await generateCode(generatePayload);
-      setValue("grnNumber", code);
-    };
-
-    loadCodes();
-
+    handleLoadCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [codeConfig]);
+  }, []);
+
+  const handleLoadCode = async () => {
+    try {
+      const selectedData = selectedMaterials?.find(
+        (item) => item.id === selectedIds[0],
+      );
+      const department = selectedData?.department?.name as string;
+      const material = selectedData?.material;
+
+      const warehouse = getNameInBeta(department) ? "BWH" : "NWH";
+      const type = Number(material?.kind) === EMaterialKind.Raw ? "RM" : "PM";
+      const year = new Date().getFullYear();
+      const prefix = getGRNPrefix(warehouse, type, year);
+
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.GRNNumber,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateGRNNumber({ warehouse, type, year, serial });
+      setValue("grnNumber", code);
+      return code;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Dialog open={isGRNOpen} onOpenChange={onGRNClose}>
@@ -135,7 +134,7 @@ const CreateGRN = ({ isGRNOpen, onGRNClose, selectedIds, data }: Props) => {
             register={register}
             control={control}
             errors={errors}
-            filteredData={filteredData}
+            filteredData={selectedMaterials}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onGRNClose}>

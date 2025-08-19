@@ -26,7 +26,8 @@ import { ORYX_ERP_COOKIE_ID, fullname, getInitials, routes } from "@/lib";
 
 import { useUserPermissions } from "@/hooks/use-permission";
 import useCurrentUser from "@/hooks/use-current";
-import { NotificationsSheet } from "@/components/pages/settings/alert/notificationsSheet";
+
+import NotificationSheet from "@/shared/notifications";
 
 const HeaderEnd = () => {
   const { clearPermissions } = useUserPermissions();
@@ -43,7 +44,7 @@ const HeaderEnd = () => {
   return (
     <div className="flex items-center gap-3 rounded-full p-1 px-4">
       <SearchWithAnimation />
-      <NotificationsSheet />
+      <NotificationSheet />
       <DropdownMenu>
         <DropdownMenuTrigger className="outline-none ring-0 active:outline-none active:ring-0">
           <div className="flex size-10 items-center justify-center rounded-full hover:bg-white">
