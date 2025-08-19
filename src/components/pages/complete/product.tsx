@@ -171,7 +171,7 @@ const FormResponseForProduct = () => {
       ThrowErrorMessage(error);
     }
   };
-  console.log(formTemplate, "formf tem");
+
   return (
     <PageWrapper>
       {(isDataLoading || isSpecLoading || isFormLoading) && (

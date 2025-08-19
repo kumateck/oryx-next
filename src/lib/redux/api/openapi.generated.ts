@@ -1170,6 +1170,7 @@ const injectedRtkApi = api.injectEndpoints({
           searchQuery: queryArg.searchQuery,
           designation: queryArg.designation,
           department: queryArg.department,
+          isNotUser: queryArg.isNotUser,
         },
       }),
     }),
@@ -9297,6 +9298,7 @@ export type GetApiV1EmployeeApiArg = {
   searchQuery?: string;
   designation?: string;
   department?: string;
+  isNotUser?: boolean;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -21820,7 +21822,7 @@ export type ProductionOrderProductQuantityDtoRead = {
   quantity?: number;
 };
 export type ProductionOrderProductsDto = {
-  product?: CollectionItemDto;
+  product?: ProductListDto;
   totalOrderQuantity?: number;
   volumePerPiece?: number;
   totalVolume?: number;
@@ -21830,7 +21832,7 @@ export type ProductionOrderProductsDto = {
   fulfilled?: boolean;
 };
 export type ProductionOrderProductsDtoRead = {
-  product?: CollectionItemDto;
+  product?: ProductListDtoRead;
   totalOrderQuantity?: number;
   volumePerPiece?: number;
   totalVolume?: number;
