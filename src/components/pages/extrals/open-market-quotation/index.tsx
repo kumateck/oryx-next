@@ -34,7 +34,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Purchase Requisitions" />
+        <PageTitle title="Open Market Quotation" />
         <div className="flex items-center justify-end gap-2"></div>
       </div>
 
