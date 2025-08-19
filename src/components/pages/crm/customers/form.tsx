@@ -52,7 +52,7 @@ const CustomerForm = <TFieldValues extends FieldValues, TContext>({
           },
           {
             register: register("phone" as Path<TFieldValues>),
-            label: "Phone Number Nubers",
+            label: "Phone Number",
             placeholder: "Enter phone number",
             type: InputTypes.TEXT,
             required: true,

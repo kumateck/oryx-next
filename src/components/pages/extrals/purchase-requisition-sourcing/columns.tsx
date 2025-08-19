@@ -63,6 +63,13 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
     ),
   },
   {
+    accessorKey: "numberOfItems",
+    header: "Number of Items",
+    cell: ({ row }) => (
+      <div className="min-w-36">{row.original?.items?.length ?? 0}</div>
+    ),
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {

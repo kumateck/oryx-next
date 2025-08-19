@@ -21,12 +21,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AccessTabs from "@/shared/access";
 import { Button, Icon } from "@/components/ui";
 import ThrowErrorMessage from "@/lib/throw-error";
+import { useDebounce } from "@uidotdev/usehooks";
 import { toast } from "sonner";
 
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const searchQuery = useSelector((state) => state.common.searchInput);
+  const debouncedValue = useDebounce(searchQuery, 500);
 
   const [saveMutation, { isLoading: isSaving }] =
     usePostApiV1MaterialDepartmentMutation();
@@ -59,13 +61,13 @@ const Page = () => {
     useLazyGetApiV1MaterialDepartmentNotLinkedQuery();
 
   useEffect(() => {
-    handleLoadMaterials(kind, searchQuery);
+    handleLoadMaterials(kind, debouncedValue);
 
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, searchQuery, triggerReload]);
+  }, [kind, debouncedValue, triggerReload]);
 
   const [loadUom] = useLazyGetApiV1CollectionUomQuery();
 

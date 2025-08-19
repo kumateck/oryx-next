@@ -435,8 +435,8 @@ export const ROUTES: Route[] = [
             url: "/extrals/vendors",
           },
           {
-            title: "Vendor Memo",
-            url: "/extrals/vendors-memo",
+            title: "Open Source Memos",
+            url: "/extrals/open-source-memo",
           },
           {
             title: "Open Market Quotation",
