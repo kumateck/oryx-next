@@ -54,12 +54,7 @@ const ReceivingArea = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, page, pageSize, searchValue, triggerReload]);
 
-  const data = (result?.data || []).map(
-    (item: DistributedRequisitionMaterialDto) => ({
-      ...item,
-      // id: item.id || "",
-    }),
-  );
+  const data = result?.data || [];
   const selectedIds = getMatchingIds(data, rowSelection);
 
   const selectedData = data.filter((item: DistributedRequisitionMaterialDto) =>
@@ -147,7 +142,7 @@ const ReceivingArea = () => {
             onGRNClose={() => setIsGRNOpen(false)}
             isGRNOpen={isGRNOpen}
             selectedIds={selectedIds}
-            data={data}
+            selectedMaterials={selectedData}
           />
         )}
       </div>

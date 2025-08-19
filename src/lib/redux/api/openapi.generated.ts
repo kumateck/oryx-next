@@ -13294,7 +13294,7 @@ export type GetApiV1ReportStaffTurnoverReportApiArg = {
   subModule?: any;
 };
 export type GetApiV1ReportMaterialsReadyForChecklistApiResponse =
-  /** status 200 OK */ DistributedRequisitionMaterialDto[];
+  /** status 200 OK */ DistributedRequisitionMaterialDtoRead[];
 export type GetApiV1ReportMaterialsReadyForChecklistApiArg = {
   startDate?: string;
   endDate?: string;
@@ -14361,7 +14361,7 @@ export type GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg = {
   subModule?: any;
 };
 export type GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse =
-  /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateable;
+  /** status 200 OK */ DistributedRequisitionMaterialDtoIEnumerablePaginateableRead;
 export type GetApiV1WarehouseDistributedRequisitionMaterialsApiArg = {
   kind?: MaterialKind;
   page?: number;
@@ -14396,7 +14396,7 @@ export type GetApiV1WarehouseStockTransferDetailsApiArg = {
   subModule?: any;
 };
 export type GetApiV1WarehouseDistributedMaterialByIdApiResponse =
-  /** status 200 OK */ DistributedRequisitionMaterialDto;
+  /** status 200 OK */ DistributedRequisitionMaterialDtoRead;
 export type GetApiV1WarehouseDistributedMaterialByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -20215,7 +20215,7 @@ export type UpdateReOrderLevelRequest = {
   reOrderLevel?: number;
 };
 export type ManufacturerMaterialDto = {
-  material?: CollectionItemDto;
+  material?: MaterialDto;
 };
 export type ManufacturerDto = {
   id?: string;
@@ -20257,7 +20257,7 @@ export type ShipmentInvoiceItemDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  material?: CollectionItemDto;
+  material?: MaterialDto;
   uoM?: UnitOfMeasureDto;
   manufacturer?: CollectionItemDto;
   purchaseOrder?: CollectionItemDto;
@@ -20431,9 +20431,38 @@ export type DistributedRequisitionMaterialDto = {
   materialItemDistributions?: MaterialItemDistributionDto[] | null;
   status?: DistributedRequisitionMaterialStatus;
   checklists?: DistributedChecklistDto[] | null;
+  department?: DepartmentDto;
+};
+export type DistributedRequisitionMaterialDtoRead = {
+  id?: string;
+  requisitionItem?: RequisitionItemDto;
+  material?: MaterialDto;
+  uom?: UnitOfMeasureDto;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  quantity?: number;
+  arrivedAt?: string | null;
+  checkedAt?: string | null;
+  distributedAt?: string | null;
+  grnGeneratedAt?: string | null;
+  materialItemDistributions?: MaterialItemDistributionDto[] | null;
+  status?: DistributedRequisitionMaterialStatus;
+  checklists?: DistributedChecklistDto[] | null;
+  department?: DepartmentDtoRead;
 };
 export type BatchChecklistDto = {
   distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
+  material?: MaterialDto;
+  checkedAt?: string | null;
+  shipmentInvoice?: ShipmentInvoiceDto;
+  supplier?: SupplierDto;
+  manufacturer?: ManufacturerDto;
+  certificateOfAnalysisDelivered?: boolean;
+  visibleLabelling?: boolean;
+  intactnessStatus?: Intactness;
+  consignmentCarrierStatus?: ConsignmentCarrier;
+};
+export type BatchChecklistDtoRead = {
+  distributedRequisitionMaterial?: DistributedRequisitionMaterialDtoRead;
   material?: MaterialDto;
   checkedAt?: string | null;
   shipmentInvoice?: ShipmentInvoiceDto;
@@ -20513,7 +20542,7 @@ export type MaterialBatchDtoRead = {
   id?: string;
   material?: CollectionItemDto;
   batchNumber?: string | null;
-  checklist?: BatchChecklistDto;
+  checklist?: BatchChecklistDtoRead;
   stockTransferSource?: MaterialBatchStockTransferSourceDtoRead;
   uoM?: UnitOfMeasureDto;
   numberOfContainers?: number;
@@ -21474,7 +21503,7 @@ export type ProductListDtoIEnumerablePaginateableRead = {
 };
 export type BillOfMaterialItemDto = {
   id?: string;
-  material?: CollectionItemDto;
+  material?: MaterialDto;
   materialType?: CollectionItemDto;
   isSubstitutable?: boolean;
   grade?: string | null;
@@ -23615,12 +23644,23 @@ export type WarehouseArrivalLocationDtoRead = {
   name?: string | null;
   floorName?: string | null;
   description?: string | null;
-  distributedRequisitionMaterials?: DistributedRequisitionMaterialDto[] | null;
+  distributedRequisitionMaterials?:
+    | DistributedRequisitionMaterialDtoRead[]
+    | null;
   distributedFinishedProducts?: DistributedFinishedProductDtoRead[] | null;
   distributedStockTransferBatches?: MaterialBatchDtoRead[] | null;
 };
 export type DistributedRequisitionMaterialDtoIEnumerablePaginateable = {
   data?: DistributedRequisitionMaterialDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type DistributedRequisitionMaterialDtoIEnumerablePaginateableRead = {
+  data?: DistributedRequisitionMaterialDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -23685,7 +23725,7 @@ export type ChecklistDto = {
   materialBatches?: MaterialBatchDto[] | null;
 };
 export type ChecklistDtoRead = {
-  distributedRequisitionMaterial?: DistributedRequisitionMaterialDto;
+  distributedRequisitionMaterial?: DistributedRequisitionMaterialDtoRead;
   material?: MaterialDto;
   checkedAt?: string | null;
   shipmentInvoice?: ShipmentInvoiceDto;

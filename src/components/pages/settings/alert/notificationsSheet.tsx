@@ -17,14 +17,6 @@ export function NotificationsSheet() {
   const { data: unReadNotfications } = useGetApiV1AlertNotificationsQuery({
     unreadOnly: true,
   });
-  // console.log(data);
-  // const [activeTab, setActiveTab] = React.useState(TABS_OPTIONS[0]);
-  // const allData = groupByDate(notifications);
-  // const unreadData = allData.filter((data) =>
-  //   data.items.filter((data) => data.status === "unread"),
-  // );
-  // console.log(allData, "this is all data we need");
-  // console.log(unreadData, "these are all unread data we've got");
 
   const notificationCount = unReadNotfications?.length ?? 0;
 
