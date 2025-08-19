@@ -86,7 +86,6 @@ function CreateProductionOrder({ open, onClose }: Props) {
         label: "",
         value: "",
       },
-      volumePerPiece: 0,
       price: 0,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +134,6 @@ function CreateProductionOrder({ open, onClose }: Props) {
           products: data.products.map((product) => ({
             productId: product.productId.value,
             totalOrderQuantity: Number(product.totalOrderQuantity),
-            volumePerPiece: Number(product.volumePerPiece),
           })),
         },
       }).unwrap();

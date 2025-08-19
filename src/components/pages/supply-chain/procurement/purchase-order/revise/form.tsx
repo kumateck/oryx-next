@@ -18,8 +18,8 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   uomOptions: Option[];
   defaultValues?: TFieldValues;
   kind?: EMaterialKind;
-  isLoading: boolean;
   currency?: Option;
+  isLoading: boolean;
   fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 const RevisionForm = <TFieldValues extends FieldValues, TContext>({

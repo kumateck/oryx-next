@@ -75,7 +75,6 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
                 label: "",
                 value: "",
               },
-              volumePerPiece: 0,
               price: 0,
             });
           }}
@@ -89,9 +88,11 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
       </div>
       <div>
         {fields.map((field, index) => (
-          <div key={field.id} className="relative flex">
-            <div className="flex items-center gap-2 mb-2 justify-center mr-10">
+          <div key={field.id} className="relative flex gap-2 justify-between">
+            <div className="">
               <FormWizard
+                className="grid grid-cols-3 gap-4 gap-y-3 space-y-0"
+                fieldWrapperClassName="flex-grow"
                 config={[
                   {
                     name: `products.${index}.productId`,
@@ -106,10 +107,6 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
                     fetchOptions: fetchProducts,
                     errors,
                   },
-                ]}
-              />
-              <FormWizard
-                config={[
                   {
                     register: register(
                       `products.${index}.totalOrderQuantity` as Path<TFieldValues>,
@@ -120,26 +117,6 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
                     type: InputTypes.NUMBER,
                     errors,
                   },
-                ]}
-              />
-              <FormWizard
-                config={[
-                  {
-                    register: register(
-                      `products.${index}.volumePerPiece` as Path<TFieldValues>,
-                      {
-                        valueAsNumber: true,
-                      },
-                    ),
-                    label: "Volume Per Piece",
-                    required: true,
-                    type: InputTypes.NUMBER,
-                    errors,
-                  },
-                ]}
-              />
-              <FormWizard
-                config={[
                   {
                     register: register(
                       `products.${index}.price` as Path<TFieldValues>,
@@ -155,7 +132,7 @@ export const Form = <TFieldValues extends FieldValues, TContext>({
                 ]}
               />
             </div>
-            <div className="flex items-center absolute right-0 top-6 justify-center">
+            <div className="flex items-center ">
               <Icon
                 name="Trash2"
                 className="cursor-pointer size-5 ml-auto text-red-500"
