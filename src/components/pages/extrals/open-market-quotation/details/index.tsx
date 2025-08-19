@@ -1,3 +1,4 @@
+"use client";
 import { Icon } from "@/components/ui";
 // import { useGetApiV1ProcurementInventoryMarketVendorsQuery } from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
