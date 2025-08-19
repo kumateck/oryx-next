@@ -144,7 +144,7 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   const [details, setDetails] = useState<CreateSampleFormData>(
     {} as CreateSampleFormData,
   );
-  const totqty = row.original.totalQuantity ?? 0;
+  const totqty = row.original.totalQuantity || 0;
   const baseUnit = getSmallestUnit(row.original.uoM?.symbol as Units);
   const qty = convertToLargestUnit(totqty, baseUnit);
   const handleStartTest = async () => {
@@ -168,14 +168,11 @@ export function DataTableRowActions<TData extends MaterialBatchDto>({
   const handlePickSample = async (payload: MaterialBatchDto) => {
     try {
       const dept = "QCD";
-
-      console.log(kind, "kind");
       const type = Number(kind) === EMaterialKind.Raw ? "RM" : "PM";
-
       const year = new Date().getFullYear();
       const prefix = getArNumberPrefix(dept, type, year);
       const countConfigResponse = await loadCountConfig({
-        modelType: CodeModelTypes.ArNumber,
+        modelType: CodeModelTypes.ArNumberMaterial,
         prefix,
       }).unwrap();
       const serial = countConfigResponse + 1;

@@ -1,5 +1,6 @@
 "use client";
 import {
+  AnalyticalTestRequestDtoRead,
   ProductAnalyticalRawDataDto,
   useLazyGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
   useLazyGetApiV1ProductArdProductByProductIdQuery,
@@ -57,7 +58,7 @@ const ArdDetails = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   // State management for data
-  const [atrData, setAtrData] = useState<any>(null);
+  const [atrData, setAtrData] = useState<AnalyticalTestRequestDtoRead>();
   const [batchData, setBatchData] = useState<any>(null);
   const [batchFormResponses, setBatchFormResponses] = useState<any[]>([]);
   const [filteredArdData, setFilteredArdData] =
@@ -162,6 +163,9 @@ const ArdDetails = () => {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           productBatchId={productBatchId}
+          productionActivityStepId={
+            atrData.productionActivityStep?.id as string
+          }
         >
           <CertificateOfAnalysis
             batchNo={batchData.batchNumber as string}
