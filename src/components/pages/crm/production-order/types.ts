@@ -24,7 +24,7 @@ const ProductionOrderShema = z.object({
         },
       ),
       totalOrderQuantity: z.number().min(1, "Quantity must be greater than 0"),
-      volumePerPiece: z.number().min(0, "Volume per piece cannot be negative"),
+      // volumePerPiece: z.number().min(0, "Volume per piece cannot be negative"),
       price: z.number().min(0, "Price cannot be negative"),
     }),
   ),

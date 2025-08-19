@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,12 +12,11 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { AuditModules, COLLECTION_TYPES, Option } from "@/lib";
+import { AuditModules, COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
-  MaterialDto,
+  MaterialDepartmentWithWarehouseStockDto,
   PostApiV1CollectionApiArg,
-  useGetApiV1CollectionUomQuery,
-  useGetApiV1MaterialQuery,
+  useLazyGetApiV1MaterialDepartmentQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -56,35 +55,26 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
-  const { data: materialResponse } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 1000,
-    kind: 0,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
+  // const { data: uomResponse } = useGetApiV1CollectionUomQuery({
+  //   isRawMaterial: true,
+  //   module: AuditModules.general.name,
+  //   subModule: AuditModules.general.collection,
+  // });
 
-  console.log(materialResponse, "materialResponse");
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
+  // const materialOptions = useMemo(() => {
+  //   if (!materialResponse?.data) return [];
 
-  const materialOptions = useMemo(() => {
-    if (!materialResponse?.data) return [];
+  //   const usedMaterialIds = new Set(
+  //     existingItems.map((item) => item.materialId?.value).filter(Boolean),
+  //   );
 
-    const usedMaterialIds = new Set(
-      existingItems.map((item) => item.materialId?.value).filter(Boolean),
-    );
-
-    return materialResponse.data
-      .filter((material) => !usedMaterialIds.has(material?.id as string))
-      .map((material: MaterialDto) => ({
-        label: material.name || "",
-        value: material.id || "",
-      })) as Option[];
-  }, [materialResponse?.data, existingItems]);
+  //   return materialResponse.data
+  //     .filter((material) => !usedMaterialIds.has(material?.id as string))
+  //     .map((material: MaterialDto) => ({
+  //       label: material.name || "",
+  //       value: material.id || "",
+  //     })) as Option[];
+  // }, [materialResponse?.data, existingItems]);
 
   const materialTypeOptions = useMemo(() => {
     return (
@@ -95,16 +85,39 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     );
   }, [collectionResponse]);
 
-  const uomOptions = useMemo(() => {
-    return (
-      (uomResponse
-        ?.filter((item) => item.isRawMaterial)
-        ?.map((uom) => ({
-          label: uom.symbol || "",
-          value: uom.id || "",
-        })) as Option[]) || []
-    );
-  }, [uomResponse]);
+  // const uomOptions = useMemo(() => {
+  //   return (
+  //     (uomResponse
+  //       ?.filter((item) => item.isRawMaterial)
+  //       ?.map((uom) => ({
+  //         label: uom.symbol || "",
+  //         value: uom.id || "",
+  //       })) as Option[]) || []
+  //   );
+  // }, [uomResponse]);
+
+  const [materials, setMaterials] = useState<
+    MaterialDepartmentWithWarehouseStockDto[]
+  >([]);
+  const selectedMaterial = useWatch({
+    control,
+    name: "materialId",
+  }) as Option;
+  useEffect(() => {
+    if (selectedMaterial) {
+      const material = materials.find(
+        (department) => department?.material?.id === selectedMaterial.value,
+      );
+      if (material) {
+        form.setValue("baseUoMId", {
+          label: material?.uoM?.symbol || "",
+          value: material.uoM?.id || "",
+        });
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materials, selectedMaterial]);
 
   useEffect(() => {
     if (isOpen) {
@@ -130,6 +143,37 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     onClose();
   };
 
+  const [
+    loadMaterials,
+    { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },
+  ] = useLazyGetApiV1MaterialDepartmentQuery();
+  const loadDataOrSearch = async (searchQuery: string, page: number) => {
+    const res = await loadMaterials({
+      searchQuery,
+      page,
+      kind: EMaterialKind.Raw,
+    }).unwrap();
+    const usedMaterialIds = new Set(
+      existingItems.map((item) => item.materialId?.value).filter(Boolean),
+    );
+    const departmentMaterials =
+      res?.data as MaterialDepartmentWithWarehouseStockDto[];
+    setMaterials(departmentMaterials);
+    const filteredData = departmentMaterials?.filter(
+      (item) => !usedMaterialIds.has(item?.material?.id as string),
+    );
+
+    const response = {
+      options: filteredData?.map((item) => ({
+        label: item?.material?.name,
+        value: item?.material?.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -144,8 +188,8 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
               errors={errors}
               control={control}
               materialTypeOptions={materialTypeOptions}
-              materialOptions={materialOptions}
-              uomOptions={uomOptions}
+              fetchOptions={loadDataOrSearch}
+              isLoading={isLoadingMaterials || isFetchingMaterials}
             />
 
             <DialogFooter className="justify-end gap-4 py-6">
