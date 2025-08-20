@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1DesignationQuery,
-  useLazyGetApiV1DesignationQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1DesignationQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -28,11 +25,8 @@ const Page = () => {
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchValue = useSelector((state) => state.common.searchInput);
 
-  const { data: result, isLoading } = useGetApiV1DesignationQuery({
-    page,
-    pageSize,
-  });
-  const [loadDesignations, { isFetching }] = useLazyGetApiV1DesignationQuery();
+  const [loadDesignations, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1DesignationQuery();
 
   useEffect(() => {
     loadDesignations({

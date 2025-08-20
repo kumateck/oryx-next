@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import React from "react";
 import { MaterialReportCard } from "./card";
 import PageWrapper from "@/components/layout/wrapper";
-import FormResponseView from "./response";
+
 import PageTitle from "@/shared/title";
 import { Button } from "@/components/ui";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
@@ -17,6 +17,8 @@ import ScrollableWrapper from "@/shared/scroll-wrapper";
 import PreviewCoa from "./coa";
 
 import CertificateOfAnalysis from "./preview";
+import FormResponseView from "@/shared/form-response-view";
+import SpecificationResponse from "./specification";
 
 const ArdDetails = () => {
   const { id, batchId } = useParams();
@@ -64,11 +66,16 @@ const ArdDetails = () => {
           issueDate={ardBatchData?.createdAt as string}
         />
       </div>
-      <ScrollableWrapper>
-        <div>
-          <span className="text-lg font-semibold">Form Responses</span>{" "}
-        </div>
-        <FormResponseView responses={batchFormResponses} />
+      <ScrollableWrapper className="pb-20">
+        <SpecificationResponse
+          title={"Specification Response"}
+          modelId={batchData?.material?.id as string}
+          type="M"
+        />
+        <FormResponseView
+          responses={batchFormResponses}
+          title="ARD Responses"
+        />
       </ScrollableWrapper>
       <PreviewCoa
         isOpen={isOpen}

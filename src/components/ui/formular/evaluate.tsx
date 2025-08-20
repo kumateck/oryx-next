@@ -103,18 +103,21 @@ export const TheAduseiEvaluation = ({ option, onChange }: Props) => {
       const roundedResult = {
         result: sanitizeNumber(evalResult),
         fieldValues: updateFields(data.fields, fieldValues),
+        expression: data.expression,
+        previewExpression: previewExpr,
       };
-      console.log(roundedResult, "roundedResult");
+      const jsonResult = JSON.stringify(roundedResult);
+      // console.log(roundedResult, "roundedResult");
       setResult(evalResult);
       if (onChange) {
-        onChange(evalResult.toString());
+        onChange(jsonResult);
       }
     } catch (err) {
       console.error("Math.js evaluation error:", err);
       setResult(NaN);
       if (onChange) onChange("");
     }
-  }, [debouncedExpression, data, fieldValues, onChange]);
+  }, [debouncedExpression, data, fieldValues, previewExpr, onChange]);
 
   if (!data) return null;
 
