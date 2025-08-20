@@ -34,7 +34,7 @@ const StatusBadge = ({ label, colorClass, style }: StatusBadgeProps) => {
   return (
     <div
       className={cn(
-        "rounded-full px-2 py-1 w-fit text-center text-xs font-medium",
+        "rounded-full px-2 py-1 w-fit text-center text-xs font-medium whitespace-nowrap shrink-0",
         colorClass,
       )}
       style={style}

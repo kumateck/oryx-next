@@ -37,7 +37,7 @@ const ScrollableWrapper = ({ children, className }: Props) => {
         className="w-full overflow-auto"
       >
         {/* Attach ref to the inner wrapper (if ScrollArea doesn’t forward refs, wrap it in a div) */}
-        <div>{children}</div>
+        <div className="pb-20">{children}</div>
       </ScrollArea>
     </div>
   );
