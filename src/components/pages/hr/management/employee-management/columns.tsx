@@ -36,6 +36,7 @@ import { TableMenuAction } from "@/shared/table-menu";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import UserDialog from "./assign-user";
 import { StatusColorsOptions } from "./types";
+import SuspensionForm from "./suspendForm";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -158,6 +159,7 @@ export function StatusActions<TData extends EmployeeDto>({
   const [updateStatus, { isLoading }] = usePutApiV1EmployeeByIdStatusMutation(
     {},
   );
+  const [isSuspension, setIsSuspension] = useState(false);
   const dispatch = useDispatch();
 
   const activeStatusOptions = Object.entries(EmployeeActiveStatus)
@@ -179,6 +181,11 @@ export function StatusActions<TData extends EmployeeDto>({
 
   return (
     <DropdownMenu>
+      <SuspensionForm
+        isOpen={isSuspension}
+        onClose={() => setIsSuspension(false)}
+        id={row.original?.id as string}
+      />
       <DropdownMenuTrigger disabled={isLoading} asChild>
         <div
           className={`text-sm cursor-pointer flex gap-2 items-center justify-center ${
@@ -240,6 +247,13 @@ export function StatusActions<TData extends EmployeeDto>({
                           isLoading ||
                           String(row?.original?.activeStatus) === option.value
                         ) {
+                          return;
+                        }
+                        if (
+                          option.value ===
+                          EmployeeActiveStatus.Suspension.toString()
+                        ) {
+                          setIsSuspension(true);
                           return;
                         }
                         try {

@@ -25,6 +25,7 @@ import {
   Units,
   cn,
   convertToLargestUnit,
+  convertToSmallestUnit,
   getSmallestUnit,
   omit,
   routes,
@@ -264,6 +265,7 @@ const FinalPacking = () => {
         materialId: item.material?.id as string,
         materialName: item.material?.name as string,
         uoMId: item.uoM?.id as string,
+        uoMName: item.uoM?.symbol as Units,
         // receivedQuantity: item.quantity as number,
 
         //i have to convert to largest and also i have to make sure that everything is converted to smallest for saving
@@ -292,6 +294,7 @@ const FinalPacking = () => {
       materialForMatrix.forEach((material) => {
         initialFormData[material.materialId] = {
           uoMId: material.uoMId, // Remain as string
+          uoMName: material.uoMName, // Remain as string
           receivedQuantity: sanitizeNumber(material.receivedQuantity), // Read-only
           subsequentDeliveredQuantity: sanitizeNumber(
             material.subsequentDeliveredQuantity,
@@ -349,6 +352,7 @@ const FinalPacking = () => {
         ([materialId, values]) => ({
           materialId,
           uoMId: values.uoMId,
+          uoMName: values.uoMName,
           returnedQuantity: Number(values.returnedQuantity) || 0, // Ensure returnedQuantity exists
 
           ...values,
@@ -357,24 +361,23 @@ const FinalPacking = () => {
 
       const returnedMaterials = materialArray
         .filter((material) => Number(material.returnedQuantity) > 0)
-        .map((material) => ({
-          materialId: material.materialId,
-          quantity: Number(material.returnedQuantity),
-          uoMId: material.uoMId as string,
-        }));
+        .map((material) => {
+          const convertedQuantity = convertToSmallestUnit(
+            Number(material.returnedQuantity),
+            material.uoMName as Units,
+          );
 
-      // const materials = materialArray?.map(
-      //   ({ uoMId: _, materialId, ...rest }) => ({
-      //     materialId,
-      //     ...Object.fromEntries(
-      //       Object.entries(rest).map(([key, val]) => [key, Number(val) || 0]),
-      //     ),
-      //   }),
-      // );
+          return {
+            materialId: material.materialId,
+            quantity: convertedQuantity.value,
+            uoMId: material.uoMId as string,
+          };
+        });
+
       const materials = materialArray?.map((material) => ({
         materialId: material.materialId,
         ...Object.fromEntries(
-          Object.entries(omit(material, "uoMId", "materialId")).map(
+          Object.entries(omit(material, "uoMId", "uoMName", "materialId")).map(
             ([key, val]) => [key, Number(val) || 0],
           ),
         ),

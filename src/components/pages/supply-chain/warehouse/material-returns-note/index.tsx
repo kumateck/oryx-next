@@ -7,8 +7,10 @@ import { useGetApiV1ProductionScheduleMaterialReturnNoteQuery } from "@/lib/redu
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import { columns } from "./columns";
+import { useRouter } from "next/navigation";
 
 const MaterialReturnsNote = () => {
+  const router = useRouter();
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const { data: result, isLoading } =
@@ -26,6 +28,9 @@ const MaterialReturnsNote = () => {
       </div>
 
       <ServerDatatable
+        onRowClick={(row) => {
+          router.push(`/warehouse/material-returns/${row?.id}/details`);
+        }}
         data={data}
         columns={columns}
         isLoading={isLoading}

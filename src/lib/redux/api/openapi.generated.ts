@@ -12136,7 +12136,7 @@ export type PostApiV1ProductionOrdersApiArg = {
   createProductionOrderRequest: CreateProductionOrderRequest;
 };
 export type GetApiV1ProductionOrdersApiResponse =
-  /** status 200 OK */ ProductionOrderDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ ProductionOrderDtoIEnumerablePaginateable;
 export type GetApiV1ProductionOrdersApiArg = {
   page?: number;
   pageSize?: number;
@@ -12147,7 +12147,7 @@ export type GetApiV1ProductionOrdersApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersByIdApiResponse =
-  /** status 200 OK */ ProductionOrderDtoRead;
+  /** status 200 OK */ ProductionOrderDto;
 export type GetApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -12156,7 +12156,7 @@ export type GetApiV1ProductionOrdersByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1ProductionOrdersByIdApiResponse =
-  /** status 204 No Content */ ProductionOrderDtoRead;
+  /** status 204 No Content */ ProductionOrderDto;
 export type PutApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -15938,7 +15938,6 @@ export type HolidayDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateInventoryPurchaseRequisitionItem = {
-  inventoryPurchaseRequisitionId?: string;
   itemId?: string;
   uoMId?: string;
   quantity?: number;
@@ -20373,16 +20372,7 @@ export type MaterialBatchReservedQuantityDto = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  materialBatch?: MaterialBatchDto;
-  warehouse?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
-export type MaterialBatchReservedQuantityDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  materialBatch?: MaterialBatchDto;
+  materialBatch?: MaterialBatchListDto;
   warehouse?: CollectionItemDto;
   uoM?: UnitOfMeasureDto;
   quantity?: number;
@@ -20564,7 +20554,7 @@ export type MaterialBatchDtoRead = {
   sampleWeights?: SrDto[] | null;
   massMovements?: MassMaterialBatchMovementDto[] | null;
   locations?: CurrentLocationDto[] | null;
-  reservedQuantities?: MaterialBatchReservedQuantityDtoRead[] | null;
+  reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
   reservedQuantity?: number;
 };
 export type CreateSrRequest = {
@@ -21759,74 +21749,17 @@ export type CreateProductionOrderRequest = {
   customerId: string;
   products?: CreateProductionOrderProduct[] | null;
 };
-export type FinishedGoodsTransferNoteDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  transferNoteNumber?: string | null;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  quantityReceived?: number;
-  notes?: string | null;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDto;
-  productionActivityStep?: ProductionActivityStepDto;
-  isApproved?: boolean;
-  loose?: number;
-  allocatedQuantity?: number;
-  remainingQuantity?: number;
-};
-export type FinishedGoodsTransferNoteDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  transferNoteNumber?: string | null;
-  fromWarehouse?: WarehouseDto;
-  toWarehouse?: WarehouseDto;
-  quantityPerPack?: number;
-  packageStyle?: PackageStyleDto;
-  uoM?: UnitOfMeasureDto;
-  totalQuantity?: number;
-  quantityReceived?: number;
-  notes?: string | null;
-  qarNumber?: string | null;
-  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
-  productionActivityStep?: ProductionActivityStepDto;
-  isApproved?: boolean;
-  loose?: number;
-  allocatedQuantity?: number;
-  remainingQuantity?: number;
-};
 export type ProductionOrderProductQuantityDto = {
-  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
-  quantity?: number;
-};
-export type ProductionOrderProductQuantityDtoRead = {
-  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDtoRead;
   quantity?: number;
 };
 export type ProductionOrderProductsDto = {
-  product?: ProductListDto;
+  product?: CollectionItemDto;
   totalOrderQuantity?: number;
   volumePerPiece?: number;
   totalVolume?: number;
   totalBatches?: number;
   totalValue?: number;
   fulfilledQuantities?: ProductionOrderProductQuantityDto[] | null;
-  fulfilled?: boolean;
-};
-export type ProductionOrderProductsDtoRead = {
-  product?: ProductListDtoRead;
-  totalOrderQuantity?: number;
-  volumePerPiece?: number;
-  totalVolume?: number;
-  totalBatches?: number;
-  totalValue?: number;
-  fulfilledQuantities?: ProductionOrderProductQuantityDtoRead[] | null;
   fulfilled?: boolean;
 };
 export type ProductionOrderDto = {
@@ -21838,26 +21771,8 @@ export type ProductionOrderDto = {
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
 };
-export type ProductionOrderDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  customer?: CustomerDto;
-  products?: ProductionOrderProductsDtoRead[] | null;
-  totalValue?: number;
-};
 export type ProductionOrderDtoIEnumerablePaginateable = {
   data?: ProductionOrderDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ProductionOrderDtoIEnumerablePaginateableRead = {
-  data?: ProductionOrderDtoRead[] | null;
   pageIndex?: number;
   pageCount?: number;
   totalRecordCount?: number;
@@ -21898,7 +21813,7 @@ export type ProformaInvoiceDtoRead = {
   id?: string;
   createdBy?: UserDto;
   createdAt?: string;
-  productionOrder?: ProductionOrderDtoRead;
+  productionOrder?: ProductionOrderDto;
   products?: ProformaInvoiceProductDtoRead[] | null;
 };
 export type ProformaInvoiceDtoIEnumerablePaginateable = {
@@ -22166,6 +22081,48 @@ export type CreateFinishedGoodsTransferNoteRequest = {
   totalQuantity?: number;
   uoMId?: string | null;
   qarNumber?: string | null;
+};
+export type FinishedGoodsTransferNoteDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDto;
+  productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
+  allocatedQuantity?: number;
+  remainingQuantity?: number;
+};
+export type FinishedGoodsTransferNoteDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  transferNoteNumber?: string | null;
+  fromWarehouse?: WarehouseDto;
+  toWarehouse?: WarehouseDto;
+  quantityPerPack?: number;
+  packageStyle?: PackageStyleDto;
+  uoM?: UnitOfMeasureDto;
+  totalQuantity?: number;
+  quantityReceived?: number;
+  notes?: string | null;
+  qarNumber?: string | null;
+  batchManufacturingRecord?: BatchManufacturingRecordDtoRead;
+  productionActivityStep?: ProductionActivityStepDto;
+  isApproved?: boolean;
+  loose?: number;
+  allocatedQuantity?: number;
+  remainingQuantity?: number;
 };
 export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
   data?: FinishedGoodsTransferNoteDto[] | null;
@@ -22451,6 +22408,7 @@ export type MaterialReturnNoteFullReturnDto = {
 };
 export type MaterialReturnNotePartialReturnDto = {
   material?: MaterialDto;
+  materialBatch?: MaterialBatchListDto;
   quantity?: number;
   uoM?: UnitOfMeasureDto;
   destinationWarehouse?: CollectionItemDto;
