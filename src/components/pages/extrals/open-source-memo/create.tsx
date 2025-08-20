@@ -8,7 +8,7 @@ import {
   Icon,
 } from "@/components/ui";
 import { cn, CODE_SETTINGS } from "@/lib";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { MemoArdForm } from "./form";
 import {
   MemoDtoRead,
@@ -53,8 +53,15 @@ export const Create = ({ isOpen, onClose, data }: Props) => {
         quantity: item?.quantity ?? 0,
         uoMId: item?.uoM?.id as string,
         vendorQuotationItemId: item?.vendor?.id as string,
+        totalValue: item?.itemValue ?? 0,
+        termsOfPayment: item?.termsOfPayment ?? "",
       })) as CreateMemoSchema["body"],
     },
+  });
+
+  const { fields } = useFieldArray({
+    control,
+    name: "body",
   });
 
   //fuction fro creating material analytical raw data
@@ -118,7 +125,12 @@ export const Create = ({ isOpen, onClose, data }: Props) => {
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <MemoArdForm errors={errors} register={register} control={control} />
+          <MemoArdForm
+            fields={fields}
+            errors={errors}
+            register={register}
+            control={control}
+          />
           <DialogFooter>
             <DialogFooter className="justify-end gap-4 py-6">
               <Button type="button" variant="secondary" onClick={onClose}>

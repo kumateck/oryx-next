@@ -64,7 +64,7 @@ const ManufacturerForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Validaty Date",
+            label: "Validity Date",
             control: control as Control,
             type: InputTypes.DATE,
             name: "validityDate",
