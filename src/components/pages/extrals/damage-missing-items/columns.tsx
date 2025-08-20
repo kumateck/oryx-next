@@ -1,7 +1,7 @@
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
-  DamagedStockDtoRead,
+  DamagedStockDto,
   useDeleteApiV1MaterialSpecificationsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData extends DamagedStockDtoRead>({
+export function DataTableRowActions<TData extends DamagedStockDto>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const [isDelete, setIsDelete] = useState(false);
@@ -62,7 +62,7 @@ export function DataTableRowActions<TData extends DamagedStockDtoRead>({
     </section>
   );
 }
-export const columns: ColumnDef<DamagedStockDtoRead>[] = [
+export const columns: ColumnDef<DamagedStockDto>[] = [
   {
     accessorKey: "itemName",
     header: "Item Name",

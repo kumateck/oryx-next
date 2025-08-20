@@ -1630,6 +1630,32 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1FormResponsesMaterialSpecificationByMaterialSpecificationId:
+      build.query<
+        GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiResponse,
+        GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses/material-specification/${queryArg.materialSpecificationId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
+    getApiV1FormResponsesProductSpecificationByProductSpecificationId:
+      build.query<
+        GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiResponse,
+        GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses/product-specification/${queryArg.productSpecificationId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
     getApiV1FormWithResponsesMaterialBatchByMaterialBatchId: build.query<
       GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse,
       GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg
@@ -9126,7 +9152,7 @@ export type PostApiV1DamagedGoodsApiArg = {
   createDamagedStockRequest: CreateDamagedStockRequest;
 };
 export type GetApiV1DamagedGoodsApiResponse =
-  /** status 200 OK */ DamagedStockDtoIEnumerablePaginateableRead;
+  /** status 200 OK */ DamagedStockDtoIEnumerablePaginateable;
 export type GetApiV1DamagedGoodsApiArg = {
   page?: number;
   pageSize?: number;
@@ -9137,7 +9163,7 @@ export type GetApiV1DamagedGoodsApiArg = {
   subModule?: any;
 };
 export type GetApiV1DamagedGoodsByIdApiResponse =
-  /** status 200 OK */ DamagedStockDtoRead;
+  /** status 200 OK */ DamagedStockDto;
 export type GetApiV1DamagedGoodsByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -9146,7 +9172,7 @@ export type GetApiV1DamagedGoodsByIdApiArg = {
   subModule?: any;
 };
 export type PutApiV1DamagedGoodsByIdApiResponse =
-  /** status 204 No Content */ DamagedStockDtoRead;
+  /** status 204 No Content */ DamagedStockDto;
 export type PutApiV1DamagedGoodsByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -9655,6 +9681,28 @@ export type GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiArg =
+  {
+    /** The ID of the material spec. */
+    materialSpecificationId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
+export type GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiResponse =
+  /** status 200 OK */ FormResponseDto[];
+export type GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiArg =
+  {
+    /** The ID of the product spec */
+    productSpecificationId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse =
   /** status 200 OK */ FormDto;
 export type GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg = {
@@ -15531,6 +15579,796 @@ export type CustomerDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type DamageStatus = 0 | 1;
+export type CreateDamagedStockRequest = {
+  itemId: string;
+  damageStatus: DamageStatus;
+  quantityDamaged: number;
+  remarks?: string | null;
+};
+export type InventoryClassification = 0 | 1;
+export type Store = 0 | 1 | 2;
+export type ItemCategoryDto = {
+  id?: string;
+  name?: string | null;
+};
+export type ItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  name?: string | null;
+  code?: string | null;
+  classification?: InventoryClassification;
+  unitOfMeasure?: UnitOfMeasureDto;
+  hasBatch?: boolean;
+  store?: Store;
+  minimumLevel?: number;
+  maximumLevel?: number;
+  reorderLevel?: number;
+  isActive?: boolean;
+  description?: string | null;
+  itemCategoryId?: string;
+  itemCategory?: ItemCategoryDto;
+  availableQuantity?: number;
+};
+export type DamagedStockDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  attachments?: AttachmentDto[] | null;
+  itemId?: string;
+  item?: ItemDto;
+  damageStatus?: DamageStatus;
+  remarks?: string | null;
+};
+export type DamagedStockDtoIEnumerablePaginateable = {
+  data?: DamagedStockDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateWarehouseLocationShelfRequest = {
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+};
+export type CreateWarehouseLocationRackRequest = {
+  name?: string | null;
+  description?: string | null;
+  shelves?: CreateWarehouseLocationShelfRequest[] | null;
+};
+export type CreateWarehouseLocationRequest = {
+  name?: string | null;
+  floorName?: string | null;
+  description?: string | null;
+  racks?: CreateWarehouseLocationRackRequest[] | null;
+};
+export type CreateWarehouseRequest = {
+  name?: string | null;
+  description?: string | null;
+  type?: WarehouseType;
+  materialKind?: MaterialKind;
+  locations?: CreateWarehouseLocationRequest[] | null;
+};
+export type CreateDepartmentRequest = {
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  type?: DepartmentType;
+  parentDepartmentId?: string | null;
+  warehouses?: CreateWarehouseRequest[] | null;
+};
+export type DepartmentDtoIEnumerablePaginateable = {
+  data?: DepartmentDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type DepartmentDtoIEnumerablePaginateableRead = {
+  data?: DepartmentDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateDesignationRequest = {
+  name: string;
+  description?: string | null;
+  maximumLeaveDays: number;
+  departmentIds: string[];
+};
+export type DesignationDtoIEnumerablePaginateable = {
+  data?: DesignationDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type DesignationDtoIEnumerablePaginateableRead = {
+  data?: DesignationDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type EmployeeInviteDto = {
+  email: string;
+  employeeType: EmployeeType;
+};
+export type OnboardEmployeeDto = {
+  emailList: EmployeeInviteDto[];
+};
+export type CreateEmployeeRequest = {
+  avatar?: string | null;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: Gender;
+  phoneNumber: string;
+  region: string;
+  type: EmployeeType;
+  nationality: string;
+  residentialAddress: string;
+  maritalStatus: MaritalStatus;
+  religion: Religion;
+  dateEmployed: string;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
+  staffNumber?: string | null;
+  email: string;
+  mother: PersonDto;
+  father: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact: EmergencyContactDto;
+  nextOfKin: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground: EducationDto[];
+  employmentHistory: EmploymentHistoryDto[];
+};
+export type EmployeeDtoIEnumerablePaginateable = {
+  data?: EmployeeDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type EmployeeDtoIEnumerablePaginateableRead = {
+  data?: EmployeeDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type EmployeeUserDto = {
+  employeeId: string;
+  roleId: string;
+};
+export type UploadFileRequest = {
+  file?: string | null;
+};
+export type MinimalEmployeeInfoDto = {
+  employeeId?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  staffNumber?: string | null;
+  level?: EmployeeLevel;
+  type?: string | null;
+  department?: string | null;
+  designation?: string | null;
+};
+export type UpdateEmployeeRequest = {
+  avatar?: string | null;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: Gender;
+  phoneNumber: string;
+  region: string;
+  type: EmployeeType;
+  nationality: string;
+  residentialAddress: string;
+  maritalStatus: MaritalStatus;
+  religion: Religion;
+  dateEmployed: string;
+  bankAccountNumber: string;
+  ssnitNumber: string;
+  ghanaCardNumber: string;
+  staffNumber?: string | null;
+  email: string;
+  mother: PersonDto;
+  father: PersonDto;
+  spouse?: PersonDto;
+  emergencyContact: EmergencyContactDto;
+  nextOfKin: EmergencyContactDto;
+  children?: ChildDto[] | null;
+  siblings?: SiblingDto[] | null;
+  educationBackground: EducationDto[];
+  employmentHistory: EmploymentHistoryDto[];
+  status?: EmployeeStatus;
+  activeStatus?: EmployeeActiveStatus;
+  inactiveStatus?: EmployeeInactiveStatus;
+  suspensionStartDate?: string | null;
+  suspensionEndDate?: string | null;
+};
+export type AssignEmployeeDto = {
+  designationId: string;
+  departmentId: string;
+  staffNumber?: string | null;
+  level?: EmployeeLevel;
+  startDate?: string;
+  reportingManagerId: string;
+};
+export type UpdateEmployeeStatus = {
+  status?: EmployeeStatus;
+  activeStatus?: EmployeeActiveStatus;
+  inactiveStatus?: EmployeeInactiveStatus;
+  suspensionStartDate?: string | null;
+  suspensionEndDate?: string | null;
+};
+export type CreateFormFieldRequest = {
+  questionId?: string;
+  required?: boolean;
+  rank?: number;
+  description?: string | null;
+  assigneeId?: string | null;
+  reviewerId?: string | null;
+};
+export type CreateFormSectionRequest = {
+  name?: string | null;
+  description?: string | null;
+  order?: number;
+  instrumentId?: string | null;
+  fields?: CreateFormFieldRequest[] | null;
+};
+export type CreateFormAssigneeRequest = {
+  userId?: string;
+};
+export type CreateFormReviewerRequest = {
+  userId?: string;
+};
+export type CreateFormRequest = {
+  name?: string | null;
+  sections?: CreateFormSectionRequest[] | null;
+  assignees?: CreateFormAssigneeRequest[] | null;
+  reviewers?: CreateFormReviewerRequest[] | null;
+  type?: FormType;
+};
+export type FormDtoIEnumerablePaginateable = {
+  data?: FormDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FormSectionDtoIEnumerablePaginateable = {
+  data?: FormSectionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateFormResponseRequest = {
+  formFieldId?: string;
+  value?: string | null;
+};
+export type CreateResponseRequest = {
+  formId?: string;
+  batchManufacturingRecordId?: string | null;
+  materialBatchId?: string | null;
+  materialSpecificationId?: string | null;
+  productSpecificationId?: string | null;
+  productionActivityStepId?: string | null;
+  formResponses?: CreateFormResponseRequest[] | null;
+};
+export type ResponseDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  form?: CollectionItemDto;
+  formResponses?: FormResponseDto[] | null;
+};
+export type CreateQuestionOptionsRequest = {
+  name?: string | null;
+};
+export type FormulaDto = {
+  expression?: string | null;
+  variables?: string | null;
+};
+export type CreateQuestionRequest = {
+  label: string;
+  type: QuestionType;
+  isMultiSelect?: boolean;
+  validation?: QuestionValidationType;
+  options?: CreateQuestionOptionsRequest[] | null;
+  description?: string | null;
+  reference?: string | null;
+  formula?: FormulaDto;
+};
+export type QuestionDtoIEnumerablePaginateable = {
+  data?: QuestionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateHolidayRequest = {
+  name: string;
+  date: string;
+  description?: string | null;
+};
+export type HolidayDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  date?: string;
+  description?: string | null;
+};
+export type HolidayDtoIEnumerablePaginateable = {
+  data?: HolidayDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateInventoryPurchaseRequisitionItem = {
+  inventoryPurchaseRequisitionId?: string;
+  itemId?: string;
+  uoMId?: string;
+  quantity?: number;
+};
+export type CreateInventoryPurchaseRequisition = {
+  code?: string | null;
+  expectedDeliveryDate?: string | null;
+  remarks?: string | null;
+  items?: CreateInventoryPurchaseRequisitionItem[] | null;
+};
+export type InventoryPurchaseRequisitionStatus = 0 | 1;
+export type RequestStatus = 0 | 1 | 2 | 3 | 4;
+export type InventoryPurchaseRequisitionItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  inventoryPurchaseRequisition?: CollectionItemDto;
+  item?: ItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  status?: RequestStatus;
+};
+export type InventoryPurchaseRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  expectedDeliveryDate?: string | null;
+  remarks?: string | null;
+  status?: InventoryPurchaseRequisitionStatus;
+  items?: InventoryPurchaseRequisitionItemDto[] | null;
+};
+export type InventoryPurchaseRequisitionDtoIEnumerablePaginateable = {
+  data?: InventoryPurchaseRequisitionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type InventoryRequisitionSource = 0 | 1;
+export type CreateSourceInventoryRequisitionItemVendor = {
+  vendorId?: string;
+};
+export type CreateSourceInventoryRequisitionItem = {
+  itemId?: string;
+  uoMId?: string;
+  quantity?: number;
+  source?: InventoryRequisitionSource;
+  vendors?: CreateSourceInventoryRequisitionItemVendor[] | null;
+};
+export type CreateSourceInventoryRequisition = {
+  inventoryPurchaseRequisitionId?: string;
+  items?: CreateSourceInventoryRequisitionItem[] | null;
+};
+export type CreateMarketRequisition = {
+  inventoryPurchaseRequisitionItemId?: string;
+  itemId?: string;
+  uoMId?: string;
+  quantity?: number;
+};
+export type MarketRequisitionDto = {
+  inventoryPurchaseRequisitionItem?: InventoryPurchaseRequisitionItemDto;
+  item?: ItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type MarketRequisitionDtoIEnumerablePaginateable = {
+  data?: MarketRequisitionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type VendorQuotationItemDto = {
+  item?: ItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  quotedPrice?: number | null;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type VendorQuotationItemStatus = 0 | 1 | 2;
+export type VendorPrice = {
+  vendor?: CollectionItemDto;
+  vendorQuotationItem?: VendorQuotationItemDto;
+  status?: VendorQuotationItemStatus;
+  vendorName?: string | null;
+  vendorAddress?: string | null;
+  vendorPhoneNumber?: string | null;
+  pricePerUnit?: number;
+  modeOfPayment?: string | null;
+  openMarketTermsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type VendorPriceComparison = {
+  item?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  vendorPrices?: VendorPrice[] | null;
+};
+export type CreateMemoItem = {
+  vendorQuotationItemId?: string | null;
+  marketRequisitionVendorId?: string | null;
+  itemId?: string;
+  uoMId?: string;
+  quantity?: number;
+};
+export type CurrencyDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+};
+export type VendorItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  item?: ItemDto;
+};
+export type VendorDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  countryId?: string;
+  country?: CountryDto;
+  currencyId?: string;
+  currency?: CurrencyDto;
+  items?: VendorItemDto[] | null;
+};
+export type SourceInventoryRequisitionItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  item?: ItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type SourceInventoryRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  inventoryPurchaseRequisition?: InventoryPurchaseRequisitionDto;
+  vendor?: VendorDto;
+  remarks?: string | null;
+  sentQuotationRequestAt?: string | null;
+  items?: SourceInventoryRequisitionItemDto[] | null;
+};
+export type VendorQuotationDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  vendor?: VendorDto;
+  sourceInventoryRequisition?: SourceInventoryRequisitionDto;
+  items?: VendorQuotationItemDto[] | null;
+  receivedQuotation?: boolean;
+};
+export type VendorQuotationDtoIEnumerablePaginateable = {
+  data?: VendorQuotationDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type VendorQuotationResponseDto = {
+  id?: string;
+  price?: number;
+};
+export type MarketRequisitionVendorDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  vendorName?: string | null;
+  vendorAddress?: string | null;
+  vendorPhoneNumber?: string | null;
+  pricePerUnit?: number;
+  modeOfPayment?: string | null;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+  complete?: boolean;
+};
+export type MarketRequisitionVendorDtoIEnumerablePaginateable = {
+  data?: MarketRequisitionVendorDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type CreateMarketRequisitionVendor = {
+  marketRequisitionId?: string;
+  vendorName?: string | null;
+  vendorAddress?: string | null;
+  vendorPhoneNumber?: string | null;
+  pricePerUnit?: number;
+  modeOfPayment?: string | null;
+  termsOfPaymentId?: string;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type MemoItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  memo?: CollectionItemDto;
+  vendor?: CollectionItemDto;
+  item?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type MemoItemDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  memo?: CollectionItemDto;
+  vendor?: CollectionItemDto;
+  item?: CollectionItemDto;
+  uoM?: UnitOfMeasureDto;
+  quantity?: number;
+  pricePerUnit?: number;
+  itemValue?: number;
+  termsOfPayment?: CollectionItemDto;
+  deliveryMode?: string | null;
+  estimatedDeliveryDate?: string;
+};
+export type MemoDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  paid?: boolean;
+  items?: MemoItemDto[] | null;
+};
+export type MemoDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  paid?: boolean;
+  items?: MemoItemDtoRead[] | null;
+  totalValue?: number;
+};
+export type MemoDtoIEnumerablePaginateable = {
+  data?: MemoDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type MemoDtoIEnumerablePaginateableRead = {
+  data?: MemoDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type StockEntryDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDto;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
+export type StockEntryDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemId?: string;
+  item?: ItemDto;
+  memoId?: string;
+  memo?: MemoDtoRead;
+  quantity?: number;
+  status?: ApprovalStatus;
+};
+export type CreateItemsRequest = {
+  name: string;
+  code: string;
+  classification: InventoryClassification;
+  unitOfMeasureId: string;
+  minimumLevel?: number;
+  maximumLevel?: number;
+  reorderLevel?: number;
+  store: Store;
+  isActive: boolean;
+  itemCategoryId?: string | null;
+  description?: string | null;
+};
+export type ItemDtoIEnumerablePaginateable = {
+  data?: ItemDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ItemInventoryTransactionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  date?: string;
+  memoId?: string;
+  memo?: MemoDto;
+  quantityReceived?: number;
+  quantityIssued?: number;
+  balanceQuantity?: number;
+};
+export type ItemInventoryTransactionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  date?: string;
+  memoId?: string;
+  memo?: MemoDtoRead;
+  quantityReceived?: number;
+  quantityIssued?: number;
+  balanceQuantity?: number;
+};
+export type StockItems = {
+  itemId?: string;
+  quantityRequested?: number;
+};
+export type CreateItemStockRequisitionRequest = {
+  number?: string | null;
+  requisitionDate: string;
+  requestedById: string;
+  departmentId: string;
+  justification?: string | null;
+  stockItems: StockItems[];
+};
+export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type ItemStockRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  number?: string | null;
+  requisitionDate?: string;
+  requestedBy?: UserDto;
+  department?: DepartmentDto;
+  justification?: string | null;
+  status?: LeaveStatus;
+};
+export type ItemStockRequisitionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  number?: string | null;
+  requisitionDate?: string;
+  requestedBy?: UserDto;
+  department?: DepartmentDtoRead;
+  justification?: string | null;
+  status?: LeaveStatus;
+};
+export type ItemStockRequisitionDtoIEnumerablePaginateable = {
+  data?: ItemStockRequisitionDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type ItemStockRequisitionDtoIEnumerablePaginateableRead = {
+  data?: ItemStockRequisitionDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type IssueItemStockRequisitionDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemStockRequisitionId?: string;
+  itemStockRequisition?: ItemStockRequisitionDto;
+  quantityIssued?: number;
+};
+export type IssueItemStockRequisitionDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  itemStockRequisitionId?: string;
+  itemStockRequisition?: ItemStockRequisitionDtoRead;
+  quantityIssued?: number;
+};
+export type IssueStockAgainstRequisitionRequest = {
+  quantitiesToIssue?: {
+    [key: string]: number | null;
+  } | null;
+};
+export type JobStatus = 0 | 1 | 2 | 3 | 4;
+export type CreateJobRequest = {
+  departmentId: string;
+  location?: string | null;
+  equipmentId?: string;
+  dateOfIssue?: string;
+  status?: JobStatus;
+  descriptionOfWork?: string | null;
+  preferredCompletionDate?: string;
+  issuedById: string;
+};
 export type MaterialCategory = {
   id?: string;
   createdAt?: string;
@@ -15686,7 +16524,6 @@ export type MaterialRead = {
   departments?: MaterialDepartmentRead[] | null;
 };
 export type RequisitionType = 0 | 1;
-export type RequestStatus = 0 | 1 | 2 | 3 | 4;
 export type ProductCategory = {
   id?: string;
   createdAt?: string;
@@ -19150,853 +19987,6 @@ export type UserRead = {
   department?: DepartmentRead;
   signature?: string | null;
 };
-export type DamagedStockBatch = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: User;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: User;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: User;
-  batchNumber?: string | null;
-  quantity?: number;
-};
-export type DamagedStockBatchRead = {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string | null;
-  createdById?: string | null;
-  createdBy?: UserRead;
-  lastUpdatedById?: string | null;
-  lastUpdatedBy?: UserRead;
-  deletedAt?: string | null;
-  lastDeletedById?: string | null;
-  lastDeletedBy?: UserRead;
-  batchNumber?: string | null;
-  quantity?: number;
-};
-export type CreateDamagedStockRequest = {
-  itemId: string;
-  damageStatus: DamageStatus;
-  quantityDamaged: number;
-  remarks?: string | null;
-  batches?: DamagedStockBatch[] | null;
-};
-export type CreateDamagedStockRequestRead = {
-  itemId: string;
-  damageStatus: DamageStatus;
-  quantityDamaged: number;
-  remarks?: string | null;
-  batches?: DamagedStockBatchRead[] | null;
-};
-export type InventoryClassification = 0 | 1;
-export type Store = 0 | 1 | 2;
-export type ItemCategoryDto = {
-  id?: string;
-  name?: string | null;
-};
-export type ItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  name?: string | null;
-  code?: string | null;
-  classification?: InventoryClassification;
-  unitOfMeasure?: UnitOfMeasureDto;
-  hasBatch?: boolean;
-  store?: Store;
-  minimumLevel?: number;
-  maximumLevel?: number;
-  reorderLevel?: number;
-  isActive?: boolean;
-  description?: string | null;
-  itemCategoryId?: string;
-  itemCategory?: ItemCategoryDto;
-  availableQuantity?: number;
-};
-export type DamagedStockDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  itemId?: string;
-  item?: ItemDto;
-  damageStatus?: DamageStatus;
-  remarks?: string | null;
-  batches?: DamagedStockBatch[] | null;
-};
-export type DamagedStockDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  attachments?: AttachmentDto[] | null;
-  itemId?: string;
-  item?: ItemDto;
-  damageStatus?: DamageStatus;
-  remarks?: string | null;
-  batches?: DamagedStockBatchRead[] | null;
-};
-export type DamagedStockDtoIEnumerablePaginateable = {
-  data?: DamagedStockDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type DamagedStockDtoIEnumerablePaginateableRead = {
-  data?: DamagedStockDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateWarehouseLocationShelfRequest = {
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-};
-export type CreateWarehouseLocationRackRequest = {
-  name?: string | null;
-  description?: string | null;
-  shelves?: CreateWarehouseLocationShelfRequest[] | null;
-};
-export type CreateWarehouseLocationRequest = {
-  name?: string | null;
-  floorName?: string | null;
-  description?: string | null;
-  racks?: CreateWarehouseLocationRackRequest[] | null;
-};
-export type CreateWarehouseRequest = {
-  name?: string | null;
-  description?: string | null;
-  type?: WarehouseType;
-  materialKind?: MaterialKind;
-  locations?: CreateWarehouseLocationRequest[] | null;
-};
-export type CreateDepartmentRequest = {
-  code?: string | null;
-  name?: string | null;
-  description?: string | null;
-  type?: DepartmentType;
-  parentDepartmentId?: string | null;
-  warehouses?: CreateWarehouseRequest[] | null;
-};
-export type DepartmentDtoIEnumerablePaginateable = {
-  data?: DepartmentDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type DepartmentDtoIEnumerablePaginateableRead = {
-  data?: DepartmentDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateDesignationRequest = {
-  name: string;
-  description?: string | null;
-  maximumLeaveDays: number;
-  departmentIds: string[];
-};
-export type DesignationDtoIEnumerablePaginateable = {
-  data?: DesignationDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type DesignationDtoIEnumerablePaginateableRead = {
-  data?: DesignationDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type EmployeeInviteDto = {
-  email: string;
-  employeeType: EmployeeType;
-};
-export type OnboardEmployeeDto = {
-  emailList: EmployeeInviteDto[];
-};
-export type CreateEmployeeRequest = {
-  avatar?: string | null;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  gender: Gender;
-  phoneNumber: string;
-  region: string;
-  type: EmployeeType;
-  nationality: string;
-  residentialAddress: string;
-  maritalStatus: MaritalStatus;
-  religion: Religion;
-  dateEmployed: string;
-  bankAccountNumber: string;
-  ssnitNumber: string;
-  ghanaCardNumber: string;
-  staffNumber?: string | null;
-  email: string;
-  mother: PersonDto;
-  father: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact: EmergencyContactDto;
-  nextOfKin: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground: EducationDto[];
-  employmentHistory: EmploymentHistoryDto[];
-};
-export type EmployeeDtoIEnumerablePaginateable = {
-  data?: EmployeeDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type EmployeeDtoIEnumerablePaginateableRead = {
-  data?: EmployeeDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type EmployeeUserDto = {
-  employeeId: string;
-  roleId: string;
-};
-export type UploadFileRequest = {
-  file?: string | null;
-};
-export type MinimalEmployeeInfoDto = {
-  employeeId?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  staffNumber?: string | null;
-  level?: EmployeeLevel;
-  type?: string | null;
-  department?: string | null;
-  designation?: string | null;
-};
-export type UpdateEmployeeRequest = {
-  avatar?: string | null;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  gender: Gender;
-  phoneNumber: string;
-  region: string;
-  type: EmployeeType;
-  nationality: string;
-  residentialAddress: string;
-  maritalStatus: MaritalStatus;
-  religion: Religion;
-  dateEmployed: string;
-  bankAccountNumber: string;
-  ssnitNumber: string;
-  ghanaCardNumber: string;
-  staffNumber?: string | null;
-  email: string;
-  mother: PersonDto;
-  father: PersonDto;
-  spouse?: PersonDto;
-  emergencyContact: EmergencyContactDto;
-  nextOfKin: EmergencyContactDto;
-  children?: ChildDto[] | null;
-  siblings?: SiblingDto[] | null;
-  educationBackground: EducationDto[];
-  employmentHistory: EmploymentHistoryDto[];
-  status?: EmployeeStatus;
-  activeStatus?: EmployeeActiveStatus;
-  inactiveStatus?: EmployeeInactiveStatus;
-  suspensionStartDate?: string | null;
-  suspensionEndDate?: string | null;
-};
-export type AssignEmployeeDto = {
-  designationId: string;
-  departmentId: string;
-  staffNumber?: string | null;
-  level?: EmployeeLevel;
-  startDate?: string;
-  reportingManagerId: string;
-};
-export type UpdateEmployeeStatus = {
-  status?: EmployeeStatus;
-  activeStatus?: EmployeeActiveStatus;
-  inactiveStatus?: EmployeeInactiveStatus;
-  suspensionStartDate?: string | null;
-  suspensionEndDate?: string | null;
-};
-export type CreateFormFieldRequest = {
-  questionId?: string;
-  required?: boolean;
-  rank?: number;
-  description?: string | null;
-  assigneeId?: string | null;
-  reviewerId?: string | null;
-};
-export type CreateFormSectionRequest = {
-  name?: string | null;
-  description?: string | null;
-  order?: number;
-  instrumentId?: string | null;
-  fields?: CreateFormFieldRequest[] | null;
-};
-export type CreateFormAssigneeRequest = {
-  userId?: string;
-};
-export type CreateFormReviewerRequest = {
-  userId?: string;
-};
-export type CreateFormRequest = {
-  name?: string | null;
-  sections?: CreateFormSectionRequest[] | null;
-  assignees?: CreateFormAssigneeRequest[] | null;
-  reviewers?: CreateFormReviewerRequest[] | null;
-  type?: FormType;
-};
-export type FormDtoIEnumerablePaginateable = {
-  data?: FormDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type FormSectionDtoIEnumerablePaginateable = {
-  data?: FormSectionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateFormResponseRequest = {
-  formFieldId?: string;
-  value?: string | null;
-};
-export type CreateResponseRequest = {
-  formId?: string;
-  batchManufacturingRecordId?: string | null;
-  materialBatchId?: string | null;
-  materialSpecificationId?: string | null;
-  productSpecificationId?: string | null;
-  productionActivityStepId?: string | null;
-  formResponses?: CreateFormResponseRequest[] | null;
-};
-export type ResponseDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  form?: CollectionItemDto;
-  formResponses?: FormResponseDto[] | null;
-};
-export type CreateQuestionOptionsRequest = {
-  name?: string | null;
-};
-export type FormulaDto = {
-  expression?: string | null;
-  variables?: string | null;
-};
-export type CreateQuestionRequest = {
-  label: string;
-  type: QuestionType;
-  isMultiSelect?: boolean;
-  validation?: QuestionValidationType;
-  options?: CreateQuestionOptionsRequest[] | null;
-  description?: string | null;
-  reference?: string | null;
-  formula?: FormulaDto;
-};
-export type QuestionDtoIEnumerablePaginateable = {
-  data?: QuestionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateHolidayRequest = {
-  name: string;
-  date: string;
-  description?: string | null;
-};
-export type HolidayDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  date?: string;
-  description?: string | null;
-};
-export type HolidayDtoIEnumerablePaginateable = {
-  data?: HolidayDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateInventoryPurchaseRequisitionItem = {
-  inventoryPurchaseRequisitionId?: string;
-  itemId?: string;
-  uoMId?: string;
-  quantity?: number;
-};
-export type CreateInventoryPurchaseRequisition = {
-  code?: string | null;
-  expectedDeliveryDate?: string | null;
-  remarks?: string | null;
-  items?: CreateInventoryPurchaseRequisitionItem[] | null;
-};
-export type InventoryPurchaseRequisitionStatus = 0 | 1;
-export type InventoryPurchaseRequisitionItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  inventoryPurchaseRequisition?: CollectionItemDto;
-  item?: ItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  status?: RequestStatus;
-};
-export type InventoryPurchaseRequisitionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  expectedDeliveryDate?: string | null;
-  remarks?: string | null;
-  status?: InventoryPurchaseRequisitionStatus;
-  items?: InventoryPurchaseRequisitionItemDto[] | null;
-};
-export type InventoryPurchaseRequisitionDtoIEnumerablePaginateable = {
-  data?: InventoryPurchaseRequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type InventoryRequisitionSource = 0 | 1;
-export type CreateSourceInventoryRequisitionItemVendor = {
-  vendorId?: string;
-};
-export type CreateSourceInventoryRequisitionItem = {
-  itemId?: string;
-  uoMId?: string;
-  quantity?: number;
-  source?: InventoryRequisitionSource;
-  vendors?: CreateSourceInventoryRequisitionItemVendor[] | null;
-};
-export type CreateSourceInventoryRequisition = {
-  inventoryPurchaseRequisitionId?: string;
-  items?: CreateSourceInventoryRequisitionItem[] | null;
-};
-export type CreateMarketRequisition = {
-  inventoryPurchaseRequisitionItemId?: string;
-  itemId?: string;
-  uoMId?: string;
-  quantity?: number;
-};
-export type MarketRequisitionDto = {
-  inventoryPurchaseRequisitionItem?: InventoryPurchaseRequisitionItemDto;
-  item?: ItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
-export type MarketRequisitionDtoIEnumerablePaginateable = {
-  data?: MarketRequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type VendorQuotationItemDto = {
-  item?: ItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  quotedPrice?: number | null;
-  termsOfPayment?: CollectionItemDto;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-};
-export type VendorQuotationItemStatus = 0 | 1 | 2;
-export type VendorPrice = {
-  vendor?: CollectionItemDto;
-  vendorQuotationItem?: VendorQuotationItemDto;
-  status?: VendorQuotationItemStatus;
-  vendorName?: string | null;
-  vendorAddress?: string | null;
-  vendorPhoneNumber?: string | null;
-  pricePerUnit?: number;
-  modeOfPayment?: string | null;
-  openMarketTermsOfPayment?: CollectionItemDto;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-};
-export type VendorPriceComparison = {
-  item?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  vendorPrices?: VendorPrice[] | null;
-};
-export type CreateMemoItem = {
-  vendorQuotationItemId?: string | null;
-  marketRequisitionVendorId?: string | null;
-  itemId?: string;
-  uoMId?: string;
-  quantity?: number;
-};
-export type CurrencyDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  symbol?: string | null;
-  description?: string | null;
-};
-export type VendorItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  item?: ItemDto;
-};
-export type VendorDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  name?: string | null;
-  address?: string | null;
-  phone?: string | null;
-  email?: string | null;
-  countryId?: string;
-  country?: CountryDto;
-  currencyId?: string;
-  currency?: CurrencyDto;
-  items?: VendorItemDto[] | null;
-};
-export type SourceInventoryRequisitionItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  item?: ItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-};
-export type SourceInventoryRequisitionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  inventoryPurchaseRequisition?: InventoryPurchaseRequisitionDto;
-  vendor?: VendorDto;
-  remarks?: string | null;
-  sentQuotationRequestAt?: string | null;
-  items?: SourceInventoryRequisitionItemDto[] | null;
-};
-export type VendorQuotationDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  vendor?: VendorDto;
-  sourceInventoryRequisition?: SourceInventoryRequisitionDto;
-  items?: VendorQuotationItemDto[] | null;
-  receivedQuotation?: boolean;
-};
-export type VendorQuotationDtoIEnumerablePaginateable = {
-  data?: VendorQuotationDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type VendorQuotationResponseDto = {
-  id?: string;
-  price?: number;
-};
-export type MarketRequisitionVendorDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  vendorName?: string | null;
-  vendorAddress?: string | null;
-  vendorPhoneNumber?: string | null;
-  pricePerUnit?: number;
-  modeOfPayment?: string | null;
-  termsOfPayment?: CollectionItemDto;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-  complete?: boolean;
-};
-export type MarketRequisitionVendorDtoIEnumerablePaginateable = {
-  data?: MarketRequisitionVendorDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type CreateMarketRequisitionVendor = {
-  marketRequisitionId?: string;
-  vendorName?: string | null;
-  vendorAddress?: string | null;
-  vendorPhoneNumber?: string | null;
-  pricePerUnit?: number;
-  modeOfPayment?: string | null;
-  termsOfPaymentId?: string;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-};
-export type MemoItemDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  memo?: CollectionItemDto;
-  vendor?: CollectionItemDto;
-  item?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  pricePerUnit?: number;
-  termsOfPayment?: CollectionItemDto;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-};
-export type MemoItemDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  memo?: CollectionItemDto;
-  vendor?: CollectionItemDto;
-  item?: CollectionItemDto;
-  uoM?: UnitOfMeasureDto;
-  quantity?: number;
-  pricePerUnit?: number;
-  itemValue?: number;
-  termsOfPayment?: CollectionItemDto;
-  deliveryMode?: string | null;
-  estimatedDeliveryDate?: string;
-};
-export type MemoDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  paid?: boolean;
-  items?: MemoItemDto[] | null;
-};
-export type MemoDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  code?: string | null;
-  paid?: boolean;
-  items?: MemoItemDtoRead[] | null;
-  totalValue?: number;
-};
-export type MemoDtoIEnumerablePaginateable = {
-  data?: MemoDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type MemoDtoIEnumerablePaginateableRead = {
-  data?: MemoDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type StockEntryDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  itemId?: string;
-  item?: ItemDto;
-  memoId?: string;
-  memo?: MemoDto;
-  quantity?: number;
-  status?: ApprovalStatus;
-};
-export type StockEntryDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  itemId?: string;
-  item?: ItemDto;
-  memoId?: string;
-  memo?: MemoDtoRead;
-  quantity?: number;
-  status?: ApprovalStatus;
-};
-export type CreateItemsRequest = {
-  name: string;
-  code: string;
-  classification: InventoryClassification;
-  unitOfMeasureId: string;
-  hasBatchNumber?: boolean;
-  minimumLevel?: number;
-  maximumLevel?: number;
-  reorderLevel?: number;
-  store: Store;
-  isActive: boolean;
-  itemCategoryId?: string | null;
-  description?: string | null;
-};
-export type ItemDtoIEnumerablePaginateable = {
-  data?: ItemDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ItemInventoryTransactionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  date?: string;
-  memoId?: string;
-  memo?: MemoDto;
-  quantityReceived?: number;
-  quantityIssued?: number;
-  balanceQuantity?: number;
-};
-export type ItemInventoryTransactionDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  date?: string;
-  memoId?: string;
-  memo?: MemoDtoRead;
-  quantityReceived?: number;
-  quantityIssued?: number;
-  balanceQuantity?: number;
-};
-export type StockItems = {
-  itemId?: string;
-  quantityRequested?: number;
-};
-export type CreateItemStockRequisitionRequest = {
-  number?: string | null;
-  requisitionDate: string;
-  requestedById: string;
-  departmentId: string;
-  justification?: string | null;
-  stockItems: StockItems[];
-};
-export type LeaveStatus = 0 | 1 | 2 | 3 | 4 | 5;
-export type ItemStockRequisitionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  number?: string | null;
-  requisitionDate?: string;
-  requestedBy?: UserDto;
-  department?: DepartmentDto;
-  justification?: string | null;
-  status?: LeaveStatus;
-};
-export type ItemStockRequisitionDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  number?: string | null;
-  requisitionDate?: string;
-  requestedBy?: UserDto;
-  department?: DepartmentDtoRead;
-  justification?: string | null;
-  status?: LeaveStatus;
-};
-export type ItemStockRequisitionDtoIEnumerablePaginateable = {
-  data?: ItemStockRequisitionDto[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type ItemStockRequisitionDtoIEnumerablePaginateableRead = {
-  data?: ItemStockRequisitionDtoRead[] | null;
-  pageIndex?: number;
-  pageCount?: number;
-  totalRecordCount?: number;
-  numberOfPagesToShow?: number;
-  startPageIndex?: number;
-  stopPageIndex?: number;
-};
-export type IssueItemStockRequisitionDto = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  itemStockRequisitionId?: string;
-  itemStockRequisition?: ItemStockRequisitionDto;
-  quantityIssued?: number;
-};
-export type IssueItemStockRequisitionDtoRead = {
-  id?: string;
-  createdBy?: UserDto;
-  createdAt?: string;
-  itemStockRequisitionId?: string;
-  itemStockRequisition?: ItemStockRequisitionDtoRead;
-  quantityIssued?: number;
-};
-export type IssueStockAgainstRequisitionRequest = {
-  quantitiesToIssue?: {
-    [key: string]: number | null;
-  } | null;
-};
-export type JobStatus = 0 | 1 | 2 | 3 | 4;
-export type CreateJobRequest = {
-  departmentId: string;
-  location?: string | null;
-  equipmentId?: string;
-  dateOfIssue?: string;
-  status?: JobStatus;
-  descriptionOfWork?: string | null;
-  preferredCompletionDate?: string;
-  issuedById: string;
-};
 export type JobRequest = {
   id?: string;
   createdAt?: string;
@@ -20923,9 +20913,7 @@ export type MaterialSpecificationDto = {
   description?: string | null;
   userId?: string;
   user?: UserDto;
-  materialAnalyticalRawDataId?: string;
   materialAnalyticalRawData?: MaterialAnalyticalRawDataDto;
-  materialId?: string;
   material?: MaterialDto;
   response?: ResponseDto;
 };
@@ -21746,7 +21734,7 @@ export type EquipmentDtoIEnumerablePaginateable = {
   stopPageIndex?: number;
 };
 export type CreateProductAnalyticalRawDataRequest = {
-  specNumber: string;
+  specNumber?: string | null;
   stage: Stage;
   description?: string | null;
   stpId: string;
@@ -24049,6 +24037,10 @@ export const {
   useLazyGetApiV1FormResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
   useLazyGetApiV1FormResponsesBmrByBatchManufacturingRecordIdQuery,
+  useGetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdQuery,
+  useLazyGetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdQuery,
+  useGetApiV1FormResponsesProductSpecificationByProductSpecificationIdQuery,
+  useLazyGetApiV1FormResponsesProductSpecificationByProductSpecificationIdQuery,
   useGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
   useLazyGetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdQuery,
   useGetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdQuery,

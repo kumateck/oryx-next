@@ -71,7 +71,7 @@ export function CreateInventoryItem() {
       ) as unknown as InventoryClassification,
       store: Number(storeType) as unknown as Store,
       unitOfMeasureId: data.unitOfMeasureId.value,
-      hasBatchNumber: data.isActive,
+      // hasBatchNumber: data.isActive,
       maximumLevel: data.maximumLevel,
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
