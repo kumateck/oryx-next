@@ -5,8 +5,8 @@ import { IdSchema } from "@/lib";
 
 export const CreateLeaveTypeSchema = z.object({
   name: z.string().min(1, { message: "Leave type name is required" }),
-  isPaid: z.boolean(),
-  deductFromBalance: z.boolean(),
+  isPaid: z.boolean().optional(),
+  deductFromBalance: z.boolean().optional(),
   designationIds: z
     .array(IdSchema("Department"))
     .min(1, { message: "At least one department must be selected" }),

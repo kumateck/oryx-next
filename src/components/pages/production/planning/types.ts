@@ -108,13 +108,22 @@ export const CreateProductSchema = z.object({
       message: "Division is required",
     },
   ),
-  packPerShipper: z.string().transform((value) => Number(value)),
-  price: z
-    .string({
-      required_error: "Price is required",
-      invalid_type_error: "Price is invalid",
+  packPerShipper: z
+    .number({
+      required_error: "Pack Per Shipper is required",
+      invalid_type_error: "Pack Per Shipper must be a number",
     })
-    .transform((value) => Number(value)),
+    .positive({
+      message: "Pack Per Shipper must be greater than 0",
+    }),
+  price: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price must be a number",
+    })
+    .positive({
+      message: "Price must be greater than 0",
+    }),
   equipment: z.object(
     {
       value: z.string().min(1, { message: "Equipment is required" }),

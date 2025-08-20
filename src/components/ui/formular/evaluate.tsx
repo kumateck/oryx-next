@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import { evaluate } from "mathjs";
+import { sanitizeNumber } from "@/lib";
 
 function useDebounce<T>(value: T, delay = 300): T {
   const [debounced, setDebounced] = useState(value);
@@ -14,6 +15,7 @@ function useDebounce<T>(value: T, delay = 300): T {
 interface Field {
   key: string;
   label: string;
+  value?: number;
 }
 
 interface ExpressionData {
@@ -33,6 +35,7 @@ export const TheAduseiEvaluation = ({ option, onChange }: Props) => {
   const [result, setResult] = useState<number | null>(null);
   const [previewExpr, setPreviewExpr] = useState<string>("");
 
+  // console.log(fieldValues, option, "fieldValues");
   useEffect(() => {
     try {
       const parsed = JSON.parse(option) as ExpressionData;
@@ -40,6 +43,7 @@ export const TheAduseiEvaluation = ({ option, onChange }: Props) => {
         key,
         label,
       }));
+      // console.log(parsed, cleanedFields, "cleanedFields");
       setData({ expression: parsed.expression, fields: cleanedFields });
 
       const initialValues = Object.fromEntries(
@@ -50,6 +54,16 @@ export const TheAduseiEvaluation = ({ option, onChange }: Props) => {
       console.error("Invalid JSON passed to FormExpression:", err);
     }
   }, [option]);
+
+  function updateFields(
+    fields: Field[],
+    updates: Record<string, number>,
+  ): Field[] {
+    return fields.map((field) => ({
+      ...field,
+      value: updates[field.key] ?? field.value, // update if key exists, else keep old
+    }));
+  }
 
   const handleFieldValueChange = (key: string, val: string) => {
     const num = parseFloat(val);
@@ -86,16 +100,24 @@ export const TheAduseiEvaluation = ({ option, onChange }: Props) => {
 
     try {
       const evalResult = evaluate(debouncedExpression);
+      const roundedResult = {
+        result: sanitizeNumber(evalResult),
+        fieldValues: updateFields(data.fields, fieldValues),
+        expression: data.expression,
+        previewExpression: previewExpr,
+      };
+      const jsonResult = JSON.stringify(roundedResult);
+      // console.log(roundedResult, "roundedResult");
       setResult(evalResult);
       if (onChange) {
-        onChange(evalResult.toString());
+        onChange(jsonResult);
       }
     } catch (err) {
       console.error("Math.js evaluation error:", err);
       setResult(NaN);
       if (onChange) onChange("");
     }
-  }, [debouncedExpression, data, fieldValues, onChange]);
+  }, [debouncedExpression, data, fieldValues, previewExpr, onChange]);
 
   if (!data) return null;
 

@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { MaterialReportCard } from "./card";
 import PageWrapper from "@/components/layout/wrapper";
-import FormResponseView from "./response";
+
 import PageTitle from "@/shared/title";
 import { Button } from "@/components/ui";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
@@ -17,6 +17,7 @@ import ScrollableWrapper from "@/shared/scroll-wrapper";
 import PreviewCoa from "./coa";
 
 import CertificateOfAnalysis from "./preview";
+import FormResponseView from "@/shared/form-response-view";
 
 interface Props {
   grnId: string;

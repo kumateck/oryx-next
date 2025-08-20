@@ -75,11 +75,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     try {
       const payload = {
         name: data.name,
-        isPaid: data.isPaid,
         designationList: data.designationIds.map((d) => d.value),
         numberOfDays: data.maxDuration,
-        isActive: data.deductFromBalance,
-        deductFromBalance: data.deductFromBalance,
+        isPaid: data.isPaid ? true : false,
+        isActive: data.deductFromBalance ? true : false,
+        deductFromBalance: data.deductFromBalance ? true : false,
       };
       await editLeaveType({
         id: details.id as string,

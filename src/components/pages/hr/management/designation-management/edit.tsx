@@ -16,7 +16,6 @@ import {
   CreateDesignationRequest,
   DesignationDto,
   useGetApiV1DepartmentQuery,
-  useLazyGetApiV1DesignationQuery,
   usePutApiV1DesignationByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -32,7 +31,6 @@ interface Props {
 }
 const Edit = ({ isOpen, onClose, details }: Props) => {
   const [editDesignation, { isLoading }] = usePutApiV1DesignationByIdMutation();
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
 
   const defaultDepartments =
     details.departments?.map((dept) => ({
@@ -78,10 +76,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       reset();
       onClose();
       dispatch(commonActions.setTriggerReload());
-      loadDesignations({
-        page: 1,
-        pageSize: 10,
-      });
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
