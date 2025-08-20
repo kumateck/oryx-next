@@ -18,6 +18,7 @@ import PreviewCoa from "./coa";
 
 import CertificateOfAnalysis from "./preview";
 import FormResponseView from "@/shared/form-response-view";
+import SpecificationResponse from "./specification";
 
 const ArdDetails = () => {
   const { id, batchId } = useParams();
@@ -66,10 +67,15 @@ const ArdDetails = () => {
         />
       </div>
       <ScrollableWrapper className="pb-20">
-        <div>
-          <span className="text-lg font-semibold">Form Responses</span>{" "}
-        </div>
-        <FormResponseView responses={batchFormResponses} />
+        <SpecificationResponse
+          title={"Specification Response"}
+          modelId={batchData?.material?.id as string}
+          type="M"
+        />
+        <FormResponseView
+          responses={batchFormResponses}
+          title="ARD Responses"
+        />
       </ScrollableWrapper>
       <PreviewCoa
         isOpen={isOpen}

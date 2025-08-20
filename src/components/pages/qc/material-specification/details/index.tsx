@@ -12,13 +12,14 @@ import {
   FormResponseDto,
   useLazyGetApiV1MaterialSpecificationsByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
+
 import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import MaterialSpecificationSkeleton from "./loadingSkeleton";
 import FormResponseView from "@/shared/form-response-view";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
 
 function Page() {
   const { id } = useParams();
@@ -58,71 +59,73 @@ function Page() {
       </div>
 
       <PageTitle title="Material Specification Details" />
-      <ScrollablePageWrapper>
-        <Card>
-          <CardHeader>
-            <CardTitle>{materialData?.material?.name}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between flex-col md:flex-row">
-              <div>
-                <div className="flex items-center justify-start gap-3">
-                  <span>SPEC Number:</span>
-                  <span className="font-medium">
-                    {materialData?.specificationNumber}
-                  </span>
+      <ScrollableWrapper className=" pb-20">
+        <div className="space-y-4">
+          <Card className="pb-5">
+            <CardHeader>
+              <CardTitle>{materialData?.material?.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between flex-col md:flex-row">
+                <div>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>SPEC Number:</span>
+                    <span className="font-medium">
+                      {materialData?.specificationNumber}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>Effective Date:</span>
+                    <span className="font-medium">
+                      {materialData?.effectiveDate
+                        ? format(
+                            new Date(materialData.effectiveDate),
+                            "MMMM dd, yyyy",
+                          )
+                        : ""}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-start gap-3">
-                  <span>Effective Date:</span>
-                  <span className="font-medium">
-                    {materialData?.effectiveDate
-                      ? format(
-                          new Date(materialData.effectiveDate),
-                          "MMMM dd, yyyy",
-                        )
-                      : ""}
-                  </span>
+                <div>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>Review Date:</span>
+                    <span className="font-medium">
+                      {materialData?.reviewDate
+                        ? format(
+                            new Date(materialData.reviewDate),
+                            "MMMM dd, yyyy",
+                          )
+                        : ""}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>Revision Number:</span>
+                    <span className="font-medium">
+                      {materialData?.revisionNumber}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>Supersedes:</span>
+                    <span className="font-medium">
+                      {materialData?.supersedesNumber}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="flex items-center justify-start gap-3">
-                  <span>Review Date:</span>
-                  <span className="font-medium">
-                    {materialData?.reviewDate
-                      ? format(
-                          new Date(materialData.reviewDate),
-                          "MMMM dd, yyyy",
-                        )
-                      : ""}
-                  </span>
-                </div>
-                <div className="flex items-center justify-start gap-3">
-                  <span>Revision Number:</span>
-                  <span className="font-medium">
-                    {materialData?.revisionNumber}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-start gap-3">
-                  <span>Supersedes:</span>
-                  <span className="font-medium">
-                    {materialData?.supersedesNumber}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-xl">Test and Specifications</CardTitle>
-          </CardHeader>
-        </Card>
-        <FormResponseView
-          responses={materialData?.response?.formResponses as FormResponseDto[]}
-        />
-      </ScrollablePageWrapper>
+            </CardContent>
+          </Card>
+          <div className="py-5">
+            <PageTitle title="Form Responses" />
+            <FormResponseView
+              responses={
+                materialData?.response?.formResponses as FormResponseDto[]
+              }
+            />
+          </div>
+        </div>
+      </ScrollableWrapper>
     </PageWrapper>
   );
 }

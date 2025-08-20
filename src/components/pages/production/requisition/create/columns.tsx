@@ -13,7 +13,6 @@ import { useState } from "react";
 import AllStockByMaterial from "@/shared/all-stock";
 import {
   convertToLargestUnit,
-  getLargestUnit,
   getSmallestUnit,
   sanitizeNumber,
   Units,
@@ -217,14 +216,14 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
 
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
   },
-  {
-    accessorKey: "uom",
-    header: "UOM",
+  // {
+  //   accessorKey: "uom",
+  //   header: "UOM",
 
-    cell: ({ row }) => (
-      <div>{getLargestUnit(row.original.uoM?.symbol as Units)}</div>
-    ),
-  },
+  //   cell: ({ row }) => (
+  //     <div>{getLargestUnit(row.original.uoM?.symbol as Units)}</div>
+  //   ),
+  // },
 
   {
     accessorKey: "reOrderLevel",

@@ -194,7 +194,9 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("price" as Path<TFieldValues>),
+            register: register("price" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
             label: "Price",
             placeholder: "Enter price",
             type: InputTypes.NUMBER,
@@ -216,14 +218,19 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("description" as Path<TFieldValues>),
             label: "Label Claims",
+            control: control as Control,
+            type: InputTypes.RICHTEXT,
+            name: "description",
             placeholder: "Enter label claims",
-            type: InputTypes.TEXTAREA,
+            suggestions: [],
             errors,
           },
+
           {
-            register: register("packPerShipper" as Path<TFieldValues>),
+            register: register("packPerShipper" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
             label: "Pack Per Shipper",
             placeholder: "Enter pack per shipper",
             type: InputTypes.NUMBER,
