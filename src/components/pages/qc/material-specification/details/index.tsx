@@ -8,13 +8,17 @@ import {
   CardTitle,
   Icon,
 } from "@/components/ui";
-import { useLazyGetApiV1MaterialSpecificationsByIdQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  FormResponseDto,
+  useLazyGetApiV1MaterialSpecificationsByIdQuery,
+} from "@/lib/redux/api/openapi.generated";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import MaterialSpecificationSkeleton from "./loadingSkeleton";
+import FormResponseView from "@/shared/form-response-view";
 
 function Page() {
   const { id } = useParams();
@@ -114,15 +118,10 @@ function Page() {
           <CardHeader>
             <CardTitle className="text-xl">Test and Specifications</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-6 mb-2 font-medium text-gray-600">
-              <div className="col-span-1">SR Number</div>
-              <div className="col-span-2">Test</div>
-              <div className="col-span-2">Specification</div>
-              <div className="col-span-1">Reference</div>
-            </div>
-          </CardContent>
         </Card>
+        <FormResponseView
+          responses={materialData?.response?.formResponses as FormResponseDto[]}
+        />
       </ScrollablePageWrapper>
     </PageWrapper>
   );
