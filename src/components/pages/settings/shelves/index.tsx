@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1WarehouseShelfQuery,
-  useLazyGetApiV1WarehouseShelfQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1WarehouseShelfQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -28,11 +25,9 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const triggerReload = useSelector((state) => state.common.triggerReload);
-  const { data: result, isLoading } = useGetApiV1WarehouseShelfQuery({
-    page,
-    pageSize,
-  });
-  const [loadShelves, { isFetching }] = useLazyGetApiV1WarehouseShelfQuery();
+
+  const [loadShelves, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1WarehouseShelfQuery();
 
   useEffect(() => {
     loadShelves({

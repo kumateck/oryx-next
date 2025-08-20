@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1DepartmentQuery,
-  useLazyGetApiV1DepartmentQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1DepartmentQuery } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch, useSelector } from "@/lib/redux/store";
 import { ServerDatatable } from "@/shared/datatable";
@@ -31,11 +28,9 @@ const Page = () => {
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
-  const { data: result, isLoading } = useGetApiV1DepartmentQuery({
-    page,
-    pageSize,
-  });
-  const [loadDepartment, { isFetching }] = useLazyGetApiV1DepartmentQuery();
+
+  const [loadDepartment, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1DepartmentQuery();
 
   useEffect(() => {
     loadDepartment({

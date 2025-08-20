@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { Button, Icon } from "@/components/ui";
-import {
-  useGetApiV1WarehouseRackQuery,
-  useLazyGetApiV1WarehouseRackQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1WarehouseRackQuery } from "@/lib/redux/api/openapi.generated";
 import { ServerDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 
@@ -29,11 +26,9 @@ const Page = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
   const triggerReload = useSelector((state) => state.common.triggerReload);
-  const { data: result, isLoading } = useGetApiV1WarehouseRackQuery({
-    page,
-    pageSize,
-  });
-  const [loadRacks, { isFetching }] = useLazyGetApiV1WarehouseRackQuery();
+
+  const [loadRacks, { isFetching, data: result, isLoading }] =
+    useLazyGetApiV1WarehouseRackQuery();
   const searchValue = useSelector((state) => state.common.searchInput);
   const debouncedValue = useDebounce(searchValue, 500);
 
@@ -48,6 +43,7 @@ const Page = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, triggerReload, debouncedValue]);
+
   const data = result?.data || [];
   const [isOpen, setIsOpen] = useState(false);
 

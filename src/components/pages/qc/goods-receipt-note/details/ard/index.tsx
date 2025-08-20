@@ -66,16 +66,18 @@ const ArdDetails = () => {
           issueDate={ardBatchData?.createdAt as string}
         />
       </div>
-      <ScrollableWrapper className="pb-20">
-        <SpecificationResponse
-          title={"Specification Response"}
-          modelId={batchData?.material?.id as string}
-          type="M"
-        />
-        <FormResponseView
-          responses={batchFormResponses}
-          title="ARD Responses"
-        />
+      <ScrollableWrapper>
+        <div className="">
+          <SpecificationResponse
+            title={"Specification Response"}
+            modelId={batchData?.material?.id as string}
+            type="M"
+          />
+          <FormResponseView
+            responses={batchFormResponses}
+            title={ardBatchData?.form?.name as string}
+          />
+        </div>
       </ScrollableWrapper>
       <PreviewCoa
         isOpen={isOpen}

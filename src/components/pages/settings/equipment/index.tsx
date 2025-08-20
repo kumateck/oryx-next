@@ -21,21 +21,11 @@ import { useRouter } from "next/navigation";
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  // const router = useRouter();
+
   const triggerReload = useSelector((state) => state.common.triggerReload);
   const searchQuery = useSelector((state) => state.common.searchInput);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleLoadEquipments = async (
-    page: number,
-    pageSize: number,
-    searchQuery: string,
-  ) => {
-    await loadEquipments({
-      page,
-      pageSize,
-      searchQuery,
-    }).unwrap();
-  };
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
 
@@ -47,11 +37,25 @@ const Page = () => {
     if (triggerReload) {
       dispatch(commonActions.unSetTriggerReload());
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, triggerReload, searchQuery]);
 
-  const [isOpen, setIsOpen] = useState(false);
-
+  const handleLoadEquipments = async (
+    page: number,
+    pageSize: number,
+    searchQuery: string,
+  ) => {
+    try {
+      await loadEquipments({
+        page,
+        pageSize,
+        searchQuery,
+      }).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //Check Permision
   const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
