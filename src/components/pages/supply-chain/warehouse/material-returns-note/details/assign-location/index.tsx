@@ -48,16 +48,6 @@ const AssignLocationDialog = ({
   const [supplyShelf, { isLoading }] =
     usePostApiV1MaterialBatchSupplyMutation();
 
-  // const { data: racks } = useGetApiV1WarehouseRackQuery({
-  //   page: 1,
-  //   pageSize: 100,
-  // });
-
-  // const { data: shelves } = useGetApiV1WarehouseShelfQuery({
-  //   page: 1,
-  //   pageSize: 100,
-  // });
-
   const { data: racks } = useGetApiV1WarehouseRackByDepartmentQuery({
     kind: kind ?? EMaterialKind.Raw,
   });
