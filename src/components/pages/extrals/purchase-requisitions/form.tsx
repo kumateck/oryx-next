@@ -39,7 +39,7 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
 }: Props<TFieldValues, TContext>) => {
   const stableAppend = useCallback(append, [append]);
   useEffect(() => {
-    if (fields.length > 1) return;
+    if (fields.length > 0) return;
     stableAppend({
       itemId: {
         label: "",

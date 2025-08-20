@@ -1,4 +1,4 @@
-import { Option } from "@/lib";
+import { InventoryRequisitionSource, Option, splitWords } from "@/lib";
 import { useLazyGetApiV1VendorsQuery } from "@/lib/redux/api/openapi.generated";
 import { ListsTable, TableUpdateData } from "@/shared/datatable";
 
@@ -41,14 +41,15 @@ const TableForData = ({ lists, setItemLists }: Props) => {
   );
 };
 
-const sourceOptions = [
-  {
-    label: "Foreign Procurement",
-    value: "0",
-  },
-  {
-    label: "Local Procurement",
-    value: "1",
-  },
-];
+const sourceOptions = Object.values(InventoryRequisitionSource)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey =
+      InventoryRequisitionSource[enumValue as InventoryRequisitionSource];
+    return {
+      label: splitWords(enumKey),
+      value: String(enumValue),
+    };
+  }) as Option[];
+
 export default TableForData;
