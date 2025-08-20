@@ -194,12 +194,17 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
     accessorKey: "code",
     header: "Requisition ID",
 
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <div>{row.original.code}</div>,
   },
   {
     accessorKey: "requisitionDate",
     header: "Requisition Date",
-    cell: ({ row }) => <div>{row.getValue("venderCode")}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.original.createdAt &&
+          format(new Date(row.original.createdAt), "dd/MM/yyyy")}
+      </div>
+    ),
   },
   {
     accessorKey: "deliveryDate",
@@ -215,7 +220,7 @@ export const columns: ColumnDef<InventoryPurchaseRequisitionDto>[] = [
   {
     accessorKey: "numberOfItems",
     header: "Number of items",
-    cell: ({ row }) => <div>{row.getValue("contactPerson")}</div>,
+    cell: ({ row }) => <div>{row.original.items?.length ?? 0}</div>,
   },
   {
     accessorKey: "status",

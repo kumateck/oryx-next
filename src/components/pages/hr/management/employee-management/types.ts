@@ -65,6 +65,15 @@ export const CreateEmployeeSchema = z.object({
   employees: z.array(associateEmployeesRequestSchema),
 });
 
+const createSuspensionSchema = z.object({
+  justification: z.string().optional(),
+  startDate: z.date({ invalid_type_error: "Start date is required" }),
+  endDate: z.date({ invalid_type_error: "end date is required" }),
+});
+
+export type CreatesuspensionDto = z.infer<typeof createSuspensionSchema>;
+export const CreateSuspensionValidator = zodResolver(createSuspensionSchema);
+
 export type EmployeeRequestDto = z.infer<typeof CreateEmployeeSchema>;
 export const CreateEmployeeValidator = zodResolver(CreateEmployeeSchema);
 export type EmployeeItemDto = z.infer<typeof associateEmployeesRequestSchema>;
