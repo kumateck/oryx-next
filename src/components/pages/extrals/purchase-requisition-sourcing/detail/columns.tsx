@@ -40,8 +40,8 @@ export const getColumns = (
     },
   },
   {
-    accessorKey: "sourceSuppliers",
-    header: "Supplier",
+    accessorKey: "Vendor",
+    header: "Vendor",
     meta: {
       edittableCell: {
         type: ColumnType.MULTI,

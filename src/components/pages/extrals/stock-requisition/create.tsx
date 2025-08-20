@@ -24,7 +24,6 @@ import StockRequisition from "./form";
 import { toast } from "sonner";
 import { useSelector } from "@/lib/redux/store";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -126,12 +125,6 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
       setValue(`items.${index}.itemCode`, product?.code ?? "");
     }
   };
-
-  useEffect(() => {
-    if (errors) {
-      console.log(errors);
-    }
-  }, [errors]);
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>

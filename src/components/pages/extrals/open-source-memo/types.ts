@@ -61,6 +61,17 @@ const createMemoSchema = z.object({
       vendorQuotationItemId: z
         .string()
         .min(2, { message: "Vendor Quotation is required" }),
+      totalValue: z.number().min(0, { message: "Total Value is required" }),
+      termsOfPayment: z.string(),
+      date: z.date().refine(
+        (date) => {
+          const today = new Date();
+          return date >= today;
+        },
+        {
+          message: "Date must be today or in the future",
+        },
+      ),
     }),
   ),
   attachments: imageValidationSchema,
