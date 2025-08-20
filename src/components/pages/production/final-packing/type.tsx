@@ -1,3 +1,4 @@
+import { Units } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -99,6 +100,7 @@ export const CreatePackingValidator = zodResolver(CreateFinalPackingSchema);
 
 export interface MaterialMatrix {
   uoMId: string;
+  uoMName: Units;
   materialId: string;
   materialName: string;
   receivedQuantity: number;

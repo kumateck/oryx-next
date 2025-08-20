@@ -77,7 +77,14 @@ function MaterialReturnsDetails() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ListsTable data={data?.partialReturns || []} columns={columns} />
+          <ListsTable
+            data={
+              data?.isFullReturn
+                ? data?.fullReturns || []
+                : data?.partialReturns || []
+            }
+            columns={columns}
+          />
         </CardContent>
       </Card>
     </ScrollablePageWrapper>
