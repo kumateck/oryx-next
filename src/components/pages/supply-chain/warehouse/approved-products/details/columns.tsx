@@ -1,6 +1,6 @@
 import { sanitizeNumber } from "@/lib";
 import {
-  BinCardInformationDtoRead,
+  BinCardInformationDto,
   FinishedGoodsTransferNoteDtoRead,
 } from "@/lib/redux/api/openapi.generated";
 import { ColumnDef } from "@tanstack/react-table";
@@ -84,7 +84,7 @@ export const generalColumn: ColumnDef<FinishedGoodsTransferNoteDtoRead>[] = [
   },
 ];
 
-export const bincardColumn: ColumnDef<BinCardInformationDtoRead>[] = [
+export const bincardColumn: ColumnDef<BinCardInformationDto>[] = [
   {
     accessorKey: "date",
     header: "Date",

@@ -6,7 +6,7 @@ import Active from "./active";
 import Completed from "./completed";
 import InActive from "./inactive";
 import { TimelineItemProps } from "./type";
-import { ProductionScheduleProductDtoRead } from "@/lib/redux/api/openapi.generated";
+import { ProductionScheduleProductDto } from "@/lib/redux/api/openapi.generated";
 import { Card } from "../card";
 import { Icon } from "../icon";
 
@@ -15,7 +15,7 @@ interface Props {
   activityId: string;
   productId: string;
   scheduleId: string;
-  productInfo?: ProductionScheduleProductDtoRead;
+  productInfo?: ProductionScheduleProductDto;
 }
 
 export const TimelineLayout = ({
