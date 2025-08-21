@@ -10,9 +10,7 @@ import {
   Icon,
 } from "@/components/ui";
 import {
-  ProductionOrderDto,
   useLazyGetApiV1ProductionOrdersByIdQuery,
-  useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery,
   ApprovedProductDetailDtoRead,
   FinishedGoodsTransferNoteDtoRead,
 } from "@/lib/redux/api/openapi.generated";
@@ -39,45 +37,16 @@ function Index() {
   const { id } = useParams();
   const [loadProductionOrderById, { data, isLoading }] =
     useLazyGetApiV1ProductionOrdersByIdQuery();
-  const [loadApprovedProducts] =
-    useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery();
+
   const [isOpenAllocation, setIsOpenAllocation] = useState(false);
-  const [orderData, setOrderData] = useState<ProductionOrderDto>();
-  // const [allocationData, setAllocationData] = useState<any>();
+
   useEffect(() => {
     if (id) {
       loadProductionOrderById({ id: id as string });
-      handleLoadData(id as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const handleLoadData = async (id: string) => {
-    const order = await loadProductionOrderById({ id }).unwrap();
-    setOrderData(order);
-    order.products?.map(async (order) => {
-      const productId = order?.product?.id as string;
-      const productResponse = await loadApprovedProducts({
-        productId,
-      }).unwrap();
-      const approvedProducts = filterApprovedFinishedGoods(
-        productResponse as ApprovedProductDetailDtoRead,
-      );
-      console.log(approvedProducts, "productResponse");
-      // const
-      // const stockQuantity = productResponse.
-      return {
-        ...order,
-
-        // approvedProducts,
-      };
-    });
-
-    // const products = await loadApprovedProducts({ id }).unwrap();
-    // setAllocationData(products);
-  };
-
-  console.log(orderData);
   if (isLoading) return <LoadingSkeleton />;
   return (
     <PageWrapper className="space-y-4">
@@ -142,7 +111,6 @@ function Index() {
           <ListsTable data={data?.products ?? []} columns={columns} />
         </CardContent>
 
-        {/* <PharmaceuticalInventoryForm /> */}
         {isOpenAllocation && (
           <OrderAllocation
             isOpen={isOpenAllocation}
