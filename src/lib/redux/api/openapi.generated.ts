@@ -2059,6 +2059,9 @@ const injectedRtkApi = api.injectEndpoints({
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
+        params: {
+          status: queryArg.status,
+        },
       }),
     }),
     postApiV1ProcurementInventoryItemsByIdApprove: build.mutation<
@@ -6611,24 +6614,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ReportStaffGenderRatioReport: build.query<
-      GetApiV1ReportStaffGenderRatioReportApiResponse,
-      GetApiV1ReportStaffGenderRatioReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/staff-gender-ratio-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
     getApiV1ReportStaffLeaveReport: build.query<
       GetApiV1ReportStaffLeaveReportApiResponse,
       GetApiV1ReportStaffLeaveReportApiArg
@@ -8794,7 +8779,7 @@ export type GetApiV1AttendanceRecordsDailySummaryApiArg = {
   subModule?: any;
 };
 export type GetApiV1AttendanceRecordsGeneralSummaryApiResponse =
-  /** status 200 OK */ GeneralAttendanceReportDtoRead;
+  /** status 200 OK */ GeneralAttendanceReportResponseRead;
 export type GetApiV1AttendanceRecordsGeneralSummaryApiArg = {
   /** The module this request falls under */
   module?: any;
@@ -10009,6 +9994,7 @@ export type PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg = {
 export type GetApiV1ProcurementInventoryPurchasedItemsApiResponse =
   /** status 200 OK */ StockEntryDtoRead[];
 export type GetApiV1ProcurementInventoryPurchasedItemsApiArg = {
+  status?: ApprovalStatus;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -13329,18 +13315,6 @@ export type GetApiV1ReportStaffTotalReportApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ReportStaffGenderRatioReportApiResponse =
-  /** status 200 OK */ StaffGenderRatioReportRead;
-export type GetApiV1ReportStaffGenderRatioReportApiArg = {
-  departmentId?: string;
-  startDate?: string;
-  endDate?: string;
-  materialKind?: MaterialKind;
-  /** The module this request falls under */
-  module?: any;
-  /** The sub module this request falls under */
-  subModule?: any;
-};
 export type GetApiV1ReportStaffLeaveReportApiResponse =
   /** status 200 OK */ StaffLeaveSummaryReportDtoRead;
 export type GetApiV1ReportStaffLeaveReportApiArg = {
@@ -14711,7 +14685,8 @@ export type NotificationType =
   | 11
   | 12
   | 13
-  | 14;
+  | 14
+  | 15;
 export type AlertType = 0 | 1;
 export type CreateAlertRequest = {
   title?: string | null;
@@ -15377,6 +15352,39 @@ export type AttendanceRecordDepartmentDto = {
   clockOutTime?: string | null;
   workHours?: number;
 };
+export type SystemGeneralStaffCountDto = {
+  numberOfPermanentLeaves?: number;
+  numberOfCasualLeaves?: number;
+  numberOfPermanentSickLeaves?: number;
+  numberOfCasualSickLeaves?: number;
+  numberOfPermanentMaternityLeave?: number;
+  numberOfCasualMaternityLeave?: number;
+  numberOfPermanentAbsentEmployees?: number;
+  numberOfCasualAbsentEmployees?: number;
+  numberOfPermanentOfficialDuty?: number;
+  numberOfCasualOfficialDuty?: number;
+  numberOfPermanentSuspensions?: number;
+  numberOfCasualSuspensions?: number;
+  department?: string | null;
+};
+export type SystemGeneralStats = {
+  numberOfPermanentLeaves?: number;
+  numberOfCasualLeaves?: number;
+  numberOfPermanentSickLeaves?: number;
+  numberOfCasualSickLeaves?: number;
+  numberOfPermanentMaternityLeave?: number;
+  numberOfCasualMaternityLeave?: number;
+  numberOfPermanentAbsentEmployees?: number;
+  numberOfCasualAbsentEmployees?: number;
+  numberOfPermanentOfficialDuty?: number;
+  numberOfCasualOfficialDuty?: number;
+  numberOfPermanentSuspensions?: number;
+  numberOfCasualSuspensions?: number;
+};
+export type GeneralSystemReport = {
+  departments?: SystemGeneralStaffCountDto[] | null;
+  totals?: SystemGeneralStats;
+};
 export type GeneralAttendanceReportDto = {
   departmentName?: string | null;
   permanentStaff?: number;
@@ -15392,6 +15400,7 @@ export type GeneralAttendanceReportDto = {
   suspensions?: number;
   sickLeaves?: number;
   maternityLeaves?: number;
+  systemStatistics?: GeneralSystemReport;
 };
 export type GeneralAttendanceReportDtoRead = {
   departmentName?: string | null;
@@ -15409,6 +15418,15 @@ export type GeneralAttendanceReportDtoRead = {
   suspensions?: number;
   sickLeaves?: number;
   maternityLeaves?: number;
+  systemStatistics?: GeneralSystemReport;
+};
+export type GeneralAttendanceReportResponse = {
+  departmentReports?: GeneralAttendanceReportDto[] | null;
+  systemStatistics?: GeneralSystemReport;
+};
+export type GeneralAttendanceReportResponseRead = {
+  departmentReports?: GeneralAttendanceReportDtoRead[] | null;
+  systemStatistics?: GeneralSystemReport;
 };
 export type LoginResponse = {
   userId?: string | null;
@@ -22040,6 +22058,7 @@ export type FinishedGoodsTransferNoteDto = {
   loose?: number;
   allocatedQuantity?: number;
   remainingQuantity?: number;
+  pendingAllocatedQuantity?: number;
 };
 export type FinishedGoodsTransferNoteDtoRead = {
   id?: string;
@@ -22061,6 +22080,7 @@ export type FinishedGoodsTransferNoteDtoRead = {
   loose?: number;
   allocatedQuantity?: number;
   remainingQuantity?: number;
+  pendingAllocatedQuantity?: number;
 };
 export type FinishedGoodsTransferNoteDtoIEnumerablePaginateable = {
   data?: FinishedGoodsTransferNoteDto[] | null;
@@ -22806,46 +22826,6 @@ export type StaffTotalReport = {
 export type StaffTotalReportRead = {
   departments?: StaffTotalSummaryRead[] | null;
   totals?: StaffGrandTotalRead;
-};
-export type StaffGenderRatioCountDto = {
-  numberOfPermanentMale?: number;
-  numberOfPermanentFemale?: number;
-  numberOfCasualMale?: number;
-  numberOfCasualFemale?: number;
-  department?: string | null;
-};
-export type StaffGenderRatioCountDtoRead = {
-  numberOfPermanentMale?: number;
-  numberOfPermanentFemale?: number;
-  numberOfCasualMale?: number;
-  numberOfCasualFemale?: number;
-  totalMales?: number;
-  totalFemales?: number;
-  total?: number;
-  department?: string | null;
-};
-export type StaffGenderRatioTotalDto = {
-  numberOfPermanentMale?: number;
-  numberOfPermanentFemale?: number;
-  numberOfCasualMale?: number;
-  numberOfCasualFemale?: number;
-};
-export type StaffGenderRatioTotalDtoRead = {
-  numberOfPermanentMale?: number;
-  numberOfPermanentFemale?: number;
-  numberOfCasualMale?: number;
-  numberOfCasualFemale?: number;
-  totalMales?: number;
-  totalFemales?: number;
-  total?: number;
-};
-export type StaffGenderRatioReport = {
-  departments?: StaffGenderRatioCountDto[] | null;
-  totals?: StaffGenderRatioTotalDto;
-};
-export type StaffGenderRatioReportRead = {
-  departments?: StaffGenderRatioCountDtoRead[] | null;
-  totals?: StaffGenderRatioTotalDtoRead;
 };
 export type StaffLeaveSummaryDto = {
   departmentName?: string | null;
@@ -23630,6 +23610,7 @@ export type CreateGrnRequest = {
   vehicleNumber?: string | null;
   remarks?: string | null;
   grnNumber?: string | null;
+  departmentId?: string | null;
   materialBatchIds?: string[] | null;
 };
 export type GrnListDto = {
@@ -24440,8 +24421,6 @@ export const {
   useLazyGetApiV1ReportEmployeeMovementQuery,
   useGetApiV1ReportStaffTotalReportQuery,
   useLazyGetApiV1ReportStaffTotalReportQuery,
-  useGetApiV1ReportStaffGenderRatioReportQuery,
-  useLazyGetApiV1ReportStaffGenderRatioReportQuery,
   useGetApiV1ReportStaffLeaveReportQuery,
   useLazyGetApiV1ReportStaffLeaveReportQuery,
   useGetApiV1ReportStaffTurnoverReportQuery,

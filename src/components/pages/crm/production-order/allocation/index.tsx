@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse, Option } from "@/lib";
+import { ErrorResponse, isErrorResponse } from "@/lib";
 
 import {
   ProductionOrderProductsDto,
@@ -36,18 +36,12 @@ const OrderAllocation = ({
   const [saveMutation, { isLoading }] =
     usePostApiV1ProductionScheduleAllocateProductsMutation();
 
-  // const [purchaseLists, setPurchaseLists] = useState<ExtendedOrderedProduct[]>(
-  //   orderedProduct?.map((item) => ({
-  //     ...item,
-  //     quantity: 0,
-  //   })),
-  // );
-
   const onSubmit = async () => {
     try {
       await saveMutation({
         allocateProductionOrderRequest: {
           productionOrderId,
+          products: [],
         },
       }).unwrap();
 
@@ -91,18 +85,10 @@ const OrderAllocation = ({
         </div>
         <div className="py-5">
           <PharmaceuticalInventoryForm
-            productOptions={
-              orderedProduct?.map((item) => ({
-                label: item.product?.name,
-                value: item.product?.id,
-              })) as Option[]
-            }
+            productOptions={orderedProduct}
+            productionOrderId={productionOrderId as string}
+            onClose={onClose}
           />
-          {/* <TableForData
-            lists={purchaseLists}
-            setItemLists={setPurchaseLists}
-            defaultColumns={getPurchaseColumns(setPurchaseLists)}
-          /> */}
         </div>
       </DialogContent>
     </Dialog>

@@ -610,6 +610,7 @@ export enum NotificationType {
   AuditLogEvent = 12,
   BmrBprRequested = 13,
   BmrBprApproved = 14,
+  ExpiredMaterial = 15,
 }
 
 export enum AlertType {

@@ -25,6 +25,7 @@ export const NotificationTypeLabels: Record<NotificationType, string> = {
   [NotificationType.AuditLogEvent]: "Audit Log Event",
   [NotificationType.BmrBprRequested]: "BMR/BPR Requested",
   [NotificationType.BmrBprApproved]: "BMR/BPR Approved",
+  [NotificationType.ExpiredMaterial]: "Expired Material",
 };
 
 export type AlertResponse = {
