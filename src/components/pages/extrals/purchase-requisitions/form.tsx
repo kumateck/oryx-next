@@ -47,6 +47,7 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
       },
       orderQuantity: 0,
       itemCode: "",
+      uomId: "",
       stockQuantity: 0,
     });
   }, [fields.length, stableAppend]);
@@ -189,6 +190,7 @@ const PurchaseRequisitionForm = <TFieldValues extends FieldValues, TContext>({
                         },
                         orderQuantity: 0,
                         itemCode: "",
+                        uomId: "",
                         stockQuantity: 0,
                       })
                     }

@@ -82,7 +82,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         employeeId: data.employeeId.value,
         contactPerson: data.contactPerson as string,
         contactPersonNumber: data.contactPersonNumber as string,
-        requestCategory: details.requestCategory as RequestCategory,
+        requestCategory: Number(details.requestCategory) as RequestCategory,
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 

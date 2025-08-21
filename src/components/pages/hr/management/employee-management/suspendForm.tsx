@@ -7,7 +7,6 @@ import {
   Icon,
   DialogTitle,
 } from "@/components/ui";
-import React, { useEffect } from "react";
 import { Control, useForm } from "react-hook-form";
 import { CreatesuspensionDto, CreateSuspensionValidator } from "./types";
 import { FormWizard } from "@/components/form-inputs";
@@ -58,10 +57,6 @@ function SuspensionForm({ isOpen, onClose, id }: Props) {
       ThrowErrorMessage(error);
     }
   };
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
