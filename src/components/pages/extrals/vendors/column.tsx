@@ -33,7 +33,7 @@ export function DataTableRowActions<TData extends VendorDto>({
         <Edit
           isOpen={isEdit}
           onClose={() => setIsEdit(false)}
-          details={row.original}
+          detail={row.original as VendorDto}
         />
       )}
       <TableMenuAction>
