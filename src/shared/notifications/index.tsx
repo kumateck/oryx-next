@@ -3,6 +3,7 @@
 import {
   NotificationDto,
   useGetApiV1AlertNotificationsQuery,
+  usePutApiV1AlertByIdMarkAsReadMutation,
 } from "@/lib/redux/api/openapi.generated";
 import React from "react";
 import NotificationArea from "./sheet";
@@ -13,14 +14,16 @@ const NotificationSheet: React.FC = () => {
       unreadOnly: true,
     });
 
+  const [markAlertAsRead, { isLoading: isMarkingAsRead }] =
+    usePutApiV1AlertByIdMarkAsReadMutation();
+
   // Optional: Add mutation hooks for marking notifications as read
   // const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
   // const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      // Call your API to mark notification as read
-      // await markNotificationAsRead({ id }).unwrap();
+      await markAlertAsRead({ id }).unwrap();
       console.log(`Marking notification ${id} as read`);
     } catch (error) {
       console.error("Failed to mark notification as read:", error);
@@ -29,7 +32,10 @@ const NotificationSheet: React.FC = () => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      // Call your API to mark all notifications as read
+      const unReadIds = unReadNotifications?.map((n) => n.id) || [];
+      await Promise.all(
+        unReadIds.map((id) => markAlertAsRead({ id: id as string }).unwrap()),
+      );
       // await markAllNotificationsAsRead().unwrap();
       console.log("Marking all notifications as read");
     } catch (error) {
@@ -42,7 +48,7 @@ const NotificationSheet: React.FC = () => {
       unreadNotifications={unReadNotifications as NotificationDto[]}
       onMarkAsRead={handleMarkAsRead}
       onMarkAllAsRead={handleMarkAllAsRead}
-      isLoading={isLoading}
+      isLoading={isLoading || isMarkingAsRead}
     />
   );
 };
