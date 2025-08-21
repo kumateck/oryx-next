@@ -131,9 +131,22 @@ const Page = () => {
     });
   };
 
+  // const onSubmit = async () => {
+  //   try {
+  //     const body = findSelectedQuotation(state);
+  //     await saveProcess({
+  //       supplierType: type || SupplierType.Foreign,
+  //       body,
+  //     }).unwrap();
+  //     toast.success("Supplier Selected successfully");
+  //     handleLoadPriceComparison(type);
+  //   } catch (error) {
+  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
+  //   }
+  // };
   const onSubmit = async () => {
     try {
-      const body = findSelectedQuotation(state);
+      const body = findSelectedQuotation(state); // will throw if some missing
       await saveProcess({
         supplierType: type || SupplierType.Foreign,
         body,
@@ -141,7 +154,12 @@ const Page = () => {
       toast.success("Supplier Selected successfully");
       handleLoadPriceComparison(type);
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      // differentiate between validation vs API error
+      if (error instanceof Error && error.message.includes("Please select")) {
+        toast.error(error.message);
+      } else {
+        toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      }
     }
   };
   // Check Permision
