@@ -7,7 +7,10 @@ import {
   CardHeader,
   Icon,
 } from "@/components/ui";
-import { useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  MaterialReturnStatus,
+  useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
+} from "@/lib/redux/api/openapi.generated";
 // import { ListsTable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
@@ -83,7 +86,7 @@ function MaterialReturnsDetails() {
                 ? data?.fullReturns || []
                 : data?.partialReturns || []
             }
-            columns={columns}
+            columns={columns(data?.status as MaterialReturnStatus)}
           />
         </CardContent>
       </Card>
