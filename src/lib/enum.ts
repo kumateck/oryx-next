@@ -69,6 +69,8 @@ export enum CodeModelTypes {
   Item = "Item",
   ArNumberMaterial = "ArNumberMaterial",
   ArNumberProduct = "ArNumberProduct",
+  MaterialSTPNumber = "MaterialSTPNumber",
+  ProductSTPNumber = "ProductSTPNumber",
 }
 
 export enum ApprovalDocument {

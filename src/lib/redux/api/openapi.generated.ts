@@ -20616,6 +20616,7 @@ export type CreateShelfMaterialBatch = {
 };
 export type SupplyMaterialBatchRequest = {
   materialBatchId?: string;
+  materialReturnNoteId?: string | null;
   shelfMaterialBatches?: CreateShelfMaterialBatch[] | null;
 };
 export type MovedShelfBatchMaterial = {
