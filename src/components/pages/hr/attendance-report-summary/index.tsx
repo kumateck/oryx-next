@@ -30,6 +30,7 @@ const Page = () => {
   }, [triggerReload]);
 
   const data = result ?? [];
+
   console.log("Attendance Report Summary Data:", data);
 
   return (
