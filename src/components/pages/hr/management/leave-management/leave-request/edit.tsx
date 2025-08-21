@@ -86,8 +86,21 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
+      const exitPastOrOfficialDutyPayload = {
+        leaveTypeId: data.leaveTypeId?.value as string,
+        startDate: data?.startDate ? data.startDate.toISOString() : "",
+        endDate: data?.endDate ? data.endDate.toISOString() : "",
+        employeeId: data.employeeId.value,
+        destination: data.destination ?? "-",
+        requestCategory: Number(details.requestCategory) as RequestCategory,
+        justification: data.justification,
+      } satisfies CreateLeaveRequest;
+
       const leaveRequestId = await updateLeaveRequest({
-        createLeaveRequest: payload,
+        createLeaveRequest:
+          isExitPass || isOfficialDuty
+            ? exitPastOrOfficialDutyPayload
+            : payload,
         id: details.id as string,
         module: AuditModules.management.name,
         subModule: AuditModules.management.leaveManagement,
@@ -108,7 +121,9 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         //   body: formData,
         // } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
-      toast.success("Leave Request updated successfully");
+      toast.success(
+        `${splitWords(LeaveCategories[category])} leave request updated successfully`,
+      );
 
       dispatch(commonActions.setTriggerReload());
       reset();

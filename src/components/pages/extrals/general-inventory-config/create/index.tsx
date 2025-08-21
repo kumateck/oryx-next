@@ -19,7 +19,7 @@ import {
   PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
   useGetApiV1CollectionUomQuery,
-  useLazyGetApiV1ServicesQuery,
+  useLazyGetApiV1ItemsQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -41,7 +41,7 @@ export default Page;
 export function CreateInventoryItem() {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
-  const [loadCodeModelCount] = useLazyGetApiV1ServicesQuery();
+  const [loadCodeModelCount] = useLazyGetApiV1ItemsQuery();
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     module: AuditModules.general.name,
     subModule: AuditModules.general.collection,
@@ -110,6 +110,7 @@ export function CreateInventoryItem() {
     setValue("code", code ?? "");
   };
   const fetchCount = async () => {
+    console.log("Fetching code model count...");
     const countResponse = await loadCodeModelCount({}).unwrap();
     return { totalRecordCount: countResponse?.totalRecordCount };
   };
@@ -118,6 +119,7 @@ export function CreateInventoryItem() {
     fetchCount,
     setCodeToInput,
   );
+
   useEffect(() => {
     regenerateCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
