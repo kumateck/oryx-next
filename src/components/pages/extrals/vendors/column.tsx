@@ -31,7 +31,7 @@ export function DataTableRowActions<TData extends VendorDto>({
     <div className="flex items-center justify-end gap-2">
       {isEdit && (
         <Edit
-          open={isEdit}
+          isOpen={isEdit}
           onClose={() => setIsEdit(false)}
           details={row.original}
         />
