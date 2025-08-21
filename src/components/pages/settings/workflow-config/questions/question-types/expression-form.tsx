@@ -99,7 +99,7 @@ const ExpressionQuestionForm = ({
           <div className="flex flex-col gap-2">
             <span className="block text-sm">Type</span>
             <div className="h-8 rounded-2xl border w-full px-3 bg-neutral-bg flex items-center">
-              {QuestionTypeOptions[QuestionTypeOptions.length - 1].label}
+              {QuestionTypeOptions[selectedQType.value].label}
             </div>
           </div>
           <div>

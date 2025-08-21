@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
-import { Option } from "@/lib";
+import { Option, SupplierType } from "@/lib";
 // import { Icon } from "@/components/ui";
 import { ShipmentInvoiceDto } from "@/lib/redux/api/openapi.generated";
 import MultiSelectListViewer from "@/shared/multi-select-lists";
@@ -32,6 +32,22 @@ export const columns: ColumnDef<ShipmentInvoiceDto>[] = [
     accessorKey: "code",
     header: "Invoice No",
     cell: ({ row }) => <div className="min-w-36">{row.original.code}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: "Supplier Type",
+    cell: ({ row }) => (
+      <div className="min-w-36">
+        {SupplierType[Number(row.original.supplier?.type)]}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "supplier",
+    header: "Supplier",
+    cell: ({ row }) => (
+      <div className="min-w-36">{row.original.supplier?.name}</div>
+    ),
   },
   {
     accessorKey: "createdAt",
