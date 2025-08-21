@@ -24,6 +24,7 @@ import {
   SupplierType,
   cn,
   findSelectedQuotation,
+  findSelectedQuotationSubmit,
   isErrorResponse,
 } from "@/lib";
 import {
@@ -131,22 +132,10 @@ const Page = () => {
     });
   };
 
-  // const onSubmit = async () => {
-  //   try {
-  //     const body = findSelectedQuotation(state);
-  //     await saveProcess({
-  //       supplierType: type || SupplierType.Foreign,
-  //       body,
-  //     }).unwrap();
-  //     toast.success("Supplier Selected successfully");
-  //     handleLoadPriceComparison(type);
-  //   } catch (error) {
-  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
-  //   }
-  // };
   const onSubmit = async () => {
     try {
-      const body = findSelectedQuotation(state); // will throw if some missing
+      const body = findSelectedQuotationSubmit(state); // will throw if some missing
+
       await saveProcess({
         supplierType: type || SupplierType.Foreign,
         body,

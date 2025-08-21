@@ -68,7 +68,8 @@ function Index() {
       // const stockQuantity = productResponse.
       return {
         ...order,
-        approvedProducts,
+
+        // approvedProducts,
       };
     });
 
