@@ -1,8 +1,8 @@
 import { sanitizeNumber } from "@/lib";
-import { ApprovedProductDtoRead } from "@/lib/redux/api/openapi.generated";
+import { ApprovedProductDto } from "@/lib/redux/api/openapi.generated";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<ApprovedProductDtoRead>[] = [
+export const columns: ColumnDef<ApprovedProductDto>[] = [
   {
     accessorKey: "productName",
     header: "Product Name",

@@ -9,28 +9,75 @@ import {
   CardTitle,
   Icon,
 } from "@/components/ui";
-import { useLazyGetApiV1ProductionOrdersByIdQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  ProductionOrderDto,
+  useLazyGetApiV1ProductionOrdersByIdQuery,
+  useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery,
+  ApprovedProductDetailDtoRead,
+  FinishedGoodsTransferNoteDtoRead,
+} from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LoadingSkeleton from "./loadingSkeleton";
 import { format } from "date-fns";
 import { ListsTable } from "@/shared/datatable";
 import { columns } from "./columns";
-
+import OrderAllocation from "../allocation";
+export function filterApprovedFinishedGoods(
+  data: ApprovedProductDetailDtoRead,
+): ApprovedProductDetailDtoRead {
+  return {
+    ...data,
+    finishedGoodsTransferNotes: data.finishedGoodsTransferNotes?.filter(
+      (note: FinishedGoodsTransferNoteDtoRead) => note.isApproved === true,
+    ),
+  };
+}
 function Index() {
   const router = useRouter();
   const { id } = useParams();
-  const [loadProFormalInvoiceDetial, { data, isLoading }] =
+  const [loadProductionOrderById, { data, isLoading }] =
     useLazyGetApiV1ProductionOrdersByIdQuery();
-
+  const [loadApprovedProducts] =
+    useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery();
+  const [isOpenAllocation, setIsOpenAllocation] = useState(false);
+  const [orderData, setOrderData] = useState<ProductionOrderDto>();
+  // const [allocationData, setAllocationData] = useState<any>();
   useEffect(() => {
     if (id) {
-      loadProFormalInvoiceDetial({ id: id as string });
+      loadProductionOrderById({ id: id as string });
+      handleLoadData(id as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const handleLoadData = async (id: string) => {
+    const order = await loadProductionOrderById({ id }).unwrap();
+    setOrderData(order);
+    order.products?.map(async (order) => {
+      const productId = order?.product?.id as string;
+      const productResponse = await loadApprovedProducts({
+        productId,
+      }).unwrap();
+      const approvedProducts = filterApprovedFinishedGoods(
+        productResponse as ApprovedProductDetailDtoRead,
+      );
+      console.log(approvedProducts, "productResponse");
+      // const
+      // const stockQuantity = productResponse.
+      return {
+        ...order,
+
+        // approvedProducts,
+      };
+    });
+
+    // const products = await loadApprovedProducts({ id }).unwrap();
+    // setAllocationData(products);
+  };
+
+  console.log(orderData);
   if (isLoading) return <LoadingSkeleton />;
   return (
     <PageWrapper className="space-y-4">
@@ -43,7 +90,7 @@ function Index() {
         </div>
         <div className="flex items-center ml-auto gap-2">
           <Button
-            onClick={() => console.log(id)}
+            onClick={() => setIsOpenAllocation(true)}
             className="flex items-center gap-2"
           >
             <Icon name="Plus" />
@@ -94,6 +141,16 @@ function Index() {
         <CardContent>
           <ListsTable data={data?.products ?? []} columns={columns} />
         </CardContent>
+
+        {/* <PharmaceuticalInventoryForm /> */}
+        {isOpenAllocation && (
+          <OrderAllocation
+            isOpen={isOpenAllocation}
+            onClose={() => setIsOpenAllocation(false)}
+            orderedProduct={data?.products ?? []}
+            productionOrderId={data?.id as string}
+          />
+        )}
       </Card>
     </PageWrapper>
   );

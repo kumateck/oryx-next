@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { MaterialReturnNoteDtoRead } from "@/lib/redux/api/openapi.generated";
+import { MaterialReturnNoteDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { getEnumBadgeWithHexColors, MaterialReturnsStatus } from "@/lib";
 import StatusBadge from "@/shared/status-badge";
@@ -10,7 +10,7 @@ import StatusBadge from "@/shared/status-badge";
 //   [MaterialReturnsStatus.Rejected]: "bg-red-100 text-red-800",
 // };
 
-export const columns: ColumnDef<MaterialReturnNoteDtoRead>[] = [
+export const columns: ColumnDef<MaterialReturnNoteDto>[] = [
   {
     accessorKey: "productionSchedule",
     header: "Production Schedule",

@@ -245,7 +245,7 @@ import {
 import TimelineCard from "./card";
 import { TimelineItemProps } from "./type";
 import {
-  ProductionScheduleProductDtoRead,
+  ProductionScheduleProductDto,
   useGetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdQuery,
   useGetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdQuery,
   useLazyGetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdQuery,
@@ -258,7 +258,7 @@ interface Props {
   activityId: string;
   productId: string;
   scheduleId: string;
-  productInfo?: ProductionScheduleProductDtoRead;
+  productInfo?: ProductionScheduleProductDto;
 }
 
 const showProgress = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];

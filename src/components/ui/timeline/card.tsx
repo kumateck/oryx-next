@@ -327,7 +327,7 @@ import {
   splitWords,
 } from "@/lib";
 import {
-  ProductionScheduleProductDtoRead,
+  ProductionScheduleProductDto,
   ProductionStatus,
   useGetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdQuery,
   useGetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdQuery,
@@ -373,7 +373,7 @@ interface Props {
   productId?: string;
   scheduleId?: string;
   bmrStatus?: ProductBMRStatus;
-  productInfo?: ProductionScheduleProductDtoRead;
+  productInfo?: ProductionScheduleProductDto;
 }
 
 const TimelineCard = ({
