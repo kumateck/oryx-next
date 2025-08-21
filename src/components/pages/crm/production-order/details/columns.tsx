@@ -48,7 +48,9 @@ export const columns: ColumnDef<ProductionOrderProductsDto>[] = [
   {
     accessorKey: "unitPrice",
     header: "Unit Price",
-    cell: ({ row }) => <div className="">{row.original && "N/A"}</div>,
+    cell: ({ row }) => (
+      <div className="">{row.original.product?.name && "N/A"}</div>
+    ),
   },
   {
     accessorKey: "price",
