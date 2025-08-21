@@ -134,3 +134,20 @@ export const getGRNPrefix = (
   const yearCode = year.toString().slice(-2);
   return `${warehouse}/${type}/${yearCode}`;
 };
+
+interface STPOptions {
+  warehouse: string; // "BWH" or "NWH"
+  type: MaterialType | Stage; // "RM" or "PM"
+  serial: number; // e.g. 1 (auto-increment externally)
+}
+
+export function generateSTPNumber({ warehouse, type, serial }: STPOptions) {
+  const genCode = getSTPPrefix(warehouse, type);
+  const series = serial.toString().padStart(3, "0");
+
+  return `${genCode}/${series}`;
+}
+
+export const getSTPPrefix = (warehouse: string, type: MaterialType | Stage) => {
+  return `${warehouse}/${type}`;
+};

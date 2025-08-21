@@ -21,7 +21,7 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
-  MaterialBatchDto,
+  MaterialReturnNotePartialReturnDto,
   SupplyMaterialBatchRequest,
   useGetApiV1WarehouseRackByDepartmentQuery,
   usePostApiV1MaterialBatchSupplyMutation,
@@ -34,7 +34,7 @@ interface AssignLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
-  selectedBatch: MaterialBatchDto | null;
+  selectedBatch: MaterialReturnNotePartialReturnDto | null;
   kind?: EMaterialKind;
 }
 
@@ -45,6 +45,7 @@ const AssignLocationDialog = ({
   selectedBatch,
   kind,
 }: AssignLocationDialogProps) => {
+  console.log(selectedBatch, "selectedBatch");
   const [supplyShelf, { isLoading }] =
     usePostApiV1MaterialBatchSupplyMutation();
 
@@ -155,11 +156,10 @@ const AssignLocationDialog = ({
       //     }
 
       const SelectedUnit = convertToLargestUnit(
-        selectedBatch?.totalQuantity as number,
+        selectedBatch?.quantity as number,
         selectedBatch?.uoM?.symbol as Units,
       ).unit as Units;
       const payload = {
-        materialBatchId: selectedBatch.id,
         shelfMaterialBatches: data.locations.map((location) => ({
           warehouseLocationShelfId: location.shelfId.value,
           quantity: convertToSmallestUnit(location.quantity, SelectedUnit)

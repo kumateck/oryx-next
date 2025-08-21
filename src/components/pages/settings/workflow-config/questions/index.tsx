@@ -22,6 +22,7 @@ const PAGE_SIZE = 10; // or whatever your API page size is
 const QuestionCards = () => {
   const dispatch = useDispatch();
   const triggerReload = useSelector((state) => state.common.triggerReload);
+  const searchInput = useSelector((state) => state.common.searchInput);
   const [loadQuestions, { isLoading, isFetching }] =
     useLazyGetApiV1FormQuestionQuery();
   const [deleteMutation, { isLoading: isDeleting }] =
@@ -46,6 +47,7 @@ const QuestionCards = () => {
       const response = await loadQuestions({
         page,
         pageSize: PAGE_SIZE,
+        searchQuery: searchInput,
       }).unwrap();
       const loadedQuestions = response.data || [];
 
@@ -79,7 +81,7 @@ const QuestionCards = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerReload]);
+  }, [triggerReload, searchInput]);
 
   const onEdit = (details: QuestionDto) => {
     const payload = {

@@ -11,11 +11,12 @@ import {
   AuditModules,
   cn,
   CODE_SETTINGS,
+  CodeModelTypes,
   ErrorResponse,
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
 import {
@@ -25,6 +26,7 @@ import {
   CreateProductStandardTestProcedureRequest,
   usePostApiV1ProductStpsMutation,
   useGetApiV1ProductQuery,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   CreateStandardTestProcedureDto,
@@ -33,6 +35,7 @@ import {
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { generateSTPNumber, getSTPPrefix } from "@/lib/batch-gen";
 
 type Props = {
   isOpen: boolean;
@@ -47,9 +50,11 @@ export const Create = ({ isOpen, onClose }: Props) => {
     control,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<CreateStandardTestProcedureDto>({
     resolver: StandardTestProcedureValidator,
   });
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   //get products
   const { data: products } = useGetApiV1ProductQuery({
@@ -113,6 +118,30 @@ export const Create = ({ isOpen, onClose }: Props) => {
       value: product.id,
     };
   }) as Option[];
+
+  useEffect(() => {
+    handleGenerateStpNumber();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleGenerateStpNumber = async () => {
+    try {
+      const warehouse = "QCD/STP";
+      const type = "FP";
+
+      const prefix = getSTPPrefix(warehouse, type);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.ProductSTPNumber,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateSTPNumber({ warehouse, type, serial });
+
+      setValue("stpNumber", code);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
