@@ -98,6 +98,7 @@ const Create = ({ isOpen, onClose }: Props) => {
         item.availableQuantity as number,
       );
       setValue(`items.${index}.itemCode`, item.code as string);
+      setValue(`items.${index}.uomId`, item.unitOfMeasure?.id as string);
     }
   };
 
