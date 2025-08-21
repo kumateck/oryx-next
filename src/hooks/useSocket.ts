@@ -1,6 +1,7 @@
 import { NotificationData, SocketHookReturn } from "@/lib";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
+import { toast } from "sonner";
 
 export const useSocket = (
   onNotification?: (data: NotificationData) => void,
@@ -11,6 +12,7 @@ export const useSocket = (
   const handleNotification = useCallback(
     (data: NotificationData) => {
       console.log("📥 Received notification:", data);
+      toast.success(data.message?.message || "Notification received");
       if (onNotification) {
         onNotification(data);
       }
