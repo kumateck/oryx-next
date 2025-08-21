@@ -32,8 +32,8 @@ const JobeRequestForm = <TFieldValues extends FieldValues, TContext>({
   isLoadingEquipment,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-2 w-full">
+    <div className="w-full space-y-3">
+      <div className="flex items-center  gap-2 w-full">
         <FormWizard
           fieldWrapperClassName="flex-grow"
           config={[
