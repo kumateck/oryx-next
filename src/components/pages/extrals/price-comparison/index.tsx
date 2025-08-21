@@ -10,10 +10,18 @@ import {
   AccordionItem,
   AccordionTrigger,
   Button,
+  Icon,
+  Label,
   // Icon,
   RadioGroup,
+  RadioGroupItem,
 } from "@/components/ui";
-import { ProcurementType, SupplierType } from "@/lib";
+import {
+  cn,
+  InventoryRequisitionSource,
+  splitWords,
+  SupplierType,
+} from "@/lib";
 import {
   useLazyGetApiV1ProcurementInventoryPriceComparisonQuery,
   usePostApiV1RequisitionSourceQuotationProcessPurchaseOrderMutation,
@@ -23,13 +31,17 @@ import EmptyState from "@/shared/empty";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import SkeletonLoadingPage from "@/shared/skeleton-page-loader";
 import PageTitle from "@/shared/title";
-import { Quotations } from "./type";
+import { findSelectedQuotation, Quotations } from "./type";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
 
 const Page = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const type = searchParams.get("type") as unknown as SupplierType; // Extracts 'type' from URL
+  const type = searchParams.get(
+    "type",
+  ) as unknown as InventoryRequisitionSource; // Extracts 'type' from URL
 
   const pathname = usePathname();
 
@@ -59,11 +71,13 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
-  const handleLoadPriceComparison = async (type: SupplierType) => {
+  const handleLoadPriceComparison = async (
+    type: InventoryRequisitionSource,
+  ) => {
     setState([]);
     try {
       const response = await loadPrices({
-        source: type ?? SupplierType.Foreign,
+        source: type ?? InventoryRequisitionSource.TrustedVendor,
       }).unwrap();
       setState(() => []);
       const prices = response?.map((item) => {
@@ -92,44 +106,44 @@ const Page = () => {
     }
   };
 
-  // const onChange = (value: string, index: number) => {
-  //   setState((prev) => {
-  //     return prev?.map((item, idx) => {
-  //       if (idx === index) {
-  //         return {
-  //           ...item,
-  //           supplierQuotations: item?.supplierQuotations?.map((quote) => {
-  //             if (quote.supplierId === value) {
-  //               return {
-  //                 ...quote,
-  //                 selected: true,
-  //               };
-  //             }
-  //             return {
-  //               ...quote,
-  //               selected: false,
-  //             };
-  //           }),
-  //         };
-  //       }
-  //       return item;
-  //     });
-  //   });
-  // };
+  const onChange = (value: string, index: number) => {
+    setState((prev) => {
+      return prev?.map((item, idx) => {
+        if (idx === index) {
+          return {
+            ...item,
+            vendorQuotations: item?.vendorQuotations?.map((quote) => {
+              if (quote.vendorId === value) {
+                return {
+                  ...quote,
+                  selected: true,
+                };
+              }
+              return {
+                ...quote,
+                selected: false,
+              };
+            }),
+          };
+        }
+        return item;
+      });
+    });
+  };
 
-  // const onSubmit = async () => {
-  //   try {
-  //     const body = findSelectedQuotation(state);
-  //     await saveProcess({
-  //       supplierType: type || SupplierType.Foreign,
-  //       body,
-  //     }).unwrap();
-  //     toast.success("Supplier Selected successfully");
-  //     handleLoadPriceComparison(type);
-  //   } catch (error) {
-  //     toast.error(isErrorResponse(error as ErrorResponse)?.description);
-  //   }
-  // };
+  const onSubmit = async () => {
+    try {
+      // const body = findSelectedQuotation(state);
+      // await saveProcess({
+      //   sorce: type || SupplierType.Foreign,
+      //   body,
+      // }).unwrap();
+      toast.success("Vendor Selected successfully");
+      handleLoadPriceComparison(type);
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
 
   return (
     <PageWrapper className="w-full space-y-2 py-1">
@@ -140,18 +154,26 @@ const Page = () => {
           type={type}
           tabs={[
             {
-              label: ProcurementType.Foreign,
-              value: SupplierType.Foreign.toString(),
+              label: splitWords(
+                InventoryRequisitionSource[
+                  InventoryRequisitionSource.TrustedVendor
+                ],
+              ),
+              value: InventoryRequisitionSource.TrustedVendor.toString(),
             },
             {
-              label: ProcurementType.Local,
-              value: SupplierType.Local.toString(),
+              label: splitWords(
+                InventoryRequisitionSource[
+                  InventoryRequisitionSource.OpenMarket
+                ],
+              ),
+              value: InventoryRequisitionSource.OpenMarket.toString(),
             },
           ]}
         />
         <Button
-        // onClick={() => onSubmit()}
-        // disabled={findSelectedQuotation(state).length === 0}
+          onClick={() => onSubmit()}
+          disabled={findSelectedQuotation(state).length === 0}
         >
           {/* {isLoading && (
             <Icon name="LoaderCircle" className="animate-spin" size={16} />
@@ -171,23 +193,23 @@ const Page = () => {
               className="w-full"
               defaultValue={"group-0"}
             >
-              {state?.map((idx, index) => (
+              {state?.map((item, index) => (
                 <AccordionItem
-                  key={index + idx?.itemId}
+                  key={index + item?.itemId}
                   value={`group-${index}`}
                   className="shadow-shadow2a rounded-2xl bg-white"
                 >
                   <AccordionTrigger className="w-full gap-4 px-5">
                     <div>
-                      {/* {item?.materialCode} - {item?.materialName} */}
+                      {item.itemCode} - {item?.itemName}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="border-t bg-white p-5">
                     <RadioGroup
                       className="flex flex-col gap-6 lg:flex-row"
-                      // onValueChange={(v) => onChange(v, idx)}
+                      onValueChange={(v) => onChange(v, index)}
                     >
-                      {/* {item?.supplierQuotations?.map((quote, index) => (
+                      {item?.vendorQuotations?.map((quote, index) => (
                         <div
                           key={index}
                           className={cn(
@@ -201,7 +223,7 @@ const Page = () => {
                           <Label className="flex items-center space-x-4">
                             <div className="flex-shrink-0">
                               <RadioGroupItem
-                                value={quote?.supplierId}
+                                value={quote?.vendorId}
                                 id="newPassport"
                                 className="h-8 w-8"
                                 checked={quote?.selected}
@@ -214,7 +236,7 @@ const Page = () => {
                             </div>
                             <div className="space-y-6">
                               <h3 className="text-xl font-semibold capitalize">
-                                {quote?.supplierName}
+                                {quote?.vendorName}
                               </h3>
                               <p className="text-muted-foreground text-sm capitalize leading-normal">
                                 {quote?.price}
@@ -222,7 +244,7 @@ const Page = () => {
                             </div>
                           </Label>
                         </div>
-                      ))} */}
+                      ))}
                     </RadioGroup>
                   </AccordionContent>
                 </AccordionItem>

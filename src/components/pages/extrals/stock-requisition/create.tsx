@@ -42,7 +42,6 @@ const Create = ({ isOpen, onClose }: VendorFormProps) => {
     const res = await loadItems({
       searchQuery,
       page,
-      store: 2,
     }).unwrap();
     const response = {
       options: res?.data?.map((item) => ({

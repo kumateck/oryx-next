@@ -1,17 +1,17 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import Link from "next/link";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog, DropdownMenuItem, Icon } from "@/components/ui";
-import { ErrorResponse, SupplierStatus, isErrorResponse, routes } from "@/lib";
+import { ErrorResponse, SupplierStatus, isErrorResponse } from "@/lib";
 import {
   useDeleteApiV1VendorsByIdMutation,
   VendorDto,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 import { TableMenuAction } from "@/shared/table-menu";
+import Edit from "./edit";
 
 // import Edit from "./edit";
 
@@ -23,24 +23,30 @@ export function DataTableRowActions<TData extends VendorDto>({
 }: DataTableRowActionsProps<TData>) {
   const dispatch = useDispatch();
   const [deleteMutation] = useDeleteApiV1VendorsByIdMutation();
-  // const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState<VendorDto>({} as VendorDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  // check permissions access
+  const [isEdit, setIsEdit] = useState(false);
 
   return (
     <div className="flex items-center justify-end gap-2">
+      {isEdit && (
+        <Edit
+          isOpen={isEdit}
+          onClose={() => setIsEdit(false)}
+          detail={row.original as VendorDto}
+        />
+      )}
       <TableMenuAction>
         <DropdownMenuItem className="group">
-          <Link
+          <div
             className="flex cursor-pointer items-center justify-start gap-2"
-            href={routes.editSupplier(row.original.id as string)}
+            onClick={() => setIsEdit(true)}
           >
             <span className="text-black">
               <Icon name="Pencil" className="h-5 w-5 text-neutral-500" />
             </span>
             <span>Edit</span>
-          </Link>
+          </div>
         </DropdownMenuItem>
         <DropdownMenuItem className="group">
           <div

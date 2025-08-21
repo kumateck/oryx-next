@@ -23,11 +23,11 @@ import { EMaterialKind } from "@/lib";
 import {
   CreateMaterialStandardTestProcedureRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
-  useGetApiV1MaterialQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1MaterialStpsMutation,
   PostApiV1MaterialStpsApiArg,
   useLazyGetApiV1ConfigurationByModelTypeCountQuery,
+  useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
   CreateStandardTestProcedureDto,
@@ -59,13 +59,29 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
   const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   //get materials
-  const { data: materials } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 1000,
-    kind: kind || EMaterialKind.Raw,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
+  const [loadMaterials, { isLoading: isLoadingMaterials }] =
+    useLazyGetApiV1MaterialQuery();
+  const loadDataOrSearchMaterials = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadMaterials({
+      searchQuery,
+      kind: kind || EMaterialKind.Raw,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.materials,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((equipment) => ({
+        label: equipment?.name,
+        value: equipment.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
   const [createStandardTestProcedure, { isLoading }] =
     usePostApiV1MaterialStpsMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
@@ -111,13 +127,6 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
       );
     }
   };
-  const data = materials?.data;
-  const materialOptions = data?.map((material) => {
-    return {
-      label: material.name,
-      value: material.id,
-    };
-  }) as Option[];
 
   useEffect(() => {
     handleGenerateStpNumber(Number(kind));
@@ -154,7 +163,8 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
             errors={errors}
             register={register}
             control={control}
-            materialsOptions={materialOptions}
+            isLoadingMaterials={isLoadingMaterials}
+            fetchMaterials={loadDataOrSearchMaterials}
           />
           <DialogFooter className="justify-end gap-4 py-6">
             <Button type="button" variant="secondary" onClick={onClose}>

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui";
 import {
   PostApiV1FileByModelTypeAndModelIdApiArg,
-  useGetApiV1MaterialQuery,
+  useLazyGetApiV1MaterialQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialStpsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -23,6 +23,7 @@ import {
   AuditModules,
   cn,
   CODE_SETTINGS,
+  EMaterialKind,
   ErrorResponse,
   isErrorResponse,
   Option,
@@ -30,6 +31,7 @@ import {
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   isOpen: boolean;
@@ -43,6 +45,8 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
     usePutApiV1MaterialStpsByIdMutation();
   const [uploadAttachment] = usePostApiV1FileByModelTypeAndModelIdMutation();
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const kind = searchParams.get("kind") as unknown as EMaterialKind;
 
   //useForm hook
   const {
@@ -61,21 +65,29 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
   });
 
   //get materials
-  const { data: materials } = useGetApiV1MaterialQuery({
-    page: 1,
-    pageSize: 1000,
-    kind: 0,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
-  //format to match the select component options
-  const data = materials?.data;
-  const materialOptions = data?.map((material) => {
-    return {
-      label: material.name,
-      value: material.id,
+  const [loadMaterials, { isLoading: isLoadingMaterials }] =
+    useLazyGetApiV1MaterialQuery();
+  const loadDataOrSearchMaterials = async (
+    searchQuery: string,
+    page: number,
+  ) => {
+    const res = await loadMaterials({
+      searchQuery,
+      kind: kind || EMaterialKind.Raw,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.materials,
+      page,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((equipment) => ({
+        label: equipment?.name,
+        value: equipment.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
     };
-  }) as Option[];
+    return response;
+  };
 
   //function for editing standard test procedure
   const onSubmit = async (data: CreateStandardTestProcedureDto) => {
@@ -130,7 +142,8 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
             register={register}
             control={control}
             errors={errors}
-            materialsOptions={materialOptions}
+            fetchMaterials={loadDataOrSearchMaterials}
+            isLoadingMaterials={isLoadingMaterials}
           />
           <DialogFooter>
             <Button
