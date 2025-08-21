@@ -66,6 +66,11 @@ export function DataTableRowActions<TData extends MaterialSpecificationDto>({
 
 export const columns: ColumnDef<MaterialSpecificationDto>[] = [
   {
+    accessorKey: "materialCode",
+    header: "Material Code",
+    cell: ({ row }) => <div>{row.original.material?.code}</div>,
+  },
+  {
     accessorKey: "materialName",
     header: "Material Name",
     cell: ({ row }) => <div>{row.original.material?.name}</div>,

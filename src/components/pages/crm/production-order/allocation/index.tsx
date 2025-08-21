@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { ErrorResponse, isErrorResponse } from "@/lib";
+import { ErrorResponse, isErrorResponse, Option } from "@/lib";
 
 import {
   ProductionOrderProductsDto,
@@ -90,7 +90,14 @@ const OrderAllocation = ({
           </Button>
         </div>
         <div className="py-5">
-          <PharmaceuticalInventoryForm />
+          <PharmaceuticalInventoryForm
+            productOptions={
+              orderedProduct?.map((item) => ({
+                label: item.product?.name,
+                value: item.product?.id,
+              })) as Option[]
+            }
+          />
           {/* <TableForData
             lists={purchaseLists}
             setItemLists={setPurchaseLists}
