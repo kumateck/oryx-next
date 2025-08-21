@@ -76,13 +76,12 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                   errors,
                 },
                 {
-                  label: "Minimum Level",
-                  type: InputTypes.NUMBER,
-                  placeholder: "Minimum Level",
+                  label: "Description",
+                  type: InputTypes.TEXTAREA,
+                  placeholder: "Enter Description",
+                  register: register("description" as Path<TFieldValues>),
+                  rows: 4,
                   required: true,
-                  register: register("minimumLevel" as Path<TFieldValues>, {
-                    valueAsNumber: true,
-                  }),
                   errors,
                 },
               ]}
@@ -122,15 +121,7 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                       })),
                     errors,
                   },
-                  {
-                    label: "Description",
-                    type: InputTypes.TEXTAREA,
-                    placeholder: "Enter Description",
-                    register: register("description" as Path<TFieldValues>),
-                    rows: 4,
-                    required: true,
-                    errors,
-                  },
+
                   {
                     label: "Reorder Level",
                     type: InputTypes.NUMBER,
@@ -141,28 +132,18 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                     }),
                     errors,
                   },
+                  {
+                    label: "Minimum Level",
+                    type: InputTypes.NUMBER,
+                    placeholder: "Minimum Level",
+                    required: true,
+                    register: register("minimumLevel" as Path<TFieldValues>, {
+                      valueAsNumber: true,
+                    }),
+                    errors,
+                  },
                 ]}
               />
-              <div className="space-y-1">
-                <label htmlFor="isActive">Batch Number</label>
-                <div className="flex w-fit items-center justify-center gap-2">
-                  <FormWizard
-                    config={[
-                      {
-                        label: "Active",
-                        type: InputTypes.SWITCH,
-                        placeholder: "active",
-                        control: control as Control,
-
-                        required: true,
-                        name: "isActive",
-                        errors,
-                      },
-                    ]}
-                  />
-                  <span className="-mt-2">Required</span>
-                </div>
-              </div>
             </div>
           </div>
         </CardContent>
