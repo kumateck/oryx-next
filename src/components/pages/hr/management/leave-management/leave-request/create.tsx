@@ -87,8 +87,22 @@ const LeaveRequest = ({
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
+      const exitPastOrOfficialDutyPayload = {
+        leaveTypeId: data.leaveTypeId?.value as string,
+        startDate: data?.startDate ? data.startDate.toISOString() : "",
+        endDate: data?.endDate ? data.endDate.toISOString() : "",
+        employeeId: data.employeeId.value,
+        destination: data.destination ?? "-",
+        requestCategory:
+          (Number(category) as RequestCategory) ?? (0 as RequestCategory),
+        justification: data.justification,
+      } satisfies CreateLeaveRequest;
+
       const leaveRequestId = await createLeaveRequest({
-        createLeaveRequest: payload,
+        createLeaveRequest:
+          isExitPass || isOfficialDuty
+            ? exitPastOrOfficialDutyPayload
+            : payload,
         module: AuditModules.management.name,
         subModule: AuditModules.management.leaveManagement,
       } as PostApiV1LeaveRequestApiArg).unwrap();
