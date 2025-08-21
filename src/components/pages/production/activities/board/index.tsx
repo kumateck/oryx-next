@@ -10,7 +10,7 @@ import { TimelineItemProps } from "@/components/ui/timeline/type";
 import { AuditModules, fullname, OperationAction } from "@/lib";
 import {
   ProductionActivityDto,
-  ProductionScheduleProductDtoRead,
+  ProductionScheduleProductDto,
   useLazyGetApiV1ProductionScheduleActivityByProductionActivityIdQuery,
   useLazyGetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -29,7 +29,7 @@ const Board = () => {
     TimelineItemProps[]
   >([]);
   const [productInfo, setProductInfo] =
-    React.useState<ProductionScheduleProductDtoRead>();
+    React.useState<ProductionScheduleProductDto>();
   const [activityInfo, setActivityInfo] =
     React.useState<ProductionActivityDto>();
   const [loadActivity, { isLoading, isFetching }] =
