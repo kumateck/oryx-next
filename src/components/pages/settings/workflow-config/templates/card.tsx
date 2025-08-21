@@ -34,6 +34,7 @@ const TemplateCard = ({ template, number, onDelete, isDeleting }: Props) => {
             <div>
               <StatusBadge label={label} style={style} />
             </div>
+            <div></div>
           </div>
 
           <div className="flex w-2/6 items-center justify-center gap-1 px-2">
