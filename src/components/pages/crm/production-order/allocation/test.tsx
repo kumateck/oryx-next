@@ -3,6 +3,7 @@
 import { Button, Input } from "@/components/ui";
 import { SpecialSelect } from "@/components/ui/special-select";
 import { Option } from "@/lib";
+import { useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery } from "@/lib/redux/api/openapi.generated";
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 
@@ -76,7 +77,10 @@ const PRODUCTS_DATA: Product[] = [
   },
 ];
 
-export default function PharmaceuticalInventoryForm() {
+interface Props {
+  productOptions: Option[];
+}
+const PharmaceuticalInventoryForm = ({ productOptions }: Props) => {
   const { control, register, watch, setValue, handleSubmit } =
     useForm<FormData>({
       defaultValues: {
@@ -128,9 +132,20 @@ export default function PharmaceuticalInventoryForm() {
       0,
     );
   };
+  const [loadApprovedProducts] =
+    useLazyGetApiV1ProductionScheduleApprovedProductsProductByProductIdQuery();
 
+  const handleLoadBatches = async (productId: string) => {
+    try {
+      const response = await loadApprovedProducts({
+        productId,
+      }).unwrap();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [selectedProduct, setSelectedProduct] = React.useState<Option>();
-  const productOptions = [];
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white">
@@ -139,22 +154,24 @@ export default function PharmaceuticalInventoryForm() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Add Product:
           </label>
-          <SpecialSelect
-            value={selectedProduct}
-            onChange={(option) => {
-              //   addProduct(option.value);
-              setSelectedProduct(option);
-            }}
-            placeholder={"Select a product"}
-            options={productOptions}
-          />
-          <SpecialSelect
-            onChange={(option) => {
-              addProduct(option.value);
-            }}
-            placeholder={"Select a Batch"}
-            options={productOptions}
-          />
+          <div className="flex gap-4 items-center">
+            <SpecialSelect
+              value={selectedProduct}
+              onChange={(option) => {
+                handleLoadBatches(option.value);
+                setSelectedProduct(option);
+              }}
+              placeholder={"Select a product"}
+              options={productOptions}
+            />
+            <SpecialSelect
+              onChange={(option) => {
+                addProduct(option.value);
+              }}
+              placeholder={"Select a Batch"}
+              options={productOptions}
+            />
+          </div>
         </div>
       </div>
 
@@ -305,4 +322,5 @@ export default function PharmaceuticalInventoryForm() {
       </div>
     </div>
   );
-}
+};
+export default PharmaceuticalInventoryForm;

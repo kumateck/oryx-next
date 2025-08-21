@@ -23,11 +23,13 @@ import {
   useGetApiV1FormQuery,
   useGetApiV1MaterialMaterialSpecsNotLinkedQuery,
   useGetApiV1UserQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   usePostApiV1MaterialSpecificationsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import PageTitle from "@/shared/title";
 import { useSelector } from "@/lib/redux/store";
+import { useEffect } from "react";
 
 function Page() {
   return (
@@ -56,13 +58,14 @@ export function MaterialSpecPage() {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<CreateMaterialSpecificationDto>({
     resolver: CreateMaterialSpecificationValidator,
   });
 
   const materialOptions =
     materials?.map((material) => ({
-      label: material?.name as string,
+      label: `${material?.name} (${material?.code})` as string,
       value: material?.id as string,
     })) || [];
 
@@ -120,6 +123,36 @@ export function MaterialSpecPage() {
     name: "assignSpec",
     control,
   }) as boolean;
+
+  const selectedMaterial = useWatch<CreateMaterialSpecificationDto>({
+    name: "materialId",
+    control,
+  }) as Option;
+
+  const [checkMaterialInSpec] =
+    useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+  useEffect(() => {
+    if (selectedMaterial) {
+      handleMaterialSpecChecker(selectedMaterial.value);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMaterial]);
+
+  const handleMaterialSpecChecker = async (id: string) => {
+    try {
+      const res = await checkMaterialInSpec({
+        id,
+      }).unwrap();
+      console.log(res);
+
+      if (res) {
+        setValue("materialId", { value: "", label: "" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //load forms template
   const { data: formTemplates } = useGetApiV1FormQuery({
     page: 1,
