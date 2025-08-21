@@ -92,6 +92,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
           items: data.items.map((item) => ({
             itemId: item.itemId.value,
             quantity: item.orderQuantity,
+            uoMId: item.uomId,
           })),
         },
       }).unwrap();
@@ -112,6 +113,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
         item.availableQuantity as number,
       );
       setValue(`items.${index}.itemCode`, item.code as string);
+      setValue(`items.${index}.uomId`, item.unitOfMeasure?.id as string);
     }
   };
 

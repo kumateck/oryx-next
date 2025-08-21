@@ -11,9 +11,9 @@ const createJobRequestSchema = z.object({
     label: z.string().min(1, "Equipment label is required"),
     value: z.string().uuid("Invalid Equipment ID"),
   }),
-  dateOfIssue: z.string().datetime("Invalid date format"),
+  dateOfIssue: z.date(),
   descriptionOfWork: z.string().min(1, "Description is required"),
-  preferredCompletionDate: z.string().datetime("Invalid date format"),
+  preferredCompletionDate: z.date(),
 });
 
 export type CreateJobRequestDto = z.infer<typeof createJobRequestSchema>;
