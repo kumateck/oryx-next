@@ -36,18 +36,12 @@ const OrderAllocation = ({
   const [saveMutation, { isLoading }] =
     usePostApiV1ProductionScheduleAllocateProductsMutation();
 
-  // const [purchaseLists, setPurchaseLists] = useState<ExtendedOrderedProduct[]>(
-  //   orderedProduct?.map((item) => ({
-  //     ...item,
-  //     quantity: 0,
-  //   })),
-  // );
-
   const onSubmit = async () => {
     try {
       await saveMutation({
         allocateProductionOrderRequest: {
           productionOrderId,
+          products: [],
         },
       }).unwrap();
 
@@ -90,12 +84,11 @@ const OrderAllocation = ({
           </Button>
         </div>
         <div className="py-5">
-          <PharmaceuticalInventoryForm />
-          {/* <TableForData
-            lists={purchaseLists}
-            setItemLists={setPurchaseLists}
-            defaultColumns={getPurchaseColumns(setPurchaseLists)}
-          /> */}
+          <PharmaceuticalInventoryForm
+            productOptions={orderedProduct}
+            productionOrderId={productionOrderId as string}
+            onClose={onClose}
+          />
         </div>
       </DialogContent>
     </Dialog>
