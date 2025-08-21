@@ -82,7 +82,8 @@ const LeaveRequest = ({
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "",
         destination: data.destination ?? "-",
-        requestCategory: Number(category) ?? (0 as RequestCategory),
+        requestCategory:
+          (Number(category) as RequestCategory) ?? (0 as RequestCategory),
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 
