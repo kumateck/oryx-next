@@ -78,7 +78,7 @@ const Create = ({ isOpen, onClose }: Props) => {
           items: data.items.map((item) => ({
             itemId: item.itemId.value,
             quantity: item.orderQuantity,
-            // uoMId: item.uoMId,
+            uoMId: item.uomId,
           })),
         },
       }).unwrap();

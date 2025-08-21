@@ -20,6 +20,7 @@ import Edit from "./edit";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -139,9 +140,10 @@ export const columns: ColumnDef<DepartmentDto>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    cell: ({ row }) => (
+      <TheAduseiEditorViewer content={row.original?.description as string} />
+    ),
   },
-
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

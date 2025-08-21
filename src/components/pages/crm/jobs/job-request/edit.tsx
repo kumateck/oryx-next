@@ -89,13 +89,13 @@ const Edit = ({ isOpen, onClose }: Props) => {
     //TODO: use the right function when available
     try {
       const payload: CreateJobRequest = {
-        dateOfIssue: data.dateOfIssue,
+        dateOfIssue: data.dateOfIssue.toISOString(),
         departmentId: data.departmentId.value,
         equipmentId: data.equipmentId.value,
         descriptionOfWork: data.descriptionOfWork,
         issuedById: "",
         location: data.location,
-        preferredCompletionDate: data.preferredCompletionDate,
+        preferredCompletionDate: data.preferredCompletionDate.toISOString(),
       };
       await createJobRequest({
         createJobRequest: payload,

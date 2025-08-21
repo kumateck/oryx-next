@@ -17,12 +17,16 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const data = result || [];
+
   return (
     <PageWrapper>
       {isOpen && <Create isOpen={isOpen} onClose={() => setIsOpen(false)} />}
       <div className="flex items-center justify-between gap-2 w-full">
         <PageTitle title="Job Request" />
-        <Button className="whitespace-nowrap flex gap-2">
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="whitespace-nowrap flex gap-2"
+        >
           <Icon name="Plus" />
           <span>Create</span>
         </Button>

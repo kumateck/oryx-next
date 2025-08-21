@@ -110,7 +110,6 @@ function CreateProductionOrder({ open, onClose }: Props) {
     setValue("code", code ?? "");
   };
   const fetchCount = async () => {
-    console.log("generating code now");
     const countResponse = await loadCodeModelCount({}).unwrap();
     return { totalRecordCount: countResponse?.totalRecordCount };
   };

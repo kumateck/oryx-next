@@ -141,6 +141,11 @@ export const ROUTES: Route[] = [
         ],
       },
       {
+        icon: "ReceiptJapaneseYen",
+        title: "Rejected Area",
+        url: "/warehouse/rejected-area",
+      },
+      {
         title: "Material Requests",
         icon: "FilePenLine",
         items: [
