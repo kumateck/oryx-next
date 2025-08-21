@@ -41,7 +41,6 @@ const Page = () => {
         <PageTitle title="Purchase Requisitions Sourcing" />
         <div className="flex items-center justify-end gap-2"></div>
       </div>
-
       <ServerDatatable
         data={data}
         columns={columns}

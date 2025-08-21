@@ -380,6 +380,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "Job Request",
+        url: "/crm/jobs/job-request",
+        icon: "UserRoundPlus",
+        isActive: false,
+      },
+      {
         title: "Production Order",
         url: "/crm/production-order",
         icon: "Factory",

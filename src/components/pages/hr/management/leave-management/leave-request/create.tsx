@@ -82,9 +82,7 @@ const LeaveRequest = ({
         contactPerson: data.contactPerson ?? "-",
         contactPersonNumber: data.contactPersonNumber ?? "",
         destination: data.destination ?? "-",
-        requestCategory: parseInt(
-          data?.leaveCategory ?? "0",
-        ) as RequestCategory,
+        requestCategory: Number(category) ?? (0 as RequestCategory),
         justification: data.justification,
       } satisfies CreateLeaveRequest;
 

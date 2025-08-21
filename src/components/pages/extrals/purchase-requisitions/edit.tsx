@@ -102,9 +102,6 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
-    console.log(data, "Venders form data");
-    reset();
-    onClose();
   };
 
   const handleItemsChange = (index: number, selecte: { value: string }) => {

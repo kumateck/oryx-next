@@ -1,5 +1,6 @@
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
+import { InputTypes } from "@/lib";
 import {
   Control,
   Path,
@@ -12,12 +13,14 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
-  materialsOptions: Option[];
+  isLoadingMaterials: boolean;
+  fetchMaterials: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
-  materialsOptions,
+  isLoadingMaterials,
+  fetchMaterials,
   control,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -28,11 +31,12 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Select Material",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "materialId",
             required: true,
+            isLoading: isLoadingMaterials,
             placeholder: "Select Material",
-            options: materialsOptions,
+            fetchOptions: fetchMaterials,
             errors,
           },
         ]}
