@@ -18,7 +18,7 @@ import {
   Units,
   convertToLargestUnit,
 } from "@/lib";
-import { MaterialBatchDto } from "@/lib/redux/api/openapi.generated";
+import { MaterialReturnNotePartialReturnDto } from "@/lib/redux/api/openapi.generated";
 
 interface FormProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -26,7 +26,7 @@ interface FormProps<TFieldValues extends FieldValues> {
   errors: FieldErrors<TFieldValues>;
   rackOptions: Option[];
   // shelfOptions: Option[];
-  selectedBatch: MaterialBatchDto | null;
+  selectedBatch: MaterialReturnNotePartialReturnDto | null;
   shelfOptionsMap: OptionMap;
   typeValues: Option[];
 }
@@ -59,25 +59,25 @@ const AssignLocationForm = <TFieldValues extends FieldValues>({
           <div>
             <span className="block text-gray-500">Material Name</span>
             <span className="block font-bold">
-              {selectedBatch?.checklist?.material?.name || "N/A"}
+              {selectedBatch?.material?.name || "N/A"}
             </span>
           </div>
           <div>
             <span className="block text-gray-500">Batch Number</span>
             <span className="block font-bold">
-              {selectedBatch?.batchNumber || "N/A"}
+              {/* {selectedBatch?.batchNumber || "N/A"} */}
             </span>
           </div>
           <div>
             <span className="block text-gray-500">Remaining Quantity</span>
             <span className="block font-bold">
               {convertToLargestUnit(
-                selectedBatch?.quantityUnassigned as number,
+                selectedBatch?.quantity as number,
                 selectedBatch?.uoM?.symbol as Units,
               ).value +
                 "" +
                 convertToLargestUnit(
-                  selectedBatch?.quantityUnassigned as number,
+                  selectedBatch?.quantity as number,
                   selectedBatch?.uoM?.symbol as Units,
                 ).unit || "N/A"}
             </span>

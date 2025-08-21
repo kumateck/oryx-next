@@ -11,11 +11,12 @@ import {
   AuditModules,
   cn,
   CODE_SETTINGS,
+  CodeModelTypes,
   ErrorResponse,
   isErrorResponse,
   Option,
 } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StandardTestForm } from "./form";
 import { EMaterialKind } from "@/lib";
@@ -25,6 +26,7 @@ import {
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1MaterialStpsMutation,
   PostApiV1MaterialStpsApiArg,
+  useLazyGetApiV1ConfigurationByModelTypeCountQuery,
   useLazyGetApiV1MaterialQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -34,6 +36,7 @@ import {
 import { toast } from "sonner";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
+import { generateSTPNumber, getSTPPrefix } from "@/lib/batch-gen";
 
 type Props = {
   isOpen: boolean;
@@ -49,9 +52,11 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
     control,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<CreateStandardTestProcedureDto>({
     resolver: StandardTestProcedureValidator,
   });
+  const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
 
   //get materials
   const [loadMaterials, { isLoading: isLoadingMaterials }] =
@@ -120,6 +125,30 @@ export const Create = ({ isOpen, kind, onClose }: Props) => {
         isErrorResponse(error as ErrorResponse)?.description ||
           "Failed to create STP",
       );
+    }
+  };
+
+  useEffect(() => {
+    handleGenerateStpNumber(Number(kind));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind]);
+
+  const handleGenerateStpNumber = async (kind: EMaterialKind) => {
+    try {
+      const warehouse = "QCD/STP";
+      const type = kind === EMaterialKind.Raw ? "RM" : "PM";
+
+      const prefix = getSTPPrefix(warehouse, type);
+      const countConfigResponse = await loadCountConfig({
+        modelType: CodeModelTypes.MaterialSTPNumber,
+        prefix,
+      }).unwrap();
+      const serial = countConfigResponse + 1;
+      const code = generateSTPNumber({ warehouse, type, serial });
+
+      setValue("stpNumber", code);
+    } catch (error) {
+      console.log(error);
     }
   };
 

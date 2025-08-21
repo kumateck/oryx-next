@@ -48,7 +48,8 @@ export const StandardTestForm = <TFieldValues extends FieldValues, TContext>({
             register: register("stpNumber" as Path<TFieldValues>),
             type: InputTypes.TEXT,
             required: true,
-            placeholder: "STP123557",
+            readOnly: true,
+            placeholder: "",
             errors,
           },
         ]}
