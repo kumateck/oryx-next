@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductionOrderProductsDto } from "@/lib/redux/api/openapi.generated";
+import { sanitizeNumber } from "@/lib";
 // import { ProductionOrderType } from "@/lib";
 
 export const columns: ColumnDef<ProductionOrderProductsDto>[] = [
@@ -28,34 +29,48 @@ export const columns: ColumnDef<ProductionOrderProductsDto>[] = [
     accessorKey: "quantity",
     header: "Quantity",
     cell: ({ row }) => (
-      <div className="">{row.original?.totalOrderQuantity ?? "N/A"}</div>
+      <div className="">{row.original?.totalOrderQuantity}</div>
     ),
   },
   {
     accessorKey: "Volume",
     header: "Volume Per Pieces",
     cell: ({ row }) => (
-      <div className="">{row.original?.volumePerPiece ?? "N/A"}</div>
+      <div className="">{row.original?.product?.basePackingQuantity}</div>
     ),
   },
   {
     accessorKey: "totalBatches",
     header: "Total Batches",
-    cell: ({ row }) => (
-      <div className="">{row.original?.totalBatches ?? "N/A"}</div>
-    ),
+    cell: ({ row }) => {
+      const totalBatches =
+        (sanitizeNumber(row.original.totalOrderQuantity) *
+          sanitizeNumber(row.original?.product?.basePackingQuantity)) /
+        sanitizeNumber(row.original?.product?.fullBatchSize);
+      return <div className="">{totalBatches}</div>;
+    },
   },
   {
-    accessorKey: "unitPrice",
-    header: "Unit Price",
+    accessorKey: "packPerShipper",
+    header: "Pack Per Shipper",
     cell: ({ row }) => (
-      <div className="">{row.original.product?.name && "N/A"}</div>
+      <div className="">{row.original.product?.packPerShipper}</div>
     ),
   },
   {
     accessorKey: "price",
-    header: "Price",
-    cell: ({ row }) => <div className="">{row.original && "N/A"}</div>,
+    header: "Unit Price",
+    cell: ({ row }) => <div className="">{row.original.product?.price}</div>,
+  },
+  {
+    accessorKey: "cost",
+    header: "Total Cost",
+    cell: ({ row }) => {
+      const totalcost =
+        sanitizeNumber(row.original.totalOrderQuantity) *
+        sanitizeNumber(row.original.product?.price);
+      return <div className="">{totalcost}</div>;
+    },
   },
   {
     accessorKey: "status",

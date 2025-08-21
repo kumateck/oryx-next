@@ -396,52 +396,107 @@ export const cleanArrayObject = (fitItems: Option[]) => {
   return cleanedArray;
 };
 
+// export const findSelectedQuotation = (state: Quotations[]) => {
+//   const data = state
+//     ?.map((item) => {
+//       const selected = item?.supplierQuotations?.find((p) => p?.selected);
+//       return {
+//         materialId: item?.materialId,
+//         quantity: item?.quantity,
+//         uomId: item?.uomId,
+//         supplierId: selected?.supplierId,
+//         price: selected?.price,
+//         sourceRequisitionId: selected?.sourceRequisitionId,
+//       };
+//     })
+//     .filter((item) => item?.supplierId);
+//   const grouped: { [key: string]: GroupedBySupplier } = {};
+
+//   data.forEach((item) => {
+//     const {
+//       supplierId,
+//       materialId,
+//       uomId,
+//       quantity,
+//       price,
+//       sourceRequisitionId,
+//     } = item;
+//     const supplier = supplierId as string;
+//     const pricePerUnit = price as number;
+//     if (!grouped[supplier]) {
+//       grouped[supplier] = {
+//         supplierId: supplier,
+//         sourceRequisitionId: sourceRequisitionId as string,
+//         items: [],
+//       };
+//     }
+
+//     grouped[supplier].items.push({
+//       materialId,
+//       uomId,
+//       quantity,
+//       price: pricePerUnit,
+//     });
+//   });
+
+//   return Object.values(grouped);
+// };
+
 export const findSelectedQuotation = (state: Quotations[]) => {
-  const data = state
-    ?.map((item) => {
-      const selected = item?.supplierQuotations?.find((p) => p?.selected);
-      return {
-        materialId: item?.materialId,
-        quantity: item?.quantity,
-        uomId: item?.uomId,
-        supplierId: selected?.supplierId,
-        price: selected?.price,
-        sourceRequisitionId: selected?.sourceRequisitionId,
-      };
-    })
-    .filter((item) => item?.supplierId);
-  const grouped: { [key: string]: GroupedBySupplier } = {};
-
-  data.forEach((item) => {
-    const {
-      supplierId,
-      materialId,
-      uomId,
-      quantity,
-      price,
-      sourceRequisitionId,
-    } = item;
-    const supplier = supplierId as string;
-    const pricePerUnit = price as number;
-    if (!grouped[supplier]) {
-      grouped[supplier] = {
-        supplierId: supplier,
-        sourceRequisitionId: sourceRequisitionId as string,
-        items: [],
-      };
-    }
-
-    grouped[supplier].items.push({
-      materialId,
-      uomId,
-      quantity,
-      price: pricePerUnit,
-    });
+  const data = state?.map((item) => {
+    const selected = item?.supplierQuotations?.find((p) => p?.selected);
+    return {
+      materialId: item?.materialId,
+      quantity: item?.quantity,
+      uomId: item?.uomId,
+      supplierId: selected?.supplierId,
+      price: selected?.price,
+      sourceRequisitionId: selected?.sourceRequisitionId,
+    };
   });
+
+  // check if any material has no selected supplier
+  const unselected = data?.filter((d) => !d?.supplierId);
+  if (unselected?.length) {
+    throw new Error(
+      "Please select a supplier for all materials before submitting",
+    );
+  }
+
+  // group only valid ones
+  const grouped: { [key: string]: GroupedBySupplier } = {};
+  data
+    .filter((item) => item?.supplierId)
+    .forEach((item) => {
+      const {
+        supplierId,
+        materialId,
+        uomId,
+        quantity,
+        price,
+        sourceRequisitionId,
+      } = item;
+      const supplier = supplierId as string;
+      const pricePerUnit = price as number;
+
+      if (!grouped[supplier]) {
+        grouped[supplier] = {
+          supplierId: supplier,
+          sourceRequisitionId: sourceRequisitionId as string,
+          items: [],
+        };
+      }
+
+      grouped[supplier].items.push({
+        materialId,
+        uomId,
+        quantity,
+        price: pricePerUnit,
+      });
+    });
 
   return Object.values(grouped);
 };
-
 export const convertUnits = (
   quantity: number,
   fromUnit: string,
