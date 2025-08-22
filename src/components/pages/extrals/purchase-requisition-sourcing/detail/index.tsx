@@ -56,7 +56,6 @@ const Page = () => {
         options: [],
       })) as unknown as InventoryRequestDto[];
       setPurchaseLists(items);
-      console.log(items, "items itmes from requisition");
     }
   }, [requisition]);
 
@@ -170,7 +169,10 @@ const Page = () => {
       </Card>
       <div className="w-full">
         <div className="space-y-2">
-          <TableForData lists={purchaseLists} setItemLists={setPurchaseLists} />
+          <TableForData
+            lists={purchaseLists || []}
+            setItemLists={setPurchaseLists}
+          />
         </div>
       </div>
     </ScrollablePageWrapper>

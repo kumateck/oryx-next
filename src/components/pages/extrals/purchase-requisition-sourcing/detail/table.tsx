@@ -13,23 +13,31 @@ const TableForData = ({ lists, setItemLists }: Props) => {
   const [loadSuppliers] = useLazyGetApiV1VendorsQuery();
 
   const handleLoadVendors = async (rowIndex: number, value: unknown) => {
-    console.log(value);
-    const vendorLists = await loadSuppliers({
-      page: 1,
-      pageSize: 1000,
-    }).unwrap();
+    if (Number(value) === 1) {
+      TableUpdateData({
+        rowIndex,
+        columnId: "options",
+        value: [],
+        setTableData: setItemLists,
+      });
+    } else {
+      const vendorLists = await loadSuppliers({
+        page: 1,
+        pageSize: 1000,
+      }).unwrap();
 
-    const vendorOptions = vendorLists?.data?.map((vendor) => ({
-      label: vendor.name,
-      value: vendor.id,
-    })) as Option[];
+      const vendorOptions = vendorLists?.data?.map((vendor) => ({
+        label: vendor.name,
+        value: vendor.id,
+      })) as Option[];
 
-    TableUpdateData({
-      rowIndex,
-      columnId: "options",
-      value: vendorOptions,
-      setTableData: setItemLists,
-    });
+      TableUpdateData({
+        rowIndex,
+        columnId: "options",
+        value: vendorOptions,
+        setTableData: setItemLists,
+      });
+    }
   };
 
   const columns = getColumns(setItemLists, sourceOptions, handleLoadVendors);

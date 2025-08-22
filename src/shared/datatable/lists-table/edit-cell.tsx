@@ -152,7 +152,7 @@ const InputSwitch = ({
       return (
         <SpecialMultiSelect
           defaultValue={
-            (Array.isArray(editingValue) && editingValue) as Option[]
+            (Array.isArray(editingValue) ? editingValue : []) as Option[]
           }
           options={options as Option[]}
           onChange={(selectedOptions) => {
