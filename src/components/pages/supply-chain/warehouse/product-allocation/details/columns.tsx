@@ -6,26 +6,21 @@ export const column: ColumnDef<AllocateProductionOrderProductDtoRead>[] = [
   {
     accessorKey: "ProductName",
     header: "Order Code",
-    cell: ({ row }) => <div>{row.original?.code}</div>,
+    cell: ({ row }) => <div>{row.original?.product?.code}</div>,
   },
-  // {
-  //   accessorKey: "qarNumber",
-  //   header: "QAR #",
-  //   cell: ({ row }) => <div>{row.original?.}</div>,
-  // },
-
-  // {
-  //   accessorKey: "expiryDate",
-  //   header: "Expiry Date",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.batchManufacturingRecord?.expiryDate
-  //         ? format(
-  //             row.original.batchManufacturingRecord?.expiryDate,
-  //             "MMMM dd, yyyy",
-  //           )
-  //         : "-"}
-  //     </div>
-  //   ),
-  // },
+  {
+    accessorKey: "productName",
+    header: "Product Name",
+    cell: ({ row }) => <div>{row.original?.product?.name}</div>,
+  },
+  {
+    accessorKey: "description",
+    header: "Product Description",
+    cell: ({ row }) => <div>{row.original?.product?.description}</div>,
+  },
+  {
+    accessorKey: "description",
+    header: "Product Description",
+    cell: ({ row }) => <div>{row.original?.product?.symbol}</div>,
+  },
 ];

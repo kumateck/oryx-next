@@ -12,6 +12,7 @@ import { ListsTable } from "@/shared/datatable";
 import { useParams, useRouter } from "next/navigation";
 import { column } from "./columns";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
+import { format } from "date-fns";
 
 function Page() {
   const { id } = useParams();
@@ -42,13 +43,65 @@ function Page() {
           >
             {data?.approved ? "Approved" : "Pending"}
           </span>
-          <CardTitle></CardTitle>
+          <CardTitle className="text-lg font-semibold">
+            {data?.productionOrder?.code}
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ListsTable data={[]} columns={column} isLoading={isLoading} />
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-col md:flex-row">
+            <div className="flex items-center gap-2">
+              <span>Created On:</span>
+              <span className="font-semibold whitespace-nowrap">
+                {data?.createdAt &&
+                  format(new Date(data.createdAt), "MMMM dd, yyyy")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Delivered On:</span>
+              <span className="font-semibold whitespace-nowrap">
+                {data?.deliveredAt &&
+                  format(new Date(data.deliveredAt), "MMMM dd, yyyy")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Total Products:</span>
+              <span className="font-semibold whitespace-nowrap">
+                {data?.products?.length ?? 0}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-3 flex-col md:flex-row">
+            <div className="flex items-center gap-2">
+              <span>Customer Name:</span>
+              <span className="font-semibold whitespace-nowrap">
+                {data?.productionOrder?.customer?.name}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Created By:</span>
+              <span className="font-semibold whitespace-nowrap">{`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Total Value:</span>
+              <span className="font-semibold whitespace-nowrap">
+                {data?.productionOrder?.totalValue}
+              </span>
+            </div>
+          </div>
         </CardContent>
       </Card>
-      <ListsTable data={[]} columns={column} isLoading={isLoading} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Product List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ListsTable
+            data={data?.products ?? []}
+            columns={column}
+            isLoading={isLoading}
+          />
+        </CardContent>
+      </Card>
     </ScrollableWrapper>
   );
 }
