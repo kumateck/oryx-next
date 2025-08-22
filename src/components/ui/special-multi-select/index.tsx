@@ -158,6 +158,7 @@ export const SpecialMultiSelect = ({
     resultLists.length > 0 ? resultLists : searchValue ? resultLists : options;
 
   // Update state when defaultValue changes
+
   useEffect(() => {
     if (defaultValue) {
       setSelectedOptions(cleanArrayObject(defaultValue));
