@@ -24,8 +24,6 @@ function Page() {
       allocatedProductId: productid,
     });
 
-  console.log(data);
-
   return (
     <ScrollableWrapper className="space-y-4">
       <div
