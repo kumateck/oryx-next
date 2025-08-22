@@ -38,13 +38,15 @@ export const employeeInfoSchema = z.object({
     },
     { message: "Job title is required" },
   ),
-  reportingManagerId: z.object(
-    {
-      value: z.string().min(1, { message: "Reporting manager is required" }),
-      label: z.string(),
-    },
-    { message: "Reporting manager is required" },
-  ),
+  reportingManagerId: z
+    .object(
+      {
+        value: z.string().min(1, { message: "Reporting manager is required" }),
+        label: z.string(),
+      },
+      { message: "Reporting manager is required" },
+    )
+    .optional(),
   // startDate: z.preprocess(
   //   (arg) => (typeof arg === "string" ? new Date(arg) : arg),
   //   z.date({

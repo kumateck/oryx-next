@@ -16,3 +16,33 @@ const createInvoiceShema = z.object({
 
 export type CreateInvoiceSchema = z.infer<typeof createInvoiceShema>;
 export const CreateInvoiceSchemaValidator = zodResolver(createInvoiceShema);
+
+// Extracted invoice data structure
+export interface InvoiceProduct {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  price: number;
+  fulfilledQuantity: number;
+  totalValue: number;
+  storageCondition: string;
+  shelfLife: string;
+  labelClaim: string | null;
+}
+
+export interface InvoiceCustomer {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export interface InvoiceData {
+  orderCode: string;
+  customer: InvoiceCustomer;
+  products: InvoiceProduct[];
+  orderDate: string;
+  totalAmount: number;
+  isApproved: boolean;
+}

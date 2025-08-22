@@ -110,7 +110,7 @@ const AssignUserForm = <TFieldValues extends FieldValues>({
             control: control as Control,
             type: InputTypes.SELECT,
             name: `reportingManagerId` as Path<TFieldValues>,
-            required: true,
+            required: false,
             placeholder: "Select Reporting Manager",
             options: userOptions,
             errors,

@@ -9,26 +9,39 @@ import {
 } from "@/components/ui";
 import {
   MaterialReturnStatus,
-  useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
+  useLazyGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 // import { ListsTable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { columns } from "./columns";
 import { ListsTable } from "@/shared/datatable";
+import { useSelector } from "@/lib/redux/store";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 // import { columns } from "./columns";
 
 function MaterialReturnsDetails() {
   const router = useRouter();
   const { id } = useParams();
   const materialReturnNoteId = id as string;
-  const { data } =
-    useGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery({
-      materialReturnNoteId,
-    });
+  const dispatch = useDispatch();
+  const triggerReload = useSelector((state) => state.common.triggerReload);
+  const [loadData, { data }] =
+    useLazyGetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdQuery();
+
+  useEffect(() => {
+    loadData({ materialReturnNoteId }).unwrap();
+
+    if (triggerReload) {
+      dispatch(commonActions.unSetTriggerReload());
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materialReturnNoteId, triggerReload]);
 
   return (
     <ScrollablePageWrapper>
