@@ -78,7 +78,7 @@ function Index() {
 
       toast.success("Shift schedule uploaded successfully");
       setResults(result as unknown as ShiftsReportSummary[]);
-      router.push("/hr/shift-schedule");
+      router.push("/plan-shift");
       reset();
     } catch (error) {
       ThrowErrorMessage(error);
