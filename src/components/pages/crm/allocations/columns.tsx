@@ -1,14 +1,21 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { AllocateProductionOrderDtoRead } from "@/lib/redux/api/openapi.generated";
+import {
+  AllocateProductionOrderDtoRead,
+  usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation,
+} from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { sanitizeNumber } from "@/lib";
 
 import { useState } from "react";
 import { TableMenuAction } from "@/shared/table-menu";
 import CreateProFormalInvoice from "./proforma-invoice";
-import { Button, DropdownMenuItem } from "@/components/ui";
+import { Button, DropdownMenuItem, Icon } from "@/components/ui";
+import ThrowErrorMessage from "@/lib/throw-error";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -20,10 +27,41 @@ export function DataTableRowActions<
   const [details, setDetails] = useState<AllocateProductionOrderDtoRead>(
     {} as AllocateProductionOrderDtoRead,
   );
+  const dispatch = useDispatch();
+  const [deliverItem, { isLoading }] =
+    usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation();
+  const handleDeliverItem = async (allocatedProductId: string) => {
+    try {
+      await deliverItem({
+        allocatedProductId,
+      }).unwrap();
+      toast.success("Order delivered successfully");
+      dispatch(commonActions.setTriggerReload());
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
   return (
     <section>
+      {isLoading && details.id === row.original.id && (
+        <Icon name="LoaderCircle" className="h-5 w-5 animate-spin" />
+      )}
       <TableMenuAction>
-        <DropdownMenuItem className="group">
+        {row.original.deliveredAt === null && (
+          <DropdownMenuItem className="group">
+            <Button
+              variant="ghost"
+              className="w-full gap-1 text-center items-center justify-center"
+              onClick={() => {
+                setDetails(row.original);
+                handleDeliverItem(row.original.id as string);
+              }}
+            >
+              <span>Marked as Delivered</span>
+            </Button>
+          </DropdownMenuItem>
+        )}
+        {/* <DropdownMenuItem className="group">
           <Button
             variant="ghost"
             className="w-full gap-1 text-center items-center justify-center"
@@ -34,7 +72,7 @@ export function DataTableRowActions<
           >
             <span>Create Proforma Invoice</span>
           </Button>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </TableMenuAction>
 
       {isOpen && (
@@ -100,11 +138,13 @@ export const columns: ColumnDef<AllocateProductionOrderDtoRead>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "deliveredAt",
+    header: "Delivered At",
     cell: ({ row }) => (
-      <div className=" px-2 py-1 text-center text-xs rounded-3xl bg-gray-200">
-        {row && "Pending"}
+      <div className=" px-2 py-1 text-center text-xs ">
+        {row.original.deliveredAt
+          ? format(new Date(row.original.deliveredAt), "dd MMMM, yyyy")
+          : "-"}
       </div>
     ),
   },
