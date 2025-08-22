@@ -90,9 +90,8 @@ const FormOptionTabs: TabProps[] = [
       },
       {
         icon: "Tag",
-        modelType: CollectionTypes.Item,
+        modelType: CollectionTypes.ItemCategory,
         title: "Item Category",
-        kind: EMaterialKind.Packing,
       },
     ],
   },

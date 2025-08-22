@@ -237,6 +237,7 @@ export enum CollectionTypes {
   ShiftCategory = "ShiftCategory",
   ProductState = "ProductState",
   Item = "Item",
+  ItemCategory = "ItemCategory",
 }
 
 export enum TimeType {
