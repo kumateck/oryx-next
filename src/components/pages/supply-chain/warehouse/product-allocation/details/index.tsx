@@ -14,6 +14,7 @@ import { column } from "./columns";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
 import { format } from "date-fns";
 import PageWrapper from "@/components/layout/wrapper";
+import DetailsSkeleton from "./loadingSkeleton";
 
 function Page() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ function Page() {
       allocatedProductId: productid,
     });
 
-  console.log(data);
+  if (isLoading) return <DetailsSkeleton />;
 
   return (
     <PageWrapper>
