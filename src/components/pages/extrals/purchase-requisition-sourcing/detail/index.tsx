@@ -15,6 +15,7 @@ import {
   isErrorResponse,
 } from "@/lib";
 import {
+  InventoryRequisitionSource,
   PostApiV1ProcurementInventorySourceApiArg,
   useGetApiV1ProcurementInventoryByIdQuery,
   usePostApiV1ProcurementInventorySourceMutation,
@@ -60,43 +61,46 @@ const Page = () => {
   }, [requisition]);
 
   const onSubmit = async () => {
+    // Only check vendors when source === 0
     const hasEmptyVendors = purchaseLists?.some(
-      (item) => item.vendors?.length === 0 || Number(item.source) !== 1,
+      (item) =>
+        Number(item.source) === 0 &&
+        (!item.vendors || item.vendors.length === 0),
     );
 
     if (hasEmptyVendors) {
-      toast.warning("One or more items are missing vendor selection.");
-      return; // stop execution if needed
+      toast.warning(
+        "One or more vendor-sourced items are missing vendor selection.",
+      );
+      return; // stop execution if validation fails
     }
+
     try {
       const payload: PostApiV1ProcurementInventorySourceApiArg = {
         createSourceInventoryRequisition: {
           inventoryPurchaseRequisitionId: id as string,
           items: purchaseLists?.map((item) => ({
-            source: 0,
+            source: Number(item.source) as InventoryRequisitionSource,
             itemId: item.itemId,
             quantity: convertToSmallestUnit(item.quantity, item.uom as Units)
               .value,
-            vendors: item?.vendors?.map((item) => {
-              return {
-                vendorId: item?.value,
-              };
-            }),
+            vendors:
+              Number(item.source) === 0
+                ? (item?.vendors?.map((v) => ({ vendorId: v?.value })) ?? [])
+                : [],
             uomId: item.uomId,
           })),
         },
       };
 
-      // console.log(payload, "payload");
       await saveMutation(payload).unwrap();
       toast.success("Sourcing created successfully");
       router.push("/extrals/purchase-requisition-sourcing");
-      // reset(); // Reset the form after submission
-      // onClose(); // Close the form/modal if applicable
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
   // console.log(requisition, "requisition");
 
   // Check Permision
