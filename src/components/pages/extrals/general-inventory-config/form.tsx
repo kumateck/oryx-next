@@ -20,6 +20,7 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   unitOfMeasureOptions: Option[];
+  itemCategoryOptions: Option[];
   isLoadingCode?: boolean;
 }
 const InventoryForm = <TFieldValues extends FieldValues, TContext>({
@@ -27,6 +28,7 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
   unitOfMeasureOptions,
+  itemCategoryOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="space-y-4">
@@ -101,11 +103,14 @@ const InventoryForm = <TFieldValues extends FieldValues, TContext>({
                   },
                   {
                     label: "Category",
-                    type: InputTypes.TEXT,
-                    placeholder: "Category(Optional)",
-                    register: register("category" as Path<TFieldValues>),
+                    type: InputTypes.SELECT,
+                    placeholder: "Select Category",
+                    name: "category",
+                    control: control as Control,
+                    options: itemCategoryOptions,
                     errors,
                   },
+
                   {
                     label: "Classification",
                     type: InputTypes.SELECT,

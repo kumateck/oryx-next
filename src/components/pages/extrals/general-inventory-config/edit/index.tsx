@@ -3,6 +3,7 @@ import { Button, Icon } from "@/components/ui";
 import {
   AuditModules,
   CODE_SETTINGS,
+  CollectionTypes,
   ErrorResponse,
   InventoryClassificationEnum,
   InventoryType,
@@ -16,10 +17,12 @@ import { useParams, useRouter } from "next/navigation";
 import {
   CreateItemsRequest,
   InventoryClassification,
+  PostApiV1CollectionApiArg,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
   useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ItemsByIdQuery,
+  usePostApiV1CollectionMutation,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1ItemsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -61,6 +64,23 @@ function EditInventory() {
     resolver: CreateInventoryValidator,
   });
 
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
+  useEffect(() => {
+    loadCollection({
+      body: [CollectionTypes.ItemCategory],
+    } as PostApiV1CollectionApiArg).unwrap();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const itemCategoryOptions = collectionResponse?.[
+    CollectionTypes.ItemCategory
+  ]?.map((uom) => ({
+    label: uom.name,
+    value: uom.id,
+  })) as Option[];
+
   useEffect(() => {
     if (id) {
       fetchItemDetails({ id: id as string });
@@ -77,7 +97,10 @@ function EditInventory() {
       setValue("maximumLevel", inventoryDetails?.maximumLevel ?? 0);
       setValue("reorderLevel", inventoryDetails?.reorderLevel ?? 0);
       setValue("minimumLevel", inventoryDetails?.minimumLevel ?? 0);
-      setValue("category", inventoryDetails?.itemCategoryId ?? "");
+      setValue("category", {
+        label: inventoryDetails?.itemCategory?.name as string,
+        value: inventoryDetails?.itemCategory?.id,
+      } as Option);
       setValue("unitOfMeasureId", {
         label: inventoryDetails?.unitOfMeasure?.symbol,
         value: String(inventoryDetails?.unitOfMeasure?.id),
@@ -110,11 +133,11 @@ function EditInventory() {
       ) as unknown as InventoryClassification,
       store: inventoryDetails?.store as Store,
       unitOfMeasureId: data.unitOfMeasureId.value,
-      // hasBatchNumber: data.isActive,
+
       maximumLevel: data.maximumLevel,
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
-      itemCategoryId: data.category,
+      itemCategoryId: data.category?.value,
     };
     try {
       await editItem({
@@ -167,6 +190,7 @@ function EditInventory() {
             register={register}
             errors={errors}
             unitOfMeasureOptions={unitOfMeasureOptions}
+            itemCategoryOptions={itemCategoryOptions}
           />
         </div>
         <div className="flex justify-end gap-4">

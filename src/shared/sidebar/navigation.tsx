@@ -401,6 +401,12 @@ export const ROUTES: Route[] = [
         isActive: false,
       },
       {
+        title: "Allocations",
+        url: "/crm/allocations",
+        icon: "Factory",
+        isActive: false,
+      },
+      {
         title: "Proforma Invoice",
         url: "/crm/proforma-invoice",
         icon: "Sheet",

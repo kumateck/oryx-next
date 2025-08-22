@@ -29,6 +29,8 @@ import {
 
 import AssignLocationForm from "./form";
 import { LocationRequestDto, LocationValidator } from "./type";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "react-redux";
 
 interface AssignLocationDialogProps {
   open: boolean;
@@ -47,7 +49,7 @@ const AssignLocationDialog = ({
   kind,
   materialReturnNoteId,
 }: AssignLocationDialogProps) => {
-  console.log(selectedBatch, "selectedBatch");
+  const dispatch = useDispatch();
   const [supplyShelf, { isLoading }] =
     usePostApiV1MaterialBatchSupplyMutation();
 
@@ -148,7 +150,6 @@ const AssignLocationDialog = ({
         })),
       } satisfies SupplyMaterialBatchRequest;
 
-      console.log(payload);
       await supplyShelf({
         supplyMaterialBatchRequest: payload,
       }).unwrap();
@@ -162,6 +163,7 @@ const AssignLocationDialog = ({
   };
 
   const handleClose = () => {
+    dispatch(commonActions.setTriggerReload());
     reset(); // Reset form values
     onOpenChange(false);
   };

@@ -17,6 +17,8 @@ const TableForData = ({ lists, setItemLists }: Props) => {
     useLazyGetApiV1ProcurementSupplierByMaterialIdAndTypeQuery();
 
   const handleLoadingSupplier = async (rowIndex: number, value: unknown) => {
+    console.log(value, "source value");
+
     const supplierLists = await loadSuppliers({
       materialId: lists[rowIndex].materialId,
       type: value as SupplierType,

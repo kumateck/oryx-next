@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Button, Icon } from "@/components/ui";
 import {
   useDeleteApiV1ApprovalByApprovalIdMutation,
-  useGetApiV1ApprovalQuery,
+  useLazyGetApiV1ApprovalQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 // import AddApproval from "./add-approval";
@@ -22,10 +22,15 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 const Page = () => {
   const router = useRouter();
-  const { data: responseDto } = useGetApiV1ApprovalQuery({
-    pageSize: 30,
-    page: 1,
-  });
+  const [loadApprovals, { data: responseDto }] = useLazyGetApiV1ApprovalQuery();
+
+  useEffect(() => {
+    loadApprovals({
+      pageSize: 30,
+      page: 1,
+    }).unwrap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [deleteApproval, { isLoading: isDeleteMutationLoading }] =
     useDeleteApiV1ApprovalByApprovalIdMutation();
@@ -37,6 +42,10 @@ const Page = () => {
         approvalId: id,
       }).unwrap();
       toast.success("Deleted successfully");
+      loadApprovals({
+        pageSize: 30,
+        page: 1,
+      }).unwrap();
     } catch (error) {
       ThrowErrorMessage(error);
     }

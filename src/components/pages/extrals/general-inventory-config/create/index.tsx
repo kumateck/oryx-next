@@ -3,6 +3,7 @@ import { Button, Icon } from "@/components/ui";
 import {
   AuditModules,
   CODE_SETTINGS,
+  CollectionTypes,
   ErrorResponse,
   InventoryType,
   isErrorResponse,
@@ -16,10 +17,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   CreateItemsRequest,
   InventoryClassification,
+  PostApiV1CollectionApiArg,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
   useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ItemsQuery,
+  usePostApiV1CollectionMutation,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -42,6 +45,7 @@ export function CreateInventoryItem() {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [loadCodeModelCount] = useLazyGetApiV1ItemsQuery();
+
   const { data: uomResponse } = useGetApiV1CollectionUomQuery({
     module: AuditModules.general.name,
     subModule: AuditModules.general.collection,
@@ -60,6 +64,23 @@ export function CreateInventoryItem() {
     resolver: CreateInventoryValidator,
   });
 
+  const [loadCollection, { data: collectionResponse }] =
+    usePostApiV1CollectionMutation();
+  useEffect(() => {
+    loadCollection({
+      body: [CollectionTypes.ItemCategory],
+    } as PostApiV1CollectionApiArg).unwrap();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const itemCategoryOptions = collectionResponse?.[
+    CollectionTypes.ItemCategory
+  ]?.map((uom) => ({
+    label: uom.name,
+    value: uom.id,
+  })) as Option[];
+
   const onSubmit = async (data: CreateInventoryDto) => {
     const payload: CreateItemsRequest = {
       description: data.description,
@@ -71,11 +92,10 @@ export function CreateInventoryItem() {
       ) as unknown as InventoryClassification,
       store: Number(storeType) as unknown as Store,
       unitOfMeasureId: data.unitOfMeasureId.value,
-      // hasBatchNumber: data.isActive,
       maximumLevel: data.maximumLevel,
       minimumLevel: data.minimumLevel,
       reorderLevel: data.reorderLevel,
-      itemCategoryId: data.category,
+      itemCategoryId: data.category?.value,
     };
     try {
       const itemId = await createItem({
@@ -157,6 +177,7 @@ export function CreateInventoryItem() {
             register={register}
             errors={errors}
             unitOfMeasureOptions={unitOfMeasureOptions}
+            itemCategoryOptions={itemCategoryOptions}
           />
         </div>
         <div className="flex justify-end gap-4">

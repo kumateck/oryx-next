@@ -49,7 +49,12 @@ export const imageValidationSchema = z.any().refine(
   },
 );
 const inventoryConfigSchema = z.object({
-  category: z.string().optional(),
+  category: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .optional(),
   materialName: z.string().min(1, "Material name is required"),
   code: z.string().min(1, "Code is required"),
   storeType: z.string().min(1, "Store type is required"),

@@ -34,7 +34,7 @@ export const getColumns = (
         type: ColumnType.COMBOBOX,
         editable: true,
         setItemLists,
-        options,
+        options: options || [],
         extraEvents,
       },
     },
