@@ -61,7 +61,7 @@ const Page = () => {
 
   const onSubmit = async () => {
     const hasEmptyVendors = purchaseLists?.some(
-      (item) => item.vendors?.length === 0 || item.source === undefined,
+      (item) => item.vendors?.length === 0 || Number(item.source) !== 1,
     );
 
     if (hasEmptyVendors) {
