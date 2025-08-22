@@ -6,7 +6,7 @@ import {
   Skeleton,
 } from "@/components/ui";
 
-function ItemsDetailsSkeleton() {
+function DetailsSkeleton() {
   return (
     <div className="space-y-8">
       {/* Header Skeleton */}
@@ -73,4 +73,4 @@ function ItemsDetailsSkeleton() {
   );
 }
 
-export default ItemsDetailsSkeleton;
+export default DetailsSkeleton;
