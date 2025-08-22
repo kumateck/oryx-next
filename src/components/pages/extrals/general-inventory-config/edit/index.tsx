@@ -68,18 +68,18 @@ function EditInventory() {
     usePostApiV1CollectionMutation();
   useEffect(() => {
     loadCollection({
-      body: [CollectionTypes.Item],
+      body: [CollectionTypes.ItemCategory],
     } as PostApiV1CollectionApiArg).unwrap();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const itemCategoryOptions = collectionResponse?.[CollectionTypes.Item]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
+  const itemCategoryOptions = collectionResponse?.[
+    CollectionTypes.ItemCategory
+  ]?.map((uom) => ({
+    label: uom.name,
+    value: uom.id,
+  })) as Option[];
 
   useEffect(() => {
     if (id) {
