@@ -1,12 +1,12 @@
-import { AllocateProductionOrderDtoRead } from "@/lib/redux/api/openapi.generated";
+import { AllocateProductionOrderProductDtoRead } from "@/lib/redux/api/openapi.generated";
 import { ColumnDef } from "@tanstack/react-table";
 // import { format } from "date-fns";
 
-export const column: ColumnDef<AllocateProductionOrderDtoRead>[] = [
+export const column: ColumnDef<AllocateProductionOrderProductDtoRead>[] = [
   {
     accessorKey: "ProductName",
     header: "Order Code",
-    cell: ({ row }) => <div>{row.original.productionOrder?.code}</div>,
+    cell: ({ row }) => <div>{row.original?.code}</div>,
   },
   // {
   //   accessorKey: "qarNumber",
