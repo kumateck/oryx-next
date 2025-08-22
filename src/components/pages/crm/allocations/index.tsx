@@ -36,7 +36,6 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, triggerReload, debouncedValue]);
 
-  console.log(result);
   return (
     <PageWrapper className="space-y-4">
       <div className="flex items-center w-full justify-between gap-3">
