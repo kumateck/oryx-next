@@ -60,7 +60,6 @@ const Page = () => {
         options: [],
       })) as unknown as MaterialRequestDto[];
       setPurchaseLists(items);
-      console.log(items, "items itmes from requisition");
     }
   }, [requisition]);
 
