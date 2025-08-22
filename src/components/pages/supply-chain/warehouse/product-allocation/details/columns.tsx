@@ -1,10 +1,11 @@
 import { ProductionOrderProductsDto } from "@/lib/redux/api/openapi.generated";
+// import { sanitizeNumber } from "@/lib";
 import { ColumnDef } from "@tanstack/react-table";
 // import { format } from "date-fns";
 
 export const column: ColumnDef<ProductionOrderProductsDto>[] = [
   {
-    accessorKey: "ProductName",
+    accessorKey: "code",
     header: "Order Code",
     cell: ({ row }) => <div>{row.original?.product?.code}</div>,
   },
@@ -28,11 +29,11 @@ export const column: ColumnDef<ProductionOrderProductsDto>[] = [
     header: "Total Batches",
     cell: ({ row }) => <div>{row.original?.totalBatches}</div>,
   },
-  {
-    accessorKey: "totalValue",
-    header: "Total Value",
-    cell: ({ row }) => <div>{row.original?.totalValue}</div>,
-  },
+  // {
+  //   accessorKey: "totalValue",
+  //   header: "Total Value",
+  //   cell: ({ row }) => <div>{row.original?.totalValue}</div>,
+  // },
   {
     accessorKey: "fulfilled",
     header: "Fulfilled",
@@ -43,5 +44,16 @@ export const column: ColumnDef<ProductionOrderProductsDto>[] = [
         {row.original?.fulfilled ? "Yes" : "No"}
       </div>
     ),
+  },
+  {
+    accessorKey: "totalValue",
+    header: "Total Allocated Quantity",
+    cell: ({ row }) => {
+      const itemSum = row.original?.fulfilledQuantities?.reduce(
+        (sum, fq) => sum + (fq.quantity || 0),
+        0,
+      );
+      return <div className="min-w-36">{itemSum}</div>;
+    },
   },
 ];
