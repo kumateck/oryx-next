@@ -6256,13 +6256,14 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductId:
-      build.query<
-        GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse,
-        GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg
+    putApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductId:
+      build.mutation<
+        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse,
+        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg
       >({
         query: (queryArg) => ({
           url: `/api/v1/production-schedule/allocate-products/deliver/${queryArg.allocatedProductId}`,
+          method: "PUT",
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
@@ -13103,7 +13104,7 @@ export type PostApiV1ProductionScheduleAllocateProductsApiArg = {
   allocateProductionOrderRequest: AllocateProductionOrderRequest;
 };
 export type GetApiV1ProductionScheduleAllocateProductsApiResponse =
-  /** status 200 OK */ AllocateProductionOrderDtoRead[];
+  /** status 200 OK */ AllocateProductionOrderDtoIEnumerablePaginateableRead;
 export type GetApiV1ProductionScheduleAllocateProductsApiArg = {
   onlyApproved?: boolean;
   page?: number;
@@ -13124,9 +13125,9 @@ export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg
     /** The sub module this request falls under */
     subModule?: any;
   };
-export type GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse =
+export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse =
   unknown;
-export type GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg =
+export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg =
   {
     allocatedProductId: string;
     /** The module this request falls under */
@@ -22567,6 +22568,24 @@ export type AllocateProductionOrderDtoRead = {
   products?: AllocateProductionOrderProductDtoRead[] | null;
   deliveredAt?: string | null;
 };
+export type AllocateProductionOrderDtoIEnumerablePaginateable = {
+  data?: AllocateProductionOrderDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type AllocateProductionOrderDtoIEnumerablePaginateableRead = {
+  data?: AllocateProductionOrderDtoRead[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
   unitPrice?: number;
@@ -24490,8 +24509,7 @@ export const {
   useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
   useGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
   useLazyGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
-  useGetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdQuery,
-  useLazyGetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdQuery,
+  usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,

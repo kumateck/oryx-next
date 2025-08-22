@@ -4,10 +4,7 @@ import React, { useEffect } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { AuditModules, PermissionKeys } from "@/lib";
-import {
-  AllocateProductionOrderDtoRead,
-  useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
-} from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ProductionScheduleAllocateProductsQuery } from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
 import NoAccess from "@/shared/no-access";
@@ -48,13 +45,13 @@ const Page = () => {
     return <NoAccess />;
   }
 
-  const data = result as AllocateProductionOrderDtoRead[];
+  const data = result?.data || [];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <PageTitle title="Approved Products" />
       <ClientDatatable
         onRowClick={(row) => {
-          router.push(`/warehouse/approved-products/${row?.id}`);
+          router.push(`/warehouse/products-allocation/${row?.id}`);
         }}
         data={data}
         columns={columns}

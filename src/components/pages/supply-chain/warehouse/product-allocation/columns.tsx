@@ -73,7 +73,7 @@ export const columns: ColumnDef<AllocateProductionOrderDtoRead>[] = [
     cell: ({ row }) => {
       return (
         <div
-          className={`px-2 rounded-lg py-1 ${row.original?.approved ? "bg-green-100 text-green-800" : "bg-gray-400 text-white"}`}
+          className={`px-2 rounded-xl text-center py-1 ${row.original?.approved ? "bg-green-100 text-green-800" : "bg-gray-400 text-white"}`}
         >
           {row.original?.approved ? "Approved" : "Pending"}
         </div>

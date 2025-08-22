@@ -27,7 +27,6 @@ import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
 import { CreateLeaveValidator, LeaveRequestDto } from "./types";
 import LeaveRequestForm from "./form";
-import { useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -144,6 +143,7 @@ const LeaveRequest = ({
     module: AuditModules.management.name,
     subModule: AuditModules.management.employeeManagement,
   });
+
   const employeeOptions = (employeesResponse?.data || []).map((e) => ({
     label: `${e.firstName} ${e.lastName}`,
     value: e.id,
@@ -159,13 +159,6 @@ const LeaveRequest = ({
     label: lt.name,
     value: lt.id,
   })) as Option[];
-
-  useEffect(() => {
-    if (errors) {
-      console.log(errors, "errors in useEffect");
-    }
-  }, [errors]);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
