@@ -31,7 +31,7 @@ function Page() {
         onClick={() => router.back()}
       >
         <Icon name="ArrowLeft" className="size-4" />
-        <span>Approved Product</span>
+        <span>Allocated Product</span>
       </div>
       <Card>
         <CardHeader>
@@ -40,13 +40,18 @@ function Page() {
           >
             {data?.approved ? "Approved" : "Pending"}
           </span>
-          <CardTitle></CardTitle>
+          <CardTitle>
+            Customer: {data?.productionOrder?.customer?.name}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <ListsTable data={[]} columns={column} isLoading={isLoading} />
+          <ListsTable
+            data={data?.products || []}
+            columns={column}
+            isLoading={isLoading}
+          />
         </CardContent>
       </Card>
-      <ListsTable data={[]} columns={column} isLoading={isLoading} />
     </ScrollableWrapper>
   );
 }
