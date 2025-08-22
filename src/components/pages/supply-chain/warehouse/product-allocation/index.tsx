@@ -4,20 +4,22 @@ import React, { useEffect } from "react";
 
 import PageWrapper from "@/components/layout/wrapper";
 import { AuditModules, PermissionKeys } from "@/lib";
-import { useLazyGetApiV1ProductionScheduleApprovedProductsQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  AllocateProductionOrderDtoRead,
+  useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
+} from "@/lib/redux/api/openapi.generated";
 import { ClientDatatable } from "@/shared/datatable";
 import PageTitle from "@/shared/title";
-
-import { columns } from "./columns";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useDispatch } from "react-redux";
 import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
+import { columns } from "./columns";
 
 const Page = () => {
-  const [loadApprovedProducts, { data: result, isLoading, isFetching }] =
-    useLazyGetApiV1ProductionScheduleApprovedProductsQuery();
+  const [loadAllocateProducts, { data: result, isLoading, isFetching }] =
+    useLazyGetApiV1ProductionScheduleAllocateProductsQuery();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -26,7 +28,7 @@ const Page = () => {
   const searchValue = useSelector((state) => state.common.searchInput);
 
   useEffect(() => {
-    loadApprovedProducts({
+    loadAllocateProducts({
       module: AuditModules.warehouse.name,
       subModule: AuditModules.warehouse.approvedProducts,
     });
@@ -46,13 +48,13 @@ const Page = () => {
     return <NoAccess />;
   }
 
-  const data = result || [];
+  const data = result as AllocateProductionOrderDtoRead[];
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <PageTitle title="Approved Products" />
       <ClientDatatable
         onRowClick={(row) => {
-          router.push(`/warehouse/approved-products/${row?.product?.id}`);
+          router.push(`/warehouse/approved-products/${row?.id}`);
         }}
         data={data}
         columns={columns}

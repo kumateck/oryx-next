@@ -6226,6 +6226,49 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProductionScheduleAllocateProducts: build.query<
+      GetApiV1ProductionScheduleAllocateProductsApiResponse,
+      GetApiV1ProductionScheduleAllocateProductsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/allocate-products`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          onlyApproved: queryArg.onlyApproved,
+          page: queryArg.page,
+          pageSize: queryArg.pageSize,
+          searchQuery: queryArg.searchQuery,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleAllocateProductsByAllocatedProductId: build.query<
+      GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse,
+      GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-schedule/allocate-products/${queryArg.allocatedProductId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductId:
+      build.query<
+        GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse,
+        GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/allocate-products/deliver/${queryArg.allocatedProductId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+      }),
     getApiV1ProductionScheduleSummaryReport: build.query<
       GetApiV1ProductionScheduleSummaryReportApiResponse,
       GetApiV1ProductionScheduleSummaryReportApiArg
@@ -13059,6 +13102,38 @@ export type PostApiV1ProductionScheduleAllocateProductsApiArg = {
   subModule?: any;
   allocateProductionOrderRequest: AllocateProductionOrderRequest;
 };
+export type GetApiV1ProductionScheduleAllocateProductsApiResponse =
+  /** status 200 OK */ AllocateProductionOrderDtoRead[];
+export type GetApiV1ProductionScheduleAllocateProductsApiArg = {
+  onlyApproved?: boolean;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse =
+  /** status 200 OK */ AllocateProductionOrderDtoRead;
+export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg =
+  {
+    allocatedProductId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
+export type GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse =
+  unknown;
+export type GetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg =
+  {
+    allocatedProductId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
 export type GetApiV1ProductionScheduleSummaryReportApiResponse =
   /** status 200 OK */ ProductionScheduleReportDtoRead[];
 export type GetApiV1ProductionScheduleSummaryReportApiArg = {
@@ -22458,6 +22533,40 @@ export type AllocateProductionOrderRequest = {
   productionOrderId?: string;
   products?: AllocateProductionOrderProductRequest[] | null;
 };
+export type AllocateProductQuantityDto = {
+  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
+  quantity?: number;
+};
+export type AllocateProductQuantityDtoRead = {
+  finishedGoodsTransferNote?: FinishedGoodsTransferNoteDtoRead;
+  quantity?: number;
+};
+export type AllocateProductionOrderProductDto = {
+  product?: CollectionItemDto;
+  fulfilledQuantities?: AllocateProductQuantityDto[] | null;
+};
+export type AllocateProductionOrderProductDtoRead = {
+  product?: CollectionItemDto;
+  fulfilledQuantities?: AllocateProductQuantityDtoRead[] | null;
+};
+export type AllocateProductionOrderDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrder?: ProductionOrderDto;
+  approved?: boolean;
+  products?: AllocateProductionOrderProductDto[] | null;
+  deliveredAt?: string | null;
+};
+export type AllocateProductionOrderDtoRead = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrder?: ProductionOrderDto;
+  approved?: boolean;
+  products?: AllocateProductionOrderProductDtoRead[] | null;
+  deliveredAt?: string | null;
+};
 export type ProductionScheduleReportDto = {
   product?: ProductListDto;
   unitPrice?: number;
@@ -24377,6 +24486,12 @@ export const {
   useGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
   useLazyGetApiV1ProductionScheduleApprovedProductsByProductIdQuery,
   usePostApiV1ProductionScheduleAllocateProductsMutation,
+  useGetApiV1ProductionScheduleAllocateProductsQuery,
+  useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
+  useGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
+  useLazyGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
+  useGetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdQuery,
+  useLazyGetApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdQuery,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,

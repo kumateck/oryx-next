@@ -180,6 +180,10 @@ export const ROUTES: Route[] = [
             url: "/warehouse/approved-products",
           },
           {
+            title: "Products Allocation",
+            url: "/warehouse/products-allocation",
+          },
+          {
             title: "Finished Goods Transfer Note",
             url: "/warehouse/finished-goods-transfer-notes",
           },
