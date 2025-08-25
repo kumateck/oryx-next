@@ -129,6 +129,10 @@ const UserDialog = ({
         departmentId: defaultDepartment,
         designationId: defaultDesignation,
         staffNumber: selectedEmployee.staffNumber as string,
+        reportingManagerId: {
+          value: selectedEmployee?.reportingManager?.id as string,
+          label: `${selectedEmployee?.reportingManager?.firstName} ${selectedEmployee?.reportingManager?.lastName}`,
+        },
         // reportingManagerId: selectedEmployee.re
         employeeLevel: selectedEmployee.level
           ? {
