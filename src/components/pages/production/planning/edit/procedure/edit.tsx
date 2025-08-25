@@ -115,12 +115,6 @@ const Edit = ({
     label: uom.name,
     value: uom.id,
   })) as Option[];
-  const resourceOptions = collectionResponse?.[COLLECTION_TYPES.Resource]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
 
   const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
     (role) => ({
@@ -176,7 +170,6 @@ const Edit = ({
               control={control}
               errors={errors}
               operationOptions={operationOptions}
-              resourceOptions={resourceOptions}
               workCenterOptions={workCenterOptions}
               register={register}
             />

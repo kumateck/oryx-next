@@ -26,15 +26,12 @@ export const associateProductRequestSchema = z.object({
       message: `Product is required`,
     },
   ),
-  marketTypeId: z.object(
-    {
-      value: z.string().min(1, { message: "Market Type is required" }),
+  marketTypeId: z
+    .object({
+      value: z.string(),
       label: z.string(),
-    },
-    {
-      message: `Market Type is required`,
-    },
-  ),
+    })
+    .optional(),
   // quantity: z.number().min(0.1, { message: "Quantity is required" }),
 });
 

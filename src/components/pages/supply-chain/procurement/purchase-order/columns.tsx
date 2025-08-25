@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { Icon } from "@/components/ui";
 import {
   convertToLargestUnit,
+  getEnumBadgeWithHexColors,
   getSmallestUnit,
   PurchaseOrderStatusList,
   Units,
@@ -19,6 +20,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 // import PrintPreview from "./print/preview";
 import Create from "./final-details";
 import PrintPreview from "./print/preview";
+import StatusBadge from "@/shared/status-badge";
 
 // import Edit from "./edit";
 
@@ -176,11 +178,14 @@ export const listsColumns: ColumnDef<PurchaseOrderDtoRead>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as PurchaseOrderStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        PurchaseOrderStatusList,
+        status,
+      );
+      return <StatusBadge label={label} style={style} />;
+    },
   },
   {
     id: "actions",

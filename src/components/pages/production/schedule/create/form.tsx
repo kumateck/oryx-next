@@ -186,7 +186,7 @@ const ScheduleForm = <TFieldValues extends FieldValues, TContext>({
                         control: control as Control,
                         type: InputTypes.SELECT,
                         name: `products.${index}.marketTypeId`,
-                        required: true,
+                        required: false,
                         placeholder: "Select Type",
                         defaultValue:
                           defaultValues?.products[index]?.marketTypeId,

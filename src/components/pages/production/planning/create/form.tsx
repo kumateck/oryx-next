@@ -56,7 +56,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
           {
             register: register("code" as Path<TFieldValues>),
             label: "Product Code",
-            // readOnly: true,
+            readOnly: true,
             required: true,
             description: (
               <span className="text-sm text-neutral-500">
@@ -102,7 +102,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             register: register("baseQuantity" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Base Quantity",
+            label: "Composition Unit Qty",
             placeholder: "Enter quantity",
             type: InputTypes.NUMBER,
 
@@ -211,7 +211,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            register: register("actionuse" as Path<TFieldValues>),
+            register: register("actionUse" as Path<TFieldValues>),
             label: "Action and Use",
             placeholder: "Enter action and use",
             type: InputTypes.TEXT,

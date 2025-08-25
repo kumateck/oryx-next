@@ -25,6 +25,7 @@ export function DataTableRowActions<TData extends SupplierQuotationDto>({
           onClose={() => setIsOpen(false)}
         />
       )}
+
       <Icon
         onClick={() => {
           setSupplierId(row.original.supplier?.id as string);

@@ -374,6 +374,7 @@ export enum PurchaseOrderStatusList {
   Delivered = 2,
   Attached = 3,
   Completed = 4,
+  Linked = 5,
 }
 export enum RequisitionStatus {
   New = 0,

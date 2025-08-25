@@ -172,9 +172,9 @@ const Routing = () => {
           estimatedTime: item.estimatedTime,
           order: idx + 1,
           operationId: item.operationId.value,
-          resources: item.resources?.map((item) => ({
-            resourceId: item.value,
-          })),
+          // resources: item.resources?.map((item) => ({
+          //   resourceId: item.value,
+          // })),
           responsibleUsers: item.personnels
             ?.filter((item) => item?.userId?.value)
             ?.map((item) => ({

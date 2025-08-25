@@ -114,11 +114,11 @@ const ProductInfo = () => {
     } as Option;
 
     const uom = {
-      label: product?.baseUoM?.symbol as string,
+      label: `${product.baseUoM?.name} (${product?.baseUoM?.symbol})`,
       value: product?.baseUoM?.id as string,
     } as Option;
     const puom = {
-      label: product?.basePackingUoM?.symbol as string,
+      label: `${product.basePackingUoM?.name} (${product?.basePackingUoM?.symbol})`,
       value: product?.basePackingUoM?.id as string,
     } as Option;
 
@@ -139,6 +139,7 @@ const ProductInfo = () => {
       basePackingUomId: puom,
       genericName: product?.genericName as string,
       description: product?.description as string,
+      actionUse: product?.actionUse as string,
       basePackingQuantity: product?.basePackingQuantity,
       fullBatchSize: convertToLargestUnit(
         product?.fullBatchSize as number,
@@ -183,6 +184,8 @@ const ProductInfo = () => {
     setValue("genericName", defaultProduct.genericName);
     setValue("basePackingQuantity", defaultProduct.basePackingQuantity);
     setValue("baseQuantity", defaultProduct.baseQuantity);
+    setValue("description", defaultProduct.description);
+    setValue("actionUse", defaultProduct.actionUse);
   };
 
   const [loadCollection, { data: collectionResponse }] =
@@ -200,9 +203,9 @@ const ProductInfo = () => {
 
   const categoryOptions = collectionResponse?.[
     COLLECTION_TYPES.ProductCategory
-  ]?.map((uom) => ({
-    label: uom.name,
-    value: uom.id,
+  ]?.map((cat) => ({
+    label: cat.name,
+    value: cat.id,
   })) as Option[];
   const { data: departmentResponse } = useGetApiV1DepartmentQuery({
     type: DepartmentType.Production,
@@ -257,12 +260,12 @@ const ProductInfo = () => {
   });
 
   const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
+    label: `${uom.name} (${uom.symbol})`,
     value: uom.id,
   })) as Option[];
 
   const packingUomOptions = packingUomResponse?.map((uom) => ({
-    label: uom.symbol,
+    label: `${uom.name} (${uom.symbol})`,
     value: uom.id,
   })) as Option[];
 

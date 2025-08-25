@@ -41,7 +41,7 @@ const Summary = ({ summary }: Props) => {
         </div>
       </div>
 
-      <div className="flex gap-2 items-center">
+      {/* <div className="flex gap-2 items-center">
         <span className="font-semibold  mb-1">Resources:</span>
         <div className="flex flex-wrap gap-2">
           {summary?.resources?.length ? (
@@ -57,7 +57,7 @@ const Summary = ({ summary }: Props) => {
             <span className="text-gray-400">—</span>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

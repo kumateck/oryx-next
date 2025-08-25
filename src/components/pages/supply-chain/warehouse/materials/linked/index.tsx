@@ -63,7 +63,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2">
       <div className="w-full flex items-center justify-between gap-4">
-        <PageTitle title="Linked Materials" />
+        <PageTitle title="Linked Materials (Stock Levels)" />
         <AccessTabs
           handleTabClick={handleTabClick}
           type={kind}

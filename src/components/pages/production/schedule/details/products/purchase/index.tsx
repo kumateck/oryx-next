@@ -164,6 +164,7 @@ const Purchase = ({
         <form className="spacey-6 w-full" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center justify-end gap-4">
             <Button
+              onClick={onClose}
               type="button"
               variant="outline"
               className="flex items-center gap-2"

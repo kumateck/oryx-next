@@ -1,210 +1,190 @@
 "use client";
-
-import { format } from "date-fns";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-
-import PageWrapper from "@/components/layout/wrapper";
-import { Icon } from "@/components/ui";
-import { AuditModules, routes } from "@/lib";
+import { format } from "date-fns";
+import { Package, Shield, Factory } from "lucide-react";
+import InfoCard from "./new/info-card";
+import InfoRow from "./new/info-row";
+import { useParams, useRouter } from "next/navigation";
 import { useGetApiV1ProductByProductIdQuery } from "@/lib/redux/api/openapi.generated";
-import { cn } from "@/lib/utils";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
+import { routes } from "@/lib";
+import {
+  ActiveBOMTab,
+  OutdatedBOMsTab,
+  PackingTab,
+  ProcedureTab,
+} from "./new/tabs";
+import Link from "next/link";
+import { Icon } from "@/components/ui";
 import PageTitle from "@/shared/title";
-import StepWrapper from "@/shared/wrapper";
+import ScrollableWrapper from "@/shared/scroll-wrapper";
+import ProductDetailSkeleton from "./new/skeleton";
+import PageWrapper from "@/components/layout/wrapper";
 
-import { Bom, OutdatedBom, Packaging } from "./tabs";
-import { Procedure } from "./tabs/procedure";
+const ProductDetailPage: React.FC = () => {
+  const router = useRouter();
 
-const ViewPage: React.FC = () => {
   const { id } = useParams();
   const productId = id as string;
-  const { data: singleDetailed } = useGetApiV1ProductByProductIdQuery({
+  const { data: productData, isLoading } = useGetApiV1ProductByProductIdQuery({
     productId,
-    module: AuditModules.production.name,
-    subModule: AuditModules.production.planning,
   });
+  const [activeTab, setActiveTab] = useState<string>("Active BOM");
 
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState<string>(tablists[0]);
+  const tabs = ["Active BOM", "Outdated BOM", "Packing", "Procedure"];
+  if (isLoading) {
+    return <ProductDetailSkeleton />;
+  }
   return (
-    <PageWrapper>
-      <ScrollablePageWrapper className="space-y-8 pr-32">
-        <div className="flex items-center justify-between">
-          {/* Head */}
-          <div
-            className="group flex items-center gap-1 hover:cursor-pointer"
-            onClick={() => {
-              router.back();
-            }}
-          >
-            <Icon name="ArrowLeft" className="h-5 w-5" />
-            <div className="group-hover:underline">
-              <PageTitle title={"Products"} />
-            </div>
-          </div>
-          <Link href={routes.editPlanning(productId)}>
-            <div className="flex items-center gap-1 rounded-2xl border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
-              <Icon name="Pencil" className="size-4" />
-              <span className="text-sm">Edit</span>
-            </div>
-          </Link>
-        </div>
-        <StepWrapper className="w-full">
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-normal text-primary-default">
-                  {singleDetailed?.code}
-                </span>
-                <span className="text-sm font-normal text-neutral-default">
-                  | Created on{" "}
-                  {singleDetailed?.createdAt
-                    ? format(singleDetailed?.createdAt, "MMM d, yyyy. h:mma")
-                    : ""}
-                </span>
-                <span className="text-sm font-normal">
-                  {" "}
-                  | by: {singleDetailed?.createdBy?.name}
-                </span>
+    <ScrollableWrapper className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <PageWrapper>
+          <div className="flex items-center justify-between">
+            <button
+              className="group flex items-center gap-1 hover:cursor-pointer"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <Icon name="ArrowLeft" className="h-5 w-5" />
+              <div className="group-hover:underline">
+                <PageTitle title={"Products"} />
               </div>
-              <span className="font-Medium block text-3xl text-neutral-secondary">
-                {singleDetailed?.name}{" "}
-              </span>
-              <ul className="flex gap-2">
-                <li>
-                  <div className="rounded-3xl border border-neutral-input px-2 text-sm text-neutral-700">
-                    {singleDetailed?.category?.name}
-                  </div>
-                </li>
-              </ul>
-            </div>
+            </button>
+            <Link href={routes.editPlanning(productId)}>
+              <div className="flex items-center gap-1 rounded-2xl border border-neutral-input bg-white px-3 py-1.5 text-neutral-secondary hover:bg-neutral-hover">
+                <Icon name="Pencil" className="size-4" />
+                <span className="text-sm">Edit Product</span>
+              </div>
+            </Link>
+          </div>
+        </PageWrapper>
+      </header>
 
+      <PageWrapper>
+        <div className="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 mb-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start justify-between mb-6">
             <div>
-              <PageTitle title={singleDetailed?.name as string} />
-
-              <div className="grid grid-cols-3 text-sm">
-                <div>
-                  {/* Product Name */}
-                  <div>
-                    <span>Product Name: </span>
-                    <span>{singleDetailed?.name}</span>
-                  </div>
-                  {/* Product Category */}
-                  <div>
-                    <span>Product Category: </span>
-                    <span>{singleDetailed?.category?.name}</span>
-                  </div>
-                  {/* Packing Style */}
-                  <div>
-                    <span>Packing Style: </span>
-                    <span>{singleDetailed?.packageStyle}</span>
-                  </div>
-                  {/* Filled Volume */}
-                  <div>
-                    <span>Filled Volume: </span>
-                    <span>{singleDetailed?.filledWeight}</span>
-                  </div>
-                </div>
-
-                <div>
-                  {/* Storage Condition */}
-                  <div>
-                    <span>Storage Condition: </span>
-                    <span>{singleDetailed?.storageCondition}</span>
-                  </div>
-                  {/* Primary Packaging Style */}
-                  <div>
-                    <span>Primary Packaging Style: </span>
-                    <span>{singleDetailed?.primaryPackDescription}</span>
-                  </div>
-                  {/* Action & Use */}
-                  <div>
-                    <span>Action & Use: </span>
-                    <span>{singleDetailed?.actionUse}</span>
-                  </div>
-                  {/* Shelf Life */}
-                  <div>
-                    <span>Shelf Life: </span>
-                    <span>{singleDetailed?.shelfLife}</span>
-                  </div>
-                </div>
-
-                {/* <div>
-
-                      <div>
-                        <span>Product Description:{' '}</span>
-                        <span>{singleDetailed?.description}</span>
-                      </div>
-
-                      <div>
-                        <span>Label Claims:{' '}</span>
-                        <span>{singleDetailed?.}</span>
-                      </div>
-                    </div> 
-                    */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                <span className="text-lg font-semibold text-blue-600">
+                  {productData?.code}
+                </span>
+                <span className="text-gray-300 hidden sm:inline">|</span>
+                <span className="text-sm text-gray-600">
+                  Created{" "}
+                  {productData?.createdAt
+                    ? format(productData?.createdAt, "MMM dd, yyyy 'at' h:mma")
+                    : "-"}
+                </span>
+                <span className="text-gray-300 hidden sm:inline">|</span>
+                <span className="text-sm text-gray-600">
+                  by {productData?.createdBy?.name}
+                </span>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                {productData?.name}
+              </h1>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
+                  {productData?.category?.name}
+                </span>
               </div>
             </div>
           </div>
-        </StepWrapper>
-
-        <div>
-          <div className="border-b border-neutral-200 text-center text-sm font-medium">
-            <ul className="-mb-px flex flex-wrap">
-              {tablists.map((tab, idx) => (
-                <li
-                  key={idx}
-                  className="me-2 hover:cursor-pointer"
-                  onClick={() => setActiveTab(tab)}
-                >
-                  <span
-                    className={cn(
-                      "inline-block rounded-t-lg border-b-2 border-transparent p-4 text-sm hover:border-neutral-300 hover:text-neutral-600",
-                      {
-                        "font-Bold border-primary-600 text-primary-500 p-4":
-                          activeTab === tab,
-                      },
-                    )}
-                  >
-                    {tab}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <InfoCard icon={Package} title="Product Information">
+              <div className="space-y-1">
+                <InfoRow
+                  label="Generic Name"
+                  value={productData?.genericName}
+                />
+                <InfoRow
+                  label="Filled Volume"
+                  value={productData?.filledWeight}
+                />
+                <InfoRow
+                  label="Package Style"
+                  value={productData?.packageStyle}
+                />
+                <InfoRow
+                  label="Department"
+                  value={productData?.department?.name}
+                />
+              </div>
+            </InfoCard>
+            <InfoCard icon={Shield} title="Storage & Safety">
+              <div className="space-y-1">
+                <InfoRow
+                  label="Storage Condition"
+                  value={productData?.storageCondition}
+                />
+                <InfoRow label="Shelf Life" value={productData?.shelfLife} />
+                <InfoRow label="Action & Use" value={productData?.actionUse} />
+              </div>
+            </InfoCard>
+            <InfoCard icon={Factory} title="Production Details">
+              <div className="space-y-1">
+                <InfoRow
+                  label="Equipment"
+                  value={productData?.equipment?.name}
+                />
+                <InfoRow
+                  label="Machine ID"
+                  value={productData?.equipment?.machineId}
+                />
+                <InfoRow
+                  label="BOM Status"
+                  value={
+                    productData?.currentBillOfMaterial?.isActive
+                      ? "Active"
+                      : "Inactive"
+                  }
+                  status={
+                    productData?.currentBillOfMaterial?.isActive
+                      ? "active"
+                      : "inactive"
+                  }
+                />
+              </div>
+            </InfoCard>
           </div>
         </div>
-        <div className="w-full">
-          {/* {activeTab === "Finished Goods" && (
-            <FinishedGoods data={singleDetailed?.finishedProducts ?? []} />
-          )} */}
-          {activeTab === "Active BOM" && (
-            <Bom
-              data={singleDetailed?.currentBillOfMaterial}
-              // title="Current Bill of Material"
-            />
-          )}
-          {activeTab === "Outdated BOM" && (
-            <OutdatedBom data={singleDetailed?.outdatedBillOfMaterials ?? []} />
-          )}
 
-          {activeTab === "Packaging" && (
-            <Packaging data={singleDetailed?.packages ?? []} />
-          )}
-          {activeTab === "Procedure" && (
-            <Procedure data={singleDetailed?.routes ?? []} />
-          )}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8 px-6 -mb-px">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-4 px-1 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab
+                      ? "border-blue-500 text-blue-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
+          </div>
+          <div className="p-6">
+            {activeTab === "Active BOM" && (
+              <ActiveBOMTab bom={productData?.currentBillOfMaterial} />
+            )}
+            {activeTab === "Outdated BOM" && (
+              <OutdatedBOMsTab boms={productData?.outdatedBillOfMaterials} />
+            )}
+            {activeTab === "Packing" && (
+              <PackingTab packages={productData?.packages} />
+            )}
+            {activeTab === "Procedure" && (
+              <ProcedureTab routes={productData?.routes} />
+            )}
+          </div>
         </div>
-      </ScrollablePageWrapper>
-    </PageWrapper>
+      </PageWrapper>
+    </ScrollableWrapper>
   );
 };
 
-const tablists = [
-  // "Finished Goods",
-  "Active BOM",
-  "Outdated BOM",
-  "Packaging",
-  "Procedure",
-];
-export default ViewPage;
+export default ProductDetailPage;

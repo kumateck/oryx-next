@@ -14,6 +14,7 @@ import LeaveDetails from "./leave-request";
 import Comments from "./comments";
 import PurchaseRequisition from "./purchase-requisition";
 import ArdDetails from "./ard";
+import AllocationDetails from "./allocation";
 
 // const statusColors: Record<ApprovalStatus, string> = {
 //   [ApprovalStatus.Pending]: "bg-gray-500 text-white",
@@ -23,6 +24,7 @@ import ArdDetails from "./ard";
 
 const DetailPage = () => {
   const { type, id } = useParams();
+  console.log(type, id);
   const router = useRouter();
   const { data } = useGetApiV1ApprovalByModelTypeAndModelIdQuery({
     modelId: id as string,
@@ -136,7 +138,12 @@ const DetailPage = () => {
           case ApprovalDocument.OvertimeRequest:
             return <PurchaseRequisition id={id as string} />;
           case ApprovalDocument.Response:
-            <ArdDetails grnId={id as string} materialBatchId={id as string} />;
+            return (
+              <ArdDetails grnId={id as string} materialBatchId={id as string} />
+            );
+          case ApprovalDocument.AllocateProductionOrder:
+            return <AllocationDetails allocationId={id as string} />;
+
           default:
             return null;
         }

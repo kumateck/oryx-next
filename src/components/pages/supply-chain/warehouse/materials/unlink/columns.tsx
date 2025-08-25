@@ -25,9 +25,10 @@ export const getColumns = (
       },
     },
   },
+
   {
-    accessorKey: "reOrderLevel",
-    header: "Re-Order Level",
+    accessorKey: "minimumStockLevel",
+    header: "Minimum (base)",
     meta: {
       edittableCell: {
         min: true,
@@ -38,8 +39,8 @@ export const getColumns = (
     },
   },
   {
-    accessorKey: "minimumStockLevel",
-    header: "Minimum Stock Level",
+    accessorKey: "reOrderLevel",
+    header: "Re-Order (base)",
     meta: {
       edittableCell: {
         min: true,
@@ -51,7 +52,7 @@ export const getColumns = (
   },
   {
     accessorKey: "maximumStockLevel",
-    header: "Maximum Stock Level",
+    header: "Maximum (base)",
     meta: {
       edittableCell: {
         min: true,

@@ -226,30 +226,8 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   // },
 
   {
-    accessorKey: "reOrderLevel",
-    header: "Re-Order Level",
-
-    cell: ({ row }) => {
-      const formattedStock = convertToLargestUnit(
-        Number(row.original.reOrderLevel),
-        getSmallestUnit(row.original.uoM?.symbol as Units),
-      );
-      return (
-        <div>
-          {formattedStock.value > 0 ? (
-            <div>
-              {formattedStock.value} {formattedStock.unit}
-            </div>
-          ) : (
-            <div>0</div>
-          )}
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "minimumStockLevel",
-    header: "Minimum Stock Level",
+    header: "Min (kg/L)",
 
     cell: ({ row }) => {
       const formattedStock = convertToLargestUnit(
@@ -270,8 +248,30 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
     },
   },
   {
+    accessorKey: "reOrderLevel",
+    header: "Re-Order (kg/L)",
+
+    cell: ({ row }) => {
+      const formattedStock = convertToLargestUnit(
+        Number(row.original.reOrderLevel),
+        getSmallestUnit(row.original.uoM?.symbol as Units),
+      );
+      return (
+        <div>
+          {formattedStock.value > 0 ? (
+            <div>
+              {formattedStock.value} {formattedStock.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "maximumStockLevel",
-    header: "Maximum Stock Level",
+    header: "Max (kg/L)",
 
     cell: ({ row }) => {
       const formattedStock = convertToLargestUnit(
@@ -293,7 +293,7 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   },
   {
     accessorKey: "warehouseStock",
-    header: "Stock in my Warehouse",
+    header: "Current Stock (Warehouse)",
 
     cell: ({ row }) => {
       const formatWarehouseStock = convertToLargestUnit(
@@ -315,7 +315,7 @@ export const columns: ColumnDef<MaterialDepartmentWithWarehouseStockDto>[] = [
   },
   {
     id: "totalStock",
-    header: "Stock in Other Sources",
+    header: "Current Stock (Other Sources)",
     enableHiding: false,
     meta: { omitRowClick: true },
     cell: ({ row }) => <DataTableRowActions row={row} />,
