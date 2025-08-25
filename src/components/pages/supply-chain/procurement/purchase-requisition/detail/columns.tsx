@@ -25,11 +25,11 @@ export const getColumns = (
   },
   {
     accessorKey: "quantity",
-    header: "Quantity",
+    header: "Ordered Quantity",
   },
   {
     accessorKey: "source",
-    header: "Source",
+    header: "Sourcing Type",
     meta: {
       edittableCell: {
         type: ColumnType.COMBOBOX,

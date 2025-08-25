@@ -82,7 +82,7 @@ const Page = () => {
         materialName: item.material?.name,
         materialId: item.material?.id,
         uom: getLargestUnit(item.uoM?.symbol as Units),
-        quantityOnHand: 0,
+        quantityOnHand: item.warehouseStock,
         quantityRequested: 0,
         quantity: 0,
         totalStock: 0,

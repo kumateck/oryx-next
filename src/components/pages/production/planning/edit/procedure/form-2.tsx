@@ -63,7 +63,7 @@ const SecondForm = <TFieldValues extends FieldValues, TContext>({
     <div>
       <Summary summary={summary as unknown as RoutingRequestDto} />
       <div className="flex justify-between px-2 py-5">
-        <Label className="text-lg">Personnel</Label>
+        <Label className="text-lg">Responsible Parties</Label>
         <DropdownBtns
           title="Add Type"
           icon="Plus"
@@ -124,7 +124,7 @@ const SecondForm = <TFieldValues extends FieldValues, TContext>({
                   config={[
                     typeSelect as FormInput<FieldValues, TContext>,
                     {
-                      label: "Action",
+                      label: "Instruction",
                       control: control as Control,
                       type: InputTypes.SELECT,
                       name: `personnels.${index}.action`,

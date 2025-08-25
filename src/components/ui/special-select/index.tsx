@@ -67,7 +67,7 @@ export function SpecialSelect(props: SearchableDropdownProps) {
           type="button"
           size={"sm"}
           className={cn(
-            "relative w-full justify-start rounded-2xl border-neutral-input bg-white px-3 text-sm text-neutral-dark shadow-none hover:border-b-2 hover:border-b-primary-default hover:bg-white",
+            "relative w-full justify-start min-w-48 rounded-2xl border-neutral-input bg-white px-3 text-sm text-neutral-dark shadow-none hover:border-b-2 hover:border-b-primary-default hover:bg-white",
             props.className,
           )}
         >

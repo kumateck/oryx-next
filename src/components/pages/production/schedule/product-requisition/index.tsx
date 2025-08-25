@@ -12,6 +12,7 @@ import {
   Units,
   convertToLargestUnit,
   getMatchingIds,
+  sanitizeNumber,
 } from "@/lib";
 import {
   useGetApiV1ProductionScheduleByScheduleIdQuery,
@@ -171,78 +172,86 @@ const Page = () => {
         {isRawLoading ? (
           <SkeletonLoadingPage />
         ) : (
-          <TableCard
-            type={EMaterialKind.Raw}
-            rowSelection={rRowSelection}
-            setRowSelection={setRRowSelection}
-            title="Raw Materials"
-            data={materialResponse ?? []}
-            action={
-              <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
-                {Object.keys(rRowSelection).length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Icon
-                      name="SquareCheck"
-                      className="size-6 text-primary-default"
-                    />
-                    <span>
-                      {Object.keys(rRowSelection).length} Item
-                      {Object.keys(rRowSelection).length > 1 && "s"}
-                    </span>
-                    <Separator orientation="vertical" />
-                    <Button size="sm" onClick={loadRawPurchaseData}>
-                      Purchase Requisition
-                    </Button>
+          <div>
+            {sanitizeNumber(materialResponse?.length) > 0 && (
+              <TableCard
+                type={EMaterialKind.Raw}
+                rowSelection={rRowSelection}
+                setRowSelection={setRRowSelection}
+                title="Raw Materials"
+                data={materialResponse ?? []}
+                action={
+                  <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
+                    {Object.keys(rRowSelection).length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <Icon
+                          name="SquareCheck"
+                          className="size-6 text-primary-default"
+                        />
+                        <span>
+                          {Object.keys(rRowSelection).length} Item
+                          {Object.keys(rRowSelection).length > 1 && "s"}
+                        </span>
+                        <Separator orientation="vertical" />
+                        <Button size="sm" onClick={loadRawPurchaseData}>
+                          Purchase Requisition
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            }
-          />
+                }
+              />
+            )}
+          </div>
         )}
         {isPackageLoading ? (
           <SkeletonLoadingPage />
         ) : (
-          <TableCard
-            type={EMaterialKind.Packing}
-            rowSelection={pRowSelection}
-            setRowSelection={setPRowSelection}
-            title="Package Materials"
-            data={
-              packageResponse?.map((item) => {
-                const excess =
-                  (convertToLargestUnit(
-                    productFound?.quantity as number,
-                    productFound?.product?.baseUoM?.symbol as Units,
-                  ).value === productFound?.product?.fullBatchSize
-                    ? item?.packingExcessMargin
-                    : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
-                return {
-                  ...item,
-                  packingExcessMargin: excess,
-                };
-              }) ?? []
-            }
-            action={
-              <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
-                {Object.keys(pRowSelection).length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Icon
-                      name="SquareCheck"
-                      className="size-6 text-primary-default"
-                    />
-                    <span>
-                      {Object.keys(pRowSelection).length} Item
-                      {Object.keys(pRowSelection).length > 1 && "s"}
-                    </span>
-                    <Separator orientation="vertical" />
-                    <Button size="sm" onClick={loadPackagePurchaseData}>
-                      Purchase Requisition
-                    </Button>
+          <div>
+            {sanitizeNumber(packageResponse?.length) > 0 && (
+              <TableCard
+                type={EMaterialKind.Packing}
+                rowSelection={pRowSelection}
+                setRowSelection={setPRowSelection}
+                title="Package Materials"
+                data={
+                  packageResponse?.map((item) => {
+                    const excess =
+                      (convertToLargestUnit(
+                        productFound?.quantity as number,
+                        productFound?.product?.baseUoM?.symbol as Units,
+                      ).value === productFound?.product?.fullBatchSize
+                        ? item?.packingExcessMargin
+                        : (item?.packingExcessMargin ?? 0) / 2) ?? 0;
+                    return {
+                      ...item,
+                      packingExcessMargin: excess,
+                    };
+                  }) ?? []
+                }
+                action={
+                  <div className="flex items-center gap-2 rounded-2xl bg-neutral-hover p-2 shadow-sm">
+                    {Object.keys(pRowSelection).length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <Icon
+                          name="SquareCheck"
+                          className="size-6 text-primary-default"
+                        />
+                        <span>
+                          {Object.keys(pRowSelection).length} Item
+                          {Object.keys(pRowSelection).length > 1 && "s"}
+                        </span>
+                        <Separator orientation="vertical" />
+                        <Button size="sm" onClick={loadPackagePurchaseData}>
+                          Purchase Requisition
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            }
-          />
+                }
+              />
+            )}
+          </div>
         )}
         {purchaseLists.length > 0 && (
           <Purchase

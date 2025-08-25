@@ -117,12 +117,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     label: uom.name,
     value: uom.id,
   })) as Option[];
-  const resourceOptions = collectionResponse?.[COLLECTION_TYPES.Resource]?.map(
-    (uom) => ({
-      label: uom.name,
-      value: uom.id,
-    }),
-  ) as Option[];
 
   const roleOptions = collectionResponse?.[COLLECTION_TYPES.Role]?.map(
     (role) => ({
@@ -180,7 +174,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
                 control={control}
                 errors={errors}
                 operationOptions={operationOptions}
-                resourceOptions={resourceOptions}
                 workCenterOptions={workCenterOptions}
                 register={register}
               />

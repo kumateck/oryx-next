@@ -83,11 +83,14 @@ export const getColumns = (
     cell: ({ row }) => <div>{row.original.material?.label}</div>,
   },
   {
-    accessorKey: "baseQuantity",
-    header: "Base Quantity",
-    cell: ({ row }) => <div>{row.original.baseQuantity}</div>,
+    accessorKey: "spec", // Access nested label for display
+    header: "SPEC Ref",
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.material?.label}
+      </div>
+    ),
   },
-
   {
     accessorKey: "directLinkMaterialId",
     header: "Direct Link Material",
@@ -101,19 +104,29 @@ export const getColumns = (
     cell: ({ row }) => <div>{row.original.unitCapacity}</div>,
   },
   {
+    accessorKey: "baseQuantity",
+    header: "Base Qty per Batch",
+    cell: ({ row }) => <div>{row.original.baseQuantity}</div>,
+  },
+  {
+    accessorKey: "totalQuantity",
+    header: "Total Qty Needed ",
+    cell: ({ row }) => <div>{row.original.baseQuantity}</div>,
+  },
+
+  {
     accessorKey: "packingExcessMargin",
     header: "Packing Excess",
     cell: ({ row }) => <div>{row.original.packingExcessMargin}</div>,
   },
   {
-    accessorKey: "materialThickness",
-    header: "Material Thickness",
-    cell: ({ row }) => <div>{row.original.materialThickness}</div>,
-  },
-  {
-    accessorKey: "otherStandards",
-    header: "Other Standards",
-    cell: ({ row }) => <div>{row.getValue("otherStandards")}</div>,
+    accessorKey: "materialTypeId.label", // Access nested label for display
+    header: "Function",
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.packingExcessMargin}
+      </div>
+    ),
   },
   {
     id: "actions",

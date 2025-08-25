@@ -175,7 +175,7 @@ const RevisePurchaseOrder = () => {
               ) : (
                 <Icon name="Save" className="mr-2" />
               )}
-              Save Changes
+              Apply Changes
             </Button>
           </div>
         </div>

@@ -64,7 +64,7 @@ const Page = () => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <PageWrapper className="w-full space-y-2 py-1">
         <div className="flex items-center justify-between py-2">
           <div className="flex items-center gap-2 ">

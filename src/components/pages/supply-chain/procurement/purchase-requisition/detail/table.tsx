@@ -52,11 +52,11 @@ const TableForData = ({ lists, setItemLists }: Props) => {
 
 const sourceOptions = [
   {
-    label: "Foreign Procurement",
+    label: "Foreign",
     value: "0",
   },
   {
-    label: "Local Procurement",
+    label: "Local",
     value: "1",
   },
 ];

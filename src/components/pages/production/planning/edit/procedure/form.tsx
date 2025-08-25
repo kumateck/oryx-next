@@ -18,7 +18,6 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   errors: FieldErrors<TFieldValues>;
   operationOptions: Option[];
   workCenterOptions: Option[];
-  resourceOptions: Option[];
   defaultValues?: TFieldValues;
   selectedType?: ProcedureType;
 }
@@ -29,7 +28,6 @@ const ProcedureForm = <TFieldValues extends FieldValues, TContext>({
   operationOptions,
   defaultValues,
   workCenterOptions,
-  resourceOptions,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full">
@@ -69,17 +67,17 @@ const ProcedureForm = <TFieldValues extends FieldValues, TContext>({
             required: true,
             errors,
           },
-          {
-            label: "Resources",
-            control: control as Control,
-            type: InputTypes.MULTI,
-            name: "resources",
-            defaultValue: defaultValues?.resources,
-            required: true,
-            placeholder: "Select resource",
-            options: resourceOptions,
-            errors,
-          },
+          // {
+          //   label: "Resources",
+          //   control: control as Control,
+          //   type: InputTypes.MULTI,
+          //   name: "resources",
+          //   defaultValue: defaultValues?.resources,
+          //   required: true,
+          //   placeholder: "Select resource",
+          //   options: resourceOptions,
+          //   errors,
+          // },
         ]}
       />
     </div>

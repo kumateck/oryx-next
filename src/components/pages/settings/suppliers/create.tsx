@@ -216,7 +216,7 @@ const Create = () => {
               onClick={onBack}
               className="cursor-pointer"
             />
-            <PageTitle title={"Create Vendor"} />
+            <PageTitle title={"Create Supplier"} />
           </div>
           <div className="flex justify-end gap-4 py-6">
             <Button

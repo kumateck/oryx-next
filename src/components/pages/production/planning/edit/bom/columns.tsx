@@ -133,7 +133,7 @@ export const getColumns = (
   },
   {
     accessorKey: "order",
-    header: "Order",
+    header: "Step",
     cell: ({ row }) => (
       <div className="text-sm text-gray-700 text-center">
         {row.getValue("order")}
@@ -142,17 +142,26 @@ export const getColumns = (
     size: 80,
   },
   {
-    accessorKey: "materialTypeId.label", // Access nested label for display
-    header: "Material Type",
+    accessorKey: "materialCode", // Access nested label for display
+    header: "Code",
     cell: ({ row }) => (
       <div className="text-sm text-gray-700">
-        {row.original.materialTypeId?.label}
+        {row.original.materialId?.label}
       </div>
     ),
   },
   {
     accessorKey: "materialId.label", // Access nested label for display
-    header: "Component Material",
+    header: "Material",
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.materialId?.label}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "spec", // Access nested label for display
+    header: "SPEC Ref",
     cell: ({ row }) => (
       <div className="text-sm text-gray-700">
         {row.original.materialId?.label}
@@ -161,7 +170,7 @@ export const getColumns = (
   },
   {
     accessorKey: "baseQuantity", // Changed from "quantity" to match BomRequestDto
-    header: "Quantity",
+    header: "Qty per Unit",
     cell: ({ row }) => (
       <div className="text-sm text-gray-700 text-right">
         {row.original.baseQuantity}
@@ -180,6 +189,26 @@ export const getColumns = (
     size: 80,
   },
   {
+    accessorKey: "batchQuantity", // Changed from "quantity" to match BomRequestDto
+    header: "Full Batch Qty",
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700 text-right">
+        {row.original.baseQuantity}
+      </div>
+    ),
+    size: 100,
+  },
+  {
+    accessorKey: "materialTypeId.label", // Access nested label for display
+    header: "Function",
+    cell: ({ row }) => (
+      <div className="text-sm text-gray-700">
+        {row.original.materialTypeId?.label}
+      </div>
+    ),
+  },
+
+  {
     accessorKey: "grade",
     header: "Grade",
     cell: ({ row }) => (
@@ -188,24 +217,7 @@ export const getColumns = (
       </div>
     ),
   },
-  {
-    accessorKey: "casNumber",
-    header: "CAS Number",
-    cell: ({ row }) => (
-      <div className="text-sm text-gray-700">
-        {row.getValue("casNumber") || "-"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "function",
-    header: "Function",
-    cell: ({ row }) => (
-      <div className="text-sm text-gray-700">
-        {row.getValue("function") || "-"}
-      </div>
-    ),
-  },
+
   {
     id: "actions",
     header: "Actions",

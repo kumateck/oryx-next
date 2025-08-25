@@ -3,7 +3,11 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { Icon } from "@/components/ui";
-import { PermissionKeys, PurchaseOrderStatusList } from "@/lib";
+import {
+  getEnumBadgeWithHexColors,
+  PermissionKeys,
+  PurchaseOrderStatusList,
+} from "@/lib";
 import {
   PurchaseOrderDtoRead,
   PurchaseOrderStatus,
@@ -11,6 +15,7 @@ import {
 
 import AttachDocuments from "./attachment";
 import { useUserPermissions } from "@/hooks/use-permission";
+import StatusBadge from "@/shared/status-badge";
 
 // import Edit from "./edit";
 
@@ -94,11 +99,14 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as PurchaseOrderStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        PurchaseOrderStatusList,
+        status,
+      );
+      return <StatusBadge label={label} style={style} />;
+    },
   },
   {
     id: "actions",

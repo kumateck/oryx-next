@@ -134,7 +134,7 @@ export const getColumns = (
   },
   {
     accessorKey: "order",
-    header: "Order",
+    header: "Step",
     cell: ({ row }) => <div>{row.getValue("order")}</div>,
   },
   {
@@ -162,18 +162,18 @@ export const getColumns = (
     cell: ({ row }) => <div>{row.getValue("estimatedTime")}</div>,
   },
 
-  {
-    accessorKey: "resources",
-    header: "Resources",
-    cell: ({ row }) => (
-      <div>
-        <MultiSelectListViewer
-          className="max-w-[20ch]"
-          lists={row.original.resources}
-        />
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "resources",
+  //   header: "Resources",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       <MultiSelectListViewer
+  //         className="max-w-[20ch]"
+  //         lists={row.original.resources}
+  //       />
+  //     </div>
+  //   ),
+  // },
 
   {
     accessorKey: "responsible",

@@ -133,7 +133,7 @@ const Page = () => {
           productId: item.productId?.value,
           quantity,
           batchSize: sizeType,
-          marketTypeId: item.marketTypeId?.value,
+          marketTypeId: item.marketTypeId?.value || undefined,
         };
       }),
     );

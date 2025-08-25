@@ -155,6 +155,7 @@ export const columns: ColumnDef<ShipmentDocumentDto>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => <DataTableRowStatus row={row} />,
+    meta: { omitRowClick: true },
   },
   {
     id: "actions",

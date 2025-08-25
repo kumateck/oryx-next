@@ -1,7 +1,12 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { MaterialStatus, Units } from "@/lib";
+import {
+  convertToLargestUnit,
+  getSmallestUnit,
+  MaterialStatus,
+  Units,
+} from "@/lib";
 import AllStockByMaterial from "@/shared/all-stock";
 import { ColumnType } from "@/shared/datatable";
 import TableBadge from "@/shared/datatable/badge";
@@ -72,21 +77,37 @@ export const getPurchaseColumns = (
   },
   {
     accessorKey: "uom",
-    header: "Unit of Measurement",
+    header: "UoM",
   },
-  {
-    accessorKey: "quantityRequested",
-    header: "Qty Requested",
-    cell: ({ row }) => <div>{row.original.quantityRequested}</div>,
-  },
+  // {
+  //   accessorKey: "quantityRequested",
+  //   header: "Qty Requested",
+  //   cell: ({ row }) => <div>{row.original.quantityRequested}</div>,
+  // },
   {
     accessorKey: "quantityOnHand",
-    header: "Warehouse Stock",
-    cell: ({ row }) => <div>{row.original.quantityOnHand}</div>,
+    header: "Current Stock",
+    cell: ({ row }) => {
+      const converted = convertToLargestUnit(
+        row.original.quantityOnHand,
+        getSmallestUnit(row.original.uom as Units),
+      );
+      return (
+        <div>
+          {converted.value > 0 ? (
+            <div>
+              {converted.value} {converted.unit}
+            </div>
+          ) : (
+            <div>0</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "quantity",
-    header: "Order Quantity",
+    header: "Qty to Order",
     meta: {
       edittableCell: {
         min: true,
