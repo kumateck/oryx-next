@@ -104,9 +104,6 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
         module: AuditModules.settings.name,
         subModule: AuditModules.settings.standardTestProcedure,
       }).unwrap();
-      toast.success("Standard test procedure updated successfully");
-      dispatch(commonActions.setTriggerReload());
-      onClose();
       if (id && data?.attachments) {
         //upload attachment if any
         const files = Array.isArray(data.attachments)
@@ -123,6 +120,9 @@ export const Edit = ({ isOpen, id, onClose, details }: Props) => {
           body: formData,
         } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
       }
+      toast.success("Standard test procedure updated successfully");
+      dispatch(commonActions.setTriggerReload());
+      onClose();
     } catch (error) {
       toast.error(
         isErrorResponse(error as ErrorResponse)?.description ||

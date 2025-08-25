@@ -21,13 +21,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MaterialArdForm } from "./form";
 import {
-  useGetApiV1MaterialStpsQuery,
   usePostApiV1MaterialArdMutation,
-  useGetApiV1FormQuery,
   PostApiV1MaterialArdApiArg,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
+  useLazyGetApiV1MaterialStpsQuery,
+  useLazyGetApiV1FormQuery,
 } from "@/lib/redux/api/openapi.generated";
 import { MaterialArdSchemaResolver, MaterialArdSchemaType } from "./types";
 import { toast } from "sonner";
@@ -43,7 +43,7 @@ type Props = {
 export const Create = ({ isOpen, onClose, kind }: Props) => {
   const dispatch = useDispatch();
 
-  const [loadMaterialstpSpecification, { data }] =
+  const [loadMaterialstpSpecification, { data, isLoading: isLoadingSpec }] =
     useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
 
   const {
@@ -59,20 +59,47 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
   });
 
   //get stp
-  const { data: materialStps } = useGetApiV1MaterialStpsQuery({
-    page: 1,
-    pageSize: 1000,
-    materialKind: kind || EMaterialKind.Raw,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
+  const [loadMaterialStps, { isLoading: isLoadingStp, data: materialStps }] =
+    useLazyGetApiV1MaterialStpsQuery();
+  const loadDataOrSearchStp = async (searchQuery: string, page: number) => {
+    const res = await loadMaterialStps({
+      searchQuery,
+      page,
+      materialKind: kind || EMaterialKind.Raw,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.materials,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((stp) => ({
+        label: stp.stpNumber,
+        value: stp.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
-  //loead forms template
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.ARD,
-  });
+  //load forms template
+  const [loadingFormdata, { isLoading: isLoadingForm }] =
+    useLazyGetApiV1FormQuery();
+
+  const loadDataOrSearchForm = async (searchQuery: string, page: number) => {
+    const res = await loadingFormdata({
+      searchQuery,
+      page,
+      type: FormTypeEnum.ARD,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((form) => ({
+        label: form.name,
+        value: form.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   const [createMaterialArdMutation, { isLoading }] =
     usePostApiV1MaterialArdMutation();
@@ -84,12 +111,12 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
   useEffect(() => {
     if (!stpId?.value) return;
     const material = materialStps?.data?.find((stp) => stp.id === stpId?.value);
-    console.log(material);
+
     if (material) {
       loadMaterialstpSpecification({ id: material?.material?.id as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stpId, loadMaterialstpSpecification]);
+  }, [stpId]);
   useEffect(() => {
     if (data) {
       setValue("specNumber", data.specificationNumber ?? "");
@@ -151,35 +178,23 @@ export const Create = ({ isOpen, onClose, kind }: Props) => {
       );
     }
   };
-  const StpData = materialStps?.data;
-  const materialStpOptions = StpData?.map((stp) => {
-    return {
-      label: stp.stpNumber,
-      value: stp.id,
-    };
-  }) as Option[];
-
-  const formData = formTemplates?.data || [];
-  const formOptions = formData?.map((form) => {
-    return {
-      label: form.name,
-      value: form.id,
-    };
-  }) as Option[];
 
   return (
     <Dialog onOpenChange={onClose} open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Material Analytical Raw Data</DialogTitle>
+          <DialogTitle>Create Material Analytical Raw Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <MaterialArdForm
             errors={errors}
             register={register}
             control={control}
-            stpOptions={materialStpOptions}
-            formOptions={formOptions}
+            isLoadingSpec={isLoadingSpec}
+            fetchStp={loadDataOrSearchStp}
+            fetchForm={loadDataOrSearchForm}
+            isLoadingForm={isLoadingForm}
+            isLoadingStp={isLoadingStp}
           />
           <DialogFooter>
             <DialogFooter className="justify-end gap-4 py-6">

@@ -133,9 +133,14 @@ export const columns: ColumnDef<ProductStandardTestProcedureDto>[] = [
     cell: ({ row }) => <div>{row.original.stpNumber}</div>,
   },
   {
-    accessorKey: "productId",
+    accessorKey: "productName",
     header: "Product Name",
     cell: ({ row }) => <div>{row.original?.product?.name}</div>,
+  },
+  {
+    accessorKey: "productCode",
+    header: "Product Code",
+    cell: ({ row }) => <div>{row.original?.product?.code ?? "N/A"}</div>,
   },
   {
     id: "actions",

@@ -11,7 +11,6 @@ import { columns } from "./columns";
 import { Create } from "./create";
 import AccessTabs from "@/shared/access";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useDispatch } from "react-redux";
 import { commonActions } from "@/lib/redux/slices/common";
 
@@ -63,51 +62,51 @@ function Page() {
 
   const data = result?.data || [];
   return (
-    <PageWrapper>
+    <PageWrapper className="space-x-3">
       {isOpen && (
         <Create kind={kind} isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
-      <PageTitle title="Standard Test Procedure - Material" />
       <div className="flex w-full justify-between items-center">
-        <AccessTabs
-          handleTabClick={handleTabClick}
-          type={kind}
-          tabs={[
-            {
-              label: EMaterialKind[EMaterialKind.Raw],
-              value: EMaterialKind.Raw.toString(),
-            },
-            {
-              label: EMaterialKind[EMaterialKind.Packing],
-              value: EMaterialKind.Packing.toString(),
-            },
-          ]}
-        />
-        <div className="w-fit flex items-center justify-center gap-4">
+        <PageTitle title="Standard Test Procedure - Material" />
+
+        <div className="w-fit flex gap-3">
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            type={kind}
+            tabs={[
+              {
+                label: EMaterialKind[EMaterialKind.Raw],
+                value: EMaterialKind.Raw.toString(),
+              },
+              {
+                label: EMaterialKind[EMaterialKind.Packing],
+                value: EMaterialKind.Packing.toString(),
+              },
+            ]}
+          />
           <Button onClick={() => setIsOpen(true)}>
             <Icon name="Plus" />
             <span>Add Standard Test</span>
           </Button>
         </div>
       </div>
-      <ScrollablePageWrapper>
-        <ServerDatatable
-          data={data}
-          columns={columns}
-          isLoading={isLoading || isFetching}
-          setPage={setPage}
-          setPageSize={setPageSize}
-          meta={{
-            pageIndex: result?.pageIndex as number,
-            pageCount: result?.pageCount as number,
-            totalRecordCount: result?.totalRecordCount as number,
-            numberOfPagesToShow: result?.numberOfPagesToShow as number,
-            startPageIndex: result?.startPageIndex as number,
-            stopPageIndex: result?.stopPageIndex as number,
-            pageSize,
-          }}
-        />
-      </ScrollablePageWrapper>
+
+      <ServerDatatable
+        data={data}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        setPage={setPage}
+        setPageSize={setPageSize}
+        meta={{
+          pageIndex: result?.pageIndex as number,
+          pageCount: result?.pageCount as number,
+          totalRecordCount: result?.totalRecordCount as number,
+          numberOfPagesToShow: result?.numberOfPagesToShow as number,
+          startPageIndex: result?.startPageIndex as number,
+          stopPageIndex: result?.stopPageIndex as number,
+          pageSize,
+        }}
+      />
     </PageWrapper>
   );
 }

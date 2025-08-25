@@ -4,7 +4,6 @@ import { ErrorResponse, isErrorResponse, ShiftFrequency } from "@/lib";
 import {
   ShiftScheduleDtoRead,
   useDeleteApiV1ShiftSchedulesByIdMutation,
-  useLazyGetApiV1ShiftSchedulesQuery,
 } from "@/lib/redux/api/openapi.generated";
 
 import { ConfirmDeleteDialog, Icon } from "@/components/ui";
@@ -13,6 +12,8 @@ import { useState } from "react";
 
 import { format } from "date-fns";
 import Edit from "./edit";
+import { useDispatch } from "react-redux";
+import { commonActions } from "@/lib/redux/slices/common";
 // import Edit from "./leave-request/edit";
 
 interface DataTableRowActionsProps<TData> {
@@ -24,12 +25,12 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
 }: DataTableRowActionsProps<TData>) {
   const [open, setOpne] = useState(false);
   const [deleteMutation] = useDeleteApiV1ShiftSchedulesByIdMutation();
+  const dispatch = useDispatch();
 
   const [details, setDetails] = useState<ShiftScheduleDtoRead>(
     {} as ShiftScheduleDtoRead,
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [loadShiftSchedules] = useLazyGetApiV1ShiftSchedulesQuery();
 
   return (
     <section className="flex items-center justify-end gap-2">
@@ -61,32 +62,6 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
       >
         <Icon name="Trash2" className="text-red-500 h-5 w-5 cursor-pointer" />
       </div>
-
-      {/* <div
-        className="flex cursor-pointer items-center justify-start gap-2"
-        // onClick={(e) => {
-        //   e.stopPropagation();
-        //   setDetails(row.original);
-        //   setIsDeleteOpen(true);
-        // }}
-      >
-        <Link href={`/settings/shift-schedule/${row.id}/calendar`}>
-          <Icon
-            name="Calendar"
-            className="text-blue-500 h-5 w-5 cursor-pointer"
-          />
-        </Link>
-      </div> */}
-      {/* <Edit
-        isOpen={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-          setDetails({} as LeaveRequestDto);
-        }}
-        details={details}
-        loadDesignations={loadDesignations}
-      /> */}
-
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
@@ -95,8 +70,8 @@ export function DataTableRowActions<TData extends ShiftScheduleDtoRead>({
             await deleteMutation({
               id: details.id as string,
             }).unwrap();
+            dispatch(commonActions.setTriggerReload());
             toast.success("Schedule deleted successfully");
-            loadShiftSchedules({ page: 1, pageSize: 10 });
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }

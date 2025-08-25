@@ -13,7 +13,6 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { ServerDatatable } from "@/shared/datatable";
 import { columns } from "./columns";
 import { Create } from "./create";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 // usePostApiV1MaterialArdMutation
 function Page() {
@@ -61,50 +60,50 @@ function Page() {
 
   const data = result?.data || [];
   return (
-    <PageWrapper>
+    <PageWrapper className="space-y-4">
       {isOpen && (
         <Create isOpen={isOpen} kind={type} onClose={() => setIsOpen(false)} />
       )}
-      <PageTitle title="Analytical Raw Data - Material" />
       <div className="flex w-full justify-between items-center">
-        <AccessTabs
-          handleTabClick={handleTabClick}
-          containerClassName="w-60"
-          type={type}
-          tabs={[
-            {
-              label: EMaterialKind[EMaterialKind.Raw],
-              value: EMaterialKind.Raw.toString(),
-            },
-            {
-              label: EMaterialKind[EMaterialKind.Packing],
-              value: EMaterialKind.Packing.toString(),
-            },
-          ]}
-        />
-        <Button onClick={() => setIsOpen(true)} className="flex items-center">
-          <Icon name="Plus" />
-          <span>Add Material ARD</span>
-        </Button>
+        <PageTitle title="Analytical Raw Data - Material" />
+        <div className="flex items-center gap-2">
+          <AccessTabs
+            handleTabClick={handleTabClick}
+            containerClassName="w-60"
+            type={type}
+            tabs={[
+              {
+                label: EMaterialKind[EMaterialKind.Raw],
+                value: EMaterialKind.Raw.toString(),
+              },
+              {
+                label: EMaterialKind[EMaterialKind.Packing],
+                value: EMaterialKind.Packing.toString(),
+              },
+            ]}
+          />
+          <Button onClick={() => setIsOpen(true)} className="flex items-center">
+            <Icon name="Plus" />
+            <span>Add Material ARD</span>
+          </Button>
+        </div>
       </div>
-      <ScrollablePageWrapper>
-        <ServerDatatable
-          data={data}
-          columns={columns}
-          isLoading={isLoading || isFetching}
-          setPage={setPage}
-          setPageSize={setPageSize}
-          meta={{
-            pageIndex: result?.pageIndex as number,
-            pageCount: result?.pageCount as number,
-            totalRecordCount: result?.totalRecordCount as number,
-            numberOfPagesToShow: result?.numberOfPagesToShow as number,
-            startPageIndex: result?.startPageIndex as number,
-            stopPageIndex: result?.stopPageIndex as number,
-            pageSize,
-          }}
-        />
-      </ScrollablePageWrapper>
+      <ServerDatatable
+        data={data}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        setPage={setPage}
+        setPageSize={setPageSize}
+        meta={{
+          pageIndex: result?.pageIndex as number,
+          pageCount: result?.pageCount as number,
+          totalRecordCount: result?.totalRecordCount as number,
+          numberOfPagesToShow: result?.numberOfPagesToShow as number,
+          startPageIndex: result?.startPageIndex as number,
+          stopPageIndex: result?.stopPageIndex as number,
+          pageSize,
+        }}
+      />
     </PageWrapper>
   );
 }

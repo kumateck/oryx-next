@@ -2,26 +2,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const CreateStaffRequisitionSchema = z.object({
-  numberOfStaff: z.number().min(1, { message: "Number of staff is required" }),
-  designationId: z.object(
-    {
-      value: z.string().min(1, { message: "Job title is required" }),
-      label: z.string(),
-    },
-    {
-      message: "Job title is required",
-    },
-  ),
+  numberOfStaff: z
+    .number({ invalid_type_error: "Number of staff must be a number" })
+    .min(1, { message: "Number of staff is required" }),
+  designationId: z.object({
+    value: z.string().min(1, { message: "Job title is required" }),
+    label: z.string(),
+  }),
   departmentId: z.object(
     {
-      value: z.string().min(1, { message: "Department is required" }),
-      label: z.string(),
+      value: z
+        .string({ message: "Department is required" })
+        .min(1, { message: "Department is required" }),
+      label: z.string({ message: "Department is required" }),
     },
     {
       message: "Department is required",
     },
   ),
-  qualification: z.string().min(1, { message: "Qualification is required" }),
+  qualification: z
+    .string({ message: "Qualification is required" })
+    .min(1, { message: "Qualification is required" }),
   appointmentType: z.object(
     {
       value: z.string().min(1, { message: "Appointment type is required" }),

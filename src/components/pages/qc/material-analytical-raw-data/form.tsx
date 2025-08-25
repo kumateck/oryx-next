@@ -1,5 +1,6 @@
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
+import { InputTypes } from "@/lib";
 import {
   Control,
   Path,
@@ -12,16 +13,22 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   register: UseFormRegister<TFieldValues>;
   control: Control<TFieldValues, TContext>;
   errors: FieldErrors<TFieldValues>;
-  formOptions: Option[];
-  stpOptions: Option[];
+  isLoadingStp: boolean;
+  isLoadingForm: boolean;
+  isLoadingSpec?: boolean;
+  fetchStp: (search: string, page: number) => Promise<FetchOptionsResult>;
+  fetchForm: (search: string, page: number) => Promise<FetchOptionsResult>;
 }
 
 export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
   register,
   errors,
-  formOptions,
   control,
-  stpOptions,
+  isLoadingStp,
+  isLoadingForm,
+  isLoadingSpec,
+  fetchForm,
+  fetchStp,
 }: Props<TFieldValues, TContext>) => {
   return (
     <div className="w-full space-y-6">
@@ -31,11 +38,12 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Stp Number",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "stpId",
             required: true,
             placeholder: "Select stp number",
-            options: stpOptions,
+            fetchOptions: fetchStp,
+            isLoading: isLoadingStp,
             errors,
           },
         ]}
@@ -46,8 +54,12 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
             label: "Spec Number",
             register: register("specNumber" as Path<TFieldValues>),
             type: InputTypes.TEXT,
+            readOnly: true,
+            className: "disabled",
             required: true,
-            placeholder: "Enter Spec Number",
+            placeholder: isLoadingSpec
+              ? "Loading..."
+              : "Select Stp to view Spec Number",
             errors,
           },
         ]}
@@ -70,11 +82,12 @@ export const MaterialArdForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Template",
             control: control as Control,
-            type: InputTypes.SELECT,
+            type: InputTypes.ASYNC_SELECT,
             name: "formId",
             required: true,
             placeholder: "Select Template",
-            options: formOptions,
+            fetchOptions: fetchForm,
+            isLoading: isLoadingForm,
             errors,
           },
         ]}
