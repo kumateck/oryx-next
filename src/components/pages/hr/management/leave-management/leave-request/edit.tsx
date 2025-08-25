@@ -39,8 +39,7 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     usePutApiV1LeaveRequestByIdMutation();
 
   const defaultEmployee = {
-    label: ((details?.employee?.firstName ?? "") +
-      (details?.employee?.lastName ?? "")) as string,
+    label: `${details?.employee?.firstName} ${details?.employee?.lastName}`,
     value: details?.employee?.id as string,
   };
 

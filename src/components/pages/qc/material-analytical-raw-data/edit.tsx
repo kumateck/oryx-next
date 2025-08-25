@@ -14,11 +14,10 @@ import {
   MaterialAnalyticalRawDataDto,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   PutApiV1MaterialArdByIdApiArg,
-  useGetApiV1FormQuery,
-  useGetApiV1MaterialStpsQuery,
+  useLazyGetApiV1FormQuery,
+  useLazyGetApiV1MaterialStpsQuery,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1MaterialArdByIdMutation,
-  useGetApiV1MaterialArdByIdQuery,
   useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
 } from "@/lib/redux/api/openapi.generated";
 import {
@@ -49,7 +48,7 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
   };
   const dispatch = useDispatch();
 
-  const [loadMaterialstpSpecification, { data }] =
+  const [loadMaterialstpSpecification, { data, isLoading: isLoadingSpec }] =
     useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
 
   const {
@@ -75,7 +74,6 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
     const material = materialStps?.data?.find(
       (stp) => stp?.id === stpId?.value,
     );
-    console.log(material);
     if (material) {
       loadMaterialstpSpecification({ id: material?.material?.id as string });
     }
@@ -90,65 +88,48 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
 
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
-  //get material stp by id
-  const { data: materialStpData } = useGetApiV1MaterialArdByIdQuery({
-    id: details?.materialStandardTestProcedure?.id as string,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
 
   //get stp
-  const { data: materialStps } = useGetApiV1MaterialStpsQuery({
-    page: 1,
-    pageSize: 1000,
-    module: AuditModules.warehouse.name,
-    subModule: AuditModules.warehouse.materials,
-  });
-  useEffect(() => {
-    if (isOpen && details) {
-      // Compute stpId option
-      const stpOption = materialData.find(
-        (stp) => stp.id === details.materialStandardTestProcedure?.material?.id,
-      );
-      const defaultStpId = {
-        value: details.materialStandardTestProcedure?.id || "",
-        label:
-          stpOption?.stpNumber ||
-          details.materialStandardTestProcedure?.stpNumber ||
-          "",
-      };
-
-      reset({
-        description: details.description || "",
-        stpId: defaultStpId,
-        formId: {
-          value: details.form?.id || "",
-          label: details.form?.name || "",
-        },
-        specNumber: details.specNumber || "",
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, details, reset, materialStpData, details.id]);
+  const [loadMaterialStps, { isLoading: isLoadingStp, data: materialStps }] =
+    useLazyGetApiV1MaterialStpsQuery();
+  const loadDataOrSearchStp = async (searchQuery: string, page: number) => {
+    const res = await loadMaterialStps({
+      searchQuery,
+      page,
+      module: AuditModules.warehouse.name,
+      subModule: AuditModules.warehouse.materials,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((stp) => ({
+        label: stp.stpNumber,
+        value: stp.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   //load forms template
-  const { data: formTemplates } = useGetApiV1FormQuery({
-    page: 1,
-    pageSize: 1000,
-    type: FormTypeEnum.ARD,
-  });
+  const [loadingFormdata, { isLoading: isLoadingForm }] =
+    useLazyGetApiV1FormQuery();
 
-  const formOptionsData = formTemplates?.data || [];
-  const formOptions = formOptionsData.map((form) => ({
-    value: form.id,
-    label: form.name,
-  })) as Option[];
-
-  const materialData = materialStps?.data || [];
-  const materialStpOptions = materialData.map((stp) => ({
-    value: stp.id,
-    label: stp.stpNumber,
-  })) as Option[];
+  const loadDataOrSearchForm = async (searchQuery: string, page: number) => {
+    const res = await loadingFormdata({
+      searchQuery,
+      page,
+      type: FormTypeEnum.ARD,
+    }).unwrap();
+    const response = {
+      options: res?.data?.map((form) => ({
+        label: form.name,
+        value: form.id,
+      })) as Option[],
+      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
+      hasPrevious: (res?.pageIndex as number) > 1,
+    };
+    return response;
+  };
 
   const [updateMaterialArdMutation, { isLoading }] =
     usePutApiV1MaterialArdByIdMutation();
@@ -222,8 +203,11 @@ export function Edit({ isOpen, id, onClose, details }: Props) {
             errors={errors}
             register={register}
             control={control}
-            stpOptions={materialStpOptions}
-            formOptions={formOptions}
+            fetchStp={loadDataOrSearchStp}
+            fetchForm={loadDataOrSearchForm}
+            isLoadingForm={isLoadingForm}
+            isLoadingSpec={isLoadingSpec}
+            isLoadingStp={isLoadingStp}
           />
           <DialogFooter>
             <Button

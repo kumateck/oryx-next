@@ -54,7 +54,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     trigger,
   } = useForm<StaffRequisitionRequestDto>({
     resolver: CreateStaffRequisitionValidator,
-    mode: "onTouched",
+    // mode: "onTouched",
   });
 
   const { data: designationResponse } = useGetApiV1DesignationQuery({
@@ -176,7 +176,7 @@ const Create = ({ isOpen, onClose }: Props) => {
           )}
           <DialogFooter className="justify-end gap-4 py-6">
             <Button
-              type="button"
+              type="submit"
               variant="secondary"
               onClick={() => {
                 if (step === 1) {
@@ -193,7 +193,7 @@ const Create = ({ isOpen, onClose }: Props) => {
             {step === 1 ? (
               <Button
                 variant="default"
-                type="button"
+                type="submit"
                 onClick={handleNext}
                 className="flex items-center gap-2"
               >

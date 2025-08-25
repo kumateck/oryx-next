@@ -47,17 +47,19 @@ export const CreateStockRequisitionSchema = z.object({
       value: String(InventoryType["IT Store"]),
       label: "IT Store",
     }),
-  departmentId: z.object(
-    {
-      value: z.string({
+  departmentId: z
+    .object(
+      {
+        value: z.string({
+          message: "Department is required",
+        }),
+        label: z.string(),
+      },
+      {
         message: "Department is required",
-      }),
-      label: z.string(),
-    },
-    {
-      message: "Department is required",
-    },
-  ),
+      },
+    )
+    .required({}),
 });
 
 export type StockRequisitionDto = z.infer<typeof CreateStockRequisitionSchema>;

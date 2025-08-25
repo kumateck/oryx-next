@@ -100,7 +100,8 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
       educationQualification:
         (details.educationalQualification as string) || "",
       justification: (details.justification as string) || "",
-      additionalRequirements: (details.additionalRequests as string) || "",
+      additionalRequirements: (details.additionalRequirements as string) || "",
+
       departmentId: defaultDepartments,
     },
   });

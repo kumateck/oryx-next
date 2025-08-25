@@ -101,6 +101,11 @@ export const columns: ColumnDef<MaterialStandardTestProcedureDto>[] = [
     cell: ({ row }) => <div>{row.original?.material?.name}</div>,
   },
   {
+    accessorKey: "materialCod",
+    header: "Material Code",
+    cell: ({ row }) => <div>{row.original?.material?.code ?? "N/A"}</div>,
+  },
+  {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },

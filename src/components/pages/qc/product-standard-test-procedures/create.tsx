@@ -80,9 +80,6 @@ export const Create = ({ isOpen, onClose }: Props) => {
         subModule: AuditModules.settings.standardTestProcedure,
         createProductStandardTestProcedureRequest: payload,
       } as PostApiV1ProductStpsApiArg).unwrap();
-      toast.success("STP created successfully");
-      onClose();
-      reset();
       //upload attachment if any
       if (standardTestProcedureId && data?.attachments?.length > 0) {
         const files = Array.isArray(data.attachments)
@@ -101,7 +98,9 @@ export const Create = ({ isOpen, onClose }: Props) => {
           } as PostApiV1FileByModelTypeAndModelIdApiArg).unwrap();
         }
       }
-
+      toast.success("STP created successfully");
+      onClose();
+      reset();
       dispatch(commonActions.setTriggerReload());
     } catch (error) {
       console.error("Error creating STP:", error);

@@ -9,7 +9,6 @@ import PageTitle from "@/shared/title";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { Create } from "./create";
-import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 
@@ -50,24 +49,22 @@ function Page() {
           </Button>
         </div>
       </div>
-      <ScrollablePageWrapper>
-        <ServerDatatable
-          data={data}
-          columns={columns}
-          isLoading={isLoading || isFetching}
-          setPage={setPage}
-          setPageSize={setPageSize}
-          meta={{
-            pageIndex: result?.pageIndex as number,
-            pageCount: result?.pageCount as number,
-            totalRecordCount: result?.totalRecordCount as number,
-            numberOfPagesToShow: result?.numberOfPagesToShow as number,
-            startPageIndex: result?.startPageIndex as number,
-            stopPageIndex: result?.stopPageIndex as number,
-            pageSize,
-          }}
-        />
-      </ScrollablePageWrapper>
+      <ServerDatatable
+        data={data}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        setPage={setPage}
+        setPageSize={setPageSize}
+        meta={{
+          pageIndex: result?.pageIndex as number,
+          pageCount: result?.pageCount as number,
+          totalRecordCount: result?.totalRecordCount as number,
+          numberOfPagesToShow: result?.numberOfPagesToShow as number,
+          startPageIndex: result?.startPageIndex as number,
+          stopPageIndex: result?.stopPageIndex as number,
+          pageSize,
+        }}
+      />
     </PageWrapper>
   );
 }
