@@ -12,12 +12,18 @@ import {
 import { EmployeeDto } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import React from "react";
+import { StatusColorsOptions } from "../types";
 
 interface Props {
   data: EmployeeDto | undefined;
 }
 
 function LeftCard({ data }: Props) {
+  const isActiveStatus =
+    data?.activeStatus !== null && data?.activeStatus !== undefined;
+  const isInactiveStatus =
+    data?.inactiveStatus !== null && data?.inactiveStatus !== undefined;
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -51,27 +57,42 @@ function LeftCard({ data }: Props) {
               )}
             </div>
             <div className="text-center sm:text-left">
-              <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-3xl">
-                {/* {EmployeeStatusType[data?.status as EmployeeStatus]} */}
-                {data?.status === EmployeeStatusType.Active
-                  ? data?.activeStatus !== null
-                    ? splitWords(
-                        EmployeeActiveStatus[
-                          data?.activeStatus as EmployeeActiveStatus
-                        ],
-                      )
-                    : EmployeeStatusType[data?.status as EmployeeStatusType]
-                  : ""}
-                {data?.status === EmployeeStatusType.Inactive
-                  ? data?.inactiveStatus !== null
-                    ? splitWords(
-                        EmployeeInactiveStatus[
-                          data?.inactiveStatus as EmployeeInactiveStatus
-                        ],
-                      )
-                    : EmployeeStatusType[data?.status as EmployeeStatusType]
-                  : ""}
-              </span>
+              <div
+                className={`text-sm cursor-pointer flex gap-2 items-center justify-center ${
+                  isActiveStatus
+                    ? StatusColorsOptions.activeStatus[
+                        data.activeStatus as EmployeeActiveStatus
+                      ]
+                    : isInactiveStatus
+                      ? StatusColorsOptions.inactiveStatus[
+                          data.inactiveStatus as EmployeeInactiveStatus
+                        ]
+                      : StatusColorsOptions.statusColors[
+                          data?.status as EmployeeStatusType
+                        ]
+                } text-white px-3 py-1 rounded-full w-fit`}
+              >
+                <span>
+                  {data?.status === EmployeeStatusType.Active
+                    ? data?.activeStatus !== null
+                      ? splitWords(
+                          EmployeeActiveStatus[
+                            data?.activeStatus as EmployeeActiveStatus
+                          ],
+                        )
+                      : EmployeeStatusType[data.status as EmployeeStatusType]
+                    : ""}
+                  {data?.status === EmployeeStatusType.Inactive
+                    ? data?.inactiveStatus !== null
+                      ? splitWords(
+                          EmployeeInactiveStatus[
+                            data?.inactiveStatus as EmployeeInactiveStatus
+                          ],
+                        )
+                      : EmployeeStatusType[data?.status as EmployeeStatusType]
+                    : ""}
+                </span>
+              </div>
               <h2 className="font-bold text-xl">
                 {data?.firstName} {data?.lastName}
               </h2>

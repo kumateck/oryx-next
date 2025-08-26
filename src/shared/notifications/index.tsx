@@ -17,14 +17,9 @@ const NotificationSheet: React.FC = () => {
   const [markAlertAsRead, { isLoading: isMarkingAsRead }] =
     usePutApiV1AlertByIdMarkAsReadMutation();
 
-  // Optional: Add mutation hooks for marking notifications as read
-  // const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
-  // const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
-
   const handleMarkAsRead = async (id: string) => {
     try {
       await markAlertAsRead({ id }).unwrap();
-      console.log(`Marking notification ${id} as read`);
     } catch (error) {
       console.error("Failed to mark notification as read:", error);
     }
@@ -36,8 +31,6 @@ const NotificationSheet: React.FC = () => {
       await Promise.all(
         unReadIds.map((id) => markAlertAsRead({ id: id as string }).unwrap()),
       );
-      // await markAllNotificationsAsRead().unwrap();
-      console.log("Marking all notifications as read");
     } catch (error) {
       console.error("Failed to mark all notifications as read:", error);
     }

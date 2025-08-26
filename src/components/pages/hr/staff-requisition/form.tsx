@@ -64,7 +64,6 @@ export const PositionDetailsForm = <
             type: InputTypes.SELECT,
             name: "designationId",
             required: true,
-            defaultValue: defaultValues?.designationId,
             placeholder: "Select designation",
             options: designationsOptions,
             errors,

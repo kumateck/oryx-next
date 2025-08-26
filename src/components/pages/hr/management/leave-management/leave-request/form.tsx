@@ -76,6 +76,9 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
               label: "Date",
               control: control as Control,
               type: InputTypes.DATE,
+              disabled: {
+                after: new Date(),
+              },
               name: "date",
               required: true,
               placeholder: "Select exit pass date",
@@ -92,6 +95,9 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Start Date",
                 control: control as Control,
                 type: InputTypes.DATE,
+                disabled: {
+                  after: new Date(),
+                },
                 name: "startDate",
                 required: true,
                 placeholder: "Select start date",
@@ -105,41 +111,12 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 label: "End Date",
                 control: control as Control,
                 type: InputTypes.DATE,
+                disabled: {
+                  after: new Date(),
+                },
                 name: "endDate",
                 required: true,
                 placeholder: "Select end date",
-                errors,
-              },
-            ]}
-          />
-        </div>
-      )}
-      {isExitPass && (
-        <div className="flex w-full items-center gap-2">
-          <FormWizard
-            className=""
-            config={[
-              {
-                label: "Time In",
-                control: control as Control,
-                type: InputTypes.TIME,
-                name: "timeIn",
-                required: true,
-                placeholder: "Select time in",
-                errors,
-              },
-            ]}
-          />
-          <FormWizard
-            className=""
-            config={[
-              {
-                label: "Time Out",
-                control: control as Control,
-                type: InputTypes.TIME,
-                name: "timeOut",
-                required: true,
-                placeholder: "Select time out",
                 errors,
               },
             ]}

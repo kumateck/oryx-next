@@ -71,7 +71,6 @@ const UserDialog = ({
     }),
     [selectedEmployee?.designation?.name, selectedEmployee?.designation?.id],
   );
-
   const {
     control,
     register,
@@ -131,15 +130,17 @@ const UserDialog = ({
         staffNumber: selectedEmployee.staffNumber as string,
         reportingManagerId: {
           value: selectedEmployee?.reportingManager?.id as string,
-          label: `${selectedEmployee?.reportingManager?.firstName} ${selectedEmployee?.reportingManager?.lastName}`,
+          label: `${selectedEmployee?.reportingManager?.firstName ?? ""} ${selectedEmployee?.reportingManager?.lastName ?? ""}`,
         },
-        // reportingManagerId: selectedEmployee.re
-        employeeLevel: selectedEmployee.level
-          ? {
-              value: selectedEmployee.level.toString(),
-              label: EmployeeLevel[selectedEmployee.level],
-            }
-          : undefined,
+        employeeLevel:
+          selectedEmployee.level !== undefined &&
+          selectedEmployee.level !== null
+            ? {
+                value: String(selectedEmployee.level),
+                label:
+                  EmployeeLevel[selectedEmployee.level as EmployeeLevel] ?? "",
+              }
+            : undefined,
       });
     }
   }, [open, selectedEmployee, reset, defaultDepartment, defaultDesignation]);
@@ -180,7 +181,6 @@ const UserDialog = ({
         id: selectedEmployee.id as string,
         assignEmployeeDto: payload,
       }).unwrap();
-
       toast.success("Employee assigned successfully");
       dispatch(commonActions.setTriggerReload());
       onSuccess();

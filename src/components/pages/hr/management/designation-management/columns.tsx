@@ -8,11 +8,12 @@ import { ErrorResponse, isErrorResponse } from "@/lib";
 import {
   DesignationDto,
   useDeleteApiV1DesignationByIdMutation,
-  useLazyGetApiV1DesignationQuery,
 } from "@/lib/redux/api/openapi.generated";
 import Edit from "./edit";
 import { TableMenuAction } from "@/shared/table-menu";
 import { DetailsDialog } from "./detailsDailog";
+import { commonActions } from "@/lib/redux/slices/common";
+import { useDispatch } from "@/lib/redux/store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -25,7 +26,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
   const [details, setDetails] = useState<DesignationDto>({} as DesignationDto);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
+  const dispatch = useDispatch();
 
   //permisions checks
   // const { hasPermissionAccess } = useUserPermissions();
@@ -121,7 +122,7 @@ export function DataTableRowActions<TData extends DesignationDto>({
               id: details.id as string,
             }).unwrap();
             toast.success("Designation deleted successfully");
-            loadDesignations({ page: 1, pageSize: 10 });
+            dispatch(commonActions.setTriggerReload());
           } catch (error) {
             toast.error(isErrorResponse(error as ErrorResponse)?.description);
           }
