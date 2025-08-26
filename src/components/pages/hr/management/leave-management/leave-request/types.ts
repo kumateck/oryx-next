@@ -52,31 +52,25 @@ const imageValidationSchema = z.any().refine(
 
 export const CreateLeaveSchema = z
   .object({
-    leaveTypeId: z
-      .object(
-        {
-          value: z.string().min(1, { message: "Leave type is required" }),
-          label: z.string(),
-        },
-        { required_error: "Leave type is required" },
-      )
-      .optional(),
+    leaveTypeId: z.object(
+      {
+        value: z.string().min(1, { message: "Leave type is required" }),
+        label: z.string(),
+      },
+      { required_error: "Leave type is required" },
+    ),
     startDate: z.preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z
-        .date({
-          required_error: "Start date is required",
-          invalid_type_error: "Start date must be a valid date",
-        })
-        .optional(),
+      z.date({
+        required_error: "Start date is required",
+        invalid_type_error: "Start date must be a valid date",
+      }),
     ),
     endDate: z.preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z
-        .date({
-          invalid_type_error: "End date must be a valid date",
-        })
-        .optional(),
+      z.date({
+        invalid_type_error: "End date must be a valid date",
+      }),
     ),
     employeeId: z.object(
       {
@@ -90,7 +84,7 @@ export const CreateLeaveSchema = z
     contactPersonNumber: z.string().optional(),
     attachments: imageValidationSchema.optional(),
     justification: z.string().optional(),
-    destination: z.string(),
+    destination: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -110,8 +104,8 @@ export const CreateLeaveSchema = z
   .refine(
     (data) => {
       if (
-        data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory !== LeaveCategories.ExitPassRequest.toString()
+        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString() &&
+        data.leaveCategory === LeaveCategories.ExitPassRequest.toString()
       ) {
         return !!data.contactPerson?.trim();
       }
@@ -125,8 +119,8 @@ export const CreateLeaveSchema = z
   .refine(
     (data) => {
       if (
-        data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory !== LeaveCategories.ExitPassRequest.toString()
+        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString() &&
+        data.leaveCategory === LeaveCategories.ExitPassRequest.toString()
       ) {
         return !!data.contactPersonNumber?.trim();
       }
@@ -152,12 +146,10 @@ export const CreateLeaveSchema = z
       path: ["startDate"],
     },
   )
-
   .refine(
     (data) => {
       if (
-        data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory !== LeaveCategories.ExitPassRequest.toString()
+        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString()
       ) {
         return !!data.endDate;
       }
@@ -165,6 +157,18 @@ export const CreateLeaveSchema = z
     },
     {
       message: "End date is required",
+      path: ["endDate"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.startDate instanceof Date && data.endDate instanceof Date) {
+        return data.startDate < data.endDate;
+      }
+      return true;
+    },
+    {
+      message: "Start date must be before end date",
       path: ["endDate"],
     },
   );

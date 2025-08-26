@@ -653,27 +653,80 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1CollectionUom: build.query<
-      GetApiV1CollectionUomApiResponse,
-      GetApiV1CollectionUomApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/uom`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          isRawMaterial: queryArg.isRawMaterial,
-        },
-      }),
-    }),
     getApiV1CollectionPackageStyles: build.query<
       GetApiV1CollectionPackageStylesApiResponse,
       GetApiV1CollectionPackageStylesApiArg
     >({
       query: (queryArg) => ({
         url: `/api/v1/collection/package-styles`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1CollectionUom: build.mutation<
+      PostApiV1CollectionUomApiResponse,
+      PostApiV1CollectionUomApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom`,
+        method: "POST",
+        body: queryArg.createUnitOfMeasure,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1CollectionUomPaginated: build.mutation<
+      PostApiV1CollectionUomPaginatedApiResponse,
+      PostApiV1CollectionUomPaginatedApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom/paginated`,
+        method: "POST",
+        body: queryArg.filterUnitOfMeasure,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1CollectionUomByUomId: build.mutation<
+      PostApiV1CollectionUomByUomIdApiResponse,
+      PostApiV1CollectionUomByUomIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom/${queryArg.uomId}`,
+        method: "POST",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1CollectionUomByUomId: build.mutation<
+      PutApiV1CollectionUomByUomIdApiResponse,
+      PutApiV1CollectionUomByUomIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom/${queryArg.uomId}`,
+        method: "PUT",
+        body: queryArg.createUnitOfMeasure,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    deleteApiV1CollectionUomByUomId: build.mutation<
+      DeleteApiV1CollectionUomByUomIdApiResponse,
+      DeleteApiV1CollectionUomByUomIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/collection/uom/${queryArg.uomId}`,
+        method: "DELETE",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -2950,6 +3003,22 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    deleteApiV1MaterialDepartment: build.mutation<
+      DeleteApiV1MaterialDepartmentApiResponse,
+      DeleteApiV1MaterialDepartmentApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/material/department`,
+        method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+        params: {
+          materialId: queryArg.materialId,
+        },
+      }),
+    }),
     getApiV1MaterialDepartment: build.query<
       GetApiV1MaterialDepartmentApiResponse,
       GetApiV1MaterialDepartmentApiArg
@@ -5059,12 +5128,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1ProductionOrdersProformaInvoices: build.mutation<
-      PostApiV1ProductionOrdersProformaInvoicesApiResponse,
-      PostApiV1ProductionOrdersProformaInvoicesApiArg
+    postApiV1ProductionOrdersProformaInvoice: build.mutation<
+      PostApiV1ProductionOrdersProformaInvoiceApiResponse,
+      PostApiV1ProductionOrdersProformaInvoiceApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices`,
+        url: `/api/v1/production-orders/proforma-invoice`,
         method: "POST",
         body: queryArg.createProformaInvoice,
         headers: {
@@ -5073,12 +5142,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductionOrdersProformaInvoices: build.query<
-      GetApiV1ProductionOrdersProformaInvoicesApiResponse,
-      GetApiV1ProductionOrdersProformaInvoicesApiArg
+    getApiV1ProductionOrdersProformaInvoice: build.query<
+      GetApiV1ProductionOrdersProformaInvoiceApiResponse,
+      GetApiV1ProductionOrdersProformaInvoiceApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices`,
+        url: `/api/v1/production-orders/proforma-invoice`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -5090,24 +5159,24 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductionOrdersProformaInvoicesById: build.query<
-      GetApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      GetApiV1ProductionOrdersProformaInvoicesByIdApiArg
+    getApiV1ProductionOrdersProformaInvoiceById: build.query<
+      GetApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+      GetApiV1ProductionOrdersProformaInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
       }),
     }),
-    putApiV1ProductionOrdersProformaInvoicesById: build.mutation<
-      PutApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      PutApiV1ProductionOrdersProformaInvoicesByIdApiArg
+    putApiV1ProductionOrdersProformaInvoiceById: build.mutation<
+      PutApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+      PutApiV1ProductionOrdersProformaInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createProformaInvoice,
         headers: {
@@ -5116,12 +5185,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    deleteApiV1ProductionOrdersProformaInvoicesById: build.mutation<
-      DeleteApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      DeleteApiV1ProductionOrdersProformaInvoicesByIdApiArg
+    deleteApiV1ProductionOrdersProformaInvoiceById: build.mutation<
+      DeleteApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+      DeleteApiV1ProductionOrdersProformaInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
         method: "DELETE",
         headers: {
           Module: queryArg["module"],
@@ -5129,12 +5198,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postApiV1ProductionOrdersInvoices: build.mutation<
-      PostApiV1ProductionOrdersInvoicesApiResponse,
-      PostApiV1ProductionOrdersInvoicesApiArg
+    postApiV1ProductionOrdersInvoice: build.mutation<
+      PostApiV1ProductionOrdersInvoiceApiResponse,
+      PostApiV1ProductionOrdersInvoiceApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices`,
+        url: `/api/v1/production-orders/invoice`,
         method: "POST",
         body: queryArg.createInvoice,
         headers: {
@@ -5143,12 +5212,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductionOrdersInvoices: build.query<
-      GetApiV1ProductionOrdersInvoicesApiResponse,
-      GetApiV1ProductionOrdersInvoicesApiArg
+    getApiV1ProductionOrdersInvoice: build.query<
+      GetApiV1ProductionOrdersInvoiceApiResponse,
+      GetApiV1ProductionOrdersInvoiceApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices`,
+        url: `/api/v1/production-orders/invoice`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -5160,24 +5229,24 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getApiV1ProductionOrdersInvoicesById: build.query<
-      GetApiV1ProductionOrdersInvoicesByIdApiResponse,
-      GetApiV1ProductionOrdersInvoicesByIdApiArg
+    getApiV1ProductionOrdersInvoiceById: build.query<
+      GetApiV1ProductionOrdersInvoiceByIdApiResponse,
+      GetApiV1ProductionOrdersInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/invoice/${queryArg.id}`,
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
         },
       }),
     }),
-    putApiV1ProductionOrdersInvoicesById: build.mutation<
-      PutApiV1ProductionOrdersInvoicesByIdApiResponse,
-      PutApiV1ProductionOrdersInvoicesByIdApiArg
+    putApiV1ProductionOrdersInvoiceById: build.mutation<
+      PutApiV1ProductionOrdersInvoiceByIdApiResponse,
+      PutApiV1ProductionOrdersInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/invoice/${queryArg.id}`,
         method: "PUT",
         body: queryArg.createInvoice,
         headers: {
@@ -5186,13 +5255,40 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    deleteApiV1ProductionOrdersInvoicesById: build.mutation<
-      DeleteApiV1ProductionOrdersInvoicesByIdApiResponse,
-      DeleteApiV1ProductionOrdersInvoicesByIdApiArg
+    deleteApiV1ProductionOrdersInvoiceById: build.mutation<
+      DeleteApiV1ProductionOrdersInvoiceByIdApiResponse,
+      DeleteApiV1ProductionOrdersInvoiceByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
+        url: `/api/v1/production-orders/invoice/${queryArg.id}`,
         method: "DELETE",
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    postApiV1ProductionOrdersAllocate: build.mutation<
+      PostApiV1ProductionOrdersAllocateApiResponse,
+      PostApiV1ProductionOrdersAllocateApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders/allocate`,
+        method: "POST",
+        body: queryArg.allocateProductionOrderRequest,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    putApiV1ProductionOrdersDeliverByProductionOrderId: build.mutation<
+      PutApiV1ProductionOrdersDeliverByProductionOrderIdApiResponse,
+      PutApiV1ProductionOrdersDeliverByProductionOrderIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/production-orders/deliver/${queryArg.productionOrderId}`,
+        method: "PUT",
         headers: {
           Module: queryArg["module"],
           SubModule: queryArg.subModule,
@@ -6256,20 +6352,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    putApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductId:
-      build.mutation<
-        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse,
-        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/allocate-products/deliver/${queryArg.allocatedProductId}`,
-          method: "PUT",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
     getApiV1ProductionScheduleSummaryReport: build.query<
       GetApiV1ProductionScheduleSummaryReportApiResponse,
       GetApiV1ProductionScheduleSummaryReportApiArg
@@ -9012,18 +9094,52 @@ export type DeleteApiV1CollectionByItemTypeAndItemIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1CollectionUomApiResponse =
-  /** status 200 OK */ UnitOfMeasureDto[];
-export type GetApiV1CollectionUomApiArg = {
-  isRawMaterial?: boolean;
+export type GetApiV1CollectionPackageStylesApiResponse =
+  /** status 200 OK */ PackageStyleDto[];
+export type GetApiV1CollectionPackageStylesApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1CollectionPackageStylesApiResponse =
-  /** status 200 OK */ PackageStyleDto[];
-export type GetApiV1CollectionPackageStylesApiArg = {
+export type PostApiV1CollectionUomApiResponse = unknown;
+export type PostApiV1CollectionUomApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUnitOfMeasure: CreateUnitOfMeasure;
+};
+export type PostApiV1CollectionUomPaginatedApiResponse =
+  /** status 200 OK */ UnitOfMeasureDtoIEnumerablePaginateable;
+export type PostApiV1CollectionUomPaginatedApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  filterUnitOfMeasure: FilterUnitOfMeasure;
+};
+export type PostApiV1CollectionUomByUomIdApiResponse =
+  /** status 200 OK */ UnitOfMeasureDto;
+export type PostApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1CollectionUomByUomIdApiResponse = unknown;
+export type PutApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUnitOfMeasure: CreateUnitOfMeasure;
+};
+export type DeleteApiV1CollectionUomByUomIdApiResponse = unknown;
+export type DeleteApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10671,6 +10787,15 @@ export type PostApiV1MaterialDepartmentApiArg = {
   /** The list of material departments to create. */
   body: CreateMaterialDepartment[];
 };
+export type DeleteApiV1MaterialDepartmentApiResponse = unknown;
+export type DeleteApiV1MaterialDepartmentApiArg = {
+  /** The material you want to unlink from your department */
+  materialId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1MaterialDepartmentApiResponse =
   /** status 200 OK */ MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable;
 export type GetApiV1MaterialDepartmentApiArg = {
@@ -12189,7 +12314,7 @@ export type GetApiV1ProductionOrdersApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersByIdApiResponse =
-  /** status 200 OK */ ProductionOrderDto;
+  /** status 200 OK */ ProductionOrderDetailDto;
 export type GetApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -12215,18 +12340,18 @@ export type DeleteApiV1ProductionOrdersByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1ProductionOrdersProformaInvoicesApiResponse =
+export type PostApiV1ProductionOrdersProformaInvoiceApiResponse =
   /** status 200 OK */ string;
-export type PostApiV1ProductionOrdersProformaInvoicesApiArg = {
+export type PostApiV1ProductionOrdersProformaInvoiceApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
   createProformaInvoice: CreateProformaInvoice;
 };
-export type GetApiV1ProductionOrdersProformaInvoicesApiResponse =
+export type GetApiV1ProductionOrdersProformaInvoiceApiResponse =
   /** status 200 OK */ ProformaInvoiceDtoIEnumerablePaginateableRead;
-export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
+export type GetApiV1ProductionOrdersProformaInvoiceApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -12235,17 +12360,17 @@ export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductionOrdersProformaInvoicesByIdApiResponse =
+export type GetApiV1ProductionOrdersProformaInvoiceByIdApiResponse =
   /** status 200 OK */ ProformaInvoiceDtoRead;
-export type GetApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type GetApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ProductionOrdersProformaInvoicesByIdApiResponse = unknown;
-export type PutApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type PutApiV1ProductionOrdersProformaInvoiceByIdApiResponse = unknown;
+export type PutApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -12253,27 +12378,26 @@ export type PutApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
   subModule?: any;
   createProformaInvoice: CreateProformaInvoice;
 };
-export type DeleteApiV1ProductionOrdersProformaInvoicesByIdApiResponse =
-  unknown;
-export type DeleteApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type DeleteApiV1ProductionOrdersProformaInvoiceByIdApiResponse = unknown;
+export type DeleteApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1ProductionOrdersInvoicesApiResponse =
+export type PostApiV1ProductionOrdersInvoiceApiResponse =
   /** status 200 OK */ string;
-export type PostApiV1ProductionOrdersInvoicesApiArg = {
+export type PostApiV1ProductionOrdersInvoiceApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
   createInvoice: CreateInvoice;
 };
-export type GetApiV1ProductionOrdersInvoicesApiResponse =
+export type GetApiV1ProductionOrdersInvoiceApiResponse =
   /** status 200 OK */ InvoiceDtoIEnumerablePaginateableRead;
-export type GetApiV1ProductionOrdersInvoicesApiArg = {
+export type GetApiV1ProductionOrdersInvoiceApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -12282,17 +12406,17 @@ export type GetApiV1ProductionOrdersInvoicesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductionOrdersInvoicesByIdApiResponse =
+export type GetApiV1ProductionOrdersInvoiceByIdApiResponse =
   /** status 200 OK */ InvoiceDtoRead;
-export type GetApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type GetApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ProductionOrdersInvoicesByIdApiResponse = unknown;
-export type PutApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type PutApiV1ProductionOrdersInvoiceByIdApiResponse = unknown;
+export type PutApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -12300,9 +12424,26 @@ export type PutApiV1ProductionOrdersInvoicesByIdApiArg = {
   subModule?: any;
   createInvoice: CreateInvoice;
 };
-export type DeleteApiV1ProductionOrdersInvoicesByIdApiResponse = unknown;
-export type DeleteApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type DeleteApiV1ProductionOrdersInvoiceByIdApiResponse = unknown;
+export type DeleteApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProductionOrdersAllocateApiResponse = unknown;
+export type PostApiV1ProductionOrdersAllocateApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  allocateProductionOrderRequest: AllocateProductionOrderRequest;
+};
+export type PutApiV1ProductionOrdersDeliverByProductionOrderIdApiResponse =
+  unknown;
+export type PutApiV1ProductionOrdersDeliverByProductionOrderIdApiArg = {
+  productionOrderId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -13118,16 +13259,6 @@ export type GetApiV1ProductionScheduleAllocateProductsApiArg = {
 export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse =
   /** status 200 OK */ AllocateProductionOrderDtoRead;
 export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg =
-  {
-    allocatedProductId: string;
-    /** The module this request falls under */
-    module?: any;
-    /** The sub module this request falls under */
-    subModule?: any;
-  };
-export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse =
-  unknown;
-export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg =
   {
     allocatedProductId: string;
     /** The module this request falls under */
@@ -14846,6 +14977,8 @@ export type CreateAnalyticalTestRequest = {
   numberOfContainers?: number;
   sampledAt?: string | null;
 };
+export type UnitOfMeasureType = 0 | 1 | 2;
+export type UnitOfMeasureCategory = 0 | 1 | 2 | 3 | 4;
 export type UnitOfMeasureDto = {
   id?: string;
   createdBy?: UserDto;
@@ -14855,6 +14988,8 @@ export type UnitOfMeasureDto = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type EquipmentDto = {
   id?: string;
@@ -14899,6 +15034,7 @@ export type ProductListDto = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
 };
 export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type BatchManufacturingRecordDto = {
@@ -15580,6 +15716,32 @@ export type PackageStyleDto = {
   name?: string | null;
   description?: string | null;
 };
+export type CreateUnitOfMeasure = {
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+  isScalable?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
+};
+export type UnitOfMeasureDtoIEnumerablePaginateable = {
+  data?: UnitOfMeasureDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FilterUnitOfMeasure = {
+  pageSize?: number;
+  page?: number;
+  sortLabel?: string | null;
+  sortDirection?: SortDirection;
+  searchQuery?: string | null;
+  types?: UnitOfMeasureType[] | null;
+  categories?: UnitOfMeasureCategory[] | null;
+};
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type CompanyWorkingDaysRequest = {
   day: DayOfWeek;
@@ -15889,6 +16051,7 @@ export type UpdateEmployeeRequest = {
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
   status?: EmployeeStatus;
+  level?: EmployeeLevel;
   activeStatus?: EmployeeActiveStatus;
   inactiveStatus?: EmployeeInactiveStatus;
   suspensionStartDate?: string | null;
@@ -15898,7 +16061,7 @@ export type AssignEmployeeDto = {
   designationId: string;
   departmentId: string;
   staffNumber?: string | null;
-  level?: EmployeeLevel;
+  level: EmployeeLevel;
   startDate?: string;
   reportingManagerId: string;
 };
@@ -16501,6 +16664,8 @@ export type UnitOfMeasure = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type UnitOfMeasureRead = {
   id?: string;
@@ -16518,6 +16683,8 @@ export type UnitOfMeasureRead = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type MaterialDepartment = {
   id?: string;
@@ -18091,6 +18258,10 @@ export type RouteRead = {
   responsibleRoles?: RouteResponsibleRoleRead[] | null;
   workCenters?: RouteWorkCenterRead[] | null;
 };
+export type ProductPrices = {
+  price?: number;
+  date?: string;
+};
 export type Product = {
   id?: string;
   createdAt?: string;
@@ -18134,9 +18305,10 @@ export type Product = {
   billOfMaterials?: ProductBillOfMaterial[] | null;
   packages?: ProductPackage[] | null;
   routes?: Route[] | null;
-  price?: number;
   division?: Division;
   packPerShipper?: number;
+  prices?: ProductPrices[] | null;
+  expectedYield?: number;
 };
 export type ProductRead = {
   id?: string;
@@ -18184,6 +18356,8 @@ export type ProductRead = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  prices?: ProductPrices[] | null;
+  expectedYield?: number;
 };
 export type RequisitionApproval = {
   userId?: string | null;
@@ -18874,6 +19048,7 @@ export type PurchaseOrderItem = {
   uoMId?: string;
   uoM?: UnitOfMeasure;
   quantity?: number;
+  quantityInvoiced?: number;
   price?: number;
   currencyId?: string | null;
   currency?: Currency;
@@ -18896,11 +19071,12 @@ export type PurchaseOrderItemRead = {
   uoMId?: string;
   uoM?: UnitOfMeasureRead;
   quantity?: number;
+  quantityInvoiced?: number;
   price?: number;
   currencyId?: string | null;
   currency?: CurrencyRead;
 };
-export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4;
+export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type RevisedPurchaseOrderType = 0 | 1 | 2 | 3 | 4;
 export type RevisedPurchaseOrder = {
   id?: string;
@@ -21191,6 +21367,7 @@ export type PurchaseOrderItemDto = {
   manufacturers?: SupplierManufacturerDto[] | null;
   canReassignSupplier?: boolean;
   receivedQuantity?: number;
+  quantityInvoiced?: number;
 };
 export type PurchaseOrderItemDtoRead = {
   id?: string;
@@ -21204,6 +21381,7 @@ export type PurchaseOrderItemDtoRead = {
   cost?: number;
   canReassignSupplier?: boolean;
   receivedQuantity?: number;
+  quantityInvoiced?: number;
 };
 export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
 export type PurchaseOrderRevisionDto = {
@@ -21558,6 +21736,7 @@ export type CreateProductRequest = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  expectedYield?: number;
 };
 export type ProductListDtoIEnumerablePaginateable = {
   data?: ProductListDto[] | null;
@@ -21671,6 +21850,7 @@ export type ProductDto = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -21707,6 +21887,7 @@ export type ProductDtoRead = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -21741,6 +21922,7 @@ export type UpdateProductRequest = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  expectedYield?: number;
 };
 export type UpdateProductPackageDescriptionRequest = {
   primaryPackDescription?: string | null;
@@ -21840,6 +22022,7 @@ export type ProductionOrderProductsDto = {
   fulfilledQuantities?: ProductionOrderProductQuantityDto[] | null;
   fulfilled?: boolean;
 };
+export type ProductionOrderStatus = 0 | 1 | 2;
 export type ProductionOrderDto = {
   id?: string;
   createdBy?: UserDto;
@@ -21848,6 +22031,9 @@ export type ProductionOrderDto = {
   customer?: CustomerDto;
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
+  status?: ProductionOrderStatus;
+  approved?: boolean;
+  deliveredAt?: string | null;
 };
 export type ProductionOrderDtoIEnumerablePaginateable = {
   data?: ProductionOrderDto[] | null;
@@ -21857,6 +22043,33 @@ export type ProductionOrderDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type ProductionOrderInvoiceItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  product?: ProductListDto;
+  quantity?: number;
+};
+export type ProductionOrderInvoiceDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrder?: CollectionItemDto;
+  items?: ProductionOrderInvoiceItemDto[] | null;
+};
+export type ProductionOrderDetailDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  customer?: CustomerDto;
+  products?: ProductionOrderProductsDto[] | null;
+  totalValue?: number;
+  status?: ProductionOrderStatus;
+  approved?: boolean;
+  deliveredAt?: string | null;
+  invoice?: ProductionOrderInvoiceDto;
 };
 export type CreateProformaInvoiceProduct = {
   productId?: string;
@@ -21914,7 +22127,7 @@ export type ProformaInvoiceDtoIEnumerablePaginateableRead = {
 };
 export type CreateInvoice = {
   proformaInvoiceId?: string;
-  customerPoNumber?: string | null;
+  customerId?: string;
 };
 export type InvoiceStatus = 0 | 1;
 export type InvoiceDto = {
@@ -21923,7 +22136,7 @@ export type InvoiceDto = {
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   proformaInvoice?: ProformaInvoiceDto;
-  customerPoNumber?: string | null;
+  customer?: CustomerDto;
   status?: InvoiceStatus;
 };
 export type InvoiceDtoRead = {
@@ -21932,7 +22145,7 @@ export type InvoiceDtoRead = {
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   proformaInvoice?: ProformaInvoiceDtoRead;
-  customerPoNumber?: string | null;
+  customer?: CustomerDto;
   status?: InvoiceStatus;
 };
 export type InvoiceDtoIEnumerablePaginateable = {
@@ -21952,6 +22165,18 @@ export type InvoiceDtoIEnumerablePaginateableRead = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type AllocateProductQuantityRequest = {
+  finishedGoodsTransferNoteId?: string;
+  quantity?: number;
+};
+export type AllocateProductionOrderProductRequest = {
+  productId?: string;
+  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
+};
+export type AllocateProductionOrderRequest = {
+  productionOrderId?: string;
+  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type CreateProductionScheduleProduct = {
   productId?: string;
@@ -22521,18 +22746,6 @@ export type ApprovedProductDetailDtoRead = {
   quantityPerPack?: number;
   totalLoose?: number;
   finishedGoodsTransferNotes?: FinishedGoodsTransferNoteDtoRead[] | null;
-};
-export type AllocateProductQuantityRequest = {
-  finishedGoodsTransferNoteId?: string;
-  quantity?: number;
-};
-export type AllocateProductionOrderProductRequest = {
-  productId?: string;
-  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
-};
-export type AllocateProductionOrderRequest = {
-  productionOrderId?: string;
-  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type AllocateProductQuantityDto = {
   finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
@@ -23911,10 +24124,13 @@ export const {
   useLazyGetApiV1CollectionItemTypesQuery,
   usePutApiV1CollectionByItemTypeAndItemIdMutation,
   useDeleteApiV1CollectionByItemTypeAndItemIdMutation,
-  useGetApiV1CollectionUomQuery,
-  useLazyGetApiV1CollectionUomQuery,
   useGetApiV1CollectionPackageStylesQuery,
   useLazyGetApiV1CollectionPackageStylesQuery,
+  usePostApiV1CollectionUomMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
+  usePostApiV1CollectionUomByUomIdMutation,
+  usePutApiV1CollectionUomByUomIdMutation,
+  useDeleteApiV1CollectionUomByUomIdMutation,
   usePostApiV1WorkingDaysMutation,
   useGetApiV1WorkingDaysQuery,
   useLazyGetApiV1WorkingDaysQuery,
@@ -24153,6 +24369,7 @@ export const {
   useGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   useLazyGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   usePostApiV1MaterialDepartmentMutation,
+  useDeleteApiV1MaterialDepartmentMutation,
   useGetApiV1MaterialDepartmentQuery,
   useLazyGetApiV1MaterialDepartmentQuery,
   useGetApiV1MaterialDepartmentNotLinkedQuery,
@@ -24374,20 +24591,22 @@ export const {
   useLazyGetApiV1ProductionOrdersByIdQuery,
   usePutApiV1ProductionOrdersByIdMutation,
   useDeleteApiV1ProductionOrdersByIdMutation,
-  usePostApiV1ProductionOrdersProformaInvoicesMutation,
-  useGetApiV1ProductionOrdersProformaInvoicesQuery,
-  useLazyGetApiV1ProductionOrdersProformaInvoicesQuery,
-  useGetApiV1ProductionOrdersProformaInvoicesByIdQuery,
-  useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery,
-  usePutApiV1ProductionOrdersProformaInvoicesByIdMutation,
-  useDeleteApiV1ProductionOrdersProformaInvoicesByIdMutation,
-  usePostApiV1ProductionOrdersInvoicesMutation,
-  useGetApiV1ProductionOrdersInvoicesQuery,
-  useLazyGetApiV1ProductionOrdersInvoicesQuery,
-  useGetApiV1ProductionOrdersInvoicesByIdQuery,
-  useLazyGetApiV1ProductionOrdersInvoicesByIdQuery,
-  usePutApiV1ProductionOrdersInvoicesByIdMutation,
-  useDeleteApiV1ProductionOrdersInvoicesByIdMutation,
+  usePostApiV1ProductionOrdersProformaInvoiceMutation,
+  useGetApiV1ProductionOrdersProformaInvoiceQuery,
+  useLazyGetApiV1ProductionOrdersProformaInvoiceQuery,
+  useGetApiV1ProductionOrdersProformaInvoiceByIdQuery,
+  useLazyGetApiV1ProductionOrdersProformaInvoiceByIdQuery,
+  usePutApiV1ProductionOrdersProformaInvoiceByIdMutation,
+  useDeleteApiV1ProductionOrdersProformaInvoiceByIdMutation,
+  usePostApiV1ProductionOrdersInvoiceMutation,
+  useGetApiV1ProductionOrdersInvoiceQuery,
+  useLazyGetApiV1ProductionOrdersInvoiceQuery,
+  useGetApiV1ProductionOrdersInvoiceByIdQuery,
+  useLazyGetApiV1ProductionOrdersInvoiceByIdQuery,
+  usePutApiV1ProductionOrdersInvoiceByIdMutation,
+  useDeleteApiV1ProductionOrdersInvoiceByIdMutation,
+  usePostApiV1ProductionOrdersAllocateMutation,
+  usePutApiV1ProductionOrdersDeliverByProductionOrderIdMutation,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -24509,7 +24728,6 @@ export const {
   useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
   useGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
   useLazyGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
-  usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,

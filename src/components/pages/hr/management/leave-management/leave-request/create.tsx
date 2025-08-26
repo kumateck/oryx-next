@@ -27,6 +27,7 @@ import { cn, ErrorResponse, isErrorResponse, splitWords } from "@/lib/utils";
 
 import { CreateLeaveValidator, LeaveRequestDto } from "./types";
 import LeaveRequestForm from "./form";
+import { useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -159,6 +160,10 @@ const LeaveRequest = ({
     label: lt.name,
     value: lt.id,
   })) as Option[];
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">

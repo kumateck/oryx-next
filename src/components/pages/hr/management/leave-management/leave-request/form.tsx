@@ -114,38 +114,6 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           />
         </div>
       )}
-      {isExitPass && (
-        <div className="flex w-full items-center gap-2">
-          <FormWizard
-            className=""
-            config={[
-              {
-                label: "Time In",
-                control: control as Control,
-                type: InputTypes.TIME,
-                name: "timeIn",
-                required: true,
-                placeholder: "Select time in",
-                errors,
-              },
-            ]}
-          />
-          <FormWizard
-            className=""
-            config={[
-              {
-                label: "Time Out",
-                control: control as Control,
-                type: InputTypes.TIME,
-                name: "timeOut",
-                required: true,
-                placeholder: "Select time out",
-                errors,
-              },
-            ]}
-          />
-        </div>
-      )}
       <FormWizard
         className="w-full space-y-5"
         config={[
