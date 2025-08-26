@@ -12,12 +12,12 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { IsYesorNo, Option } from "@/lib";
+import { IsYesorNo, Option, UoMType } from "@/lib";
 import {
   CreateEquipmentRequest,
   EquipmentDto,
-  useGetApiV1CollectionUomQuery,
   useLazyGetApiV1DepartmentQuery,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePutApiV1ProductEquipmentByEquipmentIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -25,6 +25,7 @@ import { ErrorResponse, cn, isErrorResponse } from "@/lib/utils";
 
 import EquipmentForm from "./form";
 import { CreateEquipmentValidator, EquipmentRequestDto } from "./types";
+import { useEffect, useState } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -73,14 +74,35 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },
   ] = useLazyGetApiV1DepartmentQuery();
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
-  });
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
 
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+          types: [UoMType.Raw],
+        },
+      }).unwrap();
+      const uom = response.data;
+      const uomOpt = uom?.map((uom) => ({
+        label: `${uom.name} (${uom.symbol})`,
+        value: uom.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadDataOrSearch = async (searchQuery: string, page: number) => {
     const res = await loadDepartments({

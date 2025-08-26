@@ -11,6 +11,7 @@ const config: ConfigFile = {
     lazyQueries: true,
     mutations: true,
   },
+  tag: true,
 };
 
 export default config;

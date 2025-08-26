@@ -10,7 +10,7 @@ import {
   isErrorResponse,
   Option,
 } from "@/lib";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { useParams, useRouter } from "next/navigation";
@@ -20,9 +20,9 @@ import {
   PostApiV1CollectionApiArg,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
-  useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ItemsByIdQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePutApiV1ItemsByIdMutation,
 } from "@/lib/redux/api/openapi.generated";
@@ -47,10 +47,6 @@ function EditInventory() {
   const [uploadAttachment, { isLoading: isUploadingAttachment }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [editItem, { isLoading }] = usePutApiV1ItemsByIdMutation();
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
 
   const [fetchItemDetails, { data: inventoryDetails }] =
     useLazyGetApiV1ItemsByIdQuery({});
@@ -168,10 +164,34 @@ function EditInventory() {
     }
   };
 
-  const unitOfMeasureOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
+
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+        },
+      }).unwrap();
+      const uom = response.data;
+      const uomOpt = uom?.map((uom) => ({
+        label: `${uom.name} (${uom.symbol})`,
+        value: uom.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -189,7 +209,7 @@ function EditInventory() {
             control={control}
             register={register}
             errors={errors}
-            unitOfMeasureOptions={unitOfMeasureOptions}
+            unitOfMeasureOptions={uomOptions}
             itemCategoryOptions={itemCategoryOptions}
           />
         </div>

@@ -5,13 +5,13 @@ import { useDispatch } from "react-redux";
 
 import { useSelector } from "@/lib/redux/store";
 import {
-  useLazyGetApiV1CollectionUomQuery,
   useLazyGetApiV1MaterialDepartmentNotLinkedQuery,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePostApiV1MaterialDepartmentMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
 
-import { EMaterialKind, Option } from "@/lib";
+import { EMaterialKind, Option, UoMType } from "@/lib";
 
 import PageWrapper from "@/components/layout/wrapper";
 import PageTitle from "@/shared/title";
@@ -34,17 +34,15 @@ const Page = () => {
     usePostApiV1MaterialDepartmentMutation();
 
   const searchParams = useSearchParams();
-  const kind = searchParams.get("kind") as unknown as EMaterialKind; // Extracts 'type' from URL
+  const kind =
+    (searchParams.get("kind") as unknown as EMaterialKind) ?? EMaterialKind.Raw;
 
   const pathname = usePathname();
 
-  // Get a new searchParams string by merging the current
-  // searchParams with a provided key/value pair
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set(name, value);
-
       return params.toString();
     },
     [searchParams],
@@ -60,6 +58,62 @@ const Page = () => {
   const [loadUnlinkedMaterials, { isLoading, isFetching }] =
     useLazyGetApiV1MaterialDepartmentNotLinkedQuery();
 
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async (type: UoMType) => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+          types: [type],
+        },
+      }).unwrap();
+
+      const uom = response.data;
+      const uomOpt = uom?.map((u) => ({
+        label: `${u.name} (${u.symbol})`,
+        value: u.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLoadMaterials = async (
+    kind: EMaterialKind,
+    searchQuery?: string,
+  ) => {
+    try {
+      const response = await loadUnlinkedMaterials({
+        kind: (Number(kind) as EMaterialKind) || EMaterialKind.Raw,
+        page: 1,
+        pageSize: 500,
+        searchQuery,
+      }).unwrap();
+
+      const results = response.data?.map((item) => ({
+        materialId: item?.id,
+        materialName: item?.name,
+        uomId: {
+          label: "",
+          value: "",
+        },
+        code: item?.code,
+        reOrderLevel: 0,
+        minimumStockLevel: 0,
+        maximumStockLevel: 0,
+        options: uomOptions,
+      })) as MaterialRequestDto[];
+
+      setItemLists(results);
+    } catch (error) {
+      ThrowErrorMessage(error);
+    }
+  };
+
   useEffect(() => {
     handleLoadMaterials(kind, debouncedValue);
 
@@ -69,41 +123,10 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, debouncedValue, triggerReload]);
 
-  const [loadUom] = useLazyGetApiV1CollectionUomQuery();
-
-  const handleLoadMaterials = async (
-    kind: EMaterialKind,
-    searchQuery?: string,
-  ) => {
-    const response = await loadUnlinkedMaterials({
-      kind: (Number(kind) as EMaterialKind) || EMaterialKind.Raw,
-      page: 1,
-      pageSize: 500,
-      searchQuery,
-    }).unwrap();
-
-    const uomResponse = await loadUom({
-      isRawMaterial: Number(kind) === EMaterialKind.Packing ? false : true,
-    }).unwrap();
-    const uomOptions = uomResponse?.map((uom) => ({
-      label: uom.symbol,
-      value: uom.id,
-    })) as Option[];
-    const results = response.data?.map((item) => ({
-      materialId: item?.id,
-      materialName: item?.name,
-      uomId: {
-        label: "",
-        value: "",
-      },
-      code: item?.code,
-      reOrderLevel: 0,
-      minimumStockLevel: 0,
-      maximumStockLevel: 0,
-      options: uomOptions,
-    })) as MaterialRequestDto[];
-    setItemLists(results);
-  };
+  useEffect(() => {
+    handleLoadUom(kind as unknown as UoMType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind]);
 
   const handleSaveChanges = async () => {
     const payload = itemLists?.filter(
@@ -112,19 +135,19 @@ const Page = () => {
         item.minimumStockLevel > 0 &&
         item.maximumStockLevel > 0,
     );
+
     if (payload.length === 0) {
       toast.error("No materials selected");
       return;
     }
+
     const validate = itemsRequestSchema.safeParse(payload);
 
     if (!validate.success) {
-      // console.log(validate.error.issues, "issues");
       const errors = validate.error.issues.map(
         ({ message, path }) =>
           `${payload[path[0] as number].materialName}: ${message}`,
       );
-
       toast.error(errors.join(". "));
     } else {
       try {
@@ -137,6 +160,7 @@ const Page = () => {
             maximumStockLevel: item.maximumStockLevel,
           })),
         }).unwrap();
+
         toast.success("Materials Linked to Department");
         handleLoadMaterials(kind);
       } catch (error) {
@@ -144,6 +168,7 @@ const Page = () => {
       }
     }
   };
+
   return (
     <PageWrapper className="w-full space-y-2">
       <div className="w-full flex items-center justify-between gap-4">

@@ -1,1 +1,1 @@
-export {default} from '@/components/pages/settings/alert/index';
+export { default } from "@/components/pages/settings/alert";

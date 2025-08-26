@@ -12,10 +12,9 @@ import {
   AuditModules,
   Division,
   ErrorResponse,
-  convertToLargestUnit,
+  UoMType,
   convertToSmallestUnit,
   getLargestUnit,
-  getSmallestUnit,
   isErrorResponse,
   splitWords,
 } from "@/lib";
@@ -24,11 +23,11 @@ import {
   CreateProductRequest,
   PostApiV1CollectionApiArg,
   PutApiV1ProductByProductIdApiArg,
-  useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
   useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductByProductIdQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePutApiV1ProductByProductIdMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -141,10 +140,7 @@ const ProductInfo = () => {
       description: product?.description as string,
       actionUse: product?.actionUse as string,
       basePackingQuantity: product?.basePackingQuantity,
-      fullBatchSize: convertToLargestUnit(
-        product?.fullBatchSize as number,
-        getSmallestUnit(product?.baseUoM?.symbol as Units),
-      ).value,
+      fullBatchSize: product?.fullBatchSize,
       baseQuantity: product?.baseQuantity,
       categoryId: {
         label: product?.category?.name as string,
@@ -164,7 +160,11 @@ const ProductInfo = () => {
         label: product?.department?.name as string,
         value: product?.department?.id as string,
       },
+      masterFormulaNumber: product?.masterFormulaNumber as string,
+      fdaRegistrationNumber: product?.fdaRegistrationNumber as string,
+      expectedYield: product?.expectedYield as number,
     } as ProductRequestDto;
+
     setValue("code", defaultProduct.code);
     setValue("name", defaultProduct.name);
     setValue("fullBatchSize", defaultProduct.fullBatchSize);
@@ -186,6 +186,9 @@ const ProductInfo = () => {
     setValue("baseQuantity", defaultProduct.baseQuantity);
     setValue("description", defaultProduct.description);
     setValue("actionUse", defaultProduct.actionUse);
+    setValue("fdaRegistrationNumber", defaultProduct?.fdaRegistrationNumber);
+    setValue("masterFormulaNumber", defaultProduct?.masterFormulaNumber);
+    setValue("expectedYield", defaultProduct?.expectedYield);
   };
 
   const [loadCollection, { data: collectionResponse }] =
@@ -195,7 +198,7 @@ const ProductInfo = () => {
     loadCollection({
       module: AuditModules.general.name,
       subModule: AuditModules.general.collection,
-      body: [COLLECTION_TYPES.UnitOfMeasure, COLLECTION_TYPES.ProductCategory],
+      body: [COLLECTION_TYPES.ProductCategory],
     } as PostApiV1CollectionApiArg).unwrap();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -248,26 +251,44 @@ const ProductInfo = () => {
     }
   };
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
-  const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: false,
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
 
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: `${uom.name} (${uom.symbol})`,
-    value: uom.id,
-  })) as Option[];
+  const [packingUomOptions, setPackingUomOptions] = useState<Option[]>([]);
+  const [rawUomOptions, setRawUomOptions] = useState<Option[]>([]);
 
-  const packingUomOptions = packingUomResponse?.map((uom) => ({
-    label: `${uom.name} (${uom.symbol})`,
-    value: uom.id,
-  })) as Option[];
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          types: [UoMType.Raw, UoMType.Packing],
+          pageSize: 100,
+        },
+      }).unwrap();
+      const uom = response.data;
+      const packingUom = uom
+        ?.filter((uom) => uom.type === UoMType.Packing)
+        ?.map((uom) => ({
+          label: `${uom.name} (${uom.symbol})`,
+          value: uom.id,
+        })) as Option[];
+      const rawUom = uom
+        ?.filter((uom) => uom.type === UoMType.Raw)
+        ?.map((uom) => ({
+          label: `${uom.name} (${uom.symbol})`,
+          value: uom.id,
+        })) as Option[];
+      setPackingUomOptions(packingUom);
+      setRawUomOptions(rawUom);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <PageWrapper className="relative w-full">
@@ -312,7 +333,7 @@ const ProductInfo = () => {
               defaultEquipment={defaultEquipment}
               defaultPackingUom={defaultPackingUom}
               defaultDepartment={defaultDepartment}
-              uomOptions={uomOptions}
+              uomOptions={rawUomOptions}
               packingUomOptions={packingUomOptions}
               equipmentOptions={equipmentOptions}
               departmentOptions={departmentOptions}
