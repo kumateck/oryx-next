@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,6 +15,7 @@ import {
   ErrorResponse,
   Option,
   Units,
+  UoMType,
   convertToSmallestUnit,
   getLargestUnit,
   isErrorResponse,
@@ -24,11 +25,11 @@ import {
   CreateProductRequest,
   Division,
   PostApiV1CollectionApiArg,
-  useGetApiV1CollectionUomQuery,
   useGetApiV1DepartmentQuery,
   useGetApiV1ProductEquipmentAllQuery,
   useLazyGetApiV1ProductQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePostApiV1ProductMutation,
 } from "@/lib/redux/api/openapi.generated";
 import ScrollableWrapper from "@/shared/scroll-wrapper";
@@ -94,27 +95,6 @@ const Create = () => {
     value: uom.id,
   })) as Option[];
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: true,
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
-  const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: false,
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
-
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
-
-  const packingUomOptions = packingUomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
-
   const onSubmit = async (data: ProductRequestDto) => {
     const payload = {
       ...data,
@@ -162,6 +142,46 @@ const Create = () => {
   const onBack = () => {
     router.back();
   };
+
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
+
+  const [packingUomOptions, setPackingUomOptions] = useState<Option[]>([]);
+  const [rawUomOptions, setRawUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          types: [UoMType.Raw, UoMType.Packing],
+          pageSize: 100,
+        },
+      }).unwrap();
+      const uom = response.data;
+      const packingUom = uom
+        ?.filter((uom) => uom.type === UoMType.Packing)
+        ?.map((uom) => ({
+          label: `${uom.name} (${uom.symbol})`,
+          value: uom.id,
+        })) as Option[];
+      const rawUom = uom
+        ?.filter((uom) => uom.type === UoMType.Raw)
+        ?.map((uom) => ({
+          label: `${uom.name} (${uom.symbol})`,
+          value: uom.id,
+        })) as Option[];
+      setPackingUomOptions(packingUom);
+      setRawUomOptions(rawUom);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <PageWrapper>
       <form className="w-full space-y-8" onSubmit={handleSubmit(onSubmit)}>
@@ -195,7 +215,7 @@ const Create = () => {
                 register={register}
                 errors={errors}
                 categoryOptions={categoryOptions}
-                uomOptions={uomOptions}
+                uomOptions={rawUomOptions}
                 packingUomOptions={packingUomOptions}
                 equipmentOptions={equipmentOptions}
                 departmentOptions={departmentOptions}

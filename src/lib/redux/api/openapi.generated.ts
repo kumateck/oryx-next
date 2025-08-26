@@ -1,5621 +1,332 @@
 import { api } from "./index";
-const injectedRtkApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    getApiV1ActivityLog: build.query<
-      GetApiV1ActivityLogApiResponse,
-      GetApiV1ActivityLogApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/activity-log`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    postApiV1Alert: build.mutation<
-      PostApiV1AlertApiResponse,
-      PostApiV1AlertApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert`,
-        method: "POST",
-        body: queryArg.createAlertRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Alert: build.query<GetApiV1AlertApiResponse, GetApiV1AlertApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/alert`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          withDisabled: queryArg.withDisabled,
-        },
-      }),
-    }),
-    getApiV1AlertByAlertId: build.query<
-      GetApiV1AlertByAlertIdApiResponse,
-      GetApiV1AlertByAlertIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/${queryArg.alertId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1AlertByAlertId: build.mutation<
-      PutApiV1AlertByAlertIdApiResponse,
-      PutApiV1AlertByAlertIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/${queryArg.alertId}`,
-        method: "PUT",
-        body: queryArg.createAlertRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1AlertByIdToggleDisable: build.mutation<
-      PutApiV1AlertByIdToggleDisableApiResponse,
-      PutApiV1AlertByIdToggleDisableApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/${queryArg.id}/toggle-disable`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1AlertById: build.mutation<
-      DeleteApiV1AlertByIdApiResponse,
-      DeleteApiV1AlertByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1AlertByIdMarkAsRead: build.mutation<
-      PutApiV1AlertByIdMarkAsReadApiResponse,
-      PutApiV1AlertByIdMarkAsReadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/${queryArg.id}/mark-as-read`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1AlertNotifications: build.query<
-      GetApiV1AlertNotificationsApiResponse,
-      GetApiV1AlertNotificationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/alert/notifications`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          unreadOnly: queryArg.unreadOnly,
-        },
-      }),
-    }),
-    postApiV1QaAnalyticalTests: build.mutation<
-      PostApiV1QaAnalyticalTestsApiResponse,
-      PostApiV1QaAnalyticalTestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests`,
-        method: "POST",
-        body: queryArg.createAnalyticalTestRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1QaAnalyticalTests: build.query<
-      GetApiV1QaAnalyticalTestsApiResponse,
-      GetApiV1QaAnalyticalTestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-        },
-      }),
-    }),
-    getApiV1QaAnalyticalTestsById: build.query<
-      GetApiV1QaAnalyticalTestsByIdApiResponse,
-      GetApiV1QaAnalyticalTestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1QaAnalyticalTestsById: build.mutation<
-      PutApiV1QaAnalyticalTestsByIdApiResponse,
-      PutApiV1QaAnalyticalTestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createAnalyticalTestRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1QaAnalyticalTestsById: build.mutation<
-      DeleteApiV1QaAnalyticalTestsByIdApiResponse,
-      DeleteApiV1QaAnalyticalTestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1QaAnalyticalTestsStatusById: build.mutation<
-      PutApiV1QaAnalyticalTestsStatusByIdApiResponse,
-      PutApiV1QaAnalyticalTestsStatusByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests/status/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateAnalyticalTestRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1QaAnalyticalTestsActivityStepByActivityStepId: build.query<
-      GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse,
-      GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/qa/analytical-tests/activity-step/${queryArg.activityStepId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Approval: build.mutation<
-      PostApiV1ApprovalApiResponse,
-      PostApiV1ApprovalApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval`,
-        method: "POST",
-        body: queryArg.createApprovalRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Approval: build.query<
-      GetApiV1ApprovalApiResponse,
-      GetApiV1ApprovalApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1ApprovalDelegate: build.mutation<
-      PostApiV1ApprovalDelegateApiResponse,
-      PostApiV1ApprovalDelegateApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/delegate`,
-        method: "POST",
-        body: queryArg.delegateApproval,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ApprovalByApprovalId: build.query<
-      GetApiV1ApprovalByApprovalIdApiResponse,
-      GetApiV1ApprovalByApprovalIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/${queryArg.approvalId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ApprovalByApprovalId: build.mutation<
-      PutApiV1ApprovalByApprovalIdApiResponse,
-      PutApiV1ApprovalByApprovalIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/${queryArg.approvalId}`,
-        method: "PUT",
-        body: queryArg.createApprovalRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ApprovalByApprovalId: build.mutation<
-      DeleteApiV1ApprovalByApprovalIdApiResponse,
-      DeleteApiV1ApprovalByApprovalIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/${queryArg.approvalId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ApprovalByModelTypeAndModelId: build.query<
-      GetApiV1ApprovalByModelTypeAndModelIdApiResponse,
-      GetApiV1ApprovalByModelTypeAndModelIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/${queryArg.modelType}/${queryArg.modelId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ApprovalApproveByModelTypeAndModelId: build.mutation<
-      PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse,
-      PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/approve/${queryArg.modelType}/${queryArg.modelId}`,
-        method: "POST",
-        body: queryArg.approvalRequestBody,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ApprovalRejectByModelTypeAndModelId: build.mutation<
-      PostApiV1ApprovalRejectByModelTypeAndModelIdApiResponse,
-      PostApiV1ApprovalRejectByModelTypeAndModelIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/reject/${queryArg.modelType}/${queryArg.modelId}`,
-        method: "POST",
-        body: queryArg.approvalRequestBody,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ApprovalMyPending: build.query<
-      GetApiV1ApprovalMyPendingApiResponse,
-      GetApiV1ApprovalMyPendingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/approval/my-pending`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AttendanceRecordsUpload: build.mutation<
-      PostApiV1AttendanceRecordsUploadApiResponse,
-      PostApiV1AttendanceRecordsUploadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/attendance-records/upload`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1AttendanceRecordsDailySummary: build.query<
-      GetApiV1AttendanceRecordsDailySummaryApiResponse,
-      GetApiV1AttendanceRecordsDailySummaryApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/attendance-records/daily-summary`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentName: queryArg.departmentName,
-          date: queryArg.date,
-        },
-      }),
-    }),
-    getApiV1AttendanceRecordsGeneralSummary: build.query<
-      GetApiV1AttendanceRecordsGeneralSummaryApiResponse,
-      GetApiV1AttendanceRecordsGeneralSummaryApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/attendance-records/general-summary`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1AttendanceRecordsExport: build.query<
-      GetApiV1AttendanceRecordsExportApiResponse,
-      GetApiV1AttendanceRecordsExportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/attendance-records/export`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          fileType: queryArg.fileType,
-        },
-      }),
-    }),
-    postApiV1AuthLogin: build.mutation<
-      PostApiV1AuthLoginApiResponse,
-      PostApiV1AuthLoginApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/login`,
-        method: "POST",
-        body: queryArg.loginRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AuthLoginWithRefreshToken: build.mutation<
-      PostApiV1AuthLoginWithRefreshTokenApiResponse,
-      PostApiV1AuthLoginWithRefreshTokenApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/login-with-refresh-token`,
-        method: "POST",
-        body: queryArg.loginWithRefreshToken,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AuthSetPassword: build.mutation<
-      PostApiV1AuthSetPasswordApiResponse,
-      PostApiV1AuthSetPasswordApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/set-password`,
-        method: "POST",
-        body: queryArg.setPasswordRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AuthChangePassword: build.mutation<
-      PostApiV1AuthChangePasswordApiResponse,
-      PostApiV1AuthChangePasswordApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/change-password`,
-        method: "POST",
-        body: queryArg.changePasswordRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AuthForgotPassword: build.mutation<
-      PostApiV1AuthForgotPasswordApiResponse,
-      PostApiV1AuthForgotPasswordApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/forgot-password`,
-        method: "POST",
-        body: queryArg.forgotPasswordRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1AuthUserResetPassword: build.mutation<
-      PostApiV1AuthUserResetPasswordApiResponse,
-      PostApiV1AuthUserResetPasswordApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/auth/user-reset-password`,
-        method: "POST",
-        body: queryArg.userPasswordChangeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Bom: build.mutation<PostApiV1BomApiResponse, PostApiV1BomApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/bom`,
-        method: "POST",
-        body: queryArg.createBillOfMaterialRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Bom: build.query<GetApiV1BomApiResponse, GetApiV1BomApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/bom`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1BomByBillOfMaterialId: build.query<
-      GetApiV1BomByBillOfMaterialIdApiResponse,
-      GetApiV1BomByBillOfMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1BomByBillOfMaterialId: build.mutation<
-      PutApiV1BomByBillOfMaterialIdApiResponse,
-      PutApiV1BomByBillOfMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
-        method: "PUT",
-        body: queryArg.createProductBillOfMaterialRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1BomByBillOfMaterialId: build.mutation<
-      DeleteApiV1BomByBillOfMaterialIdApiResponse,
-      DeleteApiV1BomByBillOfMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Collection: build.mutation<
-      PostApiV1CollectionApiResponse,
-      PostApiV1CollectionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1CollectionByItemType: build.query<
-      GetApiV1CollectionByItemTypeApiResponse,
-      GetApiV1CollectionByItemTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/${queryArg.itemType}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    postApiV1CollectionByItemType: build.mutation<
-      PostApiV1CollectionByItemTypeApiResponse,
-      PostApiV1CollectionByItemTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/${queryArg.itemType}`,
-        method: "POST",
-        body: queryArg.createItemRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1CollectionItemTypes: build.query<
-      GetApiV1CollectionItemTypesApiResponse,
-      GetApiV1CollectionItemTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/item-types`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1CollectionByItemTypeAndItemId: build.mutation<
-      PutApiV1CollectionByItemTypeAndItemIdApiResponse,
-      PutApiV1CollectionByItemTypeAndItemIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/${queryArg.itemType}/${queryArg.itemId}`,
-        method: "PUT",
-        body: queryArg.createItemRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1CollectionByItemTypeAndItemId: build.mutation<
-      DeleteApiV1CollectionByItemTypeAndItemIdApiResponse,
-      DeleteApiV1CollectionByItemTypeAndItemIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/${queryArg.itemType}/${queryArg.itemId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1CollectionUom: build.query<
-      GetApiV1CollectionUomApiResponse,
-      GetApiV1CollectionUomApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/uom`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          isRawMaterial: queryArg.isRawMaterial,
-        },
-      }),
-    }),
-    getApiV1CollectionPackageStyles: build.query<
-      GetApiV1CollectionPackageStylesApiResponse,
-      GetApiV1CollectionPackageStylesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/collection/package-styles`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1WorkingDays: build.mutation<
-      PostApiV1WorkingDaysApiResponse,
-      PostApiV1WorkingDaysApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/working-days`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WorkingDays: build.query<
-      GetApiV1WorkingDaysApiResponse,
-      GetApiV1WorkingDaysApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/working-days`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1Configuration: build.mutation<
-      PostApiV1ConfigurationApiResponse,
-      PostApiV1ConfigurationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration`,
-        method: "POST",
-        body: queryArg.createConfigurationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Configuration: build.query<
-      GetApiV1ConfigurationApiResponse,
-      GetApiV1ConfigurationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ConfigurationByConfigurationId: build.query<
-      GetApiV1ConfigurationByConfigurationIdApiResponse,
-      GetApiV1ConfigurationByConfigurationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.configurationId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ConfigurationByConfigurationId: build.mutation<
-      PutApiV1ConfigurationByConfigurationIdApiResponse,
-      PutApiV1ConfigurationByConfigurationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.configurationId}`,
-        method: "PUT",
-        body: queryArg.createConfigurationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ConfigurationByConfigurationId: build.mutation<
-      DeleteApiV1ConfigurationByConfigurationIdApiResponse,
-      DeleteApiV1ConfigurationByConfigurationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.configurationId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ConfigurationByModelTypeByModelType: build.query<
-      GetApiV1ConfigurationByModelTypeByModelTypeApiResponse,
-      GetApiV1ConfigurationByModelTypeByModelTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/by-model-type/${queryArg.modelType}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ConfigurationNamingTypes: build.query<
-      GetApiV1ConfigurationNamingTypesApiResponse,
-      GetApiV1ConfigurationNamingTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/naming-types`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ConfigurationByModelTypeCount: build.query<
-      GetApiV1ConfigurationByModelTypeCountApiResponse,
-      GetApiV1ConfigurationByModelTypeCountApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/configuration/${queryArg.modelType}/count`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          prefix: queryArg.prefix,
-        },
-      }),
-    }),
-    getApiV1Countries: build.query<
-      GetApiV1CountriesApiResponse,
-      GetApiV1CountriesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/countries`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Customers: build.mutation<
-      PostApiV1CustomersApiResponse,
-      PostApiV1CustomersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/customers`,
-        method: "POST",
-        body: queryArg.createCustomerRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Customers: build.query<
-      GetApiV1CustomersApiResponse,
-      GetApiV1CustomersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/customers`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1CustomersById: build.query<
-      GetApiV1CustomersByIdApiResponse,
-      GetApiV1CustomersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/customers/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1CustomersById: build.mutation<
-      PutApiV1CustomersByIdApiResponse,
-      PutApiV1CustomersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/customers/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createCustomerRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1CustomersById: build.mutation<
-      DeleteApiV1CustomersByIdApiResponse,
-      DeleteApiV1CustomersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/customers/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1DamagedGoods: build.mutation<
-      PostApiV1DamagedGoodsApiResponse,
-      PostApiV1DamagedGoodsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/damaged-goods`,
-        method: "POST",
-        body: queryArg.createDamagedStockRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1DamagedGoods: build.query<
-      GetApiV1DamagedGoodsApiResponse,
-      GetApiV1DamagedGoodsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/damaged-goods`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1DamagedGoodsById: build.query<
-      GetApiV1DamagedGoodsByIdApiResponse,
-      GetApiV1DamagedGoodsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/damaged-goods/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1DamagedGoodsById: build.mutation<
-      PutApiV1DamagedGoodsByIdApiResponse,
-      PutApiV1DamagedGoodsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/damaged-goods/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createDamagedStockRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1DamagedGoodsById: build.mutation<
-      DeleteApiV1DamagedGoodsByIdApiResponse,
-      DeleteApiV1DamagedGoodsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/damaged-goods/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Department: build.mutation<
-      PostApiV1DepartmentApiResponse,
-      PostApiV1DepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/department`,
-        method: "POST",
-        body: queryArg.createDepartmentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Department: build.query<
-      GetApiV1DepartmentApiResponse,
-      GetApiV1DepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/department`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-        },
-      }),
-    }),
-    getApiV1DepartmentByDepartmentId: build.query<
-      GetApiV1DepartmentByDepartmentIdApiResponse,
-      GetApiV1DepartmentByDepartmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/department/${queryArg.departmentId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1DepartmentByDepartmentId: build.mutation<
-      PutApiV1DepartmentByDepartmentIdApiResponse,
-      PutApiV1DepartmentByDepartmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/department/${queryArg.departmentId}`,
-        method: "PUT",
-        body: queryArg.createDepartmentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1DepartmentByDepartmentId: build.mutation<
-      DeleteApiV1DepartmentByDepartmentIdApiResponse,
-      DeleteApiV1DepartmentByDepartmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/department/${queryArg.departmentId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Designation: build.mutation<
-      PostApiV1DesignationApiResponse,
-      PostApiV1DesignationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation`,
-        method: "POST",
-        body: queryArg.createDesignationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Designation: build.query<
-      GetApiV1DesignationApiResponse,
-      GetApiV1DesignationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1DesignationById: build.query<
-      GetApiV1DesignationByIdApiResponse,
-      GetApiV1DesignationByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1DesignationById: build.mutation<
-      PutApiV1DesignationByIdApiResponse,
-      PutApiV1DesignationByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createDesignationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1DesignationById: build.mutation<
-      DeleteApiV1DesignationByIdApiResponse,
-      DeleteApiV1DesignationByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1DesignationDepartmentById: build.query<
-      GetApiV1DesignationDepartmentByIdApiResponse,
-      GetApiV1DesignationDepartmentByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/designation/department/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1EmployeeRegister: build.mutation<
-      PostApiV1EmployeeRegisterApiResponse,
-      PostApiV1EmployeeRegisterApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/register`,
-        method: "POST",
-        body: queryArg.onboardEmployeeDto,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Employee: build.mutation<
-      PostApiV1EmployeeApiResponse,
-      PostApiV1EmployeeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee`,
-        method: "POST",
-        body: queryArg.createEmployeeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Employee: build.query<
-      GetApiV1EmployeeApiResponse,
-      GetApiV1EmployeeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          status: queryArg.status,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          designation: queryArg.designation,
-          department: queryArg.department,
-          isNotUser: queryArg.isNotUser,
-        },
-      }),
-    }),
-    postApiV1EmployeeUser: build.mutation<
-      PostApiV1EmployeeUserApiResponse,
-      PostApiV1EmployeeUserApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/user`,
-        method: "POST",
-        body: queryArg.employeeUserDto,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1EmployeeAvatarById: build.mutation<
-      PostApiV1EmployeeAvatarByIdApiResponse,
-      PostApiV1EmployeeAvatarByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/avatar/${queryArg.id}`,
-        method: "POST",
-        body: queryArg.uploadFileRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1EmployeeDepartmentsById: build.query<
-      GetApiV1EmployeeDepartmentsByIdApiResponse,
-      GetApiV1EmployeeDepartmentsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/departments/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1EmployeeByShiftScheduleIdAvailable: build.query<
-      GetApiV1EmployeeByShiftScheduleIdAvailableApiResponse,
-      GetApiV1EmployeeByShiftScheduleIdAvailableApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.shiftScheduleId}/available`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          date: queryArg.date,
-        },
-      }),
-    }),
-    getApiV1EmployeeById: build.query<
-      GetApiV1EmployeeByIdApiResponse,
-      GetApiV1EmployeeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1EmployeeById: build.mutation<
-      PutApiV1EmployeeByIdApiResponse,
-      PutApiV1EmployeeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateEmployeeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1EmployeeById: build.mutation<
-      DeleteApiV1EmployeeByIdApiResponse,
-      DeleteApiV1EmployeeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1EmployeeByIdAssign: build.mutation<
-      PutApiV1EmployeeByIdAssignApiResponse,
-      PutApiV1EmployeeByIdAssignApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}/assign`,
-        method: "PUT",
-        body: queryArg.assignEmployeeDto,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1EmployeeByIdChangeType: build.mutation<
-      PutApiV1EmployeeByIdChangeTypeApiResponse,
-      PutApiV1EmployeeByIdChangeTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}/change-type`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          employeeType: queryArg.employeeType,
-        },
-      }),
-    }),
-    putApiV1EmployeeByIdStatus: build.mutation<
-      PutApiV1EmployeeByIdStatusApiResponse,
-      PutApiV1EmployeeByIdStatusApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/employee/${queryArg.id}/status`,
-        method: "PUT",
-        body: queryArg.updateEmployeeStatus,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1FileByModelTypeAndModelIdReference: build.mutation<
-      PostApiV1FileByModelTypeAndModelIdReferenceApiResponse,
-      PostApiV1FileByModelTypeAndModelIdReferenceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FileByModelTypeAndModelIdReference: build.query<
-      GetApiV1FileByModelTypeAndModelIdReferenceApiResponse,
-      GetApiV1FileByModelTypeAndModelIdReferenceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1FileByModelTypeAndModelId: build.mutation<
-      PostApiV1FileByModelTypeAndModelIdApiResponse,
-      PostApiV1FileByModelTypeAndModelIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1FileByModelId: build.mutation<
-      DeleteApiV1FileByModelIdApiResponse,
-      DeleteApiV1FileByModelIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1FileByModelIdAndReference: build.mutation<
-      DeleteApiV1FileByModelIdAndReferenceApiResponse,
-      DeleteApiV1FileByModelIdAndReferenceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelId}/${queryArg.reference}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FileByModelTypeAndReference: build.query<
-      GetApiV1FileByModelTypeAndReferenceApiResponse,
-      GetApiV1FileByModelTypeAndReferenceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/file/${queryArg.modelType}/${queryArg.reference}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Form: build.mutation<
-      PostApiV1FormApiResponse,
-      PostApiV1FormApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form`,
-        method: "POST",
-        body: queryArg.createFormRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Form: build.query<GetApiV1FormApiResponse, GetApiV1FormApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/form`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    getApiV1FormByFormId: build.query<
-      GetApiV1FormByFormIdApiResponse,
-      GetApiV1FormByFormIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/${queryArg.formId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1FormByFormId: build.mutation<
-      PutApiV1FormByFormIdApiResponse,
-      PutApiV1FormByFormIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/${queryArg.formId}`,
-        method: "PUT",
-        body: queryArg.createFormRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1FormByFormId: build.mutation<
-      DeleteApiV1FormByFormIdApiResponse,
-      DeleteApiV1FormByFormIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/${queryArg.formId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FormSection: build.query<
-      GetApiV1FormSectionApiResponse,
-      GetApiV1FormSectionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/section`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    postApiV1FormResponses: build.mutation<
-      PostApiV1FormResponsesApiResponse,
-      PostApiV1FormResponsesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/responses`,
-        method: "POST",
-        body: queryArg.createResponseRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FormResponsesByFormResponseId: build.query<
-      GetApiV1FormResponsesByFormResponseIdApiResponse,
-      GetApiV1FormResponsesByFormResponseIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/responses/${queryArg.formResponseId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1FormQuestion: build.mutation<
-      PostApiV1FormQuestionApiResponse,
-      PostApiV1FormQuestionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/question`,
-        method: "POST",
-        body: queryArg.createQuestionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FormQuestion: build.query<
-      GetApiV1FormQuestionApiResponse,
-      GetApiV1FormQuestionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/question`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    getApiV1FormQuestionByQuestionId: build.query<
-      GetApiV1FormQuestionByQuestionIdApiResponse,
-      GetApiV1FormQuestionByQuestionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/question/${queryArg.questionId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1FormQuestionByQuestionId: build.mutation<
-      PutApiV1FormQuestionByQuestionIdApiResponse,
-      PutApiV1FormQuestionByQuestionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/question/${queryArg.questionId}`,
-        method: "PUT",
-        body: queryArg.createQuestionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1FormQuestionByQuestionId: build.mutation<
-      DeleteApiV1FormQuestionByQuestionIdApiResponse,
-      DeleteApiV1FormQuestionByQuestionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/question/${queryArg.questionId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1FormGenerateCertificateByMaterialBatchId: build.mutation<
-      PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse,
-      PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/generate-certificate/${queryArg.materialBatchId}`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepId:
-      build.mutation<
-        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiResponse,
-        PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiArg
+export const addTagTypes = [
+  "ActivityLog",
+  "Alert",
+  "AnalyticalTestRequest",
+  "Approval",
+  "AttendanceRecord",
+  "Auth",
+  "BillOfMaterial",
+  "Collection",
+  "CompanyWorkingDays",
+  "Configuration",
+  "Country",
+  "Customer",
+  "DamagedStocks",
+  "Department",
+  "Designation",
+  "Employee",
+  "File",
+  "Form",
+  "Holiday",
+  "InventoryProcurement",
+  "Item",
+  "ItemInventoryTransaction",
+  "ItemStockRequisition",
+  "JobRequest",
+  "LeaveEntitlement",
+  "LeaveRequest",
+  "LeaveType",
+  "Material",
+  "MaterialAnalyticalRawData",
+  "MaterialSampling",
+  "MaterialSpecification",
+  "MaterialStandardTestProcedure",
+  "OvertimeRequest",
+  "Permission",
+  "Procurement",
+  "Product",
+  "ProductAnalyticalRawData",
+  "ProductionOrder",
+  "ProductionSchedule",
+  "ProductSampling",
+  "ProductSpecification",
+  "ProductStandardTestProcedure",
+  "RecoverableItemsReport",
+  "Report",
+  "Requisition",
+  "Role",
+  "Service",
+  "ServiceProvider",
+  "ShiftSchedule",
+  "ShiftType",
+  "StaffRequisition",
+  "User",
+  "Vendor",
+  "Warehouse",
+  "WorkOrder",
+] as const;
+const injectedRtkApi = api
+  .enhanceEndpoints({
+    addTagTypes,
+  })
+  .injectEndpoints({
+    endpoints: (build) => ({
+      getApiV1ActivityLog: build.query<
+        GetApiV1ActivityLogApiResponse,
+        GetApiV1ActivityLogApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}/${queryArg.productionActivityStepId}`,
+          url: `/api/v1/activity-log`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["ActivityLog"],
+      }),
+      postApiV1Alert: build.mutation<
+        PostApiV1AlertApiResponse,
+        PostApiV1AlertApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/alert`,
           method: "POST",
+          body: queryArg.createAlertRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Alert"],
       }),
-    getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
-      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
-      GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/responses/material-batch/${queryArg.materialBatchId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
+      getApiV1Alert: build.query<GetApiV1AlertApiResponse, GetApiV1AlertApiArg>(
+        {
+          query: (queryArg) => ({
+            url: `/api/v1/alert`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              page: queryArg.page,
+              pageSize: queryArg.pageSize,
+              searchQuery: queryArg.searchQuery,
+              withDisabled: queryArg.withDisabled,
+            },
+          }),
+          providesTags: ["Alert"],
         },
-      }),
-    }),
-    getApiV1FormResponsesBmrByBatchManufacturingRecordId: build.query<
-      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse,
-      GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/responses/bmr/${queryArg.batchManufacturingRecordId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FormResponsesMaterialSpecificationByMaterialSpecificationId:
-      build.query<
-        GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiResponse,
-        GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiArg
+      ),
+      getApiV1AlertByAlertId: build.query<
+        GetApiV1AlertByAlertIdApiResponse,
+        GetApiV1AlertByAlertIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/form/responses/material-specification/${queryArg.materialSpecificationId}`,
+          url: `/api/v1/alert/${queryArg.alertId}`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["Alert"],
       }),
-    getApiV1FormResponsesProductSpecificationByProductSpecificationId:
-      build.query<
-        GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiResponse,
-        GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiArg
+      putApiV1AlertByAlertId: build.mutation<
+        PutApiV1AlertByAlertIdApiResponse,
+        PutApiV1AlertByAlertIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/form/responses/product-specification/${queryArg.productSpecificationId}`,
+          url: `/api/v1/alert/${queryArg.alertId}`,
+          method: "PUT",
+          body: queryArg.createAlertRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Alert"],
       }),
-    getApiV1FormWithResponsesMaterialBatchByMaterialBatchId: build.query<
-      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse,
-      GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/with-responses/material-batch/${queryArg.materialBatchId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1FormWithResponsesBmrByBatchManufacturingRecordId: build.query<
-      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse,
-      GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/form/with-responses/bmr/${queryArg.batchManufacturingRecordId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Holidays: build.mutation<
-      PostApiV1HolidaysApiResponse,
-      PostApiV1HolidaysApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/holidays`,
-        method: "POST",
-        body: queryArg.createHolidayRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Holidays: build.query<
-      GetApiV1HolidaysApiResponse,
-      GetApiV1HolidaysApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/holidays`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1HolidaysById: build.query<
-      GetApiV1HolidaysByIdApiResponse,
-      GetApiV1HolidaysByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/holidays/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1HolidaysById: build.mutation<
-      PutApiV1HolidaysByIdApiResponse,
-      PutApiV1HolidaysByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/holidays/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createHolidayRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1HolidaysById: build.mutation<
-      DeleteApiV1HolidaysByIdApiResponse,
-      DeleteApiV1HolidaysByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/holidays/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventory: build.mutation<
-      PostApiV1ProcurementInventoryApiResponse,
-      PostApiV1ProcurementInventoryApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory`,
-        method: "POST",
-        body: queryArg.createInventoryPurchaseRequisition,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventory: build.query<
-      GetApiV1ProcurementInventoryApiResponse,
-      GetApiV1ProcurementInventoryApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    putApiV1ProcurementInventoryById: build.mutation<
-      PutApiV1ProcurementInventoryByIdApiResponse,
-      PutApiV1ProcurementInventoryByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createInventoryPurchaseRequisition,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementInventoryById: build.mutation<
-      DeleteApiV1ProcurementInventoryByIdApiResponse,
-      DeleteApiV1ProcurementInventoryByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryById: build.query<
-      GetApiV1ProcurementInventoryByIdApiResponse,
-      GetApiV1ProcurementInventoryByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventorySource: build.mutation<
-      PostApiV1ProcurementInventorySourceApiResponse,
-      PostApiV1ProcurementInventorySourceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/source`,
-        method: "POST",
-        body: queryArg.createSourceInventoryRequisition,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMarket: build.mutation<
-      PostApiV1ProcurementInventoryMarketApiResponse,
-      PostApiV1ProcurementInventoryMarketApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/market`,
-        method: "POST",
-        body: queryArg.createMarketRequisition,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryMarket: build.query<
-      GetApiV1ProcurementInventoryMarketApiResponse,
-      GetApiV1ProcurementInventoryMarketApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/market`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryPriceComparison: build.query<
-      GetApiV1ProcurementInventoryPriceComparisonApiResponse,
-      GetApiV1ProcurementInventoryPriceComparisonApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/price-comparison`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          source: queryArg.source,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMemoOpenMarket: build.mutation<
-      PostApiV1ProcurementInventoryMemoOpenMarketApiResponse,
-      PostApiV1ProcurementInventoryMemoOpenMarketApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo/open-market`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMemoTrustedVendor: build.mutation<
-      PostApiV1ProcurementInventoryMemoTrustedVendorApiResponse,
-      PostApiV1ProcurementInventoryMemoTrustedVendorApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo/trusted-vendor`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryVendorByVendorIdSendQuotation: build.mutation<
-      PostApiV1ProcurementInventoryVendorByVendorIdSendQuotationApiResponse,
-      PostApiV1ProcurementInventoryVendorByVendorIdSendQuotationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/vendor/${queryArg.vendorId}/send-quotation`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryVendorQuotations: build.query<
-      GetApiV1ProcurementInventoryVendorQuotationsApiResponse,
-      GetApiV1ProcurementInventoryVendorQuotationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/vendor/quotations`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          received: queryArg.received,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryVendorQuotationByVendorQuotationId: build.query<
-      GetApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdApiResponse,
-      GetApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/vendor/quotation/${queryArg.vendorQuotationId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceive:
-      build.mutation<
-        PostApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceiveApiResponse,
-        PostApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceiveApiArg
+      putApiV1AlertByIdToggleDisable: build.mutation<
+        PutApiV1AlertByIdToggleDisableApiResponse,
+        PutApiV1AlertByIdToggleDisableApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/procurement/inventory/vendor/quotation/${queryArg.vendorQuotationId}/receive`,
-          method: "POST",
-          body: queryArg.body,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProcurementInventoryMarketVendors: build.query<
-      GetApiV1ProcurementInventoryMarketVendorsApiResponse,
-      GetApiV1ProcurementInventoryMarketVendorsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/market/vendors`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          complete: queryArg.complete,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMarketVendors: build.mutation<
-      PostApiV1ProcurementInventoryMarketVendorsApiResponse,
-      PostApiV1ProcurementInventoryMarketVendorsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/market/vendors`,
-        method: "POST",
-        body: queryArg.createMarketRequisitionVendor,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirm:
-      build.mutation<
-        PostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirmApiResponse,
-        PostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirmApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/inventory/market/vendors/${queryArg.marketRequisitionVendorId}/confirm`,
-          method: "POST",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProcurementInventoryMemo: build.query<
-      GetApiV1ProcurementInventoryMemoApiResponse,
-      GetApiV1ProcurementInventoryMemoApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryMemoById: build.query<
-      GetApiV1ProcurementInventoryMemoByIdApiResponse,
-      GetApiV1ProcurementInventoryMemoByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryMemoItemByIdMarkPaid: build.mutation<
-      PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiResponse,
-      PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo-item/${queryArg.id}/mark-paid`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryPurchasedItems: build.query<
-      GetApiV1ProcurementInventoryPurchasedItemsApiResponse,
-      GetApiV1ProcurementInventoryPurchasedItemsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/purchased-items`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          status: queryArg.status,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryItemsByIdApprove: build.mutation<
-      PostApiV1ProcurementInventoryItemsByIdApproveApiResponse,
-      PostApiV1ProcurementInventoryItemsByIdApproveApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/items/${queryArg.id}/approve`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementInventoryItemsByIdReject: build.mutation<
-      PostApiV1ProcurementInventoryItemsByIdRejectApiResponse,
-      PostApiV1ProcurementInventoryItemsByIdRejectApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/items/${queryArg.id}/reject`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementInventoryMemoCodeGenerate: build.query<
-      GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse,
-      GetApiV1ProcurementInventoryMemoCodeGenerateApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/inventory/memo/code/generate`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Items: build.mutation<
-      PostApiV1ItemsApiResponse,
-      PostApiV1ItemsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items`,
-        method: "POST",
-        body: queryArg.createItemsRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Items: build.query<GetApiV1ItemsApiResponse, GetApiV1ItemsApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/items`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          store: queryArg.store,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ItemsById: build.query<
-      GetApiV1ItemsByIdApiResponse,
-      GetApiV1ItemsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ItemsById: build.mutation<
-      PutApiV1ItemsByIdApiResponse,
-      PutApiV1ItemsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createItemsRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ItemsById: build.mutation<
-      DeleteApiV1ItemsByIdApiResponse,
-      DeleteApiV1ItemsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ItemInventoryTransactionsByMemoId: build.query<
-      GetApiV1ItemInventoryTransactionsByMemoIdApiResponse,
-      GetApiV1ItemInventoryTransactionsByMemoIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/item-inventory-transactions/${queryArg.memoId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ItemsStockRequisitions: build.mutation<
-      PostApiV1ItemsStockRequisitionsApiResponse,
-      PostApiV1ItemsStockRequisitionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/stock-requisitions`,
-        method: "POST",
-        body: queryArg.createItemStockRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ItemsStockRequisitions: build.query<
-      GetApiV1ItemsStockRequisitionsApiResponse,
-      GetApiV1ItemsStockRequisitionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/stock-requisitions`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    deleteApiV1ItemsStockRequisitions: build.mutation<
-      DeleteApiV1ItemsStockRequisitionsApiResponse,
-      DeleteApiV1ItemsStockRequisitionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/stock-requisitions`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ItemsStockRequisitionsById: build.query<
-      GetApiV1ItemsStockRequisitionsByIdApiResponse,
-      GetApiV1ItemsStockRequisitionsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ItemsStockRequisitionsById: build.mutation<
-      PutApiV1ItemsStockRequisitionsByIdApiResponse,
-      PutApiV1ItemsStockRequisitionsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createItemStockRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisition:
-      build.mutation<
-        PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiResponse,
-        PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/issue-stock-against-requisition`,
-          method: "POST",
-          body: queryArg.issueStockAgainstRequisitionRequest,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisition:
-      build.mutation<
-        PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiResponse,
-        PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/partial-issue-stock-against-requisition`,
-          method: "POST",
-          body: queryArg.issueStockAgainstRequisitionRequest,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1JobRequests: build.mutation<
-      PostApiV1JobRequestsApiResponse,
-      PostApiV1JobRequestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/job-requests`,
-        method: "POST",
-        body: queryArg.createJobRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1JobRequests: build.query<
-      GetApiV1JobRequestsApiResponse,
-      GetApiV1JobRequestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/job-requests`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1LeaveEntitlement: build.mutation<
-      PostApiV1LeaveEntitlementApiResponse,
-      PostApiV1LeaveEntitlementApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-entitlement`,
-        method: "POST",
-        body: queryArg.leaveEntitlementDto,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1LeaveEntitlement: build.query<
-      GetApiV1LeaveEntitlementApiResponse,
-      GetApiV1LeaveEntitlementApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-entitlement`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1LeaveEntitlementById: build.query<
-      GetApiV1LeaveEntitlementByIdApiResponse,
-      GetApiV1LeaveEntitlementByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-entitlement/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1LeaveEntitlementById: build.mutation<
-      PutApiV1LeaveEntitlementByIdApiResponse,
-      PutApiV1LeaveEntitlementByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-entitlement/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.leaveEntitlementDto,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1LeaveEntitlementById: build.mutation<
-      DeleteApiV1LeaveEntitlementByIdApiResponse,
-      DeleteApiV1LeaveEntitlementByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-entitlement/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1LeaveRequest: build.mutation<
-      PostApiV1LeaveRequestApiResponse,
-      PostApiV1LeaveRequestApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request`,
-        method: "POST",
-        body: queryArg.createLeaveRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1LeaveRequest: build.query<
-      GetApiV1LeaveRequestApiResponse,
-      GetApiV1LeaveRequestApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1LeaveRequestById: build.query<
-      GetApiV1LeaveRequestByIdApiResponse,
-      GetApiV1LeaveRequestByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1LeaveRequestById: build.mutation<
-      PutApiV1LeaveRequestByIdApiResponse,
-      PutApiV1LeaveRequestByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createLeaveRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1LeaveRequestById: build.mutation<
-      DeleteApiV1LeaveRequestByIdApiResponse,
-      DeleteApiV1LeaveRequestByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1LeaveRequestRecall: build.mutation<
-      PutApiV1LeaveRequestRecallApiResponse,
-      PutApiV1LeaveRequestRecallApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request/recall`,
-        method: "PUT",
-        body: queryArg.createLeaveRecallRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1LeaveRequestByLeaveRequestIdReapply: build.mutation<
-      PutApiV1LeaveRequestByLeaveRequestIdReapplyApiResponse,
-      PutApiV1LeaveRequestByLeaveRequestIdReapplyApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-request/${queryArg.leaveRequestId}/reapply`,
-        method: "PUT",
-        body: queryArg.reapplyLeaveRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1LeaveType: build.mutation<
-      PostApiV1LeaveTypeApiResponse,
-      PostApiV1LeaveTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-type`,
-        method: "POST",
-        body: queryArg.createLeaveTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1LeaveType: build.query<
-      GetApiV1LeaveTypeApiResponse,
-      GetApiV1LeaveTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-type`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1LeaveTypeById: build.query<
-      GetApiV1LeaveTypeByIdApiResponse,
-      GetApiV1LeaveTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-type/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1LeaveTypeById: build.mutation<
-      PutApiV1LeaveTypeByIdApiResponse,
-      PutApiV1LeaveTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-type/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createLeaveTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1LeaveTypeById: build.mutation<
-      DeleteApiV1LeaveTypeByIdApiResponse,
-      DeleteApiV1LeaveTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/leave-type/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Material: build.mutation<
-      PostApiV1MaterialApiResponse,
-      PostApiV1MaterialApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material`,
-        method: "POST",
-        body: queryArg.createMaterialRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Material: build.query<
-      GetApiV1MaterialApiResponse,
-      GetApiV1MaterialApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialId: build.query<
-      GetApiV1MaterialByMaterialIdApiResponse,
-      GetApiV1MaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialByMaterialId: build.mutation<
-      PutApiV1MaterialByMaterialIdApiResponse,
-      PutApiV1MaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}`,
-        method: "PUT",
-        body: queryArg.createMaterialRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1MaterialByMaterialId: build.mutation<
-      DeleteApiV1MaterialByMaterialIdApiResponse,
-      DeleteApiV1MaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialCategory: build.query<
-      GetApiV1MaterialCategoryApiResponse,
-      GetApiV1MaterialCategoryApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/category`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1MaterialAll: build.query<
-      GetApiV1MaterialAllApiResponse,
-      GetApiV1MaterialAllApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/all`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialByMaterialIdReorderLevel: build.mutation<
-      PutApiV1MaterialByMaterialIdReorderLevelApiResponse,
-      PutApiV1MaterialByMaterialIdReorderLevelApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/reorder-level`,
-        method: "PUT",
-        body: queryArg.updateReOrderLevelRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdStockLevel: build.query<
-      GetApiV1MaterialByMaterialIdStockLevelApiResponse,
-      GetApiV1MaterialByMaterialIdStockLevelApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/stock-level`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdBatches: build.query<
-      GetApiV1MaterialByMaterialIdBatchesApiResponse,
-      GetApiV1MaterialByMaterialIdBatchesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/batches`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdInTransit: build.query<
-      GetApiV1MaterialByMaterialIdInTransitApiResponse,
-      GetApiV1MaterialByMaterialIdInTransitApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/in-transit`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatch: build.mutation<
-      PostApiV1MaterialBatchApiResponse,
-      PostApiV1MaterialBatchApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialBatch: build.query<
-      GetApiV1MaterialBatchApiResponse,
-      GetApiV1MaterialBatchApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialBatchByBatchId: build.query<
-      GetApiV1MaterialBatchByBatchIdApiResponse,
-      GetApiV1MaterialBatchByBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/${queryArg.batchId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatchMove: build.mutation<
-      PostApiV1MaterialBatchMoveApiResponse,
-      PostApiV1MaterialBatchMoveApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/move`,
-        method: "POST",
-        body: queryArg.moveMaterialBatchRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialBatchByBatchIdApprove: build.mutation<
-      PutApiV1MaterialBatchByBatchIdApproveApiResponse,
-      PutApiV1MaterialBatchByBatchIdApproveApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/${queryArg.batchId}/approve`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdStockAndWarehouseId: build.query<
-      GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiResponse,
-      GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/stock/${queryArg.warehouseId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatchConsume: build.mutation<
-      PostApiV1MaterialBatchConsumeApiResponse,
-      PostApiV1MaterialBatchConsumeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/consume`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          batchId: queryArg.batchId,
-          locationId: queryArg.locationId,
-          quantity: queryArg.quantity,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdStockAcrossWarehouses: build.query<
-      GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse,
-      GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/stock/across-warehouses`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdDepartmentStockAndQuantity: build.query<
-      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse,
-      GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/department-stock/${queryArg.quantity}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialUpload: build.mutation<
-      PostApiV1MaterialUploadApiResponse,
-      PostApiV1MaterialUploadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/upload`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    putApiV1MaterialBatchStatus: build.mutation<
-      PutApiV1MaterialBatchStatusApiResponse,
-      PutApiV1MaterialBatchStatusApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/status`,
-        method: "PUT",
-        body: queryArg.updateBatchStatusRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatchSupply: build.mutation<
-      PostApiV1MaterialBatchSupplyApiResponse,
-      PostApiV1MaterialBatchSupplyApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/supply`,
-        method: "POST",
-        body: queryArg.supplyMaterialBatchRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatchMoveV2: build.mutation<
-      PostApiV1MaterialBatchMoveV2ApiResponse,
-      PostApiV1MaterialBatchMoveV2ApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batch/move/v2`,
-        method: "POST",
-        body: queryArg.moveShelfMaterialBatchRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialApprovedMaterials: build.query<
-      GetApiV1MaterialApprovedMaterialsApiResponse,
-      GetApiV1MaterialApprovedMaterialsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/approved-materials`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdBatchesV2: build.query<
-      GetApiV1MaterialByMaterialIdBatchesV2ApiResponse,
-      GetApiV1MaterialByMaterialIdBatchesV2ApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/batches/v2`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdStockWarehouses: build.query<
-      GetApiV1MaterialByMaterialIdStockWarehousesApiResponse,
-      GetApiV1MaterialByMaterialIdStockWarehousesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/stock/warehouses`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdStockDepartments: build.query<
-      GetApiV1MaterialByMaterialIdStockDepartmentsApiResponse,
-      GetApiV1MaterialByMaterialIdStockDepartmentsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/stock/departments`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialDepartment: build.mutation<
-      PostApiV1MaterialDepartmentApiResponse,
-      PostApiV1MaterialDepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/department`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialDepartment: build.query<
-      GetApiV1MaterialDepartmentApiResponse,
-      GetApiV1MaterialDepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/department`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1MaterialDepartmentNotLinked: build.query<
-      GetApiV1MaterialDepartmentNotLinkedApiResponse,
-      GetApiV1MaterialDepartmentNotLinkedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/department/not-linked`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1MaterialByMaterialIdUom: build.query<
-      GetApiV1MaterialByMaterialIdUomApiResponse,
-      GetApiV1MaterialByMaterialIdUomApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/${queryArg.materialId}/uom`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialHolding: build.query<
-      GetApiV1MaterialHoldingApiResponse,
-      GetApiV1MaterialHoldingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/holding`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          withProcessed: queryArg.withProcessed,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          userId: queryArg.userId,
-        },
-      }),
-    }),
-    postApiV1MaterialHoldingMoveByHoldingMaterialId: build.mutation<
-      PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiResponse,
-      PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/holding/move/${queryArg.holdingMaterialId}`,
-        method: "POST",
-        body: queryArg.moveShelfMaterialBatchRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialBatchesImport: build.mutation<
-      PostApiV1MaterialBatchesImportApiResponse,
-      PostApiV1MaterialBatchesImportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batches/import`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialBatchesExpired: build.query<
-      GetApiV1MaterialBatchesExpiredApiResponse,
-      GetApiV1MaterialBatchesExpiredApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/batches/expired`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          warehouseIds: queryArg.warehouseIds,
-        },
-      }),
-    }),
-    getApiV1MaterialMaterialSpecsNotLinked: build.query<
-      GetApiV1MaterialMaterialSpecsNotLinkedApiResponse,
-      GetApiV1MaterialMaterialSpecsNotLinkedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/material-specs/not-linked`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1MaterialRejects: build.query<
-      GetApiV1MaterialRejectsApiResponse,
-      GetApiV1MaterialRejectsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material/rejects`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    postApiV1MaterialArd: build.mutation<
-      PostApiV1MaterialArdApiResponse,
-      PostApiV1MaterialArdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard`,
-        method: "POST",
-        body: queryArg.createMaterialAnalyticalRawDataRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialArd: build.query<
-      GetApiV1MaterialArdApiResponse,
-      GetApiV1MaterialArdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialArdById: build.query<
-      GetApiV1MaterialArdByIdApiResponse,
-      GetApiV1MaterialArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialArdById: build.mutation<
-      PutApiV1MaterialArdByIdApiResponse,
-      PutApiV1MaterialArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createMaterialAnalyticalRawDataRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1MaterialArdById: build.mutation<
-      DeleteApiV1MaterialArdByIdApiResponse,
-      DeleteApiV1MaterialArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialArdMaterialByMaterialId: build.query<
-      GetApiV1MaterialArdMaterialByMaterialIdApiResponse,
-      GetApiV1MaterialArdMaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/material/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialArdMaterialBatchByMaterialBatchId: build.query<
-      GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiResponse,
-      GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/material/batch/${queryArg.materialBatchId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialArdStartTestByMaterialBatchId: build.mutation<
-      PutApiV1MaterialArdStartTestByMaterialBatchIdApiResponse,
-      PutApiV1MaterialArdStartTestByMaterialBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/start-test/${queryArg.materialBatchId}`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialArdUniformityOfWeight: build.mutation<
-      PostApiV1MaterialArdUniformityOfWeightApiResponse,
-      PostApiV1MaterialArdUniformityOfWeightApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight`,
-        method: "POST",
-        body: queryArg.createUniformityOfWeight,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialArdUniformityOfWeight: build.query<
-      GetApiV1MaterialArdUniformityOfWeightApiResponse,
-      GetApiV1MaterialArdUniformityOfWeightApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialArdUniformityOfWeightById: build.query<
-      GetApiV1MaterialArdUniformityOfWeightByIdApiResponse,
-      GetApiV1MaterialArdUniformityOfWeightByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialArdUniformityOfWeightById: build.mutation<
-      PutApiV1MaterialArdUniformityOfWeightByIdApiResponse,
-      PutApiV1MaterialArdUniformityOfWeightByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createUniformityOfWeight,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1MaterialArdUniformityOfWeightById: build.mutation<
-      DeleteApiV1MaterialArdUniformityOfWeightByIdApiResponse,
-      DeleteApiV1MaterialArdUniformityOfWeightByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialArdUniformityOfWeightResponse: build.mutation<
-      PostApiV1MaterialArdUniformityOfWeightResponseApiResponse,
-      PostApiV1MaterialArdUniformityOfWeightResponseApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-ard/uniformity-of-weight/response`,
-        method: "POST",
-        body: queryArg.createUniformityOfWeightResponse,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponse:
-      build.query<
-        GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiResponse,
-        GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.uniformityOfWeightId}/${queryArg.materialBatchId}/response`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1MaterialSamplings: build.mutation<
-      PostApiV1MaterialSamplingsApiResponse,
-      PostApiV1MaterialSamplingsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-samplings`,
-        method: "POST",
-        body: queryArg.createMaterialSamplingRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialSamplingsByGrnIdAndBatchId: build.query<
-      GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiResponse,
-      GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-samplings/${queryArg.grnId}/${queryArg.batchId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialSpecifications: build.mutation<
-      PostApiV1MaterialSpecificationsApiResponse,
-      PostApiV1MaterialSpecificationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications`,
-        method: "POST",
-        body: queryArg.createMaterialSpecificationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialSpecifications: build.query<
-      GetApiV1MaterialSpecificationsApiResponse,
-      GetApiV1MaterialSpecificationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialSpecificationsById: build.query<
-      GetApiV1MaterialSpecificationsByIdApiResponse,
-      GetApiV1MaterialSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialSpecificationsById: build.mutation<
-      PutApiV1MaterialSpecificationsByIdApiResponse,
-      PutApiV1MaterialSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createMaterialSpecificationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1MaterialSpecificationsById: build.mutation<
-      DeleteApiV1MaterialSpecificationsByIdApiResponse,
-      DeleteApiV1MaterialSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialSpecificationsMaterialById: build.query<
-      GetApiV1MaterialSpecificationsMaterialByIdApiResponse,
-      GetApiV1MaterialSpecificationsMaterialByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-specifications/material/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1MaterialStps: build.mutation<
-      PostApiV1MaterialStpsApiResponse,
-      PostApiV1MaterialStpsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-stps`,
-        method: "POST",
-        body: queryArg.createMaterialStandardTestProcedureRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1MaterialStps: build.query<
-      GetApiV1MaterialStpsApiResponse,
-      GetApiV1MaterialStpsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-stps`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          materialKind: queryArg.materialKind,
-          unused: queryArg.unused,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1MaterialStpsById: build.query<
-      GetApiV1MaterialStpsByIdApiResponse,
-      GetApiV1MaterialStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-stps/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1MaterialStpsById: build.mutation<
-      PutApiV1MaterialStpsByIdApiResponse,
-      PutApiV1MaterialStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-stps/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createMaterialStandardTestProcedureRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1MaterialStpsById: build.mutation<
-      DeleteApiV1MaterialStpsByIdApiResponse,
-      DeleteApiV1MaterialStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/material-stps/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1OvertimeRequests: build.mutation<
-      PostApiV1OvertimeRequestsApiResponse,
-      PostApiV1OvertimeRequestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/overtime-requests`,
-        method: "POST",
-        body: queryArg.createOvertimeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1OvertimeRequests: build.query<
-      GetApiV1OvertimeRequestsApiResponse,
-      GetApiV1OvertimeRequestsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/overtime-requests`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1OvertimeRequestsById: build.query<
-      GetApiV1OvertimeRequestsByIdApiResponse,
-      GetApiV1OvertimeRequestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/overtime-requests/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1OvertimeRequestsById: build.mutation<
-      PutApiV1OvertimeRequestsByIdApiResponse,
-      PutApiV1OvertimeRequestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/overtime-requests/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createOvertimeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1OvertimeRequestsById: build.mutation<
-      DeleteApiV1OvertimeRequestsByIdApiResponse,
-      DeleteApiV1OvertimeRequestsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/overtime-requests/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1PermissionModules: build.query<
-      GetApiV1PermissionModulesApiResponse,
-      GetApiV1PermissionModulesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission/modules`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Permission: build.query<
-      GetApiV1PermissionApiResponse,
-      GetApiV1PermissionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1PermissionUserByUserId: build.query<
-      GetApiV1PermissionUserByUserIdApiResponse,
-      GetApiV1PermissionUserByUserIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission/user/${queryArg.userId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1PermissionRoleByRoleId: build.query<
-      GetApiV1PermissionRoleByRoleIdApiResponse,
-      GetApiV1PermissionRoleByRoleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission/role/${queryArg.roleId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1PermissionRoleByRoleId: build.mutation<
-      PutApiV1PermissionRoleByRoleIdApiResponse,
-      PutApiV1PermissionRoleByRoleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission/role/${queryArg.roleId}`,
-        method: "PUT",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1PermissionMenu: build.query<
-      GetApiV1PermissionMenuApiResponse,
-      GetApiV1PermissionMenuApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/permission/menu`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementManufacturer: build.mutation<
-      PostApiV1ProcurementManufacturerApiResponse,
-      PostApiV1ProcurementManufacturerApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer`,
-        method: "POST",
-        body: queryArg.createManufacturerRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementManufacturer: build.query<
-      GetApiV1ProcurementManufacturerApiResponse,
-      GetApiV1ProcurementManufacturerApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProcurementManufacturerByManufacturerId: build.query<
-      GetApiV1ProcurementManufacturerByManufacturerIdApiResponse,
-      GetApiV1ProcurementManufacturerByManufacturerIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementManufacturerByManufacturerId: build.mutation<
-      PutApiV1ProcurementManufacturerByManufacturerIdApiResponse,
-      PutApiV1ProcurementManufacturerByManufacturerIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
-        method: "PUT",
-        body: queryArg.createManufacturerRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementManufacturerByManufacturerId: build.mutation<
-      DeleteApiV1ProcurementManufacturerByManufacturerIdApiResponse,
-      DeleteApiV1ProcurementManufacturerByManufacturerIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementManufacturerMaterialByMaterialId: build.query<
-      GetApiV1ProcurementManufacturerMaterialByMaterialIdApiResponse,
-      GetApiV1ProcurementManufacturerMaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/manufacturer/material/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementSupplier: build.mutation<
-      PostApiV1ProcurementSupplierApiResponse,
-      PostApiV1ProcurementSupplierApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier`,
-        method: "POST",
-        body: queryArg.createSupplierRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementSupplier: build.query<
-      GetApiV1ProcurementSupplierApiResponse,
-      GetApiV1ProcurementSupplierApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProcurementSupplierBySupplierId: build.query<
-      GetApiV1ProcurementSupplierBySupplierIdApiResponse,
-      GetApiV1ProcurementSupplierBySupplierIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementSupplierBySupplierId: build.mutation<
-      PutApiV1ProcurementSupplierBySupplierIdApiResponse,
-      PutApiV1ProcurementSupplierBySupplierIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
-        method: "PUT",
-        body: queryArg.createSupplierRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementSupplierBySupplierId: build.mutation<
-      DeleteApiV1ProcurementSupplierBySupplierIdApiResponse,
-      DeleteApiV1ProcurementSupplierBySupplierIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementSupplierBySupplierIdStatus: build.mutation<
-      PutApiV1ProcurementSupplierBySupplierIdStatusApiResponse,
-      PutApiV1ProcurementSupplierBySupplierIdStatusApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/${queryArg.supplierId}/status`,
-        method: "PUT",
-        body: queryArg.updateSupplierStatusRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementSupplierMaterialByMaterialId: build.query<
-      GetApiV1ProcurementSupplierMaterialByMaterialIdApiResponse,
-      GetApiV1ProcurementSupplierMaterialByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/material/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementSupplierByMaterialIdAndType: build.query<
-      GetApiV1ProcurementSupplierByMaterialIdAndTypeApiResponse,
-      GetApiV1ProcurementSupplierByMaterialIdAndTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/supplier/${queryArg.materialId}/${queryArg["type"]}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementPurchaseOrder: build.mutation<
-      PostApiV1ProcurementPurchaseOrderApiResponse,
-      PostApiV1ProcurementPurchaseOrderApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order`,
-        method: "POST",
-        body: queryArg.createPurchaseOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrder: build.query<
-      GetApiV1ProcurementPurchaseOrderApiResponse,
-      GetApiV1ProcurementPurchaseOrderApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-          type: queryArg["type"],
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.query<
-      GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
-      GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
-      PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
-      PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
-        method: "POST",
-        body: queryArg.sendPurchaseOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
-      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
-      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
-        method: "PUT",
-        body: queryArg.updatePurchaseOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
-      DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
-      DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialId:
-      build.query<
-        GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiResponse,
-        GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/purchase-order/requisition/${queryArg.purchaseOrderId}/${queryArg.materialId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderId:
-      build.mutation<
-        PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiResponse,
-        PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/purchase-order/proforma-invoice/${queryArg.purchaseOrderId}`,
-          method: "POST",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    putApiV1ProcurementPurchaseOrderByPurchaseOrderIdRevise: build.mutation<
-      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiResponse,
-      PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}/revise`,
-        method: "PUT",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementPurchaseOrderInvoice: build.mutation<
-      PostApiV1ProcurementPurchaseOrderInvoiceApiResponse,
-      PostApiV1ProcurementPurchaseOrderInvoiceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order-invoice`,
-        method: "POST",
-        body: queryArg.createPurchaseOrderInvoiceRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrderInvoice: build.query<
-      GetApiV1ProcurementPurchaseOrderInvoiceApiResponse,
-      GetApiV1ProcurementPurchaseOrderInvoiceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order-invoice`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.query<
-      GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
-      GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
-      PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
-      PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
-        method: "PUT",
-        body: queryArg.createPurchaseOrderInvoiceRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
-      DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
-      DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementBillingSheet: build.mutation<
-      PostApiV1ProcurementBillingSheetApiResponse,
-      PostApiV1ProcurementBillingSheetApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/billing-sheet`,
-        method: "POST",
-        body: queryArg.createBillingSheetRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementBillingSheet: build.query<
-      GetApiV1ProcurementBillingSheetApiResponse,
-      GetApiV1ProcurementBillingSheetApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/billing-sheet`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-        },
-      }),
-    }),
-    getApiV1ProcurementBillingSheetByBillingSheetId: build.query<
-      GetApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
-      GetApiV1ProcurementBillingSheetByBillingSheetIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
-      PutApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
-      PutApiV1ProcurementBillingSheetByBillingSheetIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
-        method: "PUT",
-        body: queryArg.createBillingSheetRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
-      DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
-      DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementShipmentDocument: build.mutation<
-      PostApiV1ProcurementShipmentDocumentApiResponse,
-      PostApiV1ProcurementShipmentDocumentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document`,
-        method: "POST",
-        body: queryArg.createShipmentDocumentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentDocument: build.query<
-      GetApiV1ProcurementShipmentDocumentApiResponse,
-      GetApiV1ProcurementShipmentDocumentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentDocumentByShipmentDocumentId: build.query<
-      GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
-      GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementShipmentDocumentByShipmentDocumentId: build.mutation<
-      PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
-      PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
-        method: "PUT",
-        body: queryArg.createShipmentDocumentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementShipmentDocumentByShipmentDocumentId: build.mutation<
-      DeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
-      DeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementWaybill: build.mutation<
-      PostApiV1ProcurementWaybillApiResponse,
-      PostApiV1ProcurementWaybillApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/waybill`,
-        method: "POST",
-        body: queryArg.createShipmentDocumentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementWaybill: build.query<
-      GetApiV1ProcurementWaybillApiResponse,
-      GetApiV1ProcurementWaybillApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/waybill`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-        },
-      }),
-    }),
-    getApiV1ProcurementWaybillByWaybillId: build.query<
-      GetApiV1ProcurementWaybillByWaybillIdApiResponse,
-      GetApiV1ProcurementWaybillByWaybillIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementWaybillByWaybillId: build.mutation<
-      PutApiV1ProcurementWaybillByWaybillIdApiResponse,
-      PutApiV1ProcurementWaybillByWaybillIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
-        method: "PUT",
-        body: queryArg.createShipmentDocumentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementWaybillByWaybillId: build.mutation<
-      DeleteApiV1ProcurementWaybillByWaybillIdApiResponse,
-      DeleteApiV1ProcurementWaybillByWaybillIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrived:
-      build.mutation<
-        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiResponse,
-        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/arrived`,
+          url: `/api/v1/alert/${queryArg.id}/toggle-disable`,
           method: "PUT",
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Alert"],
       }),
-    putApiV1ProcurementShipmentsByShipmentIdStatus: build.mutation<
-      PutApiV1ProcurementShipmentsByShipmentIdStatusApiResponse,
-      PutApiV1ProcurementShipmentsByShipmentIdStatusApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipments/${queryArg.shipmentId}/status`,
-        method: "PUT",
-        body: queryArg.updateShipmentStatusRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentDocumentArrived: build.query<
-      GetApiV1ProcurementShipmentDocumentArrivedApiResponse,
-      GetApiV1ProcurementShipmentDocumentArrivedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-document/arrived`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1ProcurementShipmentInvoice: build.mutation<
-      PostApiV1ProcurementShipmentInvoiceApiResponse,
-      PostApiV1ProcurementShipmentInvoiceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice`,
-        method: "POST",
-        body: queryArg.createShipmentInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentInvoice: build.query<
-      GetApiV1ProcurementShipmentInvoiceApiResponse,
-      GetApiV1ProcurementShipmentInvoiceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentInvoiceById: build.query<
-      GetApiV1ProcurementShipmentInvoiceByIdApiResponse,
-      GetApiV1ProcurementShipmentInvoiceByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentInvoiceUnattached: build.query<
-      GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse,
-      GetApiV1ProcurementShipmentInvoiceUnattachedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/unattached`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentId:
-      build.query<
-        GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse,
-        GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiArg
+      deleteApiV1AlertById: build.mutation<
+        DeleteApiV1AlertByIdApiResponse,
+        DeleteApiV1AlertByIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/procurement/shipment-invoice/shipment-document/${queryArg.shipmentDocumentId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    putApiV1ProcurementShipmentInvoiceByShipmentInvoiceId: build.mutation<
-      PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse,
-      PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/${queryArg.shipmentInvoiceId}`,
-        method: "PUT",
-        body: queryArg.createShipmentInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceId: build.mutation<
-      DeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse,
-      DeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/${queryArg.shipmentInvoiceId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceId: build.mutation<
-      PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiResponse,
-      PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/paid/${queryArg.shipmentInvoiceId}`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          paidAt: queryArg.paidAt,
-        },
-      }),
-    }),
-    putApiV1ProcurementShipmentInvoicePaidMultiple: build.mutation<
-      PutApiV1ProcurementShipmentInvoicePaidMultipleApiResponse,
-      PutApiV1ProcurementShipmentInvoicePaidMultipleApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-invoice/paid/multiple`,
-        method: "PUT",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          paidAt: queryArg.paidAt,
-        },
-      }),
-    }),
-    postApiV1ProcurementShipmentDiscrepancy: build.mutation<
-      PostApiV1ProcurementShipmentDiscrepancyApiResponse,
-      PostApiV1ProcurementShipmentDiscrepancyApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-discrepancy`,
-        method: "POST",
-        body: queryArg.createShipmentDiscrepancy,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId: build.query<
-      GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
-      GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId:
-      build.mutation<
-        PutApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
-        PutApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
-          method: "PUT",
-          body: queryArg.createShipmentDiscrepancy,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    deleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId:
-      build.mutation<
-        DeleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
-        DeleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
+          url: `/api/v1/alert/${queryArg.id}`,
           method: "DELETE",
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Alert"],
       }),
-    getApiV1ProcurementPurchaseOrderNotLinked: build.query<
-      GetApiV1ProcurementPurchaseOrderNotLinkedApiResponse,
-      GetApiV1ProcurementPurchaseOrderNotLinkedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/not-linked`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinked: build.query<
-      GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiResponse,
-      GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/purchase-order/supplier/${queryArg.supplierId}/not-linked`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProcurementMaterialsByPurchaseOrders: build.mutation<
-      PostApiV1ProcurementMaterialsByPurchaseOrdersApiResponse,
-      PostApiV1ProcurementMaterialsByPurchaseOrdersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/materials/by-purchase-orders`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistribution:
-      build.query<
-        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiResponse,
-        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiArg
+      putApiV1AlertByIdMarkAsRead: build.mutation<
+        PutApiV1AlertByIdMarkAsReadApiResponse,
+        PutApiV1AlertByIdMarkAsReadApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/material-distribution`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialId:
-      build.mutation<
-        PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiResponse,
-        PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution/${queryArg.materialId}`,
-          method: "POST",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProcurementByShipmentDocumentIdConfirmDistribution: build.mutation<
-      PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiResponse,
-      PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Product: build.mutation<
-      PostApiV1ProductApiResponse,
-      PostApiV1ProductApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product`,
-        method: "POST",
-        body: queryArg.createProductRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Product: build.query<
-      GetApiV1ProductApiResponse,
-      GetApiV1ProductApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductByProductId: build.query<
-      GetApiV1ProductByProductIdApiResponse,
-      GetApiV1ProductByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductByProductId: build.mutation<
-      PutApiV1ProductByProductIdApiResponse,
-      PutApiV1ProductByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}`,
-        method: "PUT",
-        body: queryArg.updateProductRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductByProductId: build.mutation<
-      DeleteApiV1ProductByProductIdApiResponse,
-      DeleteApiV1ProductByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductPackageDescriptionByProductId: build.mutation<
-      PutApiV1ProductPackageDescriptionByProductIdApiResponse,
-      PutApiV1ProductPackageDescriptionByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/package-description/${queryArg.productId}`,
-        method: "PUT",
-        body: queryArg.updateProductPackageDescriptionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductByProductIdBom: build.query<
-      GetApiV1ProductByProductIdBomApiResponse,
-      GetApiV1ProductByProductIdBomApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/bom`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductByProductIdRoutes: build.mutation<
-      PostApiV1ProductByProductIdRoutesApiResponse,
-      PostApiV1ProductByProductIdRoutesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/routes`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductByProductIdRoutes: build.query<
-      GetApiV1ProductByProductIdRoutesApiResponse,
-      GetApiV1ProductByProductIdRoutesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/routes`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductRoutesByRouteId: build.query<
-      GetApiV1ProductRoutesByRouteIdApiResponse,
-      GetApiV1ProductRoutesByRouteIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/routes/${queryArg.routeId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductRoutesByRouteId: build.mutation<
-      DeleteApiV1ProductRoutesByRouteIdApiResponse,
-      DeleteApiV1ProductRoutesByRouteIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/routes/${queryArg.routeId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductByProductIdPackages: build.mutation<
-      PostApiV1ProductByProductIdPackagesApiResponse,
-      PostApiV1ProductByProductIdPackagesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/packages`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductByProductIdPackages: build.query<
-      GetApiV1ProductByProductIdPackagesApiResponse,
-      GetApiV1ProductByProductIdPackagesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/packages`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductPackagesByProductPackageId: build.query<
-      GetApiV1ProductPackagesByProductPackageIdApiResponse,
-      GetApiV1ProductPackagesByProductPackageIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/packages/${queryArg.productPackageId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductPackagesByProductPackageId: build.mutation<
-      PutApiV1ProductPackagesByProductPackageIdApiResponse,
-      PutApiV1ProductPackagesByProductPackageIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/packages/${queryArg.productPackageId}`,
-        method: "PUT",
-        body: queryArg.createProductPackageRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductPackagesByProductPackageId: build.mutation<
-      DeleteApiV1ProductPackagesByProductPackageIdApiResponse,
-      DeleteApiV1ProductPackagesByProductPackageIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/packages/${queryArg.productPackageId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductByProductIdFinished: build.mutation<
-      PostApiV1ProductByProductIdFinishedApiResponse,
-      PostApiV1ProductByProductIdFinishedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/finished`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductByProductIdBomArchive: build.mutation<
-      PutApiV1ProductByProductIdBomArchiveApiResponse,
-      PutApiV1ProductByProductIdBomArchiveApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/${queryArg.productId}/bom/archive`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductEquipment: build.mutation<
-      PostApiV1ProductEquipmentApiResponse,
-      PostApiV1ProductEquipmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment`,
-        method: "POST",
-        body: queryArg.createEquipmentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductEquipment: build.query<
-      GetApiV1ProductEquipmentApiResponse,
-      GetApiV1ProductEquipmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductEquipmentByEquipmentId: build.query<
-      GetApiV1ProductEquipmentByEquipmentIdApiResponse,
-      GetApiV1ProductEquipmentByEquipmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductEquipmentByEquipmentId: build.mutation<
-      PutApiV1ProductEquipmentByEquipmentIdApiResponse,
-      PutApiV1ProductEquipmentByEquipmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
-        method: "PUT",
-        body: queryArg.createEquipmentRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductEquipmentByEquipmentId: build.mutation<
-      DeleteApiV1ProductEquipmentByEquipmentIdApiResponse,
-      DeleteApiV1ProductEquipmentByEquipmentIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductEquipmentAll: build.query<
-      GetApiV1ProductEquipmentAllApiResponse,
-      GetApiV1ProductEquipmentAllApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/equipment/all`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductUpload: build.mutation<
-      PostApiV1ProductUploadApiResponse,
-      PostApiV1ProductUploadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/upload`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductBomUpload: build.mutation<
-      PostApiV1ProductBomUploadApiResponse,
-      PostApiV1ProductBomUploadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/bom/upload`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductPackagesUpload: build.mutation<
-      PostApiV1ProductPackagesUploadApiResponse,
-      PostApiV1ProductPackagesUploadApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product/packages/upload`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductArd: build.mutation<
-      PostApiV1ProductArdApiResponse,
-      PostApiV1ProductArdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard`,
-        method: "POST",
-        body: queryArg.createProductAnalyticalRawDataRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductArd: build.query<
-      GetApiV1ProductArdApiResponse,
-      GetApiV1ProductArdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductArdById: build.query<
-      GetApiV1ProductArdByIdApiResponse,
-      GetApiV1ProductArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductArdById: build.mutation<
-      PutApiV1ProductArdByIdApiResponse,
-      PutApiV1ProductArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createProductAnalyticalRawDataRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductArdById: build.mutation<
-      DeleteApiV1ProductArdByIdApiResponse,
-      DeleteApiV1ProductArdByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductArdProductByProductId: build.query<
-      GetApiV1ProductArdProductByProductIdApiResponse,
-      GetApiV1ProductArdProductByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard/product/${queryArg.productId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductArdStartTestByBatchManufacturingRecordId: build.mutation<
-      PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
-      PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionOrders: build.mutation<
-      PostApiV1ProductionOrdersApiResponse,
-      PostApiV1ProductionOrdersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders`,
-        method: "POST",
-        body: queryArg.createProductionOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionOrders: build.query<
-      GetApiV1ProductionOrdersApiResponse,
-      GetApiV1ProductionOrdersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionOrdersById: build.query<
-      GetApiV1ProductionOrdersByIdApiResponse,
-      GetApiV1ProductionOrdersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionOrdersById: build.mutation<
-      PutApiV1ProductionOrdersByIdApiResponse,
-      PutApiV1ProductionOrdersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createProductionOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductionOrdersById: build.mutation<
-      DeleteApiV1ProductionOrdersByIdApiResponse,
-      DeleteApiV1ProductionOrdersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionOrdersProformaInvoices: build.mutation<
-      PostApiV1ProductionOrdersProformaInvoicesApiResponse,
-      PostApiV1ProductionOrdersProformaInvoicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices`,
-        method: "POST",
-        body: queryArg.createProformaInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionOrdersProformaInvoices: build.query<
-      GetApiV1ProductionOrdersProformaInvoicesApiResponse,
-      GetApiV1ProductionOrdersProformaInvoicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionOrdersProformaInvoicesById: build.query<
-      GetApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      GetApiV1ProductionOrdersProformaInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionOrdersProformaInvoicesById: build.mutation<
-      PutApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      PutApiV1ProductionOrdersProformaInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createProformaInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductionOrdersProformaInvoicesById: build.mutation<
-      DeleteApiV1ProductionOrdersProformaInvoicesByIdApiResponse,
-      DeleteApiV1ProductionOrdersProformaInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/proforma-invoices/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionOrdersInvoices: build.mutation<
-      PostApiV1ProductionOrdersInvoicesApiResponse,
-      PostApiV1ProductionOrdersInvoicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices`,
-        method: "POST",
-        body: queryArg.createInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionOrdersInvoices: build.query<
-      GetApiV1ProductionOrdersInvoicesApiResponse,
-      GetApiV1ProductionOrdersInvoicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionOrdersInvoicesById: build.query<
-      GetApiV1ProductionOrdersInvoicesByIdApiResponse,
-      GetApiV1ProductionOrdersInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionOrdersInvoicesById: build.mutation<
-      PutApiV1ProductionOrdersInvoicesByIdApiResponse,
-      PutApiV1ProductionOrdersInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createInvoice,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductionOrdersInvoicesById: build.mutation<
-      DeleteApiV1ProductionOrdersInvoicesByIdApiResponse,
-      DeleteApiV1ProductionOrdersInvoicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-orders/invoices/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionSchedule: build.mutation<
-      PostApiV1ProductionScheduleApiResponse,
-      PostApiV1ProductionScheduleApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule`,
-        method: "POST",
-        body: queryArg.createProductionScheduleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionSchedule: build.query<
-      GetApiV1ProductionScheduleApiResponse,
-      GetApiV1ProductionScheduleApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleByScheduleId: build.query<
-      GetApiV1ProductionScheduleByScheduleIdApiResponse,
-      GetApiV1ProductionScheduleByScheduleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleByScheduleId: build.mutation<
-      PutApiV1ProductionScheduleByScheduleIdApiResponse,
-      PutApiV1ProductionScheduleByScheduleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
-        method: "PUT",
-        body: queryArg.updateProductionScheduleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductionScheduleByScheduleId: build.mutation<
-      DeleteApiV1ProductionScheduleByScheduleIdApiResponse,
-      DeleteApiV1ProductionScheduleByScheduleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleByProductionScheduleIdProductAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiResponse,
-        GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/product/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleProductionStatus: build.query<
-      GetApiV1ProductionScheduleProductionStatusApiResponse,
-      GetApiV1ProductionScheduleProductionStatusApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/production-status`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleByScheduleIdDetails: build.query<
-      GetApiV1ProductionScheduleByScheduleIdDetailsApiResponse,
-      GetApiV1ProductionScheduleByScheduleIdDetailsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/${queryArg.scheduleId}/details`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-          params: {
-            status: queryArg.status,
-          },
-        }),
-      }),
-    getApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/package-material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-          params: {
-            status: queryArg.status,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiResponse,
-        GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/materials-with-insufficient-stock/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiResponse,
-        GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/package-materials-with-insufficient-stock/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductId:
-      build.mutation<
-        PostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdApiResponse,
-        PostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/activity/start/${queryArg.productionScheduleId}/${queryArg.productId}`,
-          method: "POST",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleActivity: build.query<
-      GetApiV1ProductionScheduleActivityApiResponse,
-      GetApiV1ProductionScheduleActivityApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          userIds: queryArg.userIds,
-          status: queryArg.status,
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleActivityByProductionActivityId: build.query<
-      GetApiV1ProductionScheduleActivityByProductionActivityIdApiResponse,
-      GetApiV1ProductionScheduleActivityByProductionActivityIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity/${queryArg.productionActivityId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleActivityByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/activity/${queryArg.productionScheduleId}/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleActivityStatusGrouped: build.query<
-      GetApiV1ProductionScheduleActivityStatusGroupedApiResponse,
-      GetApiV1ProductionScheduleActivityStatusGroupedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity/status-grouped`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleActivityOperationGrouped: build.query<
-      GetApiV1ProductionScheduleActivityOperationGroupedApiResponse,
-      GetApiV1ProductionScheduleActivityOperationGroupedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity/operation-grouped`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleActivityStepByProductionStepIdStatus:
-      build.mutation<
-        PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiResponse,
-        PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/activity-step/${queryArg.productionStepId}/status`,
+          url: `/api/v1/alert/${queryArg.id}/mark-as-read`,
           method: "PUT",
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
+        }),
+        invalidatesTags: ["Alert"],
+      }),
+      getApiV1AlertNotifications: build.query<
+        GetApiV1AlertNotificationsApiResponse,
+        GetApiV1AlertNotificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/alert/notifications`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
           params: {
+            unreadOnly: queryArg.unreadOnly,
+          },
+        }),
+        providesTags: ["Alert"],
+      }),
+      postApiV1QaAnalyticalTests: build.mutation<
+        PostApiV1QaAnalyticalTestsApiResponse,
+        PostApiV1QaAnalyticalTestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/qa/analytical-tests`,
+          method: "POST",
+          body: queryArg.createAnalyticalTestRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["AnalyticalTestRequest"],
+      }),
+      getApiV1QaAnalyticalTests: build.query<
+        GetApiV1QaAnalyticalTestsApiResponse,
+        GetApiV1QaAnalyticalTestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/qa/analytical-tests`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
             status: queryArg.status,
           },
         }),
+        providesTags: ["AnalyticalTestRequest"],
       }),
-    getApiV1ProductionScheduleActivityStep: build.query<
-      GetApiV1ProductionScheduleActivityStepApiResponse,
-      GetApiV1ProductionScheduleActivityStepApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity-step`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          userIds: queryArg.userIds,
-          status: queryArg.status,
-          pageSize: queryArg.pageSize,
-          page: queryArg.page,
-          sortLabel: queryArg.sortLabel,
-          sortDirection: queryArg.sortDirection,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleActivityStepByProductionActivityStepId:
-      build.query<
-        GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiResponse,
-        GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiArg
+      getApiV1QaAnalyticalTestsById: build.query<
+        GetApiV1QaAnalyticalTestsByIdApiResponse,
+        GetApiV1QaAnalyticalTestsByIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/activity-step/${queryArg.productionActivityStepId}`,
+          url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["AnalyticalTestRequest"],
       }),
-    getApiV1ProductionScheduleActivityStepStatusGrouped: build.query<
-      GetApiV1ProductionScheduleActivityStepStatusGroupedApiResponse,
-      GetApiV1ProductionScheduleActivityStepStatusGroupedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity-step/status-grouped`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleActivityStepOperationGrouped: build.query<
-      GetApiV1ProductionScheduleActivityStepOperationGroupedApiResponse,
-      GetApiV1ProductionScheduleActivityStepOperationGroupedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/activity-step/operation-grouped`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionScheduleManufacturing: build.mutation<
-      PostApiV1ProductionScheduleManufacturingApiResponse,
-      PostApiV1ProductionScheduleManufacturingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/manufacturing`,
-        method: "POST",
-        body: queryArg.createBatchManufacturingRecord,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleManufacturing: build.query<
-      GetApiV1ProductionScheduleManufacturingApiResponse,
-      GetApiV1ProductionScheduleManufacturingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/manufacturing`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleId:
-      build.query<
-        GetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdApiResponse,
-        GetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdApiArg
+      putApiV1QaAnalyticalTestsById: build.mutation<
+        PutApiV1QaAnalyticalTestsByIdApiResponse,
+        PutApiV1QaAnalyticalTestsByIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/manufacturing/${queryArg.productionId}/${queryArg.productionScheduleId}`,
+          url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createAnalyticalTestRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["AnalyticalTestRequest"],
       }),
-    postApiV1ProductionScheduleFinishedGoodsTransferNote: build.mutation<
-      PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
-      PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/finished-goods-transfer-note`,
-        method: "POST",
-        body: queryArg.createFinishedGoodsTransferNoteRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinishedGoodsTransferNote: build.query<
-      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
-      GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/finished-goods-transfer-note`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          onlyApproved: queryArg.onlyApproved,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
-      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
-      GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProduct:
-      build.query<
-        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiResponse,
-        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiArg
+      deleteApiV1QaAnalyticalTestsById: build.mutation<
+        DeleteApiV1QaAnalyticalTestsByIdApiResponse,
+        DeleteApiV1QaAnalyticalTestsByIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.productId}/product`,
+          url: `/api/v1/qa/analytical-tests/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["AnalyticalTestRequest"],
+      }),
+      putApiV1QaAnalyticalTestsStatusById: build.mutation<
+        PutApiV1QaAnalyticalTestsStatusByIdApiResponse,
+        PutApiV1QaAnalyticalTestsStatusByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/qa/analytical-tests/status/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateAnalyticalTestRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["AnalyticalTestRequest"],
+      }),
+      getApiV1QaAnalyticalTestsActivityStepByActivityStepId: build.query<
+        GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiResponse,
+        GetApiV1QaAnalyticalTestsActivityStepByActivityStepIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/qa/analytical-tests/activity-step/${queryArg.activityStepId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["AnalyticalTestRequest"],
+      }),
+      postApiV1Approval: build.mutation<
+        PostApiV1ApprovalApiResponse,
+        PostApiV1ApprovalApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/approval`,
+          method: "POST",
+          body: queryArg.createApprovalRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Approval"],
+      }),
+      getApiV1Approval: build.query<
+        GetApiV1ApprovalApiResponse,
+        GetApiV1ApprovalApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/approval`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
@@ -5626,477 +337,127 @@ const injectedRtkApi = api.injectEndpoints({
             searchQuery: queryArg.searchQuery,
           },
         }),
+        providesTags: ["Approval"],
       }),
-    putApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApprove:
-      build.mutation<
-        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse,
-        PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg
+      postApiV1ApprovalDelegate: build.mutation<
+        PostApiV1ApprovalDelegateApiResponse,
+        PostApiV1ApprovalDelegateApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}/approve`,
+          url: `/api/v1/approval/delegate`,
+          method: "POST",
+          body: queryArg.delegateApproval,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Approval"],
+      }),
+      getApiV1ApprovalByApprovalId: build.query<
+        GetApiV1ApprovalByApprovalIdApiResponse,
+        GetApiV1ApprovalByApprovalIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/approval/${queryArg.approvalId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Approval"],
+      }),
+      putApiV1ApprovalByApprovalId: build.mutation<
+        PutApiV1ApprovalByApprovalIdApiResponse,
+        PutApiV1ApprovalByApprovalIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/approval/${queryArg.approvalId}`,
           method: "PUT",
-          body: queryArg.approveTransferNoteRequest,
+          body: queryArg.createApprovalRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Approval"],
       }),
-    putApiV1ProductionScheduleById: build.mutation<
-      PutApiV1ProductionScheduleByIdApiResponse,
-      PutApiV1ProductionScheduleByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createFinishedGoodsTransferNoteRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleManufacturingById: build.query<
-      GetApiV1ProductionScheduleManufacturingByIdApiResponse,
-      GetApiV1ProductionScheduleManufacturingByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/manufacturing/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleManufacturingById: build.mutation<
-      PutApiV1ProductionScheduleManufacturingByIdApiResponse,
-      PutApiV1ProductionScheduleManufacturingByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/manufacturing/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateBatchManufacturingRecord,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleManufacturingIssueById: build.mutation<
-      PutApiV1ProductionScheduleManufacturingIssueByIdApiResponse,
-      PutApiV1ProductionScheduleManufacturingIssueByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/manufacturing/issue/${queryArg.id}`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionSchedulePackaging: build.mutation<
-      PostApiV1ProductionSchedulePackagingApiResponse,
-      PostApiV1ProductionSchedulePackagingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/packaging`,
-        method: "POST",
-        body: queryArg.createBatchPackagingRecord,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionSchedulePackaging: build.query<
-      GetApiV1ProductionSchedulePackagingApiResponse,
-      GetApiV1ProductionSchedulePackagingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/packaging`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionSchedulePackagingById: build.query<
-      GetApiV1ProductionSchedulePackagingByIdApiResponse,
-      GetApiV1ProductionSchedulePackagingByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/packaging/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionSchedulePackagingById: build.mutation<
-      PutApiV1ProductionSchedulePackagingByIdApiResponse,
-      PutApiV1ProductionSchedulePackagingByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/packaging/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateBatchPackagingRecord,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionSchedulePackagingIssueById: build.mutation<
-      PutApiV1ProductionSchedulePackagingIssueByIdApiResponse,
-      PutApiV1ProductionSchedulePackagingIssueByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/packaging/issue/${queryArg.id}`,
-        method: "PUT",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionScheduleStockTransfer: build.mutation<
-      PostApiV1ProductionScheduleStockTransferApiResponse,
-      PostApiV1ProductionScheduleStockTransferApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer`,
-        method: "POST",
-        body: queryArg.createStockTransferRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleStockTransfer: build.query<
-      GetApiV1ProductionScheduleStockTransferApiResponse,
-      GetApiV1ProductionScheduleStockTransferApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          fromDepartmentId: queryArg.fromDepartmentId,
-          toDepartmentId: queryArg.toDepartmentId,
-          materialId: queryArg.materialId,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleStockTransferInBound: build.query<
-      GetApiV1ProductionScheduleStockTransferInBoundApiResponse,
-      GetApiV1ProductionScheduleStockTransferInBoundApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer/in-bound`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-          toDepartmentId: queryArg.toDepartmentId,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleStockTransferOutBound: build.query<
-      GetApiV1ProductionScheduleStockTransferOutBoundApiResponse,
-      GetApiV1ProductionScheduleStockTransferOutBoundApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer/out-bound`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-          fromDepartmentId: queryArg.fromDepartmentId,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleStockTransferByStockTransferId: build.query<
-      GetApiV1ProductionScheduleStockTransferByStockTransferIdApiResponse,
-      GetApiV1ProductionScheduleStockTransferByStockTransferIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer/${queryArg.stockTransferId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleStockTransferApproveByStockTransferId:
-      build.mutation<
-        PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse,
-        PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiArg
+      deleteApiV1ApprovalByApprovalId: build.mutation<
+        DeleteApiV1ApprovalByApprovalIdApiResponse,
+        DeleteApiV1ApprovalByApprovalIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/stock-transfer/approve/${queryArg.stockTransferId}`,
-          method: "PUT",
+          url: `/api/v1/approval/${queryArg.approvalId}`,
+          method: "DELETE",
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Approval"],
       }),
-    putApiV1ProductionScheduleStockTransferRejectByStockTransferId:
-      build.mutation<
-        PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiResponse,
-        PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg
+      getApiV1ApprovalByModelTypeAndModelId: build.query<
+        GetApiV1ApprovalByModelTypeAndModelIdApiResponse,
+        GetApiV1ApprovalByModelTypeAndModelIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/stock-transfer/reject/${queryArg.stockTransferId}`,
-          method: "PUT",
+          url: `/api/v1/approval/${queryArg.modelType}/${queryArg.modelId}`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["Approval"],
       }),
-    getApiV1ProductionScheduleStockTransferBatchByStockTransferId: build.query<
-      GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiResponse,
-      GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/stock-transfer/batch/${queryArg.stockTransferId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleStockTransferIssueByStockTransferId:
-      build.mutation<
-        PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse,
-        PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiArg
+      postApiV1ApprovalApproveByModelTypeAndModelId: build.mutation<
+        PostApiV1ApprovalApproveByModelTypeAndModelIdApiResponse,
+        PostApiV1ApprovalApproveByModelTypeAndModelIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/stock-transfer/issue/${queryArg.stockTransferId}`,
-          method: "PUT",
-          body: queryArg.body,
+          url: `/api/v1/approval/approve/${queryArg.modelType}/${queryArg.modelId}`,
+          method: "POST",
+          body: queryArg.approvalRequestBody,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Approval"],
       }),
-    postApiV1ProductionScheduleFinalPacking: build.mutation<
-      PostApiV1ProductionScheduleFinalPackingApiResponse,
-      PostApiV1ProductionScheduleFinalPackingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/final-packing`,
-        method: "POST",
-        body: queryArg.createFinalPacking,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinalPacking: build.query<
-      GetApiV1ProductionScheduleFinalPackingApiResponse,
-      GetApiV1ProductionScheduleFinalPackingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/final-packing`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinalPackingByFinalPackingId: build.query<
-      GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
-      GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleFinalPackingByFinalPackingId: build.mutation<
-      PutApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
-      PutApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
-        method: "PUT",
-        body: queryArg.createFinalPacking,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductionScheduleFinalPackingByFinalPackingId: build.mutation<
-      DeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
-      DeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiArg
+      postApiV1ApprovalRejectByModelTypeAndModelId: build.mutation<
+        PostApiV1ApprovalRejectByModelTypeAndModelIdApiResponse,
+        PostApiV1ApprovalRejectByModelTypeAndModelIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/final-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          url: `/api/v1/approval/reject/${queryArg.modelType}/${queryArg.modelId}`,
+          method: "POST",
+          body: queryArg.approvalRequestBody,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Approval"],
       }),
-    getApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiArg
+      getApiV1ApprovalMyPending: build.query<
+        GetApiV1ApprovalMyPendingApiResponse,
+        GetApiV1ApprovalMyPendingApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/stock-requisition/raw/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          url: `/api/v1/approval/my-pending`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["Approval"],
       }),
-    getApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiArg
+      postApiV1AttendanceRecordsUpload: build.mutation<
+        PostApiV1AttendanceRecordsUploadApiResponse,
+        PostApiV1AttendanceRecordsUploadApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/stock-requisition/package/${queryArg.productionScheduleId}/${queryArg.productId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProductionScheduleReturnBeforeProduction: build.mutation<
-      PostApiV1ProductionScheduleReturnBeforeProductionApiResponse,
-      PostApiV1ProductionScheduleReturnBeforeProductionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/return-before-production`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          productionScheduleId: queryArg.productionScheduleId,
-          productId: queryArg.productId,
-          reason: queryArg.reason,
-        },
-      }),
-    }),
-    postApiV1ProductionScheduleReturnAfterProduction: build.mutation<
-      PostApiV1ProductionScheduleReturnAfterProductionApiResponse,
-      PostApiV1ProductionScheduleReturnAfterProductionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/return-after-production`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          productionScheduleId: queryArg.productionScheduleId,
-          productId: queryArg.productId,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleMaterialReturnNote: build.query<
-      GetApiV1ProductionScheduleMaterialReturnNoteApiResponse,
-      GetApiV1ProductionScheduleMaterialReturnNoteApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/material-return-note`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteId:
-      build.query<
-        GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiResponse,
-        GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/material-return-note/${queryArg.materialReturnNoteId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    putApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteId:
-      build.mutation<
-        PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiResponse,
-        PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/material-return-note/complete/${queryArg.materialReturnNoteId}`,
-          method: "PUT",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductId:
-      build.mutation<
-        PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiResponse,
-        PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          url: `/api/v1/attendance-records/upload`,
           method: "POST",
           body: queryArg.body,
           headers: {
@@ -6104,2071 +465,161 @@ const injectedRtkApi = api.injectEndpoints({
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["AttendanceRecord"],
       }),
-    getApiV1ProductionScheduleExtraPacking: build.query<
-      GetApiV1ProductionScheduleExtraPackingApiResponse,
-      GetApiV1ProductionScheduleExtraPackingApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/extra-packing`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleExtraPackingByProductionExtraPackingId:
-      build.query<
-        GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiResponse,
-        GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiArg
+      getApiV1AttendanceRecordsDailySummary: build.query<
+        GetApiV1AttendanceRecordsDailySummaryApiResponse,
+        GetApiV1AttendanceRecordsDailySummaryApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/${queryArg.productionExtraPackingId}`,
+          url: `/api/v1/attendance-records/daily-summary`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentName: queryArg.departmentName,
+            date: queryArg.date,
+          },
+        }),
+        providesTags: ["AttendanceRecord"],
+      }),
+      getApiV1AttendanceRecordsGeneralSummary: build.query<
+        GetApiV1AttendanceRecordsGeneralSummaryApiResponse,
+        GetApiV1AttendanceRecordsGeneralSummaryApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/attendance-records/general-summary`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["AttendanceRecord"],
       }),
-    getApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductId:
-      build.query<
-        GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiResponse,
-        GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiArg
+      getApiV1AttendanceRecordsExport: build.query<
+        GetApiV1AttendanceRecordsExportApiResponse,
+        GetApiV1AttendanceRecordsExportApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/by-product/${queryArg.productionScheduleId}/${queryArg.productId}`,
+          url: `/api/v1/attendance-records/export`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
-        }),
-      }),
-    getApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialId:
-      build.query<
-        GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiResponse,
-        GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/batches-to-supply/${queryArg.extraPackingMaterialId}`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
+          params: {
+            fileType: queryArg.fileType,
           },
         }),
+        providesTags: ["AttendanceRecord"],
       }),
-    postApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingId:
-      build.mutation<
-        PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiResponse,
-        PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiArg
+      postApiV1AuthLogin: build.mutation<
+        PostApiV1AuthLoginApiResponse,
+        PostApiV1AuthLoginApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/extra-packing/approve/${queryArg.productionExtraPackingId}`,
+          url: `/api/v1/auth/login`,
           method: "POST",
-          body: queryArg.body,
+          body: queryArg.loginRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Auth"],
       }),
-    getApiV1ProductionScheduleApprovedProducts: build.query<
-      GetApiV1ProductionScheduleApprovedProductsApiResponse,
-      GetApiV1ProductionScheduleApprovedProductsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/approved-products`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleApprovedProductsProductByProductId: build.query<
-      GetApiV1ProductionScheduleApprovedProductsProductByProductIdApiResponse,
-      GetApiV1ProductionScheduleApprovedProductsProductByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/approved-products/product/${queryArg.productId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleApprovedProductsByProductId: build.query<
-      GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse,
-      GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/approved-products/${queryArg.productId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductionScheduleAllocateProducts: build.mutation<
-      PostApiV1ProductionScheduleAllocateProductsApiResponse,
-      PostApiV1ProductionScheduleAllocateProductsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/allocate-products`,
-        method: "POST",
-        body: queryArg.allocateProductionOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleAllocateProducts: build.query<
-      GetApiV1ProductionScheduleAllocateProductsApiResponse,
-      GetApiV1ProductionScheduleAllocateProductsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/allocate-products`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          onlyApproved: queryArg.onlyApproved,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleAllocateProductsByAllocatedProductId: build.query<
-      GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse,
-      GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/allocate-products/${queryArg.allocatedProductId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductId:
-      build.mutation<
-        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse,
-        PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg
+      postApiV1AuthLoginWithRefreshToken: build.mutation<
+        PostApiV1AuthLoginWithRefreshTokenApiResponse,
+        PostApiV1AuthLoginWithRefreshTokenApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/production-schedule/allocate-products/deliver/${queryArg.allocatedProductId}`,
-          method: "PUT",
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    getApiV1ProductionScheduleSummaryReport: build.query<
-      GetApiV1ProductionScheduleSummaryReportApiResponse,
-      GetApiV1ProductionScheduleSummaryReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/summary-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          productId: queryArg.productId,
-          marketTypeId: queryArg.marketTypeId,
-        },
-      }),
-    }),
-    getApiV1ProductionScheduleDetailedReport: build.query<
-      GetApiV1ProductionScheduleDetailedReportApiResponse,
-      GetApiV1ProductionScheduleDetailedReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/production-schedule/detailed-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          productId: queryArg.productId,
-          marketTypeId: queryArg.marketTypeId,
-        },
-      }),
-    }),
-    postApiV1ProductSamplings: build.mutation<
-      PostApiV1ProductSamplingsApiResponse,
-      PostApiV1ProductSamplingsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-samplings`,
-        method: "POST",
-        body: queryArg.createProductSamplingRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductSamplingsById: build.query<
-      GetApiV1ProductSamplingsByIdApiResponse,
-      GetApiV1ProductSamplingsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-samplings/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductSpecifications: build.mutation<
-      PostApiV1ProductSpecificationsApiResponse,
-      PostApiV1ProductSpecificationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications`,
-        method: "POST",
-        body: queryArg.createProductSpecificationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductSpecifications: build.query<
-      GetApiV1ProductSpecificationsApiResponse,
-      GetApiV1ProductSpecificationsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductSpecificationsById: build.query<
-      GetApiV1ProductSpecificationsByIdApiResponse,
-      GetApiV1ProductSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductSpecificationsById: build.mutation<
-      PutApiV1ProductSpecificationsByIdApiResponse,
-      PutApiV1ProductSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createProductSpecificationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductSpecificationsById: build.mutation<
-      DeleteApiV1ProductSpecificationsByIdApiResponse,
-      DeleteApiV1ProductSpecificationsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductSpecificationsProductById: build.query<
-      GetApiV1ProductSpecificationsProductByIdApiResponse,
-      GetApiV1ProductSpecificationsProductByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-specifications/product/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ProductStps: build.mutation<
-      PostApiV1ProductStpsApiResponse,
-      PostApiV1ProductStpsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-stps`,
-        method: "POST",
-        body: queryArg.createProductStandardTestProcedureRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ProductStps: build.query<
-      GetApiV1ProductStpsApiResponse,
-      GetApiV1ProductStpsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-stps`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ProductStpsById: build.query<
-      GetApiV1ProductStpsByIdApiResponse,
-      GetApiV1ProductStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-stps/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ProductStpsById: build.mutation<
-      PutApiV1ProductStpsByIdApiResponse,
-      PutApiV1ProductStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-stps/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createProductStandardTestProcedureRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ProductStpsById: build.mutation<
-      DeleteApiV1ProductStpsByIdApiResponse,
-      DeleteApiV1ProductStpsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/product-stps/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postV1RecoverableItemsReports: build.mutation<
-      PostV1RecoverableItemsReportsApiResponse,
-      PostV1RecoverableItemsReportsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/recoverable-items-reports`,
-        method: "POST",
-        body: queryArg.createRecoverableItemReportRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getV1RecoverableItemsReports: build.query<
-      GetV1RecoverableItemsReportsApiResponse,
-      GetV1RecoverableItemsReportsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/recoverable-items-reports`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ReportProduction: build.query<
-      GetApiV1ReportProductionApiResponse,
-      GetApiV1ReportProductionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/production`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportProductionMaterialsBelowMinimum: build.query<
-      GetApiV1ReportProductionMaterialsBelowMinimumApiResponse,
-      GetApiV1ReportProductionMaterialsBelowMinimumApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/production/materials-below-minimum`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ReportWarehouse: build.query<
-      GetApiV1ReportWarehouseApiResponse,
-      GetApiV1ReportWarehouseApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/warehouse`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportLogistics: build.query<
-      GetApiV1ReportLogisticsApiResponse,
-      GetApiV1ReportLogisticsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/logistics`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportReservedMaterialBatches: build.query<
-      GetApiV1ReportReservedMaterialBatchesApiResponse,
-      GetApiV1ReportReservedMaterialBatchesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/reserved-material-batches`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportHumanResource: build.query<
-      GetApiV1ReportHumanResourceApiResponse,
-      GetApiV1ReportHumanResourceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/human-resource`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportStaffReport: build.query<
-      GetApiV1ReportStaffReportApiResponse,
-      GetApiV1ReportStaffReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/staff-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-        },
-      }),
-    }),
-    getApiV1ReportEmployeeMovement: build.query<
-      GetApiV1ReportEmployeeMovementApiResponse,
-      GetApiV1ReportEmployeeMovementApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/employee-movement`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportStaffTotalReport: build.query<
-      GetApiV1ReportStaffTotalReportApiResponse,
-      GetApiV1ReportStaffTotalReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/staff-total-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportStaffLeaveReport: build.query<
-      GetApiV1ReportStaffLeaveReportApiResponse,
-      GetApiV1ReportStaffLeaveReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/staff-leave-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportStaffTurnoverReport: build.query<
-      GetApiV1ReportStaffTurnoverReportApiResponse,
-      GetApiV1ReportStaffTurnoverReportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/staff-turnover-report`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportMaterialsReadyForChecklist: build.query<
-      GetApiV1ReportMaterialsReadyForChecklistApiResponse,
-      GetApiV1ReportMaterialsReadyForChecklistApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/materials-ready-for-checklist`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportMaterialsReadyForAssignment: build.query<
-      GetApiV1ReportMaterialsReadyForAssignmentApiResponse,
-      GetApiV1ReportMaterialsReadyForAssignmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/materials-ready-for-assignment`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportQaDashboard: build.query<
-      GetApiV1ReportQaDashboardApiResponse,
-      GetApiV1ReportQaDashboardApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/qa-dashboard`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    getApiV1ReportQcDashboard: build.query<
-      GetApiV1ReportQcDashboardApiResponse,
-      GetApiV1ReportQcDashboardApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/report/qc-dashboard`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-          materialKind: queryArg.materialKind,
-        },
-      }),
-    }),
-    postApiV1Requisition: build.mutation<
-      PostApiV1RequisitionApiResponse,
-      PostApiV1RequisitionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition`,
-        method: "POST",
-        body: queryArg.createRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Requisition: build.query<
-      GetApiV1RequisitionApiResponse,
-      GetApiV1RequisitionApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-          type: queryArg["type"],
-        },
-      }),
-    }),
-    getApiV1RequisitionDepartment: build.query<
-      GetApiV1RequisitionDepartmentApiResponse,
-      GetApiV1RequisitionDepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/department`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          status: queryArg.status,
-          type: queryArg["type"],
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1RequisitionByRequisitionId: build.query<
-      GetApiV1RequisitionByRequisitionIdApiResponse,
-      GetApiV1RequisitionByRequisitionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/${queryArg.requisitionId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1RequisitionIssueStockRequisitionByStockRequisitionId:
-      build.mutation<
-        PostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdApiResponse,
-        PostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/requisition/issue-stock-requisition/${queryArg.stockRequisitionId}`,
+          url: `/api/v1/auth/login-with-refresh-token`,
           method: "POST",
+          body: queryArg.loginWithRefreshToken,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["Auth"],
       }),
-    postApiV1RequisitionByRequisitionIdIssue: build.mutation<
-      PostApiV1RequisitionByRequisitionIdIssueApiResponse,
-      PostApiV1RequisitionByRequisitionIdIssueApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/${queryArg.requisitionId}/issue`,
-        method: "POST",
-        body: queryArg.approveRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1RequisitionSource: build.mutation<
-      PostApiV1RequisitionSourceApiResponse,
-      PostApiV1RequisitionSourceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source`,
-        method: "POST",
-        body: queryArg.createSourceRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1RequisitionSource: build.query<
-      GetApiV1RequisitionSourceApiResponse,
-      GetApiV1RequisitionSourceApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceBySourceRequisitionId: build.query<
-      GetApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
-      GetApiV1RequisitionSourceBySourceRequisitionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1RequisitionSourceBySourceRequisitionId: build.mutation<
-      PutApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
-      PutApiV1RequisitionSourceBySourceRequisitionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
-        method: "PUT",
-        body: queryArg.createSourceRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1RequisitionSourceBySourceRequisitionId: build.mutation<
-      DeleteApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
-      DeleteApiV1RequisitionSourceBySourceRequisitionIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceItems: build.query<
-      GetApiV1RequisitionSourceItemsApiResponse,
-      GetApiV1RequisitionSourceItemsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/items`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          source: queryArg.source,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceSupplier: build.query<
-      GetApiV1RequisitionSourceSupplierApiResponse,
-      GetApiV1RequisitionSourceSupplierApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/supplier`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          source: queryArg.source,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          sent: queryArg.sent,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceSupplierBySupplierId: build.query<
-      GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse,
-      GetApiV1RequisitionSourceSupplierBySupplierIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1RequisitionSourceSupplierBySupplierIdSendQuotation: build.mutation<
-      PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiResponse,
-      PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}/send-quotation`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceSupplierQuotation: build.query<
-      GetApiV1RequisitionSourceSupplierQuotationApiResponse,
-      GetApiV1RequisitionSourceSupplierQuotationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/supplier/quotation`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          supplierType: queryArg.supplierType,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          received: queryArg.received,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotation:
-      build.query<
-        GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiResponse,
-        GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiArg
+      postApiV1AuthSetPassword: build.mutation<
+        PostApiV1AuthSetPasswordApiResponse,
+        PostApiV1AuthSetPasswordApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation`,
-          headers: {
-            Module: queryArg["module"],
-            SubModule: queryArg.subModule,
-          },
-        }),
-      }),
-    postApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceive:
-      build.mutation<
-        PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiResponse,
-        PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation/receive`,
+          url: `/api/v1/auth/set-password`,
           method: "POST",
-          body: queryArg.body,
+          body: queryArg.setPasswordRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
-      }),
-    getApiV1RequisitionSourceMaterialPriceComparison: build.query<
-      GetApiV1RequisitionSourceMaterialPriceComparisonApiResponse,
-      GetApiV1RequisitionSourceMaterialPriceComparisonApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/material/price-comparison`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          supplierType: queryArg.supplierType,
-        },
-      }),
-    }),
-    getApiV1RequisitionSourceMaterialPriceComparisonByMaterial: build.query<
-      GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiResponse,
-      GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/material/price-comparison/by-material`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          supplierType: queryArg.supplierType,
-          materialId: queryArg.materialId,
-          purchaseOrderId: queryArg.purchaseOrderId,
-          status: queryArg.status,
-        },
-      }),
-    }),
-    postApiV1RequisitionSourceQuotationProcessPurchaseOrder: build.mutation<
-      PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse,
-      PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/requisition/source/quotation/process-purchase-order`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          supplierType: queryArg.supplierType,
-        },
-      }),
-    }),
-    getApiV1Role: build.query<GetApiV1RoleApiResponse, GetApiV1RoleApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/role`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Role: build.mutation<
-      PostApiV1RoleApiResponse,
-      PostApiV1RoleApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role`,
-        method: "POST",
-        body: queryArg.createRoleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1RoleWithPermissions: build.query<
-      GetApiV1RoleWithPermissionsApiResponse,
-      GetApiV1RoleWithPermissionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role/with-permissions`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1RoleById: build.query<
-      GetApiV1RoleByIdApiResponse,
-      GetApiV1RoleByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1RoleById: build.mutation<
-      PutApiV1RoleByIdApiResponse,
-      PutApiV1RoleByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateRoleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1RoleById: build.mutation<
-      DeleteApiV1RoleByIdApiResponse,
-      DeleteApiV1RoleByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1RoleCheckById: build.query<
-      GetApiV1RoleCheckByIdApiResponse,
-      GetApiV1RoleCheckByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/role/check/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Services: build.mutation<
-      PostApiV1ServicesApiResponse,
-      PostApiV1ServicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/services`,
-        method: "POST",
-        body: queryArg.createServiceRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Services: build.query<
-      GetApiV1ServicesApiResponse,
-      GetApiV1ServicesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/services`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          isActive: queryArg.isActive,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-        },
-      }),
-    }),
-    getApiV1ServicesById: build.query<
-      GetApiV1ServicesByIdApiResponse,
-      GetApiV1ServicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/services/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ServicesById: build.mutation<
-      PutApiV1ServicesByIdApiResponse,
-      PutApiV1ServicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/services/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createServiceRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ServicesById: build.mutation<
-      DeleteApiV1ServicesByIdApiResponse,
-      DeleteApiV1ServicesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/services/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ServiceProviders: build.mutation<
-      PostApiV1ServiceProvidersApiResponse,
-      PostApiV1ServiceProvidersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/service-providers`,
-        method: "POST",
-        body: queryArg.createServiceProviderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ServiceProviders: build.query<
-      GetApiV1ServiceProvidersApiResponse,
-      GetApiV1ServiceProvidersApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/service-providers`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ServiceProvidersById: build.query<
-      GetApiV1ServiceProvidersByIdApiResponse,
-      GetApiV1ServiceProvidersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/service-providers/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ServiceProvidersById: build.mutation<
-      PutApiV1ServiceProvidersByIdApiResponse,
-      PutApiV1ServiceProvidersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/service-providers/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createServiceProviderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ServiceProvidersById: build.mutation<
-      DeleteApiV1ServiceProvidersByIdApiResponse,
-      DeleteApiV1ServiceProvidersByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/service-providers/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ShiftSchedules: build.mutation<
-      PostApiV1ShiftSchedulesApiResponse,
-      PostApiV1ShiftSchedulesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules`,
-        method: "POST",
-        body: queryArg.createShiftScheduleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ShiftSchedules: build.query<
-      GetApiV1ShiftSchedulesApiResponse,
-      GetApiV1ShiftSchedulesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1ShiftSchedulesAssign: build.mutation<
-      PostApiV1ShiftSchedulesAssignApiResponse,
-      PostApiV1ShiftSchedulesAssignApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/assign`,
-        method: "POST",
-        body: queryArg.assignShiftRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ShiftSchedulesById: build.query<
-      GetApiV1ShiftSchedulesByIdApiResponse,
-      GetApiV1ShiftSchedulesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ShiftSchedulesById: build.mutation<
-      PutApiV1ShiftSchedulesByIdApiResponse,
-      PutApiV1ShiftSchedulesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createShiftScheduleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ShiftSchedulesById: build.mutation<
-      DeleteApiV1ShiftSchedulesByIdApiResponse,
-      DeleteApiV1ShiftSchedulesByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ShiftSchedulesDepartmentById: build.query<
-      GetApiV1ShiftSchedulesDepartmentByIdApiResponse,
-      GetApiV1ShiftSchedulesDepartmentByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/department/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ShiftSchedulesByScheduleIdView: build.query<
-      GetApiV1ShiftSchedulesByScheduleIdViewApiResponse,
-      GetApiV1ShiftSchedulesByScheduleIdViewApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.scheduleId}/view`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-        },
-      }),
-    }),
-    getApiV1ShiftSchedulesByScheduleIdDay: build.query<
-      GetApiV1ShiftSchedulesByScheduleIdDayApiResponse,
-      GetApiV1ShiftSchedulesByScheduleIdDayApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.scheduleId}/day`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          date: queryArg.date,
-        },
-      }),
-    }),
-    putApiV1ShiftSchedulesByIdUpdateSchedule: build.mutation<
-      PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse,
-      PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/${queryArg.id}/update-schedule`,
-        method: "PUT",
-        body: queryArg.updateShiftAssignment,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1ShiftSchedulesAssignImport: build.mutation<
-      PostApiV1ShiftSchedulesAssignImportApiResponse,
-      PostApiV1ShiftSchedulesAssignImportApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-schedules/assign/import`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          departmentId: queryArg.departmentId,
-          shiftId: queryArg.shiftId,
-        },
-      }),
-    }),
-    postApiV1ShiftType: build.mutation<
-      PostApiV1ShiftTypeApiResponse,
-      PostApiV1ShiftTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type`,
-        method: "POST",
-        body: queryArg.createShiftTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1ShiftType: build.query<
-      GetApiV1ShiftTypeApiResponse,
-      GetApiV1ShiftTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1ShiftTypeById: build.query<
-      GetApiV1ShiftTypeByIdApiResponse,
-      GetApiV1ShiftTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1ShiftTypeById: build.mutation<
-      PutApiV1ShiftTypeByIdApiResponse,
-      PutApiV1ShiftTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createShiftTypeRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1ShiftTypeById: build.mutation<
-      DeleteApiV1ShiftTypeByIdApiResponse,
-      DeleteApiV1ShiftTypeByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/shift-type/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1StaffRequisitions: build.mutation<
-      PostApiV1StaffRequisitionsApiResponse,
-      PostApiV1StaffRequisitionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/staff-requisitions`,
-        method: "POST",
-        body: queryArg.createStaffRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1StaffRequisitions: build.query<
-      GetApiV1StaffRequisitionsApiResponse,
-      GetApiV1StaffRequisitionsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/staff-requisitions`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          startDate: queryArg.startDate,
-          endDate: queryArg.endDate,
-        },
-      }),
-    }),
-    getApiV1StaffRequisitionsById: build.query<
-      GetApiV1StaffRequisitionsByIdApiResponse,
-      GetApiV1StaffRequisitionsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/staff-requisitions/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1StaffRequisitionsById: build.mutation<
-      PutApiV1StaffRequisitionsByIdApiResponse,
-      PutApiV1StaffRequisitionsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/staff-requisitions/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createStaffRequisitionRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1StaffRequisitionsById: build.mutation<
-      DeleteApiV1StaffRequisitionsByIdApiResponse,
-      DeleteApiV1StaffRequisitionsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/staff-requisitions/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1User: build.mutation<
-      PostApiV1UserApiResponse,
-      PostApiV1UserApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user`,
-        method: "POST",
-        body: queryArg.createUserRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1User: build.query<GetApiV1UserApiResponse, GetApiV1UserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/v1/user`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1UserSignUp: build.mutation<
-      PostApiV1UserSignUpApiResponse,
-      PostApiV1UserSignUpApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/sign-up`,
-        method: "POST",
-        body: queryArg.createClientRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1UserAuthenticated: build.query<
-      GetApiV1UserAuthenticatedApiResponse,
-      GetApiV1UserAuthenticatedApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/authenticated`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1UserRoleByRoleId: build.query<
-      GetApiV1UserRoleByRoleIdApiResponse,
-      GetApiV1UserRoleByRoleIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/role/${queryArg.roleId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1UserById: build.mutation<
-      PutApiV1UserByIdApiResponse,
-      PutApiV1UserByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateUserRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1UserById: build.mutation<
-      DeleteApiV1UserByIdApiResponse,
-      DeleteApiV1UserByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1UserRoleById: build.mutation<
-      PutApiV1UserRoleByIdApiResponse,
-      PutApiV1UserRoleByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/role/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.updateUserRoleRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1UserAvatarById: build.mutation<
-      PostApiV1UserAvatarByIdApiResponse,
-      PostApiV1UserAvatarByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/avatar/${queryArg.id}`,
-        method: "POST",
-        body: queryArg.uploadFileRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1UserSignatureById: build.mutation<
-      PostApiV1UserSignatureByIdApiResponse,
-      PostApiV1UserSignatureByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/signature/${queryArg.id}`,
-        method: "POST",
-        body: queryArg.uploadFileRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1UserToggleDisableById: build.query<
-      GetApiV1UserToggleDisableByIdApiResponse,
-      GetApiV1UserToggleDisableByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/user/toggle-disable/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Vendors: build.mutation<
-      PostApiV1VendorsApiResponse,
-      PostApiV1VendorsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/vendors`,
-        method: "POST",
-        body: queryArg.createVendorRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Vendors: build.query<
-      GetApiV1VendorsApiResponse,
-      GetApiV1VendorsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/vendors`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1VendorsById: build.query<
-      GetApiV1VendorsByIdApiResponse,
-      GetApiV1VendorsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/vendors/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1VendorsById: build.mutation<
-      PutApiV1VendorsByIdApiResponse,
-      PutApiV1VendorsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/vendors/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.createVendorRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1VendorsById: build.mutation<
-      DeleteApiV1VendorsByIdApiResponse,
-      DeleteApiV1VendorsByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/vendors/${queryArg.id}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1Warehouse: build.mutation<
-      PostApiV1WarehouseApiResponse,
-      PostApiV1WarehouseApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse`,
-        method: "POST",
-        body: queryArg.createWarehouseRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1Warehouse: build.query<
-      GetApiV1WarehouseApiResponse,
-      GetApiV1WarehouseApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          type: queryArg["type"],
-        },
-      }),
-    }),
-    getApiV1WarehouseByWarehouseId: build.query<
-      GetApiV1WarehouseByWarehouseIdApiResponse,
-      GetApiV1WarehouseByWarehouseIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WarehouseByWarehouseId: build.mutation<
-      PutApiV1WarehouseByWarehouseIdApiResponse,
-      PutApiV1WarehouseByWarehouseIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}`,
-        method: "PUT",
-        body: queryArg.createWarehouseRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1WarehouseByWarehouseId: build.mutation<
-      DeleteApiV1WarehouseByWarehouseIdApiResponse,
-      DeleteApiV1WarehouseByWarehouseIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1WarehouseByWarehouseIdLocation: build.mutation<
-      PostApiV1WarehouseByWarehouseIdLocationApiResponse,
-      PostApiV1WarehouseByWarehouseIdLocationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}/location`,
-        method: "POST",
-        body: queryArg.createWarehouseLocationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseLocationByLocationId: build.query<
-      GetApiV1WarehouseLocationByLocationIdApiResponse,
-      GetApiV1WarehouseLocationByLocationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/location/${queryArg.locationId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WarehouseLocationByLocationId: build.mutation<
-      PutApiV1WarehouseLocationByLocationIdApiResponse,
-      PutApiV1WarehouseLocationByLocationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/location/${queryArg.locationId}`,
-        method: "PUT",
-        body: queryArg.createWarehouseLocationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1WarehouseLocationByLocationId: build.mutation<
-      DeleteApiV1WarehouseLocationByLocationIdApiResponse,
-      DeleteApiV1WarehouseLocationByLocationIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/location/${queryArg.locationId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseLocation: build.query<
-      GetApiV1WarehouseLocationApiResponse,
-      GetApiV1WarehouseLocationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/location`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1WarehouseByLocationIdRack: build.mutation<
-      PostApiV1WarehouseByLocationIdRackApiResponse,
-      PostApiV1WarehouseByLocationIdRackApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.locationId}/rack`,
-        method: "POST",
-        body: queryArg.createWarehouseLocationRackRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseRackByRackId: build.query<
-      GetApiV1WarehouseRackByRackIdApiResponse,
-      GetApiV1WarehouseRackByRackIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WarehouseRackByRackId: build.mutation<
-      PutApiV1WarehouseRackByRackIdApiResponse,
-      PutApiV1WarehouseRackByRackIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
-        method: "PUT",
-        body: queryArg.createWarehouseLocationRackRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1WarehouseRackByRackId: build.mutation<
-      DeleteApiV1WarehouseRackByRackIdApiResponse,
-      DeleteApiV1WarehouseRackByRackIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseRack: build.query<
-      GetApiV1WarehouseRackApiResponse,
-      GetApiV1WarehouseRackApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1WarehouseRackByDepartment: build.query<
-      GetApiV1WarehouseRackByDepartmentApiResponse,
-      GetApiV1WarehouseRackByDepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack/by-department`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    postApiV1WarehouseByRackIdShelf: build.mutation<
-      PostApiV1WarehouseByRackIdShelfApiResponse,
-      PostApiV1WarehouseByRackIdShelfApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.rackId}/shelf`,
-        method: "POST",
-        body: queryArg.createWarehouseLocationShelfRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseShelfByShelfId: build.query<
-      GetApiV1WarehouseShelfByShelfIdApiResponse,
-      GetApiV1WarehouseShelfByShelfIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WarehouseShelfByShelfId: build.mutation<
-      PutApiV1WarehouseShelfByShelfIdApiResponse,
-      PutApiV1WarehouseShelfByShelfIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
-        method: "PUT",
-        body: queryArg.createWarehouseLocationShelfRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    deleteApiV1WarehouseShelfByShelfId: build.mutation<
-      DeleteApiV1WarehouseShelfByShelfIdApiResponse,
-      DeleteApiV1WarehouseShelfByShelfIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseShelf: build.query<
-      GetApiV1WarehouseShelfApiResponse,
-      GetApiV1WarehouseShelfApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/shelf`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseShelfByDepartment: build.query<
-      GetApiV1WarehouseShelfByDepartmentApiResponse,
-      GetApiV1WarehouseShelfByDepartmentApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/shelf/by-department`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialId: build.query<
-      GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiResponse,
-      GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-material/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchId:
-      build.query<
-        GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiResponse,
-        GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiArg
+        invalidatesTags: ["Auth"],
+      }),
+      postApiV1AuthChangePassword: build.mutation<
+        PostApiV1AuthChangePasswordApiResponse,
+        PostApiV1AuthChangePasswordApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-materialbatch/${queryArg.materialBatchId}`,
+          url: `/api/v1/auth/change-password`,
+          method: "POST",
+          body: queryArg.changePasswordRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Auth"],
+      }),
+      postApiV1AuthForgotPassword: build.mutation<
+        PostApiV1AuthForgotPasswordApiResponse,
+        PostApiV1AuthForgotPasswordApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/auth/forgot-password`,
+          method: "POST",
+          body: queryArg.forgotPasswordRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Auth"],
+      }),
+      postApiV1AuthUserResetPassword: build.mutation<
+        PostApiV1AuthUserResetPasswordApiResponse,
+        PostApiV1AuthUserResetPasswordApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/auth/user-reset-password`,
+          method: "POST",
+          body: queryArg.userPasswordChangeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Auth"],
+      }),
+      postApiV1Bom: build.mutation<PostApiV1BomApiResponse, PostApiV1BomApiArg>(
+        {
+          query: (queryArg) => ({
+            url: `/api/v1/bom`,
+            method: "POST",
+            body: queryArg.createBillOfMaterialRequest,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["BillOfMaterial"],
+        },
+      ),
+      getApiV1Bom: build.query<GetApiV1BomApiResponse, GetApiV1BomApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/bom`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
@@ -8179,386 +630,8704 @@ const injectedRtkApi = api.injectEndpoints({
             searchQuery: queryArg.searchQuery,
           },
         }),
+        providesTags: ["BillOfMaterial"],
       }),
-    getApiV1WarehouseRackByRackIdShelves: build.query<
-      GetApiV1WarehouseRackByRackIdShelvesApiResponse,
-      GetApiV1WarehouseRackByRackIdShelvesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/rack/${queryArg.rackId}/shelves`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseByWarehouseIdShelves: build.query<
-      GetApiV1WarehouseByWarehouseIdShelvesApiResponse,
-      GetApiV1WarehouseByWarehouseIdShelvesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseByWarehouseIdArrivalLocation: build.query<
-      GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse,
-      GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/${queryArg.warehouseId}/arrival-location`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseDistributedRequisitionMaterials: build.query<
-      GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse,
-      GetApiV1WarehouseDistributedRequisitionMaterialsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/distributed-requisition-materials`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseFinishedGoodsDetails: build.query<
-      GetApiV1WarehouseFinishedGoodsDetailsApiResponse,
-      GetApiV1WarehouseFinishedGoodsDetailsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/finished-goods-details`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseStockTransferDetails: build.query<
-      GetApiV1WarehouseStockTransferDetailsApiResponse,
-      GetApiV1WarehouseStockTransferDetailsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/stock-transfer-details`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          kind: queryArg.kind,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseDistributedMaterialById: build.query<
-      GetApiV1WarehouseDistributedMaterialByIdApiResponse,
-      GetApiV1WarehouseDistributedMaterialByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/distributed-material/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1WarehouseArrivalLocation: build.mutation<
-      PostApiV1WarehouseArrivalLocationApiResponse,
-      PostApiV1WarehouseArrivalLocationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/arrival-location`,
-        method: "POST",
-        body: queryArg.createArrivalLocationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WarehouseArrivalLocation: build.mutation<
-      PutApiV1WarehouseArrivalLocationApiResponse,
-      PutApiV1WarehouseArrivalLocationApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/arrival-location`,
-        method: "PUT",
-        body: queryArg.updateArrivalLocationRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1WarehouseConfirmArrivalByDistributedMaterialId: build.mutation<
-      PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiResponse,
-      PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/confirm-arrival/${queryArg.distributedMaterialId}`,
-        method: "POST",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    postApiV1WarehouseChecklist: build.mutation<
-      PostApiV1WarehouseChecklistApiResponse,
-      PostApiV1WarehouseChecklistApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/checklist`,
-        method: "POST",
-        body: queryArg.createChecklistRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseChecklistById: build.query<
-      GetApiV1WarehouseChecklistByIdApiResponse,
-      GetApiV1WarehouseChecklistByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/checklist/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatch:
-      build.query<
-        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiResponse,
-        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiArg
+      getApiV1BomByBillOfMaterialId: build.query<
+        GetApiV1BomByBillOfMaterialIdApiResponse,
+        GetApiV1BomByBillOfMaterialIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/material-batch`,
+          url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        providesTags: ["BillOfMaterial"],
       }),
-    postApiV1WarehouseDistributedMaterialMaterialBatch: build.mutation<
-      PostApiV1WarehouseDistributedMaterialMaterialBatchApiResponse,
-      PostApiV1WarehouseDistributedMaterialMaterialBatchApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/distributed-material/material-batch`,
-        method: "POST",
-        body: queryArg.body,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklist:
-      build.query<
-        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiResponse,
-        GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiArg
+      putApiV1BomByBillOfMaterialId: build.mutation<
+        PutApiV1BomByBillOfMaterialIdApiResponse,
+        PutApiV1BomByBillOfMaterialIdApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/checklist`,
+          url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
+          method: "PUT",
+          body: queryArg.createProductBillOfMaterialRequest,
           headers: {
             Module: queryArg["module"],
             SubModule: queryArg.subModule,
           },
         }),
+        invalidatesTags: ["BillOfMaterial"],
       }),
-    postApiV1WarehouseGrn: build.mutation<
-      PostApiV1WarehouseGrnApiResponse,
-      PostApiV1WarehouseGrnApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/grn`,
-        method: "POST",
-        body: queryArg.createGrnRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
+      deleteApiV1BomByBillOfMaterialId: build.mutation<
+        DeleteApiV1BomByBillOfMaterialIdApiResponse,
+        DeleteApiV1BomByBillOfMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/bom/${queryArg.billOfMaterialId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["BillOfMaterial"],
+      }),
+      postApiV1Collection: build.mutation<
+        PostApiV1CollectionApiResponse,
+        PostApiV1CollectionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      getApiV1CollectionByItemType: build.query<
+        GetApiV1CollectionByItemTypeApiResponse,
+        GetApiV1CollectionByItemTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/${queryArg.itemType}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Collection"],
+      }),
+      postApiV1CollectionByItemType: build.mutation<
+        PostApiV1CollectionByItemTypeApiResponse,
+        PostApiV1CollectionByItemTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/${queryArg.itemType}`,
+          method: "POST",
+          body: queryArg.createItemRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      getApiV1CollectionItemTypes: build.query<
+        GetApiV1CollectionItemTypesApiResponse,
+        GetApiV1CollectionItemTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/item-types`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Collection"],
+      }),
+      putApiV1CollectionByItemTypeAndItemId: build.mutation<
+        PutApiV1CollectionByItemTypeAndItemIdApiResponse,
+        PutApiV1CollectionByItemTypeAndItemIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/${queryArg.itemType}/${queryArg.itemId}`,
+          method: "PUT",
+          body: queryArg.createItemRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      deleteApiV1CollectionByItemTypeAndItemId: build.mutation<
+        DeleteApiV1CollectionByItemTypeAndItemIdApiResponse,
+        DeleteApiV1CollectionByItemTypeAndItemIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/${queryArg.itemType}/${queryArg.itemId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      getApiV1CollectionPackageStyles: build.query<
+        GetApiV1CollectionPackageStylesApiResponse,
+        GetApiV1CollectionPackageStylesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/package-styles`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Collection"],
+      }),
+      postApiV1CollectionUom: build.mutation<
+        PostApiV1CollectionUomApiResponse,
+        PostApiV1CollectionUomApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/uom`,
+          method: "POST",
+          body: queryArg.createUnitOfMeasure,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      postApiV1CollectionUomPaginated: build.mutation<
+        PostApiV1CollectionUomPaginatedApiResponse,
+        PostApiV1CollectionUomPaginatedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/uom/paginated`,
+          method: "POST",
+          body: queryArg.filterUnitOfMeasure,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      postApiV1CollectionUomByUomId: build.mutation<
+        PostApiV1CollectionUomByUomIdApiResponse,
+        PostApiV1CollectionUomByUomIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/uom/${queryArg.uomId}`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      putApiV1CollectionUomByUomId: build.mutation<
+        PutApiV1CollectionUomByUomIdApiResponse,
+        PutApiV1CollectionUomByUomIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/uom/${queryArg.uomId}`,
+          method: "PUT",
+          body: queryArg.createUnitOfMeasure,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      deleteApiV1CollectionUomByUomId: build.mutation<
+        DeleteApiV1CollectionUomByUomIdApiResponse,
+        DeleteApiV1CollectionUomByUomIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/collection/uom/${queryArg.uomId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Collection"],
+      }),
+      postApiV1WorkingDays: build.mutation<
+        PostApiV1WorkingDaysApiResponse,
+        PostApiV1WorkingDaysApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/working-days`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["CompanyWorkingDays"],
+      }),
+      getApiV1WorkingDays: build.query<
+        GetApiV1WorkingDaysApiResponse,
+        GetApiV1WorkingDaysApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/working-days`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["CompanyWorkingDays"],
+      }),
+      postApiV1Configuration: build.mutation<
+        PostApiV1ConfigurationApiResponse,
+        PostApiV1ConfigurationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration`,
+          method: "POST",
+          body: queryArg.createConfigurationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Configuration"],
+      }),
+      getApiV1Configuration: build.query<
+        GetApiV1ConfigurationApiResponse,
+        GetApiV1ConfigurationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Configuration"],
+      }),
+      getApiV1ConfigurationByConfigurationId: build.query<
+        GetApiV1ConfigurationByConfigurationIdApiResponse,
+        GetApiV1ConfigurationByConfigurationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/${queryArg.configurationId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Configuration"],
+      }),
+      putApiV1ConfigurationByConfigurationId: build.mutation<
+        PutApiV1ConfigurationByConfigurationIdApiResponse,
+        PutApiV1ConfigurationByConfigurationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/${queryArg.configurationId}`,
+          method: "PUT",
+          body: queryArg.createConfigurationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Configuration"],
+      }),
+      deleteApiV1ConfigurationByConfigurationId: build.mutation<
+        DeleteApiV1ConfigurationByConfigurationIdApiResponse,
+        DeleteApiV1ConfigurationByConfigurationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/${queryArg.configurationId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Configuration"],
+      }),
+      getApiV1ConfigurationByModelTypeByModelType: build.query<
+        GetApiV1ConfigurationByModelTypeByModelTypeApiResponse,
+        GetApiV1ConfigurationByModelTypeByModelTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/by-model-type/${queryArg.modelType}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Configuration"],
+      }),
+      getApiV1ConfigurationNamingTypes: build.query<
+        GetApiV1ConfigurationNamingTypesApiResponse,
+        GetApiV1ConfigurationNamingTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/naming-types`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Configuration"],
+      }),
+      getApiV1ConfigurationByModelTypeCount: build.query<
+        GetApiV1ConfigurationByModelTypeCountApiResponse,
+        GetApiV1ConfigurationByModelTypeCountApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/configuration/${queryArg.modelType}/count`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            prefix: queryArg.prefix,
+          },
+        }),
+        providesTags: ["Configuration"],
+      }),
+      getApiV1Countries: build.query<
+        GetApiV1CountriesApiResponse,
+        GetApiV1CountriesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/countries`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Country"],
+      }),
+      postApiV1Customers: build.mutation<
+        PostApiV1CustomersApiResponse,
+        PostApiV1CustomersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/customers`,
+          method: "POST",
+          body: queryArg.createCustomerRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Customer"],
+      }),
+      getApiV1Customers: build.query<
+        GetApiV1CustomersApiResponse,
+        GetApiV1CustomersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/customers`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Customer"],
+      }),
+      getApiV1CustomersById: build.query<
+        GetApiV1CustomersByIdApiResponse,
+        GetApiV1CustomersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/customers/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Customer"],
+      }),
+      putApiV1CustomersById: build.mutation<
+        PutApiV1CustomersByIdApiResponse,
+        PutApiV1CustomersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/customers/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createCustomerRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Customer"],
+      }),
+      deleteApiV1CustomersById: build.mutation<
+        DeleteApiV1CustomersByIdApiResponse,
+        DeleteApiV1CustomersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/customers/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Customer"],
+      }),
+      postApiV1DamagedGoods: build.mutation<
+        PostApiV1DamagedGoodsApiResponse,
+        PostApiV1DamagedGoodsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/damaged-goods`,
+          method: "POST",
+          body: queryArg.createDamagedStockRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["DamagedStocks"],
+      }),
+      getApiV1DamagedGoods: build.query<
+        GetApiV1DamagedGoodsApiResponse,
+        GetApiV1DamagedGoodsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/damaged-goods`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["DamagedStocks"],
+      }),
+      getApiV1DamagedGoodsById: build.query<
+        GetApiV1DamagedGoodsByIdApiResponse,
+        GetApiV1DamagedGoodsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/damaged-goods/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["DamagedStocks"],
+      }),
+      putApiV1DamagedGoodsById: build.mutation<
+        PutApiV1DamagedGoodsByIdApiResponse,
+        PutApiV1DamagedGoodsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/damaged-goods/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createDamagedStockRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["DamagedStocks"],
+      }),
+      deleteApiV1DamagedGoodsById: build.mutation<
+        DeleteApiV1DamagedGoodsByIdApiResponse,
+        DeleteApiV1DamagedGoodsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/damaged-goods/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["DamagedStocks"],
+      }),
+      postApiV1Department: build.mutation<
+        PostApiV1DepartmentApiResponse,
+        PostApiV1DepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/department`,
+          method: "POST",
+          body: queryArg.createDepartmentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Department"],
+      }),
+      getApiV1Department: build.query<
+        GetApiV1DepartmentApiResponse,
+        GetApiV1DepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/department`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+          },
+        }),
+        providesTags: ["Department"],
+      }),
+      getApiV1DepartmentByDepartmentId: build.query<
+        GetApiV1DepartmentByDepartmentIdApiResponse,
+        GetApiV1DepartmentByDepartmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/department/${queryArg.departmentId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Department"],
+      }),
+      putApiV1DepartmentByDepartmentId: build.mutation<
+        PutApiV1DepartmentByDepartmentIdApiResponse,
+        PutApiV1DepartmentByDepartmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/department/${queryArg.departmentId}`,
+          method: "PUT",
+          body: queryArg.createDepartmentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Department"],
+      }),
+      deleteApiV1DepartmentByDepartmentId: build.mutation<
+        DeleteApiV1DepartmentByDepartmentIdApiResponse,
+        DeleteApiV1DepartmentByDepartmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/department/${queryArg.departmentId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Department"],
+      }),
+      postApiV1Designation: build.mutation<
+        PostApiV1DesignationApiResponse,
+        PostApiV1DesignationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation`,
+          method: "POST",
+          body: queryArg.createDesignationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Designation"],
+      }),
+      getApiV1Designation: build.query<
+        GetApiV1DesignationApiResponse,
+        GetApiV1DesignationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Designation"],
+      }),
+      getApiV1DesignationById: build.query<
+        GetApiV1DesignationByIdApiResponse,
+        GetApiV1DesignationByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Designation"],
+      }),
+      putApiV1DesignationById: build.mutation<
+        PutApiV1DesignationByIdApiResponse,
+        PutApiV1DesignationByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createDesignationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Designation"],
+      }),
+      deleteApiV1DesignationById: build.mutation<
+        DeleteApiV1DesignationByIdApiResponse,
+        DeleteApiV1DesignationByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Designation"],
+      }),
+      getApiV1DesignationDepartmentById: build.query<
+        GetApiV1DesignationDepartmentByIdApiResponse,
+        GetApiV1DesignationDepartmentByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/designation/department/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Designation"],
+      }),
+      postApiV1EmployeeRegister: build.mutation<
+        PostApiV1EmployeeRegisterApiResponse,
+        PostApiV1EmployeeRegisterApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/register`,
+          method: "POST",
+          body: queryArg.onboardEmployeeDto,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      postApiV1Employee: build.mutation<
+        PostApiV1EmployeeApiResponse,
+        PostApiV1EmployeeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee`,
+          method: "POST",
+          body: queryArg.createEmployeeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      getApiV1Employee: build.query<
+        GetApiV1EmployeeApiResponse,
+        GetApiV1EmployeeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            status: queryArg.status,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            designation: queryArg.designation,
+            department: queryArg.department,
+            isNotUser: queryArg.isNotUser,
+          },
+        }),
+        providesTags: ["Employee"],
+      }),
+      postApiV1EmployeeUser: build.mutation<
+        PostApiV1EmployeeUserApiResponse,
+        PostApiV1EmployeeUserApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/user`,
+          method: "POST",
+          body: queryArg.employeeUserDto,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      postApiV1EmployeeAvatarById: build.mutation<
+        PostApiV1EmployeeAvatarByIdApiResponse,
+        PostApiV1EmployeeAvatarByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/avatar/${queryArg.id}`,
+          method: "POST",
+          body: queryArg.uploadFileRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      getApiV1EmployeeDepartmentsById: build.query<
+        GetApiV1EmployeeDepartmentsByIdApiResponse,
+        GetApiV1EmployeeDepartmentsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/departments/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Employee"],
+      }),
+      getApiV1EmployeeByShiftScheduleIdAvailable: build.query<
+        GetApiV1EmployeeByShiftScheduleIdAvailableApiResponse,
+        GetApiV1EmployeeByShiftScheduleIdAvailableApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.shiftScheduleId}/available`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            date: queryArg.date,
+          },
+        }),
+        providesTags: ["Employee"],
+      }),
+      getApiV1EmployeeById: build.query<
+        GetApiV1EmployeeByIdApiResponse,
+        GetApiV1EmployeeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Employee"],
+      }),
+      putApiV1EmployeeById: build.mutation<
+        PutApiV1EmployeeByIdApiResponse,
+        PutApiV1EmployeeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateEmployeeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      deleteApiV1EmployeeById: build.mutation<
+        DeleteApiV1EmployeeByIdApiResponse,
+        DeleteApiV1EmployeeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      putApiV1EmployeeByIdAssign: build.mutation<
+        PutApiV1EmployeeByIdAssignApiResponse,
+        PutApiV1EmployeeByIdAssignApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}/assign`,
+          method: "PUT",
+          body: queryArg.assignEmployeeDto,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      putApiV1EmployeeByIdChangeType: build.mutation<
+        PutApiV1EmployeeByIdChangeTypeApiResponse,
+        PutApiV1EmployeeByIdChangeTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}/change-type`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            employeeType: queryArg.employeeType,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      putApiV1EmployeeByIdStatus: build.mutation<
+        PutApiV1EmployeeByIdStatusApiResponse,
+        PutApiV1EmployeeByIdStatusApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/employee/${queryArg.id}/status`,
+          method: "PUT",
+          body: queryArg.updateEmployeeStatus,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Employee"],
+      }),
+      postApiV1FileByModelTypeAndModelIdReference: build.mutation<
+        PostApiV1FileByModelTypeAndModelIdReferenceApiResponse,
+        PostApiV1FileByModelTypeAndModelIdReferenceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["File"],
+      }),
+      getApiV1FileByModelTypeAndModelIdReference: build.query<
+        GetApiV1FileByModelTypeAndModelIdReferenceApiResponse,
+        GetApiV1FileByModelTypeAndModelIdReferenceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}/${queryArg.reference}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["File"],
+      }),
+      postApiV1FileByModelTypeAndModelId: build.mutation<
+        PostApiV1FileByModelTypeAndModelIdApiResponse,
+        PostApiV1FileByModelTypeAndModelIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelType}/${queryArg.modelId}`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["File"],
+      }),
+      deleteApiV1FileByModelId: build.mutation<
+        DeleteApiV1FileByModelIdApiResponse,
+        DeleteApiV1FileByModelIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["File"],
+      }),
+      deleteApiV1FileByModelIdAndReference: build.mutation<
+        DeleteApiV1FileByModelIdAndReferenceApiResponse,
+        DeleteApiV1FileByModelIdAndReferenceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelId}/${queryArg.reference}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["File"],
+      }),
+      getApiV1FileByModelTypeAndReference: build.query<
+        GetApiV1FileByModelTypeAndReferenceApiResponse,
+        GetApiV1FileByModelTypeAndReferenceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/file/${queryArg.modelType}/${queryArg.reference}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["File"],
+      }),
+      postApiV1Form: build.mutation<
+        PostApiV1FormApiResponse,
+        PostApiV1FormApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form`,
+          method: "POST",
+          body: queryArg.createFormRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      getApiV1Form: build.query<GetApiV1FormApiResponse, GetApiV1FormApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/form`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      getApiV1FormByFormId: build.query<
+        GetApiV1FormByFormIdApiResponse,
+        GetApiV1FormByFormIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/${queryArg.formId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      putApiV1FormByFormId: build.mutation<
+        PutApiV1FormByFormIdApiResponse,
+        PutApiV1FormByFormIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/${queryArg.formId}`,
+          method: "PUT",
+          body: queryArg.createFormRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      deleteApiV1FormByFormId: build.mutation<
+        DeleteApiV1FormByFormIdApiResponse,
+        DeleteApiV1FormByFormIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/${queryArg.formId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      getApiV1FormSection: build.query<
+        GetApiV1FormSectionApiResponse,
+        GetApiV1FormSectionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/section`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      postApiV1FormResponses: build.mutation<
+        PostApiV1FormResponsesApiResponse,
+        PostApiV1FormResponsesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses`,
+          method: "POST",
+          body: queryArg.createResponseRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      getApiV1FormResponsesByFormResponseId: build.query<
+        GetApiV1FormResponsesByFormResponseIdApiResponse,
+        GetApiV1FormResponsesByFormResponseIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses/${queryArg.formResponseId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      postApiV1FormQuestion: build.mutation<
+        PostApiV1FormQuestionApiResponse,
+        PostApiV1FormQuestionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/question`,
+          method: "POST",
+          body: queryArg.createQuestionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      getApiV1FormQuestion: build.query<
+        GetApiV1FormQuestionApiResponse,
+        GetApiV1FormQuestionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/question`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      getApiV1FormQuestionByQuestionId: build.query<
+        GetApiV1FormQuestionByQuestionIdApiResponse,
+        GetApiV1FormQuestionByQuestionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/question/${queryArg.questionId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      putApiV1FormQuestionByQuestionId: build.mutation<
+        PutApiV1FormQuestionByQuestionIdApiResponse,
+        PutApiV1FormQuestionByQuestionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/question/${queryArg.questionId}`,
+          method: "PUT",
+          body: queryArg.createQuestionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      deleteApiV1FormQuestionByQuestionId: build.mutation<
+        DeleteApiV1FormQuestionByQuestionIdApiResponse,
+        DeleteApiV1FormQuestionByQuestionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/question/${queryArg.questionId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      postApiV1FormGenerateCertificateByMaterialBatchId: build.mutation<
+        PostApiV1FormGenerateCertificateByMaterialBatchIdApiResponse,
+        PostApiV1FormGenerateCertificateByMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/generate-certificate/${queryArg.materialBatchId}`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Form"],
+      }),
+      postApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepId:
+        build.mutation<
+          PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiResponse,
+          PostApiV1FormGenerateCertificateProductByBatchManufacturingRecordIdAndProductionActivityStepIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/form/generate-certificate/product/${queryArg.batchManufacturingRecordId}/${queryArg.productionActivityStepId}`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Form"],
+        }),
+      getApiV1FormResponsesMaterialBatchByMaterialBatchId: build.query<
+        GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiResponse,
+        GetApiV1FormResponsesMaterialBatchByMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses/material-batch/${queryArg.materialBatchId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      getApiV1FormResponsesBmrByBatchManufacturingRecordId: build.query<
+        GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiResponse,
+        GetApiV1FormResponsesBmrByBatchManufacturingRecordIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/responses/bmr/${queryArg.batchManufacturingRecordId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      getApiV1FormResponsesMaterialSpecificationByMaterialSpecificationId:
+        build.query<
+          GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiResponse,
+          GetApiV1FormResponsesMaterialSpecificationByMaterialSpecificationIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/form/responses/material-specification/${queryArg.materialSpecificationId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Form"],
+        }),
+      getApiV1FormResponsesProductSpecificationByProductSpecificationId:
+        build.query<
+          GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiResponse,
+          GetApiV1FormResponsesProductSpecificationByProductSpecificationIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/form/responses/product-specification/${queryArg.productSpecificationId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Form"],
+        }),
+      getApiV1FormWithResponsesMaterialBatchByMaterialBatchId: build.query<
+        GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiResponse,
+        GetApiV1FormWithResponsesMaterialBatchByMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/with-responses/material-batch/${queryArg.materialBatchId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      getApiV1FormWithResponsesBmrByBatchManufacturingRecordId: build.query<
+        GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiResponse,
+        GetApiV1FormWithResponsesBmrByBatchManufacturingRecordIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/form/with-responses/bmr/${queryArg.batchManufacturingRecordId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Form"],
+      }),
+      postApiV1Holidays: build.mutation<
+        PostApiV1HolidaysApiResponse,
+        PostApiV1HolidaysApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/holidays`,
+          method: "POST",
+          body: queryArg.createHolidayRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Holiday"],
+      }),
+      getApiV1Holidays: build.query<
+        GetApiV1HolidaysApiResponse,
+        GetApiV1HolidaysApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/holidays`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Holiday"],
+      }),
+      getApiV1HolidaysById: build.query<
+        GetApiV1HolidaysByIdApiResponse,
+        GetApiV1HolidaysByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/holidays/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Holiday"],
+      }),
+      putApiV1HolidaysById: build.mutation<
+        PutApiV1HolidaysByIdApiResponse,
+        PutApiV1HolidaysByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/holidays/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createHolidayRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Holiday"],
+      }),
+      deleteApiV1HolidaysById: build.mutation<
+        DeleteApiV1HolidaysByIdApiResponse,
+        DeleteApiV1HolidaysByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/holidays/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Holiday"],
+      }),
+      postApiV1ProcurementInventory: build.mutation<
+        PostApiV1ProcurementInventoryApiResponse,
+        PostApiV1ProcurementInventoryApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory`,
+          method: "POST",
+          body: queryArg.createInventoryPurchaseRequisition,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventory: build.query<
+        GetApiV1ProcurementInventoryApiResponse,
+        GetApiV1ProcurementInventoryApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      putApiV1ProcurementInventoryById: build.mutation<
+        PutApiV1ProcurementInventoryByIdApiResponse,
+        PutApiV1ProcurementInventoryByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createInventoryPurchaseRequisition,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      deleteApiV1ProcurementInventoryById: build.mutation<
+        DeleteApiV1ProcurementInventoryByIdApiResponse,
+        DeleteApiV1ProcurementInventoryByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryById: build.query<
+        GetApiV1ProcurementInventoryByIdApiResponse,
+        GetApiV1ProcurementInventoryByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventorySource: build.mutation<
+        PostApiV1ProcurementInventorySourceApiResponse,
+        PostApiV1ProcurementInventorySourceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/source`,
+          method: "POST",
+          body: queryArg.createSourceInventoryRequisition,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMarket: build.mutation<
+        PostApiV1ProcurementInventoryMarketApiResponse,
+        PostApiV1ProcurementInventoryMarketApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/market`,
+          method: "POST",
+          body: queryArg.createMarketRequisition,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryMarket: build.query<
+        GetApiV1ProcurementInventoryMarketApiResponse,
+        GetApiV1ProcurementInventoryMarketApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/market`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryPriceComparison: build.query<
+        GetApiV1ProcurementInventoryPriceComparisonApiResponse,
+        GetApiV1ProcurementInventoryPriceComparisonApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/price-comparison`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            source: queryArg.source,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMemoOpenMarket: build.mutation<
+        PostApiV1ProcurementInventoryMemoOpenMarketApiResponse,
+        PostApiV1ProcurementInventoryMemoOpenMarketApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo/open-market`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMemoTrustedVendor: build.mutation<
+        PostApiV1ProcurementInventoryMemoTrustedVendorApiResponse,
+        PostApiV1ProcurementInventoryMemoTrustedVendorApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo/trusted-vendor`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryVendorByVendorIdSendQuotation:
+        build.mutation<
+          PostApiV1ProcurementInventoryVendorByVendorIdSendQuotationApiResponse,
+          PostApiV1ProcurementInventoryVendorByVendorIdSendQuotationApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/inventory/vendor/${queryArg.vendorId}/send-quotation`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["InventoryProcurement"],
+        }),
+      getApiV1ProcurementInventoryVendorQuotations: build.query<
+        GetApiV1ProcurementInventoryVendorQuotationsApiResponse,
+        GetApiV1ProcurementInventoryVendorQuotationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/vendor/quotations`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            received: queryArg.received,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryVendorQuotationByVendorQuotationId:
+        build.query<
+          GetApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdApiResponse,
+          GetApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/inventory/vendor/quotation/${queryArg.vendorQuotationId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["InventoryProcurement"],
+        }),
+      postApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceive:
+        build.mutation<
+          PostApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceiveApiResponse,
+          PostApiV1ProcurementInventoryVendorQuotationByVendorQuotationIdReceiveApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/inventory/vendor/quotation/${queryArg.vendorQuotationId}/receive`,
+            method: "POST",
+            body: queryArg.body,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["InventoryProcurement"],
+        }),
+      getApiV1ProcurementInventoryMarketVendors: build.query<
+        GetApiV1ProcurementInventoryMarketVendorsApiResponse,
+        GetApiV1ProcurementInventoryMarketVendorsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/market/vendors`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            complete: queryArg.complete,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMarketVendors: build.mutation<
+        PostApiV1ProcurementInventoryMarketVendorsApiResponse,
+        PostApiV1ProcurementInventoryMarketVendorsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/market/vendors`,
+          method: "POST",
+          body: queryArg.createMarketRequisitionVendor,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirm:
+        build.mutation<
+          PostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirmApiResponse,
+          PostApiV1ProcurementInventoryMarketVendorsByMarketRequisitionVendorIdConfirmApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/inventory/market/vendors/${queryArg.marketRequisitionVendorId}/confirm`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["InventoryProcurement"],
+        }),
+      getApiV1ProcurementInventoryMemo: build.query<
+        GetApiV1ProcurementInventoryMemoApiResponse,
+        GetApiV1ProcurementInventoryMemoApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryMemoById: build.query<
+        GetApiV1ProcurementInventoryMemoByIdApiResponse,
+        GetApiV1ProcurementInventoryMemoByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryMemoItemByIdMarkPaid: build.mutation<
+        PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiResponse,
+        PostApiV1ProcurementInventoryMemoItemByIdMarkPaidApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo-item/${queryArg.id}/mark-paid`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryPurchasedItems: build.query<
+        GetApiV1ProcurementInventoryPurchasedItemsApiResponse,
+        GetApiV1ProcurementInventoryPurchasedItemsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/purchased-items`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            status: queryArg.status,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryItemsByIdApprove: build.mutation<
+        PostApiV1ProcurementInventoryItemsByIdApproveApiResponse,
+        PostApiV1ProcurementInventoryItemsByIdApproveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/items/${queryArg.id}/approve`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      postApiV1ProcurementInventoryItemsByIdReject: build.mutation<
+        PostApiV1ProcurementInventoryItemsByIdRejectApiResponse,
+        PostApiV1ProcurementInventoryItemsByIdRejectApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/items/${queryArg.id}/reject`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["InventoryProcurement"],
+      }),
+      getApiV1ProcurementInventoryMemoCodeGenerate: build.query<
+        GetApiV1ProcurementInventoryMemoCodeGenerateApiResponse,
+        GetApiV1ProcurementInventoryMemoCodeGenerateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/inventory/memo/code/generate`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["InventoryProcurement"],
+      }),
+      postApiV1Items: build.mutation<
+        PostApiV1ItemsApiResponse,
+        PostApiV1ItemsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items`,
+          method: "POST",
+          body: queryArg.createItemsRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Item"],
+      }),
+      getApiV1Items: build.query<GetApiV1ItemsApiResponse, GetApiV1ItemsApiArg>(
+        {
+          query: (queryArg) => ({
+            url: `/api/v1/items`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              store: queryArg.store,
+              page: queryArg.page,
+              pageSize: queryArg.pageSize,
+              searchQuery: queryArg.searchQuery,
+            },
+          }),
+          providesTags: ["Item"],
         },
+      ),
+      getApiV1ItemsById: build.query<
+        GetApiV1ItemsByIdApiResponse,
+        GetApiV1ItemsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Item"],
+      }),
+      putApiV1ItemsById: build.mutation<
+        PutApiV1ItemsByIdApiResponse,
+        PutApiV1ItemsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createItemsRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Item"],
+      }),
+      deleteApiV1ItemsById: build.mutation<
+        DeleteApiV1ItemsByIdApiResponse,
+        DeleteApiV1ItemsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Item"],
+      }),
+      getApiV1ItemInventoryTransactionsByMemoId: build.query<
+        GetApiV1ItemInventoryTransactionsByMemoIdApiResponse,
+        GetApiV1ItemInventoryTransactionsByMemoIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/item-inventory-transactions/${queryArg.memoId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ItemInventoryTransaction"],
+      }),
+      postApiV1ItemsStockRequisitions: build.mutation<
+        PostApiV1ItemsStockRequisitionsApiResponse,
+        PostApiV1ItemsStockRequisitionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions`,
+          method: "POST",
+          body: queryArg.createItemStockRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ItemStockRequisition"],
+      }),
+      getApiV1ItemsStockRequisitions: build.query<
+        GetApiV1ItemsStockRequisitionsApiResponse,
+        GetApiV1ItemsStockRequisitionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ItemStockRequisition"],
+      }),
+      deleteApiV1ItemsStockRequisitions: build.mutation<
+        DeleteApiV1ItemsStockRequisitionsApiResponse,
+        DeleteApiV1ItemsStockRequisitionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ItemStockRequisition"],
+      }),
+      getApiV1ItemsStockRequisitionsById: build.query<
+        GetApiV1ItemsStockRequisitionsByIdApiResponse,
+        GetApiV1ItemsStockRequisitionsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ItemStockRequisition"],
+      }),
+      putApiV1ItemsStockRequisitionsById: build.mutation<
+        PutApiV1ItemsStockRequisitionsByIdApiResponse,
+        PutApiV1ItemsStockRequisitionsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/items/stock-requisitions/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createItemStockRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ItemStockRequisition"],
+      }),
+      postApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisition:
+        build.mutation<
+          PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiResponse,
+          PostApiV1ItemsStockRequisitionsByStockRequisitionIdIssueStockAgainstRequisitionApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/issue-stock-against-requisition`,
+            method: "POST",
+            body: queryArg.issueStockAgainstRequisitionRequest,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ItemStockRequisition"],
+        }),
+      postApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisition:
+        build.mutation<
+          PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiResponse,
+          PostApiV1ItemsStockRequisitionsByStockRequisitionIdPartialIssueStockAgainstRequisitionApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/items/stock-requisitions/${queryArg.stockRequisitionId}/partial-issue-stock-against-requisition`,
+            method: "POST",
+            body: queryArg.issueStockAgainstRequisitionRequest,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ItemStockRequisition"],
+        }),
+      postApiV1JobRequests: build.mutation<
+        PostApiV1JobRequestsApiResponse,
+        PostApiV1JobRequestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/job-requests`,
+          method: "POST",
+          body: queryArg.createJobRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["JobRequest"],
+      }),
+      getApiV1JobRequests: build.query<
+        GetApiV1JobRequestsApiResponse,
+        GetApiV1JobRequestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/job-requests`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["JobRequest"],
+      }),
+      postApiV1LeaveEntitlement: build.mutation<
+        PostApiV1LeaveEntitlementApiResponse,
+        PostApiV1LeaveEntitlementApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-entitlement`,
+          method: "POST",
+          body: queryArg.leaveEntitlementDto,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveEntitlement"],
+      }),
+      getApiV1LeaveEntitlement: build.query<
+        GetApiV1LeaveEntitlementApiResponse,
+        GetApiV1LeaveEntitlementApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-entitlement`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["LeaveEntitlement"],
+      }),
+      getApiV1LeaveEntitlementById: build.query<
+        GetApiV1LeaveEntitlementByIdApiResponse,
+        GetApiV1LeaveEntitlementByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-entitlement/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["LeaveEntitlement"],
+      }),
+      putApiV1LeaveEntitlementById: build.mutation<
+        PutApiV1LeaveEntitlementByIdApiResponse,
+        PutApiV1LeaveEntitlementByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-entitlement/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.leaveEntitlementDto,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveEntitlement"],
+      }),
+      deleteApiV1LeaveEntitlementById: build.mutation<
+        DeleteApiV1LeaveEntitlementByIdApiResponse,
+        DeleteApiV1LeaveEntitlementByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-entitlement/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveEntitlement"],
+      }),
+      postApiV1LeaveRequest: build.mutation<
+        PostApiV1LeaveRequestApiResponse,
+        PostApiV1LeaveRequestApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request`,
+          method: "POST",
+          body: queryArg.createLeaveRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveRequest"],
+      }),
+      getApiV1LeaveRequest: build.query<
+        GetApiV1LeaveRequestApiResponse,
+        GetApiV1LeaveRequestApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["LeaveRequest"],
+      }),
+      getApiV1LeaveRequestById: build.query<
+        GetApiV1LeaveRequestByIdApiResponse,
+        GetApiV1LeaveRequestByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["LeaveRequest"],
+      }),
+      putApiV1LeaveRequestById: build.mutation<
+        PutApiV1LeaveRequestByIdApiResponse,
+        PutApiV1LeaveRequestByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createLeaveRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveRequest"],
+      }),
+      deleteApiV1LeaveRequestById: build.mutation<
+        DeleteApiV1LeaveRequestByIdApiResponse,
+        DeleteApiV1LeaveRequestByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveRequest"],
+      }),
+      putApiV1LeaveRequestRecall: build.mutation<
+        PutApiV1LeaveRequestRecallApiResponse,
+        PutApiV1LeaveRequestRecallApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request/recall`,
+          method: "PUT",
+          body: queryArg.createLeaveRecallRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveRequest"],
+      }),
+      putApiV1LeaveRequestByLeaveRequestIdReapply: build.mutation<
+        PutApiV1LeaveRequestByLeaveRequestIdReapplyApiResponse,
+        PutApiV1LeaveRequestByLeaveRequestIdReapplyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-request/${queryArg.leaveRequestId}/reapply`,
+          method: "PUT",
+          body: queryArg.reapplyLeaveRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveRequest"],
+      }),
+      postApiV1LeaveType: build.mutation<
+        PostApiV1LeaveTypeApiResponse,
+        PostApiV1LeaveTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-type`,
+          method: "POST",
+          body: queryArg.createLeaveTypeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveType"],
+      }),
+      getApiV1LeaveType: build.query<
+        GetApiV1LeaveTypeApiResponse,
+        GetApiV1LeaveTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-type`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["LeaveType"],
+      }),
+      getApiV1LeaveTypeById: build.query<
+        GetApiV1LeaveTypeByIdApiResponse,
+        GetApiV1LeaveTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-type/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["LeaveType"],
+      }),
+      putApiV1LeaveTypeById: build.mutation<
+        PutApiV1LeaveTypeByIdApiResponse,
+        PutApiV1LeaveTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-type/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createLeaveTypeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveType"],
+      }),
+      deleteApiV1LeaveTypeById: build.mutation<
+        DeleteApiV1LeaveTypeByIdApiResponse,
+        DeleteApiV1LeaveTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/leave-type/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["LeaveType"],
+      }),
+      postApiV1Material: build.mutation<
+        PostApiV1MaterialApiResponse,
+        PostApiV1MaterialApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material`,
+          method: "POST",
+          body: queryArg.createMaterialRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1Material: build.query<
+        GetApiV1MaterialApiResponse,
+        GetApiV1MaterialApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialId: build.query<
+        GetApiV1MaterialByMaterialIdApiResponse,
+        GetApiV1MaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      putApiV1MaterialByMaterialId: build.mutation<
+        PutApiV1MaterialByMaterialIdApiResponse,
+        PutApiV1MaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}`,
+          method: "PUT",
+          body: queryArg.createMaterialRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      deleteApiV1MaterialByMaterialId: build.mutation<
+        DeleteApiV1MaterialByMaterialIdApiResponse,
+        DeleteApiV1MaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialCategory: build.query<
+        GetApiV1MaterialCategoryApiResponse,
+        GetApiV1MaterialCategoryApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/category`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialAll: build.query<
+        GetApiV1MaterialAllApiResponse,
+        GetApiV1MaterialAllApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/all`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      putApiV1MaterialByMaterialIdReorderLevel: build.mutation<
+        PutApiV1MaterialByMaterialIdReorderLevelApiResponse,
+        PutApiV1MaterialByMaterialIdReorderLevelApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/reorder-level`,
+          method: "PUT",
+          body: queryArg.updateReOrderLevelRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdStockLevel: build.query<
+        GetApiV1MaterialByMaterialIdStockLevelApiResponse,
+        GetApiV1MaterialByMaterialIdStockLevelApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/stock-level`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdBatches: build.query<
+        GetApiV1MaterialByMaterialIdBatchesApiResponse,
+        GetApiV1MaterialByMaterialIdBatchesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/batches`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdInTransit: build.query<
+        GetApiV1MaterialByMaterialIdInTransitApiResponse,
+        GetApiV1MaterialByMaterialIdInTransitApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/in-transit`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialBatch: build.mutation<
+        PostApiV1MaterialBatchApiResponse,
+        PostApiV1MaterialBatchApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialBatch: build.query<
+        GetApiV1MaterialBatchApiResponse,
+        GetApiV1MaterialBatchApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialBatchByBatchId: build.query<
+        GetApiV1MaterialBatchByBatchIdApiResponse,
+        GetApiV1MaterialBatchByBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/${queryArg.batchId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialBatchMove: build.mutation<
+        PostApiV1MaterialBatchMoveApiResponse,
+        PostApiV1MaterialBatchMoveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/move`,
+          method: "POST",
+          body: queryArg.moveMaterialBatchRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      putApiV1MaterialBatchByBatchIdApprove: build.mutation<
+        PutApiV1MaterialBatchByBatchIdApproveApiResponse,
+        PutApiV1MaterialBatchByBatchIdApproveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/${queryArg.batchId}/approve`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdStockAndWarehouseId: build.query<
+        GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiResponse,
+        GetApiV1MaterialByMaterialIdStockAndWarehouseIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/stock/${queryArg.warehouseId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialBatchConsume: build.mutation<
+        PostApiV1MaterialBatchConsumeApiResponse,
+        PostApiV1MaterialBatchConsumeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/consume`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            batchId: queryArg.batchId,
+            locationId: queryArg.locationId,
+            quantity: queryArg.quantity,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdStockAcrossWarehouses: build.query<
+        GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiResponse,
+        GetApiV1MaterialByMaterialIdStockAcrossWarehousesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/stock/across-warehouses`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdDepartmentStockAndQuantity: build.query<
+        GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiResponse,
+        GetApiV1MaterialByMaterialIdDepartmentStockAndQuantityApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/department-stock/${queryArg.quantity}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialUpload: build.mutation<
+        PostApiV1MaterialUploadApiResponse,
+        PostApiV1MaterialUploadApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/upload`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      putApiV1MaterialBatchStatus: build.mutation<
+        PutApiV1MaterialBatchStatusApiResponse,
+        PutApiV1MaterialBatchStatusApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/status`,
+          method: "PUT",
+          body: queryArg.updateBatchStatusRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      postApiV1MaterialBatchSupply: build.mutation<
+        PostApiV1MaterialBatchSupplyApiResponse,
+        PostApiV1MaterialBatchSupplyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/supply`,
+          method: "POST",
+          body: queryArg.supplyMaterialBatchRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      postApiV1MaterialBatchMoveV2: build.mutation<
+        PostApiV1MaterialBatchMoveV2ApiResponse,
+        PostApiV1MaterialBatchMoveV2ApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batch/move/v2`,
+          method: "POST",
+          body: queryArg.moveShelfMaterialBatchRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialApprovedMaterials: build.query<
+        GetApiV1MaterialApprovedMaterialsApiResponse,
+        GetApiV1MaterialApprovedMaterialsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/approved-materials`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdBatchesV2: build.query<
+        GetApiV1MaterialByMaterialIdBatchesV2ApiResponse,
+        GetApiV1MaterialByMaterialIdBatchesV2ApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/batches/v2`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdStockWarehouses: build.query<
+        GetApiV1MaterialByMaterialIdStockWarehousesApiResponse,
+        GetApiV1MaterialByMaterialIdStockWarehousesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/stock/warehouses`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdStockDepartments: build.query<
+        GetApiV1MaterialByMaterialIdStockDepartmentsApiResponse,
+        GetApiV1MaterialByMaterialIdStockDepartmentsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/stock/departments`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialDepartment: build.mutation<
+        PostApiV1MaterialDepartmentApiResponse,
+        PostApiV1MaterialDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/department`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      deleteApiV1MaterialDepartment: build.mutation<
+        DeleteApiV1MaterialDepartmentApiResponse,
+        DeleteApiV1MaterialDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/department`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialId: queryArg.materialId,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialDepartment: build.query<
+        GetApiV1MaterialDepartmentApiResponse,
+        GetApiV1MaterialDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/department`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialDepartmentNotLinked: build.query<
+        GetApiV1MaterialDepartmentNotLinkedApiResponse,
+        GetApiV1MaterialDepartmentNotLinkedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/department/not-linked`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialByMaterialIdUom: build.query<
+        GetApiV1MaterialByMaterialIdUomApiResponse,
+        GetApiV1MaterialByMaterialIdUomApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/${queryArg.materialId}/uom`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialHolding: build.query<
+        GetApiV1MaterialHoldingApiResponse,
+        GetApiV1MaterialHoldingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/holding`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            withProcessed: queryArg.withProcessed,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            userId: queryArg.userId,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialHoldingMoveByHoldingMaterialId: build.mutation<
+        PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiResponse,
+        PostApiV1MaterialHoldingMoveByHoldingMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/holding/move/${queryArg.holdingMaterialId}`,
+          method: "POST",
+          body: queryArg.moveShelfMaterialBatchRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      postApiV1MaterialBatchesImport: build.mutation<
+        PostApiV1MaterialBatchesImportApiResponse,
+        PostApiV1MaterialBatchesImportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batches/import`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Material"],
+      }),
+      getApiV1MaterialBatchesExpired: build.query<
+        GetApiV1MaterialBatchesExpiredApiResponse,
+        GetApiV1MaterialBatchesExpiredApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/batches/expired`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            warehouseIds: queryArg.warehouseIds,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialMaterialSpecsNotLinked: build.query<
+        GetApiV1MaterialMaterialSpecsNotLinkedApiResponse,
+        GetApiV1MaterialMaterialSpecsNotLinkedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/material-specs/not-linked`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      getApiV1MaterialRejects: build.query<
+        GetApiV1MaterialRejectsApiResponse,
+        GetApiV1MaterialRejectsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material/rejects`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Material"],
+      }),
+      postApiV1MaterialArd: build.mutation<
+        PostApiV1MaterialArdApiResponse,
+        PostApiV1MaterialArdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard`,
+          method: "POST",
+          body: queryArg.createMaterialAnalyticalRawDataRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArd: build.query<
+        GetApiV1MaterialArdApiResponse,
+        GetApiV1MaterialArdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdById: build.query<
+        GetApiV1MaterialArdByIdApiResponse,
+        GetApiV1MaterialArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      putApiV1MaterialArdById: build.mutation<
+        PutApiV1MaterialArdByIdApiResponse,
+        PutApiV1MaterialArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createMaterialAnalyticalRawDataRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      deleteApiV1MaterialArdById: build.mutation<
+        DeleteApiV1MaterialArdByIdApiResponse,
+        DeleteApiV1MaterialArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdMaterialByMaterialId: build.query<
+        GetApiV1MaterialArdMaterialByMaterialIdApiResponse,
+        GetApiV1MaterialArdMaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/material/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdMaterialBatchByMaterialBatchId: build.query<
+        GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiResponse,
+        GetApiV1MaterialArdMaterialBatchByMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/material/batch/${queryArg.materialBatchId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      putApiV1MaterialArdStartTestByMaterialBatchId: build.mutation<
+        PutApiV1MaterialArdStartTestByMaterialBatchIdApiResponse,
+        PutApiV1MaterialArdStartTestByMaterialBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/start-test/${queryArg.materialBatchId}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      postApiV1MaterialArdUniformityOfWeight: build.mutation<
+        PostApiV1MaterialArdUniformityOfWeightApiResponse,
+        PostApiV1MaterialArdUniformityOfWeightApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight`,
+          method: "POST",
+          body: queryArg.createUniformityOfWeight,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdUniformityOfWeight: build.query<
+        GetApiV1MaterialArdUniformityOfWeightApiResponse,
+        GetApiV1MaterialArdUniformityOfWeightApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdUniformityOfWeightById: build.query<
+        GetApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+        GetApiV1MaterialArdUniformityOfWeightByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialAnalyticalRawData"],
+      }),
+      putApiV1MaterialArdUniformityOfWeightById: build.mutation<
+        PutApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+        PutApiV1MaterialArdUniformityOfWeightByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createUniformityOfWeight,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      deleteApiV1MaterialArdUniformityOfWeightById: build.mutation<
+        DeleteApiV1MaterialArdUniformityOfWeightByIdApiResponse,
+        DeleteApiV1MaterialArdUniformityOfWeightByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      postApiV1MaterialArdUniformityOfWeightResponse: build.mutation<
+        PostApiV1MaterialArdUniformityOfWeightResponseApiResponse,
+        PostApiV1MaterialArdUniformityOfWeightResponseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-ard/uniformity-of-weight/response`,
+          method: "POST",
+          body: queryArg.createUniformityOfWeightResponse,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialAnalyticalRawData"],
+      }),
+      getApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponse:
+        build.query<
+          GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiResponse,
+          GetApiV1MaterialArdUniformityOfWeightByUniformityOfWeightIdAndMaterialBatchIdResponseApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/material-ard/uniformity-of-weight/${queryArg.uniformityOfWeightId}/${queryArg.materialBatchId}/response`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["MaterialAnalyticalRawData"],
+        }),
+      postApiV1MaterialSamplings: build.mutation<
+        PostApiV1MaterialSamplingsApiResponse,
+        PostApiV1MaterialSamplingsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-samplings`,
+          method: "POST",
+          body: queryArg.createMaterialSamplingRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialSampling"],
+      }),
+      getApiV1MaterialSamplingsByGrnIdAndBatchId: build.query<
+        GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiResponse,
+        GetApiV1MaterialSamplingsByGrnIdAndBatchIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-samplings/${queryArg.grnId}/${queryArg.batchId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialSampling"],
+      }),
+      postApiV1MaterialSpecifications: build.mutation<
+        PostApiV1MaterialSpecificationsApiResponse,
+        PostApiV1MaterialSpecificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications`,
+          method: "POST",
+          body: queryArg.createMaterialSpecificationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialSpecification"],
+      }),
+      getApiV1MaterialSpecifications: build.query<
+        GetApiV1MaterialSpecificationsApiResponse,
+        GetApiV1MaterialSpecificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["MaterialSpecification"],
+      }),
+      getApiV1MaterialSpecificationsById: build.query<
+        GetApiV1MaterialSpecificationsByIdApiResponse,
+        GetApiV1MaterialSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialSpecification"],
+      }),
+      putApiV1MaterialSpecificationsById: build.mutation<
+        PutApiV1MaterialSpecificationsByIdApiResponse,
+        PutApiV1MaterialSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createMaterialSpecificationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialSpecification"],
+      }),
+      deleteApiV1MaterialSpecificationsById: build.mutation<
+        DeleteApiV1MaterialSpecificationsByIdApiResponse,
+        DeleteApiV1MaterialSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialSpecification"],
+      }),
+      getApiV1MaterialSpecificationsMaterialById: build.query<
+        GetApiV1MaterialSpecificationsMaterialByIdApiResponse,
+        GetApiV1MaterialSpecificationsMaterialByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-specifications/material/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialSpecification"],
+      }),
+      postApiV1MaterialStps: build.mutation<
+        PostApiV1MaterialStpsApiResponse,
+        PostApiV1MaterialStpsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-stps`,
+          method: "POST",
+          body: queryArg.createMaterialStandardTestProcedureRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialStandardTestProcedure"],
+      }),
+      getApiV1MaterialStps: build.query<
+        GetApiV1MaterialStpsApiResponse,
+        GetApiV1MaterialStpsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-stps`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            materialKind: queryArg.materialKind,
+            unused: queryArg.unused,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["MaterialStandardTestProcedure"],
+      }),
+      getApiV1MaterialStpsById: build.query<
+        GetApiV1MaterialStpsByIdApiResponse,
+        GetApiV1MaterialStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-stps/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["MaterialStandardTestProcedure"],
+      }),
+      putApiV1MaterialStpsById: build.mutation<
+        PutApiV1MaterialStpsByIdApiResponse,
+        PutApiV1MaterialStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-stps/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createMaterialStandardTestProcedureRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialStandardTestProcedure"],
+      }),
+      deleteApiV1MaterialStpsById: build.mutation<
+        DeleteApiV1MaterialStpsByIdApiResponse,
+        DeleteApiV1MaterialStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/material-stps/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["MaterialStandardTestProcedure"],
+      }),
+      postApiV1OvertimeRequests: build.mutation<
+        PostApiV1OvertimeRequestsApiResponse,
+        PostApiV1OvertimeRequestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/overtime-requests`,
+          method: "POST",
+          body: queryArg.createOvertimeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["OvertimeRequest"],
+      }),
+      getApiV1OvertimeRequests: build.query<
+        GetApiV1OvertimeRequestsApiResponse,
+        GetApiV1OvertimeRequestsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/overtime-requests`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["OvertimeRequest"],
+      }),
+      getApiV1OvertimeRequestsById: build.query<
+        GetApiV1OvertimeRequestsByIdApiResponse,
+        GetApiV1OvertimeRequestsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/overtime-requests/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["OvertimeRequest"],
+      }),
+      putApiV1OvertimeRequestsById: build.mutation<
+        PutApiV1OvertimeRequestsByIdApiResponse,
+        PutApiV1OvertimeRequestsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/overtime-requests/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createOvertimeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["OvertimeRequest"],
+      }),
+      deleteApiV1OvertimeRequestsById: build.mutation<
+        DeleteApiV1OvertimeRequestsByIdApiResponse,
+        DeleteApiV1OvertimeRequestsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/overtime-requests/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["OvertimeRequest"],
+      }),
+      getApiV1PermissionModules: build.query<
+        GetApiV1PermissionModulesApiResponse,
+        GetApiV1PermissionModulesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission/modules`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Permission"],
+      }),
+      getApiV1Permission: build.query<
+        GetApiV1PermissionApiResponse,
+        GetApiV1PermissionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Permission"],
+      }),
+      getApiV1PermissionUserByUserId: build.query<
+        GetApiV1PermissionUserByUserIdApiResponse,
+        GetApiV1PermissionUserByUserIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission/user/${queryArg.userId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Permission"],
+      }),
+      getApiV1PermissionRoleByRoleId: build.query<
+        GetApiV1PermissionRoleByRoleIdApiResponse,
+        GetApiV1PermissionRoleByRoleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission/role/${queryArg.roleId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Permission"],
+      }),
+      putApiV1PermissionRoleByRoleId: build.mutation<
+        PutApiV1PermissionRoleByRoleIdApiResponse,
+        PutApiV1PermissionRoleByRoleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission/role/${queryArg.roleId}`,
+          method: "PUT",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Permission"],
+      }),
+      getApiV1PermissionMenu: build.query<
+        GetApiV1PermissionMenuApiResponse,
+        GetApiV1PermissionMenuApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/permission/menu`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Permission"],
+      }),
+      postApiV1ProcurementManufacturer: build.mutation<
+        PostApiV1ProcurementManufacturerApiResponse,
+        PostApiV1ProcurementManufacturerApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer`,
+          method: "POST",
+          body: queryArg.createManufacturerRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementManufacturer: build.query<
+        GetApiV1ProcurementManufacturerApiResponse,
+        GetApiV1ProcurementManufacturerApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementManufacturerByManufacturerId: build.query<
+        GetApiV1ProcurementManufacturerByManufacturerIdApiResponse,
+        GetApiV1ProcurementManufacturerByManufacturerIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementManufacturerByManufacturerId: build.mutation<
+        PutApiV1ProcurementManufacturerByManufacturerIdApiResponse,
+        PutApiV1ProcurementManufacturerByManufacturerIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
+          method: "PUT",
+          body: queryArg.createManufacturerRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementManufacturerByManufacturerId: build.mutation<
+        DeleteApiV1ProcurementManufacturerByManufacturerIdApiResponse,
+        DeleteApiV1ProcurementManufacturerByManufacturerIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer/${queryArg.manufacturerId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementManufacturerMaterialByMaterialId: build.query<
+        GetApiV1ProcurementManufacturerMaterialByMaterialIdApiResponse,
+        GetApiV1ProcurementManufacturerMaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/manufacturer/material/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementSupplier: build.mutation<
+        PostApiV1ProcurementSupplierApiResponse,
+        PostApiV1ProcurementSupplierApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier`,
+          method: "POST",
+          body: queryArg.createSupplierRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementSupplier: build.query<
+        GetApiV1ProcurementSupplierApiResponse,
+        GetApiV1ProcurementSupplierApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementSupplierBySupplierId: build.query<
+        GetApiV1ProcurementSupplierBySupplierIdApiResponse,
+        GetApiV1ProcurementSupplierBySupplierIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementSupplierBySupplierId: build.mutation<
+        PutApiV1ProcurementSupplierBySupplierIdApiResponse,
+        PutApiV1ProcurementSupplierBySupplierIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
+          method: "PUT",
+          body: queryArg.createSupplierRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementSupplierBySupplierId: build.mutation<
+        DeleteApiV1ProcurementSupplierBySupplierIdApiResponse,
+        DeleteApiV1ProcurementSupplierBySupplierIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/${queryArg.supplierId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementSupplierBySupplierIdStatus: build.mutation<
+        PutApiV1ProcurementSupplierBySupplierIdStatusApiResponse,
+        PutApiV1ProcurementSupplierBySupplierIdStatusApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/${queryArg.supplierId}/status`,
+          method: "PUT",
+          body: queryArg.updateSupplierStatusRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementSupplierMaterialByMaterialId: build.query<
+        GetApiV1ProcurementSupplierMaterialByMaterialIdApiResponse,
+        GetApiV1ProcurementSupplierMaterialByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/material/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementSupplierByMaterialIdAndType: build.query<
+        GetApiV1ProcurementSupplierByMaterialIdAndTypeApiResponse,
+        GetApiV1ProcurementSupplierByMaterialIdAndTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/supplier/${queryArg.materialId}/${queryArg["type"]}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementPurchaseOrder: build.mutation<
+        PostApiV1ProcurementPurchaseOrderApiResponse,
+        PostApiV1ProcurementPurchaseOrderApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order`,
+          method: "POST",
+          body: queryArg.createPurchaseOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrder: build.query<
+        GetApiV1ProcurementPurchaseOrderApiResponse,
+        GetApiV1ProcurementPurchaseOrderApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+            type: queryArg["type"],
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.query<
+        GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+        GetApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+        PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+        PostApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+          method: "POST",
+          body: queryArg.sendPurchaseOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+        PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+        PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+          method: "PUT",
+          body: queryArg.updatePurchaseOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementPurchaseOrderByPurchaseOrderId: build.mutation<
+        DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiResponse,
+        DeleteApiV1ProcurementPurchaseOrderByPurchaseOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialId:
+        build.query<
+          GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiResponse,
+          GetApiV1ProcurementPurchaseOrderRequisitionByPurchaseOrderIdAndMaterialIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/purchase-order/requisition/${queryArg.purchaseOrderId}/${queryArg.materialId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Procurement"],
+        }),
+      postApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderId:
+        build.mutation<
+          PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiResponse,
+          PostApiV1ProcurementPurchaseOrderProformaInvoiceByPurchaseOrderIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/purchase-order/proforma-invoice/${queryArg.purchaseOrderId}`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      putApiV1ProcurementPurchaseOrderByPurchaseOrderIdRevise: build.mutation<
+        PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiResponse,
+        PutApiV1ProcurementPurchaseOrderByPurchaseOrderIdReviseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/${queryArg.purchaseOrderId}/revise`,
+          method: "PUT",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementPurchaseOrderInvoice: build.mutation<
+        PostApiV1ProcurementPurchaseOrderInvoiceApiResponse,
+        PostApiV1ProcurementPurchaseOrderInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order-invoice`,
+          method: "POST",
+          body: queryArg.createPurchaseOrderInvoiceRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrderInvoice: build.query<
+        GetApiV1ProcurementPurchaseOrderInvoiceApiResponse,
+        GetApiV1ProcurementPurchaseOrderInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order-invoice`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.query<
+        GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+        GetApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
+        PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+        PutApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+          method: "PUT",
+          body: queryArg.createPurchaseOrderInvoiceRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceId: build.mutation<
+        DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiResponse,
+        DeleteApiV1ProcurementPurchaseOrderInvoiceByInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order-invoice/${queryArg.invoiceId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementBillingSheet: build.mutation<
+        PostApiV1ProcurementBillingSheetApiResponse,
+        PostApiV1ProcurementBillingSheetApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/billing-sheet`,
+          method: "POST",
+          body: queryArg.createBillingSheetRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementBillingSheet: build.query<
+        GetApiV1ProcurementBillingSheetApiResponse,
+        GetApiV1ProcurementBillingSheetApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/billing-sheet`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementBillingSheetByBillingSheetId: build.query<
+        GetApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+        GetApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
+        PutApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+        PutApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+          method: "PUT",
+          body: queryArg.createBillingSheetRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementBillingSheetByBillingSheetId: build.mutation<
+        DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiResponse,
+        DeleteApiV1ProcurementBillingSheetByBillingSheetIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/billing-sheet/${queryArg.billingSheetId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementShipmentDocument: build.mutation<
+        PostApiV1ProcurementShipmentDocumentApiResponse,
+        PostApiV1ProcurementShipmentDocumentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document`,
+          method: "POST",
+          body: queryArg.createShipmentDocumentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentDocument: build.query<
+        GetApiV1ProcurementShipmentDocumentApiResponse,
+        GetApiV1ProcurementShipmentDocumentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentDocumentByShipmentDocumentId: build.query<
+        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
+        GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementShipmentDocumentByShipmentDocumentId: build.mutation<
+        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
+        PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
+          method: "PUT",
+          body: queryArg.createShipmentDocumentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementShipmentDocumentByShipmentDocumentId:
+        build.mutation<
+          DeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiResponse,
+          DeleteApiV1ProcurementShipmentDocumentByShipmentDocumentIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}`,
+            method: "DELETE",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      postApiV1ProcurementWaybill: build.mutation<
+        PostApiV1ProcurementWaybillApiResponse,
+        PostApiV1ProcurementWaybillApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/waybill`,
+          method: "POST",
+          body: queryArg.createShipmentDocumentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementWaybill: build.query<
+        GetApiV1ProcurementWaybillApiResponse,
+        GetApiV1ProcurementWaybillApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/waybill`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementWaybillByWaybillId: build.query<
+        GetApiV1ProcurementWaybillByWaybillIdApiResponse,
+        GetApiV1ProcurementWaybillByWaybillIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementWaybillByWaybillId: build.mutation<
+        PutApiV1ProcurementWaybillByWaybillIdApiResponse,
+        PutApiV1ProcurementWaybillByWaybillIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
+          method: "PUT",
+          body: queryArg.createShipmentDocumentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementWaybillByWaybillId: build.mutation<
+        DeleteApiV1ProcurementWaybillByWaybillIdApiResponse,
+        DeleteApiV1ProcurementWaybillByWaybillIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/waybill/${queryArg.waybillId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrived:
+        build.mutation<
+          PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiResponse,
+          PutApiV1ProcurementShipmentDocumentByShipmentDocumentIdArrivedApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/arrived`,
+            method: "PUT",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      putApiV1ProcurementShipmentsByShipmentIdStatus: build.mutation<
+        PutApiV1ProcurementShipmentsByShipmentIdStatusApiResponse,
+        PutApiV1ProcurementShipmentsByShipmentIdStatusApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipments/${queryArg.shipmentId}/status`,
+          method: "PUT",
+          body: queryArg.updateShipmentStatusRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentDocumentArrived: build.query<
+        GetApiV1ProcurementShipmentDocumentArrivedApiResponse,
+        GetApiV1ProcurementShipmentDocumentArrivedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-document/arrived`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementShipmentInvoice: build.mutation<
+        PostApiV1ProcurementShipmentInvoiceApiResponse,
+        PostApiV1ProcurementShipmentInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice`,
+          method: "POST",
+          body: queryArg.createShipmentInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentInvoice: build.query<
+        GetApiV1ProcurementShipmentInvoiceApiResponse,
+        GetApiV1ProcurementShipmentInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentInvoiceById: build.query<
+        GetApiV1ProcurementShipmentInvoiceByIdApiResponse,
+        GetApiV1ProcurementShipmentInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentInvoiceUnattached: build.query<
+        GetApiV1ProcurementShipmentInvoiceUnattachedApiResponse,
+        GetApiV1ProcurementShipmentInvoiceUnattachedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/unattached`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentId:
+        build.query<
+          GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiResponse,
+          GetApiV1ProcurementShipmentInvoiceShipmentDocumentByShipmentDocumentIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-invoice/shipment-document/${queryArg.shipmentDocumentId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Procurement"],
+        }),
+      putApiV1ProcurementShipmentInvoiceByShipmentInvoiceId: build.mutation<
+        PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse,
+        PutApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/${queryArg.shipmentInvoiceId}`,
+          method: "PUT",
+          body: queryArg.createShipmentInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      deleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceId: build.mutation<
+        DeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiResponse,
+        DeleteApiV1ProcurementShipmentInvoiceByShipmentInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/${queryArg.shipmentInvoiceId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceId: build.mutation<
+        PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiResponse,
+        PutApiV1ProcurementShipmentInvoicePaidByShipmentInvoiceIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/paid/${queryArg.shipmentInvoiceId}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            paidAt: queryArg.paidAt,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      putApiV1ProcurementShipmentInvoicePaidMultiple: build.mutation<
+        PutApiV1ProcurementShipmentInvoicePaidMultipleApiResponse,
+        PutApiV1ProcurementShipmentInvoicePaidMultipleApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-invoice/paid/multiple`,
+          method: "PUT",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            paidAt: queryArg.paidAt,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      postApiV1ProcurementShipmentDiscrepancy: build.mutation<
+        PostApiV1ProcurementShipmentDiscrepancyApiResponse,
+        PostApiV1ProcurementShipmentDiscrepancyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/shipment-discrepancy`,
+          method: "POST",
+          body: queryArg.createShipmentDiscrepancy,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId:
+        build.query<
+          GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
+          GetApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Procurement"],
+        }),
+      putApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId:
+        build.mutation<
+          PutApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
+          PutApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
+            method: "PUT",
+            body: queryArg.createShipmentDiscrepancy,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      deleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyId:
+        build.mutation<
+          DeleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiResponse,
+          DeleteApiV1ProcurementShipmentDiscrepancyByShipmentDiscrepancyIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-discrepancy/${queryArg.shipmentDiscrepancyId}`,
+            method: "DELETE",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      getApiV1ProcurementPurchaseOrderNotLinked: build.query<
+        GetApiV1ProcurementPurchaseOrderNotLinkedApiResponse,
+        GetApiV1ProcurementPurchaseOrderNotLinkedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/purchase-order/not-linked`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinked:
+        build.query<
+          GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiResponse,
+          GetApiV1ProcurementPurchaseOrderSupplierBySupplierIdNotLinkedApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/purchase-order/supplier/${queryArg.supplierId}/not-linked`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Procurement"],
+        }),
+      postApiV1ProcurementMaterialsByPurchaseOrders: build.mutation<
+        PostApiV1ProcurementMaterialsByPurchaseOrdersApiResponse,
+        PostApiV1ProcurementMaterialsByPurchaseOrdersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/procurement/materials/by-purchase-orders`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Procurement"],
+      }),
+      getApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistribution:
+        build.query<
+          GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiResponse,
+          GetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/shipment-document/${queryArg.shipmentDocumentId}/material-distribution`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Procurement"],
+        }),
+      postApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialId:
+        build.mutation<
+          PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiResponse,
+          PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution/${queryArg.materialId}`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      postApiV1ProcurementByShipmentDocumentIdConfirmDistribution:
+        build.mutation<
+          PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiResponse,
+          PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/procurement/${queryArg.shipmentDocumentId}/confirm-distribution`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Procurement"],
+        }),
+      postApiV1Product: build.mutation<
+        PostApiV1ProductApiResponse,
+        PostApiV1ProductApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product`,
+          method: "POST",
+          body: queryArg.createProductRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1Product: build.query<
+        GetApiV1ProductApiResponse,
+        GetApiV1ProductApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      getApiV1ProductByProductId: build.query<
+        GetApiV1ProductByProductIdApiResponse,
+        GetApiV1ProductByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      putApiV1ProductByProductId: build.mutation<
+        PutApiV1ProductByProductIdApiResponse,
+        PutApiV1ProductByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}`,
+          method: "PUT",
+          body: queryArg.updateProductRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      deleteApiV1ProductByProductId: build.mutation<
+        DeleteApiV1ProductByProductIdApiResponse,
+        DeleteApiV1ProductByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      putApiV1ProductPackageDescriptionByProductId: build.mutation<
+        PutApiV1ProductPackageDescriptionByProductIdApiResponse,
+        PutApiV1ProductPackageDescriptionByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/package-description/${queryArg.productId}`,
+          method: "PUT",
+          body: queryArg.updateProductPackageDescriptionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductByProductIdBom: build.query<
+        GetApiV1ProductByProductIdBomApiResponse,
+        GetApiV1ProductByProductIdBomApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/bom`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      postApiV1ProductByProductIdRoutes: build.mutation<
+        PostApiV1ProductByProductIdRoutesApiResponse,
+        PostApiV1ProductByProductIdRoutesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/routes`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductByProductIdRoutes: build.query<
+        GetApiV1ProductByProductIdRoutesApiResponse,
+        GetApiV1ProductByProductIdRoutesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/routes`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      getApiV1ProductRoutesByRouteId: build.query<
+        GetApiV1ProductRoutesByRouteIdApiResponse,
+        GetApiV1ProductRoutesByRouteIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/routes/${queryArg.routeId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      deleteApiV1ProductRoutesByRouteId: build.mutation<
+        DeleteApiV1ProductRoutesByRouteIdApiResponse,
+        DeleteApiV1ProductRoutesByRouteIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/routes/${queryArg.routeId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductByProductIdPackages: build.mutation<
+        PostApiV1ProductByProductIdPackagesApiResponse,
+        PostApiV1ProductByProductIdPackagesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/packages`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductByProductIdPackages: build.query<
+        GetApiV1ProductByProductIdPackagesApiResponse,
+        GetApiV1ProductByProductIdPackagesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/packages`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      getApiV1ProductPackagesByProductPackageId: build.query<
+        GetApiV1ProductPackagesByProductPackageIdApiResponse,
+        GetApiV1ProductPackagesByProductPackageIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/packages/${queryArg.productPackageId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      putApiV1ProductPackagesByProductPackageId: build.mutation<
+        PutApiV1ProductPackagesByProductPackageIdApiResponse,
+        PutApiV1ProductPackagesByProductPackageIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/packages/${queryArg.productPackageId}`,
+          method: "PUT",
+          body: queryArg.createProductPackageRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      deleteApiV1ProductPackagesByProductPackageId: build.mutation<
+        DeleteApiV1ProductPackagesByProductPackageIdApiResponse,
+        DeleteApiV1ProductPackagesByProductPackageIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/packages/${queryArg.productPackageId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductByProductIdFinished: build.mutation<
+        PostApiV1ProductByProductIdFinishedApiResponse,
+        PostApiV1ProductByProductIdFinishedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/finished`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      putApiV1ProductByProductIdBomArchive: build.mutation<
+        PutApiV1ProductByProductIdBomArchiveApiResponse,
+        PutApiV1ProductByProductIdBomArchiveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/bom/archive`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductEquipment: build.mutation<
+        PostApiV1ProductEquipmentApiResponse,
+        PostApiV1ProductEquipmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment`,
+          method: "POST",
+          body: queryArg.createEquipmentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductEquipment: build.query<
+        GetApiV1ProductEquipmentApiResponse,
+        GetApiV1ProductEquipmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      getApiV1ProductEquipmentByEquipmentId: build.query<
+        GetApiV1ProductEquipmentByEquipmentIdApiResponse,
+        GetApiV1ProductEquipmentByEquipmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      putApiV1ProductEquipmentByEquipmentId: build.mutation<
+        PutApiV1ProductEquipmentByEquipmentIdApiResponse,
+        PutApiV1ProductEquipmentByEquipmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+          method: "PUT",
+          body: queryArg.createEquipmentRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      deleteApiV1ProductEquipmentByEquipmentId: build.mutation<
+        DeleteApiV1ProductEquipmentByEquipmentIdApiResponse,
+        DeleteApiV1ProductEquipmentByEquipmentIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment/${queryArg.equipmentId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductEquipmentAll: build.query<
+        GetApiV1ProductEquipmentAllApiResponse,
+        GetApiV1ProductEquipmentAllApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/equipment/all`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
+      postApiV1ProductUpload: build.mutation<
+        PostApiV1ProductUploadApiResponse,
+        PostApiV1ProductUploadApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/upload`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductBomUpload: build.mutation<
+        PostApiV1ProductBomUploadApiResponse,
+        PostApiV1ProductBomUploadApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/bom/upload`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductPackagesUpload: build.mutation<
+        PostApiV1ProductPackagesUploadApiResponse,
+        PostApiV1ProductPackagesUploadApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/packages/upload`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      postApiV1ProductArd: build.mutation<
+        PostApiV1ProductArdApiResponse,
+        PostApiV1ProductArdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard`,
+          method: "POST",
+          body: queryArg.createProductAnalyticalRawDataRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductAnalyticalRawData"],
+      }),
+      getApiV1ProductArd: build.query<
+        GetApiV1ProductArdApiResponse,
+        GetApiV1ProductArdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductAnalyticalRawData"],
+      }),
+      getApiV1ProductArdById: build.query<
+        GetApiV1ProductArdByIdApiResponse,
+        GetApiV1ProductArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductAnalyticalRawData"],
+      }),
+      putApiV1ProductArdById: build.mutation<
+        PutApiV1ProductArdByIdApiResponse,
+        PutApiV1ProductArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createProductAnalyticalRawDataRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductAnalyticalRawData"],
+      }),
+      deleteApiV1ProductArdById: build.mutation<
+        DeleteApiV1ProductArdByIdApiResponse,
+        DeleteApiV1ProductArdByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductAnalyticalRawData"],
+      }),
+      getApiV1ProductArdProductByProductId: build.query<
+        GetApiV1ProductArdProductByProductIdApiResponse,
+        GetApiV1ProductArdProductByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard/product/${queryArg.productId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductAnalyticalRawData"],
+      }),
+      putApiV1ProductArdStartTestByBatchManufacturingRecordId: build.mutation<
+        PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiResponse,
+        PutApiV1ProductArdStartTestByBatchManufacturingRecordIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-ard/start-test/${queryArg.batchManufacturingRecordId}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductAnalyticalRawData"],
+      }),
+      postApiV1ProductionOrders: build.mutation<
+        PostApiV1ProductionOrdersApiResponse,
+        PostApiV1ProductionOrdersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders`,
+          method: "POST",
+          body: queryArg.createProductionOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrders: build.query<
+        GetApiV1ProductionOrdersApiResponse,
+        GetApiV1ProductionOrdersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrdersById: build.query<
+        GetApiV1ProductionOrdersByIdApiResponse,
+        GetApiV1ProductionOrdersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      putApiV1ProductionOrdersById: build.mutation<
+        PutApiV1ProductionOrdersByIdApiResponse,
+        PutApiV1ProductionOrdersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createProductionOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      deleteApiV1ProductionOrdersById: build.mutation<
+        DeleteApiV1ProductionOrdersByIdApiResponse,
+        DeleteApiV1ProductionOrdersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      postApiV1ProductionOrdersProformaInvoice: build.mutation<
+        PostApiV1ProductionOrdersProformaInvoiceApiResponse,
+        PostApiV1ProductionOrdersProformaInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/proforma-invoice`,
+          method: "POST",
+          body: queryArg.createProformaInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrdersProformaInvoice: build.query<
+        GetApiV1ProductionOrdersProformaInvoiceApiResponse,
+        GetApiV1ProductionOrdersProformaInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/proforma-invoice`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrdersProformaInvoiceById: build.query<
+        GetApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+        GetApiV1ProductionOrdersProformaInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      putApiV1ProductionOrdersProformaInvoiceById: build.mutation<
+        PutApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+        PutApiV1ProductionOrdersProformaInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createProformaInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      deleteApiV1ProductionOrdersProformaInvoiceById: build.mutation<
+        DeleteApiV1ProductionOrdersProformaInvoiceByIdApiResponse,
+        DeleteApiV1ProductionOrdersProformaInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/proforma-invoice/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      postApiV1ProductionOrdersInvoice: build.mutation<
+        PostApiV1ProductionOrdersInvoiceApiResponse,
+        PostApiV1ProductionOrdersInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/invoice`,
+          method: "POST",
+          body: queryArg.createInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrdersInvoice: build.query<
+        GetApiV1ProductionOrdersInvoiceApiResponse,
+        GetApiV1ProductionOrdersInvoiceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/invoice`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      getApiV1ProductionOrdersInvoiceById: build.query<
+        GetApiV1ProductionOrdersInvoiceByIdApiResponse,
+        GetApiV1ProductionOrdersInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/invoice/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionOrder"],
+      }),
+      putApiV1ProductionOrdersInvoiceById: build.mutation<
+        PutApiV1ProductionOrdersInvoiceByIdApiResponse,
+        PutApiV1ProductionOrdersInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/invoice/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createInvoice,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      deleteApiV1ProductionOrdersInvoiceById: build.mutation<
+        DeleteApiV1ProductionOrdersInvoiceByIdApiResponse,
+        DeleteApiV1ProductionOrdersInvoiceByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/invoice/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      postApiV1ProductionOrdersAllocate: build.mutation<
+        PostApiV1ProductionOrdersAllocateApiResponse,
+        PostApiV1ProductionOrdersAllocateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/allocate`,
+          method: "POST",
+          body: queryArg.allocateProductionOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      putApiV1ProductionOrdersDeliverByProductionOrderId: build.mutation<
+        PutApiV1ProductionOrdersDeliverByProductionOrderIdApiResponse,
+        PutApiV1ProductionOrdersDeliverByProductionOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-orders/deliver/${queryArg.productionOrderId}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionOrder"],
+      }),
+      postApiV1ProductionSchedule: build.mutation<
+        PostApiV1ProductionScheduleApiResponse,
+        PostApiV1ProductionScheduleApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule`,
+          method: "POST",
+          body: queryArg.createProductionScheduleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionSchedule: build.query<
+        GetApiV1ProductionScheduleApiResponse,
+        GetApiV1ProductionScheduleApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleByScheduleId: build.query<
+        GetApiV1ProductionScheduleByScheduleIdApiResponse,
+        GetApiV1ProductionScheduleByScheduleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleByScheduleId: build.mutation<
+        PutApiV1ProductionScheduleByScheduleIdApiResponse,
+        PutApiV1ProductionScheduleByScheduleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
+          method: "PUT",
+          body: queryArg.updateProductionScheduleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      deleteApiV1ProductionScheduleByScheduleId: build.mutation<
+        DeleteApiV1ProductionScheduleByScheduleIdApiResponse,
+        DeleteApiV1ProductionScheduleByScheduleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.scheduleId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleByProductionScheduleIdProductAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiResponse,
+          GetApiV1ProductionScheduleByProductionScheduleIdProductAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/product/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleProductionStatus: build.query<
+        GetApiV1ProductionScheduleProductionStatusApiResponse,
+        GetApiV1ProductionScheduleProductionStatusApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/production-status`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleByScheduleIdDetails: build.query<
+        GetApiV1ProductionScheduleByScheduleIdDetailsApiResponse,
+        GetApiV1ProductionScheduleByScheduleIdDetailsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.scheduleId}/details`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleMaterialStockByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              status: queryArg.status,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionSchedulePackageMaterialStockByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/package-material-stock/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              status: queryArg.status,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiResponse,
+          GetApiV1ProductionScheduleByProductionScheduleIdMaterialsWithInsufficientStockAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/materials-with-insufficient-stock/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiResponse,
+          GetApiV1ProductionScheduleByProductionScheduleIdPackageMaterialsWithInsufficientStockAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/${queryArg.productionScheduleId}/package-materials-with-insufficient-stock/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductId:
+        build.mutation<
+          PostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdApiResponse,
+          PostApiV1ProductionScheduleActivityStartByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/activity/start/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleActivity: build.query<
+        GetApiV1ProductionScheduleActivityApiResponse,
+        GetApiV1ProductionScheduleActivityApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            userIds: queryArg.userIds,
+            status: queryArg.status,
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleActivityByProductionActivityId: build.query<
+        GetApiV1ProductionScheduleActivityByProductionActivityIdApiResponse,
+        GetApiV1ProductionScheduleActivityByProductionActivityIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity/${queryArg.productionActivityId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleActivityByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleActivityByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/activity/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleActivityStatusGrouped: build.query<
+        GetApiV1ProductionScheduleActivityStatusGroupedApiResponse,
+        GetApiV1ProductionScheduleActivityStatusGroupedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity/status-grouped`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleActivityOperationGrouped: build.query<
+        GetApiV1ProductionScheduleActivityOperationGroupedApiResponse,
+        GetApiV1ProductionScheduleActivityOperationGroupedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity/operation-grouped`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleActivityStepByProductionStepIdStatus:
+        build.mutation<
+          PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiResponse,
+          PutApiV1ProductionScheduleActivityStepByProductionStepIdStatusApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/activity-step/${queryArg.productionStepId}/status`,
+            method: "PUT",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              status: queryArg.status,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleActivityStep: build.query<
+        GetApiV1ProductionScheduleActivityStepApiResponse,
+        GetApiV1ProductionScheduleActivityStepApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity-step`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            userIds: queryArg.userIds,
+            status: queryArg.status,
+            pageSize: queryArg.pageSize,
+            page: queryArg.page,
+            sortLabel: queryArg.sortLabel,
+            sortDirection: queryArg.sortDirection,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleActivityStepByProductionActivityStepId:
+        build.query<
+          GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiResponse,
+          GetApiV1ProductionScheduleActivityStepByProductionActivityStepIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/activity-step/${queryArg.productionActivityStepId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleActivityStepStatusGrouped: build.query<
+        GetApiV1ProductionScheduleActivityStepStatusGroupedApiResponse,
+        GetApiV1ProductionScheduleActivityStepStatusGroupedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity-step/status-grouped`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleActivityStepOperationGrouped: build.query<
+        GetApiV1ProductionScheduleActivityStepOperationGroupedApiResponse,
+        GetApiV1ProductionScheduleActivityStepOperationGroupedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/activity-step/operation-grouped`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductionScheduleManufacturing: build.mutation<
+        PostApiV1ProductionScheduleManufacturingApiResponse,
+        PostApiV1ProductionScheduleManufacturingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/manufacturing`,
+          method: "POST",
+          body: queryArg.createBatchManufacturingRecord,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleManufacturing: build.query<
+        GetApiV1ProductionScheduleManufacturingApiResponse,
+        GetApiV1ProductionScheduleManufacturingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/manufacturing`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleId:
+        build.query<
+          GetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdApiResponse,
+          GetApiV1ProductionScheduleManufacturingByProductionIdAndProductionScheduleIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/manufacturing/${queryArg.productionId}/${queryArg.productionScheduleId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleFinishedGoodsTransferNote: build.mutation<
+        PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
+        PostApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note`,
+          method: "POST",
+          body: queryArg.createFinishedGoodsTransferNoteRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinishedGoodsTransferNote: build.query<
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiResponse,
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            onlyApproved: queryArg.onlyApproved,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinishedGoodsTransferNoteById: build.query<
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiResponse,
+        GetApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProduct:
+        build.query<
+          GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiResponse,
+          GetApiV1ProductionScheduleFinishedGoodsTransferNoteByProductIdProductApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.productId}/product`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              page: queryArg.page,
+              pageSize: queryArg.pageSize,
+              searchQuery: queryArg.searchQuery,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      putApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApprove:
+        build.mutation<
+          PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiResponse,
+          PutApiV1ProductionScheduleFinishedGoodsTransferNoteByIdApproveApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/finished-goods-transfer-note/${queryArg.id}/approve`,
+            method: "PUT",
+            body: queryArg.approveTransferNoteRequest,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      putApiV1ProductionScheduleById: build.mutation<
+        PutApiV1ProductionScheduleByIdApiResponse,
+        PutApiV1ProductionScheduleByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createFinishedGoodsTransferNoteRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleManufacturingById: build.query<
+        GetApiV1ProductionScheduleManufacturingByIdApiResponse,
+        GetApiV1ProductionScheduleManufacturingByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/manufacturing/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleManufacturingById: build.mutation<
+        PutApiV1ProductionScheduleManufacturingByIdApiResponse,
+        PutApiV1ProductionScheduleManufacturingByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/manufacturing/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateBatchManufacturingRecord,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleManufacturingIssueById: build.mutation<
+        PutApiV1ProductionScheduleManufacturingIssueByIdApiResponse,
+        PutApiV1ProductionScheduleManufacturingIssueByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/manufacturing/issue/${queryArg.id}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductionSchedulePackaging: build.mutation<
+        PostApiV1ProductionSchedulePackagingApiResponse,
+        PostApiV1ProductionSchedulePackagingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/packaging`,
+          method: "POST",
+          body: queryArg.createBatchPackagingRecord,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionSchedulePackaging: build.query<
+        GetApiV1ProductionSchedulePackagingApiResponse,
+        GetApiV1ProductionSchedulePackagingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/packaging`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionSchedulePackagingById: build.query<
+        GetApiV1ProductionSchedulePackagingByIdApiResponse,
+        GetApiV1ProductionSchedulePackagingByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/packaging/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionSchedulePackagingById: build.mutation<
+        PutApiV1ProductionSchedulePackagingByIdApiResponse,
+        PutApiV1ProductionSchedulePackagingByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/packaging/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateBatchPackagingRecord,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionSchedulePackagingIssueById: build.mutation<
+        PutApiV1ProductionSchedulePackagingIssueByIdApiResponse,
+        PutApiV1ProductionSchedulePackagingIssueByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/packaging/issue/${queryArg.id}`,
+          method: "PUT",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductionScheduleStockTransfer: build.mutation<
+        PostApiV1ProductionScheduleStockTransferApiResponse,
+        PostApiV1ProductionScheduleStockTransferApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer`,
+          method: "POST",
+          body: queryArg.createStockTransferRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleStockTransfer: build.query<
+        GetApiV1ProductionScheduleStockTransferApiResponse,
+        GetApiV1ProductionScheduleStockTransferApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            fromDepartmentId: queryArg.fromDepartmentId,
+            toDepartmentId: queryArg.toDepartmentId,
+            materialId: queryArg.materialId,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleStockTransferInBound: build.query<
+        GetApiV1ProductionScheduleStockTransferInBoundApiResponse,
+        GetApiV1ProductionScheduleStockTransferInBoundApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/in-bound`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+            toDepartmentId: queryArg.toDepartmentId,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleStockTransferOutBound: build.query<
+        GetApiV1ProductionScheduleStockTransferOutBoundApiResponse,
+        GetApiV1ProductionScheduleStockTransferOutBoundApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/out-bound`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+            fromDepartmentId: queryArg.fromDepartmentId,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleStockTransferByStockTransferId: build.query<
+        GetApiV1ProductionScheduleStockTransferByStockTransferIdApiResponse,
+        GetApiV1ProductionScheduleStockTransferByStockTransferIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/stock-transfer/${queryArg.stockTransferId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleStockTransferApproveByStockTransferId:
+        build.mutation<
+          PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiResponse,
+          PutApiV1ProductionScheduleStockTransferApproveByStockTransferIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-transfer/approve/${queryArg.stockTransferId}`,
+            method: "PUT",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      putApiV1ProductionScheduleStockTransferRejectByStockTransferId:
+        build.mutation<
+          PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiResponse,
+          PutApiV1ProductionScheduleStockTransferRejectByStockTransferIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-transfer/reject/${queryArg.stockTransferId}`,
+            method: "PUT",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleStockTransferBatchByStockTransferId:
+        build.query<
+          GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiResponse,
+          GetApiV1ProductionScheduleStockTransferBatchByStockTransferIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-transfer/batch/${queryArg.stockTransferId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      putApiV1ProductionScheduleStockTransferIssueByStockTransferId:
+        build.mutation<
+          PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiResponse,
+          PutApiV1ProductionScheduleStockTransferIssueByStockTransferIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-transfer/issue/${queryArg.stockTransferId}`,
+            method: "PUT",
+            body: queryArg.body,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleFinalPacking: build.mutation<
+        PostApiV1ProductionScheduleFinalPackingApiResponse,
+        PostApiV1ProductionScheduleFinalPackingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/final-packing`,
+          method: "POST",
+          body: queryArg.createFinalPacking,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinalPacking: build.query<
+        GetApiV1ProductionScheduleFinalPackingApiResponse,
+        GetApiV1ProductionScheduleFinalPackingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/final-packing`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinalPackingByFinalPackingId: build.query<
+        GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
+        GetApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      putApiV1ProductionScheduleFinalPackingByFinalPackingId: build.mutation<
+        PutApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
+        PutApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
+          method: "PUT",
+          body: queryArg.createFinalPacking,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      deleteApiV1ProductionScheduleFinalPackingByFinalPackingId: build.mutation<
+        DeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdApiResponse,
+        DeleteApiV1ProductionScheduleFinalPackingByFinalPackingIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/final-packing/${queryArg.finalPackingId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleFinalPackingByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/final-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleStockRequisitionRawByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-requisition/raw/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleStockRequisitionPackageByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/stock-requisition/package/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleReturnBeforeProduction: build.mutation<
+        PostApiV1ProductionScheduleReturnBeforeProductionApiResponse,
+        PostApiV1ProductionScheduleReturnBeforeProductionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/return-before-production`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            productionScheduleId: queryArg.productionScheduleId,
+            productId: queryArg.productId,
+            reason: queryArg.reason,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductionScheduleReturnAfterProduction: build.mutation<
+        PostApiV1ProductionScheduleReturnAfterProductionApiResponse,
+        PostApiV1ProductionScheduleReturnAfterProductionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/return-after-production`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            productionScheduleId: queryArg.productionScheduleId,
+            productId: queryArg.productId,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleMaterialReturnNote: build.query<
+        GetApiV1ProductionScheduleMaterialReturnNoteApiResponse,
+        GetApiV1ProductionScheduleMaterialReturnNoteApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/material-return-note`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteId:
+        build.query<
+          GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiResponse,
+          GetApiV1ProductionScheduleMaterialReturnNoteByMaterialReturnNoteIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/material-return-note/${queryArg.materialReturnNoteId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      putApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteId:
+        build.mutation<
+          PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiResponse,
+          PutApiV1ProductionScheduleMaterialReturnNoteCompleteByMaterialReturnNoteIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/material-return-note/complete/${queryArg.materialReturnNoteId}`,
+            method: "PUT",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductId:
+        build.mutation<
+          PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiResponse,
+          PostApiV1ProductionScheduleExtraPackingByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/extra-packing/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            method: "POST",
+            body: queryArg.body,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleExtraPacking: build.query<
+        GetApiV1ProductionScheduleExtraPackingApiResponse,
+        GetApiV1ProductionScheduleExtraPackingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/extra-packing`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleExtraPackingByProductionExtraPackingId:
+        build.query<
+          GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiResponse,
+          GetApiV1ProductionScheduleExtraPackingByProductionExtraPackingIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/extra-packing/${queryArg.productionExtraPackingId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductId:
+        build.query<
+          GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiResponse,
+          GetApiV1ProductionScheduleExtraPackingByProductByProductionScheduleIdAndProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/extra-packing/by-product/${queryArg.productionScheduleId}/${queryArg.productId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialId:
+        build.query<
+          GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiResponse,
+          GetApiV1ProductionScheduleExtraPackingBatchesToSupplyByExtraPackingMaterialIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/extra-packing/batches-to-supply/${queryArg.extraPackingMaterialId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      postApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingId:
+        build.mutation<
+          PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiResponse,
+          PostApiV1ProductionScheduleExtraPackingApproveByProductionExtraPackingIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/extra-packing/approve/${queryArg.productionExtraPackingId}`,
+            method: "POST",
+            body: queryArg.body,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleApprovedProducts: build.query<
+        GetApiV1ProductionScheduleApprovedProductsApiResponse,
+        GetApiV1ProductionScheduleApprovedProductsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/approved-products`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleApprovedProductsProductByProductId: build.query<
+        GetApiV1ProductionScheduleApprovedProductsProductByProductIdApiResponse,
+        GetApiV1ProductionScheduleApprovedProductsProductByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/approved-products/product/${queryArg.productId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleApprovedProductsByProductId: build.query<
+        GetApiV1ProductionScheduleApprovedProductsByProductIdApiResponse,
+        GetApiV1ProductionScheduleApprovedProductsByProductIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/approved-products/${queryArg.productId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductionScheduleAllocateProducts: build.mutation<
+        PostApiV1ProductionScheduleAllocateProductsApiResponse,
+        PostApiV1ProductionScheduleAllocateProductsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/allocate-products`,
+          method: "POST",
+          body: queryArg.allocateProductionOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleAllocateProducts: build.query<
+        GetApiV1ProductionScheduleAllocateProductsApiResponse,
+        GetApiV1ProductionScheduleAllocateProductsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/allocate-products`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            onlyApproved: queryArg.onlyApproved,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleAllocateProductsByAllocatedProductId:
+        build.query<
+          GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse,
+          GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/production-schedule/allocate-products/${queryArg.allocatedProductId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["ProductionSchedule"],
+        }),
+      getApiV1ProductionScheduleSummaryReport: build.query<
+        GetApiV1ProductionScheduleSummaryReportApiResponse,
+        GetApiV1ProductionScheduleSummaryReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/summary-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            productId: queryArg.productId,
+            marketTypeId: queryArg.marketTypeId,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      getApiV1ProductionScheduleDetailedReport: build.query<
+        GetApiV1ProductionScheduleDetailedReportApiResponse,
+        GetApiV1ProductionScheduleDetailedReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/production-schedule/detailed-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            productId: queryArg.productId,
+            marketTypeId: queryArg.marketTypeId,
+          },
+        }),
+        providesTags: ["ProductionSchedule"],
+      }),
+      postApiV1ProductSamplings: build.mutation<
+        PostApiV1ProductSamplingsApiResponse,
+        PostApiV1ProductSamplingsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-samplings`,
+          method: "POST",
+          body: queryArg.createProductSamplingRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductSampling"],
+      }),
+      getApiV1ProductSamplingsById: build.query<
+        GetApiV1ProductSamplingsByIdApiResponse,
+        GetApiV1ProductSamplingsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-samplings/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductSampling"],
+      }),
+      postApiV1ProductSpecifications: build.mutation<
+        PostApiV1ProductSpecificationsApiResponse,
+        PostApiV1ProductSpecificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications`,
+          method: "POST",
+          body: queryArg.createProductSpecificationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductSpecification"],
+      }),
+      getApiV1ProductSpecifications: build.query<
+        GetApiV1ProductSpecificationsApiResponse,
+        GetApiV1ProductSpecificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductSpecification"],
+      }),
+      getApiV1ProductSpecificationsById: build.query<
+        GetApiV1ProductSpecificationsByIdApiResponse,
+        GetApiV1ProductSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductSpecification"],
+      }),
+      putApiV1ProductSpecificationsById: build.mutation<
+        PutApiV1ProductSpecificationsByIdApiResponse,
+        PutApiV1ProductSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createProductSpecificationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductSpecification"],
+      }),
+      deleteApiV1ProductSpecificationsById: build.mutation<
+        DeleteApiV1ProductSpecificationsByIdApiResponse,
+        DeleteApiV1ProductSpecificationsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductSpecification"],
+      }),
+      getApiV1ProductSpecificationsProductById: build.query<
+        GetApiV1ProductSpecificationsProductByIdApiResponse,
+        GetApiV1ProductSpecificationsProductByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-specifications/product/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductSpecification"],
+      }),
+      postApiV1ProductStps: build.mutation<
+        PostApiV1ProductStpsApiResponse,
+        PostApiV1ProductStpsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-stps`,
+          method: "POST",
+          body: queryArg.createProductStandardTestProcedureRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductStandardTestProcedure"],
+      }),
+      getApiV1ProductStps: build.query<
+        GetApiV1ProductStpsApiResponse,
+        GetApiV1ProductStpsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-stps`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ProductStandardTestProcedure"],
+      }),
+      getApiV1ProductStpsById: build.query<
+        GetApiV1ProductStpsByIdApiResponse,
+        GetApiV1ProductStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-stps/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ProductStandardTestProcedure"],
+      }),
+      putApiV1ProductStpsById: build.mutation<
+        PutApiV1ProductStpsByIdApiResponse,
+        PutApiV1ProductStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-stps/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createProductStandardTestProcedureRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductStandardTestProcedure"],
+      }),
+      deleteApiV1ProductStpsById: build.mutation<
+        DeleteApiV1ProductStpsByIdApiResponse,
+        DeleteApiV1ProductStpsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product-stps/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ProductStandardTestProcedure"],
+      }),
+      postV1RecoverableItemsReports: build.mutation<
+        PostV1RecoverableItemsReportsApiResponse,
+        PostV1RecoverableItemsReportsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/recoverable-items-reports`,
+          method: "POST",
+          body: queryArg.createRecoverableItemReportRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["RecoverableItemsReport"],
+      }),
+      getV1RecoverableItemsReports: build.query<
+        GetV1RecoverableItemsReportsApiResponse,
+        GetV1RecoverableItemsReportsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/recoverable-items-reports`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["RecoverableItemsReport"],
+      }),
+      getApiV1ReportProduction: build.query<
+        GetApiV1ReportProductionApiResponse,
+        GetApiV1ReportProductionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/production`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportProductionMaterialsBelowMinimum: build.query<
+        GetApiV1ReportProductionMaterialsBelowMinimumApiResponse,
+        GetApiV1ReportProductionMaterialsBelowMinimumApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/production/materials-below-minimum`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportWarehouse: build.query<
+        GetApiV1ReportWarehouseApiResponse,
+        GetApiV1ReportWarehouseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/warehouse`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportLogistics: build.query<
+        GetApiV1ReportLogisticsApiResponse,
+        GetApiV1ReportLogisticsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/logistics`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportReservedMaterialBatches: build.query<
+        GetApiV1ReportReservedMaterialBatchesApiResponse,
+        GetApiV1ReportReservedMaterialBatchesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/reserved-material-batches`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportHumanResource: build.query<
+        GetApiV1ReportHumanResourceApiResponse,
+        GetApiV1ReportHumanResourceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/human-resource`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportStaffReport: build.query<
+        GetApiV1ReportStaffReportApiResponse,
+        GetApiV1ReportStaffReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/staff-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportEmployeeMovement: build.query<
+        GetApiV1ReportEmployeeMovementApiResponse,
+        GetApiV1ReportEmployeeMovementApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/employee-movement`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportStaffTotalReport: build.query<
+        GetApiV1ReportStaffTotalReportApiResponse,
+        GetApiV1ReportStaffTotalReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/staff-total-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportStaffLeaveReport: build.query<
+        GetApiV1ReportStaffLeaveReportApiResponse,
+        GetApiV1ReportStaffLeaveReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/staff-leave-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportStaffTurnoverReport: build.query<
+        GetApiV1ReportStaffTurnoverReportApiResponse,
+        GetApiV1ReportStaffTurnoverReportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/staff-turnover-report`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportMaterialsReadyForChecklist: build.query<
+        GetApiV1ReportMaterialsReadyForChecklistApiResponse,
+        GetApiV1ReportMaterialsReadyForChecklistApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/materials-ready-for-checklist`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportMaterialsReadyForAssignment: build.query<
+        GetApiV1ReportMaterialsReadyForAssignmentApiResponse,
+        GetApiV1ReportMaterialsReadyForAssignmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/materials-ready-for-assignment`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportQaDashboard: build.query<
+        GetApiV1ReportQaDashboardApiResponse,
+        GetApiV1ReportQaDashboardApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/qa-dashboard`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      getApiV1ReportQcDashboard: build.query<
+        GetApiV1ReportQcDashboardApiResponse,
+        GetApiV1ReportQcDashboardApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/report/qc-dashboard`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+            materialKind: queryArg.materialKind,
+          },
+        }),
+        providesTags: ["Report"],
+      }),
+      postApiV1Requisition: build.mutation<
+        PostApiV1RequisitionApiResponse,
+        PostApiV1RequisitionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition`,
+          method: "POST",
+          body: queryArg.createRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      getApiV1Requisition: build.query<
+        GetApiV1RequisitionApiResponse,
+        GetApiV1RequisitionApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+            type: queryArg["type"],
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionDepartment: build.query<
+        GetApiV1RequisitionDepartmentApiResponse,
+        GetApiV1RequisitionDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/department`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            status: queryArg.status,
+            type: queryArg["type"],
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionByRequisitionId: build.query<
+        GetApiV1RequisitionByRequisitionIdApiResponse,
+        GetApiV1RequisitionByRequisitionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/${queryArg.requisitionId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      postApiV1RequisitionIssueStockRequisitionByStockRequisitionId:
+        build.mutation<
+          PostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdApiResponse,
+          PostApiV1RequisitionIssueStockRequisitionByStockRequisitionIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/requisition/issue-stock-requisition/${queryArg.stockRequisitionId}`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Requisition"],
+        }),
+      postApiV1RequisitionByRequisitionIdIssue: build.mutation<
+        PostApiV1RequisitionByRequisitionIdIssueApiResponse,
+        PostApiV1RequisitionByRequisitionIdIssueApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/${queryArg.requisitionId}/issue`,
+          method: "POST",
+          body: queryArg.approveRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      postApiV1RequisitionSource: build.mutation<
+        PostApiV1RequisitionSourceApiResponse,
+        PostApiV1RequisitionSourceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source`,
+          method: "POST",
+          body: queryArg.createSourceRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSource: build.query<
+        GetApiV1RequisitionSourceApiResponse,
+        GetApiV1RequisitionSourceApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceBySourceRequisitionId: build.query<
+        GetApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
+        GetApiV1RequisitionSourceBySourceRequisitionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      putApiV1RequisitionSourceBySourceRequisitionId: build.mutation<
+        PutApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
+        PutApiV1RequisitionSourceBySourceRequisitionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
+          method: "PUT",
+          body: queryArg.createSourceRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      deleteApiV1RequisitionSourceBySourceRequisitionId: build.mutation<
+        DeleteApiV1RequisitionSourceBySourceRequisitionIdApiResponse,
+        DeleteApiV1RequisitionSourceBySourceRequisitionIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/${queryArg.sourceRequisitionId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceItems: build.query<
+        GetApiV1RequisitionSourceItemsApiResponse,
+        GetApiV1RequisitionSourceItemsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/items`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            source: queryArg.source,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceSupplier: build.query<
+        GetApiV1RequisitionSourceSupplierApiResponse,
+        GetApiV1RequisitionSourceSupplierApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/supplier`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            source: queryArg.source,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            sent: queryArg.sent,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceSupplierBySupplierId: build.query<
+        GetApiV1RequisitionSourceSupplierBySupplierIdApiResponse,
+        GetApiV1RequisitionSourceSupplierBySupplierIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      postApiV1RequisitionSourceSupplierBySupplierIdSendQuotation:
+        build.mutation<
+          PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiResponse,
+          PostApiV1RequisitionSourceSupplierBySupplierIdSendQuotationApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/requisition/source/supplier/${queryArg.supplierId}/send-quotation`,
+            method: "POST",
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Requisition"],
+        }),
+      getApiV1RequisitionSourceSupplierQuotation: build.query<
+        GetApiV1RequisitionSourceSupplierQuotationApiResponse,
+        GetApiV1RequisitionSourceSupplierQuotationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/supplier/quotation`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            supplierType: queryArg.supplierType,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            received: queryArg.received,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotation:
+        build.query<
+          GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiResponse,
+          GetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Requisition"],
+        }),
+      postApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceive:
+        build.mutation<
+          PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiResponse,
+          PostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/requisition/source/supplier/${queryArg.supplierQuotationId}/quotation/receive`,
+            method: "POST",
+            body: queryArg.body,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          invalidatesTags: ["Requisition"],
+        }),
+      getApiV1RequisitionSourceMaterialPriceComparison: build.query<
+        GetApiV1RequisitionSourceMaterialPriceComparisonApiResponse,
+        GetApiV1RequisitionSourceMaterialPriceComparisonApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/material/price-comparison`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            supplierType: queryArg.supplierType,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      getApiV1RequisitionSourceMaterialPriceComparisonByMaterial: build.query<
+        GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiResponse,
+        GetApiV1RequisitionSourceMaterialPriceComparisonByMaterialApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/material/price-comparison/by-material`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            supplierType: queryArg.supplierType,
+            materialId: queryArg.materialId,
+            purchaseOrderId: queryArg.purchaseOrderId,
+            status: queryArg.status,
+          },
+        }),
+        providesTags: ["Requisition"],
+      }),
+      postApiV1RequisitionSourceQuotationProcessPurchaseOrder: build.mutation<
+        PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiResponse,
+        PostApiV1RequisitionSourceQuotationProcessPurchaseOrderApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/requisition/source/quotation/process-purchase-order`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            supplierType: queryArg.supplierType,
+          },
+        }),
+        invalidatesTags: ["Requisition"],
+      }),
+      getApiV1Role: build.query<GetApiV1RoleApiResponse, GetApiV1RoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/role`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Role"],
+      }),
+      postApiV1Role: build.mutation<
+        PostApiV1RoleApiResponse,
+        PostApiV1RoleApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role`,
+          method: "POST",
+          body: queryArg.createRoleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Role"],
+      }),
+      getApiV1RoleWithPermissions: build.query<
+        GetApiV1RoleWithPermissionsApiResponse,
+        GetApiV1RoleWithPermissionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role/with-permissions`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Role"],
+      }),
+      getApiV1RoleById: build.query<
+        GetApiV1RoleByIdApiResponse,
+        GetApiV1RoleByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Role"],
+      }),
+      putApiV1RoleById: build.mutation<
+        PutApiV1RoleByIdApiResponse,
+        PutApiV1RoleByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateRoleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Role"],
+      }),
+      deleteApiV1RoleById: build.mutation<
+        DeleteApiV1RoleByIdApiResponse,
+        DeleteApiV1RoleByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Role"],
+      }),
+      getApiV1RoleCheckById: build.query<
+        GetApiV1RoleCheckByIdApiResponse,
+        GetApiV1RoleCheckByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/role/check/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Role"],
+      }),
+      postApiV1Services: build.mutation<
+        PostApiV1ServicesApiResponse,
+        PostApiV1ServicesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/services`,
+          method: "POST",
+          body: queryArg.createServiceRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Service"],
+      }),
+      getApiV1Services: build.query<
+        GetApiV1ServicesApiResponse,
+        GetApiV1ServicesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/services`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            isActive: queryArg.isActive,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+          },
+        }),
+        providesTags: ["Service"],
+      }),
+      getApiV1ServicesById: build.query<
+        GetApiV1ServicesByIdApiResponse,
+        GetApiV1ServicesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/services/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Service"],
+      }),
+      putApiV1ServicesById: build.mutation<
+        PutApiV1ServicesByIdApiResponse,
+        PutApiV1ServicesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/services/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createServiceRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Service"],
+      }),
+      deleteApiV1ServicesById: build.mutation<
+        DeleteApiV1ServicesByIdApiResponse,
+        DeleteApiV1ServicesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/services/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Service"],
+      }),
+      postApiV1ServiceProviders: build.mutation<
+        PostApiV1ServiceProvidersApiResponse,
+        PostApiV1ServiceProvidersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/service-providers`,
+          method: "POST",
+          body: queryArg.createServiceProviderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ServiceProvider"],
+      }),
+      getApiV1ServiceProviders: build.query<
+        GetApiV1ServiceProvidersApiResponse,
+        GetApiV1ServiceProvidersApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/service-providers`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ServiceProvider"],
+      }),
+      getApiV1ServiceProvidersById: build.query<
+        GetApiV1ServiceProvidersByIdApiResponse,
+        GetApiV1ServiceProvidersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/service-providers/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ServiceProvider"],
+      }),
+      putApiV1ServiceProvidersById: build.mutation<
+        PutApiV1ServiceProvidersByIdApiResponse,
+        PutApiV1ServiceProvidersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/service-providers/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createServiceProviderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ServiceProvider"],
+      }),
+      deleteApiV1ServiceProvidersById: build.mutation<
+        DeleteApiV1ServiceProvidersByIdApiResponse,
+        DeleteApiV1ServiceProvidersByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/service-providers/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ServiceProvider"],
+      }),
+      postApiV1ShiftSchedules: build.mutation<
+        PostApiV1ShiftSchedulesApiResponse,
+        PostApiV1ShiftSchedulesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules`,
+          method: "POST",
+          body: queryArg.createShiftScheduleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      getApiV1ShiftSchedules: build.query<
+        GetApiV1ShiftSchedulesApiResponse,
+        GetApiV1ShiftSchedulesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ShiftSchedule"],
+      }),
+      postApiV1ShiftSchedulesAssign: build.mutation<
+        PostApiV1ShiftSchedulesAssignApiResponse,
+        PostApiV1ShiftSchedulesAssignApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/assign`,
+          method: "POST",
+          body: queryArg.assignShiftRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      getApiV1ShiftSchedulesById: build.query<
+        GetApiV1ShiftSchedulesByIdApiResponse,
+        GetApiV1ShiftSchedulesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ShiftSchedule"],
+      }),
+      putApiV1ShiftSchedulesById: build.mutation<
+        PutApiV1ShiftSchedulesByIdApiResponse,
+        PutApiV1ShiftSchedulesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createShiftScheduleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      deleteApiV1ShiftSchedulesById: build.mutation<
+        DeleteApiV1ShiftSchedulesByIdApiResponse,
+        DeleteApiV1ShiftSchedulesByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      getApiV1ShiftSchedulesDepartmentById: build.query<
+        GetApiV1ShiftSchedulesDepartmentByIdApiResponse,
+        GetApiV1ShiftSchedulesDepartmentByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/department/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ShiftSchedule"],
+      }),
+      getApiV1ShiftSchedulesByScheduleIdView: build.query<
+        GetApiV1ShiftSchedulesByScheduleIdViewApiResponse,
+        GetApiV1ShiftSchedulesByScheduleIdViewApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.scheduleId}/view`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+          },
+        }),
+        providesTags: ["ShiftSchedule"],
+      }),
+      getApiV1ShiftSchedulesByScheduleIdDay: build.query<
+        GetApiV1ShiftSchedulesByScheduleIdDayApiResponse,
+        GetApiV1ShiftSchedulesByScheduleIdDayApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.scheduleId}/day`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            date: queryArg.date,
+          },
+        }),
+        providesTags: ["ShiftSchedule"],
+      }),
+      putApiV1ShiftSchedulesByIdUpdateSchedule: build.mutation<
+        PutApiV1ShiftSchedulesByIdUpdateScheduleApiResponse,
+        PutApiV1ShiftSchedulesByIdUpdateScheduleApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/${queryArg.id}/update-schedule`,
+          method: "PUT",
+          body: queryArg.updateShiftAssignment,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      postApiV1ShiftSchedulesAssignImport: build.mutation<
+        PostApiV1ShiftSchedulesAssignImportApiResponse,
+        PostApiV1ShiftSchedulesAssignImportApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-schedules/assign/import`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            departmentId: queryArg.departmentId,
+            shiftId: queryArg.shiftId,
+          },
+        }),
+        invalidatesTags: ["ShiftSchedule"],
+      }),
+      postApiV1ShiftType: build.mutation<
+        PostApiV1ShiftTypeApiResponse,
+        PostApiV1ShiftTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-type`,
+          method: "POST",
+          body: queryArg.createShiftTypeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftType"],
+      }),
+      getApiV1ShiftType: build.query<
+        GetApiV1ShiftTypeApiResponse,
+        GetApiV1ShiftTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-type`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["ShiftType"],
+      }),
+      getApiV1ShiftTypeById: build.query<
+        GetApiV1ShiftTypeByIdApiResponse,
+        GetApiV1ShiftTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-type/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["ShiftType"],
+      }),
+      putApiV1ShiftTypeById: build.mutation<
+        PutApiV1ShiftTypeByIdApiResponse,
+        PutApiV1ShiftTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-type/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createShiftTypeRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftType"],
+      }),
+      deleteApiV1ShiftTypeById: build.mutation<
+        DeleteApiV1ShiftTypeByIdApiResponse,
+        DeleteApiV1ShiftTypeByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/shift-type/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["ShiftType"],
+      }),
+      postApiV1StaffRequisitions: build.mutation<
+        PostApiV1StaffRequisitionsApiResponse,
+        PostApiV1StaffRequisitionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/staff-requisitions`,
+          method: "POST",
+          body: queryArg.createStaffRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["StaffRequisition"],
+      }),
+      getApiV1StaffRequisitions: build.query<
+        GetApiV1StaffRequisitionsApiResponse,
+        GetApiV1StaffRequisitionsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/staff-requisitions`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            startDate: queryArg.startDate,
+            endDate: queryArg.endDate,
+          },
+        }),
+        providesTags: ["StaffRequisition"],
+      }),
+      getApiV1StaffRequisitionsById: build.query<
+        GetApiV1StaffRequisitionsByIdApiResponse,
+        GetApiV1StaffRequisitionsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/staff-requisitions/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["StaffRequisition"],
+      }),
+      putApiV1StaffRequisitionsById: build.mutation<
+        PutApiV1StaffRequisitionsByIdApiResponse,
+        PutApiV1StaffRequisitionsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/staff-requisitions/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createStaffRequisitionRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["StaffRequisition"],
+      }),
+      deleteApiV1StaffRequisitionsById: build.mutation<
+        DeleteApiV1StaffRequisitionsByIdApiResponse,
+        DeleteApiV1StaffRequisitionsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/staff-requisitions/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["StaffRequisition"],
+      }),
+      postApiV1User: build.mutation<
+        PostApiV1UserApiResponse,
+        PostApiV1UserApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user`,
+          method: "POST",
+          body: queryArg.createUserRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      getApiV1User: build.query<GetApiV1UserApiResponse, GetApiV1UserApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/user`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["User"],
+      }),
+      postApiV1UserSignUp: build.mutation<
+        PostApiV1UserSignUpApiResponse,
+        PostApiV1UserSignUpApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/sign-up`,
+          method: "POST",
+          body: queryArg.createClientRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      getApiV1UserAuthenticated: build.query<
+        GetApiV1UserAuthenticatedApiResponse,
+        GetApiV1UserAuthenticatedApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/authenticated`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["User"],
+      }),
+      getApiV1UserRoleByRoleId: build.query<
+        GetApiV1UserRoleByRoleIdApiResponse,
+        GetApiV1UserRoleByRoleIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/role/${queryArg.roleId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["User"],
+      }),
+      putApiV1UserById: build.mutation<
+        PutApiV1UserByIdApiResponse,
+        PutApiV1UserByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateUserRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      deleteApiV1UserById: build.mutation<
+        DeleteApiV1UserByIdApiResponse,
+        DeleteApiV1UserByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      putApiV1UserRoleById: build.mutation<
+        PutApiV1UserRoleByIdApiResponse,
+        PutApiV1UserRoleByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/role/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.updateUserRoleRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      postApiV1UserAvatarById: build.mutation<
+        PostApiV1UserAvatarByIdApiResponse,
+        PostApiV1UserAvatarByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/avatar/${queryArg.id}`,
+          method: "POST",
+          body: queryArg.uploadFileRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      postApiV1UserSignatureById: build.mutation<
+        PostApiV1UserSignatureByIdApiResponse,
+        PostApiV1UserSignatureByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/signature/${queryArg.id}`,
+          method: "POST",
+          body: queryArg.uploadFileRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["User"],
+      }),
+      getApiV1UserToggleDisableById: build.query<
+        GetApiV1UserToggleDisableByIdApiResponse,
+        GetApiV1UserToggleDisableByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/user/toggle-disable/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["User"],
+      }),
+      postApiV1Vendors: build.mutation<
+        PostApiV1VendorsApiResponse,
+        PostApiV1VendorsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/vendors`,
+          method: "POST",
+          body: queryArg.createVendorRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Vendor"],
+      }),
+      getApiV1Vendors: build.query<
+        GetApiV1VendorsApiResponse,
+        GetApiV1VendorsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/vendors`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Vendor"],
+      }),
+      getApiV1VendorsById: build.query<
+        GetApiV1VendorsByIdApiResponse,
+        GetApiV1VendorsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/vendors/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Vendor"],
+      }),
+      putApiV1VendorsById: build.mutation<
+        PutApiV1VendorsByIdApiResponse,
+        PutApiV1VendorsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/vendors/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.createVendorRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Vendor"],
+      }),
+      deleteApiV1VendorsById: build.mutation<
+        DeleteApiV1VendorsByIdApiResponse,
+        DeleteApiV1VendorsByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/vendors/${queryArg.id}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Vendor"],
+      }),
+      postApiV1Warehouse: build.mutation<
+        PostApiV1WarehouseApiResponse,
+        PostApiV1WarehouseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse`,
+          method: "POST",
+          body: queryArg.createWarehouseRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1Warehouse: build.query<
+        GetApiV1WarehouseApiResponse,
+        GetApiV1WarehouseApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            type: queryArg["type"],
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseByWarehouseId: build.query<
+        GetApiV1WarehouseByWarehouseIdApiResponse,
+        GetApiV1WarehouseByWarehouseIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      putApiV1WarehouseByWarehouseId: build.mutation<
+        PutApiV1WarehouseByWarehouseIdApiResponse,
+        PutApiV1WarehouseByWarehouseIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}`,
+          method: "PUT",
+          body: queryArg.createWarehouseRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      deleteApiV1WarehouseByWarehouseId: build.mutation<
+        DeleteApiV1WarehouseByWarehouseIdApiResponse,
+        DeleteApiV1WarehouseByWarehouseIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseByWarehouseIdLocation: build.mutation<
+        PostApiV1WarehouseByWarehouseIdLocationApiResponse,
+        PostApiV1WarehouseByWarehouseIdLocationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}/location`,
+          method: "POST",
+          body: queryArg.createWarehouseLocationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseLocationByLocationId: build.query<
+        GetApiV1WarehouseLocationByLocationIdApiResponse,
+        GetApiV1WarehouseLocationByLocationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/location/${queryArg.locationId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      putApiV1WarehouseLocationByLocationId: build.mutation<
+        PutApiV1WarehouseLocationByLocationIdApiResponse,
+        PutApiV1WarehouseLocationByLocationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/location/${queryArg.locationId}`,
+          method: "PUT",
+          body: queryArg.createWarehouseLocationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      deleteApiV1WarehouseLocationByLocationId: build.mutation<
+        DeleteApiV1WarehouseLocationByLocationIdApiResponse,
+        DeleteApiV1WarehouseLocationByLocationIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/location/${queryArg.locationId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseLocation: build.query<
+        GetApiV1WarehouseLocationApiResponse,
+        GetApiV1WarehouseLocationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/location`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseByLocationIdRack: build.mutation<
+        PostApiV1WarehouseByLocationIdRackApiResponse,
+        PostApiV1WarehouseByLocationIdRackApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.locationId}/rack`,
+          method: "POST",
+          body: queryArg.createWarehouseLocationRackRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseRackByRackId: build.query<
+        GetApiV1WarehouseRackByRackIdApiResponse,
+        GetApiV1WarehouseRackByRackIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      putApiV1WarehouseRackByRackId: build.mutation<
+        PutApiV1WarehouseRackByRackIdApiResponse,
+        PutApiV1WarehouseRackByRackIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
+          method: "PUT",
+          body: queryArg.createWarehouseLocationRackRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      deleteApiV1WarehouseRackByRackId: build.mutation<
+        DeleteApiV1WarehouseRackByRackIdApiResponse,
+        DeleteApiV1WarehouseRackByRackIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack/${queryArg.rackId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseRack: build.query<
+        GetApiV1WarehouseRackApiResponse,
+        GetApiV1WarehouseRackApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseRackByDepartment: build.query<
+        GetApiV1WarehouseRackByDepartmentApiResponse,
+        GetApiV1WarehouseRackByDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack/by-department`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseByRackIdShelf: build.mutation<
+        PostApiV1WarehouseByRackIdShelfApiResponse,
+        PostApiV1WarehouseByRackIdShelfApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.rackId}/shelf`,
+          method: "POST",
+          body: queryArg.createWarehouseLocationShelfRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseShelfByShelfId: build.query<
+        GetApiV1WarehouseShelfByShelfIdApiResponse,
+        GetApiV1WarehouseShelfByShelfIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      putApiV1WarehouseShelfByShelfId: build.mutation<
+        PutApiV1WarehouseShelfByShelfIdApiResponse,
+        PutApiV1WarehouseShelfByShelfIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
+          method: "PUT",
+          body: queryArg.createWarehouseLocationShelfRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      deleteApiV1WarehouseShelfByShelfId: build.mutation<
+        DeleteApiV1WarehouseShelfByShelfIdApiResponse,
+        DeleteApiV1WarehouseShelfByShelfIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/shelf/${queryArg.shelfId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseShelf: build.query<
+        GetApiV1WarehouseShelfApiResponse,
+        GetApiV1WarehouseShelfApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/shelf`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseShelfByDepartment: build.query<
+        GetApiV1WarehouseShelfByDepartmentApiResponse,
+        GetApiV1WarehouseShelfByDepartmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/shelf/by-department`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialId: build.query<
+        GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiResponse,
+        GetApiV1WarehouseByWarehouseIdShelvesByMaterialAndMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-material/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchId:
+        build.query<
+          GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiResponse,
+          GetApiV1WarehouseByWarehouseIdShelvesByMaterialbatchAndMaterialBatchIdApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves/by-materialbatch/${queryArg.materialBatchId}`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+            params: {
+              page: queryArg.page,
+              pageSize: queryArg.pageSize,
+              searchQuery: queryArg.searchQuery,
+            },
+          }),
+          providesTags: ["Warehouse"],
+        }),
+      getApiV1WarehouseRackByRackIdShelves: build.query<
+        GetApiV1WarehouseRackByRackIdShelvesApiResponse,
+        GetApiV1WarehouseRackByRackIdShelvesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/rack/${queryArg.rackId}/shelves`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseByWarehouseIdShelves: build.query<
+        GetApiV1WarehouseByWarehouseIdShelvesApiResponse,
+        GetApiV1WarehouseByWarehouseIdShelvesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}/shelves`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseByWarehouseIdArrivalLocation: build.query<
+        GetApiV1WarehouseByWarehouseIdArrivalLocationApiResponse,
+        GetApiV1WarehouseByWarehouseIdArrivalLocationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/${queryArg.warehouseId}/arrival-location`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseDistributedRequisitionMaterials: build.query<
+        GetApiV1WarehouseDistributedRequisitionMaterialsApiResponse,
+        GetApiV1WarehouseDistributedRequisitionMaterialsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/distributed-requisition-materials`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseFinishedGoodsDetails: build.query<
+        GetApiV1WarehouseFinishedGoodsDetailsApiResponse,
+        GetApiV1WarehouseFinishedGoodsDetailsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/finished-goods-details`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseStockTransferDetails: build.query<
+        GetApiV1WarehouseStockTransferDetailsApiResponse,
+        GetApiV1WarehouseStockTransferDetailsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/stock-transfer-details`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            kind: queryArg.kind,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseDistributedMaterialById: build.query<
+        GetApiV1WarehouseDistributedMaterialByIdApiResponse,
+        GetApiV1WarehouseDistributedMaterialByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/distributed-material/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseArrivalLocation: build.mutation<
+        PostApiV1WarehouseArrivalLocationApiResponse,
+        PostApiV1WarehouseArrivalLocationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/arrival-location`,
+          method: "POST",
+          body: queryArg.createArrivalLocationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      putApiV1WarehouseArrivalLocation: build.mutation<
+        PutApiV1WarehouseArrivalLocationApiResponse,
+        PutApiV1WarehouseArrivalLocationApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/arrival-location`,
+          method: "PUT",
+          body: queryArg.updateArrivalLocationRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseConfirmArrivalByDistributedMaterialId: build.mutation<
+        PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiResponse,
+        PostApiV1WarehouseConfirmArrivalByDistributedMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/confirm-arrival/${queryArg.distributedMaterialId}`,
+          method: "POST",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      postApiV1WarehouseChecklist: build.mutation<
+        PostApiV1WarehouseChecklistApiResponse,
+        PostApiV1WarehouseChecklistApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/checklist`,
+          method: "POST",
+          body: queryArg.createChecklistRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseChecklistById: build.query<
+        GetApiV1WarehouseChecklistByIdApiResponse,
+        GetApiV1WarehouseChecklistByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/checklist/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatch:
+        build.query<
+          GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiResponse,
+          GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdMaterialBatchApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/material-batch`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Warehouse"],
+        }),
+      postApiV1WarehouseDistributedMaterialMaterialBatch: build.mutation<
+        PostApiV1WarehouseDistributedMaterialMaterialBatchApiResponse,
+        PostApiV1WarehouseDistributedMaterialMaterialBatchApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/distributed-material/material-batch`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklist:
+        build.query<
+          GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiResponse,
+          GetApiV1WarehouseDistributedMaterialByDistributedMaterialIdChecklistApiArg
+        >({
+          query: (queryArg) => ({
+            url: `/api/v1/warehouse/distributed-material/${queryArg.distributedMaterialId}/checklist`,
+            headers: {
+              Module: queryArg["module"],
+              SubModule: queryArg.subModule,
+            },
+          }),
+          providesTags: ["Warehouse"],
+        }),
+      postApiV1WarehouseGrn: build.mutation<
+        PostApiV1WarehouseGrnApiResponse,
+        PostApiV1WarehouseGrnApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/grn`,
+          method: "POST",
+          body: queryArg.createGrnRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseGrnById: build.query<
+        GetApiV1WarehouseGrnByIdApiResponse,
+        GetApiV1WarehouseGrnByIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/grn/${queryArg.id}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseGrns: build.query<
+        GetApiV1WarehouseGrnsApiResponse,
+        GetApiV1WarehouseGrnsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/grns`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            status: queryArg.status,
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+            kind: queryArg.kind,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseBincardinformationByMaterialId: build.query<
+        GetApiV1WarehouseBincardinformationByMaterialIdApiResponse,
+        GetApiV1WarehouseBincardinformationByMaterialIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/bincardinformation/${queryArg.materialId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      getApiV1WarehouseBincardinformationByProductIdProduct: build.query<
+        GetApiV1WarehouseBincardinformationByProductIdProductApiResponse,
+        GetApiV1WarehouseBincardinformationByProductIdProductApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/warehouse/bincardinformation/${queryArg.productId}/product`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["Warehouse"],
+      }),
+      postApiV1WorkOrder: build.mutation<
+        PostApiV1WorkOrderApiResponse,
+        PostApiV1WorkOrderApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/work-order`,
+          method: "POST",
+          body: queryArg.createWorkOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            userId: queryArg.userId,
+          },
+        }),
+        invalidatesTags: ["WorkOrder"],
+      }),
+      getApiV1WorkOrder: build.query<
+        GetApiV1WorkOrderApiResponse,
+        GetApiV1WorkOrderApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/work-order`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            searchQuery: queryArg.searchQuery,
+          },
+        }),
+        providesTags: ["WorkOrder"],
+      }),
+      getApiV1WorkOrderByWorkOrderId: build.query<
+        GetApiV1WorkOrderByWorkOrderIdApiResponse,
+        GetApiV1WorkOrderByWorkOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/work-order/${queryArg.workOrderId}`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["WorkOrder"],
+      }),
+      putApiV1WorkOrderByWorkOrderId: build.mutation<
+        PutApiV1WorkOrderByWorkOrderIdApiResponse,
+        PutApiV1WorkOrderByWorkOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/work-order/${queryArg.workOrderId}`,
+          method: "PUT",
+          body: queryArg.updateWorkOrderRequest,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            userId: queryArg.userId,
+          },
+        }),
+        invalidatesTags: ["WorkOrder"],
+      }),
+      deleteApiV1WorkOrderByWorkOrderId: build.mutation<
+        DeleteApiV1WorkOrderByWorkOrderIdApiResponse,
+        DeleteApiV1WorkOrderByWorkOrderIdApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/work-order/${queryArg.workOrderId}`,
+          method: "DELETE",
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+          params: {
+            userId: queryArg.userId,
+          },
+        }),
+        invalidatesTags: ["WorkOrder"],
       }),
     }),
-    getApiV1WarehouseGrnById: build.query<
-      GetApiV1WarehouseGrnByIdApiResponse,
-      GetApiV1WarehouseGrnByIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/grn/${queryArg.id}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    getApiV1WarehouseGrns: build.query<
-      GetApiV1WarehouseGrnsApiResponse,
-      GetApiV1WarehouseGrnsApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/grns`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          status: queryArg.status,
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-          kind: queryArg.kind,
-        },
-      }),
-    }),
-    getApiV1WarehouseBincardinformationByMaterialId: build.query<
-      GetApiV1WarehouseBincardinformationByMaterialIdApiResponse,
-      GetApiV1WarehouseBincardinformationByMaterialIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/bincardinformation/${queryArg.materialId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WarehouseBincardinformationByProductIdProduct: build.query<
-      GetApiV1WarehouseBincardinformationByProductIdProductApiResponse,
-      GetApiV1WarehouseBincardinformationByProductIdProductApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/warehouse/bincardinformation/${queryArg.productId}/product`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    postApiV1WorkOrder: build.mutation<
-      PostApiV1WorkOrderApiResponse,
-      PostApiV1WorkOrderApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/work-order`,
-        method: "POST",
-        body: queryArg.createWorkOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          userId: queryArg.userId,
-        },
-      }),
-    }),
-    getApiV1WorkOrder: build.query<
-      GetApiV1WorkOrderApiResponse,
-      GetApiV1WorkOrderApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/work-order`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          page: queryArg.page,
-          pageSize: queryArg.pageSize,
-          searchQuery: queryArg.searchQuery,
-        },
-      }),
-    }),
-    getApiV1WorkOrderByWorkOrderId: build.query<
-      GetApiV1WorkOrderByWorkOrderIdApiResponse,
-      GetApiV1WorkOrderByWorkOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/work-order/${queryArg.workOrderId}`,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-      }),
-    }),
-    putApiV1WorkOrderByWorkOrderId: build.mutation<
-      PutApiV1WorkOrderByWorkOrderIdApiResponse,
-      PutApiV1WorkOrderByWorkOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/work-order/${queryArg.workOrderId}`,
-        method: "PUT",
-        body: queryArg.updateWorkOrderRequest,
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          userId: queryArg.userId,
-        },
-      }),
-    }),
-    deleteApiV1WorkOrderByWorkOrderId: build.mutation<
-      DeleteApiV1WorkOrderByWorkOrderIdApiResponse,
-      DeleteApiV1WorkOrderByWorkOrderIdApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/v1/work-order/${queryArg.workOrderId}`,
-        method: "DELETE",
-        headers: {
-          Module: queryArg["module"],
-          SubModule: queryArg.subModule,
-        },
-        params: {
-          userId: queryArg.userId,
-        },
-      }),
-    }),
-  }),
-  overrideExisting: false,
-});
+    overrideExisting: false,
+  });
 export { injectedRtkApi as api };
 export type GetApiV1ActivityLogApiResponse =
   /** status 200 OK */ ActivityLogDtoIEnumerablePaginateable;
@@ -9012,18 +9781,52 @@ export type DeleteApiV1CollectionByItemTypeAndItemIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1CollectionUomApiResponse =
-  /** status 200 OK */ UnitOfMeasureDto[];
-export type GetApiV1CollectionUomApiArg = {
-  isRawMaterial?: boolean;
+export type GetApiV1CollectionPackageStylesApiResponse =
+  /** status 200 OK */ PackageStyleDto[];
+export type GetApiV1CollectionPackageStylesApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1CollectionPackageStylesApiResponse =
-  /** status 200 OK */ PackageStyleDto[];
-export type GetApiV1CollectionPackageStylesApiArg = {
+export type PostApiV1CollectionUomApiResponse = unknown;
+export type PostApiV1CollectionUomApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUnitOfMeasure: CreateUnitOfMeasure;
+};
+export type PostApiV1CollectionUomPaginatedApiResponse =
+  /** status 200 OK */ UnitOfMeasureDtoIEnumerablePaginateable;
+export type PostApiV1CollectionUomPaginatedApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  filterUnitOfMeasure: FilterUnitOfMeasure;
+};
+export type PostApiV1CollectionUomByUomIdApiResponse =
+  /** status 200 OK */ UnitOfMeasureDto;
+export type PostApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PutApiV1CollectionUomByUomIdApiResponse = unknown;
+export type PutApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  createUnitOfMeasure: CreateUnitOfMeasure;
+};
+export type DeleteApiV1CollectionUomByUomIdApiResponse = unknown;
+export type DeleteApiV1CollectionUomByUomIdApiArg = {
+  uomId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -10671,6 +11474,15 @@ export type PostApiV1MaterialDepartmentApiArg = {
   /** The list of material departments to create. */
   body: CreateMaterialDepartment[];
 };
+export type DeleteApiV1MaterialDepartmentApiResponse = unknown;
+export type DeleteApiV1MaterialDepartmentApiArg = {
+  /** The material you want to unlink from your department */
+  materialId?: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1MaterialDepartmentApiResponse =
   /** status 200 OK */ MaterialDepartmentWithWarehouseStockDtoIEnumerablePaginateable;
 export type GetApiV1MaterialDepartmentApiArg = {
@@ -12189,7 +13001,7 @@ export type GetApiV1ProductionOrdersApiArg = {
   subModule?: any;
 };
 export type GetApiV1ProductionOrdersByIdApiResponse =
-  /** status 200 OK */ ProductionOrderDto;
+  /** status 200 OK */ ProductionOrderDetailDto;
 export type GetApiV1ProductionOrdersByIdApiArg = {
   id: string;
   /** The module this request falls under */
@@ -12215,18 +13027,18 @@ export type DeleteApiV1ProductionOrdersByIdApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1ProductionOrdersProformaInvoicesApiResponse =
+export type PostApiV1ProductionOrdersProformaInvoiceApiResponse =
   /** status 200 OK */ string;
-export type PostApiV1ProductionOrdersProformaInvoicesApiArg = {
+export type PostApiV1ProductionOrdersProformaInvoiceApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
   createProformaInvoice: CreateProformaInvoice;
 };
-export type GetApiV1ProductionOrdersProformaInvoicesApiResponse =
+export type GetApiV1ProductionOrdersProformaInvoiceApiResponse =
   /** status 200 OK */ ProformaInvoiceDtoIEnumerablePaginateableRead;
-export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
+export type GetApiV1ProductionOrdersProformaInvoiceApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -12235,17 +13047,17 @@ export type GetApiV1ProductionOrdersProformaInvoicesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductionOrdersProformaInvoicesByIdApiResponse =
+export type GetApiV1ProductionOrdersProformaInvoiceByIdApiResponse =
   /** status 200 OK */ ProformaInvoiceDtoRead;
-export type GetApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type GetApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ProductionOrdersProformaInvoicesByIdApiResponse = unknown;
-export type PutApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type PutApiV1ProductionOrdersProformaInvoiceByIdApiResponse = unknown;
+export type PutApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -12253,27 +13065,26 @@ export type PutApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
   subModule?: any;
   createProformaInvoice: CreateProformaInvoice;
 };
-export type DeleteApiV1ProductionOrdersProformaInvoicesByIdApiResponse =
-  unknown;
-export type DeleteApiV1ProductionOrdersProformaInvoicesByIdApiArg = {
+export type DeleteApiV1ProductionOrdersProformaInvoiceByIdApiResponse = unknown;
+export type DeleteApiV1ProductionOrdersProformaInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PostApiV1ProductionOrdersInvoicesApiResponse =
+export type PostApiV1ProductionOrdersInvoiceApiResponse =
   /** status 200 OK */ string;
-export type PostApiV1ProductionOrdersInvoicesApiArg = {
+export type PostApiV1ProductionOrdersInvoiceApiArg = {
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
   createInvoice: CreateInvoice;
 };
-export type GetApiV1ProductionOrdersInvoicesApiResponse =
+export type GetApiV1ProductionOrdersInvoiceApiResponse =
   /** status 200 OK */ InvoiceDtoIEnumerablePaginateableRead;
-export type GetApiV1ProductionOrdersInvoicesApiArg = {
+export type GetApiV1ProductionOrdersInvoiceApiArg = {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
@@ -12282,17 +13093,17 @@ export type GetApiV1ProductionOrdersInvoicesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type GetApiV1ProductionOrdersInvoicesByIdApiResponse =
+export type GetApiV1ProductionOrdersInvoiceByIdApiResponse =
   /** status 200 OK */ InvoiceDtoRead;
-export type GetApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type GetApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
   subModule?: any;
 };
-export type PutApiV1ProductionOrdersInvoicesByIdApiResponse = unknown;
-export type PutApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type PutApiV1ProductionOrdersInvoiceByIdApiResponse = unknown;
+export type PutApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
   /** The module this request falls under */
   module?: any;
@@ -12300,9 +13111,26 @@ export type PutApiV1ProductionOrdersInvoicesByIdApiArg = {
   subModule?: any;
   createInvoice: CreateInvoice;
 };
-export type DeleteApiV1ProductionOrdersInvoicesByIdApiResponse = unknown;
-export type DeleteApiV1ProductionOrdersInvoicesByIdApiArg = {
+export type DeleteApiV1ProductionOrdersInvoiceByIdApiResponse = unknown;
+export type DeleteApiV1ProductionOrdersInvoiceByIdApiArg = {
   id: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
+export type PostApiV1ProductionOrdersAllocateApiResponse = unknown;
+export type PostApiV1ProductionOrdersAllocateApiArg = {
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  allocateProductionOrderRequest: AllocateProductionOrderRequest;
+};
+export type PutApiV1ProductionOrdersDeliverByProductionOrderIdApiResponse =
+  unknown;
+export type PutApiV1ProductionOrdersDeliverByProductionOrderIdApiArg = {
+  productionOrderId: string;
   /** The module this request falls under */
   module?: any;
   /** The sub module this request falls under */
@@ -13118,16 +13946,6 @@ export type GetApiV1ProductionScheduleAllocateProductsApiArg = {
 export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiResponse =
   /** status 200 OK */ AllocateProductionOrderDtoRead;
 export type GetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdApiArg =
-  {
-    allocatedProductId: string;
-    /** The module this request falls under */
-    module?: any;
-    /** The sub module this request falls under */
-    subModule?: any;
-  };
-export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiResponse =
-  unknown;
-export type PutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdApiArg =
   {
     allocatedProductId: string;
     /** The module this request falls under */
@@ -14846,6 +15664,8 @@ export type CreateAnalyticalTestRequest = {
   numberOfContainers?: number;
   sampledAt?: string | null;
 };
+export type UnitOfMeasureType = 0 | 1 | 2;
+export type UnitOfMeasureCategory = 0 | 1 | 2 | 3 | 4;
 export type UnitOfMeasureDto = {
   id?: string;
   createdBy?: UserDto;
@@ -14855,6 +15675,8 @@ export type UnitOfMeasureDto = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type EquipmentDto = {
   id?: string;
@@ -14899,6 +15721,7 @@ export type ProductListDto = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
 };
 export type BatchManufacturingStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type BatchManufacturingRecordDto = {
@@ -15580,6 +16403,32 @@ export type PackageStyleDto = {
   name?: string | null;
   description?: string | null;
 };
+export type CreateUnitOfMeasure = {
+  name?: string | null;
+  symbol?: string | null;
+  description?: string | null;
+  isScalable?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
+};
+export type UnitOfMeasureDtoIEnumerablePaginateable = {
+  data?: UnitOfMeasureDto[] | null;
+  pageIndex?: number;
+  pageCount?: number;
+  totalRecordCount?: number;
+  numberOfPagesToShow?: number;
+  startPageIndex?: number;
+  stopPageIndex?: number;
+};
+export type FilterUnitOfMeasure = {
+  pageSize?: number;
+  page?: number;
+  sortLabel?: string | null;
+  sortDirection?: SortDirection;
+  searchQuery?: string | null;
+  types?: UnitOfMeasureType[] | null;
+  categories?: UnitOfMeasureCategory[] | null;
+};
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type CompanyWorkingDaysRequest = {
   day: DayOfWeek;
@@ -15889,6 +16738,7 @@ export type UpdateEmployeeRequest = {
   educationBackground: EducationDto[];
   employmentHistory: EmploymentHistoryDto[];
   status?: EmployeeStatus;
+  level?: EmployeeLevel;
   activeStatus?: EmployeeActiveStatus;
   inactiveStatus?: EmployeeInactiveStatus;
   suspensionStartDate?: string | null;
@@ -15898,7 +16748,7 @@ export type AssignEmployeeDto = {
   designationId: string;
   departmentId: string;
   staffNumber?: string | null;
-  level?: EmployeeLevel;
+  level: EmployeeLevel;
   startDate?: string;
   reportingManagerId: string;
 };
@@ -16501,6 +17351,8 @@ export type UnitOfMeasure = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type UnitOfMeasureRead = {
   id?: string;
@@ -16518,6 +17370,8 @@ export type UnitOfMeasureRead = {
   description?: string | null;
   isScalable?: boolean;
   isRawMaterial?: boolean;
+  type?: UnitOfMeasureType;
+  category?: UnitOfMeasureCategory;
 };
 export type MaterialDepartment = {
   id?: string;
@@ -18091,6 +18945,10 @@ export type RouteRead = {
   responsibleRoles?: RouteResponsibleRoleRead[] | null;
   workCenters?: RouteWorkCenterRead[] | null;
 };
+export type ProductPrices = {
+  price?: number;
+  date?: string;
+};
 export type Product = {
   id?: string;
   createdAt?: string;
@@ -18134,9 +18992,10 @@ export type Product = {
   billOfMaterials?: ProductBillOfMaterial[] | null;
   packages?: ProductPackage[] | null;
   routes?: Route[] | null;
-  price?: number;
   division?: Division;
   packPerShipper?: number;
+  prices?: ProductPrices[] | null;
+  expectedYield?: number;
 };
 export type ProductRead = {
   id?: string;
@@ -18184,6 +19043,8 @@ export type ProductRead = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  prices?: ProductPrices[] | null;
+  expectedYield?: number;
 };
 export type RequisitionApproval = {
   userId?: string | null;
@@ -18874,6 +19735,7 @@ export type PurchaseOrderItem = {
   uoMId?: string;
   uoM?: UnitOfMeasure;
   quantity?: number;
+  quantityInvoiced?: number;
   price?: number;
   currencyId?: string | null;
   currency?: Currency;
@@ -18896,11 +19758,12 @@ export type PurchaseOrderItemRead = {
   uoMId?: string;
   uoM?: UnitOfMeasureRead;
   quantity?: number;
+  quantityInvoiced?: number;
   price?: number;
   currencyId?: string | null;
   currency?: CurrencyRead;
 };
-export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4;
+export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4 | 5;
 export type RevisedPurchaseOrderType = 0 | 1 | 2 | 3 | 4;
 export type RevisedPurchaseOrder = {
   id?: string;
@@ -21191,6 +22054,7 @@ export type PurchaseOrderItemDto = {
   manufacturers?: SupplierManufacturerDto[] | null;
   canReassignSupplier?: boolean;
   receivedQuantity?: number;
+  quantityInvoiced?: number;
 };
 export type PurchaseOrderItemDtoRead = {
   id?: string;
@@ -21204,6 +22068,7 @@ export type PurchaseOrderItemDtoRead = {
   cost?: number;
   canReassignSupplier?: boolean;
   receivedQuantity?: number;
+  quantityInvoiced?: number;
 };
 export type PurchaseOrderAttachmentStatus = 0 | 1 | 2;
 export type PurchaseOrderRevisionDto = {
@@ -21558,6 +22423,7 @@ export type CreateProductRequest = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  expectedYield?: number;
 };
 export type ProductListDtoIEnumerablePaginateable = {
   data?: ProductListDto[] | null;
@@ -21671,6 +22537,7 @@ export type ProductDto = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -21707,6 +22574,7 @@ export type ProductDtoRead = {
   division?: Division;
   packPerShipper?: number;
   labelClaim?: string | null;
+  expectedYield?: number;
   billOfMaterials?: ProductBillOfMaterialDto[] | null;
   currentBillOfMaterial?: ProductBillOfMaterialDto;
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
@@ -21741,6 +22609,7 @@ export type UpdateProductRequest = {
   price?: number;
   division?: Division;
   packPerShipper?: number;
+  expectedYield?: number;
 };
 export type UpdateProductPackageDescriptionRequest = {
   primaryPackDescription?: string | null;
@@ -21840,6 +22709,7 @@ export type ProductionOrderProductsDto = {
   fulfilledQuantities?: ProductionOrderProductQuantityDto[] | null;
   fulfilled?: boolean;
 };
+export type ProductionOrderStatus = 0 | 1 | 2;
 export type ProductionOrderDto = {
   id?: string;
   createdBy?: UserDto;
@@ -21848,6 +22718,9 @@ export type ProductionOrderDto = {
   customer?: CustomerDto;
   products?: ProductionOrderProductsDto[] | null;
   totalValue?: number;
+  status?: ProductionOrderStatus;
+  approved?: boolean;
+  deliveredAt?: string | null;
 };
 export type ProductionOrderDtoIEnumerablePaginateable = {
   data?: ProductionOrderDto[] | null;
@@ -21857,6 +22730,33 @@ export type ProductionOrderDtoIEnumerablePaginateable = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type ProductionOrderInvoiceItemDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  product?: ProductListDto;
+  quantity?: number;
+};
+export type ProductionOrderInvoiceDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  productionOrder?: CollectionItemDto;
+  items?: ProductionOrderInvoiceItemDto[] | null;
+};
+export type ProductionOrderDetailDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  code?: string | null;
+  customer?: CustomerDto;
+  products?: ProductionOrderProductsDto[] | null;
+  totalValue?: number;
+  status?: ProductionOrderStatus;
+  approved?: boolean;
+  deliveredAt?: string | null;
+  invoice?: ProductionOrderInvoiceDto;
 };
 export type CreateProformaInvoiceProduct = {
   productId?: string;
@@ -21914,7 +22814,7 @@ export type ProformaInvoiceDtoIEnumerablePaginateableRead = {
 };
 export type CreateInvoice = {
   proformaInvoiceId?: string;
-  customerPoNumber?: string | null;
+  customerId?: string;
 };
 export type InvoiceStatus = 0 | 1;
 export type InvoiceDto = {
@@ -21923,7 +22823,7 @@ export type InvoiceDto = {
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   proformaInvoice?: ProformaInvoiceDto;
-  customerPoNumber?: string | null;
+  customer?: CustomerDto;
   status?: InvoiceStatus;
 };
 export type InvoiceDtoRead = {
@@ -21932,7 +22832,7 @@ export type InvoiceDtoRead = {
   createdAt?: string;
   attachments?: AttachmentDto[] | null;
   proformaInvoice?: ProformaInvoiceDtoRead;
-  customerPoNumber?: string | null;
+  customer?: CustomerDto;
   status?: InvoiceStatus;
 };
 export type InvoiceDtoIEnumerablePaginateable = {
@@ -21952,6 +22852,18 @@ export type InvoiceDtoIEnumerablePaginateableRead = {
   numberOfPagesToShow?: number;
   startPageIndex?: number;
   stopPageIndex?: number;
+};
+export type AllocateProductQuantityRequest = {
+  finishedGoodsTransferNoteId?: string;
+  quantity?: number;
+};
+export type AllocateProductionOrderProductRequest = {
+  productId?: string;
+  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
+};
+export type AllocateProductionOrderRequest = {
+  productionOrderId?: string;
+  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type CreateProductionScheduleProduct = {
   productId?: string;
@@ -22521,18 +23433,6 @@ export type ApprovedProductDetailDtoRead = {
   quantityPerPack?: number;
   totalLoose?: number;
   finishedGoodsTransferNotes?: FinishedGoodsTransferNoteDtoRead[] | null;
-};
-export type AllocateProductQuantityRequest = {
-  finishedGoodsTransferNoteId?: string;
-  quantity?: number;
-};
-export type AllocateProductionOrderProductRequest = {
-  productId?: string;
-  fulfilledQuantities?: AllocateProductQuantityRequest[] | null;
-};
-export type AllocateProductionOrderRequest = {
-  productionOrderId?: string;
-  products?: AllocateProductionOrderProductRequest[] | null;
 };
 export type AllocateProductQuantityDto = {
   finishedGoodsTransferNote?: FinishedGoodsTransferNoteDto;
@@ -23911,10 +24811,13 @@ export const {
   useLazyGetApiV1CollectionItemTypesQuery,
   usePutApiV1CollectionByItemTypeAndItemIdMutation,
   useDeleteApiV1CollectionByItemTypeAndItemIdMutation,
-  useGetApiV1CollectionUomQuery,
-  useLazyGetApiV1CollectionUomQuery,
   useGetApiV1CollectionPackageStylesQuery,
   useLazyGetApiV1CollectionPackageStylesQuery,
+  usePostApiV1CollectionUomMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
+  usePostApiV1CollectionUomByUomIdMutation,
+  usePutApiV1CollectionUomByUomIdMutation,
+  useDeleteApiV1CollectionUomByUomIdMutation,
   usePostApiV1WorkingDaysMutation,
   useGetApiV1WorkingDaysQuery,
   useLazyGetApiV1WorkingDaysQuery,
@@ -24153,6 +25056,7 @@ export const {
   useGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   useLazyGetApiV1MaterialByMaterialIdStockDepartmentsQuery,
   usePostApiV1MaterialDepartmentMutation,
+  useDeleteApiV1MaterialDepartmentMutation,
   useGetApiV1MaterialDepartmentQuery,
   useLazyGetApiV1MaterialDepartmentQuery,
   useGetApiV1MaterialDepartmentNotLinkedQuery,
@@ -24374,20 +25278,22 @@ export const {
   useLazyGetApiV1ProductionOrdersByIdQuery,
   usePutApiV1ProductionOrdersByIdMutation,
   useDeleteApiV1ProductionOrdersByIdMutation,
-  usePostApiV1ProductionOrdersProformaInvoicesMutation,
-  useGetApiV1ProductionOrdersProformaInvoicesQuery,
-  useLazyGetApiV1ProductionOrdersProformaInvoicesQuery,
-  useGetApiV1ProductionOrdersProformaInvoicesByIdQuery,
-  useLazyGetApiV1ProductionOrdersProformaInvoicesByIdQuery,
-  usePutApiV1ProductionOrdersProformaInvoicesByIdMutation,
-  useDeleteApiV1ProductionOrdersProformaInvoicesByIdMutation,
-  usePostApiV1ProductionOrdersInvoicesMutation,
-  useGetApiV1ProductionOrdersInvoicesQuery,
-  useLazyGetApiV1ProductionOrdersInvoicesQuery,
-  useGetApiV1ProductionOrdersInvoicesByIdQuery,
-  useLazyGetApiV1ProductionOrdersInvoicesByIdQuery,
-  usePutApiV1ProductionOrdersInvoicesByIdMutation,
-  useDeleteApiV1ProductionOrdersInvoicesByIdMutation,
+  usePostApiV1ProductionOrdersProformaInvoiceMutation,
+  useGetApiV1ProductionOrdersProformaInvoiceQuery,
+  useLazyGetApiV1ProductionOrdersProformaInvoiceQuery,
+  useGetApiV1ProductionOrdersProformaInvoiceByIdQuery,
+  useLazyGetApiV1ProductionOrdersProformaInvoiceByIdQuery,
+  usePutApiV1ProductionOrdersProformaInvoiceByIdMutation,
+  useDeleteApiV1ProductionOrdersProformaInvoiceByIdMutation,
+  usePostApiV1ProductionOrdersInvoiceMutation,
+  useGetApiV1ProductionOrdersInvoiceQuery,
+  useLazyGetApiV1ProductionOrdersInvoiceQuery,
+  useGetApiV1ProductionOrdersInvoiceByIdQuery,
+  useLazyGetApiV1ProductionOrdersInvoiceByIdQuery,
+  usePutApiV1ProductionOrdersInvoiceByIdMutation,
+  useDeleteApiV1ProductionOrdersInvoiceByIdMutation,
+  usePostApiV1ProductionOrdersAllocateMutation,
+  usePutApiV1ProductionOrdersDeliverByProductionOrderIdMutation,
   usePostApiV1ProductionScheduleMutation,
   useGetApiV1ProductionScheduleQuery,
   useLazyGetApiV1ProductionScheduleQuery,
@@ -24509,7 +25415,6 @@ export const {
   useLazyGetApiV1ProductionScheduleAllocateProductsQuery,
   useGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
   useLazyGetApiV1ProductionScheduleAllocateProductsByAllocatedProductIdQuery,
-  usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation,
   useGetApiV1ProductionScheduleSummaryReportQuery,
   useLazyGetApiV1ProductionScheduleSummaryReportQuery,
   useGetApiV1ProductionScheduleDetailedReportQuery,

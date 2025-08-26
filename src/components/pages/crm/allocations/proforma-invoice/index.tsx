@@ -4,7 +4,7 @@ import {
   Button,
   DialogContent,
   DialogTitle,
-  Icon,
+  // Icon,
 } from "@/components/ui";
 // import ProFormalInvoiceForm from "./form";
 // import { useForm, useFieldArray } from "react-hook-form";
@@ -98,16 +98,13 @@ import {
 
 import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import {
-  AllocateProductionOrderDtoRead,
-  usePostApiV1ProductionOrdersProformaInvoicesMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { AllocateProductionOrderDtoRead } from "@/lib/redux/api/openapi.generated";
 import { extractInvoiceData } from "./utils";
 import { format } from "date-fns";
-import { toast } from "sonner";
-import ThrowErrorMessage from "@/lib/throw-error";
+// import { toast } from "sonner";
+// import ThrowErrorMessage from "@/lib/throw-error";
 
-// Data extraction function
+// // Data extraction function
 
 // Sample data (based on your JSON)
 
@@ -122,43 +119,43 @@ const ProformaInvoice: React.FC<ProformaInvoiceProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [createProFormalInvoice, { isLoading }] =
-    usePostApiV1ProductionOrdersProformaInvoicesMutation();
+  // const [createProFormalInvoice, { isLoading }] =
+  //   usePostApiV1ProductionOrdersProformaInvoicesMutation();
 
   // Extract the invoice data using our function
   const invoiceData = extractInvoiceData(
     data as AllocateProductionOrderDtoRead,
   );
 
-  const onSubmit = async () => {
-    try {
-      await createProFormalInvoice({
-        createProformaInvoice: {
-          productionOrderId: data?.productionOrder?.id as string,
-          products: invoiceData?.products.map((product) => ({
-            productId: product.id as string,
-            quantity: product.fulfilledQuantity,
-          })),
-        },
-      }).unwrap();
-      toast.success("Proforma invoice created successfully");
-      onClose();
-    } catch (error) {
-      ThrowErrorMessage(error);
-    }
-  };
+  // const onSubmit = async () => {
+  //   try {
+  //     await createProFormalInvoice({
+  //       createProformaInvoice: {
+  //         productionOrderId: data?.productionOrder?.id as string,
+  //         products: invoiceData?.products.map((product) => ({
+  //           productId: product.id as string,
+  //           quantity: product.fulfilledQuantity,
+  //         })),
+  //       },
+  //     }).unwrap();
+  //     toast.success("Proforma invoice created successfully");
+  //     onClose();
+  //   } catch (error) {
+  //     ThrowErrorMessage(error);
+  //   }
+  // };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl rounded-none" noClose>
         <div className="absolute -right-36 flex flex-col gap-4">
-          <Button variant="outline" onClick={() => onSubmit()}>
+          {/* <Button variant="outline" onClick={() => onSubmit()}>
             {isLoading ? (
               <Icon name="LoaderCircle" className="animate-spin" />
             ) : (
               <Icon name="Printer" />
             )}
             <span>Submit</span>
-          </Button>
+          </Button> */}
           <Button variant="destructive" onClick={() => onClose()}>
             <span>Close</span>
           </Button>

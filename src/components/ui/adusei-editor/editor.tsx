@@ -55,6 +55,7 @@ const AduseiEditor = ({
 
   // Updated useEffect to handle both clearing and setting content
   useEffect(() => {
+    console.log(value, "value");
     if (editorState) {
       const currentContent = editorState.getHTML();
 
