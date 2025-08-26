@@ -41,7 +41,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
   defaultDepartment,
 }: Props<TFieldValues, TContext>) => {
   return (
-    <div className="w-full">
+    <div className="w-full space-y-5">
       <FormWizard
         className="grid w-full grid-cols-2 gap-x-10 gap-y-5 space-y-0"
         fieldWrapperClassName="flex-grow"
@@ -109,6 +109,26 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("fullBatchSize" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Full Batch Size",
+            placeholder: "Enter in Largest Unit",
+            type: InputTypes.NUMBER,
+
+            errors,
+          },
+          {
+            register: register("expectedYield" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Expected Yield",
+            placeholder: "Enter yield",
+            type: InputTypes.TEXT,
+            errors,
+          },
+
+          {
             label: "Base Packing UOM",
             control: control as Control,
             type: InputTypes.SELECT,
@@ -131,24 +151,36 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
-            label: "Equipment",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "equipment",
-            required: true,
-            defaultValue: defaultEquipment,
-            placeholder: "Select Equipment",
-            options: equipmentOptions,
+            register: register("packPerShipper" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Pack Per Shipper",
+            placeholder: "Enter pack per shipper",
+            type: InputTypes.NUMBER,
             errors,
           },
           {
-            register: register("fullBatchSize" as Path<TFieldValues>, {
+            register: register("price" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Full Batch Size",
-            placeholder: "Enter in Largest Unit",
+            label: "Price",
+            placeholder: "Enter price",
             type: InputTypes.NUMBER,
-
+            required: true,
+            errors,
+          },
+          {
+            register: register("packageStyle" as Path<TFieldValues>),
+            label: "Pack Style",
+            placeholder: "Enter style",
+            type: InputTypes.TEXT,
+            errors,
+          },
+          {
+            register: register("filledWeight" as Path<TFieldValues>),
+            label: "Filled Volume",
+            placeholder: "Enter filled volume",
+            type: InputTypes.TEXT,
             errors,
           },
           {
@@ -163,6 +195,17 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            label: "Division",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "division",
+            required: true,
+            placeholder: "Select Division",
+            options: DivisionOptions,
+            errors,
+          },
+
+          {
             register: register("storageCondition" as Path<TFieldValues>),
             label: "Storage Condition",
             placeholder: "Enter condition",
@@ -176,40 +219,7 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.TEXT,
             errors,
           },
-          {
-            register: register("packageStyle" as Path<TFieldValues>),
-            label: "Pack Style",
-            placeholder: "Enter style",
-            type: InputTypes.TEXT,
-            errors,
-          },
-          {
-            label: "Division",
-            control: control as Control,
-            type: InputTypes.SELECT,
-            name: "division",
-            required: true,
-            placeholder: "Select Division",
-            options: DivisionOptions,
-            errors,
-          },
-          {
-            register: register("price" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
-            label: "Price",
-            placeholder: "Enter price",
-            type: InputTypes.NUMBER,
-            required: true,
-            errors,
-          },
-          {
-            register: register("filledWeight" as Path<TFieldValues>),
-            label: "Filled Volume",
-            placeholder: "Enter filled volume",
-            type: InputTypes.TEXT,
-            errors,
-          },
+
           {
             register: register("actionUse" as Path<TFieldValues>),
             label: "Action and Use",
@@ -218,22 +228,41 @@ const ProductForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            label: "Equipment",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "equipment",
+            required: true,
+            defaultValue: defaultEquipment,
+            placeholder: "Select Equipment",
+            options: equipmentOptions,
+            errors,
+          },
+          {
+            register: register("fdaRegistrationNumber" as Path<TFieldValues>),
+            label: "FDA Registration Number",
+            placeholder: "Enter FDA Registration Number",
+            type: InputTypes.TEXT,
+            errors,
+          }, //masterFormulaNumber
+          {
+            register: register("masterFormulaNumber" as Path<TFieldValues>),
+            label: "Master Formula Number",
+            placeholder: "Enter Master Formula Number",
+            type: InputTypes.TEXT,
+            errors,
+          },
+        ]}
+      />
+      <FormWizard
+        config={[
+          {
             label: "Label Claims",
             control: control as Control,
             type: InputTypes.RICHTEXT,
             name: "description",
             placeholder: "Enter label claims",
             suggestions: [],
-            errors,
-          },
-
-          {
-            register: register("packPerShipper" as Path<TFieldValues>, {
-              valueAsNumber: true,
-            }),
-            label: "Pack Per Shipper",
-            placeholder: "Enter pack per shipper",
-            type: InputTypes.NUMBER,
             errors,
           },
         ]}

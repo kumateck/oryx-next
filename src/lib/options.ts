@@ -15,6 +15,8 @@ import {
   ShipmentStatus,
   SpecificationReference,
   SupplierStatus,
+  UomCategory,
+  UoMType,
   WaybillStatus,
 } from "./enum";
 import { splitWords } from "./utils";
@@ -167,6 +169,24 @@ export const CodeNameTypeOptions = Object.values(CodeNameTypes)
     };
   }) as Option[];
 
+export const UomTypeOptions = Object.values(UoMType)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = UoMType[enumValue as UoMType];
+    return {
+      label: splitWords(enumKey), // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
+export const UomCategoryOptions = Object.values(UomCategory)
+  .filter((enumValue) => typeof enumValue === "number")
+  .map((enumValue) => {
+    const enumKey = UomCategory[enumValue as UomCategory];
+    return {
+      label: splitWords(enumKey), // e.g., "New", "InTransit"
+      value: String(enumValue), // e.g., "0", "1"
+    };
+  }) as Option[];
 //
 export const ShipmentStatusOptions = Object.values(ShipmentStatus)
   .filter((enumValue) => typeof enumValue === "number")

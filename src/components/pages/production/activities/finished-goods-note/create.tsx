@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -21,8 +21,8 @@ import {
 } from "@/lib";
 import {
   PostApiV1CollectionApiArg,
-  useGetApiV1CollectionUomQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePostApiV1ProductionScheduleFinishedGoodsTransferNoteMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -63,13 +63,35 @@ const Create = ({
     mode: "all",
     defaultValues,
   });
-  const { data: packingUomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: false,
-  });
-  const packingUomOptions = packingUomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
+
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+        },
+      }).unwrap();
+      const uom = response.data;
+      const uomOpt = uom?.map((uom) => ({
+        label: `${uom.name} (${uom.symbol})`,
+        value: uom.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
@@ -126,7 +148,7 @@ const Create = ({
             register={register}
             errors={errors}
             control={control}
-            packingUomOptions={packingUomOptions}
+            packingUomOptions={uomOptions}
             packingStyleOptions={packingStyleOptions}
           />
           <DialogFooter className="justify-end gap-4 py-6">

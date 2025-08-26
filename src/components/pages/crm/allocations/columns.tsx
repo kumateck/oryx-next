@@ -1,21 +1,16 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import {
-  AllocateProductionOrderDtoRead,
-  usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation,
-} from "@/lib/redux/api/openapi.generated";
+import { AllocateProductionOrderDtoRead } from "@/lib/redux/api/openapi.generated";
 import { format } from "date-fns";
 import { sanitizeNumber } from "@/lib";
 
 import { useState } from "react";
 import { TableMenuAction } from "@/shared/table-menu";
 import CreateProFormalInvoice from "./proforma-invoice";
-import { Button, DropdownMenuItem, Icon } from "@/components/ui";
-import ThrowErrorMessage from "@/lib/throw-error";
-import { toast } from "sonner";
-import { useDispatch } from "react-redux";
-import { commonActions } from "@/lib/redux/slices/common";
+import { Button, DropdownMenuItem } from "@/components/ui";
+
+// import { useDispatch } from "react-redux";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,25 +22,25 @@ export function DataTableRowActions<
   const [details, setDetails] = useState<AllocateProductionOrderDtoRead>(
     {} as AllocateProductionOrderDtoRead,
   );
-  const dispatch = useDispatch();
-  const [deliverItem, { isLoading }] =
-    usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation();
-  const handleDeliverItem = async (allocatedProductId: string) => {
-    try {
-      await deliverItem({
-        allocatedProductId,
-      }).unwrap();
-      toast.success("Order delivered successfully");
-      dispatch(commonActions.setTriggerReload());
-    } catch (error) {
-      ThrowErrorMessage(error);
-    }
-  };
+  // const dispatch = useDispatch();
+  // const [deliverItem, { isLoading }] =
+  //   usePutApiV1ProductionScheduleAllocateProductsDeliverByAllocatedProductIdMutation();
+  // const handleDeliverItem = async (allocatedProductId: string) => {
+  //   try {
+  //     await deliverItem({
+  //       allocatedProductId,
+  //     }).unwrap();
+  //     toast.success("Order delivered successfully");
+  //     dispatch(commonActions.setTriggerReload());
+  //   } catch (error) {
+  //     ThrowErrorMessage(error);
+  //   }
+  // };
   return (
     <section>
-      {isLoading && details.id === row.original.id && (
+      {/* {isLoading && details.id === row.original.id && (
         <Icon name="LoaderCircle" className="h-5 w-5 animate-spin" />
-      )}
+      )} */}
       <TableMenuAction>
         {row.original.deliveredAt === null && (
           <DropdownMenuItem className="group">
@@ -54,7 +49,7 @@ export function DataTableRowActions<
               className="w-full gap-1 text-center items-center justify-center"
               onClick={() => {
                 setDetails(row.original);
-                handleDeliverItem(row.original.id as string);
+                // handleDeliverItem(row.original.id as string);
               }}
             >
               <span>Marked as Delivered</span>

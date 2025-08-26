@@ -167,7 +167,7 @@ const UserDialog = ({
         departmentId: data.departmentId?.value,
         reportingManagerId: data.reportingManagerId?.value,
         staffNumber: data.staffNumber,
-        employeeLevel: Number(
+        level: Number(
           data.employeeLevel?.value,
         ) as unknown as EmployeeLevelEnum,
       } as AssignEmployeeDto;

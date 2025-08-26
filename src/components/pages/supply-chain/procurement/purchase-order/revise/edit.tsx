@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -10,11 +10,11 @@ import {
 
 import { CreateRevisionValidator, RevisionRequestDto } from "./type";
 import { useForm } from "react-hook-form";
-import { EMaterialKind, Option } from "@/lib";
+import { EMaterialKind, Option, UoMType } from "@/lib";
 import RevisionForm from "./form";
 import {
-  useGetApiV1CollectionUomQuery,
   useLazyGetApiV1MaterialQuery,
+  usePostApiV1CollectionUomPaginatedMutation,
 } from "@/lib/redux/api/openapi.generated";
 
 interface Props {
@@ -68,14 +68,36 @@ const Edit = ({
     }
   };
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    isRawMaterial: isMaterialType === EMaterialKind.Raw ? true : false,
-  });
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
 
-  const uomOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async (type: UoMType) => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+          types: [type],
+        },
+      }).unwrap();
+      const uom = response.data;
+      const uomOpt = uom?.map((uom) => ({
+        label: `${uom.name} (${uom.symbol})`,
+        value: uom.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom(isMaterialType as unknown as UoMType);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMaterialType]);
+
   const [
     loadMaterials,
     { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },

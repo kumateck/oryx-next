@@ -376,6 +376,21 @@ export enum PurchaseOrderStatusList {
   Completed = 4,
   Linked = 5,
 }
+
+export enum UoMType {
+  Raw,
+  Packing,
+  Shipping,
+}
+
+export enum UomCategory {
+  Weight,
+  Volume,
+  Countable,
+  Length,
+  Area,
+}
+
 export enum RequisitionStatus {
   New = 0,
   Pending = 1,

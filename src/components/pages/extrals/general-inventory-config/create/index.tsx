@@ -20,16 +20,16 @@ import {
   PostApiV1CollectionApiArg,
   PostApiV1FileByModelTypeAndModelIdApiArg,
   Store,
-  useGetApiV1CollectionUomQuery,
   useLazyGetApiV1ItemsQuery,
   usePostApiV1CollectionMutation,
+  usePostApiV1CollectionUomPaginatedMutation,
   usePostApiV1FileByModelTypeAndModelIdMutation,
   usePostApiV1ItemsMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { toast } from "sonner";
 import { CreateInventoryDto, CreateInventoryValidator } from "../types";
 import { useCodeGen } from "@/lib/code-gen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function Page() {
   return (
@@ -46,10 +46,6 @@ export function CreateInventoryItem() {
     usePostApiV1FileByModelTypeAndModelIdMutation();
   const [loadCodeModelCount] = useLazyGetApiV1ItemsQuery();
 
-  const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-    module: AuditModules.general.name,
-    subModule: AuditModules.general.collection,
-  });
   const router = useRouter();
   const searchParams = useSearchParams();
   const storeType = searchParams.get("storeType");
@@ -155,10 +151,34 @@ export function CreateInventoryItem() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeType]);
 
-  const unitOfMeasureOptions = uomResponse?.map((uom) => ({
-    label: uom.symbol,
-    value: uom.id,
-  })) as Option[];
+  const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
+
+  const [uomOptions, setUomOptions] = useState<Option[]>([]);
+
+  const handleLoadUom = async () => {
+    try {
+      const response = await loadUom({
+        filterUnitOfMeasure: {
+          pageSize: 100,
+        },
+      }).unwrap();
+      const uom = response.data;
+      const uomOpt = uom?.map((uom) => ({
+        label: `${uom.name} (${uom.symbol})`,
+        value: uom.id,
+      })) as Option[];
+
+      setUomOptions(uomOpt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUom();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -176,7 +196,7 @@ export function CreateInventoryItem() {
             control={control}
             register={register}
             errors={errors}
-            unitOfMeasureOptions={unitOfMeasureOptions}
+            unitOfMeasureOptions={uomOptions}
             itemCategoryOptions={itemCategoryOptions}
           />
         </div>

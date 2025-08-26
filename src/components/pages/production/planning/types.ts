@@ -47,6 +47,9 @@ export const CreateProductSchema = z.object({
   packageStyle: z.string().optional(),
   shelfLife: z.string().optional(),
   actionUse: z.string().optional(),
+  fdaRegistrationNumber: z.string().optional(),
+  masterFormulaNumber: z.string().optional(),
+  expectedYield: z.number().optional(),
   filledWeight: z.string().optional(),
   baseUomId: z.object(
     {
