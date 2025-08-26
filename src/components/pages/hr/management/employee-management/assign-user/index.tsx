@@ -71,7 +71,6 @@ const UserDialog = ({
     }),
     [selectedEmployee?.designation?.name, selectedEmployee?.designation?.id],
   );
-
   const {
     control,
     register,
@@ -131,7 +130,7 @@ const UserDialog = ({
         staffNumber: selectedEmployee.staffNumber as string,
         reportingManagerId: {
           value: selectedEmployee?.reportingManager?.id as string,
-          label: `${selectedEmployee?.reportingManager?.firstName ?? ""} ${selectedEmployee?.reportingManager?.lastName}`,
+          label: `${selectedEmployee?.reportingManager?.firstName ?? ""} ${selectedEmployee?.reportingManager?.lastName ?? ""}`,
         },
         employeeLevel:
           selectedEmployee.level !== undefined &&
@@ -182,7 +181,6 @@ const UserDialog = ({
         id: selectedEmployee.id as string,
         assignEmployeeDto: payload,
       }).unwrap();
-
       toast.success("Employee assigned successfully");
       dispatch(commonActions.setTriggerReload());
       onSuccess();

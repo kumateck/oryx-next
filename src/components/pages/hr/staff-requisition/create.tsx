@@ -32,7 +32,7 @@ import {
   CreateStaffRequisitionValidator,
   StaffRequisitionRequestDto,
 } from "./types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -54,7 +54,7 @@ const Create = ({ isOpen, onClose }: Props) => {
     trigger,
   } = useForm<StaffRequisitionRequestDto>({
     resolver: CreateStaffRequisitionValidator,
-    // mode: "onTouched",
+    mode: "onChange",
   });
 
   const { data: designationResponse } = useGetApiV1DesignationQuery({
@@ -84,7 +84,8 @@ const Create = ({ isOpen, onClose }: Props) => {
     "numberOfStaff",
     "designationId",
     "qualification",
-    "appointmentId",
+    "appointmentType",
+    "departmentId",
     "requestUrgency",
     "justification",
   ];
@@ -143,6 +144,10 @@ const Create = ({ isOpen, onClose }: Props) => {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
   };
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <Dialog

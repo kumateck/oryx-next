@@ -1484,3 +1484,36 @@ export const omit = <T extends object, K extends keyof T>(
 export const getNameInBeta = (name: string) => {
   return /beta/i.test(name);
 };
+
+//function for getting date range
+export const getDateRange = (filter: string) => {
+  const now = new Date();
+  let startDate: Date;
+  const endDate: Date = now;
+
+  switch (filter) {
+    case "Today":
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      break;
+    case "This Week":
+      const firstDayOfWeek = new Date(
+        now.setDate(now.getDate() - now.getDay()),
+      );
+      startDate = new Date(
+        firstDayOfWeek.getFullYear(),
+        firstDayOfWeek.getMonth(),
+        firstDayOfWeek.getDate(),
+      );
+      break;
+    case "This Month":
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    case "All Time":
+      startDate = new Date(2000, 0, 1);
+      break;
+    default:
+      startDate = now;
+  }
+
+  return { startDate, endDate };
+};

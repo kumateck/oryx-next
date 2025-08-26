@@ -76,6 +76,9 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
               label: "Date",
               control: control as Control,
               type: InputTypes.DATE,
+              disabled: {
+                after: new Date(),
+              },
               name: "date",
               required: true,
               placeholder: "Select exit pass date",
@@ -92,6 +95,9 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 label: "Start Date",
                 control: control as Control,
                 type: InputTypes.DATE,
+                disabled: {
+                  after: new Date(),
+                },
                 name: "startDate",
                 required: true,
                 placeholder: "Select start date",
@@ -105,6 +111,9 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 label: "End Date",
                 control: control as Control,
                 type: InputTypes.DATE,
+                disabled: {
+                  after: new Date(),
+                },
                 name: "endDate",
                 required: true,
                 placeholder: "Select end date",

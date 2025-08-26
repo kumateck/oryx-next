@@ -7,6 +7,7 @@ import { FilterBtn, QcDashboardDto } from "../types";
 import { useLazyGetApiV1ReportQcDashboardQuery } from "@/lib/redux/api/openapi.generated";
 import { DashboardCard } from "./features/card";
 import { EMaterialKind } from "@/lib";
+import QcDashboardSkeleton from "./ladingSkeleton";
 
 function Index() {
   const [materialKind, setMaterialKind] = useState<EMaterialKind>(
@@ -21,13 +22,12 @@ function Index() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialKind]);
-  console.log("data", data, isLoading);
-  // TODO: IMPLEMENT LOADING SKELETONS
+  if (isLoading) return <QcDashboardSkeleton />;
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full items-center justify-between gap-4">
         <div className="">
-          <PageTitle title="HR Dashboard" />
+          <PageTitle title="QC Dashboard" />
           <div className="flex items-center gap-2 justify-start">
             <Icon
               name="RefreshCw"

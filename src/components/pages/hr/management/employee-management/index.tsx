@@ -18,6 +18,7 @@ import { useSelector } from "@/lib/redux/store";
 import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 import AccessTabs from "@/shared/access";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const EmployeeManagement = () => {
   const [pageSize, setPageSize] = useState(30);
@@ -25,6 +26,7 @@ const EmployeeManagement = () => {
 
   const dispatch = useDispatch();
   const searchValue = useSelector((state) => state.common.searchInput);
+  const debousecedValue = useDebounce(searchValue, 500);
   const triggerReload = useSelector((state) => state.common.triggerReload);
 
   const searchParams = useSearchParams();
@@ -53,7 +55,7 @@ const EmployeeManagement = () => {
 
   useEffect(() => {
     loadData({
-      searchQuery: searchValue,
+      searchQuery: debousecedValue,
       page,
       pageSize,
       status: status || EmployeeStatusType.Active,
@@ -62,7 +64,7 @@ const EmployeeManagement = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, searchValue, status, triggerReload]);
+  }, [page, pageSize, debousecedValue, status, triggerReload]);
 
   const data = result?.data || [];
   const router = useRouter();

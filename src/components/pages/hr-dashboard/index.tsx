@@ -9,15 +9,29 @@ import { EmployeeCard } from "./features/employeeCard";
 import { ExitPassCard } from "./features/exitPassCard";
 import { HrBarChart } from "./features/hrBarChart";
 import { useLazyGetApiV1ReportHumanResourceQuery } from "@/lib/redux/api/openapi.generated";
+import { getDateRange } from "@/lib";
 
 const FilterBtn = ["Today", "This Week", "This Month", "All Time"];
 
 function Page() {
-  const [loadReport, { data }] = useLazyGetApiV1ReportHumanResourceQuery({});
+  const [loadReport, { data, isLoading }] =
+    useLazyGetApiV1ReportHumanResourceQuery({});
   useEffect(() => {
-    loadReport({});
+    loadReport({
+      endDate: new Date().toISOString(),
+      startDate: new Date().toISOString(),
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // handle button click
+  const handleFilterClick = async (filter: string) => {
+    const { startDate, endDate } = getDateRange(filter);
+    await loadReport({
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+  };
   return (
     <ScrollablePageWrapper>
       <div className="flex w-full items-center justify-between gap-4">
@@ -37,7 +51,20 @@ function Page() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
             {FilterBtn.map((btn) => (
-              <Button key={btn} variant="outline" className="text-sm p-2">
+              <Button
+                disabled={isLoading}
+                key={btn}
+                variant="outline"
+                className="text-sm p-2 flex items-center"
+                onClick={() => handleFilterClick(btn)}
+              >
+                {isLoading && (
+                  <Icon
+                    name="LoaderCircle"
+                    size={"14"}
+                    className="animate-spin mr-2"
+                  />
+                )}
                 {btn}
               </Button>
             ))}
