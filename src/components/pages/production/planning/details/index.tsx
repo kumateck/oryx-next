@@ -30,7 +30,13 @@ const ProductDetailPage: React.FC = () => {
   });
   const [activeTab, setActiveTab] = useState<string>("Active BOM");
 
-  const tabs = ["Active BOM", "Outdated BOM", "Packing", "Procedure"];
+  const tabs = [
+    "Active BOM",
+    "Outdated BOM",
+    "Packaging",
+    "Packing Style",
+    "Procedure",
+  ];
   if (isLoading) {
     return <ProductDetailSkeleton />;
   }
@@ -175,6 +181,9 @@ const ProductDetailPage: React.FC = () => {
               <OutdatedBOMsTab boms={productData?.outdatedBillOfMaterials} />
             )}
             {activeTab === "Packing" && (
+              <PackingTab packages={productData?.packages} />
+            )}
+            {activeTab === "Packing Style" && (
               <PackingTab packages={productData?.packages} />
             )}
             {activeTab === "Procedure" && (
