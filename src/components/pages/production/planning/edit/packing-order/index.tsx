@@ -16,25 +16,31 @@ const Page = () => {
             href={routes.editPlanningInfo()}
             className="hover:text-primary-500 underline"
           >
-            Edit Info
+            Info
           </Link>
           <Link
             href={routes.editPlanningBom()}
             className="hover:text-primary-500 underline"
           >
-            Edit BOM
-          </Link>
-          <Link
-            href={routes.editPlanningProcedure()}
-            className="hover:text-primary-500 underline"
-          >
-            Edit Procedure
+            BOM
           </Link>
           <Link
             href={routes.editPlanningPackaging()}
             className="underline hover:text-primary-hover"
           >
-            Edit Packaging
+            Packaging
+          </Link>
+          <Link
+            href={routes.editPlanningPackingStyle()}
+            className="hover:text-primary-500 underline"
+          >
+            Packing Style
+          </Link>
+          <Link
+            href={routes.editPlanningProcedure()}
+            className="hover:text-primary-500 underline"
+          >
+            Procedure
           </Link>
         </div>
       </div>

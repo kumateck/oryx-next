@@ -280,19 +280,25 @@ const Routing = () => {
             href={routes.editPlanningInfo()}
             className="hover:text-primary-500 underline"
           >
-            Edit Info
+            Info
           </Link>
           <Link
             href={routes.editPlanningBom()}
             className="hover:text-primary-500 underline"
           >
-            Edit BOM
+            BOM
           </Link>
           <Link
             href={routes.editPlanningPackaging()}
             className="hover:text-primary-500 underline"
           >
-            Edit Packaging
+            Packaging
+          </Link>
+          <Link
+            href={routes.editPlanningPackingStyle()}
+            className="hover:text-primary-500 underline"
+          >
+            Packing Style
           </Link>
           <Link
             href={routes.editPackingOrder()}

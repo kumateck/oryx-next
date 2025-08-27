@@ -257,7 +257,7 @@ export const ROUTES: Route[] = [
     ],
   },
   {
-    title: "Production",
+    title: "Production Planning",
     menu: [
       {
         title: "Requisition",
@@ -278,8 +278,8 @@ export const ROUTES: Route[] = [
         ],
       },
       {
-        title: "Planning",
-        url: "/production/plannings",
+        title: "Products",
+        url: "/production/products",
         icon: "CalendarRange",
         isActive: false,
       },
