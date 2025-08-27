@@ -40,6 +40,11 @@ export const getColumns = (): ColumnDef<MaterialBatchDto>[] => [
     cell: ({ row }) => <div>{row.original.batchNumber ?? "-"}</div>,
   },
   {
+    accessorKey: "code",
+    header: "Material Code",
+    cell: ({ row }) => <div>{row.original?.material?.code}</div>,
+  },
+  {
     accessorKey: "materialName",
     header: "Material Name",
     cell: ({ row }) => <div>{row.original?.material?.name ?? "-"}</div>,

@@ -9,6 +9,7 @@ interface Props {
   issuedBy: string;
   arNumber: string;
   materialName: string;
+  materialCode: string;
   batchNumber: string;
   mfgDate: string;
   expDate: string;
@@ -22,6 +23,7 @@ export const MaterialReportCard: React.FC<Props> = ({
   issuedBy,
   arNumber,
   materialName,
+  materialCode,
   batchNumber,
   mfgDate,
   expDate,
@@ -53,7 +55,9 @@ export const MaterialReportCard: React.FC<Props> = ({
         <div className="text-neutral-400 text-xs font-medium">
           AR Number: {arNumber}
         </div>
-        <h2 className="text-lg font-semibold text-black">{materialName}</h2>
+        <h2 className="text-lg font-semibold text-black">
+          {materialName} ({materialCode})
+        </h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

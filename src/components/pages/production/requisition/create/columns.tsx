@@ -160,6 +160,7 @@ export function DataTableRowActions<
   const AllStockRow = {
     materialId: rowData?.material?.id as string,
     materialName: rowData?.material?.name as string,
+    materialCode: rowData?.material?.code as string,
     qtyNeeded: rowData?.material?.totalStock,
     quantityOnHand: rowData?.warehouseStock,
     quantityRequested: "0",
@@ -194,6 +195,7 @@ export function DataTableRowActions<
           onClose={() => setIsOpen(false)}
           materialId={AllStockRow.materialId}
           materialName={AllStockRow.materialName as string}
+          materialCode={AllStockRow.materialCode}
           qtyNeeded={AllStockRow.finalQuantityNeeded}
           uomName={AllStockRow.uom as Units}
         />

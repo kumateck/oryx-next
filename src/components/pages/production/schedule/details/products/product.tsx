@@ -555,6 +555,7 @@ const Product = ({
         const materialStatus = item?.status;
         const uomName = item?.baseUoM?.symbol as Units;
         const materialName = item?.material?.name as string;
+
         const qtyNeeded = item?.quantityNeeded as number;
         const qtyNeededConvert = convertToLargestUnit(qtyNeeded, uomName);
         const quantityNeeded = qtyNeededConvert.value;
@@ -586,6 +587,7 @@ const Product = ({
           materialStatus,
           code,
           materialName,
+          materialCode: code,
           materialId,
           finalQuantityNeeded: quantityNeededFloat,
           finalQuantityOnHand: quantityOnHandFloat,
@@ -613,6 +615,7 @@ const Product = ({
         return {
           materialStatus,
           code,
+          materialCode: code,
           materialName,
           materialId,
           finalQuantityNeeded: quantityNeededFloat,

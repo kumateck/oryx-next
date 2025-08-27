@@ -91,7 +91,7 @@ export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
   },
   {
     accessorKey: "stock",
-    header: "Stock Available",
+    header: "Current Stock (Warehouse)",
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
         row.original.quantityOnHand as number,
@@ -107,7 +107,7 @@ export const rColumns: ColumnDef<ProductionScheduleProcurementDto>[] = [
   },
   {
     accessorKey: "otherstock",
-    header: "Other Sources Available",
+    header: "Current Stock (Other Sources)",
     cell: ({ row }) => {
       const qty = convertToLargestUnit(
         row.original.material?.totalStock as number,

@@ -155,16 +155,8 @@ const Page = () => {
               </li>
               <li>
                 <span className="text-sm font-semibold">Deparment:</span>{" "}
-                {/* <span>{requisition?.requestedBy?.department?.name}</span> */}
-                {/* <span>
-                  {" "}
-                  by: (
-                  {fullname(
-                    requisition?.requestedBy?.firstName as string,
-                    requisition?.requestedBy?.lastName as string,
-                  )}
-                  )
-                </span> */}
+                <span>{requisition?.department?.name}</span>
+                <span> by: ({requisition?.requestedBy?.name as string})</span>
               </li>
               <li>
                 <span className="text-sm font-semibold">Comments</span>

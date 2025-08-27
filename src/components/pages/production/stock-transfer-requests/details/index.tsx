@@ -33,7 +33,7 @@ const GRNDetail = () => {
           const batchNumber = item?.batchNumber as string;
 
           const materialName = item?.checklist?.material?.name as string;
-
+          const materialCode = item?.checklist?.material?.code as string;
           const manufacturerName = item?.checklist?.manufacturer
             ?.name as string;
 
@@ -54,6 +54,7 @@ const GRNDetail = () => {
           return {
             batchNumber,
             materialName,
+            materialCode,
             manufacturerName,
             invoiceNumber,
             totalQuantity,

@@ -62,11 +62,11 @@ export const CreateProductSchema = z.object({
   ),
   baseQuantity: z
     .number({
-      required_error: "BaseQuantity is required",
-      invalid_type_error: "Base Quantity must be a number",
+      required_error: "Composition Unit is required",
+      invalid_type_error: "Composition Unit must be a number",
     })
     .positive({
-      message: "Base Quantity must be greater than 0",
+      message: "Composition Unit must be greater than 0",
     }),
   fullBatchSize: z
     .number({

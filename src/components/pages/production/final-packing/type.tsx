@@ -102,6 +102,7 @@ export interface MaterialMatrix {
   uoMId: string;
   uoMName: Units;
   materialId: string;
+  materialCode: string;
   materialName: string;
   receivedQuantity: number;
   subsequentDeliveredQuantity: number;

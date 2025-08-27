@@ -5,6 +5,7 @@ export interface BatchColumns {
   code?: string | null;
   batchNumber?: string | null;
   materialName?: string | null;
+  materialCode?: string | null;
   manufacturerName?: string | null;
   invoiceNumber?: string | null;
   status?: number;
@@ -19,8 +20,13 @@ export interface BatchColumns {
 export const getColumns = (): ColumnDef<BatchColumns>[] => [
   {
     accessorKey: "code",
-    header: "Material Code",
+    header: "Batch Number",
     cell: ({ row }) => <div>{row.original.batchNumber ?? "N/A"}</div>,
+  },
+  {
+    accessorKey: "materialCode",
+    header: "Material Code",
+    cell: ({ row }) => <div>{row.original.materialCode ?? "N/A"}</div>,
   },
   {
     accessorKey: "materialName",
