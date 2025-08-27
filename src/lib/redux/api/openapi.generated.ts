@@ -19000,6 +19000,7 @@ export type ProductPackingList = {
   uomId?: string;
   uom?: UnitOfMeasure;
   quantity?: number;
+  order?: number;
 };
 export type ProductPacking = {
   id?: string;
@@ -20623,6 +20624,7 @@ export type MaterialBatch = {
   events?: MaterialBatchEvent[] | null;
   massMovements?: MassMaterialBatchMovement[] | null;
   reservedQuantities?: MaterialBatchReservedQuantity[] | null;
+  returnDate?: string | null;
 };
 export type MaterialBatchRead = {
   id?: string;
@@ -20668,6 +20670,7 @@ export type MaterialBatchRead = {
   massMovements?: MassMaterialBatchMovementRead[] | null;
   reservedQuantities?: MaterialBatchReservedQuantityRead[] | null;
   reservedQuantity?: number;
+  returnDate?: string | null;
 };
 export type ShelfMaterialBatch = {
   id?: string;
@@ -21565,6 +21568,7 @@ export type MaterialBatchDto = {
   locations?: CurrentLocationDto[] | null;
   reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
   reservedQuantity?: number;
+  returnDate?: string | null;
 };
 export type MaterialBatchDtoRead = {
   id?: string;
@@ -21593,6 +21597,7 @@ export type MaterialBatchDtoRead = {
   locations?: CurrentLocationDto[] | null;
   reservedQuantities?: MaterialBatchReservedQuantityDto[] | null;
   reservedQuantity?: number;
+  returnDate?: string | null;
 };
 export type CreateSrRequest = {
   srNumber?: string | null;
@@ -22599,6 +22604,7 @@ export type RouteDtoRead = {
 export type ProductPackingListDto = {
   uom?: UnitOfMeasureDto;
   quantity?: number;
+  order?: number;
 };
 export type ProductPackingDto = {
   id?: string;
@@ -22756,6 +22762,7 @@ export type CreateProductPackageRequest = {
 export type CreateProductPackingList = {
   uomId?: string;
   quantity?: number;
+  order?: number;
 };
 export type CreateProductPacking = {
   name?: string | null;

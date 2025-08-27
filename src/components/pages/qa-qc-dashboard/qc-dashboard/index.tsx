@@ -10,18 +10,18 @@ import { EMaterialKind, getDateRange } from "@/lib";
 import QcDashboardSkeleton from "./ladingSkeleton";
 
 function Index() {
-  const [materialKind, setMaterialKind] = useState<EMaterialKind>(
+  const [stpMaterialKind, setStpMaterialKind] = useState<EMaterialKind>(
     EMaterialKind.Raw,
   );
+  const [batchTestMaterialKind, setBatchTestMaterialKind] =
+    useState<EMaterialKind>(EMaterialKind.Raw);
   const [loadReport, { data, isLoading, isFetching }] =
     useLazyGetApiV1ReportQcDashboardQuery({});
 
   useEffect(() => {
-    loadReport({
-      materialKind: 1,
-    });
+    loadReport({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materialKind]);
+  }, []);
   const handleFilterClick = async (filter: string) => {
     const { startDate, endDate } = getDateRange(filter);
     await loadReport({
@@ -71,9 +71,11 @@ function Index() {
         </div>
       </div>
       <DashboardCard
-        materialKind={materialKind}
+        stpMaterialKind={stpMaterialKind}
+        batchTestMaterialKind={batchTestMaterialKind}
         data={data as unknown as QcDashboardDto}
-        onMaterialKindChange={setMaterialKind}
+        onMaterialKindChange={setStpMaterialKind}
+        onBatchTestMaterialKindChange={setBatchTestMaterialKind}
       />
     </ScrollablePageWrapper>
   );

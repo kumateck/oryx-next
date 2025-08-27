@@ -13,50 +13,49 @@ const chartConfig = {
     label: "Visitors",
   },
   sun: {
-    label: "Sun",
+    label: "sun",
     color: "#007bff",
   },
   mon: {
-    label: "Mon",
+    label: "mon",
     color: "#ff8c00",
   },
   tue: {
-    label: "Tue",
+    label: "tue",
     color: "#8a2be2",
   },
   wed: {
-    label: "Wed",
+    label: "wed",
     color: "#ff0000",
   },
   thu: {
-    label: "Thu",
+    label: "thu",
     color: "#ff0000",
   },
   fri: {
-    label: "Fri",
+    label: "fri",
     color: "#800080",
   },
 
   sat: {
-    label: "Sat",
+    label: "sat",
     color: "#9acd32",
   },
 } satisfies ChartConfig;
 const chartData = [
-  { day: "Sun", visitors: 187, fill: "#007bff" },
-  { day: "Mon", visitors: 200, fill: "#ff8c00" },
-  { day: "Tue", visitors: 275, fill: "#8a2be2" },
-  { day: "Wed", visitors: 173, fill: "#ff0000" },
-  { day: "Thu", visitors: 90, fill: "#800080" },
-  { day: "Fri", visitors: 90, fill: "#006400" },
-  { day: "Sat", visitors: 90, fill: "#9acd32" },
+  { day: "sun", visitors: 187, fill: "#007bff" },
+  { day: "mon", visitors: 200, fill: "#ff8c00" },
+  { day: "tue", visitors: 275, fill: "#8a2be2" },
+  { day: "wed", visitors: 173, fill: "#ff0000" },
+  { day: "thu", visitors: 90, fill: "#800080" },
+  { day: "fri", visitors: 90, fill: "#006400" },
+  { day: "sat", visitors: 90, fill: "#9acd32" },
 ];
 
 interface Props {
   data: HrDashboardDtoRead;
 }
-export function HrBarChart({ data }: Props) {
-  console.log("HrBarChart data", data);
+export function HrBarChart({}: Props) {
   return (
     <Card className="mt-6">
       <CardHeader>
@@ -65,14 +64,20 @@ export function HrBarChart({ data }: Props) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+        <ChartContainer className="max-h-96 h-full" config={chartConfig}>
+          <BarChart
+            className="h-full w-full"
+            accessibilityLayer
+            // dataKey={"day"}
+            data={chartData}
+          >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="browser"
+              dataKey="day"
+              className="text-lg font-medium capitalize"
               tickLine={false}
               tickMargin={10}
-              axisLine={false}
+              axisLine={true}
               tickFormatter={(value) =>
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
@@ -83,7 +88,7 @@ export function HrBarChart({ data }: Props) {
             />
             <Bar
               dataKey="visitors"
-              strokeWidth={2}
+              // strokeWidth={2}
               radius={8}
               activeIndex={2}
               activeBar={({ ...props }) => {

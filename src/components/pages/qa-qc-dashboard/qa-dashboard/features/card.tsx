@@ -10,7 +10,6 @@ interface Props {
   data: QaDashboardDto;
 }
 export const DashboardCard = ({ data }: Props) => {
-  console.log(data, "this is the data in card");
   return (
     <>
       <div className="grid gap-2 md:gap-4 grid-cols-3 md:grid-cols-4">
@@ -24,7 +23,7 @@ export const DashboardCard = ({ data }: Props) => {
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {data?.numberOfBmrRequests}
+              {data?.numberOfBmrRequests ?? ""}
             </h1>
             <div className="grid grid-cols-2 gap-1">
               <div className="flex flex-col items-start gap-1">
@@ -66,15 +65,17 @@ export const DashboardCard = ({ data }: Props) => {
               <div className="flex flex-col items-start gap-1">
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-gray-700 text-white">
                   <span className="text-xs">Pending</span>
-                  <span className="font-semibold">{"none"}</span>
+                  <span className="font-semibold">{"0"}</span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
                   <span className="text-xs">Approved</span>
-                  <span className="font-semibold">{"none"}</span>
+                  <span className="font-semibold">{"0"}</span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
-                  <span className="text-xs">Rejected</span>
-                  <span className="font-semibold">{"none"}</span>
+                  <span className="text-xs">Expired</span>
+                  <span className="font-semibold">
+                    {data?.numberOfExpiredAnalyticalTestRequests}
+                  </span>
                 </div>
               </div>
             </div>
@@ -90,26 +91,26 @@ export const DashboardCard = ({ data }: Props) => {
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {data?.numberOfApprovals}
+              {data?.numberOfApprovals ?? ""}
             </h1>
             <div className="grid grid-cols-2 gap-1">
               <div className="flex flex-col items-start gap-1">
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-gray-700 text-white">
                   <span className="text-xs">Pending</span>
                   <span className="font-semibold">
-                    {data?.numberOfPendingApprovals}
+                    {data?.numberOfPendingApprovals ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
                   <span className="text-xs">Approved</span>
                   <span className="font-semibold">
-                    {data?.numberOfApprovals}
+                    {data?.numberOfApprovals ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
                   <span className="text-xs">Rejected</span>
                   <span className="font-semibold">
-                    {data?.numberOfRejectedApprovals}
+                    {data?.numberOfRejectedApprovals ?? ""}
                   </span>
                 </div>
               </div>
@@ -139,13 +140,13 @@ export const DashboardCard = ({ data }: Props) => {
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
                   <span className="text-xs">Approved</span>
                   <span className="font-semibold">
-                    {data?.numberOfApprovals}
+                    {data?.numberOfApprovals ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
                   <span className="text-xs">Rejected</span>
                   <span className="font-semibold">
-                    {data?.numberOfRejectedApprovals}
+                    {data?.numberOfRejectedApprovals ?? ""}
                   </span>
                 </div>
               </div>
@@ -157,7 +158,7 @@ export const DashboardCard = ({ data }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Products</CardTitle>
+              <CardTitle>Total Products</CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
@@ -170,7 +171,7 @@ export const DashboardCard = ({ data }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Raw Materials</CardTitle>
+              <CardTitle>Total Raw Materials</CardTitle>
               <Icon name="UserRoundSearch" className="text-primary-default" />
             </div>
           </CardHeader>
@@ -183,7 +184,7 @@ export const DashboardCard = ({ data }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Packing Materials</CardTitle>
+              <CardTitle>Total Packing Materials</CardTitle>
               <Icon name="UserRoundSearch" className="text-primary-default" />
             </div>
           </CardHeader>

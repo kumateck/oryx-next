@@ -26,7 +26,7 @@ function Index() {
     });
   };
   if (isLoading || isFetching) return <QaDashboardSkeleton />;
-  console.log("data", data, isLoading);
+
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full items-center justify-between gap-4">
