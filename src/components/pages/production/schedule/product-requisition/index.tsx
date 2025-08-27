@@ -97,6 +97,7 @@ const Page = () => {
       ).value;
       return {
         code: material.material?.code,
+        materialCode: material.material?.code,
         materialName: material.material?.name,
         materialId: material.material?.id,
         uom,
@@ -141,6 +142,7 @@ const Page = () => {
       return {
         code: material.material?.code,
         materialName: material.material?.name,
+        materialCode: material.material?.code,
         materialId: material.material?.id,
         uom,
         quantityOnHand,

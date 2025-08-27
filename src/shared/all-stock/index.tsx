@@ -16,12 +16,14 @@ import SkeletonLoadingPage from "../skeleton-page-loader";
 interface Props {
   materialId: string;
   materialName: string;
+  materialCode?: string;
   qtyNeeded?: string;
   isOpen: boolean;
   onClose(): void;
   uomName?: Units;
 }
 const AllStockByMaterial = ({
+  materialCode,
   materialName,
   qtyNeeded,
   materialId,
@@ -41,7 +43,7 @@ const AllStockByMaterial = ({
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>
-            Stock across all warehouses for {materialName}
+            Stock across all warehouses for {materialName} ({materialCode})
           </DialogTitle>
         </DialogHeader>
 

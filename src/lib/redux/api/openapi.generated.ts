@@ -5189,6 +5189,34 @@ const injectedRtkApi = api
         }),
         providesTags: ["Product"],
       }),
+      postApiV1ProductByProductIdPacking: build.mutation<
+        PostApiV1ProductByProductIdPackingApiResponse,
+        PostApiV1ProductByProductIdPackingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/packing`,
+          method: "POST",
+          body: queryArg.body,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        invalidatesTags: ["Product"],
+      }),
+      getApiV1ProductByProductIdPacking: build.query<
+        GetApiV1ProductByProductIdPackingApiResponse,
+        GetApiV1ProductByProductIdPackingApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/product/${queryArg.productId}/packing`,
+          headers: {
+            Module: queryArg["module"],
+            SubModule: queryArg.subModule,
+          },
+        }),
+        providesTags: ["Product"],
+      }),
       getApiV1ProductPackagesByProductPackageId: build.query<
         GetApiV1ProductPackagesByProductPackageIdApiResponse,
         GetApiV1ProductPackagesByProductPackageIdApiArg
@@ -12788,6 +12816,25 @@ export type GetApiV1ProductByProductIdPackagesApiArg = {
   /** The sub module this request falls under */
   subModule?: any;
 };
+export type PostApiV1ProductByProductIdPackingApiResponse =
+  /** status 201 Created */ string;
+export type PostApiV1ProductByProductIdPackingApiArg = {
+  productId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+  body: CreateProductPacking[];
+};
+export type GetApiV1ProductByProductIdPackingApiResponse =
+  /** status 200 OK */ ProductPackingDto[];
+export type GetApiV1ProductByProductIdPackingApiArg = {
+  productId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type GetApiV1ProductPackagesByProductPackageIdApiResponse =
   /** status 200 OK */ ProductPackageDto;
 export type GetApiV1ProductPackagesByProductPackageIdApiArg = {
@@ -18949,6 +18996,45 @@ export type ProductPrices = {
   price?: number;
   date?: string;
 };
+export type ProductPackingList = {
+  uomId?: string;
+  uom?: UnitOfMeasure;
+  quantity?: number;
+};
+export type ProductPacking = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  name?: string | null;
+  description?: string | null;
+  packingLists?: ProductPackingList[] | null;
+};
+export type ProductPackingRead = {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  createdById?: string | null;
+  createdBy?: User;
+  lastUpdatedById?: string | null;
+  lastUpdatedBy?: User;
+  deletedAt?: string | null;
+  lastDeletedById?: string | null;
+  lastDeletedBy?: User;
+  productId?: string;
+  product?: Product;
+  name?: string | null;
+  description?: string | null;
+  packingLists?: ProductPackingList[] | null;
+};
 export type Product = {
   id?: string;
   createdAt?: string;
@@ -18996,6 +19082,7 @@ export type Product = {
   packPerShipper?: number;
   prices?: ProductPrices[] | null;
   expectedYield?: number;
+  packings?: ProductPacking[] | null;
 };
 export type ProductRead = {
   id?: string;
@@ -19045,6 +19132,7 @@ export type ProductRead = {
   packPerShipper?: number;
   prices?: ProductPrices[] | null;
   expectedYield?: number;
+  packings?: ProductPackingRead[] | null;
 };
 export type RequisitionApproval = {
   userId?: string | null;
@@ -22508,6 +22596,18 @@ export type RouteDtoRead = {
   responsibleRoles?: RouteResponsibleRoleDto[] | null;
   workCenters?: RouteWorkCenterDto[] | null;
 };
+export type ProductPackingListDto = {
+  uom?: UnitOfMeasureDto;
+  quantity?: number;
+};
+export type ProductPackingDto = {
+  id?: string;
+  createdBy?: UserDto;
+  createdAt?: string;
+  name?: string | null;
+  description?: string | null;
+  packingLists?: ProductPackingListDto[] | null;
+};
 export type ProductDto = {
   id?: string;
   code?: string | null;
@@ -22543,6 +22643,7 @@ export type ProductDto = {
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
   packages?: ProductPackageDto[] | null;
   routes?: RouteDto[] | null;
+  packings?: ProductPackingDto[] | null;
   createdBy?: CollectionItemDto;
 };
 export type ProductDtoRead = {
@@ -22580,6 +22681,7 @@ export type ProductDtoRead = {
   outdatedBillOfMaterials?: ProductBillOfMaterialDto[] | null;
   packages?: ProductPackageDto[] | null;
   routes?: RouteDtoRead[] | null;
+  packings?: ProductPackingDto[] | null;
   createdBy?: CollectionItemDto;
 };
 export type UpdateProductRequest = {
@@ -22650,6 +22752,15 @@ export type CreateProductPackageRequest = {
   unitCapacity?: number;
   directLinkMaterialId?: string | null;
   packingExcessMargin?: number;
+};
+export type CreateProductPackingList = {
+  uomId?: string;
+  quantity?: number;
+};
+export type CreateProductPacking = {
+  name?: string | null;
+  description?: string | null;
+  packingLists?: CreateProductPackingList[] | null;
 };
 export type CreateEquipmentRequest = {
   name?: string | null;
@@ -23133,6 +23244,7 @@ export type UpdateBatchPackagingRecord = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  productPackingId?: string | null;
 };
 export type StockTransferSourceRequest = {
   fromDepartmentId?: string;
@@ -25243,6 +25355,9 @@ export const {
   usePostApiV1ProductByProductIdPackagesMutation,
   useGetApiV1ProductByProductIdPackagesQuery,
   useLazyGetApiV1ProductByProductIdPackagesQuery,
+  usePostApiV1ProductByProductIdPackingMutation,
+  useGetApiV1ProductByProductIdPackingQuery,
+  useLazyGetApiV1ProductByProductIdPackingQuery,
   useGetApiV1ProductPackagesByProductPackageIdQuery,
   useLazyGetApiV1ProductPackagesByProductPackageIdQuery,
   usePutApiV1ProductPackagesByProductPackageIdMutation,

@@ -55,6 +55,7 @@ const ArdDetails = ({ grnId, materialBatchId }: Props) => {
           sampledOn={sampleData?.sampleDate as string}
           arNumber={sampleData?.arNumber as string}
           specNumber={ardBatchData?.specNumber as string}
+          materialCode={batchData?.material?.code as string}
           materialName={batchData?.material?.name as string}
           batchNumber={batchData?.batchNumber as string}
           mfgDate={batchData?.manufacturingDate as string}

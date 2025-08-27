@@ -295,22 +295,29 @@ const ProductInfo = () => {
       <div className="absolute right-0 -mt-10">
         <div className="flex justify-end gap-4">
           <Link
-            href={routes.editPlanningInfo()}
-            className="hover:text-primary-500 underline"
-          >
-            Edit Info
-          </Link>
-          <Link
             href={routes.editPlanningBom()}
             className="hover:text-primary-500 underline"
           >
-            Edit BOM
+            BOM
+          </Link>
+
+          <Link
+            href={routes.editPlanningPackaging()}
+            className="hover:text-primary-500 underline"
+          >
+            Packaging
+          </Link>
+          <Link
+            href={routes.editPlanningPackingStyle()}
+            className="hover:text-primary-500 underline"
+          >
+            Packing Style
           </Link>
           <Link
             href={routes.editPlanningProcedure()}
             className="hover:text-primary-500 underline"
           >
-            Edit Procedure
+            Procedure
           </Link>
           <Link
             href={routes.editPackingOrder()}
@@ -344,7 +351,7 @@ const ProductInfo = () => {
         <div className="flex w-full justify-end gap-4 px-12">
           <Button
             type="button"
-            onClick={() => router.push("/production/plannings")}
+            onClick={() => router.push("/production/products")}
             variant="outline"
           >
             Cancel

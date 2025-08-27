@@ -5,6 +5,7 @@ import { z } from "zod";
 
 export const createRequisitionItemRequestSchema = z.object({
   code: z.string().optional(),
+  materialCode: z.string().optional(),
   materialName: z.string().optional(),
   uom: z.string().optional(),
   floatQuantity: z.string().optional(),

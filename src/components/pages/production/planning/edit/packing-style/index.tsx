@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button, Icon } from "@/components/ui";
-import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
+import { AuditModules, routes } from "@/lib";
 import {
-  PostApiV1ProductByProductIdPackagesApiArg,
-  useLazyGetApiV1ProductByProductIdPackagesQuery,
-  usePostApiV1ProductByProductIdPackagesMutation,
+  PostApiV1ProductByProductIdPackingApiArg,
+  useLazyGetApiV1ProductByProductIdPackingQuery,
+  usePostApiV1ProductByProductIdPackingMutation,
 } from "@/lib/redux/api/openapi.generated";
 import PageTitle from "@/shared/title";
 import StepWrapper from "@/shared/wrapper";
@@ -18,13 +18,14 @@ import StepWrapper from "@/shared/wrapper";
 import Create from "./create";
 // import Edit from "./edit";
 import TableForData from "./table";
-import { PackagingRequestDto } from "./types";
+import { PackingStyleRequestDto } from "./types";
+import ThrowErrorMessage from "@/lib/throw-error";
 
-const Packaging = () => {
+const PackingStyle = () => {
   const { id } = useParams();
   const productId = id as string;
 
-  const [loadPacking] = useLazyGetApiV1ProductByProductIdPackagesQuery();
+  const [loadPacking] = useLazyGetApiV1ProductByProductIdPackingQuery();
   useEffect(() => {
     if (productId) {
       handleLoadPacking(productId);
@@ -37,60 +38,54 @@ const Packaging = () => {
     try {
       const response = await loadPacking({
         productId,
-        module: AuditModules.production.name,
-        subModule: AuditModules.production.packing,
       }).unwrap();
 
-      // console.log(response);
-      const defaultPackaging = response?.map((p, idx) => ({
-        ...p,
-        material: p.material
-          ? {
-              label: p.material?.name as string,
-              value: p.material?.id as string,
-            }
-          : undefined,
+      const defaultPacking = response?.map((p, idx) => ({
+        id: p.id as string,
+        name: p.name as string,
+        description: p.description as string,
+        packingLists: p.packingLists?.map((packing) => ({
+          quantity: packing.quantity as number,
+          uomId: {
+            label: `${packing.uom?.name} (${packing.uom?.symbol})`,
+            value: packing.uom?.id as string,
+          },
+        })),
         idIndex: (idx + 1).toString(),
-        directLinkMaterial: p.directLinkMaterial
-          ? {
-              label: p.directLinkMaterial?.name as string,
-              value: p.directLinkMaterial?.id as string,
-            }
-          : undefined,
-      })) as PackagingRequestDto[];
-      setItemLists(defaultPackaging);
+      })) as PackingStyleRequestDto[];
+      setItemLists(defaultPacking);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const [savePackaging, { isLoading }] =
-    usePostApiV1ProductByProductIdPackagesMutation();
+  const [savePackingStyle, { isLoading }] =
+    usePostApiV1ProductByProductIdPackingMutation();
   const [isOpen, setIsOpen] = useState(false);
-  const [itemLists, setItemLists] = useState<PackagingRequestDto[]>([]);
+  const [itemLists, setItemLists] = useState<PackingStyleRequestDto[]>([]);
 
   if (!productId) {
     return <div>Please Save a Product Info</div>;
   }
   const handleSave = async () => {
     try {
-      await savePackaging({
+      await savePackingStyle({
         module: AuditModules.production.name,
-        subModule: AuditModules.production.packing,
+        subModule: AuditModules.production.packingStyle,
         productId,
         body: itemLists?.map((item) => ({
-          baseQuantity: item.baseQuantity,
-          materialThickness: item.materialThickness,
-          otherStandards: item.otherStandards,
-          unitCapacity: item.unitCapacity,
-          packingExcessMargin: item.packingExcessMargin,
-          materialId: item.material.value,
-          directLinkMaterialId: item.directLinkMaterial?.value,
+          name: item.name,
+          description: item.description,
+          packingLists: item.packingLists?.map((packing) => ({
+            uomId: packing.uomId?.value,
+            quantity: packing.quantity,
+          })),
         })),
-      } satisfies PostApiV1ProductByProductIdPackagesApiArg).unwrap();
-      toast.success("Packaging Saved");
+      } satisfies PostApiV1ProductByProductIdPackingApiArg).unwrap();
+      toast.success("Packign Style Saved");
     } catch (error) {
-      toast.error(isErrorResponse(error as ErrorResponse)?.description);
+      ThrowErrorMessage(error);
     }
   };
   return (
@@ -110,10 +105,10 @@ const Packaging = () => {
             BOM
           </Link>
           <Link
-            href={routes.editPlanningPackingStyle()}
-            className="hover:text-primary-500 underline"
+            href={routes.editPlanningPackaging()}
+            className="underline hover:text-primary-hover"
           >
-            Packing Style
+            Packaging
           </Link>
           <Link
             href={routes.editPlanningProcedure()}
@@ -131,12 +126,12 @@ const Packaging = () => {
       </div>
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
-          <PageTitle title="Package List" />
+          <PageTitle title="Packing Style" />
           <div className="flex gap-2">
             <Button
               onClick={() => {
                 if (itemLists?.length < 1) {
-                  toast.error("Please add Packaging items");
+                  toast.error("Please add Packing items");
                   return;
                 }
                 handleSave();
@@ -180,4 +175,4 @@ const Packaging = () => {
   );
 };
 
-export default Packaging;
+export default PackingStyle;
