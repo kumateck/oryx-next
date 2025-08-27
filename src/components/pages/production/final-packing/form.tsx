@@ -115,7 +115,9 @@ const MaterialForm: React.FC<MaterialFormProps> = (props) => {
                 key={material.materialId}
                 className="p-3 text-left text-white"
               >
-                <div>{material.materialName}</div>
+                <div>
+                  {material.materialName} ({material.materialCode})
+                </div>
               </th>
             ))}
           </tr>

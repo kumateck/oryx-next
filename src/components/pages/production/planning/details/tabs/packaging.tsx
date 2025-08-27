@@ -13,11 +13,11 @@ export const Packaging = ({ data }: IProps) => {
     <div>
       <ListsTable
         columns={[
-          // {
-          //   accessorKey: "packageType",
-          //   header: "Material",
-          //   cell: (info) => info.row.original.packageType?.name,
-          // },
+          {
+            accessorKey: "materialCode",
+            header: "Material Code",
+            cell: (info) => info.row.original.material?.code,
+          },
           {
             accessorKey: "materialName",
             header: "Material Name",

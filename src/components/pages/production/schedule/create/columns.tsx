@@ -13,6 +13,11 @@ export const getColumns = (
   options: Option[],
 ): ColumnDef<MaterialRequestDto>[] => [
   {
+    accessorKey: "materialCode",
+    header: "Material Code",
+    cell: ({ row }) => <div>{row.original?.code}</div>,
+  },
+  {
     accessorKey: "materialName",
     header: "Material Name",
   },

@@ -264,6 +264,7 @@ const FinalPacking = () => {
       const materialForMatrix = packingResponse?.items?.map((item) => ({
         materialId: item.material?.id as string,
         materialName: item.material?.name as string,
+        materialCode: item.material?.code as string,
         uoMId: item.uoM?.id as string,
         uoMName: item.uoM?.symbol as Units,
         // receivedQuantity: item.quantity as number,

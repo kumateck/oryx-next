@@ -144,6 +144,7 @@ export function DataRowAllStock<TData extends MaterialRequestDto>({
             onClose={() => setIsOpen(false)}
             materialId={row.original.materialId}
             materialName={row.original.materialName as string}
+            materialCode={row.original.materialCode as string}
             qtyNeeded={row.original.finalQuantityNeeded}
             uomName={row.original.uom as Units}
           />
