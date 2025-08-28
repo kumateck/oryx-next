@@ -12,11 +12,12 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { AuditModules, COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
+import { COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
   MaterialDepartmentWithWarehouseStockDto,
   PostApiV1CollectionApiArg,
   useLazyGetApiV1MaterialDepartmentQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -35,8 +36,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     resolver: CreateBomValidator,
     mode: "onChange",
     defaultValues: {
-      casNumber: "",
-      function: "",
       grade: "",
       isSubstitutable: false,
       baseQuantity: 0,
@@ -51,30 +50,10 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     reset,
     handleSubmit,
   } = form;
+  const [loadSpec] = useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
-
-  // const { data: uomResponse } = useGetApiV1CollectionUomQuery({
-  //   isRawMaterial: true,
-  //   module: AuditModules.general.name,
-  //   subModule: AuditModules.general.collection,
-  // });
-
-  // const materialOptions = useMemo(() => {
-  //   if (!materialResponse?.data) return [];
-
-  //   const usedMaterialIds = new Set(
-  //     existingItems.map((item) => item.materialId?.value).filter(Boolean),
-  //   );
-
-  //   return materialResponse.data
-  //     .filter((material) => !usedMaterialIds.has(material?.id as string))
-  //     .map((material: MaterialDto) => ({
-  //       label: material.name || "",
-  //       value: material.id || "",
-  //     })) as Option[];
-  // }, [materialResponse?.data, existingItems]);
 
   const materialTypeOptions = useMemo(() => {
     return (
@@ -85,17 +64,6 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
     );
   }, [collectionResponse]);
 
-  // const uomOptions = useMemo(() => {
-  //   return (
-  //     (uomResponse
-  //       ?.filter((item) => item.isRawMaterial)
-  //       ?.map((uom) => ({
-  //         label: uom.symbol || "",
-  //         value: uom.id || "",
-  //       })) as Option[]) || []
-  //   );
-  // }, [uomResponse]);
-
   const [materials, setMaterials] = useState<
     MaterialDepartmentWithWarehouseStockDto[]
   >([]);
@@ -105,34 +73,45 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
   }) as Option;
   useEffect(() => {
     if (selectedMaterial) {
-      const material = materials.find(
-        (department) => department?.material?.id === selectedMaterial.value,
-      );
-      if (material) {
-        form.setValue("baseUoMId", {
-          label: material?.uoM?.symbol || "",
-          value: material.uoM?.id || "",
-        });
-      }
+      handleSelectedMaterial(materials, selectedMaterial);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materials, selectedMaterial]);
 
+  const handleSelectedMaterial = async (
+    materials: MaterialDepartmentWithWarehouseStockDto[],
+    selectedMaterial: Option,
+  ) => {
+    const foundMaterial = materials.find(
+      (department) => department?.material?.id === selectedMaterial.value,
+    );
+    if (foundMaterial) {
+      const specResponse = await loadSpec({
+        id: foundMaterial?.material?.id as string,
+      }).unwrap();
+      const spec = specResponse?.specificationNumber as string;
+      form.setValue("spec", spec);
+      form.setValue("baseUoMId", {
+        label: foundMaterial?.uoM?.symbol || "",
+        value: foundMaterial.uoM?.id || "",
+      });
+      form.setValue("code", foundMaterial?.material?.code || "");
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       loadCollection({
-        module: AuditModules.general.name,
-        subModule: AuditModules.general.collection,
         body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.ProductCategory],
       } as PostApiV1CollectionApiArg);
     }
   }, [isOpen, loadCollection]);
 
-  const onSubmit = (data: BomRequestDto) => {
+  const onSubmit = async (data: BomRequestDto) => {
     const success = onAddItem(data);
     if (success) {
-      toast.success("BOM item added successfully");
+      toast.success("BOM item added to the list");
       reset();
       onClose();
     }

@@ -9,6 +9,7 @@ import { Button, Card, CardContent, Icon } from "@/components/ui";
 import {
   CodeModelTypes,
   ErrorResponse,
+  Option,
   Units,
   convertToLargestUnit,
   convertToSmallestUnit,
@@ -16,6 +17,7 @@ import {
 } from "@/lib";
 import {
   useLazyGetApiV1ConfigurationByModelTypeCountQuery,
+  useLazyGetApiV1ProductByProductIdPackingQuery,
   useLazyGetApiV1ProductionScheduleManufacturingByIdQuery,
   usePutApiV1ProductionScheduleManufacturingByIdMutation,
   usePutApiV1ProductionScheduleManufacturingIssueByIdMutation,
@@ -40,12 +42,14 @@ const IssueDetails = () => {
 
   const [updateManufacturingRecord, { isLoading }] =
     usePutApiV1ProductionScheduleManufacturingByIdMutation();
+  const [loadPacking] = useLazyGetApiV1ProductByProductIdPackingQuery();
 
   const [IssueBMR, { isLoading: isIssueBmrLoading }] =
     usePutApiV1ProductionScheduleManufacturingIssueByIdMutation();
   const [loadCountConfig] = useLazyGetApiV1ConfigurationByModelTypeCountQuery();
   const [productId, setProductId] = useState<string>("");
   const [scheduleId, setScheduleId] = useState<string>("");
+  const [packingOptions, setPackingOptions] = useState<Option[]>([]);
   const {
     control,
     handleSubmit,
@@ -65,6 +69,17 @@ const IssueDetails = () => {
   const loadBatchInfo = async (id: string) => {
     try {
       const data = await loadProductBMR({ id }).unwrap();
+      const response = await loadPacking({
+        productId,
+      }).unwrap();
+
+      const packingOptions = response?.map((p) => {
+        return {
+          label: p.name as string,
+          value: p.id as string,
+        };
+      });
+      setPackingOptions(packingOptions);
       const batch = convertToLargestUnit(
         data?.batchQuantity as number,
         data?.product?.baseUoM?.symbol as Units,
@@ -104,6 +119,7 @@ const IssueDetails = () => {
           batchNumber: data.batchNumber,
           manufacturingDate: data.manufacturingDate.toISOString(),
           expiryDate: data.expiryDate.toISOString(),
+          productPackingId: data.packingId.value,
         },
       }).unwrap();
       await IssueBMR({
@@ -135,7 +151,12 @@ const IssueDetails = () => {
         </div>
         <Card className="space-y-4 p-5 pb-0">
           <CardContent>
-            <IssueForm register={register} control={control} errors={errors} />
+            <IssueForm
+              register={register}
+              control={control}
+              errors={errors}
+              packingOptions={packingOptions}
+            />
           </CardContent>
         </Card>
         {productId && scheduleId && (

@@ -8,19 +8,20 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { InputTypes } from "@/lib";
+import { InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
   defaultValues?: TFieldValues;
+  packingOptions: Option[];
 }
 const IssueForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-
+  packingOptions,
   // defaultValues,
 }: Props<TFieldValues, TContext>) => {
   return (
@@ -79,6 +80,16 @@ const IssueForm = <TFieldValues extends FieldValues, TContext>({
             placeholder: "Select UOM",
             type: InputTypes.TEXT,
             readOnly: true,
+            errors,
+          },
+          {
+            label: "Packing",
+            control: control as Control,
+            type: InputTypes.SELECT,
+            name: "packingId",
+            required: true,
+            placeholder: "Select packing",
+            options: packingOptions,
             errors,
           },
         ]}

@@ -24,6 +24,8 @@ import InvoiceHeader from "@/shared/invoice/header";
 
 import { getColums } from "./column";
 import { useUserPermissions } from "@/hooks/use-permission";
+import PrintPreviewSkeleton from "./skeleton";
+import PurchaseOrderSummary from "./summary";
 
 interface Props {
   isOpen: boolean;
@@ -80,7 +82,10 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
   };
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
-
+  // Show skeleton while loading
+  if (isLoading) {
+    return <PrintPreviewSkeleton isOpen={isOpen} onClose={onClose} />;
+  }
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-3xl rounded-none" noClose>
@@ -118,6 +123,7 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
             data={items}
             isLoading={isLoading}
           />
+          <PurchaseOrderSummary items={items} currency={currency} />
         </article>
       </DialogContent>
     </Dialog>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -85,29 +85,11 @@ const Purchase = ({
     setCodeToInput,
   );
 
-  // useEffect(() => {
-  //   const loadCodes = async () => {
-  //     const generatePayload: GenerateCodeOptions = {
-  //       maxlength: Number(codeConfig?.maximumNameLength),
-  //       minlength: Number(codeConfig?.minimumNameLength),
-  //       prefix: codeConfig?.prefix as string,
-  //       type: codeConfig?.namingType as NamingType,
-  //     };
-  //     const productsResponse = await loadProduct({
-  //       page: 1,
-  //       pageSize: 100000,
-  //     }).unwrap();
+  useEffect(() => {
+    setPurchaseLists(lists);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lists.length]);
 
-  //     const products = productsResponse?.totalRecordCount ?? 0;
-  //     generatePayload.seriesCounter = products + 1;
-  //     const code = await generateCode(generatePayload);
-  //     setValue("code", code);
-  //   };
-
-  //   loadCodes();
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [codeConfig]);
   const onSubmit = async (data: RequisitionRequestDto) => {
     const newCode = await regenerateCode();
     // console.log(ren, "ren");

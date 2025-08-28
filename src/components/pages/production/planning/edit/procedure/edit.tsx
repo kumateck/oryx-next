@@ -84,7 +84,6 @@ const Edit = ({
         body: [
           COLLECTION_TYPES.WorkCenter,
           COLLECTION_TYPES.Operation,
-          COLLECTION_TYPES.Resource,
           COLLECTION_TYPES.Role,
           COLLECTION_TYPES.User,
         ],
