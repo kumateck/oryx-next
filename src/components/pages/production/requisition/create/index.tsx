@@ -70,12 +70,11 @@ const Page = () => {
         id: item?.material?.id as string,
       })) ?? [];
     const ids = getMatchingIds(material, rowSelection);
-    // const productFound = data?.products?.find(
-    //   (item) => item.product?.id === productId,
-    // );
+
     const filteredItems = rawMaterials?.data?.filter((item) =>
       ids.includes(item?.material?.id as string),
     );
+
     const filtered = filteredItems?.map((item) => {
       return {
         code: item.material?.code,
@@ -89,11 +88,11 @@ const Page = () => {
         uomId: item.uoM?.id,
       };
     }) as unknown as MaterialRequestDto[];
+
     setPurchaseLists(filtered);
     setIsOpenPurchase(true);
   };
 
-  // console.log(rawMaterials?.data, "rawMaterials?.data");
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
   // check permissions access
@@ -104,6 +103,7 @@ const Page = () => {
   const canCreatePackagingRequisistion = hasPermissionAccess(
     PermissionKeys.production.createPackagingMaterialStockRequisition,
   );
+
   return (
     <PageWrapper>
       <div className="flex items-center justify-between py-2">
