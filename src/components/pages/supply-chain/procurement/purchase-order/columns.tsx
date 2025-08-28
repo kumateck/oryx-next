@@ -10,7 +10,6 @@ import {
   getSmallestUnit,
   PurchaseOrderStatusList,
   Units,
-  waitForTimeout,
 } from "@/lib";
 import {
   PurchaseOrderDtoRead,
@@ -113,17 +112,12 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
   const totalFobValue = computeTotalFobValue(details.items || []);
 
   const handleCreateSuccess = async () => {
-    console.log("this is reached");
-    // setIsCreateOpen(false);
-
-    await waitForTimeout(1000);
+    setIsCreateOpen(false);
     const id = row.original.id as string;
-    console.log(id);
     setPurchaseOrderIdForPrint(() => id);
     setIsPrintOpen(() => true);
   };
 
-  console.log(isPrintOpen, "isPrintOpen", purchaseOrderIdForPrint);
   return (
     <section className="flex items-center justify-end gap-2">
       <Icon

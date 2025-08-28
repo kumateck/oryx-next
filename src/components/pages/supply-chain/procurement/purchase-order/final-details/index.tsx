@@ -133,7 +133,6 @@ const Create = ({
   ) as Option[];
 
   const onSubmit = async (data: FinalDetailsRequestDto) => {
-    console.log(data, "data");
     try {
       await saveMutation({
         purchaseOrderId,
@@ -156,21 +155,13 @@ const Create = ({
     }
   };
 
-  // Handle dialog close - only allow closing via Cancel button or PrintPreview completion
-  const handleDialogChange = (open: boolean) => {
-    console.log(open, "open create");
-    // Prevent closing during form submission or when print preview should open
-    if (!open && !isLoading) {
-      onClose();
-    }
-  };
-
   if (isLoadingPO) {
     return <CreateSkeleton isOpen={isOpen} onClose={onClose} />;
   }
 
+  // console.log(isOpen, "isOpen");
   return (
-    <Dialog open={isOpen} onOpenChange={handleDialogChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>Purchase Order Final Details</DialogTitle>
