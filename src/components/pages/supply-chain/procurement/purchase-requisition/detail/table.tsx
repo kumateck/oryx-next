@@ -28,7 +28,12 @@ const TableForData = ({ lists, setItemLists }: Props) => {
       label: supplier.name,
       value: supplier.id,
     })) as Option[];
-
+    TableUpdateData({
+      rowIndex,
+      columnId: "sourceSuppliers",
+      value: [],
+      setTableData: setItemLists,
+    });
     TableUpdateData({
       rowIndex,
       columnId: "options",

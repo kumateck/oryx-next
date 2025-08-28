@@ -148,6 +148,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 
 import TableForData from "./table";
 import { MaterialRequestDto } from "./table/type";
+import SkeletonLoader from "./skeleton";
 
 interface Props {
   isOpen: boolean;
@@ -161,9 +162,15 @@ const Cost = ({ isOpen, onClose, id, supplierId }: Props) => {
   const [currency, setCurrency] = useState("");
   const [updatePrices, { isLoading }] =
     usePostApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationReceiveMutation();
-  const [loadQuotation] =
+  const [
+    loadQuotation,
+    { isLoading: isLoadingQuotation, isFetching: isFetchingQuotation },
+  ] =
     useLazyGetApiV1RequisitionSourceSupplierBySupplierQuotationIdQuotationQuery();
-  const [loadSupplier] = useLazyGetApiV1ProcurementSupplierBySupplierIdQuery();
+  const [
+    loadSupplier,
+    { isLoading: isLoadingSupplier, isFetching: isFetchingSupplier },
+  ] = useLazyGetApiV1ProcurementSupplierBySupplierIdQuery();
 
   const [itemLists, setItemLists] = React.useState<MaterialRequestDto[]>([]);
 
@@ -254,11 +261,18 @@ const Cost = ({ isOpen, onClose, id, supplierId }: Props) => {
             <DialogTitle>Update Prices </DialogTitle>
           </DialogHeader>
           <div className="w-full">
-            <TableForData
-              lists={itemLists}
-              setItemLists={setItemLists}
-              currency={currency}
-            />
+            {isLoadingQuotation ||
+            isLoadingSupplier ||
+            isFetchingQuotation ||
+            isFetchingSupplier ? (
+              <SkeletonLoader />
+            ) : (
+              <TableForData
+                lists={itemLists}
+                setItemLists={setItemLists}
+                currency={currency}
+              />
+            )}
           </div>
           <DialogFooter>
             <Button variant={"outline"} onClick={onClose} type="button">
