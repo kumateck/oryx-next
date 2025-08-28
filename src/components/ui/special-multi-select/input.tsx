@@ -18,7 +18,7 @@ export const SpecialInput = ({
   onValueChange,
 }: FormInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputWidth, setInputWidth] = useState<number>(0);
+  const [inputWidth, setInputWidth] = useState<number>(200);
   const [innerInputWidth, setInnerInputWidth] = useState<number>(0);
   const [charCount, setCharCount] = useState<number>(0);
 

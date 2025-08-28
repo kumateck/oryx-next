@@ -51,15 +51,6 @@ export const getColumns = (
       },
     },
   },
-  // {
-  //   accessorKey: "quantity",
-  //   header: "Request Qty",
-  //   meta: {
-  //     edittableCell: {
-  //       type: ColumnType.NUMBER,
-  //       editable: true,
-  //       setItemLists,
-  //     },
-  //   },
+
   // },
 ];

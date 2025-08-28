@@ -40,7 +40,7 @@ export const getColumns = (
     },
   },
   {
-    accessorKey: "Vendor",
+    accessorKey: "vendor",
     header: "Vendor",
     meta: {
       edittableCell: {

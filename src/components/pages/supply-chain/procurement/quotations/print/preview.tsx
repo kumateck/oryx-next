@@ -22,6 +22,7 @@ import { ListsTable } from "@/shared/datatable";
 import InvoiceHeader from "@/shared/invoice/header";
 
 import { columns } from "./column";
+import PrintPreviewSkeleton from "./skeleton";
 
 // type UoM = {
 //   name: string;
@@ -64,33 +65,8 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     useGetApiV1RequisitionSourceSupplierBySupplierIdQuery({
       supplierId: id,
     });
-
   const items = data?.items ?? [];
-  // const grouped = items?.reduce<Record<string, GroupedMaterial>>(
-  //   (acc, curr) => {
-  //     const materialId = curr.material?.id;
 
-  //     // If the material id is not in the accumulator, add it with the current quantity and uom
-  //     if (!acc[materialId]) {
-  //       acc[materialId] = {
-  //         materialId: materialId,
-  //         material: curr.material,
-  //         uoM: curr.uoM, // Store the UOM from the first occurrence of the material
-  //         quantity: 0,
-  //       };
-  //     }
-
-  //     // Add the current quantity to the existing sum
-  //     acc[materialId].quantity += curr.quantity;
-
-  //     return acc;
-  //   },
-  //   {},
-  // );
-
-  // const result: GroupedMaterial[] = Object.values(grouped);
-
-  // console.log(result, "result");
   const supplier = data?.supplier;
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -140,6 +116,11 @@ const PrintPreview = ({ isOpen, onClose, id }: Props) => {
     // Only close if the "Close" button is clicked (open = false)
     if (!open) onClose();
   };
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return <PrintPreviewSkeleton isOpen={isOpen} onClose={onClose} />;
+  }
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="max-w-4xl rounded-none" noClose>

@@ -5,6 +5,11 @@ import { SupplierQuotationItemDto } from "@/lib/redux/api/openapi.generated";
 
 export const columns: ColumnDef<SupplierQuotationItemDto>[] = [
   {
+    accessorKey: "code",
+    header: "Code",
+    cell: ({ row }) => <div>{row.original.material?.code}</div>,
+  },
+  {
     accessorKey: "material",
     header: "Material",
     cell: ({ row }) => <div>{row.original.material?.name}</div>,
