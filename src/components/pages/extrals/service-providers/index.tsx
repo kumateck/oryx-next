@@ -19,7 +19,7 @@ function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
 
   const searchValue = useSelector((state) => state.common.searchInput);
   const triggerReload = useSelector((state) => state.common.triggerReload);

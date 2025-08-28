@@ -15,7 +15,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 
 function Page() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
   const [activeTab, setActiveTab] = useState<string>(
     InventoryType.GeneralStore.toString(),
   );

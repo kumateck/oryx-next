@@ -12,7 +12,7 @@ import { commonActions } from "@/lib/redux/slices/common";
 
 function Page() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
   const [loadData, { data: result, isLoading, isFetching }] =
     useLazyGetApiV1QaAnalyticalTestsQuery({});
 

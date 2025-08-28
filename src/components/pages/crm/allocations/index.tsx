@@ -17,7 +17,7 @@ function Page() {
   const [page, setPage] = useState(1);
 
   // const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
 
   const dispatch = useDispatch();
   //   const router = useRouter();
