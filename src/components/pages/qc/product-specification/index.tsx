@@ -15,7 +15,7 @@ import { Button, Icon } from "@/components/ui";
 
 function Page() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
 
   const router = useRouter();
 

@@ -13,7 +13,6 @@ import {
 } from "@/components/ui";
 import {
   CreateCustomerRequest,
-  useLazyGetApiV1DesignationQuery,
   usePostApiV1CustomersMutation,
 } from "@/lib/redux/api/openapi.generated";
 import { commonActions } from "@/lib/redux/slices/common";
@@ -28,7 +27,6 @@ interface Props {
 }
 
 const Create = ({ isOpen, onClose }: Props) => {
-  const [loadDesignations] = useLazyGetApiV1DesignationQuery();
   const [createCustomer, { isLoading }] = usePostApiV1CustomersMutation();
 
   const {
@@ -55,10 +53,10 @@ const Create = ({ isOpen, onClose }: Props) => {
       }).unwrap();
 
       toast.success("Customer created successfully");
-      loadDesignations({ page: 1, pageSize: 10 });
+      dispatch(commonActions.setTriggerReload());
+
       reset();
       onClose();
-      dispatch(commonActions.setTriggerReload());
     } catch (error) {
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }

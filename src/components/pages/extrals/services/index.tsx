@@ -18,7 +18,7 @@ import { CreateService } from "./create";
 function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
 
   const router = useRouter();
 
