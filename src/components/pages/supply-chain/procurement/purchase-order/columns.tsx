@@ -120,11 +120,16 @@ export function DataTableRowActions<TData extends PurchaseOrderDtoRead>({
 
   return (
     <section className="flex items-center justify-end gap-2">
-      <Icon
-        name="Printer"
-        className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-        onClick={() => setIsCreateOpen(true)}
-      />
+      {row.original.status === PurchaseOrderStatusList.Attached && (
+        <Icon
+          name="Printer"
+          className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
+          onClick={() =>
+            row.original.status === PurchaseOrderStatusList.Attached &&
+            setIsCreateOpen(true)
+          }
+        />
+      )}
 
       {isCreateOpen && (
         <Create
@@ -191,11 +196,14 @@ export const columns: ColumnDef<PurchaseOrderDtoRead>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="min-w-36">
-        {PurchaseOrderStatusList[row.original?.status as PurchaseOrderStatus]}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status as PurchaseOrderStatus;
+      const { label, style } = getEnumBadgeWithHexColors(
+        PurchaseOrderStatusList,
+        status,
+      );
+      return <StatusBadge label={label} style={style} />;
+    },
   },
   {
     id: "actions",

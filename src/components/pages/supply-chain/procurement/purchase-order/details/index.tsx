@@ -7,7 +7,12 @@ import { useDispatch } from "react-redux";
 
 import { Button, Card, CardContent, Icon } from "@/components/ui";
 // import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
-import { formatAmount, PermissionKeys } from "@/lib";
+import {
+  formatAmount,
+  PermissionKeys,
+  PurchaseOrderStatusList,
+  sanitizeNumber,
+} from "@/lib";
 import {
   useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   // useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
@@ -65,6 +70,10 @@ const PODetail = () => {
             ) && (
               <Button
                 variant={"default"}
+                disabled={
+                  data?.status !== PurchaseOrderStatusList.Completed ||
+                  sanitizeNumber(data?.items?.length) === 0
+                }
                 onClick={() =>
                   router.push(`/procurement/purchase-orders/${id}/revise`)
                 }
@@ -73,10 +82,10 @@ const PODetail = () => {
                 <span>Revise</span>
               </Button>
             )}
-            <Button variant={"success"}>
+            {/* <Button variant={"success"}>
               <Icon name="Mail" />
               <span>Send Mail</span>
-            </Button>
+            </Button> */}
           </div>
         </div>
         {isLoading ? (

@@ -72,25 +72,19 @@ const GRNDetail = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h1>Stock Transfer Details</h1>
-          {hasPermissionAccess(
-            PermissionKeys.warehouse.issueRawMaterialStockTransfers,
-          ) ||
-            (hasPermissionAccess(
-              PermissionKeys.warehouse.issuePackagingMaterialStockTransfers,
-            ) && (
-              <Button
-                onClick={onIssue}
-                variant={"default"}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
-              >
-                {isLoading ? (
-                  <Icon name="LoaderCircle" className="animate-spin" />
-                ) : (
-                  <Icon name="CircleCheck" className="size-4" />
-                )}
-                <span>Issue</span>{" "}
-              </Button>
-            ))}
+
+          <Button
+            onClick={onIssue}
+            variant={"default"}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500"
+          >
+            {isLoading ? (
+              <Icon name="LoaderCircle" className="animate-spin" />
+            ) : (
+              <Icon name="CircleCheck" className="size-4" />
+            )}
+            <span>Issue</span>{" "}
+          </Button>
         </div>
         <Card>
           <CardContent className="space-y-4 py-2">
@@ -147,7 +141,7 @@ const GRNDetail = () => {
                       Justification
                     </span>
                     <span className="text-primary-500 block text-sm font-normal">
-                      {/* {stockTransferResponse?.a} */}
+                      {stockTransferResponse?.reason}
                     </span>
                   </div>
                 </div>
