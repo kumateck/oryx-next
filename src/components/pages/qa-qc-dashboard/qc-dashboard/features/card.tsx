@@ -11,28 +11,33 @@ import { EMaterialKind } from "@/lib";
 import { QcDashboardDto } from "../../types";
 interface Props {
   data: QcDashboardDto;
-  materialKind: EMaterialKind;
-  onMaterialKindChange?: (kind: EMaterialKind) => void;
+  stpMaterialKind: EMaterialKind;
+  onMaterialKindChange: (kind: EMaterialKind) => void;
+  batchTestMaterialKind: EMaterialKind;
+  onBatchTestMaterialKindChange?: (kind: EMaterialKind) => void;
 }
 export const DashboardCard = ({
   data,
-  materialKind,
+  stpMaterialKind,
+  batchTestMaterialKind,
+  onBatchTestMaterialKindChange,
   onMaterialKindChange,
 }: Props) => {
-  console.log(data, "this is the data in card");
   return (
     <>
       <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4 xl:grid-cols-5">
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>STP({EMaterialKind[materialKind]} Material)</CardTitle>
+              <CardTitle>
+                Material STP({EMaterialKind[stpMaterialKind]})
+              </CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {materialKind === EMaterialKind.Raw
+              {stpMaterialKind === EMaterialKind.Raw
                 ? data?.numberOfStpRawMaterials
                 : data?.numberOfStpRawMaterials}
             </h1>
@@ -42,26 +47,28 @@ export const DashboardCard = ({
               <Button
                 onClick={() =>
                   onMaterialKindChange?.(
-                    materialKind === EMaterialKind.Packing
+                    stpMaterialKind === EMaterialKind.Packing
                       ? EMaterialKind.Raw
                       : EMaterialKind.Packing,
                   )
                 }
                 variant={
-                  materialKind === EMaterialKind.Raw ? "default" : "outline"
+                  stpMaterialKind === EMaterialKind.Raw ? "default" : "outline"
                 }
                 className="size-3 p-0 rounded-full"
               ></Button>
               <Button
                 onClick={() =>
                   onMaterialKindChange?.(
-                    materialKind === EMaterialKind.Raw
+                    stpMaterialKind === EMaterialKind.Raw
                       ? EMaterialKind.Packing
                       : EMaterialKind.Raw,
                   )
                 }
                 variant={
-                  materialKind === EMaterialKind.Packing ? "default" : "outline"
+                  stpMaterialKind === EMaterialKind.Packing
+                    ? "default"
+                    : "outline"
                 }
                 className="size-3 p-0 rounded-full"
               ></Button>
@@ -77,7 +84,7 @@ export const DashboardCard = ({
           </CardHeader>
           <CardContent>
             <h1 className="text-3xl mt-a4to font-bold text-gray-900">
-              {data?.numberOfStpProducts}
+              {data?.numberOfStpProducts ?? ""}
             </h1>
           </CardContent>
         </Card>
@@ -90,7 +97,7 @@ export const DashboardCard = ({
           </CardHeader>
           <CardContent>
             <h1 className="text-3xl mt-a4to font-bold text-gray-900">
-              {data?.numberOfAnalyticalRawData}
+              {data?.numberOfAnalyticalRawData ?? ""}
             </h1>
           </CardContent>
         </Card>
@@ -98,14 +105,15 @@ export const DashboardCard = ({
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
               <CardTitle>
-                Batch Test Count({EMaterialKind[materialKind]} Material)
+                Material Batch Test Count({EMaterialKind[batchTestMaterialKind]}
+                )
               </CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {materialKind === EMaterialKind.Raw
+              {batchTestMaterialKind === EMaterialKind.Raw
                 ? data?.numberOfStpRawMaterials
                 : data?.numberOfStpRawMaterials}
             </h1>
@@ -114,27 +122,31 @@ export const DashboardCard = ({
             <div className="flex w-full items-center justify-center gap-1">
               <Button
                 onClick={() =>
-                  onMaterialKindChange?.(
-                    materialKind === EMaterialKind.Packing
+                  onBatchTestMaterialKindChange?.(
+                    batchTestMaterialKind === EMaterialKind.Packing
                       ? EMaterialKind.Raw
                       : EMaterialKind.Packing,
                   )
                 }
                 variant={
-                  materialKind === EMaterialKind.Raw ? "default" : "outline"
+                  batchTestMaterialKind === EMaterialKind.Raw
+                    ? "default"
+                    : "outline"
                 }
                 className="size-3 p-0 rounded-full"
               ></Button>
               <Button
                 onClick={() =>
-                  onMaterialKindChange?.(
-                    materialKind === EMaterialKind.Raw
+                  onBatchTestMaterialKindChange?.(
+                    batchTestMaterialKind === EMaterialKind.Raw
                       ? EMaterialKind.Packing
                       : EMaterialKind.Raw,
                   )
                 }
                 variant={
-                  materialKind === EMaterialKind.Packing ? "default" : "outline"
+                  batchTestMaterialKind === EMaterialKind.Packing
+                    ? "default"
+                    : "outline"
                 }
                 className="size-3 p-0 rounded-full"
               ></Button>
@@ -144,13 +156,13 @@ export const DashboardCard = ({
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Batch Test Count(Products)</CardTitle>
+              <CardTitle>Products Batch Test Count</CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {data?.numberOfBatchTestApprovedRawMaterials}
+              {data?.numberOfBatchTestApprovedRawMaterials ?? ""}
             </h1>
           </CardContent>
         </Card>
@@ -160,7 +172,7 @@ export const DashboardCard = ({
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Batch Test(Raw Materials)</CardTitle>
+              <CardTitle>Material Batch Test</CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
@@ -175,19 +187,19 @@ export const DashboardCard = ({
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-gray-700 text-white">
                   <span className="text-xs">Pending</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestPendingRawMaterials}
+                    {data?.numberOfBatchTestPendingRawMaterials ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
                   <span className="text-xs">Approved</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestApprovedRawMaterials}
+                    {data?.numberOfBatchTestApprovedRawMaterials ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
                   <span className="text-xs">Rejected</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestRejectedRawMaterials}
+                    {data?.numberOfBatchTestRejectedRawMaterials ?? ""}
                   </span>
                 </div>
               </div>
@@ -197,32 +209,32 @@ export const DashboardCard = ({
         <Card>
           <CardHeader>
             <div className="flex w-full justify-between items-center gap-2">
-              <CardTitle>Batch Test(Products)</CardTitle>
+              <CardTitle>Products Batch Test</CardTitle>
               <Icon name="ChevronDown" className="text-primary-default" />
             </div>
           </CardHeader>
           <CardContent>
             <h1 className="text-4xl font-bold text-gray-900">
-              {data?.numberOfBatchTestCountRawMaterials}
+              {data?.numberOfBatchTestCountRawMaterials ?? ""}
             </h1>
             <div className="grid grid-cols-2 gap-1">
               <div className="flex flex-col items-start gap-1">
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-gray-700 text-white">
                   <span className="text-xs">Pending</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestPendingRawMaterials}
+                    {data?.numberOfBatchTestPendingRawMaterials ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
                   <span className="text-xs">Approved</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestApprovedRawMaterials}
+                    {data?.numberOfBatchTestApprovedRawMaterials ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
                   <span className="text-xs">Rejected</span>
                   <span className="font-semibold">
-                    {data?.numberOfBatchTestRejectedRawMaterials}
+                    {data?.numberOfBatchTestRejectedRawMaterials ?? ""}
                   </span>
                 </div>
               </div>
@@ -247,7 +259,7 @@ export const DashboardCard = ({
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-gray-700 text-white">
                   <span className="text-xs">Pending</span>
                   <span className="font-semibold">
-                    {data?.numberOfPendingApprovals}
+                    {data?.numberOfPendingApprovals ?? ""}
                   </span>
                 </div>
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-green-700 text-white">
@@ -259,7 +271,7 @@ export const DashboardCard = ({
                 <div className="flex font-medium px-2 rounded-full items-center gap-1 bg-red-700 text-white">
                   <span className="text-xs">Rejected</span>
                   <span className="font-semibold">
-                    {data?.numberOfRejectedApprovals}
+                    {data?.numberOfRejectedApprovals ?? ""}
                   </span>
                 </div>
               </div>
