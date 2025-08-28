@@ -19,7 +19,7 @@ export default function LeaveUsageChart() {
       <CardHeader>
         <CardTitle>Leave Usage</CardTitle>
       </CardHeader>
-      <CardContent className="w-full h-[400px]">
+      <CardContent className="w-full h-[200px]">
         <ChartContainer config={{}}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>

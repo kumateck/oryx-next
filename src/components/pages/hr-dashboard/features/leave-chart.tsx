@@ -22,8 +22,6 @@ export default function LeavePieChart() {
         <CardTitle>Leave Overview</CardTitle>
       </CardHeader>
       <CardContent className="w-full h-[200px]">
-        {" "}
-        {/* ✅ fixed height */}
         <ChartContainer config={{}}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -31,8 +29,8 @@ export default function LeavePieChart() {
                 data={chartData}
                 dataKey="value"
                 nameKey="name"
-                cx="50%"
-                cy="50%"
+                cx="80%"
+                cy="80%"
                 outerRadius="80%"
                 label
               >
