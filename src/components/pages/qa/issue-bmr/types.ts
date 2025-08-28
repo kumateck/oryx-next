@@ -10,6 +10,15 @@ export const CreateIssueSchema = z
     expiryDate: z.date({ required_error: "Expiry Date is required" }),
     batchQuantity: z.string().optional(),
     uom: z.string().optional(),
+    packingId: z.object(
+      {
+        value: z.string().min(1, { message: "Packing Style is required" }),
+        label: z.string(),
+      },
+      {
+        message: "Packing Style is required",
+      },
+    ),
   })
   .refine((data) => data.expiryDate > data.manufacturingDate, {
     message: "Expiry Date must be after Manufacturing Date",

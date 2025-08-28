@@ -100,7 +100,7 @@ export function DataTableRowActions({
       <ConfirmDeleteDialog
         open={isDeleteOpen}
         title="Confirm Deletion"
-        description={`Are you sure you want to delete material "${row.original.materialId?.label || "this item"}"? This action cannot be undone.`}
+        description={`Are you sure you want to remove material "${row.original.materialId?.label || "this item"}"? This action cannot be undone.`}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
       />
@@ -145,9 +145,7 @@ export const getColumns = (
     accessorKey: "materialCode", // Access nested label for display
     header: "Code",
     cell: ({ row }) => (
-      <div className="text-sm text-gray-700">
-        {row.original.materialId?.label}
-      </div>
+      <div className="text-sm text-gray-700">{row.original.code}</div>
     ),
   },
   {
@@ -163,9 +161,7 @@ export const getColumns = (
     accessorKey: "spec", // Access nested label for display
     header: "SPEC Ref",
     cell: ({ row }) => (
-      <div className="text-sm text-gray-700">
-        {row.original.materialId?.label}
-      </div>
+      <div className="text-sm text-gray-700">{row.original.spec}</div>
     ),
   },
   {

@@ -3,11 +3,13 @@ import { z } from "zod";
 
 export const CreatePackagingSchema = z
   .object({
-    materialThickness: z.string().optional(),
-    otherStandards: z.string().optional(),
+    // materialThickness: z.string().optional(),
+    // otherStandards: z.string().optional(),
     id: z.string().optional(),
     idIndex: z.string().optional(),
-    material: z.object(
+    spec: z.string().optional(),
+    code: z.string().optional(),
+    materialId: z.object(
       {
         value: z.string().min(1, { message: "Material is required" }),
         label: z.string(),
@@ -56,6 +58,13 @@ export const CreatePackagingSchema = z
       path: ["unitCapacity"],
     },
   );
+
+export const PackagingFormSchema = z.object({
+  items: z.array(CreatePackagingSchema),
+});
+export type PackagingFormData = z.infer<typeof PackagingFormSchema>;
+
+export const PackagingFormValidator = zodResolver(PackagingFormSchema);
 
 export type PackagingRequestDto = z.infer<typeof CreatePackagingSchema>;
 export const CreatePackagingValidator = zodResolver(CreatePackagingSchema);

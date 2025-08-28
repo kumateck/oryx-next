@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button, Icon } from "@/components/ui";
 import { AuditModules, ErrorResponse, isErrorResponse, routes } from "@/lib";
 import {
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   useLazyGetApiV1ProductByProductIdBomQuery,
   usePostApiV1BomMutation,
   usePutApiV1ProductByProductIdBomArchiveMutation,
@@ -29,9 +30,11 @@ const BOM = () => {
   const router = useRouter();
 
   const [loadBom] = useLazyGetApiV1ProductByProductIdBomQuery();
+  const [loadSpec] = useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
   const [saveBom, { isLoading }] = usePostApiV1BomMutation();
   const [archiveBom, { isLoading: archiveLoading }] =
     usePutApiV1ProductByProductIdBomArchiveMutation();
+  const [isOpen, setIsOpen] = useState(false);
 
   // Main form with useFieldArray
   const form = useForm<BomFormData>({
@@ -61,39 +64,44 @@ const BOM = () => {
   // console.log(watchedItems, "watchedItems");
   const handleLoadBom = async (productId: string) => {
     try {
-      const bomResponse = await loadBom({
-        productId,
-        module: AuditModules.production.name,
-        subModule: AuditModules.production.bom,
-      }).unwrap();
+      const bomResponse = await loadBom({ productId }).unwrap();
 
       if (bomResponse?.billOfMaterial?.items) {
-        const defaultBillOfMaterials = bomResponse.billOfMaterial.items.map(
-          (bom, idx) => ({
-            ...bom,
-            // Ensure each item has an id for the draggable table
-            id: bom.id,
-            rowId: uuidv4(),
-            order: idx + 1,
-            materialId: {
-              label: bom.material?.name as string,
-              value: bom.material?.id as string,
-            },
-            materialTypeId: {
-              label: bom.materialType?.name as string,
-              value: bom.materialType?.id as string,
-            },
-            baseUoMId: {
-              label: bom.baseUoM?.symbol as string,
-              value: bom.baseUoM?.id as string,
-            },
+        const defaultBillOfMaterials = await Promise.all(
+          bomResponse.billOfMaterial.items.map(async (bom, idx) => {
+            const specResponse = await loadSpec({
+              id: bom.material?.id as string,
+            }).unwrap();
+            const spec = specResponse?.specificationNumber;
+            return {
+              ...bom,
+              // Ensure each item has an id for the draggable table
+              id: bom.id ?? uuidv4(), // fallback in case bom.id is missing
+              rowId: uuidv4(),
+              order: idx + 1,
+              code: bom.material?.code,
+              materialId: {
+                label: bom.material?.name ?? "",
+                value: bom.material?.id ?? "",
+              },
+              materialTypeId: {
+                label: bom.materialType?.name ?? "",
+                value: bom.materialType?.id ?? "",
+              },
+              baseUoMId: {
+                label: bom.baseUoM?.symbol ?? "",
+                value: bom.baseUoM?.id ?? "",
+              },
+              // If you need specResponse merged in, include it here
+              spec,
+            } as BomRequestDto;
           }),
-        ) as BomRequestDto[];
+        );
 
         setValue("items", defaultBillOfMaterials);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error loading BOM:", error);
     }
   };
 
@@ -110,16 +118,14 @@ const BOM = () => {
         subModule: AuditModules.production.bom,
         createBillOfMaterialRequest: {
           productId,
-          items: data.items.map((item, index) => ({
+          items: data.items.map((item) => ({
             materialId: item.materialId.value,
             materialTypeId: item.materialTypeId.value,
             baseUoMId: item.baseUoMId.value,
             baseQuantity: item.baseQuantity,
-            casNumber: item.casNumber,
-            function: item.function,
             grade: item.grade,
             isSubstitutable: item.isSubstitutable,
-            order: index + 1, // Use the actual index from the reordered array
+            order: item.order,
           })),
         },
       }).unwrap();
@@ -161,7 +167,7 @@ const BOM = () => {
     const newItemWithId = {
       ...newItem,
       id: `item-${Date.now()}-${Math.random()}`,
-      order: watchedItems.length + 1,
+      // order: watchedItems.length + 1,
     };
 
     append(newItemWithId);
@@ -238,8 +244,6 @@ const BOM = () => {
   //   // You can also add action columns for edit/delete buttons
   // ];
 
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <div className="relative">
       <div className="absolute right-0 -mt-10">
@@ -279,7 +283,12 @@ const BOM = () => {
 
       <StepWrapper className="w-full pb-3">
         <div className="flex w-full justify-between">
-          <PageTitle title="BOM List" />
+          <div>
+            <PageTitle title="BOM List" />
+            <p className="text-sm text-gray-600 mt-2">
+              Don’t forget to save your changes before leaving this page.
+            </p>
+          </div>
           <div className="flex gap-2">
             <Button
               onClick={handleArchiveBom}

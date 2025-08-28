@@ -11,11 +11,12 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { AuditModules, COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
+import { COLLECTION_TYPES, EMaterialKind, Option } from "@/lib";
 import {
   MaterialDepartmentWithWarehouseStockDto,
   PostApiV1CollectionApiArg,
   useLazyGetApiV1MaterialDepartmentQuery,
+  useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery,
   usePostApiV1CollectionMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -44,6 +45,8 @@ const Edit = ({
     defaultValues: details,
   });
 
+  const [loadSpec] = useLazyGetApiV1MaterialSpecificationsMaterialByIdQuery();
+
   const {
     register,
     control,
@@ -54,33 +57,6 @@ const Edit = ({
 
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
-
-  // const materialOptions = useMemo(() => {
-  //   if (!materialResponse?.data) return [];
-
-  //   const usedMaterialIds = new Set(
-  //     existingItems
-  //       .filter((_, idx) => idx !== currentIndex)
-  //       .map((item) => item.materialId?.value)
-  //       .filter(Boolean),
-  //   );
-
-  //   return materialResponse.data
-  //     .filter(
-  //       (material) =>
-  //         !usedMaterialIds.has(material?.id as string) ||
-  //         material.id === details.materialId?.value,
-  //     )
-  //     .map((material: MaterialDto) => ({
-  //       label: material.name || "",
-  //       value: material.id || "",
-  //     })) as Option[];
-  // }, [
-  //   materialResponse?.data,
-  //   existingItems,
-  //   currentIndex,
-  //   details.materialId?.value,
-  // ]);
 
   const materialTypeOptions = useMemo(() => {
     return (
@@ -94,8 +70,6 @@ const Edit = ({
   useEffect(() => {
     if (isOpen) {
       loadCollection({
-        module: AuditModules.general.name,
-        subModule: AuditModules.general.collection,
         body: [COLLECTION_TYPES.MaterialType, COLLECTION_TYPES.ProductCategory],
       } as PostApiV1CollectionApiArg);
       reset(details);
@@ -105,7 +79,7 @@ const Edit = ({
   const onSubmit = (data: BomRequestDto) => {
     const success = onUpdateItem(data);
     if (success) {
-      toast.success("BOM item updated successfully");
+      toast.success("BOM item changed");
       onClose();
     }
   };
@@ -124,20 +98,32 @@ const Edit = ({
   }) as Option;
   useEffect(() => {
     if (selectedMaterial) {
-      const material = materials.find(
-        (department) => department?.material?.id === selectedMaterial.value,
-      );
-      if (material) {
-        form.setValue("baseUoMId", {
-          label: material?.uoM?.symbol || "",
-          value: material.uoM?.id || "",
-        });
-      }
+      handleSelectedMaterial(materials, selectedMaterial);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materials, selectedMaterial]);
 
+  const handleSelectedMaterial = async (
+    materials: MaterialDepartmentWithWarehouseStockDto[],
+    selectedMaterial: Option,
+  ) => {
+    const foundMaterial = materials.find(
+      (department) => department?.material?.id === selectedMaterial.value,
+    );
+    if (foundMaterial) {
+      const specResponse = await loadSpec({
+        id: foundMaterial?.material?.id as string,
+      }).unwrap();
+      const spec = specResponse?.specificationNumber as string;
+      form.setValue("spec", spec);
+      form.setValue("baseUoMId", {
+        label: foundMaterial?.uoM?.symbol || "",
+        value: foundMaterial.uoM?.id || "",
+      });
+      form.setValue("code", foundMaterial?.material?.code || "");
+    }
+  };
   const [
     loadMaterials,
     { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },

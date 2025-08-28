@@ -23216,6 +23216,7 @@ export type UpdateBatchManufacturingRecord = {
   manufacturingDate?: string | null;
   expiryDate?: string | null;
   batchQuantity?: number;
+  productPackingId?: string | null;
 };
 export type CreateBatchPackagingRecord = {
   productId?: string;

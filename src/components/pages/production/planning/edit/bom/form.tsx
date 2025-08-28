@@ -37,7 +37,17 @@ const BomForm = <TFieldValues extends FieldValues, TContext>({
         fieldWrapperClassName="flex-grow"
         config={[
           {
-            label: "Ingredient Type",
+            register: register("order" as Path<TFieldValues>, {
+              valueAsNumber: true,
+            }),
+            label: "Step",
+            placeholder: "Enter step",
+            type: InputTypes.NUMBER,
+
+            errors,
+          },
+          {
+            label: "Function",
             control: control as Control,
             type: InputTypes.SELECT,
             name: "materialTypeId",
@@ -62,8 +72,24 @@ const BomForm = <TFieldValues extends FieldValues, TContext>({
             errors,
           },
           {
+            register: register("code" as Path<TFieldValues>),
+            label: "Material Code",
+            placeholder: "Enter code",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            errors,
+          },
+          {
+            register: register("spec" as Path<TFieldValues>),
+            label: "Material Spec Number",
+            placeholder: "Enter spec",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            errors,
+          },
+          {
             register: register("baseUoMId.label" as Path<TFieldValues>),
-            label: "Base UOM",
+            label: "Unit of Measure",
             placeholder: "Enter Base UOM",
             type: InputTypes.TEXT,
             readOnly: true,
@@ -73,7 +99,7 @@ const BomForm = <TFieldValues extends FieldValues, TContext>({
             register: register("baseQuantity" as Path<TFieldValues>, {
               valueAsNumber: true,
             }),
-            label: "Base Quantity",
+            label: "Quantity per unit",
             placeholder: "Enter quantity",
             type: InputTypes.NUMBER,
 
@@ -83,23 +109,8 @@ const BomForm = <TFieldValues extends FieldValues, TContext>({
             register: register("grade" as Path<TFieldValues>),
             label: "Grade/Purity",
             placeholder: "Enter Grade/Purity",
-            type: InputTypes.TEXT,
-
-            errors,
-          },
-          {
-            register: register("casNumber" as Path<TFieldValues>),
-            label: "CAS Number",
-            placeholder: "Enter CAS Number",
-            type: InputTypes.TEXT,
-
-            errors,
-          },
-          {
-            register: register("function" as Path<TFieldValues>),
-            label: "Function",
-            placeholder: "Enter function",
             type: InputTypes.TEXTAREA,
+
             errors,
           },
         ]}

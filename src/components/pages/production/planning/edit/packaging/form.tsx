@@ -9,12 +9,15 @@ import {
 
 import { FormWizard } from "@/components/form-inputs";
 import { InputTypes, Option } from "@/lib";
+import { FetchOptionsResult } from "@/components/ui";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
   control: Control<TFieldValues, TContext>;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  materialOptions: Option[];
+  isLoading: boolean;
+  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
+
   directLinkMaterialOptions: Option[];
   defaultValues?: TFieldValues;
 }
@@ -22,7 +25,8 @@ const PackageForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  materialOptions,
+  fetchOptions,
+  isLoading,
   defaultValues,
   directLinkMaterialOptions,
 }: Props<TFieldValues, TContext>) => {
@@ -35,13 +39,30 @@ const PackageForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Material",
             control: control as Control,
-            type: InputTypes.SELECT,
-            name: "material",
-            defaultValue: defaultValues?.material,
+            type: InputTypes.ASYNC_SELECT,
+            name: "materialId",
             required: true,
             onModal: true,
-            placeholder: "Select Material",
-            options: materialOptions,
+            defaultValue: defaultValues?.materialId,
+            placeholder: "Select material",
+            fetchOptions: fetchOptions,
+            isLoading: isLoading,
+            errors,
+          },
+          {
+            register: register("code" as Path<TFieldValues>),
+            label: "Material Code",
+            placeholder: "Enter code",
+            type: InputTypes.TEXT,
+            readOnly: true,
+            errors,
+          },
+          {
+            register: register("spec" as Path<TFieldValues>),
+            label: "Material Spec Number",
+            placeholder: "Enter spec",
+            type: InputTypes.TEXT,
+            readOnly: true,
             errors,
           },
           {
@@ -84,21 +105,21 @@ const PackageForm = <TFieldValues extends FieldValues, TContext>({
             type: InputTypes.NUMBER,
             errors,
           },
-          {
-            register: register("materialThickness" as Path<TFieldValues>),
-            label: "Material Thickness",
-            placeholder: "Enter material thickness",
-            type: InputTypes.TEXT,
+          // {
+          //   register: register("materialThickness" as Path<TFieldValues>),
+          //   label: "Material Thickness",
+          //   placeholder: "Enter material thickness",
+          //   type: InputTypes.TEXT,
 
-            errors,
-          },
-          {
-            register: register("otherStandards" as Path<TFieldValues>),
-            label: "Other Standards",
-            placeholder: "Enter other standards",
-            type: InputTypes.TEXT,
-            errors,
-          },
+          //   errors,
+          // },
+          // {
+          //   register: register("otherStandards" as Path<TFieldValues>),
+          //   label: "Other Standards",
+          //   placeholder: "Enter other standards",
+          //   type: InputTypes.TEXT,
+          //   errors,
+          // },
         ]}
       />
     </div>
