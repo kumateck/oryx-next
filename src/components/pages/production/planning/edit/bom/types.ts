@@ -2,11 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const CreateBomSchema = z.object({
-  casNumber: z.string().optional(),
-  function: z.string().optional(),
+  // casNumber: z.string().optional(),
+  // function: z.string().optional(),
   grade: z.string().optional(),
   isSubstitutable: z.boolean().optional(),
   id: z.string().optional(),
+  spec: z.string().optional(),
+  code: z.string().optional(),
   rowId: z.string(),
   materialId: z.object(
     {

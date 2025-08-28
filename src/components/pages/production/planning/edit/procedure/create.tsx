@@ -56,7 +56,7 @@ const Create = ({ onAddItem, existingItems, isOpen, onClose }: Props) => {
         value: "",
       },
       rowId: uuidv4(),
-      resources: [],
+
       // responsibleRoles: [],
       workCenters: [],
     },

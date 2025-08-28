@@ -44,9 +44,9 @@ export const CreateRoutingSchema = z.object({
   rowId: z.string(),
 
   operationId: IdSchema("Operation"),
-  resources: z.array(IdSchema("Resource")).min(1, {
-    message: "Resource is required",
-  }),
+  // resources: z.array(IdSchema("Resource")).min(1, {
+  //   message: "Resource is required",
+  // }),
   workCenters: z.array(IdSchema("Work Center")).min(1, {
     message: "Resource is required",
   }),
