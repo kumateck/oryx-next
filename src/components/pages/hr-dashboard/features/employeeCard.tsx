@@ -7,18 +7,21 @@ import {
   Icon,
 } from "@/components/ui";
 import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
+import { useRouter } from "next/navigation";
 
 interface Props {
   data: HrDashboardDtoRead;
 }
 export function EmployeeCard({ data }: Props) {
+  const router = useRouter();
   return (
-    <Card className="col-span-7 lg:col-span-8 w-full">
+    <Card className="col-span-6 w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Total Employee</CardTitle>
           <Icon
             name="UsersRound"
+            onClick={() => router.push("/hr/employee-management")}
             className="size-5 font-semibold text-primary-default"
           />
         </div>
@@ -37,10 +40,6 @@ export function EmployeeCard({ data }: Props) {
             <span className="text-2xl font-bold text-gray-900">
               {data.numberOfPermanentEmployees}
             </span>
-            {/* <span>
-              <span className="text-green-700 font-medium">+45%</span> in last
-              quarter
-            </span> */}
           </div>
           <div className="text-lg font-semibold text-gray-900">
             Permanent Employee
@@ -51,10 +50,6 @@ export function EmployeeCard({ data }: Props) {
             <span className="text-2xl font-bold text-gray-900">
               {data.numberOfCasualEmployees}
             </span>
-            {/* <span>
-              <span className="text-green-700 font-medium">+15%</span> in last
-              quarter
-            </span> */}
           </div>
           <div className="text-lg font-semibold text-gray-900">
             Casual Employee

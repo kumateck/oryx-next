@@ -6,7 +6,14 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
-import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Rectangle,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const chartConfig = {
   visitors: {
@@ -57,18 +64,18 @@ interface Props {
 }
 export function HrBarChart({}: Props) {
   return (
-    <Card className="mt-6">
+    <Card className="mt-6 w-full">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">
           Daily Attendance Status
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer className="max-h-96 h-full" config={chartConfig}>
+        <ChartContainer className="max-h-96 !pl-0 h-full" config={chartConfig}>
           <BarChart
             className="h-full w-full"
             accessibilityLayer
-            // dataKey={"day"}
+            margin={{ left: 0 }}
             data={chartData}
           >
             <CartesianGrid vertical={false} />
@@ -82,6 +89,7 @@ export function HrBarChart({}: Props) {
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
+            <YAxis tickLine={false} axisLine={false} />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
