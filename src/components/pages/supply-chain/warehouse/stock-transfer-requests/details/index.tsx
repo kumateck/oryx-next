@@ -141,7 +141,7 @@ const GRNDetail = () => {
                       Justification
                     </span>
                     <span className="text-primary-500 block text-sm font-normal">
-                      {/* {stockTransferResponse?.a} */}
+                      {stockTransferResponse?.reason}
                     </span>
                   </div>
                 </div>
