@@ -10,6 +10,11 @@ import { HrBarChart } from "./features/hrBarChart";
 import { useLazyGetApiV1ReportHumanResourceQuery } from "@/lib/redux/api/openapi.generated";
 import { getDateRange } from "@/lib";
 import { HRDashboardSkeleton } from "./features/loadingSkeleton";
+import { EmployeesBreakDown } from "./features/employee-summary";
+import { StaffTurnoverCard } from "./features/exitPassCard";
+import LeavePieChart from "./features/leave-chart";
+import GenderRatioChart from "./features/gender-ration";
+import LeaveUsageChart from "./features/leave-usage-chart";
 
 const FilterBtn = ["Today", "This Week", "This Month", "All Time"];
 
@@ -74,13 +79,22 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="grid mt-8 grid-flow-row gap-4">
+      <div className="grid mt-8 grid-flow-row gap-4 w-full">
         <ChartCards data={data ?? {}} />
         <div className="grid grid-cols-12 gap-4 mt-4">
           <AttendanceCard data={data ?? {}} />
           <EmployeeCard data={data ?? {}} />
+          <StaffTurnoverCard data={data ?? {}} />
         </div>
+      </div>
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <LeavePieChart />
+        <LeaveUsageChart />
+        <GenderRatioChart />
+      </div>
+      <div className="flex flex-col w-full md:flex-row items-center gap-2">
         <HrBarChart data={data ?? {}} />
+        <EmployeesBreakDown data={data ?? {}} />
       </div>
     </ScrollablePageWrapper>
   );

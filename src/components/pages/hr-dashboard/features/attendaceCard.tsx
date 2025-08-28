@@ -30,7 +30,7 @@ interface Props {
 }
 export function AttendanceCard({ data }: Props) {
   return (
-    <Card className="col-span-5 xl:col-span-4 row-span-full">
+    <Card className="col-span-3 row-span-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Attendance Rate</CardTitle>

@@ -1,96 +1,62 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Icon,
-} from "@/components/ui";
-import { fullname, getInitials } from "@/lib";
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { HrDashboardDtoRead } from "@/lib/redux/api/openapi.generated";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-//ARRAY OF USERS WITH THEIR NAMES AVATARS URLS AND ROLES
-const users = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    role: "HR Manager",
-  },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    avatar: "https://i.pravatar.cc/150?img=2",
-    role: "Recruiter",
-  },
-  {
-    id: 3,
-    firstName: "Alice",
-    lastName: "Johnson",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    role: "Payroll Specialist",
-  },
+// Dummy turnover trend data
+const chartData = [
+  { year: "2020", turnover: 12 },
+  { year: "2021", turnover: 18 },
+  { year: "2022", turnover: 15 },
+  { year: "2023", turnover: 22 },
+  { year: "2024", turnover: 17 },
+  { year: "2025", turnover: 20 },
 ];
+
+const chartConfig = {
+  turnover: {
+    label: "Turnover %",
+    color: "#007bff",
+  },
+} satisfies ChartConfig;
 
 interface Props {
   data: HrDashboardDtoRead;
 }
-export function ExitPassCard({ data }: Props) {
-  console.log("ExitPassCard data", data);
+
+export function StaffTurnoverCard({ data }: Props) {
+  console.log("data in turnover card", data);
   return (
-    <Card className="">
+    <Card className="col-span-3">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>EXIT PASS</CardTitle>
-          <Icon
-            name="UserRound"
-            className="size-5 font-semibold text-primary-default"
-          />
-        </div>
+        <CardTitle>Staff Turnover Trend</CardTitle>
       </CardHeader>
-      <CardContent className="mt-auto space-y-4">
-        {users.map((user) => (
-          <div
-            key={user.id}
-            className="flex w-full items-center justify-between"
-          >
-            <div className="flex items-center justify-start">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src={user?.avatar as string}
-                  alt={user?.role as string}
-                />
-                <AvatarFallback className="rounded-lg">
-                  {getInitials(
-                    fullname(
-                      user?.firstName as string,
-                      user?.lastName as string,
-                    ),
-                  )}
-                </AvatarFallback>
-              </Avatar>
-              <div className="ml-2 flex flex-col">
-                <span className="font-medium">
-                  {fullname(
-                    user?.firstName as string,
-                    user?.lastName as string,
-                  )}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {user?.role as string}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <Icon name="Check" className="size-5 text-green-600" />
-              <Icon name="X" className="size-5 text-red-600 ml-2" />
-            </div>
-          </div>
-        ))}
+      <CardContent>
+        <ChartContainer className="max-h-96 h-full" config={chartConfig}>
+          <LineChart className="h-full w-full" data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="year"
+              tickLine={false}
+              axisLine={true}
+              tickMargin={10}
+            />
+            <YAxis tickLine={false} axisLine={false} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              type="monotone"
+              dataKey="turnover"
+              stroke={chartConfig.turnover.color}
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
+          </LineChart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
