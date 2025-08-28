@@ -6,14 +6,14 @@ import React, { useEffect, useState } from "react";
 import { FilterBtn, QcDashboardDto } from "../types";
 import { useLazyGetApiV1ReportQcDashboardQuery } from "@/lib/redux/api/openapi.generated";
 import { DashboardCard } from "./features/card";
-import { EMaterialKind } from "@/lib";
+import { EMaterialKind, getDateRange } from "@/lib";
 import QcDashboardSkeleton from "./ladingSkeleton";
 
 function Index() {
   const [materialKind, setMaterialKind] = useState<EMaterialKind>(
     EMaterialKind.Raw,
   );
-  const [loadReport, { data, isLoading }] =
+  const [loadReport, { data, isLoading, isFetching }] =
     useLazyGetApiV1ReportQcDashboardQuery({});
 
   useEffect(() => {
@@ -22,7 +22,14 @@ function Index() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialKind]);
-  if (isLoading) return <QcDashboardSkeleton />;
+  const handleFilterClick = async (filter: string) => {
+    const { startDate, endDate } = getDateRange(filter);
+    await loadReport({
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+  };
+  if (isLoading || isFetching) return <QcDashboardSkeleton />;
   return (
     <ScrollablePageWrapper className="space-y-4">
       <div className="flex w-full items-center justify-between gap-4">
@@ -42,8 +49,22 @@ function Index() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
             {FilterBtn.map((btn) => (
-              <Button key={btn} variant="outline" className="text-sm p-2">
-                {btn}
+              <Button
+                key={btn}
+                variant="outline"
+                className="text-sm p-2"
+                onClick={() => handleFilterClick(btn)}
+              >
+                {isLoading || isFetching ? (
+                  <Icon
+                    name="LoaderCircle"
+                    size={"14"}
+                    className="animate-spin mr-2"
+                  />
+                ) : (
+                  <Icon name="RefreshCw" size={"14"} />
+                )}
+                <span>{btn}</span>
               </Button>
             ))}
           </div>

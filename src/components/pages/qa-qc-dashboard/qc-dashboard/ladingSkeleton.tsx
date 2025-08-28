@@ -5,10 +5,11 @@ import {
   CardHeader,
   Skeleton,
 } from "@/components/ui";
+import ScrollablePageWrapper from "@/shared/page-wrapper";
 
 export default function QcDashboardSkeleton() {
   return (
-    <div className="space-y-4">
+    <ScrollablePageWrapper className="space-y-4">
       {/* Header */}
       <div className="flex w-full items-center justify-between gap-4">
         <div>
@@ -72,6 +73,6 @@ export default function QcDashboardSkeleton() {
           </Card>
         ))}
       </div>
-    </div>
+    </ScrollablePageWrapper>
   );
 }

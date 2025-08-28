@@ -6,15 +6,15 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { ChartCards } from "./features/chartCard";
 import { AttendanceCard } from "./features/attendaceCard";
 import { EmployeeCard } from "./features/employeeCard";
-import { ExitPassCard } from "./features/exitPassCard";
 import { HrBarChart } from "./features/hrBarChart";
 import { useLazyGetApiV1ReportHumanResourceQuery } from "@/lib/redux/api/openapi.generated";
 import { getDateRange } from "@/lib";
+import { HRDashboardSkeleton } from "./features/loadingSkeleton";
 
 const FilterBtn = ["Today", "This Week", "This Month", "All Time"];
 
 function Page() {
-  const [loadReport, { data, isLoading }] =
+  const [loadReport, { data, isLoading, isFetching }] =
     useLazyGetApiV1ReportHumanResourceQuery({});
   useEffect(() => {
     loadReport({
@@ -32,6 +32,7 @@ function Page() {
       endDate: endDate.toISOString(),
     });
   };
+  if (isLoading || isFetching) return <HRDashboardSkeleton />;
   return (
     <ScrollablePageWrapper>
       <div className="flex w-full items-center justify-between gap-4">
@@ -55,15 +56,17 @@ function Page() {
                 disabled={isLoading}
                 key={btn}
                 variant="outline"
-                className="text-sm p-2 flex items-center"
+                className="text-sm p-1 flex items-center"
                 onClick={() => handleFilterClick(btn)}
               >
-                {isLoading && (
+                {isLoading || isFetching ? (
                   <Icon
                     name="LoaderCircle"
                     size={"14"}
-                    className="animate-spin mr-2"
+                    className="animate-spin"
                   />
+                ) : (
+                  <Icon name="RefreshCw" size={"14"} />
                 )}
                 {btn}
               </Button>
@@ -76,9 +79,6 @@ function Page() {
         <div className="grid grid-cols-12 gap-4 mt-4">
           <AttendanceCard data={data ?? {}} />
           <EmployeeCard data={data ?? {}} />
-          <div className="col-span-12 lg:col-span-3">
-            <ExitPassCard data={data ?? {}} />
-          </div>
         </div>
         <HrBarChart data={data ?? {}} />
       </div>
