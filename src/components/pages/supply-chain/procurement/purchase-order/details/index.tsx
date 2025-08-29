@@ -9,11 +9,13 @@ import { Button, Card, CardContent, Icon } from "@/components/ui";
 // import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 import {
   formatAmount,
+  getEnumBadgeWithHexColors,
   PermissionKeys,
   PurchaseOrderStatusList,
   sanitizeNumber,
 } from "@/lib";
 import {
+  PurchaseOrderStatus,
   useLazyGetApiV1ProcurementPurchaseOrderByPurchaseOrderIdQuery,
   // useLazyGetApiV1ProductionScheduleByScheduleIdQuery,
 } from "@/lib/redux/api/openapi.generated";
@@ -25,6 +27,7 @@ import PageTitle from "@/shared/title";
 import { ListsTable } from "@/shared/datatable";
 import { getColumns } from "./columns";
 import { useUserPermissions } from "@/hooks/use-permission";
+import StatusBadge from "@/shared/status-badge";
 
 const PODetail = () => {
   const dispatch = useDispatch();
@@ -52,6 +55,16 @@ const PODetail = () => {
 
   // check permissions here
   const { hasPermissionAccess } = useUserPermissions();
+
+  const cancelledStatus =
+    data?.status === PurchaseOrderStatusList.Completed &&
+    sanitizeNumber(data?.items?.length) === 0
+      ? PurchaseOrderStatusList.Cancelled
+      : (data?.status as PurchaseOrderStatus);
+  const { label, style } = getEnumBadgeWithHexColors(
+    PurchaseOrderStatusList,
+    cancelledStatus,
+  );
   return (
     <ScrollablePageWrapper>
       <div className="space-y-3">
@@ -202,6 +215,9 @@ const PODetail = () => {
                           ? format(data?.expectedDeliveryDate, "MMM dd, yyyy")
                           : "-"}
                       </span>
+                    </div>
+                    <div>
+                      <StatusBadge label={label} style={style} />
                     </div>
                   </div>
                 </div>

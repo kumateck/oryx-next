@@ -375,6 +375,7 @@ export enum PurchaseOrderStatusList {
   Attached = 3,
   Completed = 4,
   Linked = 5,
+  Cancelled = 6,
 }
 
 export enum UoMType {
