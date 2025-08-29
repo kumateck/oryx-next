@@ -115,42 +115,39 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         {hasPermissionAccess(
           PermissionKeys.humanResources.editLeaveRequest,
         ) && (
-          <DropdownMenuItem className="group">
-            <div
-              className="flex cursor-pointer items-center justify-start gap-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setDetails(row.original);
-                setIsOpen(true);
-              }}
-            >
-              <Icon
-                name="Pencil"
-                className="h-5 w-5 cursor-pointer text-neutral-500"
-              />
-              <span>Edit</span>
-            </div>
+          <DropdownMenuItem
+            className="group flex cursor-pointer items-center justify-start gap-2"
+            disabled={row.original?.leaveStatus === LeaveStatus.Expired}
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetails(row.original);
+              setIsOpen(true);
+            }}
+          >
+            <Icon
+              name="Pencil"
+              className="h-5 w-5 cursor-pointer text-neutral-500"
+            />
+            <span>Edit</span>
           </DropdownMenuItem>
         )}
         {(hasPermissionAccess(
           PermissionKeys.humanResources.deleteOrCancelLeaveRequest,
         ) ||
           row.original.leaveStatus == LeaveStatus.Approved) && (
-          <DropdownMenuItem className="group">
-            <div
-              className="flex cursor-pointer items-center justify-start gap-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setDetails(row.original);
-                setIsDeleteOpen(true);
-              }}
-            >
-              <Icon
-                name="Trash2"
-                className="text-danger-500 h-5 w-5 cursor-pointer"
-              />
-              <span>Delete</span>
-            </div>
+          <DropdownMenuItem
+            className="group flex cursor-pointer w-full items-center justify-start gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetails(row.original);
+              setIsDeleteOpen(true);
+            }}
+          >
+            <Icon
+              name="Trash2"
+              className="text-danger-500 h-5 w-5 cursor-pointer"
+            />
+            <span>Delete</span>
           </DropdownMenuItem>
         )}
       </TableMenuAction>

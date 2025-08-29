@@ -49,7 +49,7 @@ export const PositionDetailsForm = <
             errors,
           },
           {
-            label: "Request Departmentssss",
+            label: "Request Department",
             control: control as Control,
             type: InputTypes.SELECT,
             name: "departmentId",

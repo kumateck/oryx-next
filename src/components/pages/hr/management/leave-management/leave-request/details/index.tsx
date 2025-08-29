@@ -160,8 +160,8 @@ function LeaveDetails() {
               <span>Recall Date:</span>
               <span className="font-semibold">
                 {data?.recallDate
-                  ? format(data?.recallDate, "MMM dd, yyyy")
-                  : "N/A"}
+                  ? format(new Date(data.recallDate), "MMM dd, yyyy")
+                  : "Not Recalled"}
               </span>
             </div>
           </div>
