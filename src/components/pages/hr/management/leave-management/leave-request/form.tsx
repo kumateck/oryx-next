@@ -69,7 +69,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
         />
       </div>
       {/* )} */}
-      {isExitPass && (
+      {/* {isExitPass && (
         <FormWizard
           config={[
             {
@@ -77,7 +77,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
               control: control as Control,
               type: InputTypes.DATE,
               disabled: {
-                after: new Date(),
+                before: new Date(),
               },
               name: "date",
               required: true,
@@ -86,7 +86,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
             },
           ]}
         />
-      )}
+      )} */}
       {!isExitPass && (
         <div className="w-full my-5 gap-4 grid grid-cols-2">
           <FormWizard
@@ -96,7 +96,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 control: control as Control,
                 type: InputTypes.DATE,
                 disabled: {
-                  after: new Date(),
+                  before: new Date(),
                 },
                 name: "startDate",
                 required: true,
@@ -112,7 +112,7 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
                 control: control as Control,
                 type: InputTypes.DATE,
                 disabled: {
-                  after: new Date(),
+                  before: new Date(),
                 },
                 name: "endDate",
                 required: true,

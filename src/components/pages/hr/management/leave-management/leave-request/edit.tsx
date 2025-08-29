@@ -11,7 +11,12 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { AuditModules, LeaveCategories, Option } from "@/lib";
+import {
+  AuditModules,
+  EmployeeStatusType,
+  LeaveCategories,
+  Option,
+} from "@/lib";
 import {
   CreateLeaveRequest,
   LeaveRequestDto,
@@ -132,9 +137,11 @@ const Edit = ({ isOpen, onClose, details }: Props) => {
     }
   };
 
+  //TODO: update this to use the async options
   const { data: employeesResponse } = useGetApiV1EmployeeQuery({
     page: 1,
-    pageSize: 40,
+    pageSize: 500,
+    status: EmployeeStatusType.Active,
     module: AuditModules.management.name,
     subModule: AuditModules.management.employeeManagement,
   });
