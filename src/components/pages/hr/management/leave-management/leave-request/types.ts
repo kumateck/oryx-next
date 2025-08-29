@@ -59,19 +59,8 @@ export const CreateLeaveSchema = z
       },
       { required_error: "Leave type is required" },
     ),
-    startDate: z.preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date({
-        required_error: "Start date is required",
-        invalid_type_error: "Start date must be a valid date",
-      }),
-    ),
-    endDate: z.preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date({
-        invalid_type_error: "End date must be a valid date",
-      }),
-    ),
+    startDate: z.date({ message: "Start date is required" }),
+    endDate: z.date({ message: "End date is required" }),
     employeeId: z.object(
       {
         value: z.string().min(1, { message: "Staff name is required" }),
@@ -80,95 +69,55 @@ export const CreateLeaveSchema = z
       { required_error: "Staff name is required" },
     ),
     leaveCategory: z.string().optional(),
-    contactPerson: z.string().optional(),
-    contactPersonNumber: z.string().optional(),
+    contactPerson: z.string().min(1, { message: "Contact person is required" }),
+    contactPersonNumber: z
+      .string()
+      .min(1, { message: "Contact person phone is required" }),
     attachments: imageValidationSchema.optional(),
     justification: z.string().optional(),
-    destination: z.string().optional(),
+    destination: z.string().min(1, { message: "Designation is required" }),
   })
   .refine(
-    (data) => {
-      if (
-        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString() ||
-        data.leaveCategory === LeaveCategories.ExitPassRequest.toString()
-      ) {
-        return !!data.destination?.trim();
-      }
-      return true;
-    },
+    (data) =>
+      data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() ||
+      data.leaveCategory !== LeaveCategories.ExitPassRequest.toString(),
     {
       message: "Destination is required",
       path: ["destination"],
     },
   )
   .refine(
-    (data) => {
-      if (
-        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory === LeaveCategories.ExitPassRequest.toString()
-      ) {
-        return !!data.contactPerson?.trim();
-      }
-      return true;
-    },
+    (data) =>
+      data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() ||
+      data.leaveCategory !== LeaveCategories.ExitPassRequest.toString(),
     {
       message: "Contact person is required",
       path: ["contactPerson"],
     },
   )
   .refine(
-    (data) => {
-      if (
-        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory === LeaveCategories.ExitPassRequest.toString()
-      ) {
-        return !!data.contactPersonNumber?.trim();
-      }
-      return true;
-    },
+    (data) =>
+      data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() ||
+      data.leaveCategory !== LeaveCategories.ExitPassRequest.toString(),
     {
       message: "Contact person phone number is required",
       path: ["contactPersonNumber"],
     },
   )
   .refine(
-    (data) => {
-      if (
-        data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() &&
-        data.leaveCategory !== LeaveCategories.ExitPassRequest.toString()
-      ) {
-        return !!data.startDate;
-      }
-      return true;
-    },
+    (data) =>
+      data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString() ||
+      data.leaveCategory !== LeaveCategories.ExitPassRequest.toString(),
     {
       message: "Start date is required",
       path: ["startDate"],
     },
   )
   .refine(
-    (data) => {
-      if (
-        data.leaveCategory === LeaveCategories.OfficialDutyRequest.toString()
-      ) {
-        return !!data.endDate;
-      }
-      return true;
-    },
+    (data) =>
+      data.leaveCategory !== LeaveCategories.OfficialDutyRequest.toString(),
     {
       message: "End date is required",
-      path: ["endDate"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.startDate instanceof Date && data.endDate instanceof Date) {
-        return data.startDate < data.endDate;
-      }
-      return true;
-    },
-    {
-      message: "Start date must be before end date",
       path: ["endDate"],
     },
   );

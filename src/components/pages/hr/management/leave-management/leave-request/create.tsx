@@ -11,7 +11,13 @@ import {
   DialogTitle,
   Icon,
 } from "@/components/ui";
-import { AuditModules, CODE_SETTINGS, LeaveCategories, Option } from "@/lib";
+import {
+  AuditModules,
+  CODE_SETTINGS,
+  EmployeeStatusType,
+  LeaveCategories,
+  Option,
+} from "@/lib";
 import {
   CreateLeaveRequest,
   PostApiV1FileByModelTypeAndModelIdApiArg,
@@ -48,6 +54,15 @@ const LeaveRequest = ({
   const [uploadAttachment, { isLoading: uploading }] =
     usePostApiV1FileByModelTypeAndModelIdMutation();
 
+  const isExitPass =
+    category.toString() === LeaveCategories.ExitPassRequest.toString();
+  const isOfficialDuty =
+    category.toString() === LeaveCategories.OfficialDutyRequest.toString();
+  const isLeaveOrAbsence = [
+    LeaveCategories.LeaveRequest,
+    LeaveCategories.AbsenceRequest,
+  ].includes(category);
+
   const {
     register,
     control,
@@ -59,17 +74,13 @@ const LeaveRequest = ({
     mode: "all",
     defaultValues: {
       leaveCategory: splitWords(LeaveCategories[category]),
+      contactPerson: isOfficialDuty || isExitPass ? "None" : "",
+      contactPersonNumber: isOfficialDuty || isExitPass ? "None" : "",
+      startDate: isExitPass ? new Date() : undefined,
+      endDate: isExitPass ? new Date() : undefined,
+      destination: isOfficialDuty ? "" : "none",
     },
   });
-
-  const isExitPass =
-    category.toString() === LeaveCategories.ExitPassRequest.toString();
-  const isOfficialDuty =
-    category.toString() === LeaveCategories.OfficialDutyRequest.toString();
-  const isLeaveOrAbsence = [
-    LeaveCategories.LeaveRequest,
-    LeaveCategories.AbsenceRequest,
-  ].includes(category);
 
   const onSubmit = async (data: LeaveRequestDto) => {
     try {
@@ -141,6 +152,7 @@ const LeaveRequest = ({
   const { data: employeesResponse } = useGetApiV1EmployeeQuery({
     page: 1,
     pageSize: 40,
+    status: EmployeeStatusType.Active,
     module: AuditModules.management.name,
     subModule: AuditModules.management.employeeManagement,
   });
