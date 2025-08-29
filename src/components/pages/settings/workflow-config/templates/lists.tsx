@@ -18,7 +18,7 @@ import TemplateCard from "./card";
 import PageWrapper from "@/components/layout/wrapper";
 import { useDebounce } from "@uidotdev/usehooks";
 
-const PAGE_SIZE = 10; // or whatever your API page size is
+const PAGE_SIZE = 30; // or whatever your API page size is
 interface Props {
   type?: FormType;
 }

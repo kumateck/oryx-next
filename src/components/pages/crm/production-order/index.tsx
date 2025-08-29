@@ -17,7 +17,7 @@ function Index() {
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   // const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
 
   const dispatch = useDispatch();
   const router = useRouter();

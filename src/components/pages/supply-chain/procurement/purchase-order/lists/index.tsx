@@ -66,7 +66,7 @@ const Page = () => {
   return (
     <PageWrapper className="w-full space-y-2 py-1">
       <div className="flex items-center justify-between py-2">
-        <PageTitle title="Purchase Order Lists" />
+        <PageTitle title="Lists" />
         <div className="flex items-center justify-end gap-2">
           <AccessTabs
             handleTabClick={handleTabClick}
