@@ -1,60 +1,103 @@
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
-  TableFooter,
-} from "@/components/ui/table";
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui";
+import { StaffLeaveSummaryReportDtoRead } from "@/lib/redux/api/openapi.generated";
 
-export default function LeaveStatsTable() {
-  const data = [
-    { department: "Pharmacy", total: 25, onLeave: 3, leavePercent: "12%" },
-    { department: "Production", total: 40, onLeave: 5, leavePercent: "12.5%" },
-    { department: "Sales", total: 15, onLeave: 1, leavePercent: "6.7%" },
-    { department: "HR", total: 10, onLeave: 2, leavePercent: "20%" },
-    { department: "QC (Quality)", total: 12, onLeave: 0, leavePercent: "0%" },
-  ];
+interface Props {
+  data: StaffLeaveSummaryReportDtoRead;
+}
 
+export default function LeaveEntitlementTable({ data }: Props) {
   const totals = {
-    totalEmployees: 102,
-    totalOnLeave: 11,
-    avgPercent: "10.8%",
+    staffDueForLeave:
+      data.departments?.reduce(
+        (acc, d) =>
+          acc +
+          (typeof d.staffDueForLeave === "number" ? d.staffDueForLeave : 0),
+        0,
+      ) ?? 0,
+    totalLeaveEntitlement:
+      data.departments?.reduce(
+        (acc, d) =>
+          acc +
+          (typeof d.totalLeaveEntitlement === "number"
+            ? d.totalLeaveEntitlement
+            : 0),
+        0,
+      ) ?? 0,
+    daysUsed:
+      data.departments?.reduce(
+        (acc, d) => acc + (typeof d.daysUsed === "number" ? d.daysUsed : 0),
+        0,
+      ) ?? 0,
+    daysLeft:
+      data.departments?.reduce(
+        (acc, d) => acc + (typeof d.daysLeft === "number" ? d.daysLeft : 0),
+        0,
+      ) ?? 0,
   };
 
+  const percentUsed =
+    totals.totalLeaveEntitlement > 0
+      ? Math.round((totals.daysUsed / totals.totalLeaveEntitlement) * 100)
+      : 0;
+  const percentLeft =
+    totals.totalLeaveEntitlement > 0
+      ? Math.round((totals.daysLeft / totals.totalLeaveEntitlement) * 100)
+      : 0;
+
   return (
-    <div className="rounded-xl border shadow-sm overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="text-white">
-            <TableHead className="w-[200px]">Department</TableHead>
-            <TableHead>Total Employees</TableHead>
-            <TableHead>On Leave</TableHead>
-            <TableHead>Leave %</TableHead>
+    <Table>
+      <TableHeader className="bg-blue-700 text-white">
+        <TableRow>
+          <TableHead className="text-left text-white">Department</TableHead>
+          <TableHead className="text-center text-white">Staff Due</TableHead>
+          <TableHead className="text-center text-white">
+            Total Entitlement
+          </TableHead>
+          <TableHead className="text-center text-white">Days Used</TableHead>
+          <TableHead className="text-center text-white">Days Left</TableHead>
+          <TableHead className="text-center text-white">% Used</TableHead>
+          <TableHead className="text-center text-white">% Left</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data?.departments?.map((row, i) => (
+          <TableRow key={i} className="hover:bg-gray-50">
+            <TableCell className="font-medium">{row.departmentName}</TableCell>
+            <TableCell className="text-center">
+              {row.staffDueForLeave}
+            </TableCell>
+            <TableCell className="text-center">
+              {row.totalLeaveEntitlement}
+            </TableCell>
+            <TableCell className="text-center">{row.daysUsed}</TableCell>
+            <TableCell className="text-center">{row.daysLeft}</TableCell>
+            <TableCell className="text-center">{row.percentUsed}%</TableCell>
+            <TableCell className="text-center">{row.percentLeft}%</TableCell>
           </TableRow>
-        </TableHeader>
+        ))}
 
-        <TableBody>
-          {data.map((row, i) => (
-            <TableRow key={i} className="hover:bg-gray-50">
-              <TableCell className="font-medium">{row.department}</TableCell>
-              <TableCell>{row.total}</TableCell>
-              <TableCell>{row.onLeave}</TableCell>
-              <TableCell>{row.leavePercent}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TableCell className="font-bold">Total</TableCell>
-            <TableCell className="font-bold">{totals.totalEmployees}</TableCell>
-            <TableCell className="font-bold">{totals.totalOnLeave}</TableCell>
-            <TableCell className="font-bold">{totals.avgPercent}</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
+        {/* Totals Row */}
+        <TableRow className="bg-gray-100 font-bold">
+          <TableCell>Total</TableCell>
+          <TableCell className="text-center">
+            {totals.staffDueForLeave}
+          </TableCell>
+          <TableCell className="text-center">
+            {totals.totalLeaveEntitlement}
+          </TableCell>
+          <TableCell className="text-center">{totals.daysUsed}</TableCell>
+          <TableCell className="text-center">{totals.daysLeft}</TableCell>
+          <TableCell className="text-center">{percentUsed}%</TableCell>
+          <TableCell className="text-center">{percentLeft}%</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
   );
 }

@@ -19,6 +19,7 @@ import ScrollablePageWrapper from "@/shared/page-wrapper";
 import { getColumns } from "./columns";
 import { useUserPermissions } from "@/hooks/use-permission";
 import NoAccess from "@/shared/no-access";
+import TheAduseiEditorViewer from "@/components/ui/adusei-editor/viewer";
 
 const GRNDetail = () => {
   const router = useRouter();
@@ -141,7 +142,9 @@ const GRNDetail = () => {
                       Justification
                     </span>
                     <span className="text-primary-500 block text-sm font-normal">
-                      {stockTransferResponse?.reason}
+                      <TheAduseiEditorViewer
+                        content={stockTransferResponse?.reason as string}
+                      />
                     </span>
                   </div>
                 </div>

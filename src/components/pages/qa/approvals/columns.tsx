@@ -7,30 +7,6 @@ import { format } from "date-fns";
 import { ApprovalEntityRead } from "@/lib/redux/api/openapi.generated";
 import { splitWords } from "@/lib";
 
-// import Edit from "./edit";
-
-// interface DataTableRowActionsProps<TData> {
-//   row: Row<TData>;
-// }
-// export function DataTableRowActions<TData extends ApprovalEntityRead>({
-//   row,
-// }: DataTableRowActionsProps<TData>) {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [supplierId, setSupplierId] = useState("");
-//   return (
-//     <section className="flex items-center justify-end gap-2">
-//       <Icon
-//         onClick={() => {
-//           setSupplierId(row.original.id as string);
-//           setIsOpen(true);
-//         }}
-//         name="Printer"
-//         className="h-5 w-5 cursor-pointer text-neutral-500 hover:cursor-pointer"
-//       />
-//     </section>
-//   );
-// }
-
 export const columns: ColumnDef<ApprovalEntityRead>[] = [
   {
     accessorKey: "modelType",
@@ -72,32 +48,4 @@ export const columns: ColumnDef<ApprovalEntityRead>[] = [
       </div>
     ),
   },
-
-  // {
-  //   accessorKey: "total",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "totalprice",
-  //   header: "Total Items Requested",
-  //   cell: ({ row }) => (
-  //     <div>
-  //       {row.original.items?.reduce((accumulator, item) => {
-  //         return accumulator + (item.price || 0) * (item?.quantity || 0);
-  //       }, 0)}
-  //     </div>
-  //   ),
-  // },
-
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
 ];
