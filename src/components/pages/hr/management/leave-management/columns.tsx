@@ -117,7 +117,10 @@ export function DataTableRowActions<TData extends LeaveRequestDto>({
         ) && (
           <DropdownMenuItem
             className="group flex cursor-pointer items-center justify-start gap-2"
-            disabled={row.original?.leaveStatus === LeaveStatus.Expired}
+            disabled={
+              row.original?.leaveStatus === LeaveStatus.Expired ||
+              row?.original?.leaveStatus === LeaveStatus.Approved
+            }
             onClick={(e) => {
               e.stopPropagation();
               setDetails(row.original);
