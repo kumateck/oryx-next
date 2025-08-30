@@ -9,6 +9,7 @@ import {
   getEnumBadgeWithHexColors,
   getSmallestUnit,
   PurchaseOrderStatusList,
+  sanitizeNumber,
   Units,
 } from "@/lib";
 import {
@@ -251,10 +252,15 @@ export const listsColumns: ColumnDef<PurchaseOrderDtoRead>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status as PurchaseOrderStatus;
+      // const status = row.original.status as PurchaseOrderStatus;
+      const cancelledStatus =
+        row.original.status === PurchaseOrderStatusList.Completed &&
+        sanitizeNumber(row.original.items?.length) === 0
+          ? PurchaseOrderStatusList.Cancelled
+          : (row.original.status as PurchaseOrderStatus);
       const { label, style } = getEnumBadgeWithHexColors(
         PurchaseOrderStatusList,
-        status,
+        cancelledStatus,
       );
       return <StatusBadge label={label} style={style} />;
     },
