@@ -4600,6 +4600,30 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialId: build.query<
+      GetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdApiResponse,
+      GetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/supplier/${queryArg.supplierId}/material/${queryArg.materialId}`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
+    getApiV1ProcurementSupplierBySupplierIdMaterial: build.query<
+      GetApiV1ProcurementSupplierBySupplierIdMaterialApiResponse,
+      GetApiV1ProcurementSupplierBySupplierIdMaterialApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/v1/procurement/supplier/${queryArg.supplierId}/material`,
+        headers: {
+          Module: queryArg["module"],
+          SubModule: queryArg.subModule,
+        },
+      }),
+    }),
     postApiV1Product: build.mutation<
       PostApiV1ProductApiResponse,
       PostApiV1ProductApiArg
@@ -12010,6 +12034,26 @@ export type PostApiV1ProcurementByShipmentDocumentIdConfirmDistributionApiArg =
     /** The sub module this request falls under */
     subModule?: any;
   };
+export type GetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdApiResponse =
+  /** status 200 OK */ SupplierManufacturerDto[];
+export type GetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdApiArg =
+  {
+    supplierId: string;
+    materialId: string;
+    /** The module this request falls under */
+    module?: any;
+    /** The sub module this request falls under */
+    subModule?: any;
+  };
+export type GetApiV1ProcurementSupplierBySupplierIdMaterialApiResponse =
+  /** status 200 OK */ SupplierManufacturerDto[];
+export type GetApiV1ProcurementSupplierBySupplierIdMaterialApiArg = {
+  supplierId: string;
+  /** The module this request falls under */
+  module?: any;
+  /** The sub module this request falls under */
+  subModule?: any;
+};
 export type PostApiV1ProductApiResponse = /** status 201 Created */ string;
 export type PostApiV1ProductApiArg = {
   /** The module this request falls under */
@@ -23133,9 +23177,29 @@ export type HrDashboardDto = {
   numberOfPendingOvertimeRequests?: number;
   numberOfApprovedOvertimeRequests?: number;
   numberOfExpiredOvertimeRequests?: number;
+  numberOfAbsenceRequests?: number;
+  numberOfPendingAbsenceRequests?: number;
+  numberOfApprovedAbsenceRequests?: number;
+  numberOfRejectedAbsenceRequests?: number;
+  numberOfExitPasses?: number;
+  numberOfPendingExitPasses?: number;
+  numberOfApprovedExitPasses?: number;
+  numberOfRejectedExitPasses?: number;
+  numberOfOfficialDutyLeaves?: number;
+  numberOfPendingOfficialDutyLeaves?: number;
+  numberOfApprovedOfficialDutyLeaves?: number;
+  numberOfRejectedOfficialDutyLeaves?: number;
+  numberOfStaffRequisitions?: number;
+  numberOfNewCasualEmployees?: number;
+  numberOfNewPermanentEmployees?: number;
+  numberOfActiveCasualEmployees?: number;
+  numberOfActivePermanentEmployees?: number;
+  numberOfInactiveCasualEmployees?: number;
+  numberOfInactivePermanentEmployees?: number;
   numberOfCasualEmployees?: number;
   numberOfPermanentEmployees?: number;
   attendanceStats?: AttendanceStatsDto;
+  employeeGenderRatio?: number;
 };
 export type HrDashboardDtoRead = {
   numberOfLeaveRequests?: number;
@@ -23146,10 +23210,33 @@ export type HrDashboardDtoRead = {
   numberOfPendingOvertimeRequests?: number;
   numberOfApprovedOvertimeRequests?: number;
   numberOfExpiredOvertimeRequests?: number;
+  numberOfAbsenceRequests?: number;
+  numberOfPendingAbsenceRequests?: number;
+  numberOfApprovedAbsenceRequests?: number;
+  numberOfRejectedAbsenceRequests?: number;
+  numberOfExitPasses?: number;
+  numberOfPendingExitPasses?: number;
+  numberOfApprovedExitPasses?: number;
+  numberOfRejectedExitPasses?: number;
+  numberOfOfficialDutyLeaves?: number;
+  numberOfPendingOfficialDutyLeaves?: number;
+  numberOfApprovedOfficialDutyLeaves?: number;
+  numberOfRejectedOfficialDutyLeaves?: number;
+  numberOfStaffRequisitions?: number;
   totalEmployees?: number;
+  numberOfNewCasualEmployees?: number;
+  numberOfNewPermanentEmployees?: number;
+  numberOfNewEmployees?: number;
+  numberOfActiveCasualEmployees?: number;
+  numberOfActivePermanentEmployees?: number;
+  numberOfActiveEmployees?: number;
+  numberOfInactiveCasualEmployees?: number;
+  numberOfInactivePermanentEmployees?: number;
+  numberOfInactiveEmployees?: number;
   numberOfCasualEmployees?: number;
   numberOfPermanentEmployees?: number;
   attendanceStats?: AttendanceStatsDto;
+  employeeGenderRatio?: number;
 };
 export type PermanentStaffGradeCountDto = {
   seniorMgtMale?: number;
@@ -24655,6 +24742,10 @@ export const {
   useLazyGetApiV1ProcurementShipmentDocumentByShipmentDocumentIdMaterialDistributionQuery,
   usePostApiV1ProcurementByShipmentDocumentIdConfirmDistributionAndMaterialIdMutation,
   usePostApiV1ProcurementByShipmentDocumentIdConfirmDistributionMutation,
+  useGetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdQuery,
+  useLazyGetApiV1ProcurementSupplierBySupplierIdMaterialAndMaterialIdQuery,
+  useGetApiV1ProcurementSupplierBySupplierIdMaterialQuery,
+  useLazyGetApiV1ProcurementSupplierBySupplierIdMaterialQuery,
   usePostApiV1ProductMutation,
   useGetApiV1ProductQuery,
   useLazyGetApiV1ProductQuery,

@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { EMaterialKind, Option, UoMType } from "@/lib";
 import RevisionForm from "./form";
 import {
-  useLazyGetApiV1MaterialQuery,
+  useLazyGetApiV1ProcurementSupplierBySupplierIdMaterialQuery,
   usePostApiV1CollectionUomPaginatedMutation,
 } from "@/lib/redux/api/openapi.generated";
 
@@ -25,6 +25,7 @@ interface Props {
   itemLists: RevisionRequestDto[];
   currency: Option;
   isMaterialType?: EMaterialKind;
+  supplierId: string;
 }
 const Edit = ({
   currency,
@@ -33,6 +34,7 @@ const Edit = ({
   setItemLists,
   isMaterialType,
   details,
+  supplierId,
 }: Props) => {
   const {
     register,
@@ -71,6 +73,7 @@ const Edit = ({
   const [loadUom] = usePostApiV1CollectionUomPaginatedMutation();
 
   const [uomOptions, setUomOptions] = useState<Option[]>([]);
+  const [materialOptions, setMaterialOptions] = useState<Option[]>([]);
 
   const handleLoadUom = async (type: UoMType) => {
     try {
@@ -94,30 +97,35 @@ const Edit = ({
 
   useEffect(() => {
     handleLoadUom(isMaterialType as unknown as UoMType);
+    loadMaterialsBySupplier(supplierId, isMaterialType);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMaterialType]);
 
-  const [
-    loadMaterials,
-    { isLoading: isLoadingMaterials, isFetching: isFetchingMaterials },
-  ] = useLazyGetApiV1MaterialQuery();
-  const loadDataOrSearch = async (searchQuery: string, page: number) => {
-    const res = await loadMaterials({
-      searchQuery,
-      page,
-      kind: isMaterialType,
-    }).unwrap();
-    const response = {
-      options: res?.data?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })) as Option[],
-      hasNext: (res?.pageIndex || 0) < (res?.stopPageIndex as number),
-      hasPrevious: (res?.pageIndex as number) > 1,
-    };
-    return response;
+  const [loadMaterials] =
+    useLazyGetApiV1ProcurementSupplierBySupplierIdMaterialQuery();
+  const loadMaterialsBySupplier = async (
+    supplierId: string,
+    kind?: EMaterialKind,
+  ) => {
+    const res = await loadMaterials({ supplierId }).unwrap();
+
+    const seen = new Set<string>();
+    const options: Option[] = res
+      ?.filter((item) => item.material?.kind === kind && item.material?.id)
+      .filter(
+        (item) =>
+          !seen.has(item.material!.id as string) &&
+          seen.add(item.material!.id as string),
+      ) // dedupe
+      .map((item) => ({
+        label: item.material!.name,
+        value: item.material!.id,
+      })) as Option[];
+
+    setMaterialOptions(options);
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -126,8 +134,7 @@ const Edit = ({
           control={control}
           register={register}
           errors={errors}
-          fetchOptions={loadDataOrSearch}
-          isLoading={isLoadingMaterials || isFetchingMaterials}
+          materialOptions={materialOptions}
           uomOptions={uomOptions}
           currency={currency}
         />
