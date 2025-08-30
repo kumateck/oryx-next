@@ -100,6 +100,9 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               label: "Expected Arrival Date",
               placeholder: "Enter Expected Arrival Date",
               type: InputTypes.DATE,
+              disabled: {
+                after: new Date(),
+              },
               required: true,
               errors,
             },
@@ -117,6 +120,9 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               label: "Free Time Expiry Date",
               placeholder: "Enter Free Time Expiry Date",
               type: InputTypes.DATE,
+              disabled: {
+                after: new Date(),
+              },
               required: true,
               errors,
             },
@@ -126,6 +132,9 @@ const BillingSheetForm = <TFieldValues extends FieldValues, TContext>({
               label: "Demurrage Start Date",
               placeholder: "Enter Demurrage Start Date",
               type: InputTypes.DATE,
+              disabled: {
+                after: new Date(),
+              },
               required: true,
               errors,
             },

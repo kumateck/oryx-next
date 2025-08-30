@@ -93,11 +93,37 @@ const Create = ({
     setValue("cifValue", cifValue);
   }, [totalFobValue, insuranceAmount, freight, setValue]);
 
+  // useEffect(() => {
+  //   const calculatedCif =
+  //     Number(watch("totalFobValue") || 0) +
+  //     Number(watch("insuranceAmount") || 0) +
+  //     Number(watch("freight") || 0);
+
+  //   setValue("cifValue", calculatedCif);
+
+  //   const amountInWords = amountToWordsBritishStyle(
+  //     calculatedCif,
+  //     currency.name,
+  //   );
+  //   setValue("amountInWords", amountInWords);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   currency.name,
+  //   watch("totalFobValue"),
+  //   watch("insuranceAmount"),
+  //   watch("freight"),
+  // ]);
+  // Extract watched values to separate variables
+
+  useEffect(() => {
+    const cifValue =
+      Number(totalFobValue) + Number(insuranceAmount) + Number(freight);
+    setValue("cifValue", cifValue);
+  }, [totalFobValue, insuranceAmount, freight, setValue]);
+
   useEffect(() => {
     const calculatedCif =
-      Number(watch("totalFobValue") || 0) +
-      Number(watch("insuranceAmount") || 0) +
-      Number(watch("freight") || 0);
+      Number(totalFobValue) + Number(insuranceAmount) + Number(freight);
 
     setValue("cifValue", calculatedCif);
 
@@ -106,9 +132,7 @@ const Create = ({
       currency.name,
     );
     setValue("amountInWords", amountInWords);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency.name]);
-
+  }, [totalFobValue, insuranceAmount, freight, currency.name, setValue]);
   const [loadCollection, { data: collectionResponse }] =
     usePostApiV1CollectionMutation();
 
