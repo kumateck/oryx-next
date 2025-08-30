@@ -49,44 +49,26 @@ const LeaveRequestForm = <TFieldValues extends FieldValues, TContext>({
           },
         ]}
       />
-      {/* {!isOfficialDuty && !isExitPass && ( */}
-      <div className="w-full my-5">
-        <FormWizard
-          className="w-full space-y-5"
-          config={[
-            {
-              label: "Leave Type",
-              control: control as Control,
-              type: InputTypes.SELECT,
-              name: "leaveTypeId",
-              required: true,
-              defaultValue: defaultValues?.leaveTypesId,
-              placeholder: "Select leave type",
-              options: leaveTypesOptions,
-              errors,
-            },
-          ]}
-        />
-      </div>
-      {/* )} */}
-      {/* {isExitPass && (
-        <FormWizard
-          config={[
-            {
-              label: "Date",
-              control: control as Control,
-              type: InputTypes.DATE,
-              disabled: {
-                before: new Date(),
+      {!isOfficialDuty && !isExitPass && (
+        <div className="w-full my-5">
+          <FormWizard
+            className="w-full space-y-5"
+            config={[
+              {
+                label: "Leave Type",
+                control: control as Control,
+                type: InputTypes.SELECT,
+                name: "leaveTypeId",
+                required: true,
+                defaultValue: defaultValues?.leaveTypesId,
+                placeholder: "Select leave type",
+                options: leaveTypesOptions,
+                errors,
               },
-              name: "date",
-              required: true,
-              placeholder: "Select exit pass date",
-              errors,
-            },
-          ]}
-        />
-      )} */}
+            ]}
+          />
+        </div>
+      )}
       {!isExitPass && (
         <div className="w-full my-5 gap-4 grid grid-cols-2">
           <FormWizard

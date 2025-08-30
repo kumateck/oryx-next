@@ -68,6 +68,7 @@ const LeaveRequest = ({
     control,
     formState: { errors },
     reset,
+    setValue,
     handleSubmit,
   } = useForm<LeaveRequestDto>({
     resolver: CreateLeaveValidator,
@@ -172,10 +173,12 @@ const LeaveRequest = ({
     label: lt.name,
     value: lt.id,
   })) as Option[];
-
   useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+    if (isExitPass || isOfficialDuty) {
+      setValue("leaveTypeId", leaveTypesOptions[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExitPass, isOfficialDuty, setValue]);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">

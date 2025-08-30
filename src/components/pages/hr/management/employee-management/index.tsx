@@ -3,7 +3,10 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
-import { useLazyGetApiV1EmployeeQuery } from "@/lib/redux/api/openapi.generated";
+import {
+  useGetApiV1DepartmentQuery,
+  useLazyGetApiV1EmployeeQuery,
+} from "@/lib/redux/api/openapi.generated";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import { ServerDatatable } from "@/shared/datatable";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
@@ -11,7 +14,7 @@ import PageTitle from "@/shared/title";
 
 import { columns } from "./columns";
 import Create from "./create";
-import { EmployeeStatusType, PermissionKeys } from "@/lib";
+import { EmployeeStatusType, Option, PermissionKeys } from "@/lib";
 import NoAccess from "@/shared/no-access";
 import { useUserPermissions } from "@/hooks/use-permission";
 import { useSelector } from "@/lib/redux/store";
@@ -19,10 +22,15 @@ import { commonActions } from "@/lib/redux/slices/common";
 import { useDispatch } from "react-redux";
 import AccessTabs from "@/shared/access";
 import { useDebounce } from "@uidotdev/usehooks";
+import { SpecialSelect } from "@/components/ui/special-select";
+import ExportToExcel from "./export-excell";
 
 const EmployeeManagement = () => {
   const [pageSize, setPageSize] = useState(30);
   const [page, setPage] = useState(1);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null,
+  );
 
   const dispatch = useDispatch();
   const searchValue = useSelector((state) => state.common.searchInput);
@@ -52,11 +60,16 @@ const EmployeeManagement = () => {
 
   const [loadData, { isFetching, data: result, isLoading }] =
     useLazyGetApiV1EmployeeQuery();
+  const { data: departmentData } = useGetApiV1DepartmentQuery({
+    page: 1,
+    pageSize: 1000,
+  });
 
   useEffect(() => {
     loadData({
       searchQuery: debousecedValue,
       page,
+      department: selectedDepartment ?? "",
       pageSize,
       status: status || EmployeeStatusType.Active,
     });
@@ -64,7 +77,14 @@ const EmployeeManagement = () => {
       dispatch(commonActions.unSetTriggerReload());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, debousecedValue, status, triggerReload]);
+  }, [
+    page,
+    pageSize,
+    debousecedValue,
+    status,
+    triggerReload,
+    selectedDepartment,
+  ]);
 
   const data = result?.data || [];
   const router = useRouter();
@@ -81,6 +101,16 @@ const EmployeeManagement = () => {
     //redirect to no access
     return <NoAccess />;
   }
+
+  const departmentOptions = departmentData?.data?.map((item) => ({
+    value: item.id as string,
+    label: item.name as string,
+  })) as Option[];
+
+  const handleSelect = (option: Option) => {
+    if (isLoading) return;
+    setSelectedDepartment(option.label);
+  };
 
   return (
     <ScrollablePageWrapper className="w-full space-y-2 py-1">
@@ -107,6 +137,14 @@ const EmployeeManagement = () => {
               },
             ]}
           />
+          <div className="flex items-center gap-2">
+            <SpecialSelect
+              onChange={handleSelect}
+              placeholder="Filter by department"
+              options={departmentOptions}
+            />
+            {selectedDepartment && <ExportToExcel employeeData={data} />}
+          </div>
           {hasPermissionAccess(
             PermissionKeys.humanResources.registerEmployee,
           ) && (

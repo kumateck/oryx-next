@@ -12,21 +12,20 @@ import PageTitle from "@/shared/title";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import DropdownBtns from "@/shared/btns/drop-btn";
-import LeaveEntitlementTable from "./table";
 import FilterForm from "../filterForm";
 import { FilterFormValues, FilterValidator } from "../type";
 import { useForm } from "react-hook-form";
-import { useLazyGetApiV1ReportStaffLeaveReportQuery } from "@/lib/redux/api/openapi.generated";
+import { useLazyGetApiV1ReportStaffTurnoverReportQuery } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import { toast } from "sonner";
+import TurnoverReportTable from "./table";
 
 function Index() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const [loadReports, { data, isLoading }] =
-    useLazyGetApiV1ReportStaffLeaveReportQuery({});
-
+    useLazyGetApiV1ReportStaffTurnoverReportQuery({});
   //use form
   const {
     register,
@@ -102,7 +101,7 @@ function Index() {
         </div>
       </div>
 
-      <LeaveEntitlementTable data={data ?? {}} />
+      <TurnoverReportTable data={data ?? {}} />
     </ScrollablePageWrapper>
   );
 }
