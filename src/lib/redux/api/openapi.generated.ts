@@ -19207,7 +19207,7 @@ export type PurchaseOrderItemRead = {
   currencyId?: string | null;
   currency?: CurrencyRead;
 };
-export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type PurchaseOrderStatus = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type RevisedPurchaseOrderType = 0 | 1 | 2 | 3 | 4;
 export type RevisedPurchaseOrder = {
   id?: string;
@@ -23540,7 +23540,7 @@ export type SupplierQuotationResponseDto = {
 };
 export type SupplierQuotationItemStatus = 0 | 1 | 2;
 export type SupplierPrice = {
-  supplier?: CollectionItemDto;
+  supplier?: SupplierDto;
   sourceRequisition?: CollectionItemDto;
   status?: SupplierQuotationItemStatus;
   price?: number | null;
