@@ -51,12 +51,14 @@ const Page = () => {
       value: item?.id,
     };
   }) as Option[];
+
   const suppliersOptions = suppliers?.map((item) => {
     return {
       label: item.name,
       value: item?.id,
     };
   }) as Option[];
+
   const {
     register,
     control,
@@ -91,71 +93,100 @@ const Page = () => {
   }, [supplierId]);
 
   useEffect(() => {
-    const array2Values = purchaseOrderIds?.map((item) => item.value);
+    // Early return if no purchaseOrderIds or purchaseOrders
+    if (!purchaseOrderIds?.length || !purchaseOrders?.length) {
+      setPoLists([]);
+      return;
+    }
 
-    const filteredArray = purchaseOrders?.filter((item) =>
-      array2Values.includes(item?.id as string),
-    );
+    // Get selected PO IDs while maintaining order of selection
+    const selectedPoIds = purchaseOrderIds.map((item) => item.value);
 
-    const formatArray = filteredArray?.map((item) => {
-      const items = item.items?.map((x) => {
-        const remainingQuantity =
-          (x?.quantity || 0) - (x?.receivedQuantity || 0);
+    // Filter purchase orders based on selected IDs and maintain the selection order
+    const filteredArray = selectedPoIds
+      .map((poId) => purchaseOrders.find((po) => po.id === poId))
+      .filter(Boolean); // Remove any undefined values
 
-        const initialQuantity = convertToLargestUnit(
-          x.quantity as number,
-          x.uom?.symbol as Units,
-        );
-        const converted = convertToLargestUnit(
-          remainingQuantity as number,
-          x.uom?.symbol as Units,
-        );
+    // Create a Set for quick lookup to avoid duplicates
+    const processedIds = new Set<string>();
 
-        const totalCost = ((x.price || 0) * (converted.value || 0)).toFixed(2);
-        const manufacturers = x.manufacturers?.filter(
-          (item, index, self) =>
-            index ===
-            self.findIndex(
-              (m) => m?.manufacturer?.id === item?.manufacturer?.id,
-            ),
-        );
-        const defaultManufacturer = manufacturers?.find((item) => item.default);
-        const otherManufacturers = manufacturers?.filter(
-          (item) => !item.default,
-        );
+    const formatArray = filteredArray
+      .filter((item) => {
+        // Ensure we don't process the same PO twice
+        if (processedIds.has(item?.id as string)) {
+          return false;
+        }
+        processedIds.add(item?.id as string);
+        return true;
+      })
+      .map((item) => {
+        const items = item?.items?.map((x) => {
+          const remainingQuantity =
+            (x?.quantity || 0) -
+            (x?.quantityInvoiced || x?.receivedQuantity || 0);
+
+          const initialQuantity = convertToLargestUnit(
+            x.quantity as number,
+            x.uom?.symbol as Units,
+          );
+          const converted = convertToLargestUnit(
+            remainingQuantity as number,
+            x.uom?.symbol as Units,
+          );
+
+          const totalCost = ((x.price || 0) * (converted.value || 0)).toFixed(
+            2,
+          );
+
+          // Remove duplicate manufacturers more efficiently
+          const manufacturers = x.manufacturers?.filter(
+            (item, index, self) =>
+              index ===
+              self.findIndex(
+                (m) => m?.manufacturer?.id === item?.manufacturer?.id,
+              ),
+          );
+
+          const defaultManufacturer = manufacturers?.find(
+            (item) => item.default,
+          );
+          const otherManufacturers = manufacturers?.filter(
+            (item) => !item.default,
+          );
+
+          return {
+            materialId: x.material?.id as string,
+            uomId: x.uom?.id as string,
+            materialName: x.material?.name as string,
+            expectedQuantity: converted.value,
+            uomName: converted.unit,
+            receivedQuantity: converted.value,
+            initialQuantity: initialQuantity.value,
+            reason: "",
+            manufacturerId: {
+              label: defaultManufacturer?.manufacturer?.name,
+              value: defaultManufacturer?.manufacturer?.id,
+            },
+            purchaseOrderId: item.id as string,
+            purchaseOrderCode: item.code as string,
+            code: x.material?.code as string,
+            costPrice: x.price?.toString(),
+            totalCost: totalCost?.toString(),
+            options: otherManufacturers?.map((item) => ({
+              label: item.manufacturer?.name,
+              value: item.manufacturer?.id,
+            })),
+          };
+        }) as MaterialRequestDto[];
 
         return {
-          materialId: x.material?.id as string,
-          uomId: x.uom?.id as string,
-          materialName: x.material?.name as string,
-          expectedQuantity: converted.value,
-          uomName: converted.unit,
-          receivedQuantity: converted.value,
-          initialQuantity: initialQuantity.value,
-          reason: "",
-          manufacturerId: {
-            label: defaultManufacturer?.manufacturer?.name,
-            value: defaultManufacturer?.manufacturer?.id,
-          },
-          purchaseOrderId: item.id as string,
-          purchaseOrderCode: item.code as string,
-          code: x.material?.code as string,
-          costPrice: x.price?.toString(),
-          totalCost: totalCost?.toString(),
-          options: otherManufacturers?.map((item) => ({
-            label: item.manufacturer?.name,
-            value: item.manufacturer?.id,
-          })),
+          id: item?.id as string,
+          code: item?.code as string,
+          items,
         };
-      }) as MaterialRequestDto[];
-      return {
-        id: item.id as string,
-        code: item.code as string,
-        items,
-      };
-    }) as invoiceItemsDto[];
+      }) as invoiceItemsDto[];
+
     setPoLists(formatArray);
-    // }
   }, [purchaseOrderIds, purchaseOrders]);
 
   const onSubmit = async (data: InvoiceRequestDto) => {
@@ -181,6 +212,7 @@ const Page = () => {
         };
       }),
     } satisfies CreateShipmentInvoice;
+
     try {
       await saveMutation({
         createShipmentInvoice: payload,
@@ -192,26 +224,26 @@ const Page = () => {
       console.log(error, "errors");
       toast.error(isErrorResponse(error as ErrorResponse)?.description);
     }
-    // console.log(materialLists, "materialLists");
   };
-
-  // console.log(poLists, "poLists");
-  // const [materialLists, setMaterialLists] = useState<MaterialRequestDto[]>([]);
 
   const updateParentState = (
     poId: string,
     updatedItem: MaterialRequestDto[],
   ) => {
-    const index = poLists?.findIndex((item) => item.id === poId);
-    if (index !== undefined && index !== null && index !== -1) {
-      const updatedLists = [...poLists];
-      updatedLists[index] = {
-        ...updatedLists[index],
-        items: updatedItem,
-      };
-      setPoLists(updatedLists);
-    }
+    setPoLists((prevPoLists) => {
+      const index = prevPoLists.findIndex((item) => item.id === poId);
+      if (index !== -1) {
+        const updatedLists = [...prevPoLists];
+        updatedLists[index] = {
+          ...updatedLists[index],
+          items: updatedItem,
+        };
+        return updatedLists;
+      }
+      return prevPoLists;
+    });
   };
+
   return (
     <ScrollablePageWrapper className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -237,14 +269,13 @@ const Page = () => {
               errors={errors}
               suppliersOptions={suppliersOptions}
               poOptions={poOptions}
-              // defaultValues={{} as ShipmentRequestDto}
             />
           </CardContent>
         </Card>
       </form>
 
-      {poLists?.map((item, idx) => (
-        <div className="w-full space-y-4" key={idx}>
+      {poLists?.map((item) => (
+        <div className="w-full space-y-4" key={item.id}>
           <PageTitle title={item.code as string} />
           {item.items && (
             <PurchaseOrders
