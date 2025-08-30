@@ -14,6 +14,7 @@ import {
   getLargestUnit,
   getSmallestUnit,
   isErrorResponse,
+  Option,
   RevisionType,
   Units,
 } from "@/lib";
@@ -53,16 +54,18 @@ const RevisePurchaseOrder = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [POId, triggerReload]);
-  const [currency, setCurrency] = useState({
+  const [currency, setCurrency] = useState<Option>({
     label: "",
     value: "",
   });
 
+  const [supplierId, setSupplierId] = useState<string>("");
   const handleLoadPO = async (pId: string) => {
     const res = await loadPO({
       purchaseOrderId: pId,
     }).unwrap();
 
+    setSupplierId(res.supplier?.id ?? "");
     const supplierCurrency = {
       label: res?.supplier?.currency?.symbol ?? "",
       value: res?.supplier?.currency?.id ?? "",
@@ -187,6 +190,7 @@ const RevisePurchaseOrder = () => {
             onClose={() => setIsOpen(false)}
             currency={currency}
             isMaterialType={isMaterialType}
+            supplierId={supplierId}
           />
         )}
         <Card>

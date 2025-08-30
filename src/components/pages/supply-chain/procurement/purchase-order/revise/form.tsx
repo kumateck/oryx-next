@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { FormWizard } from "@/components/form-inputs";
-import { FetchOptionsResult } from "@/components/ui";
+
 import { EMaterialKind, InputTypes, Option } from "@/lib";
 
 interface Props<TFieldValues extends FieldValues, TContext> {
@@ -19,15 +19,13 @@ interface Props<TFieldValues extends FieldValues, TContext> {
   defaultValues?: TFieldValues;
   kind?: EMaterialKind;
   currency?: Option;
-  isLoading: boolean;
-  fetchOptions: (search: string, page: number) => Promise<FetchOptionsResult>;
+  materialOptions: Option[];
 }
 const RevisionForm = <TFieldValues extends FieldValues, TContext>({
   control,
   register,
   errors,
-  fetchOptions,
-  isLoading,
+  materialOptions,
   defaultValues,
   uomOptions,
   currency,
@@ -39,14 +37,13 @@ const RevisionForm = <TFieldValues extends FieldValues, TContext>({
           {
             label: "Material",
             control: control as Control,
-            type: InputTypes.ASYNC_SELECT,
+            type: InputTypes.SELECT,
             name: "material",
             required: true,
             onModal: true,
             defaultValue: defaultValues?.material,
-            placeholder: "Select material",
-            fetchOptions: fetchOptions,
-            isLoading: isLoading,
+            placeholder: "Select Material",
+            options: materialOptions,
             errors,
           },
           {
