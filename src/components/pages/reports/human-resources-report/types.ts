@@ -67,7 +67,7 @@ export const hrCategoryReportItems: HrReportCategory[] = [
       },
       {
         name: "Staff Turnover Report",
-        path: "",
+        path: "/reports/human-resources-report/staff-turn-over-over-report",
         icon: "CalendarRange",
       },
       {

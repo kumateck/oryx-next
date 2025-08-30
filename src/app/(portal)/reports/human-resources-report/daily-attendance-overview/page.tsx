@@ -1,1 +1,1 @@
-export { default } from "@/components/pages/reports/human-resources-report/leave-overview-report";
+export { default } from "@/components/pages/reports/human-resources-report/daily-attendance-overview";

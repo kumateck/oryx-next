@@ -1,12 +1,9 @@
 "use client";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "./table";
-import logo from "@/assets/oryx_logo_dark.png";
 import PageTitle from "@/shared/title";
 import DropdownBtns from "@/shared/btns/drop-btn";
-import { useReactToPrint } from "react-to-print";
-import Image from "next/image";
 import FilterForm from "../filterForm";
 import {
   Button,
@@ -25,9 +22,9 @@ import {
   useLazyGetApiV1ReportEmployeeMovementQuery,
 } from "@/lib/redux/api/openapi.generated";
 import LoadingTable from "../tableSkeleton";
+import PrintPreview from "../print-preview";
 
 function Index() {
-  const contentRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [print, setPrint] = useState(false);
 
@@ -77,33 +74,22 @@ function Index() {
     console.log("Form submitted with data:", data);
   };
 
-  // Function to handle printing the content
-
-  const handlePrint = useReactToPrint({
-    contentRef,
-    onBeforePrint: async () => {
-      setPrint(true);
-    },
-    onAfterPrint: async () => {
-      setPrint(false);
-    },
-    documentTitle: `New hires and exits count report`,
-    pageStyle: `
-        @media print {
-            html, body {
-              font-size: 12px;
-            }
-          }
-          @page {
-            margin: 2mm 15mm;
-          }`,
-  });
   if (isLoading) {
     return <LoadingTable pagetitle="New hires and exits count report" />;
   }
   const tableData = data as EmployeeMovementReportDtoRead;
   return (
     <ScrollablePageWrapper className="space-y-4">
+      {print && (
+        <PrintPreview
+          isLoading={false}
+          onClose={() => setPrint(false)}
+          isOpen={print}
+          title="New hires and exits count report"
+        >
+          <Table data={tableData} />
+        </PrintPreview>
+      )}
       <Dialog onOpenChange={() => setOpen(false)} open={open}>
         <DialogContent>
           <DialogTitle>Report Filter</DialogTitle>
@@ -146,21 +132,13 @@ function Index() {
                     return;
                   }
                   setPrint(true);
-                  handlePrint();
                 },
               },
             ]}
           />
         </div>
       </div>
-      <div ref={contentRef}>
-        {print && (
-          <div className="flex items-center justify-center ml-auto">
-            <Image src={logo} alt="logo" width={130} height={130} />
-          </div>
-        )}
-        <Table data={tableData} />
-      </div>
+      <Table data={tableData} />
     </ScrollablePageWrapper>
   );
 }

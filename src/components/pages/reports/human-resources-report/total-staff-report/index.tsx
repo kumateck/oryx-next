@@ -1,7 +1,7 @@
 "use client";
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import PageTitle from "@/shared/title";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import StaffTotalReport from "./table";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import {
@@ -9,8 +9,6 @@ import {
   useLazyGetApiV1ReportStaffTotalReportQuery,
 } from "@/lib/redux/api/openapi.generated";
 import LoadingTable from "../tableSkeleton";
-import { useReactToPrint } from "react-to-print";
-import logo from "@/assets/oryx_logo_dark.png";
 import {
   Button,
   Dialog,
@@ -24,15 +22,13 @@ import { useForm } from "react-hook-form";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import { toast } from "sonner";
 import FilterForm from "../filterForm";
-import Image from "next/image";
+import PrintPreview from "../print-preview";
 
 function Index() {
   const [loadReports, { data, isLoading }] =
     useLazyGetApiV1ReportStaffTotalReportQuery({});
   const [open, setOpen] = useState(false);
-  const [print, setPrint] = useState(false);
-
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [openPrint, setOpenPrint] = useState(false);
 
   //use form
   const {
@@ -45,25 +41,6 @@ function Index() {
     resolver: FilterValidator,
   });
 
-  const handlePrint = useReactToPrint({
-    contentRef,
-    onBeforePrint: async () => {
-      setPrint(true);
-    },
-    onAfterPrint: async () => {
-      setPrint(false);
-    },
-    documentTitle: `Total Staff Report`,
-    pageStyle: `
-        @media print {
-            html, body {
-              font-size: 12px;
-            }
-          }
-          @page {
-            margin: 2mm 15mm;
-          }`,
-  });
   const onSubmit = async (data: FilterFormValues) => {
     setOpen(false);
     try {
@@ -84,6 +61,16 @@ function Index() {
   }
   return (
     <ScrollablePageWrapper className="space-y-4">
+      {openPrint && (
+        <PrintPreview
+          isLoading={false}
+          onClose={() => setOpenPrint(false)}
+          isOpen={openPrint}
+          title="Staff Total Report"
+        >
+          <StaffTotalReport data={data ?? ([] as StaffTotalReportRead)} />
+        </PrintPreview>
+      )}
       <Dialog onOpenChange={() => setOpen(false)} open={open}>
         <DialogContent>
           <DialogTitle>Report Filter</DialogTitle>
@@ -122,21 +109,14 @@ function Index() {
                     toast.warning("No data available to print");
                     return;
                   }
-                  handlePrint();
+                  setOpenPrint(true);
                 },
               },
             ]}
           />
         </div>
       </div>
-      <div ref={contentRef}>
-        {print && (
-          <div className="flex items-center justify-center ml-auto">
-            <Image src={logo} alt="logo" width={130} height={130} />
-          </div>
-        )}
-        <StaffTotalReport data={data ?? ([] as StaffTotalReportRead)} />
-      </div>
+      <StaffTotalReport data={data ?? ([] as StaffTotalReportRead)} />
     </ScrollablePageWrapper>
   );
 }

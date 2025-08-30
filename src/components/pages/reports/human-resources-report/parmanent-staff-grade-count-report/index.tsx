@@ -2,7 +2,6 @@
 import ScrollablePageWrapper from "@/shared/page-wrapper";
 import React, { useEffect, useRef, useState } from "react";
 import DepartmentTable from "./table";
-import logo from "@/assets/oryx_logo_dark.png";
 import PageTitle from "@/shared/title";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import {
@@ -23,15 +22,14 @@ import {
 } from "@/components/ui";
 import { ErrorResponse, isErrorResponse, Option } from "@/lib";
 import GradeCountFilterForm from "./filterForm";
-import { useReactToPrint } from "react-to-print";
-import Image from "next/image";
 import LoadingTable from "../tableSkeleton";
+import PrintPreview from "../print-preview";
 
 function Index() {
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
   const [loadReports, { data, isLoading }] =
     useLazyGetApiV1ReportStaffReportQuery({});
-  const [print, setPrint] = useState(false);
   const { data: departmentData, isLoading: departmentLoading } =
     useGetApiV1DepartmentQuery({});
 
@@ -57,26 +55,6 @@ function Index() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departmentData]);
-
-  const handlePrint = useReactToPrint({
-    contentRef,
-    onBeforePrint: async () => {
-      setPrint(true);
-    },
-    onAfterPrint: async () => {
-      setPrint(false);
-    },
-    documentTitle: `New hires and exits count report`,
-    pageStyle: `
-          @media print {
-              html, body {
-                font-size: 12px;
-              }
-            }
-            @page {
-              margin: 2mm 15mm;
-            }`,
-  });
 
   const onSubmit = async (data: FilterFormValues) => {
     try {
@@ -104,6 +82,18 @@ function Index() {
 
   return (
     <ScrollablePageWrapper className="space-y-4">
+      {openPrint && (
+        <PrintPreview
+          isLoading={false}
+          onClose={() => setOpenPrint(false)}
+          isOpen={openPrint}
+          title="Permanent Staff Grade Count Report"
+        >
+          <DepartmentTable
+            data={data ?? ({} as PermanentStaffGradeReportDtoRead)}
+          />
+        </PrintPreview>
+      )}
       <div className="w-full flex items-center justify-between gap-4">
         <PageTitle title="Permanent Staff Grade Count Report" />
         <div className="flex items-center gap-2">
@@ -121,7 +111,7 @@ function Index() {
                     toast.warning("No data to export");
                     return;
                   }
-                  handlePrint();
+                  setOpenPrint(true);
                 },
               },
             ]}
@@ -155,16 +145,9 @@ function Index() {
           </form>
         </DialogContent>
       </Dialog>
-      <div ref={contentRef}>
-        {print && (
-          <div className="flex items-center justify-center ml-auto">
-            <Image src={logo} alt="logo" width={130} height={130} />
-          </div>
-        )}
-        <DepartmentTable
-          data={data ?? ({} as PermanentStaffGradeReportDtoRead)}
-        />
-      </div>
+      <DepartmentTable
+        data={data ?? ({} as PermanentStaffGradeReportDtoRead)}
+      />
     </ScrollablePageWrapper>
   );
 }

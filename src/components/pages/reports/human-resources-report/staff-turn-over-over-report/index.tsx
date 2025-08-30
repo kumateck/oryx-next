@@ -19,9 +19,11 @@ import { useLazyGetApiV1ReportStaffTurnoverReportQuery } from "@/lib/redux/api/o
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import { toast } from "sonner";
 import TurnoverReportTable from "./table";
+import PrintPreview from "../print-preview";
 
 function Index() {
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
   const router = useRouter();
 
   const [loadReports, { data, isLoading }] =
@@ -54,6 +56,15 @@ function Index() {
   };
   return (
     <ScrollablePageWrapper className="space-y-6">
+      {openPrint && (
+        <PrintPreview
+          isLoading={false}
+          onClose={() => setOpenPrint(false)}
+          isOpen={openPrint}
+        >
+          <TurnoverReportTable data={data ?? {}} />
+        </PrintPreview>
+      )}
       <Dialog onOpenChange={() => setOpen(false)} open={open}>
         <DialogContent>
           <DialogTitle>Report Filter</DialogTitle>
@@ -61,10 +72,7 @@ function Index() {
             <FilterForm errors={errors} control={control} register={register} />
             <DialogFooter>
               <div className="flex ml-auto">
-                <Button
-                  // disabled={isLoading}
-                  className="flex items-center gap-2"
-                >
+                <Button className="flex items-center gap-2">
                   <Icon
                     name="LoaderCircle"
                     className={`${isLoading ? "animate-spin flex" : "hidden"}`}
@@ -83,7 +91,7 @@ function Index() {
             name="ArrowLeft"
             className="cursor-pointer"
           />
-          <PageTitle title="Leave Management Overview" />
+          <PageTitle title="Staff Turnover Report" />
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={() => setOpen(true)}>Filter</Button>
@@ -94,13 +102,14 @@ function Index() {
             menus={[
               {
                 name: "PDF File",
-                onClick: () => {},
+                onClick: () => {
+                  setOpenPrint(true);
+                },
               },
             ]}
           />
         </div>
       </div>
-
       <TurnoverReportTable data={data ?? {}} />
     </ScrollablePageWrapper>
   );

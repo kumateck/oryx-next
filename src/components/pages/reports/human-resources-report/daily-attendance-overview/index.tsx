@@ -6,13 +6,24 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import DropdownBtns from "@/shared/btns/drop-btn";
 import { DailyAttendanceOverview } from "./table";
+import PrintPreview from "../print-preview";
 
 function Index() {
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
   console.log(open, "Open form attendance report page");
   const router = useRouter();
   return (
     <ScrollablePageWrapper className="space-y-6">
+      {openPrint && (
+        <PrintPreview
+          isLoading={false}
+          onClose={() => setOpenPrint(false)}
+          isOpen={openPrint}
+        >
+          <DailyAttendanceOverview />
+        </PrintPreview>
+      )}
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <Icon
@@ -28,7 +39,14 @@ function Index() {
             variant="default"
             icon="Download"
             title="Export"
-            menus={[]}
+            menus={[
+              {
+                name: "PDF File",
+                onClick: () => {
+                  setOpenPrint(true);
+                },
+              },
+            ]}
           />
         </div>
       </div>

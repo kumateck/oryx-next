@@ -19,9 +19,11 @@ import { useForm } from "react-hook-form";
 import { useLazyGetApiV1ReportStaffLeaveReportQuery } from "@/lib/redux/api/openapi.generated";
 import { ErrorResponse, isErrorResponse } from "@/lib";
 import { toast } from "sonner";
+import PrintPreview from "../print-preview";
 
 function Index() {
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
   const router = useRouter();
 
   const [loadReports, { data, isLoading }] =
@@ -55,6 +57,16 @@ function Index() {
   };
   return (
     <ScrollablePageWrapper className="space-y-6">
+      {openPrint && (
+        <PrintPreview
+          isLoading={false}
+          title="Leave Management Overview"
+          onClose={() => setOpenPrint(false)}
+          isOpen={openPrint}
+        >
+          <LeaveEntitlementTable data={data ?? {}} />
+        </PrintPreview>
+      )}
       <Dialog onOpenChange={() => setOpen(false)} open={open}>
         <DialogContent>
           <DialogTitle>Report Filter</DialogTitle>
@@ -95,7 +107,7 @@ function Index() {
             menus={[
               {
                 name: "PDF File",
-                onClick: () => {},
+                onClick: () => setOpenPrint(true),
               },
             ]}
           />
