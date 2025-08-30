@@ -142,6 +142,7 @@ export function DataTableRowActions<TData extends RevisionRequestDto>({
           onClose={() => setIsOpen(false)}
           itemLists={itemLists}
           currency={details?.currency as Option}
+          supplierId={details?.supplierId as string}
         />
       )}
       {details && isOpenReAssign && (
