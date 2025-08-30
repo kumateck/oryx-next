@@ -51,11 +51,11 @@ export const getColumns = (
   },
   {
     accessorKey: "initialQuantity",
-    header: "Initial Quantity",
+    header: "Qty Requested",
   },
   {
     accessorKey: "expectedQuantity",
-    header: "Expected Quantity",
+    header: "Qty Already Supplied",
   },
   {
     accessorKey: "uomName",

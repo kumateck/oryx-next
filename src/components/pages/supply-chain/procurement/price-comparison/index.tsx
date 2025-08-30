@@ -97,6 +97,7 @@ const Page = () => {
               supplierName: p?.supplier?.name,
               price: p?.price,
               selected: false,
+              // currency: p?.supplier?.,
             };
           }),
         };
