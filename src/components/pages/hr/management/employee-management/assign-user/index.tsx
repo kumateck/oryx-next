@@ -247,7 +247,7 @@ const UserDialog = ({
                 className="flex items-center gap-2"
               >
                 <Icon name="Plus" className="h-4 w-4" />
-                <span>{isLoading ? "Assigning..." : "Assign"}</span>
+                <span>{isLoading ? "Assigning..." : "Update"}</span>
               </Button>
             </div>
           </div>

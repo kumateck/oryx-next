@@ -13,11 +13,36 @@ export type HrReportCategory = {
 
 export const hrCategoryReportItems: HrReportCategory[] = [
   {
-    title: "Shift Schedule Management",
+    title: "Attendance Reports",
     items: [
       {
         name: "Attendance Report",
         path: "",
+        icon: "CalendarCheck",
+      },
+      {
+        name: "Department Attendance Summary",
+        path: "/reports/human-resources-report/departmental-attendance-report-summary",
+        icon: "CalendarCheck",
+      },
+      {
+        name: "Daily Attendance Overview",
+        path: "/reports/human-resources-report/daily-attendance-overview",
+        icon: "CalendarCheck",
+      },
+      {
+        name: "Top 5 Frequent Absentees",
+        path: "",
+        icon: "CalendarCheck",
+      },
+    ],
+  },
+  {
+    title: "Leave/Shift Schedule Management",
+    items: [
+      {
+        name: "Leave Overview Report",
+        path: "/reports/human-resources-report/leave-overview-report",
         icon: "CalendarCheck",
       },
     ],
